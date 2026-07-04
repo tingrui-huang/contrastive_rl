@@ -84,18 +84,32 @@ def collect_episode(env, act_fn, params, key, random_action, action_dim,
   return obs_buf, act_buf, key
 
 
-def evaluate(env, eval_act_fn, params, episodes, np_rng, action_dim):
-  """Greedy rollouts; success = any reward==1 within an episode."""
-  successes = []
+def evaluate(env, eval_act_fn, params, episodes, np_rng, action_dim,
+             obs_dim, start_index, end_index):
+  """Greedy rollouts. Returns (success, final_dist, min_dist), each a mean.
+
+  success  = any reward==1 within an episode.
+  *_dist   = L2 distance ||achieved_goal - desired_goal||, where achieved_goal
+             is obs_to_goal(state) (state[start:end]) and desired_goal is the
+             goal half of the observation -- the same quantity the reward uses.
+  """
+  successes, final_dists, min_dists = [], [], []
   for _ in range(episodes):
     obs = env.reset()
     hit = 0.0
+    dists = []
     for _ in range(env.max_episode_steps):
       a = np.asarray(eval_act_fn(params, jnp.asarray(obs[None]))[0])
       obs, r, _, _ = env.step(a)
       hit = max(hit, float(r))
+      state, goal = obs[:obs_dim], obs[obs_dim:]
+      ag = state[start_index:] if end_index == -1 else state[start_index:end_index]
+      dists.append(float(np.linalg.norm(ag - goal)))
     successes.append(hit)
-  return float(np.mean(successes))
+    final_dists.append(dists[-1])
+    min_dists.append(min(dists))
+  return (float(np.mean(successes)), float(np.mean(final_dists)),
+          float(np.mean(min_dists)))
 
 
 def train(config: Config):
@@ -221,11 +235,15 @@ def train(config: Config):
 
     # Eval.
     if env_steps - last_eval >= config.eval_every_steps:
-      succ = evaluate(eval_env, eval_act_fn, state.policy_params,
-                      config.eval_episodes, np_rng, config.action_dim)
-      print(f'  >> EVAL step {env_steps}: success_rate={succ:.3f}', flush=True)
+      succ, fdist, mdist = evaluate(
+          eval_env, eval_act_fn, state.policy_params, config.eval_episodes,
+          np_rng, config.action_dim, config.obs_dim, config.start_index,
+          config.end_index)
+      print(f'  >> EVAL step {env_steps}: success_rate={succ:.3f} '
+            f'final_dist={fdist:.3f} min_dist={mdist:.3f}', flush=True)
       last_eval = env_steps
-      rec = {'step': int(env_steps), 'success': float(succ)}
+      rec = {'step': int(env_steps), 'success': float(succ),
+             'final_dist': float(fdist), 'min_dist': float(mdist)}
       rec.update({k: float(v) for k, v in metrics.items()})
       metrics_history.append(rec)
 

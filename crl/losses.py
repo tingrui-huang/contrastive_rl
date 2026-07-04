@@ -157,6 +157,7 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
         'categorical_accuracy': jnp.mean(correct),
         'logits_pos': logits_pos,
         'logits_neg': logits_neg,
+        'logits_gap': logits_pos - logits_neg,  # NCE sanity: should be > 0.
         'logsumexp': logsumexp.mean(),
     }
     return loss, metrics
