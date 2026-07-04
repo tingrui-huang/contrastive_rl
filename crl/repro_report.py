@@ -258,6 +258,18 @@ def write_report_md(env_name, runs, seed_rows, out, batch_size, gif_note,
       '(relabeling is future/same-trajectory, offsets follow γ^k, diagonal='
       'positives, and — verified by target-network corruption — **no TD '
       'bootstrap** is used under the NCE objective).\n',
+      '## Notes for discussion\n',
+      f'- **Seeds:** {n}.'
+      + ('  Recommend 3+ seeds for mean±std before strong claims.'
+         if n < 3 else ''),
+      (f'- The large logits gap (~{gap:.0f}) is driven mainly by `logits_neg` '
+       'decreasing (negatives pushed toward −∞) while `logits_pos` stays '
+       'bounded — expected for *unnormalized* binary NCE. Set `repr_norm=True` '
+       'to bound the logits if numerical stability matters.'
+       if gap and gap > 50 else ''),
+      '- FetchReach is the simplest Fetch task (reach a point, no object): it '
+      'validates the objective and pipeline, not manipulation difficulty. '
+      'FetchPush is the next, harder test.',
   ]
   with open(os.path.join(out, 'REPORT.md'), 'w', encoding='utf-8') as f:
     f.write('\n'.join(lines))
