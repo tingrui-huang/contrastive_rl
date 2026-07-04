@@ -136,14 +136,17 @@ class FetchEnv:
   _SPECS = {
       'fetch_reach': (0, 3, ['FetchReach-v4', 'FetchReach-v3', 'FetchReach-v2']),
       'fetch_push': (3, 6, ['FetchPush-v4', 'FetchPush-v3', 'FetchPush-v2']),
+      'fetch_push_start_at_obj': (3, 6, ['FetchPush-v4', 'FetchPush-v3',
+                                         'FetchPush-v2']),
   }
 
   def __init__(self, task='fetch_reach', max_episode_steps=50, seed=0,
-               render_mode=None):
+               render_mode=None, start_at_obj=False):
     import gymnasium as gym
     import gymnasium_robotics  # noqa: F401  (registers the envs)
     gym.register_envs(gymnasium_robotics)
 
+    self._start_at_obj = start_at_obj
     self.start_index, self.end_index, ids = self._SPECS[task]
     last_err = None
     for env_id in ids:
@@ -170,8 +173,26 @@ class FetchEnv:
     return np.concatenate(
         [obs['observation'], obs['desired_goal']]).astype(np.float32)
 
+  def _move_hand_to_obj(self, obs):
+    """Scripted gripper->object move at reset (ports FetchPushImage's
+    _move_hand_to_obj): drive the gripper to within 0.06 of the object, just
+    behind it (-0.02 in x, ready to push). Steps the UNWRAPPED env so these
+    scripted moves do not count against the episode's TimeLimit."""
+    u = self._env.unwrapped
+    for _ in range(100):
+      hand = np.asarray(obs['observation'][:3])
+      target = np.asarray(obs['achieved_goal']) + np.array([-0.02, 0.0, 0.0])
+      delta = target - hand
+      if np.linalg.norm(delta) < 0.06:
+        break
+      a = np.concatenate([np.clip(delta, -1.0, 1.0), [0.0]]).astype(np.float32)
+      obs = u.step(a)[0]
+    return obs
+
   def reset(self):
     obs, _ = self._env.reset()
+    if self._start_at_obj:
+      obs = self._move_hand_to_obj(obs)
     self._desired = obs['desired_goal']
     return self._flatten(obs)
 
@@ -202,6 +223,9 @@ def make_env(env_name, config, seed=0, render_mode=None):
   elif env_name in ('fetch_reach', 'fetch_push'):
     env = FetchEnv(task=env_name, max_episode_steps=50, seed=seed,
                    render_mode=render_mode)
+  elif env_name == 'fetch_push_start_at_obj':
+    env = FetchEnv(task='fetch_push_start_at_obj', start_at_obj=True,
+                   max_episode_steps=50, seed=seed, render_mode=render_mode)
   else:
     raise NotImplementedError(f'Unknown env: {env_name}')
 

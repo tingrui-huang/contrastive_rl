@@ -150,12 +150,13 @@ def actor_vs_random(eps_tr, eps_rand, nets, policy_params, q_params, key):
 def main():
   p = argparse.ArgumentParser()
   p.add_argument('--ckpt', required=True)
+  p.add_argument('--env_name', default='fetch_push')
   p.add_argument('--episodes', type=int, default=50)
   p.add_argument('--out', default=None)
   args = p.parse_args()
 
-  cfg = Config(env_name='fetch_push')
-  env = envs_mod.make_env('fetch_push', cfg, seed=123)
+  cfg = Config(env_name=args.env_name)
+  env = envs_mod.make_env(args.env_name, cfg, seed=123)
   nets = networks_mod.make_networks(
       obs_dim=cfg.obs_dim, goal_dim=cfg.goal_dim, action_dim=cfg.action_dim,
       repr_dim=int(cfg.repr_dim), hidden_layer_sizes=cfg.hidden_layer_sizes,
