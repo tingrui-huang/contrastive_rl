@@ -138,15 +138,19 @@ class FetchEnv:
       'fetch_push': (3, 6, ['FetchPush-v4', 'FetchPush-v3', 'FetchPush-v2']),
       'fetch_push_start_at_obj': (3, 6, ['FetchPush-v4', 'FetchPush-v3',
                                          'FetchPush-v2']),
+      # Literal as-shipped original defaults: full-state goal (start=0,end=-1).
+      'fetch_push_original_style': (0, -1, ['FetchPush-v4', 'FetchPush-v3',
+                                            'FetchPush-v2']),
   }
 
   def __init__(self, task='fetch_reach', max_episode_steps=50, seed=0,
-               render_mode=None, start_at_obj=False):
+               render_mode=None, start_at_obj=False, original_style=False):
     import gymnasium as gym
     import gymnasium_robotics  # noqa: F401  (registers the envs)
     gym.register_envs(gymnasium_robotics)
 
     self._start_at_obj = start_at_obj
+    self._original_style = original_style
     self.start_index, self.end_index, ids = self._SPECS[task]
     last_err = None
     for env_id in ids:
@@ -165,11 +169,20 @@ class FetchEnv:
     self.max_episode_steps = max_episode_steps
     obs, _ = self._env.reset(seed=seed)
     self.obs_dim = int(obs['observation'].shape[0])          # 10 reach / 25 push
-    self.goal_dim = int(obs['desired_goal'].shape[0])        # 3
+    self._dg_dim = int(obs['desired_goal'].shape[0])         # 3
+    # original_style: goal half is a FULL-width state vector with desired_goal
+    # embedded at [0:3] and [3:6] (ports fetch_envs.FetchPushEnv.observation),
+    # so the relabel goal (start=0,end=-1) is the full future state.
+    self.goal_dim = self.obs_dim if original_style else self._dg_dim
     self.action_dim = int(self._env.action_space.shape[0])
     self._success_threshold = 0.05
 
   def _flatten(self, obs):
+    if self._original_style:
+      g = np.zeros(self.obs_dim, dtype=np.float32)
+      g[:3] = obs['desired_goal']       # matches fetch_envs.py:96
+      g[3:6] = obs['desired_goal']      # matches fetch_envs.py:97
+      return np.concatenate([obs['observation'], g]).astype(np.float32)
     return np.concatenate(
         [obs['observation'], obs['desired_goal']]).astype(np.float32)
 
@@ -225,6 +238,9 @@ def make_env(env_name, config, seed=0, render_mode=None):
                    render_mode=render_mode)
   elif env_name == 'fetch_push_start_at_obj':
     env = FetchEnv(task='fetch_push_start_at_obj', start_at_obj=True,
+                   max_episode_steps=50, seed=seed, render_mode=render_mode)
+  elif env_name == 'fetch_push_original_style':
+    env = FetchEnv(task='fetch_push_original_style', original_style=True,
                    max_episode_steps=50, seed=seed, render_mode=render_mode)
   else:
     raise NotImplementedError(f'Unknown env: {env_name}')
