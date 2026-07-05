@@ -97,8 +97,9 @@ def coverage_and_contact(eps, label):
 def relabel_diversity(eps, discount=0.99):
   """Feed rollouts through the SAME relabel sampler; measure positive spread."""
   L = eps[0]['obs'].shape[0]
+  full = eps[0]['obs'].shape[1]  # 28 (object-goal) or 50 (original-style full)
   buf = TrajectoryBuffer(capacity_steps=len(eps) * L, ep_len_obs=L,
-                         full_obs_dim=28, action_dim=4, obs_dim=25,
+                         full_obs_dim=full, action_dim=4, obs_dim=25,
                          start_index=3, end_index=6, discount=discount, seed=0)
   for e in eps:
     act = np.concatenate([e['act'], e['act'][-1:]], 0)  # pad to L (dummy last)
