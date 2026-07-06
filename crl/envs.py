@@ -151,11 +151,16 @@ class FetchEnv:
       # start -> policy must infer + acquire the push direction from the goal.
       'fetch_push_easy_neutral_dir': (3, 6, ['FetchPush-v4', 'FetchPush-v3',
                                              'FetchPush-v2']),
+      # Calibration rung (state-based approx of original image-Push geometry):
+      # fixed -x gripper + goal in a CONE around +x (the measured natural push).
+      'fetch_push_easy_conedir': (3, 6, ['FetchPush-v4', 'FetchPush-v3',
+                                         'FetchPush-v2']),
   }
 
   def __init__(self, task='fetch_reach', max_episode_steps=50, seed=0,
                render_mode=None, start_at_obj=False, original_style=False,
-               easy_fixed=False, multidir=False, neutral_dir=False):
+               easy_fixed=False, multidir=False, neutral_dir=False,
+               cone_dir=False, cone_half_width=np.pi / 3):
     import gymnasium as gym
     import gymnasium_robotics  # noqa: F401  (registers the envs)
     gym.register_envs(gymnasium_robotics)
@@ -165,6 +170,8 @@ class FetchEnv:
     self._easy_fixed = easy_fixed
     self._multidir = multidir
     self._neutral_dir = neutral_dir
+    self._cone_dir = cone_dir
+    self._cone_hw = cone_half_width           # cone half-width around +x
     self._last_dir = np.array([1.0, 0.0, 0.0])   # goal direction (audit hook)
     self._rng = np.random.default_rng(seed)
     # EasyPush L1 geometry: object pinned +x of the gripper home (~1.363) so the
@@ -301,9 +308,32 @@ class FetchEnv:
     self._pin_object()
     return u._get_obs()
 
+  def _reset_conedir(self):
+    """Calibration rung: fixed -x gripper (like L2C) but goal direction sampled
+    from a CONE around +x (the empirically-measured natural push direction from
+    a -x-side gripper). State-based approximation of the original image-Push
+    geometry -- NOT an exact reproduction."""
+    u = self._env.unwrapped
+    self._pin_object()
+    theta = float(self._rng.uniform(-self._cone_hw, self._cone_hw))  # around +x
+    d = np.array([np.cos(theta), np.sin(theta), 0.0])
+    self._last_dir = d
+    push = float(self._rng.uniform(*self._push_range))
+    u.goal = (self._obj0 + push * d).astype(float)
+    zc = self._obj0[2]
+    start = self._obj0 + np.array([-0.04, 0.0, 0.0])     # FIXED -x side
+    grip0 = np.asarray(u._get_obs()['observation'][:3])
+    self._move_gripper_to([grip0[0], grip0[1], zc + 0.12])
+    self._move_gripper_to([start[0], start[1], zc + 0.12])
+    self._move_gripper_to([start[0], start[1], zc + 0.005])
+    self._pin_object()
+    return u._get_obs()
+
   def reset(self):
     obs, _ = self._env.reset()
-    if self._neutral_dir:
+    if self._cone_dir:
+      obs = self._reset_conedir()
+    elif self._neutral_dir:
       obs = self._reset_neutral_dir()
     elif self._multidir:
       obs = self._reset_multidir()
@@ -355,6 +385,9 @@ def make_env(env_name, config, seed=0, render_mode=None):
                    max_episode_steps=50, seed=seed, render_mode=render_mode)
   elif env_name == 'fetch_push_easy_neutral_dir':
     env = FetchEnv(task='fetch_push_easy_neutral_dir', neutral_dir=True,
+                   max_episode_steps=50, seed=seed, render_mode=render_mode)
+  elif env_name == 'fetch_push_easy_conedir':
+    env = FetchEnv(task='fetch_push_easy_conedir', cone_dir=True,
                    max_episode_steps=50, seed=seed, render_mode=render_mode)
   else:
     raise NotImplementedError(f'Unknown env: {env_name}')
