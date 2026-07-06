@@ -141,16 +141,26 @@ class FetchEnv:
       # Literal as-shipped original defaults: full-state goal (start=0,end=-1).
       'fetch_push_original_style': (0, -1, ['FetchPush-v4', 'FetchPush-v3',
                                             'FetchPush-v2']),
+      # EasyPush Level 1: object-only goal, fixed object, short +x push.
+      'fetch_push_easy_fixed': (3, 6, ['FetchPush-v4', 'FetchPush-v3',
+                                       'FetchPush-v2']),
   }
 
   def __init__(self, task='fetch_reach', max_episode_steps=50, seed=0,
-               render_mode=None, start_at_obj=False, original_style=False):
+               render_mode=None, start_at_obj=False, original_style=False,
+               easy_fixed=False):
     import gymnasium as gym
     import gymnasium_robotics  # noqa: F401  (registers the envs)
     gym.register_envs(gymnasium_robotics)
 
     self._start_at_obj = start_at_obj
     self._original_style = original_style
+    self._easy_fixed = easy_fixed
+    self._rng = np.random.default_rng(seed)
+    # EasyPush L1 geometry: object pinned +x of the gripper home (~1.363) so the
+    # gripper starts BEHIND it; goal a short +x push away (6-9 cm). Both on table.
+    self._obj0 = np.array([1.40, 0.75, 0.425])
+    self._push_range = (0.06, 0.09)
     self.start_index, self.end_index, ids = self._SPECS[task]
     last_err = None
     for env_id in ids:
@@ -202,9 +212,27 @@ class FetchEnv:
       obs = u.step(a)[0]
     return obs
 
+  def _reset_easy_fixed(self):
+    """EasyPush L1: pin object at a fixed spot, set a short +x goal, start-at-obj."""
+    u = self._env.unwrapped
+    q = np.array(u._utils.get_joint_qpos(u.model, u.data, 'object0:joint'),
+                 dtype=float).copy()
+    q[0:3] = self._obj0
+    q[3:7] = [1.0, 0.0, 0.0, 0.0]
+    u._utils.set_joint_qpos(u.model, u.data, 'object0:joint', q)
+    u._mujoco.mj_forward(u.model, u.data)
+    push = float(self._rng.uniform(*self._push_range))
+    yj = float(self._rng.uniform(-0.01, 0.01))
+    u.goal = np.array([self._obj0[0] + push, self._obj0[1] + yj, self._obj0[2]],
+                      dtype=float)
+    obs = u._get_obs()
+    return self._move_hand_to_obj(obs)      # gripper starts behind the object
+
   def reset(self):
     obs, _ = self._env.reset()
-    if self._start_at_obj:
+    if self._easy_fixed:
+      obs = self._reset_easy_fixed()
+    elif self._start_at_obj:
       obs = self._move_hand_to_obj(obs)
     self._desired = obs['desired_goal']
     return self._flatten(obs)
@@ -241,6 +269,9 @@ def make_env(env_name, config, seed=0, render_mode=None):
                    max_episode_steps=50, seed=seed, render_mode=render_mode)
   elif env_name == 'fetch_push_original_style':
     env = FetchEnv(task='fetch_push_original_style', original_style=True,
+                   max_episode_steps=50, seed=seed, render_mode=render_mode)
+  elif env_name == 'fetch_push_easy_fixed':
+    env = FetchEnv(task='fetch_push_easy_fixed', easy_fixed=True,
                    max_episode_steps=50, seed=seed, render_mode=render_mode)
   else:
     raise NotImplementedError(f'Unknown env: {env_name}')
