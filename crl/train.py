@@ -219,8 +219,9 @@ def train(config: Config):
     if writer is None:
       print('  [tensorboard requested but unavailable; skipping]')
 
-  # Maze-scalar hook (point_* only; guarded so it never blocks training).
+  # Maze-scalar hooks (guarded so they never block training).
   is_point_maze = config.env_name.startswith('point_')
+  is_antmaze = config.env_name.startswith('antmaze_')
   def _maze_scalars():
     from crl import report_maze
     def _mp(s, g, memo):
@@ -231,6 +232,17 @@ def train(config: Config):
             'wp_completion')
     return {'maze_' + k: float(v) for k, v in a.items()
             if k in keep and v is not None}
+  def _antmaze_scalars():
+    from crl import report_antmaze
+    def _p(flat):
+      return np.asarray(eval_act_fn(state.policy_params, jnp.asarray(flat[None]))[0])
+    eps = [report_antmaze.rollout(eval_env, _p)
+           for _ in range(min(config.eval_episodes, 3))]
+    a = report_antmaze.aggregate(eps)
+    return {'ant_action_saturation': a['action_saturation_mean'],
+            'ant_torso_height': a['mean_z_mean'],
+            'ant_fall_fraction': a['fell_mean'],
+            'ant_goal_velocity': a['goal_directed_velocity_mean']}
 
   while env_steps < config.max_number_of_steps:
     random_action = env_steps < config.random_steps
@@ -280,6 +292,15 @@ def train(config: Config):
           rec.update(_maze_scalars())
         except Exception as ex:  # pylint: disable=broad-except
           print('  [maze scalars skipped]', ex)
+      if is_antmaze:
+        try:
+          rec.update(_antmaze_scalars())
+        except Exception as ex:  # pylint: disable=broad-except
+          print('  [antmaze scalars skipped]', ex)
+      # NaN guard: surface non-finite metrics immediately.
+      if not np.all(np.isfinite([v for v in rec.values()
+                                 if isinstance(v, (int, float))])):
+        print(f'  [WARN] non-finite metric at step {env_steps}', flush=True)
       metrics_history.append(rec)
       if writer is not None:
         for k, v in rec.items():

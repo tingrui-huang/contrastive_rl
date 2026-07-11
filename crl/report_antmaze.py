@@ -199,6 +199,64 @@ def smoke_health(metrics_json):
   }
 
 
+def env_audit(env_name='antmaze_umaze', steps=50, seed=0):
+  """Structural + rollout audit of the AntMaze wrapper. Returns (passed, details).
+  Checks invariants (not hard-coded dims) + finite random rollout."""
+  cfg = Config(env_name=env_name)
+  env = envs_mod.make_env(env_name, cfg, seed=seed)
+  flat = env.reset()
+  rng = np.random.default_rng(seed)
+  finite = bool(np.all(np.isfinite(flat)))
+  for _ in range(steps):
+    flat, r, _, _ = env.step(rng.uniform(-1, 1, cfg.action_dim).astype(np.float32))
+    if not (np.all(np.isfinite(flat)) and np.isfinite(r)):
+      finite = False
+  checks = {
+      'goal_dim_is_2': cfg.goal_dim == 2,
+      'goal_slice_0_2': (cfg.start_index, cfg.end_index) == (0, 2),
+      'action_dim_8': cfg.action_dim == 8,
+      'has_proprio': cfg.obs_dim > cfg.goal_dim,
+      'flat_len_ok': env.reset().shape[0] == cfg.obs_dim + cfg.goal_dim,
+      'rollout_finite': finite,
+  }
+  details = {**checks, 'obs_dim': cfg.obs_dim, 'goal_dim': cfg.goal_dim,
+             'action_dim': cfg.action_dim, 'max_steps': cfg.max_episode_steps}
+  return all(checks.values()), details
+
+
+def qualification_verdict(metrics_json, ckpt_dir, min_success=0.2,
+                          sat_warn=0.9, fall_warn=0.8):
+  """PASS / WARN / FAIL from metrics.json + checkpoint dir. FAIL on NaN or
+  missing checkpoints; WARN on weak optimization / high saturation / falls /
+  low success (AntMaze is hard, so low success is a WARN, not a FAIL)."""
+  h = smoke_health(metrics_json)
+  last = json.load(open(metrics_json))[-1]
+  issues = []
+  if not h['all_finite']:
+    issues.append(('FAIL', 'NaN/inf present in metrics'))
+  missing = [f for f in ('init', 'early', 'mid', 'final', 'best', 'latest')
+             if not os.path.exists(os.path.join(ckpt_dir, f + '.pkl'))]
+  if missing:
+    issues.append(('FAIL', f'missing checkpoints: {missing}'))
+  if not h['critic_loss_decreased']:
+    issues.append(('WARN', 'critic_loss did not decrease'))
+  if not h['logits_gap_grew']:
+    issues.append(('WARN', 'logits_gap did not grow'))
+  succ = last.get('success', 0.0)
+  if succ < min_success:
+    issues.append(('WARN', f'success {succ:.2f} < {min_success} (AntMaze is hard)'))
+  sat = last.get('ant_action_saturation')
+  if sat is not None and sat > sat_warn:
+    issues.append(('WARN', f'action_saturation {sat:.2f} > {sat_warn}'))
+  fall = last.get('ant_fall_fraction')
+  if fall is not None and fall > fall_warn:
+    issues.append(('WARN', f'fall_fraction {fall:.2f} > {fall_warn}'))
+  verdict = ('FAIL' if any(s == 'FAIL' for s, _ in issues)
+             else 'WARN' if any(s == 'WARN' for s, _ in issues) else 'PASS')
+  return verdict, issues, {'success': succ, 'action_saturation': sat,
+                           'fall_fraction': fall, **h}
+
+
 def full_report(env_name, ckpt=None, episodes=10, seed=123, out=None):
   cfg = Config(env_name=env_name)
   env = envs_mod.make_env(env_name, cfg, seed=seed)
