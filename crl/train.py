@@ -210,14 +210,14 @@ def train(config: Config):
   writer = None
   if config.tensorboard:
     tb_dir = os.path.join(config.ckpt_dir or '.', 'tb')
-    for mod in ('torch.utils.tensorboard', 'tensorboardX'):
-      try:
-        writer = __import__(mod, fromlist=['SummaryWriter']).SummaryWriter(tb_dir)
-        break
-      except Exception:  # pylint: disable=broad-except
-        continue
-    if writer is None:
-      print('  [tensorboard requested but unavailable; skipping]')
+    try:
+      # Use tensorboardX (pure-python). Do NOT use torch.utils.tensorboard:
+      # importing torch alongside JAX on the same GPU can hard-crash the kernel.
+      from tensorboardX import SummaryWriter
+      writer = SummaryWriter(tb_dir)
+    except Exception as ex:  # pylint: disable=broad-except
+      print(f'  [tensorboard requested but tensorboardX unavailable ({ex}); '
+            'skipping TB. `pip install tensorboardX`]')
 
   # Maze-scalar hooks (guarded so they never block training).
   is_point_maze = config.env_name.startswith('point_')
