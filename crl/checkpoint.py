@@ -56,6 +56,17 @@ def save_checkpoint(ckpt_dir, step, state, metrics_history, success,
   return best_success
 
 
+def save_named(ckpt_dir, name, step, state):
+  """Write a milestone checkpoint ``<name>.pkl`` (e.g. init/early/mid/final)."""
+  if not ckpt_dir:
+    return
+  os.makedirs(ckpt_dir, exist_ok=True)
+  payload = {'step': int(step), 'state': _to_numpy(state)}
+  with open(os.path.join(ckpt_dir, f'{name}.pkl'), 'wb') as f:
+    pickle.dump(payload, f)
+  print(f'    [ckpt] saved milestone {name} @ step {step}', flush=True)
+
+
 def load_checkpoint(path):
   """Loads a checkpoint file; returns (step, state_with_jax_arrays)."""
   with open(path, 'rb') as f:

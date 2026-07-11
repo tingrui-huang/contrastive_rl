@@ -356,6 +356,73 @@ class FetchEnv:
 
 
 # ---------------------------------------------------------------------------
+# AntMaze / PointMaze (gymnasium-robotics). Prepends achieved_goal (xy) to the
+# proprioceptive obs so the relabel goal slice is [0:2] (xy) -- matching the
+# original ant_env's expose_all_qpos. Sparse reward = xy-distance < threshold.
+# ---------------------------------------------------------------------------
+_MAZE_IDS = {
+    'antmaze_umaze':  ('AntMaze_UMaze-v5', 700),
+    'antmaze_medium': ('AntMaze_Medium-v5', 1000),
+    'antmaze_large':  ('AntMaze_Large-v5', 1000),
+}
+
+
+class MazeEnv:
+  """Wraps a gymnasium-robotics Ant/Point maze into the flat [state, goal]
+  layout: state = concat([achieved_goal(xy), proprio]), goal = desired_goal(xy),
+  goal slice = [0:2]. Fixed-length episodes (no unhealthy early termination);
+  start + goal randomized per reset (approximates the paper's non_zero_reset)."""
+
+  start_index = 0
+  end_index = 2
+
+  def __init__(self, env_id, max_episode_steps, success_threshold=0.5,
+               include_contact_forces=False, seed=0, render_mode=None):
+    import gymnasium as gym
+    import gymnasium_robotics  # noqa: F401  (registers the envs)
+    gym.register_envs(gymnasium_robotics)
+    self._success_threshold = success_threshold
+    kwargs = dict(max_episode_steps=max_episode_steps, continuing_task=False,
+                  reset_target=True, render_mode=render_mode)
+    if 'Ant' in env_id:                          # Ant-specific knobs
+      kwargs['include_cfrc_ext_in_observation'] = include_contact_forces
+      kwargs['terminate_when_unhealthy'] = False
+    self._env = gym.make(env_id, **kwargs)
+    self._env_id = env_id
+    self.max_episode_steps = max_episode_steps
+    obs, _ = self._env.reset(seed=seed)
+    # Audit ACTUAL shapes at runtime (do NOT hard-code the obs dim).
+    self._ag_dim = int(np.asarray(obs['achieved_goal']).shape[0])   # 2 (xy)
+    proprio = int(np.asarray(obs['observation']).shape[0])
+    self.obs_dim = self._ag_dim + proprio        # prepend xy -> full state width
+    self.goal_dim = self._ag_dim                 # 2 (xy)
+    self.action_dim = int(self._env.action_space.shape[0])
+    self._last_obs = obs
+
+  def _flatten(self, obs):
+    state = np.concatenate([np.asarray(obs['achieved_goal']),
+                            np.asarray(obs['observation'])])
+    return np.concatenate(
+        [state, np.asarray(obs['desired_goal'])]).astype(np.float32)
+
+  def reset(self):
+    obs, _ = self._env.reset()
+    self._last_obs = obs
+    return self._flatten(obs)
+
+  def step(self, action):
+    obs, _, _, _, _ = self._env.step(np.asarray(action, dtype=np.float32))
+    self._last_obs = obs
+    dist = float(np.linalg.norm(np.asarray(obs['achieved_goal'])
+                                - np.asarray(obs['desired_goal'])))
+    reward = float(dist < self._success_threshold)
+    return self._flatten(obs), reward, False, {}
+
+  def render(self):
+    return self._env.render()
+
+
+# ---------------------------------------------------------------------------
 def make_env(env_name, config, seed=0, render_mode=None):
   """Builds an env and fills obs/goal/action dims + episode length into config.
 
@@ -365,9 +432,13 @@ def make_env(env_name, config, seed=0, render_mode=None):
   """
   if env_name.startswith('point_'):
     walls = env_name.split('_', 1)[1]
-    # Larger maps get longer horizons (mirrors env_utils.load heuristics).
-    steps = 100 if walls in ('FourRooms', 'Maze11x11', 'Spiral11x11') else 50
+    # Only the 11x11 maps get the longer horizon (matches original env_utils.load).
+    steps = 100 if '11x11' in walls else 50
     env = PointEnv(walls=walls, max_episode_steps=steps, seed=seed)
+  elif env_name.startswith('antmaze_'):
+    env_id, steps = _MAZE_IDS[env_name]
+    env = MazeEnv(env_id, max_episode_steps=steps, seed=seed,
+                  render_mode=render_mode)
   elif env_name in ('fetch_reach', 'fetch_push'):
     env = FetchEnv(task=env_name, max_episode_steps=50, seed=seed,
                    render_mode=render_mode)

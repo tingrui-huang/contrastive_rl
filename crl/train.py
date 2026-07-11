@@ -202,6 +202,36 @@ def train(config: Config):
   best_success = -1.0
   ckpt_every = config.ckpt_every_steps or config.eval_every_steps
 
+  # Milestone checkpoints (init/early/mid/final) + optional TensorBoard mirror.
+  saved_phases = set()
+  if config.ckpt_dir:
+    ckpt_mod.save_named(config.ckpt_dir, 'init', env_steps, state)
+    saved_phases.add('init')
+  writer = None
+  if config.tensorboard:
+    tb_dir = os.path.join(config.ckpt_dir or '.', 'tb')
+    for mod in ('torch.utils.tensorboard', 'tensorboardX'):
+      try:
+        writer = __import__(mod, fromlist=['SummaryWriter']).SummaryWriter(tb_dir)
+        break
+      except Exception:  # pylint: disable=broad-except
+        continue
+    if writer is None:
+      print('  [tensorboard requested but unavailable; skipping]')
+
+  # Maze-scalar hook (point_* only; guarded so it never blocks training).
+  is_point_maze = config.env_name.startswith('point_')
+  def _maze_scalars():
+    from crl import report_maze
+    def _mp(s, g, memo):
+      obs = np.concatenate([s, g]).astype(np.float32)
+      return np.asarray(eval_act_fn(state.policy_params, jnp.asarray(obs[None]))[0])
+    a = report_maze.eval_scalars(eval_env, _mp, episodes=min(config.eval_episodes, 30))
+    keep = ('success@2.0', 'success@1.0', 'success@0.5', 'spl', 'collisions',
+            'wp_completion')
+    return {'maze_' + k: float(v) for k, v in a.items()
+            if k in keep and v is not None}
+
   while env_steps < config.max_number_of_steps:
     random_action = env_steps < config.random_steps
     key, key_collect = jax.random.split(key)
@@ -245,7 +275,16 @@ def train(config: Config):
       rec = {'step': int(env_steps), 'success': float(succ),
              'final_dist': float(fdist), 'min_dist': float(mdist)}
       rec.update({k: float(v) for k, v in metrics.items()})
+      if is_point_maze:
+        try:
+          rec.update(_maze_scalars())
+        except Exception as ex:  # pylint: disable=broad-except
+          print('  [maze scalars skipped]', ex)
       metrics_history.append(rec)
+      if writer is not None:
+        for k, v in rec.items():
+          if isinstance(v, (int, float)):
+            writer.add_scalar(k.replace('@', '_'), float(v), env_steps)
 
       # Periodic checkpoint to (Drive) ckpt_dir -- not just once at the end.
       if config.ckpt_dir and env_steps - last_ckpt >= ckpt_every:
@@ -254,10 +293,20 @@ def train(config: Config):
             best_success)
         last_ckpt = env_steps
 
+      # Milestone checkpoints at 25% / 50% of the budget.
+      if config.ckpt_dir:
+        for nm, frac in (('early', 0.25), ('mid', 0.5)):
+          if nm not in saved_phases and env_steps >= frac * config.max_number_of_steps:
+            ckpt_mod.save_named(config.ckpt_dir, nm, env_steps, state)
+            saved_phases.add(nm)
+
   # Final save.
   if config.ckpt_dir:
+    ckpt_mod.save_named(config.ckpt_dir, 'final', env_steps, state)
     ckpt_mod.save_checkpoint(config.ckpt_dir, env_steps, state,
                              metrics_history, None, best_success)
+  if writer is not None:
+    writer.close()
   return state
 
 

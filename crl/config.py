@@ -72,6 +72,7 @@ class Config:
   eval_every_steps: int = 10_000
   eval_episodes: int = 20
   log_every_steps: int = 1_000
+  tensorboard: bool = False     # mirror scalars to <ckpt_dir>/tb (optional).
 
   # --- Checkpointing (point ckpt_dir at a Google Drive folder on Colab) ---
   ckpt_dir: str = ''            # '' disables checkpointing.
