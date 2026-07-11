@@ -254,31 +254,59 @@ def load_nets(env_name, ckpt, cfg):
 # --------------------------------------------------------------------------- #
 # action-sensitivity scan (critic ranking vs clone-rollout progress)
 # --------------------------------------------------------------------------- #
+def geodesic_field(walls, goal_cell):
+  """BFS distance (in cell steps) from every free cell to the goal cell."""
+  dist = {goal_cell: 0}
+  q = collections.deque([goal_cell])
+  while q:
+    c = q.popleft()
+    for di, dj in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+      n = (c[0] + di, c[1] + dj)
+      if (0 <= n[0] < walls.shape[0] and 0 <= n[1] < walls.shape[1]
+          and walls[n] == 0 and n not in dist):
+        dist[n] = dist[c] + 1; q.append(n)
+  return dist
+
+
+def _geo(field, walls, state):
+  far = (max(field.values()) + 1) if field else 1e3
+  return field.get(cell_of(walls, state), far)
+
+
 def action_scan(env, nets, q_params, state_goal_pairs, n_dirs=16, k_steps=3):
-  """At each (state,goal): rank K action directions by critic Q vs by actual
-  short-clone-rollout goal progress; report Spearman corr + argmax agreement."""
+  """At each (state,goal): rank K action directions by critic Q, vs by short
+  clone-rollout progress measured TWO ways -- Euclidean distance reduction AND
+  maze-aware geodesic (BFS) distance reduction. The geodesic variant does not
+  penalize a correct detour action that momentarily increases Euclidean
+  distance while decreasing true path distance to the goal."""
+  walls = env._walls
   thetas = np.linspace(0, 2 * np.pi, n_dirs, endpoint=False)
   cand = np.stack([np.cos(thetas), np.sin(thetas)], 1).astype(np.float32)  # [K,2]
-  corrs, agree = [], []
+  eu_c, geo_c, eu_a, geo_a = [], [], [], []
   for (s, g) in state_goal_pairs:
+    field = geodesic_field(walls, cell_of(walls, g))
     obs = np.concatenate([s, g]).astype(np.float32)
     obs_k = jnp.asarray(np.tile(obs, (n_dirs, 1)))
     q = np.diag(np.asarray(nets.q_network.apply(q_params, obs_k, jnp.asarray(cand))))
-    prog = np.zeros(n_dirs)
+    eu, geo = np.zeros(n_dirs), np.zeros(n_dirs)
     for i, a in enumerate(cand):
       env.state = np.asarray(s, float).copy(); env.goal = np.asarray(g, float).copy()
-      d0 = np.linalg.norm(env.state - g)
+      d0, g0 = np.linalg.norm(env.state - g), _geo(field, walls, env.state)
       for _ in range(k_steps):
         env.step(a)
-      prog[i] = d0 - np.linalg.norm(env.state - g)
-    # Spearman = Pearson on ranks
-    rq, rp = _rank(q), _rank(prog)
-    if rq.std() > 0 and rp.std() > 0:
-      corrs.append(float(np.corrcoef(rq, rp)[0, 1]))
-    agree.append(int(np.argmax(q) == np.argmax(prog)))
+      eu[i] = d0 - np.linalg.norm(env.state - g)
+      geo[i] = g0 - _geo(field, walls, env.state)
+    rq = _rank(q)
+    if rq.std() > 0 and _rank(eu).std() > 0:
+      eu_c.append(float(np.corrcoef(rq, _rank(eu))[0, 1]))
+    if rq.std() > 0 and _rank(geo).std() > 0:
+      geo_c.append(float(np.corrcoef(rq, _rank(geo))[0, 1]))
+    eu_a.append(int(np.argmax(q) == np.argmax(eu)))
+    geo_a.append(int(np.argmax(q) == np.argmax(geo)))
+  mean = lambda x: float(np.mean(x)) if x else None
   return {'n_pairs': len(state_goal_pairs), 'n_dirs': n_dirs, 'k_steps': k_steps,
-          'spearman_mean': float(np.mean(corrs)) if corrs else None,
-          'argmax_agree_frac': float(np.mean(agree)) if agree else None}
+          'spearman_euclid': mean(eu_c), 'spearman_geodesic': mean(geo_c),
+          'argmax_agree_euclid': mean(eu_a), 'argmax_agree_geodesic': mean(geo_a)}
 
 
 def _rank(x):
@@ -415,15 +443,20 @@ def _print(report):
       a = d[subset]
       if a.get('n_episodes', 0) == 0:
         print(f'{name:>10} | (no pairs)'); continue
-      eff, spl = a['efficiency_at_success'], a['spl']
+      spl_s = '  None' if a['spl'] is None else f'{a["spl"]:>6.2f}'
+      eff = a['efficiency_at_success']
+      eff_s = '  None' if eff is None else f'{eff:>6.2f}'
       print(f'{name:>10} | {a["success@2.0"]:>6.2f} {a["success@1.0"]:>6.2f} '
-            f'{a["success@0.5"]:>6.2f} {spl if spl is None else round(spl,2):>6} '
-            f'{eff if eff is None else round(eff,2):>6} {a["path_len"]:>6.1f} '
+            f'{a["success@0.5"]:>6.2f} {spl_s} {eff_s} {a["path_len"]:>6.1f} '
             f'{a["collisions"]:>5.1f} {a["wp_completion"]:>5.2f} {a["final_dist"]:>6.2f}')
   if 'action_scan' in report:
     s = report['action_scan']
-    print(f'\naction-scan: spearman(Q,progress)={s["spearman_mean"]}  '
-          f'argmax-agree={s["argmax_agree_frac"]}  ({s["n_pairs"]}x{s["n_dirs"]})')
+    print(f'\naction-scan ({s["n_pairs"]} pairs x {s["n_dirs"]} dirs, '
+          f'{s["k_steps"]} clone steps):')
+    print(f'   euclid   spearman(Q,prog)={s["spearman_euclid"]}  '
+          f'argmax-agree={s["argmax_agree_euclid"]}')
+    print(f'   geodesic spearman(Q,prog)={s["spearman_geodesic"]}  '
+          f'argmax-agree={s["argmax_agree_geodesic"]}  (maze-aware)')
 
 
 def main():
