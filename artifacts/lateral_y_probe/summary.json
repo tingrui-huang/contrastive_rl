@@ -1,0 +1,90 @@
+{
+  "env": "fetch_push_easy_conedir",
+  "ckpt": "D:/Users/trhua/Research/contrastive_rl/easypush_colab/fetch_push_easy_conedir_s1/best.pkl",
+  "step": 100000,
+  "seed": 0,
+  "delta_ys": [
+    -0.04,
+    -0.02,
+    0.0,
+    0.02,
+    0.04
+  ],
+  "goal": [
+    1.475000023841858,
+    0.7498300075531006,
+    0.42500001192092896
+  ],
+  "gripper_y": 0.7498300075531006,
+  "partA": [
+    {
+      "delta_y": -0.04,
+      "meas_delta_y": -0.04000002145767212,
+      "action_x": 0.5104625225067139,
+      "action_y": 0.9285568594932556,
+      "action_z": 0.9999640583992004
+    },
+    {
+      "delta_y": -0.02,
+      "meas_delta_y": -0.019999980926513672,
+      "action_x": 0.542722761631012,
+      "action_y": 0.681537926197052,
+      "action_z": 0.9998910427093506
+    },
+    {
+      "delta_y": 0.0,
+      "meas_delta_y": 0.0,
+      "action_x": 0.6013059616088867,
+      "action_y": 0.4103918969631195,
+      "action_z": 0.9993172883987427
+    },
+    {
+      "delta_y": 0.02,
+      "meas_delta_y": 0.019999980926513672,
+      "action_x": 0.755591094493866,
+      "action_y": 0.09051895141601562,
+      "action_z": 0.9957717061042786
+    },
+    {
+      "delta_y": 0.04,
+      "meas_delta_y": 0.04000002145767212,
+      "action_x": 0.8407604694366455,
+      "action_y": -0.09323140978813171,
+      "action_z": 0.9834960103034973
+    }
+  ],
+  "action_y_range": 1.0217882692813873,
+  "opposite_sign": true,
+  "policy_uses_y": true,
+  "dynamics_spread_medium_forward": 0.03708270099388739,
+  "dynamics_depend_on_y": true,
+  "direction_tradeoff": false,
+  "partC": {
+    "small_forward": {
+      "mean_progress": 0.031307402628145506,
+      "worst_progress": 0.005402547497708132,
+      "miss": 0,
+      "fall": 0
+    },
+    "medium_forward": {
+      "mean_progress": 0.032375546532017435,
+      "worst_progress": 0.01207150391427958,
+      "miss": 0,
+      "fall": 0
+    },
+    "forward_neg_y": {
+      "mean_progress": 0.01974275379297609,
+      "worst_progress": 0.002258733960249823,
+      "miss": 0,
+      "fall": 0
+    },
+    "forward_pos_y": {
+      "mean_progress": 0.020405983681827184,
+      "worst_progress": 0.0022448744617555583,
+      "miss": 0,
+      "fall": 0
+    }
+  },
+  "robust_action": "small_forward",
+  "verdict": "Y_LOOKS_SUITABLE"
+}
