@@ -208,6 +208,8 @@ def main():
   ap.add_argument('--ckpt', required=True)
   ap.add_argument('--out', required=True)     # gate report dir
   ap.add_argument('--tag', required=True)     # e.g. alpha0_10000
+  ap.add_argument('--target_entropy', type=float, default=None,
+                  help='adaptive-alpha target; enables alpha-direction fields')
   args = ap.parse_args()
   os.makedirs(args.out, exist_ok=True)
   rng = np.random.default_rng(0)
@@ -248,6 +250,11 @@ def main():
   mode = np.tanh(loc)
   key, sk = jax.random.split(key)
   samp = pol['sample_batch'](obs_b, sk)
+  # entropy estimate under the implementation's own sample/log_prob; the
+  # median resists the arctanh-clip artifact that inflates the mean.
+  lp = pol['log_prob'](obs_b, samp)
+  ent_mean, ent_med = float(np.mean(-lp)), float(np.median(-lp))
+  artifact_frac = float(np.mean(np.abs(lp) > 1e3))
   head = {
       'scale_median': float(np.median(scale)),
       'scale_p10': float(np.percentile(scale, 10)),
@@ -258,7 +265,14 @@ def main():
       'mode_sat': float(np.mean(np.abs(mode) > SAT)),
       'sample_sat': float(np.mean(np.abs(samp) > SAT)),
       'alpha': alpha,
+      'entropy_mean': ent_mean, 'entropy_median': ent_med,
+      'entropy_clip_artifact_frac': artifact_frac,
   }
+  if args.target_entropy is not None:
+    head['target_entropy'] = args.target_entropy
+    head['alpha_direction_implied'] = (
+        'UP' if ent_mean < args.target_entropy else 'DOWN')
+    head['alpha_direction_reliable'] = bool(artifact_frac < 0.05)
 
   ev = eval_episodes(env_eval, pol, N_EVAL_EPS)
 
@@ -283,6 +297,8 @@ def main():
                     'scale_med': head['scale_median'],
                     'frac_at_floor': head['frac_at_min_std'],
                     'alpha': alpha, 'sat': head['mode_sat'],
+                    'entropy_med': head['entropy_median'],
+                    'ent_artifact': head['entropy_clip_artifact_frac'],
                     'moving_frac': coll['moving_transition_frac'],
                     'act_effrank': coll['action_eff_rank'],
                     'success': ev['success'], 'goal_vel': ev['goal_vel'],

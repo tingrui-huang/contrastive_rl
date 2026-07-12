@@ -4,9 +4,12 @@ Config mirrors the 150k antmaze_umaze run exactly (binary NCE, random_goals
 0.5, min_replay/random 10k, num_sgd_steps_per_step 4, batch 256, seed 0)
 except: env = antmaze_open_near (AntMaze_Open-v5, near goals, 300-step
 episodes), 50k steps, and the ONE arm variable entropy_coefficient:
-  --arm alpha0    -> entropy_coefficient = 0.0  (faithful baseline)
-  --arm adaptive  -> entropy_coefficient = None (adaptive SAC alpha,
-                     target_entropy = 0.0, the original's adaptive semantics)
+  --arm alpha0       -> entropy_coefficient = 0.0  (faithful baseline)
+  --arm adaptive     -> entropy_coefficient = None (adaptive SAC alpha,
+                        target_entropy = 0.0, the original's adaptive semantics)
+  --arm adaptive_te8 -> entropy_coefficient = None, target_entropy = -8
+                        (= -action_dim; direction verified by
+                        alpha_direction_sanity.py). Numerical guards ON.
 """
 import argparse
 import os
@@ -21,7 +24,8 @@ from crl.train import train
 
 def main():
   ap = argparse.ArgumentParser()
-  ap.add_argument('--arm', choices=['alpha0', 'adaptive'], required=True)
+  ap.add_argument('--arm', choices=['alpha0', 'adaptive', 'adaptive_te8'],
+                  required=True)
   ap.add_argument('--steps', type=int, default=50_000)
   ap.add_argument('--out', required=True)
   ap.add_argument('--seed', type=int, default=0)
@@ -36,6 +40,8 @@ def main():
       env_name='antmaze_open_near', use_td=False, twin_q=False,   # binary NCE
       random_goals=0.5,
       entropy_coefficient=0.0 if args.arm == 'alpha0' else None,
+      target_entropy=-8.0 if args.arm == 'adaptive_te8' else 0.0,
+      guard_abort=(args.arm == 'adaptive_te8'),
       max_number_of_steps=steps,
       min_replay_size=minrep, random_steps=minrep,
       num_sgd_steps_per_step=4, batch_size=256,

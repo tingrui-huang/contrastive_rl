@@ -68,6 +68,12 @@ class Config:
   jit: bool = True
   seed: int = 0
 
+  # --- Numerical guard (opt-in): abort training when the learner state blows
+  # up (non-finite actor/critic losses, logits, alpha, or parameters, or
+  # |actor_loss| above the threshold). Off by default.
+  guard_abort: bool = False
+  guard_actor_loss_max: float = 1e6
+
   # --- Eval / logging ---
   eval_every_steps: int = 10_000
   eval_episodes: int = 20

@@ -261,6 +261,34 @@ def train(config: Config):
       for _ in range(learner_steps):
         state, metrics = multi_update(state, sample_G())
 
+    # Numerical guard (opt-in): abort on non-finite / exploding learner state.
+    if config.guard_abort and metrics:
+      reason = None
+      m = {k: float(v) for k, v in metrics.items()}
+      for k in ('actor_loss', 'critic_loss', 'logits_pos', 'logits_neg',
+                'alpha', 'alpha_loss'):
+        if k in m and not np.isfinite(m[k]):
+          reason = f'non-finite {k}={m[k]}'
+          break
+      if reason is None and abs(m.get('actor_loss', 0.0)) > config.guard_actor_loss_max:
+        reason = (f'|actor_loss|={abs(m["actor_loss"]):.3g} > '
+                  f'{config.guard_actor_loss_max:.3g}')
+      if reason is None:
+        finite = all(bool(jnp.all(jnp.isfinite(x))) for x in
+                     jax.tree_util.tree_leaves((state.policy_params,
+                                                state.q_params)))
+        if not finite:
+          reason = 'non-finite policy/critic parameters'
+      if reason is not None:
+        print(f'GUARD_ABORT at step {env_steps}: {reason}', flush=True)
+        metrics_history.append({'step': int(env_steps), 'guard_abort': reason})
+        if config.ckpt_dir:
+          ckpt_mod.save_named(config.ckpt_dir, 'abort', env_steps, state)
+          best_success = ckpt_mod.save_checkpoint(
+              config.ckpt_dir, env_steps, state, metrics_history, None,
+              best_success)
+        break
+
     # Logging.
     if env_steps - last_log >= config.log_every_steps:
       sps = (env_steps) / (time.time() - t0)

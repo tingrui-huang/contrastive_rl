@@ -1,0 +1,83 @@
+{
+  "init@target=0.0": {
+    "entropy_mean": -5.807232856750488,
+    "entropy_median": -5.283927917480469,
+    "entropy_clip_artifact_frac": 0.0,
+    "analytic_grad_sign(+=alpha down)": -1.0,
+    "alpha_moved": "UP",
+    "new_log_alpha": 0.0002999979769811034,
+    "expected_from_mean_entropy": "UP",
+    "direction_consistent": true
+  },
+  "adaptive_30k@target=0.0": {
+    "entropy_mean": -6.508206367492676,
+    "entropy_median": -5.869685173034668,
+    "entropy_clip_artifact_frac": 0.0,
+    "analytic_grad_sign(+=alpha down)": -1.0,
+    "alpha_moved": "UP",
+    "new_log_alpha": 0.0002999980060849339,
+    "expected_from_mean_entropy": "UP",
+    "direction_consistent": true
+  },
+  "adaptive_40k_exploded@target=0.0": {
+    "entropy_mean": 2.499977927351219e+25,
+    "entropy_median": 9.714706829865553e+24,
+    "entropy_clip_artifact_frac": 1.0,
+    "analytic_grad_sign(+=alpha down)": 1.0,
+    "alpha_moved": "FLAT",
+    "new_log_alpha": 0.0,
+    "expected_from_mean_entropy": "DOWN",
+    "direction_consistent": false
+  },
+  "alpha0_50k_collapsed@target=0.0": {
+    "entropy_mean": 573331537920.0,
+    "entropy_median": 122952.3359375,
+    "entropy_clip_artifact_frac": 0.6953125,
+    "analytic_grad_sign(+=alpha down)": 1.0,
+    "alpha_moved": "DOWN",
+    "new_log_alpha": -0.00029999803518876433,
+    "expected_from_mean_entropy": "DOWN",
+    "direction_consistent": true
+  },
+  "init@target=-8.0": {
+    "entropy_mean": -6.220471382141113,
+    "entropy_median": -5.490559101104736,
+    "entropy_clip_artifact_frac": 0.0,
+    "analytic_grad_sign(+=alpha down)": 1.0,
+    "alpha_moved": "DOWN",
+    "new_log_alpha": -0.0002999980060849339,
+    "expected_from_mean_entropy": "DOWN",
+    "direction_consistent": true
+  },
+  "adaptive_30k@target=-8.0": {
+    "entropy_mean": -6.542428970336914,
+    "entropy_median": -5.482132434844971,
+    "entropy_clip_artifact_frac": 0.0,
+    "analytic_grad_sign(+=alpha down)": 1.0,
+    "alpha_moved": "DOWN",
+    "new_log_alpha": -0.0002999980060849339,
+    "expected_from_mean_entropy": "DOWN",
+    "direction_consistent": true
+  },
+  "adaptive_40k_exploded@target=-8.0": {
+    "entropy_mean": 2.499977927351219e+25,
+    "entropy_median": 9.714706829865553e+24,
+    "entropy_clip_artifact_frac": 1.0,
+    "analytic_grad_sign(+=alpha down)": 1.0,
+    "alpha_moved": "FLAT",
+    "new_log_alpha": 0.0,
+    "expected_from_mean_entropy": "DOWN",
+    "direction_consistent": false
+  },
+  "alpha0_50k_collapsed@target=-8.0": {
+    "entropy_mean": 573333307392.0,
+    "entropy_median": 209804.4375,
+    "entropy_clip_artifact_frac": 0.6796875,
+    "analytic_grad_sign(+=alpha down)": 1.0,
+    "alpha_moved": "DOWN",
+    "new_log_alpha": -0.0002999980060849339,
+    "expected_from_mean_entropy": "DOWN",
+    "direction_consistent": true
+  },
+  "verdict": "DIRECTION_CORRECT_HEALTHY_REGIME_BUT_INVERTED_WHEN_COLLAPSED"
+}
