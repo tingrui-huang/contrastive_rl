@@ -1,0 +1,79 @@
+{
+  "tag": "alpha0_20000",
+  "ckpt": "qual_open_near/alpha0_s0/gate_20000.pkl",
+  "step": 20400,
+  "policy_head": {
+    "scale_median": 1.3557522606788552e-06,
+    "scale_p10": 1.0001061809816747e-06,
+    "scale_p90": 7.741839363006875e-05,
+    "log_scale_median": -13.51115608215332,
+    "frac_at_min_std": 0.7503125,
+    "sample_vs_mode_dist": 4.9995473091257736e-05,
+    "mode_sat": 0.3815625,
+    "sample_sat": 0.3815625,
+    "alpha": null
+  },
+  "collection": {
+    "moving_transition_frac": 0.4747222222222222,
+    "disp_p50": 0.003408517688512802,
+    "disp_p90": 0.05695117637515068,
+    "disp_max": 0.15572543442249298,
+    "speed_mean": 0.017469987707970955,
+    "torso_z_mean": 0.5198752061313757,
+    "fall_step_frac": 0.21805555555555556,
+    "action_eff_rank": 4.182865662933576,
+    "action_per_dim_std_mean": 0.8375942707061768,
+    "action_sat": 0.3723611111111111,
+    "unique_cells": 93,
+    "n_episodes": 12,
+    "n_unique_goals": 12
+  },
+  "eval_deterministic": {
+    "success": 0.0,
+    "d0": 3.3894805312156677,
+    "dmin": 3.0918700098991394,
+    "progress": 0.2976105213165283,
+    "path_len": 1.1809036931880428,
+    "speed": 0.003936345643960142,
+    "static_frac": 0.8220000000000001,
+    "fall_frac": 0.08733333333333333,
+    "goal_vel": 0.008906522591908772,
+    "sat": 0.3999583333333333
+  },
+  "coverage_gates": {
+    "n_unique": 372,
+    "n_unique_ok": true,
+    "n_episodes": 12,
+    "episodes_ok": true,
+    "n_goals": 12,
+    "goals_ok": true,
+    "moving_frac_pool": 0.7123655913978495,
+    "moving_ok": true,
+    "stationary_n_pool": 107,
+    "selected": 30,
+    "selected_moving": 20,
+    "no_duplicate_domination": true,
+    "pass": true
+  },
+  "controllability": {
+    "sigma_0.05": {
+      "std_proj1_median": 0.00023477068084304994,
+      "rng_prog1_median": 0.000974887242866096,
+      "spearman_prog1_median": 0.13962912087912085,
+      "critic_decile_gap_mean": 0.00011324420957925379,
+      "true_decile_gap_mean": 0.0009806275170102568,
+      "decile_usefulness": 0.11548137034644108,
+      "fall3_frac": 0.03333333333333333
+    },
+    "sigma_0.2": {
+      "std_proj1_median": 0.0010901951299985158,
+      "rng_prog1_median": 0.004910902230772729,
+      "spearman_prog1_median": 0.08024267399267397,
+      "critic_decile_gap_mean": 0.0005829455654332907,
+      "true_decile_gap_mean": 0.004139069386193449,
+      "decile_usefulness": 0.14083976635834186,
+      "fall3_frac": 0.03333333333333333
+    },
+    "actor_disp1_median": 0.010392865302420787
+  }
+}

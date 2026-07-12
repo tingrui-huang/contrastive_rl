@@ -422,6 +422,42 @@ class MazeEnv:
     return self._env.render()
 
 
+class NearGoalOpenMazeEnv(MazeEnv):
+  """AntMaze_Open with near goals, for the locomotion qualification A/B.
+
+  Identical physics/obs/reward to MazeEnv; ONLY the reset distribution differs:
+  the start cell is uniform over free cells and the goal cell is the same or an
+  orthogonally-adjacent free cell, rejection-sampled until the start-goal
+  distance lies in [d_min, d_max] (<=30 tries, keep the last draw otherwise)."""
+
+  def __init__(self, env_id='AntMaze_Open-v5', max_episode_steps=300,
+               d_min=1.0, d_max=4.5, seed=0, render_mode=None):
+    super().__init__(env_id, max_episode_steps, seed=seed,
+                     render_mode=render_mode)
+    self._d_min, self._d_max = d_min, d_max
+    mz = self._env.unwrapped.maze
+    self._free = [(r, c) for r in range(len(mz.maze_map))
+                  for c in range(len(mz.maze_map[0])) if mz.maze_map[r][c] == 0]
+    self._reset_rng = np.random.default_rng(seed + 991)
+
+  def reset(self):
+    rng = self._reset_rng
+    obs = None
+    for _ in range(30):
+      rc = self._free[rng.integers(len(self._free))]
+      nbrs = [(r, c) for (r, c) in self._free
+              if abs(r - rc[0]) + abs(c - rc[1]) <= 1]  # same + orthogonal
+      gc = nbrs[rng.integers(len(nbrs))]
+      obs, _ = self._env.reset(options={'reset_cell': np.array(rc),
+                                        'goal_cell': np.array(gc)})
+      d = float(np.linalg.norm(np.asarray(obs['achieved_goal'])
+                               - np.asarray(obs['desired_goal'])))
+      if self._d_min <= d <= self._d_max:
+        break
+    self._last_obs = obs
+    return self._flatten(obs)
+
+
 # ---------------------------------------------------------------------------
 def make_env(env_name, config, seed=0, render_mode=None):
   """Builds an env and fills obs/goal/action dims + episode length into config.
@@ -435,6 +471,8 @@ def make_env(env_name, config, seed=0, render_mode=None):
     # Only the 11x11 maps get the longer horizon (matches original env_utils.load).
     steps = 100 if '11x11' in walls else 50
     env = PointEnv(walls=walls, max_episode_steps=steps, seed=seed)
+  elif env_name == 'antmaze_open_near':
+    env = NearGoalOpenMazeEnv(seed=seed, render_mode=render_mode)
   elif env_name.startswith('antmaze_'):
     env_id, steps = _MAZE_IDS[env_name]
     env = MazeEnv(env_id, max_episode_steps=steps, seed=seed,
