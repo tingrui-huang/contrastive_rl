@@ -5,8 +5,12 @@ import os
 
 OUT_MD = 'qual_open_near/ab_50k_comparison.md'
 OUT_JSON = 'qual_open_near/ab_50k_comparison.json'
-GATES = [10000, 20000, 30000, 40000, 50000]
-ARMS = ['alpha0', 'adaptive']
+ARM_GATES = {
+    'alpha0': [10000, 20000, 30000, 40000, 50000],
+    'adaptive': [10000, 20000, 30000, 40000, 50000],
+    'adaptive_te8': [10000, 20000, 30000],
+}
+ARMS = list(ARM_GATES)
 
 G = {}
 for f in glob.glob('qual_open_near/gates/gate_*.json'):
@@ -61,7 +65,7 @@ for arm in ARMS:
   L.append(f'\n## Arm: {arm}\n')
   L.append('| gate | ' + ' | '.join(COLS) + ' |')
   L.append('|' + '---|' * (len(COLS) + 1))
-  for g in GATES:
+  for g in ARM_GATES[arm]:
     L.append(f'| {g // 1000}k | ' + ' | '.join(row(f'{arm}_{g}')) + ' |')
   L.append('\ntraining evals: ' + '; '.join(
       f"step {e['step']}: sat={e.get('ant_action_saturation', 0):.2f}"
@@ -115,7 +119,27 @@ L += ['\n\n## Findings\n',
       '- Gate snapshots land at the eval AFTER the boundary '
       '(10.2k/20.4k/30.6k/40.8k/50.1k).',
       '- adaptive_40000 and adaptive_50000 rows are bit-identical: the policy '
-      'stopped changing after the blowup (constant action + fixed eval seeds).']
+      'stopped changing after the blowup (constant action + fixed eval seeds).',
+      '\n## Third arm: adaptive_te8 (target_entropy = -8, guards on, stopped at 30k)\n',
+      'Alpha-direction sanity (artifacts/alpha_direction_sanity): the implemented '
+      'loss moves alpha the correct way in the healthy regime for both targets; '
+      'the entropy ESTIMATE inverts under saturation (arctanh-clip artifact), '
+      'which is the feedback loop that killed target=0; exploded policies NaN '
+      'the alpha optimizer (hence the guards).',
+      '\nResult: entropy median on collection obs +5.0 -> +4.2 -> **-7.56** (at '
+      'the -8 target) while alpha annealed 0.91 -> 0.084 -> 0.011 and STOPPED '
+      'at its designed equilibrium: no explosion, zero clip-artifact fraction, '
+      'no guard trip, saturation 0.10, scale 0.50, action eff-rank 4.9, moving '
+      'fraction 0.82 at 30k (vs alpha0 at 30k: scale at floor, moving 0.35; vs '
+      'target=0 which exploded by 40k). Diversity is trending down '
+      '(eff-rank 8.0 -> 7.6 -> 4.9) but the policy is nowhere near collapse.',
+      '\nHowever, per the pre-registered conditional: local critic usefulness '
+      'and goal-directed locomotion remain FLAT (sigma=0.05 spearman -0.17..'
+      '0.19, decile usefulness -0.17..0.15, even sigma=0.2 usefulness ~0; '
+      'success 0.1, goal velocity <= 0.006 m/s, deterministic progress '
+      '<= 0.33 m). STOPPED at 30k. Recommended next: goal-representation '
+      'ablation -- current 2D XY goal vs a richer Ant future-state goal '
+      '(closer to the original 29D goal-obs formulation).']
 
 os.makedirs('qual_open_near', exist_ok=True)
 open(OUT_MD, 'w').write('\n'.join(L) + '\n')

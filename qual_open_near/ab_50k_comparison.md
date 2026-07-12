@@ -31,6 +31,16 @@ training evals: step 10200: sat=0.10, actor_loss=6.53, logits_gap=5.9; step 2040
 
 training evals: step 10200: sat=0.00, alpha=0.913, actor_loss=2.5, logits_gap=5.9; step 20400: sat=0.00, alpha=0.084, actor_loss=19.3, logits_gap=34.6; step 30600: sat=0.03, alpha=0.014, actor_loss=18.3, logits_gap=36.5; step 40800: sat=1.00, alpha=0.012, actor_loss=-3.8e+23, logits_gap=38.5
 
+## Arm: adaptive_te8
+
+| gate | scale med | frac@floor | alpha | |samp-mode| | mode sat | act effrank | act dim std | moving frac | disp p90 | torso z | fall step | cov u/ep/goal/mov | cov gate | ctrl std proj1 | ctrl rng prog1 | ctrl sp | critic dec gap | dec useful | success | progress | goal vel | speed | static | fall(eval) |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 10k | 0.862 | 0.00 | 0.911 | 1.607 | 0.00 | 8.0 | 0.597 | 0.97 | 0.0778 | 0.47 | 0.47 | 389/12/12/0.97 | PASS | 0.00055 | 0.0026 | 0.19 | 0.00031 | 0.15 | 0.00 | 0.33 | 0.006 | 0.0083 | 0.41 | 0.00 |
+| 20k | 0.809 | 0.00 | 0.084 | 1.446 | 0.00 | 7.6 | 0.602 | 0.96 | 0.0635 | 0.48 | 0.48 | 380/12/12/0.96 | PASS | 0.00047 | 0.0022 | -0.17 | -0.00032 | -0.17 | 0.00 | 0.07 | -0.005 | 0.0016 | 0.85 | 0.00 |
+| 30k | 0.501 | 0.00 | 0.011 | 0.725 | 0.10 | 4.9 | 0.714 | 0.82 | 0.0565 | 0.54 | 0.21 | 570/12/12/0.88 | PASS | 0.00024 | 0.001 | 0.05 | 6.2e-05 | 0.06 | 0.10 | 0.24 | 0.004 | 0.0052 | 0.69 | 0.00 |
+
+training evals: step 10200: sat=0.00, alpha=0.911, actor_loss=2.51, logits_gap=5.9; step 20400: sat=0.00, alpha=0.084, actor_loss=16.8, logits_gap=28.8
+
 
 ## Findings
 
@@ -53,3 +63,11 @@ target_entropy=0.0 (the original as-shipped adaptive semantics) is the proximate
 - Documented, unchanged in this A/B: Gymnasium-Robotics gear-150 ant (vs d4rl ctrl+-30 gear-1 RK4 dt=0.1), 2D XY goal (vs original full-29D goal obs), 1 actor (vs 4), 50k budget.
 - Gate snapshots land at the eval AFTER the boundary (10.2k/20.4k/30.6k/40.8k/50.1k).
 - adaptive_40000 and adaptive_50000 rows are bit-identical: the policy stopped changing after the blowup (constant action + fixed eval seeds).
+
+## Third arm: adaptive_te8 (target_entropy = -8, guards on, stopped at 30k)
+
+Alpha-direction sanity (artifacts/alpha_direction_sanity): the implemented loss moves alpha the correct way in the healthy regime for both targets; the entropy ESTIMATE inverts under saturation (arctanh-clip artifact), which is the feedback loop that killed target=0; exploded policies NaN the alpha optimizer (hence the guards).
+
+Result: entropy median on collection obs +5.0 -> +4.2 -> **-7.56** (at the -8 target) while alpha annealed 0.91 -> 0.084 -> 0.011 and STOPPED at its designed equilibrium: no explosion, zero clip-artifact fraction, no guard trip, saturation 0.10, scale 0.50, action eff-rank 4.9, moving fraction 0.82 at 30k (vs alpha0 at 30k: scale at floor, moving 0.35; vs target=0 which exploded by 40k). Diversity is trending down (eff-rank 8.0 -> 7.6 -> 4.9) but the policy is nowhere near collapse.
+
+However, per the pre-registered conditional: local critic usefulness and goal-directed locomotion remain FLAT (sigma=0.05 spearman -0.17..0.19, decile usefulness -0.17..0.15, even sigma=0.2 usefulness ~0; success 0.1, goal velocity <= 0.006 m/s, deterministic progress <= 0.33 m). STOPPED at 30k. Recommended next: goal-representation ablation -- current 2D XY goal vs a richer Ant future-state goal (closer to the original 29D goal-obs formulation).
