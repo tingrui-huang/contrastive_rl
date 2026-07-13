@@ -126,6 +126,286 @@ class PointEnv:
 
 
 # ---------------------------------------------------------------------------
+# Two-route gate maze (confounder-qualification env v0, numpy).
+# SUPERSEDED by TwoRouteSwampEnv (point_two_route_swamp_v0) below -- kept as
+# the qualified static-gate reference/ablation.
+#
+# Fixed start (left) and goal (right). Two routes:
+#   * UPPER (short): the straight middle corridor through a single GATE cell.
+#   * LOWER (long) : a detour down through the bottom corridor, always open.
+# An episode-level hidden binary gate U ~ Bernoulli(gate_prob) decides whether
+# the gate cell is passable (open) or a wall (closed). U is sampled at reset and
+# is NOT part of the observation (learner sees XY only) -> U is a hidden
+# confounder: a gate-aware teacher takes the shortcut when open and the safe
+# route when closed, so the *behavior* couples U to both the action (at the
+# fork) and the transition (at the gate front), while the learner cannot see U.
+#
+# Grid is indexed [x][y] (x horizontal, y vertical when plotted). 1 = wall.
+# ---------------------------------------------------------------------------
+# Base (gate-CLOSED) wall grid. Open grid = this with the gate cell freed.
+_TWO_ROUTE_GATE_WALLS = np.array([
+    [1, 1, 1, 0, 1],   # x=0  start cell at y=3
+    [1, 0, 0, 0, 1],   # x=1  fork: middle (y=3) + drop to bottom (y=2->y=1)
+    [1, 0, 1, 0, 1],   # x=2
+    [1, 0, 1, 0, 1],   # x=3  gate-front cell at y=3
+    [1, 0, 1, 1, 1],   # x=4  GATE cell at y=3 (1=closed here in the base grid)
+    [1, 0, 1, 0, 1],   # x=5
+    [1, 0, 1, 0, 1],   # x=6
+    [1, 0, 0, 0, 1],   # x=7  join: bottom (y=1->y=2) rejoins middle (y=3)
+    [1, 1, 1, 0, 1],   # x=8  goal cell at y=3
+], dtype=int)
+
+
+class TwoRouteGateEnv:
+  """Fixed two-route maze with an episode-level hidden gate (confounder U)."""
+
+  start_index = 0
+  end_index = -1                       # goal = full 2D state (point_ convention)
+
+  GATE_CELL = (4, 3)                   # U-controlled cell (short route)
+  GATE_FRONT_CELL = (3, 3)             # cell immediately before the gate
+  FORK_CELL = (1, 3)                   # upper/lower routes diverge here
+  START_CELL = (0, 3)
+  GOAL_CELL = (8, 3)
+  START = np.array([0.5, 3.5])         # fixed start (center of START_CELL)
+  GOAL = np.array([8.5, 3.5])          # fixed goal  (center of GOAL_CELL)
+
+  def __init__(self, action_noise=0.01, max_episode_steps=50, seed=0,
+               gate_prob=0.5, fixed_gate=None, jitter=0.0):
+    self._walls_closed = _TWO_ROUTE_GATE_WALLS.copy()
+    self._walls_open = self._walls_closed.copy()
+    self._walls_open[self.GATE_CELL] = 0
+    self._height, self._width = self._walls_closed.shape
+    self._action_noise = action_noise
+    self._rng = np.random.default_rng(seed)
+    self.max_episode_steps = max_episode_steps
+    self._gate_prob = gate_prob
+    self._fixed_gate = fixed_gate      # None => sample; True/False => forced
+    self._jitter = jitter
+
+    self.obs_dim = 2                   # state = [x, y]  (U is NOT exposed)
+    self.goal_dim = 2                  # goal  = full state
+    self.action_dim = 2
+    self._low = np.array([0.0, 0.0])
+    self._high = np.array([self._height, self._width])
+    self._gate_open = True
+    self.reset()
+
+  # -- gate / walls -------------------------------------------------------- #
+  @property
+  def _walls(self):
+    """Current-episode wall grid (reflects the sampled gate)."""
+    return self._walls_open if self._gate_open else self._walls_closed
+
+  @property
+  def gate_open(self):
+    return self._gate_open
+
+  def set_gate(self, is_open):
+    """Force the gate (for clone rollouts / matched-state probes)."""
+    self._gate_open = bool(is_open)
+
+  # -- dynamics (mirrors PointEnv) ----------------------------------------- #
+  def _discretize_state(self, state):
+    ij = np.floor(state).astype(int)
+    ij = np.clip(ij, [0, 0], np.array(self._walls.shape) - 1)
+    return ij.astype(int)
+
+  def _is_blocked(self, state):
+    if np.any(state < self._low) or np.any(state > self._high):
+      return True
+    (i, j) = self._discretize_state(state)
+    return self._walls[i, j] == 1
+
+  def _get_obs(self):
+    # No gate bit: the learner observation is XY (+ goal XY) only.
+    return np.concatenate([self.state, self.goal]).astype(np.float32)
+
+  def _jittered(self, center):
+    c = np.asarray(center, float).copy()
+    if self._jitter > 0:
+      c += self._rng.uniform(-self._jitter, self._jitter, size=2)
+    return c
+
+  def reset(self):
+    if self._fixed_gate is None:
+      self._gate_open = bool(self._rng.random() < self._gate_prob)
+    else:
+      self._gate_open = bool(self._fixed_gate)
+    self.goal = self._jittered(self.GOAL)
+    self.state = self._jittered(self.START)
+    return self._get_obs()
+
+  def step(self, action):
+    action = np.array(action, dtype=float).copy()
+    if self._action_noise > 0:
+      action += self._rng.normal(0, self._action_noise, (2,))
+    action = np.clip(action, -1.0, 1.0)
+    num_substeps = 10
+    dt = 1.0 / num_substeps
+    for _ in range(num_substeps):
+      for axis in range(len(action)):
+        new_state = self.state.copy()
+        new_state[axis] += dt * action[axis]
+        if not self._is_blocked(new_state):
+          self.state = new_state
+    obs = self._get_obs()
+    dist = np.linalg.norm(self.goal - self.state)
+    reward = float(dist < 2.0)
+    return obs, reward, False, {}
+
+
+# ---------------------------------------------------------------------------
+# Two-route SWAMP maze (confounder-qualification env v1, numpy).
+#
+# Same two-route geometry as the gate env, but the confounder is DYNAMIC and
+# acts through the transition function instead of geometry: the short route
+# crosses THREE consecutive SWAMP cells, each independently active with
+# probability ``active_prob`` (default 0.2). Active cells are NEVER walls --
+# they multiply movement by ``slow_factor`` while the point is inside them
+# (a trap that is recoverable by crawling back out, but very costly).
+#
+# Hidden state U_t = the 3 swamp bits. Resampling protocol:
+#   * sampled fresh at reset,
+#   * resampled at the END of every step while the agent is OUTSIDE the swamp
+#     corridor (start area, pre-swamp HOLDING cell, lower route),
+#   * FROZEN while the agent is inside any swamp cell (the configuration met
+#     at entry persists until it exits back out).
+#
+# The learner observes [x, y, goal_x, goal_y] ONLY -- no swamp bits, no wait
+# counter. The gate-aware teacher (scripts/qualify_two_route_swamp.py) reads
+# ``swamp_bits`` at the holding cell: all clear -> shortcut; any active ->
+# wait one step, re-check after the resample, clear -> shortcut else take the
+# always-safe lower route.
+# ---------------------------------------------------------------------------
+_TWO_ROUTE_SWAMP_WALLS = np.array([
+    [1, 1, 1, 0, 1],   # x=0  start cell at y=3
+    [1, 0, 0, 0, 1],   # x=1  fork: middle (y=3) + drop to bottom (y=2->y=1)
+    [1, 0, 1, 0, 1],   # x=2  HOLDING cell at y=3 (pre-swamp decision point)
+    [1, 0, 1, 0, 1],   # x=3  swamp cell 0
+    [1, 0, 1, 0, 1],   # x=4  swamp cell 1
+    [1, 0, 1, 0, 1],   # x=5  swamp cell 2
+    [1, 0, 1, 0, 1],   # x=6
+    [1, 0, 0, 0, 1],   # x=7  join: bottom (y=1->y=2) rejoins middle (y=3)
+    [1, 1, 1, 0, 1],   # x=8  goal cell at y=3
+], dtype=int)
+
+
+class TwoRouteSwampEnv:
+  """Two-route maze whose short route crosses 3 hidden dynamic swamp cells."""
+
+  start_index = 0
+  end_index = -1                       # goal = full 2D state (point_ convention)
+
+  SWAMP_CELLS = ((3, 3), (4, 3), (5, 3))
+  HOLDING_CELL = (2, 3)                # pre-swamp decision/holding cell
+  FORK_CELL = (1, 3)                   # upper/lower routes diverge here
+  START_CELL = (0, 3)
+  GOAL_CELL = (8, 3)
+  START = np.array([0.5, 3.5])
+  GOAL = np.array([8.5, 3.5])
+
+  def __init__(self, action_noise=0.01, max_episode_steps=50, seed=0,
+               active_prob=0.2, slow_factor=0.02):
+    self._walls = _TWO_ROUTE_SWAMP_WALLS.copy()
+    self._height, self._width = self._walls.shape
+    self._action_noise = action_noise
+    self._rng = np.random.default_rng(seed)
+    self.max_episode_steps = max_episode_steps
+    self.active_prob = active_prob
+    self.slow_factor = slow_factor
+    self._auto_resample = True
+    self._bits = np.zeros(3, dtype=bool)
+
+    self.obs_dim = 2                   # state = [x, y]  (U is NOT exposed)
+    self.goal_dim = 2                  # goal  = full state
+    self.action_dim = 2
+    self._low = np.array([0.0, 0.0])
+    self._high = np.array([self._height, self._width])
+    self.reset()
+
+  # -- hidden swamp state (teacher/probe access ONLY; never in the obs) ----- #
+  @property
+  def swamp_bits(self):
+    return self._bits.copy()
+
+  def set_swamp(self, bits):
+    """Force the 3 swamp bits (for clone rollouts / matched-state probes)."""
+    self._bits = np.asarray(bits, dtype=bool).copy()
+
+  def set_auto_resample(self, enabled):
+    """Disable to hold a forced configuration fixed during probes."""
+    self._auto_resample = bool(enabled)
+
+  def _resample(self):
+    self._bits = self._rng.random(3) < self.active_prob
+
+  def _swamp_index(self, state):
+    c = tuple(self._discretize_state(state))
+    for k, sc in enumerate(self.SWAMP_CELLS):
+      if c == sc:
+        return k
+    return None
+
+  def _in_swamp_corridor(self, state):
+    return self._swamp_index(state) is not None
+
+  def _in_active_swamp(self, state):
+    k = self._swamp_index(state)
+    return k is not None and bool(self._bits[k])
+
+  # -- dynamics (PointEnv substep scheme + swamp slowdown) ------------------ #
+  def _discretize_state(self, state):
+    ij = np.floor(state).astype(int)
+    ij = np.clip(ij, [0, 0], np.array(self._walls.shape) - 1)
+    return ij.astype(int)
+
+  def _is_blocked(self, state):
+    # Swamp cells are NEVER walls; only the static grid + boundary block.
+    if np.any(state < self._low) or np.any(state > self._high):
+      return True
+    (i, j) = self._discretize_state(state)
+    return self._walls[i, j] == 1
+
+  def _get_obs(self):
+    # XY + goal only: no swamp bits, no wait counter, no time index.
+    return np.concatenate([self.state, self.goal]).astype(np.float32)
+
+  def reset(self):
+    self.goal = self.GOAL.copy()
+    self.state = self.START.copy()
+    if self._auto_resample:
+      self._resample()
+    return self._get_obs()
+
+  def step(self, action):
+    action = np.array(action, dtype=float).copy()
+    if self._action_noise > 0:
+      action += self._rng.normal(0, self._action_noise, (2,))
+    action = np.clip(action, -1.0, 1.0)
+    num_substeps = 10
+    dt = 1.0 / num_substeps
+    for _ in range(num_substeps):
+      # Trap: while inside an ACTIVE swamp cell, motion is scaled down hard
+      # (recoverable -- the point can crawl back out -- but very costly).
+      factor = self.slow_factor if self._in_active_swamp(self.state) else 1.0
+      for axis in range(len(action)):
+        new_state = self.state.copy()
+        new_state[axis] += dt * action[axis] * factor
+        if not self._is_blocked(new_state):
+          self.state = new_state
+    # U resamples ONLY while the agent ends the step OUTSIDE the corridor;
+    # the configuration met at entry stays frozen until it exits. The bits a
+    # policy reads between steps are exactly the bits governing the next step.
+    if self._auto_resample and not self._in_swamp_corridor(self.state):
+      self._resample()
+    obs = self._get_obs()
+    dist = np.linalg.norm(self.goal - self.state)
+    reward = float(dist < 2.0)
+    return obs, reward, False, {}
+
+
+# ---------------------------------------------------------------------------
 # Fetch (gymnasium-robotics wrapper). Colab-oriented; needs `mujoco` +
 # `gymnasium-robotics`. Flattens Dict obs to concat([state, desired_goal]).
 # ---------------------------------------------------------------------------
@@ -541,7 +821,11 @@ def make_env(env_name, config, seed=0, render_mode=None):
   action_dim, max_episode_steps, start_index, end_index.
   ``render_mode='rgb_array'`` enables Fetch frame rendering (for GIFs on Colab).
   """
-  if env_name.startswith('point_'):
+  if env_name == 'point_two_route_swamp_v0':
+    env = TwoRouteSwampEnv(max_episode_steps=50, seed=seed)
+  elif env_name == 'point_two_route_gate_v0':   # superseded v0 (kept as ablation)
+    env = TwoRouteGateEnv(max_episode_steps=50, seed=seed)
+  elif env_name.startswith('point_'):
     walls = env_name.split('_', 1)[1]
     # Only the 11x11 maps get the longer horizon (matches original env_utils.load).
     steps = 100 if '11x11' in walls else 50
