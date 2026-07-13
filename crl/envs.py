@@ -554,6 +554,9 @@ def make_env(env_name, config, seed=0, render_mode=None):
   elif env_name == 'antmaze_open_near_gfull':
     env = RichGoalOpenMazeEnv(ANT_FULL_GOAL_IDX, seed=seed,
                               render_mode=render_mode)
+  elif env_name == 'd4rl_ant_umaze_gfull':
+    from crl.d4rl_ant import D4rlAntUMazeEnv
+    env = D4rlAntUMazeEnv(seed=seed, render_mode=render_mode)
   elif env_name.startswith('antmaze_'):
     env_id, steps = _MAZE_IDS[env_name]
     env = MazeEnv(env_id, max_episode_steps=steps, seed=seed,

@@ -1,0 +1,49 @@
+{
+  "physics": {
+    "timestep": 0.02,
+    "integrator": "RK4",
+    "dt_env": 0.1,
+    "ctrlrange": 30.0,
+    "gear": 1.0,
+    "n_walls": 18,
+    "pass": true
+  },
+  "observation": {
+    "flat_dim": 58,
+    "layout_bit_exact": true,
+    "pass": true
+  },
+  "goal": {
+    "settled_z_mean": 0.42914099991321564,
+    "settled_speed_mean": 0.04441072291713984,
+    "reward_target_is_settled_xy": true,
+    "pass": true
+  },
+  "relabel": {
+    "strict_future_frac": 1.0,
+    "pass": true
+  },
+  "action_sensitivity": {
+    "d4rl": {
+      "disp_std": 0.00869724116956523,
+      "disp_max": 0.03518379373162784,
+      "disp_mean": 0.016044518047834112,
+      "zero_disp": 0.008673885780933886
+    },
+    "gymnasium": {
+      "disp_std": 0.0037877944019019606,
+      "disp_max": 0.01644057908607161,
+      "disp_mean": 0.009122720371924827,
+      "zero_disp": 0.0
+    },
+    "ratio_std": 2.2961228215549645,
+    "pass": true
+  },
+  "coverage": {
+    "unique_states": 840,
+    "unique_cells": 87,
+    "unique_goals": 6,
+    "moving_frac": 0.9871428571428571,
+    "pass": true
+  }
+}
