@@ -49,28 +49,45 @@ def ckpt_step(p):
 
 
 def _atomic_copy(src, dst):
+  """Copy src->dst. Tries tmp+rename; falls back to a direct copy because the
+  Google Drive FUSE mount often rejects os.replace/rename with an I/O error."""
   os.makedirs(os.path.dirname(dst), exist_ok=True)
-  shutil.copy2(src, dst + '.tmp')
-  os.replace(dst + '.tmp', dst)
+  try:
+    shutil.copy2(src, dst + '.tmp')
+    os.replace(dst + '.tmp', dst)
+  except OSError:
+    # Drive FUSE hiccup on rename: copy straight through (best-effort).
+    if os.path.exists(dst + '.tmp'):
+      try:
+        os.remove(dst + '.tmp')
+      except OSError:
+        pass
+    shutil.copy2(src, dst)
 
 
 def mirror_to_drive():
-  """Copy the local run dir to Drive (atomic per file). No-op if no Drive."""
+  """Copy the local run dir to Drive (best-effort). No-op if no Drive. A Drive
+  I/O hiccup must NEVER abort a run that is already checkpointed locally, so the
+  whole mirror is wrapped and only warns on failure."""
   if not DRIVE_DIR:
     return
-  for sub in _MIRROR_SUBS:
-    s = os.path.join(RUN_DIR, sub)
-    if not os.path.isdir(s):
-      continue
-    for name in os.listdir(s):
-      sp = os.path.join(s, name)
+  try:
+    for sub in _MIRROR_SUBS:
+      s = os.path.join(RUN_DIR, sub)
+      if not os.path.isdir(s):
+        continue
+      for name in os.listdir(s):
+        sp = os.path.join(s, name)
+        if os.path.isfile(sp):
+          _atomic_copy(sp, os.path.join(DRIVE_DIR, sub, name))
+    for name in ('config.json', os.path.join('reports', 'run_plan.json')):
+      sp = os.path.join(RUN_DIR, name)
       if os.path.isfile(sp):
-        _atomic_copy(sp, os.path.join(DRIVE_DIR, sub, name))
-  for name in ('config.json', os.path.join('reports', 'run_plan.json')):
-    sp = os.path.join(RUN_DIR, name)
-    if os.path.isfile(sp):
-      _atomic_copy(sp, os.path.join(DRIVE_DIR, name))
-  print(f'  [drive] mirrored run dir -> {DRIVE_DIR}', flush=True)
+        _atomic_copy(sp, os.path.join(DRIVE_DIR, name))
+    print(f'  [drive] mirrored run dir -> {DRIVE_DIR}', flush=True)
+  except Exception as ex:  # pylint: disable=broad-except
+    print(f'  [drive] WARNING: mirror to {DRIVE_DIR} failed ({ex}); '
+          'local checkpoints under OFFLINE_RUN_DIR are intact.', flush=True)
 
 
 def restore_from_drive():
