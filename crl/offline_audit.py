@@ -39,7 +39,10 @@ KNOWN_AUDIT_KEYS = frozenset({
 })
 LEARNER_KEYS = frozenset({'obs', 'act'})
 META_KEYS = frozenset({'meta'})
-STRUCTURAL_KEYS = frozenset({'lengths'})   # allowed non-learner bookkeeping.
+# Allowed non-learner bookkeeping: per-episode valid lengths, and the eval
+# env's empirical goal table (read ONLY by envs.make_env for the offline
+# antmaze eval env -- never fed to the learner).
+STRUCTURAL_KEYS = frozenset({'lengths', 'eval_goals'})
 
 
 def sha256_file(path, chunk=1 << 20):

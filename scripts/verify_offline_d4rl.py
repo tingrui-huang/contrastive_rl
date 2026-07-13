@@ -46,7 +46,11 @@ from crl import networks as networks_mod
 from crl import losses as losses_mod
 from crl.replay import TrajectoryBuffer
 
-NPZ = r'D:\Users\trhua\Research\datasets\d4rl\antmaze_umaze_v2_offline.npz'
+# Dataset path is env-overridable so the SAME builder serves the local
+# workstation run and the Colab run (which sets OFFLINE_NPZ=/content/...npz).
+NPZ = os.environ.get(
+    'OFFLINE_NPZ',
+    r'D:\Users\trhua\Research\datasets\d4rl\antmaze_umaze_v2_offline.npz')
 OUT = 'artifacts/offline_d4rl'
 SCRATCH = os.environ.get('OFFLINE_DRYRUN_DIR', os.path.join(
     os.environ.get('TEMP', '.'), 'crl_offline_dryrun'))
@@ -58,6 +62,7 @@ def build_offline_cfg(max_steps=1_000_000, ckpt_dir=''):
   return Config(
       env_name='offline_ant_umaze',
       offline_dataset=NPZ,
+      num_actors=0,                         # OFFLINE: zero collection actors
       use_td=False, use_cpc=False,          # binary NCE
       twin_q=True,                          # 2 critics; actor uses min
       bc_coef=0.05,
@@ -210,28 +215,34 @@ def main():
   with contextlib.redirect_stdout(buf_stdout):
     train(dry_cfg)
   out = buf_stdout.getvalue()
-  assert 'env collection DISABLED' in out
-  assert 'offline replay frozen: eps=1426' in out
-  assert '1426 episodes (998200 transitions)' in out
-  assert 'EVAL' not in out and 'GUARD_ABORT' not in out
+  assert 'OFFLINE AUDIT (pre-training gates):' in out
+  assert 'FAIL' not in out, out
+  assert 'eps=1426' in out and 'trans=998200' in out
+  assert '>> EVAL' not in out and 'GUARD_ABORT' not in out
   GATE['G5_dry_run'] = {
       'pass': True,
       'evidence': [l.strip() for l in out.splitlines()
-                   if 'Offline dataset' in l or 'frozen' in l]}
-  print('G5 PASS: dry run ingests 1426 eps / 998200 transitions, no env '
-        'interaction, no learner step')
+                   if 'PASS' in l or 'sha256=' in l or 'offline' in l.lower()]}
+  print('G5 PASS: dry run ingests 1426 eps / 998200 transitions via the '
+        'static offline audit, no env interaction, no learner step')
 
   # ---------------- G6: runtime hard-assertion wiring ---------------------
   src = open(os.path.join(os.path.dirname(_HERE), 'crl', 'train.py'),
              encoding='utf-8').read()
-  need = ['_poisoned_step', 'offline_frozen_sha', '_replay_sha() == '
-          'offline_frozen_sha', "offline_eval_steps['n'] == expected",
-          'replay CONTENT changed by end of run']
+  need = ['env = None',                       # no training env is ever built
+          'offline mode rejects num_actors',
+          'buffer.content_sha256() == offline_frozen_sha',
+          'consumed == expected',
+          'require_same_dataset_hash']
   missing = [s for s in need if s not in src]
   assert not missing, missing
-  GATE['G6_runtime_asserts_armed'] = {'pass': True, 'checks': need}
-  print('G6 PASS: poisoned collection env + replay sha per eval + eval-step '
-        'accounting + end-of-run sha, all armed in crl/train.py')
+  src_r = open(os.path.join(os.path.dirname(_HERE), 'crl', 'replay.py'),
+               encoding='utf-8').read()
+  assert 'def freeze' in src_r and 'frozen' in src_r
+  GATE['G6_runtime_asserts_armed'] = {'pass': True, 'checks': need + [
+      'TrajectoryBuffer.freeze (add_episode raises when frozen)']}
+  print('G6 PASS: structural no-env offline mode + frozen buffer + per-eval '
+        'sha + eval-step accounting + resume dataset-hash guard, all armed')
 
   # ---------------- G7: run-config contract -------------------------------
   run_cfg = build_offline_cfg(max_steps=1_000_000)
