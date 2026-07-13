@@ -69,7 +69,9 @@ def collect_episode(env, act_fn, params, key, random_action, action_dim,
   """Runs one fixed-length episode; returns (obs[L,.], act[L,.])."""
   L = env.max_episode_steps + 1
   obs = env.reset()
-  obs_buf = np.zeros((L, obs.shape[0]), np.float32)
+  # Keep the env's dtype: float32 for state envs, uint8 for image envs (the
+  # networks normalize pixels by /255 internally, so uint8 feeds are fine).
+  obs_buf = np.zeros((L, obs.shape[0]), obs.dtype)
   act_buf = np.zeros((L, action_dim), np.float32)
   for t in range(env.max_episode_steps):
     obs_buf[t] = obs
@@ -104,7 +106,9 @@ def evaluate(env, eval_act_fn, params, episodes, np_rng, action_dim,
       a = np.asarray(eval_act_fn(params, jnp.asarray(obs[None]))[0])
       obs, r, _, _ = env.step(a)
       hit = max(hit, float(r))
-      state, goal = obs[:obs_dim], obs[obs_dim:]
+      # float cast: uint8 (image obs) subtraction would wrap around.
+      state = obs[:obs_dim].astype(np.float32, copy=False)
+      goal = obs[obs_dim:].astype(np.float32, copy=False)
       if goal_indices is not None:
         ag, goal = state[:2], goal[:2]           # XY primary metric
       else:
@@ -190,7 +194,8 @@ def train(config: Config):
       action_dim=config.action_dim, obs_dim=config.obs_dim,
       start_index=config.start_index, end_index=config.end_index,
       discount=config.discount, seed=config.seed,
-      goal_indices=config.goal_indices)
+      goal_indices=config.goal_indices,
+      obs_dtype=np.uint8 if config.use_image_obs else np.float32)
 
   G = max(1, config.num_sgd_steps_per_step)
   B = config.batch_size

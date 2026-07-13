@@ -42,7 +42,7 @@ class TrajectoryBuffer:
 
   def __init__(self, capacity_steps, ep_len_obs, full_obs_dim, action_dim,
                obs_dim, start_index, end_index, discount, seed=0,
-               goal_indices=None):
+               goal_indices=None, obs_dtype=np.float32):
     """Args:
 
       capacity_steps: approx max ENV steps to retain (=> capacity in episodes).
@@ -52,6 +52,8 @@ class TrajectoryBuffer:
       obs_dim: width of the STATE part of the observation.
       start_index/end_index: goal-coordinate slice applied to the state.
       discount: geometric discount used for future-goal sampling.
+      obs_dtype: storage dtype for observations. Image envs use uint8 (4x less
+        RAM; frames are raw pixels anyway). Sampling always emits float32.
     """
     self._L = int(ep_len_obs)
     self._capacity_eps = max(1, int(capacity_steps) // self._L)
@@ -62,9 +64,10 @@ class TrajectoryBuffer:
                           else np.asarray(goal_indices, dtype=np.int64))
     self._discount = discount
     self._rng = np.random.default_rng(seed)
+    self._obs_dtype = np.dtype(obs_dtype)
 
     self._obs = np.zeros((self._capacity_eps, self._L, full_obs_dim),
-                         dtype=np.float32)
+                         dtype=self._obs_dtype)
     self._act = np.zeros((self._capacity_eps, self._L, action_dim),
                          dtype=np.float32)
     self._write = 0      # next episode slot to write (ring).
@@ -73,7 +76,7 @@ class TrajectoryBuffer:
 
   def add_episode(self, obs, act):
     """Store one episode. obs: [L, full_obs_dim], act: [L, action_dim]."""
-    obs = np.asarray(obs, dtype=np.float32)
+    obs = np.asarray(obs, dtype=self._obs_dtype)
     act = np.asarray(act, dtype=np.float32)
     assert obs.shape[0] == self._L, (
         f'expected {self._L} obs, got {obs.shape[0]}')
@@ -109,9 +112,13 @@ class TrajectoryBuffer:
     g = -np.log(-np.log(rng.uniform(size=logits.shape).clip(1e-20, 1.0)))
     j = np.argmax(logits + g, axis=1)                    # [B]
 
-    state = self._obs[traj, i, :self._obs_dim]           # [B, obs_dim]
-    next_state = self._obs[traj, i + 1, :self._obs_dim]
-    goal_state = self._obs[traj, j, :self._obs_dim]
+    # .astype(float32): no-op for state envs; uint8 -> float32 for image envs
+    # (networks normalize by /255 themselves).
+    state = self._obs[traj, i, :self._obs_dim].astype(np.float32, copy=False)
+    next_state = self._obs[traj, i + 1, :self._obs_dim].astype(np.float32,
+                                                               copy=False)
+    goal_state = self._obs[traj, j, :self._obs_dim].astype(np.float32,
+                                                           copy=False)
     goal = obs_to_goal(goal_state, self._start_index, self._end_index,
                        self._goal_indices)
 

@@ -435,12 +435,19 @@ class FetchEnv:
       # fixed -x gripper + goal in a CONE around +x (the measured natural push).
       'fetch_push_easy_conedir': (3, 6, ['FetchPush-v4', 'FetchPush-v3',
                                          'FetchPush-v2']),
+      # IMAGE version of conedir: obs = concat(frame, goal_frame), each a
+      # flattened 64x64x3 uint8 render from the original's fixed 'camera2'.
+      # Goal slice (0,-1): the relabel goal is the FULL future frame (identity
+      # obs_to_goal, as in the original image envs).
+      'fetch_push_image_conedir': (0, -1, ['FetchPush-v4', 'FetchPush-v3',
+                                           'FetchPush-v2']),
   }
 
   def __init__(self, task='fetch_reach', max_episode_steps=50, seed=0,
                render_mode=None, start_at_obj=False, original_style=False,
                easy_fixed=False, multidir=False, neutral_dir=False,
-               cone_dir=False, cone_half_width=np.pi / 3):
+               cone_dir=False, cone_half_width=np.pi / 3,
+               image_obs=False, image_size=64):
     import gymnasium as gym
     import gymnasium_robotics  # noqa: F401  (registers the envs)
     gym.register_envs(gymnasium_robotics)
@@ -458,12 +465,21 @@ class FetchEnv:
     # gripper starts BEHIND it; goal a short +x push away (6-9 cm). Both on table.
     self._obj0 = np.array([1.40, 0.75, 0.425])
     self._push_range = (0.06, 0.09)
+    self.use_image_obs = bool(image_obs)
+    self._img_size = int(image_size)
+    self._goal_img = None
     self.start_index, self.end_index, ids = self._SPECS[task]
+    make_kwargs = dict(max_episode_steps=max_episode_steps,
+                       render_mode=render_mode)
+    if image_obs:
+      # Frames come from env.render(); the render buffer is sized 64x64 like
+      # the original FetchPushImage (fetch_envs.py:264 rendered height=width=64).
+      make_kwargs.update(render_mode='rgb_array',
+                         width=self._img_size, height=self._img_size)
     last_err = None
     for env_id in ids:
       try:
-        self._env = gym.make(env_id, max_episode_steps=max_episode_steps,
-                             render_mode=render_mode)
+        self._env = gym.make(env_id, **make_kwargs)
         self._env_id = env_id
         break
       except Exception as e:  # pylint: disable=broad-except
@@ -483,6 +499,79 @@ class FetchEnv:
     self.goal_dim = self.obs_dim if original_style else self._dg_dim
     self.action_dim = int(self._env.action_space.shape[0])
     self._success_threshold = 0.05
+    if image_obs:
+      # Visual-only setup; dynamics untouched. Must run BEFORE any render.
+      self._hide_visual_markers()
+      self._set_camera2()
+      self.obs_dim = self._img_size * self._img_size * 3
+      self.goal_dim = self.obs_dim
+
+  # ---- image-obs helpers (port of fetch_envs.FetchPushImage rendering) ----
+  def _hide_visual_markers(self):
+    """The goal must NOT leak into the frame. Ports fetch_envs.py's two hacks:
+    site_xpos[0]=1e6 each render (hide red goal marker, fetch_envs.py:263) and
+    geom_rgba[1:5]=0 (hide mocap box + 'lasers', fetch_envs.py:187) -- done
+    here once via alpha=0 (persistent; the modern _render_callback re-places
+    the target site every render, so moving it would not stick)."""
+    u = self._env.unwrapped
+    mj = u._mujoco
+    sid = mj.mj_name2id(u.model, mj.mjtObj.mjOBJ_SITE, 'target0')
+    if sid >= 0:
+      u.model.site_rgba[sid, 3] = 0.0
+    bid = mj.mj_name2id(u.model, mj.mjtObj.mjOBJ_BODY, 'robot0:mocap')
+    if bid >= 0:
+      for gid in range(u.model.ngeom):
+        if u.model.geom_bodyid[gid] == bid:
+          u.model.geom_rgba[gid, 3] = 0.0
+
+  def _set_camera2(self):
+    """Fixed side camera = the original's 'camera2' (fetch_envs.py:274-278:
+    distance 0.65, azimuth 90, elevation -40), with the lookat recentered on
+    the conedir workspace (object pinned at x=1.40 vs ~1.15-1.25 originally;
+    camera2's literal lookat=[1.25,0.8,0.4] pushes the action off-frame)."""
+    cam = {'lookat': np.array([1.43, 0.75, 0.42]), 'distance': 0.65,
+           'azimuth': 90.0, 'elevation': -40.0}
+    r = self._env.unwrapped.mujoco_renderer
+    r.default_cam_config = cam            # applied when the viewer is created
+    for v in getattr(r, '_viewers', {}).values():  # or now, if it exists
+      v.cam.lookat[:] = cam['lookat']
+      v.cam.distance, v.cam.azimuth, v.cam.elevation = (
+          cam['distance'], cam['azimuth'], cam['elevation'])
+
+  def _frame(self):
+    """One flattened uint8 RGB frame (fetch_envs.py observation())."""
+    img = self._env.render()
+    return np.asarray(img, dtype=np.uint8).reshape(-1)
+
+  def _render_goal_image(self, theta, push):
+    """Goal-image recipe of FetchPushImage.reset (fetch_envs.py:209-226) in
+    conedir geometry: put the OBJECT at the goal, gripper next to it on the -x
+    side (original used _move_hand_to_obj's -x offset), snapshot a frame. All
+    scripted; the sim is fully reset afterwards, so dynamics are untouched."""
+    u = self._env.unwrapped
+    d = np.array([np.cos(theta), np.sin(theta), 0.0])
+    g = (self._obj0 + push * d).astype(float)
+    u.goal = g.copy()
+    q = np.array(u._utils.get_joint_qpos(u.model, u.data, 'object0:joint'),
+                 dtype=float).copy()
+    q[0:3] = g
+    q[3:7] = [1.0, 0.0, 0.0, 0.0]
+    u._utils.set_joint_qpos(u.model, u.data, 'object0:joint', q)
+    u._mujoco.mj_forward(u.model, u.data)
+    zc = self._obj0[2]
+    beside = g + np.array([-0.04, 0.0, 0.0])
+    grip0 = np.asarray(u._get_obs()['observation'][:3])
+    self._move_gripper_to([grip0[0], grip0[1], zc + 0.12])    # lift
+    self._move_gripper_to([beside[0], beside[1], zc + 0.12])  # move over
+    self._move_gripper_to([beside[0], beside[1], zc + 0.005])  # descend
+    # Re-pin the object AT the goal (undo any placement nudge) and snapshot.
+    q = np.array(u._utils.get_joint_qpos(u.model, u.data, 'object0:joint'),
+                 dtype=float).copy()
+    q[0:3] = g
+    q[3:7] = [1.0, 0.0, 0.0, 0.0]
+    u._utils.set_joint_qpos(u.model, u.data, 'object0:joint', q)
+    u._mujoco.mj_forward(u.model, u.data)
+    return self._frame()
 
   def _flatten(self, obs):
     if self._original_style:
@@ -588,17 +677,20 @@ class FetchEnv:
     self._pin_object()
     return u._get_obs()
 
-  def _reset_conedir(self):
+  def _reset_conedir(self, theta=None, push=None):
     """Calibration rung: fixed -x gripper (like L2C) but goal direction sampled
     from a CONE around +x (the empirically-measured natural push direction from
     a -x-side gripper). State-based approximation of the original image-Push
-    geometry -- NOT an exact reproduction."""
+    geometry -- NOT an exact reproduction. ``theta``/``push`` can be pinned by
+    the image path so the episode goal matches the pre-rendered goal image."""
     u = self._env.unwrapped
     self._pin_object()
-    theta = float(self._rng.uniform(-self._cone_hw, self._cone_hw))  # around +x
+    if theta is None:
+      theta = float(self._rng.uniform(-self._cone_hw, self._cone_hw))  # around +x
+    if push is None:
+      push = float(self._rng.uniform(*self._push_range))
     d = np.array([np.cos(theta), np.sin(theta), 0.0])
     self._last_dir = d
-    push = float(self._rng.uniform(*self._push_range))
     u.goal = (self._obj0 + push * d).astype(float)
     zc = self._obj0[2]
     start = self._obj0 + np.array([-0.04, 0.0, 0.0])     # FIXED -x side
@@ -611,6 +703,17 @@ class FetchEnv:
 
   def reset(self):
     obs, _ = self._env.reset()
+    if self.use_image_obs:
+      # Two-reset recipe of FetchPushImage.reset: build the goal image on a
+      # scratch sim, then fully reset and set up the REAL episode with the SAME
+      # sampled goal, so the goal image depicts this episode's target.
+      theta = float(self._rng.uniform(-self._cone_hw, self._cone_hw))
+      push = float(self._rng.uniform(*self._push_range))
+      self._goal_img = self._render_goal_image(theta, push)
+      obs, _ = self._env.reset()
+      obs = self._reset_conedir(theta=theta, push=push)
+      self._desired = obs['desired_goal']
+      return np.concatenate([self._frame(), self._goal_img])
     if self._cone_dir:
       obs = self._reset_conedir()
     elif self._neutral_dir:
@@ -627,7 +730,9 @@ class FetchEnv:
   def step(self, action):
     obs, _, _, _, _ = self._env.step(np.asarray(action, dtype=np.float32))
     dist = np.linalg.norm(obs['achieved_goal'] - obs['desired_goal'])
-    reward = float(dist < self._success_threshold)
+    reward = float(dist < self._success_threshold)   # from sim state, not pixels
+    if self.use_image_obs:
+      return np.concatenate([self._frame(), self._goal_img]), reward, False, {}
     return self._flatten(obs), reward, False, {}
 
   def render(self):
@@ -866,6 +971,10 @@ def make_env(env_name, config, seed=0, render_mode=None):
   elif env_name == 'fetch_push_easy_conedir':
     env = FetchEnv(task='fetch_push_easy_conedir', cone_dir=True,
                    max_episode_steps=50, seed=seed, render_mode=render_mode)
+  elif env_name == 'fetch_push_image_conedir':
+    env = FetchEnv(task='fetch_push_image_conedir', cone_dir=True,
+                   image_obs=True, max_episode_steps=50, seed=seed,
+                   render_mode=render_mode)
   else:
     raise NotImplementedError(f'Unknown env: {env_name}')
 
@@ -876,4 +985,6 @@ def make_env(env_name, config, seed=0, render_mode=None):
   config.start_index = env.start_index
   config.end_index = env.end_index
   config.goal_indices = getattr(env, 'goal_indices', None)
+  if getattr(env, 'use_image_obs', False):
+    config.use_image_obs = True
   return env
