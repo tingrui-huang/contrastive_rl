@@ -26,6 +26,9 @@ def main():
   ap = argparse.ArgumentParser()
   ap.add_argument('--arm', choices=['alpha0', 'adaptive', 'adaptive_te8'],
                   required=True)
+  ap.add_argument('--env_name', default='antmaze_open_near',
+                  help='goal-representation ablation: antmaze_open_near '
+                       '(xy) / _gcompact / _gfull')
   ap.add_argument('--steps', type=int, default=50_000)
   ap.add_argument('--out', required=True)
   ap.add_argument('--seed', type=int, default=0)
@@ -37,7 +40,7 @@ def main():
   steps = 1_800 if args.smoke else args.steps
   minrep = 600 if args.smoke else 10_000
   cfg = Config(
-      env_name='antmaze_open_near', use_td=False, twin_q=False,   # binary NCE
+      env_name=args.env_name, use_td=False, twin_q=False,   # binary NCE
       random_goals=0.5,
       entropy_coefficient=0.0 if args.arm == 'alpha0' else None,
       target_entropy=-8.0 if args.arm == 'adaptive_te8' else 0.0,

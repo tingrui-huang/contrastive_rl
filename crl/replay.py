@@ -25,8 +25,13 @@ import numpy as np
 from crl.losses import Transition
 
 
-def obs_to_goal(states, start_index, end_index):
-  """Slice a batch of states [., obs_dim] down to goal coords (utils port)."""
+def obs_to_goal(states, start_index, end_index, goal_indices=None):
+  """Slice a batch of states [., obs_dim] down to goal coords (utils port).
+
+  ``goal_indices`` (a sequence of column indices) overrides the contiguous
+  start/end slice when given -- used by the goal-representation ablation."""
+  if goal_indices is not None:
+    return states[:, np.asarray(goal_indices)]
   if end_index == -1:
     return states[:, start_index:]
   return states[:, start_index:end_index]
@@ -36,7 +41,8 @@ class TrajectoryBuffer:
   """Fixed-episode-length ring buffer of trajectories."""
 
   def __init__(self, capacity_steps, ep_len_obs, full_obs_dim, action_dim,
-               obs_dim, start_index, end_index, discount, seed=0):
+               obs_dim, start_index, end_index, discount, seed=0,
+               goal_indices=None):
     """Args:
 
       capacity_steps: approx max ENV steps to retain (=> capacity in episodes).
@@ -52,6 +58,8 @@ class TrajectoryBuffer:
     self._obs_dim = obs_dim
     self._start_index = start_index
     self._end_index = end_index
+    self._goal_indices = (None if goal_indices is None
+                          else np.asarray(goal_indices, dtype=np.int64))
     self._discount = discount
     self._rng = np.random.default_rng(seed)
 
@@ -104,7 +112,8 @@ class TrajectoryBuffer:
     state = self._obs[traj, i, :self._obs_dim]           # [B, obs_dim]
     next_state = self._obs[traj, i + 1, :self._obs_dim]
     goal_state = self._obs[traj, j, :self._obs_dim]
-    goal = obs_to_goal(goal_state, self._start_index, self._end_index)
+    goal = obs_to_goal(goal_state, self._start_index, self._end_index,
+                       self._goal_indices)
 
     new_obs = np.concatenate([state, goal], axis=1)
     new_next_obs = np.concatenate([next_state, goal], axis=1)

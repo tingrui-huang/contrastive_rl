@@ -49,9 +49,12 @@ SIGMAS = (0.05, 0.2)
 DT = 0.05              # env step = frame_skip 5 x 0.01
 
 
+ENV_NAME = 'antmaze_open_near'
+
+
 def build_env(seed):
-  cfg = Config(env_name='antmaze_open_near')
-  env = envs_mod.make_env('antmaze_open_near', cfg, seed=seed)
+  cfg = Config(env_name=ENV_NAME)
+  env = envs_mod.make_env(ENV_NAME, cfg, seed=seed)
   return cfg, env
 
 
@@ -210,7 +213,10 @@ def main():
   ap.add_argument('--tag', required=True)     # e.g. alpha0_10000
   ap.add_argument('--target_entropy', type=float, default=None,
                   help='adaptive-alpha target; enables alpha-direction fields')
+  ap.add_argument('--env_name', default='antmaze_open_near')
   args = ap.parse_args()
+  global ENV_NAME
+  ENV_NAME = args.env_name
   os.makedirs(args.out, exist_ok=True)
   rng = np.random.default_rng(0)
 

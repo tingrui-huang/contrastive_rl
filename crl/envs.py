@@ -458,6 +458,81 @@ class NearGoalOpenMazeEnv(MazeEnv):
     return self._flatten(obs)
 
 
+# State layout of the flattened Ant state (obs_dim=29):
+#   [0:2]  achieved xy          (= qpos[0:2])
+#   [2]    torso height z       (= qpos[2])
+#   [3:7]  torso quaternion     (= qpos[3:7])
+#   [7:15] joint angles         (= qpos[7:15])
+#   [15:18] torso linear vel    (= qvel[0:3])
+#   [18:21] torso angular vel   (= qvel[3:6])
+#   [21:29] joint velocities    (= qvel[6:14])
+ANT_GOAL_BLOCKS = {
+    'xy': tuple(range(0, 2)),
+    'pose': tuple(range(2, 7)),            # z + quaternion
+    'velocity': tuple(range(15, 21)),      # linear + angular
+    'joints': tuple(range(7, 15)) + tuple(range(21, 29)),
+}
+ANT_COMPACT_GOAL_IDX = (ANT_GOAL_BLOCKS['xy'] + ANT_GOAL_BLOCKS['pose']
+                        + ANT_GOAL_BLOCKS['velocity'])          # 13 dims
+ANT_FULL_GOAL_IDX = tuple(range(29))                            # 29 dims
+
+
+class RichGoalOpenMazeEnv(NearGoalOpenMazeEnv):
+  """Near-goal open Ant with a richer commanded-goal representation.
+
+  Same physics/reward/reset distribution as NearGoalOpenMazeEnv (reward and
+  success stay XY-based). Only the GOAL half of the flat observation changes:
+  at reset, the ant is teleported to the commanded goal cell (keeping its
+  post-reset pose), settled for 50 zero-action env-steps (as the original
+  ant_envs.AntMaze did), the full 29-dim settled state is snapshotted, and
+  ``goal_indices`` of it become the commanded goal vector. The pre-settle
+  start state is restored bit-exactly (qpos/qvel) afterwards.
+
+  Relabeled goals (replay) use the same indices of FUTURE states, matching
+  the original's obs_to_goal(full state) semantics when goal_indices=(0..28).
+  """
+
+  def __init__(self, goal_indices, **kw):
+    super().__init__(**kw)
+    assert tuple(goal_indices[:2]) == (0, 1), 'goal must start with XY'
+    self.goal_indices = tuple(int(i) for i in goal_indices)
+    self.goal_dim = len(self.goal_indices)
+    self._goal_vec = np.zeros(self.goal_dim, np.float32)
+    self._goal_state_full = np.zeros(29, np.float32)
+
+  def _flatten(self, obs):
+    state = np.concatenate([np.asarray(obs['achieved_goal']),
+                            np.asarray(obs['observation'])])
+    return np.concatenate([state, self._goal_vec]).astype(np.float32)
+
+  def reset(self):
+    # Parent does the near-goal rejection reset and sets self._last_obs, but
+    # calls _flatten before we snapshot the goal state -- so re-flatten after.
+    super().reset()
+    obs = self._last_obs
+    u = self._env.unwrapped
+    import mujoco as _mj
+    qpos0 = np.asarray(u.data.qpos).copy()
+    qvel0 = np.asarray(u.data.qvel).copy()
+    goal_xy = np.asarray(obs['desired_goal'], dtype=np.float64)
+    # Teleport to the goal cell (keep pose), settle 50 zero-action env steps.
+    u.data.qpos[:2] = goal_xy
+    u.data.qvel[:] = 0.0
+    _mj.mj_forward(u.model, u.data)
+    u.data.ctrl[:] = 0.0
+    frame_skip = getattr(u, 'frame_skip', 5)
+    for _ in range(50 * frame_skip):
+      _mj.mj_step(u.model, u.data)
+    self._goal_state_full = np.concatenate(
+        [np.asarray(u.data.qpos), np.asarray(u.data.qvel)]).astype(np.float32)
+    self._goal_vec = self._goal_state_full[list(self.goal_indices)]
+    # Restore the start state bit-exactly.
+    u.data.qpos[:] = qpos0
+    u.data.qvel[:] = qvel0
+    _mj.mj_forward(u.model, u.data)
+    return self._flatten(obs)
+
+
 # ---------------------------------------------------------------------------
 def make_env(env_name, config, seed=0, render_mode=None):
   """Builds an env and fills obs/goal/action dims + episode length into config.
@@ -473,6 +548,12 @@ def make_env(env_name, config, seed=0, render_mode=None):
     env = PointEnv(walls=walls, max_episode_steps=steps, seed=seed)
   elif env_name == 'antmaze_open_near':
     env = NearGoalOpenMazeEnv(seed=seed, render_mode=render_mode)
+  elif env_name == 'antmaze_open_near_gcompact':
+    env = RichGoalOpenMazeEnv(ANT_COMPACT_GOAL_IDX, seed=seed,
+                              render_mode=render_mode)
+  elif env_name == 'antmaze_open_near_gfull':
+    env = RichGoalOpenMazeEnv(ANT_FULL_GOAL_IDX, seed=seed,
+                              render_mode=render_mode)
   elif env_name.startswith('antmaze_'):
     env_id, steps = _MAZE_IDS[env_name]
     env = MazeEnv(env_id, max_episode_steps=steps, seed=seed,
@@ -507,4 +588,5 @@ def make_env(env_name, config, seed=0, render_mode=None):
   config.max_episode_steps = env.max_episode_steps
   config.start_index = env.start_index
   config.end_index = env.end_index
+  config.goal_indices = getattr(env, 'goal_indices', None)
   return env

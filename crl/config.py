@@ -27,6 +27,10 @@ class Config:
   # fetch_reach: (0, 3) => gripper xyz.  fetch_push: (3, 6) => object xyz.
   start_index: int = 0
   end_index: int = -1
+  # Optional NON-CONTIGUOUS goal coordinates (overrides start/end when set;
+  # filled from the env by make_env). Must start with the XY indices (0, 1) so
+  # XY success/distance metrics stay comparable across goal representations.
+  goal_indices: Optional[Tuple[int, ...]] = None
 
   # --- Loss options (identical defaults to the original paper) ---
   batch_size: int = 256

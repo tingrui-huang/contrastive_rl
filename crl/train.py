@@ -85,13 +85,15 @@ def collect_episode(env, act_fn, params, key, random_action, action_dim,
 
 
 def evaluate(env, eval_act_fn, params, episodes, np_rng, action_dim,
-             obs_dim, start_index, end_index):
+             obs_dim, start_index, end_index, goal_indices=None):
   """Greedy rollouts. Returns (success, final_dist, min_dist), each a mean.
 
   success  = any reward==1 within an episode.
   *_dist   = L2 distance ||achieved_goal - desired_goal||, where achieved_goal
              is obs_to_goal(state) (state[start:end]) and desired_goal is the
              goal half of the observation -- the same quantity the reward uses.
+  With ``goal_indices`` (rich-goal ablation) the distance is XY-ONLY (the
+  first two goal coords), so metrics stay comparable across goal arms.
   """
   successes, final_dists, min_dists = [], [], []
   for _ in range(episodes):
@@ -103,7 +105,10 @@ def evaluate(env, eval_act_fn, params, episodes, np_rng, action_dim,
       obs, r, _, _ = env.step(a)
       hit = max(hit, float(r))
       state, goal = obs[:obs_dim], obs[obs_dim:]
-      ag = state[start_index:] if end_index == -1 else state[start_index:end_index]
+      if goal_indices is not None:
+        ag, goal = state[:2], goal[:2]           # XY primary metric
+      else:
+        ag = state[start_index:] if end_index == -1 else state[start_index:end_index]
       dists.append(float(np.linalg.norm(ag - goal)))
     successes.append(hit)
     final_dists.append(dists[-1])
@@ -137,7 +142,11 @@ def train(config: Config):
   q_optimizer = optax.adam(config.learning_rate, eps=1e-7)
 
   start, end = config.start_index, config.end_index
+  gidx = (None if config.goal_indices is None
+          else jnp.asarray(config.goal_indices))
   def obs_to_goal(states):
+    if gidx is not None:
+      return states[:, gidx]
     return states[:, start:] if end == -1 else states[:, start:end]
 
   init_state, update_step = losses_mod.build_learner(
@@ -180,7 +189,8 @@ def train(config: Config):
       full_obs_dim=config.obs_dim + config.goal_dim,
       action_dim=config.action_dim, obs_dim=config.obs_dim,
       start_index=config.start_index, end_index=config.end_index,
-      discount=config.discount, seed=config.seed)
+      discount=config.discount, seed=config.seed,
+      goal_indices=config.goal_indices)
 
   G = max(1, config.num_sgd_steps_per_step)
   B = config.batch_size
@@ -308,7 +318,7 @@ def train(config: Config):
       succ, fdist, mdist = evaluate(
           eval_env, eval_act_fn, state.policy_params, config.eval_episodes,
           np_rng, config.action_dim, config.obs_dim, config.start_index,
-          config.end_index)
+          config.end_index, config.goal_indices)
       print(f'  >> EVAL step {env_steps}: success_rate={succ:.3f} '
             f'final_dist={fdist:.3f} min_dist={mdist:.3f}', flush=True)
       last_eval = env_steps

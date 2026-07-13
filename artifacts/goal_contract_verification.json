@@ -1,0 +1,101 @@
+{
+  "antmaze_open_near": {
+    "env": "antmaze_open_near",
+    "obs_dim": 29,
+    "goal_dim": 2,
+    "goal_indices": null,
+    "state_layout_max_err": 0.0,
+    "relabel_checked": 256,
+    "relabel_goal_from_strict_future_frac": 1.0,
+    "g_encoder_input_width": 2,
+    "pass": true
+  },
+  "antmaze_open_near_gcompact": {
+    "env": "antmaze_open_near_gcompact",
+    "obs_dim": 29,
+    "goal_dim": 13,
+    "goal_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20
+    ],
+    "state_layout_max_err": 0.0,
+    "settled_goal_xy_drift": {
+      "mean": 1.3646275291730907e-07,
+      "max": 3.5319063454785887e-07
+    },
+    "settled_goal_z_mean": 0.5582826137542725,
+    "relabel_checked": 256,
+    "relabel_goal_from_strict_future_frac": 1.0,
+    "g_encoder_input_width": 13,
+    "goal_block_std": {
+      "xy": 4.579160213470459,
+      "pose": 0.40645554661750793,
+      "velocity": 0.0018512080423533916,
+      "joints": null
+    },
+    "pass": true
+  },
+  "antmaze_open_near_gfull": {
+    "env": "antmaze_open_near_gfull",
+    "obs_dim": 29,
+    "goal_dim": 29,
+    "goal_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28
+    ],
+    "state_layout_max_err": 0.0,
+    "settled_goal_xy_drift": {
+      "mean": 1.3646275291730907e-07,
+      "max": 3.5319063454785887e-07
+    },
+    "settled_goal_z_mean": 0.5582826137542725,
+    "relabel_checked": 256,
+    "relabel_goal_from_strict_future_frac": 1.0,
+    "g_encoder_input_width": 29,
+    "goal_block_std": {
+      "xy": 4.579160213470459,
+      "pose": 0.40645554661750793,
+      "velocity": 0.0018512080423533916,
+      "joints": 0.47276708483695984
+    },
+    "pass": true
+  }
+}

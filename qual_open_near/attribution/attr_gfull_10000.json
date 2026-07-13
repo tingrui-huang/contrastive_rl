@@ -1,0 +1,35 @@
+{
+  "tag": "gfull_10000",
+  "env": "antmaze_open_near_gfull",
+  "step": 10200,
+  "k_way": 64,
+  "chance_acc": 0.015625,
+  "baseline_acc": 0.08333333333333333,
+  "positive_rank_median": 9.0,
+  "blocks": {
+    "xy": {
+      "n_dims": 2,
+      "knockout_acc": 0.010416666666666666,
+      "reliance": 0.07291666666666666,
+      "only_block_acc": 0.07291666666666667
+    },
+    "pose": {
+      "n_dims": 5,
+      "knockout_acc": 0.125,
+      "reliance": -0.04166666666666667,
+      "only_block_acc": 0.03125
+    },
+    "velocity": {
+      "n_dims": 6,
+      "knockout_acc": 0.10416666666666667,
+      "reliance": -0.020833333333333343,
+      "only_block_acc": 0.0
+    },
+    "joints": {
+      "n_dims": 16,
+      "knockout_acc": 0.041666666666666664,
+      "reliance": 0.041666666666666664,
+      "only_block_acc": 0.020833333333333332
+    }
+  }
+}
