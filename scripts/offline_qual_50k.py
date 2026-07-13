@@ -30,7 +30,17 @@ sys.path.insert(0, os.path.dirname(_HERE))
 from verify_offline_d4rl import build_offline_cfg, NPZ  # noqa: E402
 
 BLOCK = 700
+# Canonical 50k qualification gates (nominal -> actual step-clock value hit).
 GATES = {1000: 1400, 5000: 4900, 10000: 9800, 25000: 25200, 50000: 50400}
+# Extend past 50k by resume: OFFLINE_EXTRA_GATES="75000,100000" appends gates
+# (actual = ceil(nominal/BLOCK)*BLOCK). Done gates are skipped (their gate pkl
+# exists), so the run continues from latest.pkl to the new targets.
+import math as _math  # noqa: E402
+_extra = os.environ.get('OFFLINE_EXTRA_GATES', '').strip()
+if _extra:
+  for _n in (int(x) for x in _extra.split(',') if x.strip()):
+    GATES[_n] = int(_math.ceil(_n / BLOCK) * BLOCK)
+  GATES = dict(sorted(GATES.items()))
 # RUN_DIR is env-overridable: on Colab set OFFLINE_RUN_DIR to a fast local
 # /content scratch (atomic checkpoint writes) and OFFLINE_DRIVE_DIR to the
 # persistent Drive run dir (mirrored after each gate). Local runs use the
