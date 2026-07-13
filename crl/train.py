@@ -154,30 +154,38 @@ def train(config: Config):
   key = jax.random.PRNGKey(config.seed)
   np_rng = np.random.default_rng(config.seed)
 
-  # --- Env (fills obs/goal/action dims into config) ---
-  env = envs.make_env(config.env_name, config, seed=config.seed)
-  eval_env = envs.make_env(config.env_name, config, seed=config.seed + 10_000)
-  # Offline mode: train on a frozen episode dataset; the env is used for EVAL
-  # ONLY and 'steps' below count the gradient clock, not env interaction.
   offline = bool(config.offline_dataset)
-  off_obs = off_act = None
   if offline:
-    data = np.load(config.offline_dataset)
-    off_obs, off_act = data['obs'], data['act']    # [N, L, D], [N, L, A]
-    assert off_obs.shape[1] == config.max_episode_steps + 1, (
-        f'dataset ep_len {off_obs.shape[1]} != env {config.max_episode_steps + 1}')
-    assert off_obs.shape[2] == config.obs_dim + config.goal_dim, (
-        f'dataset obs width {off_obs.shape[2]} != '
-        f'{config.obs_dim + config.goal_dim}')
-  # Additional logical actors (original multi-actor recipe): distinct env
-  # seeds + distinct warmup RNG streams per actor; actor 0 keeps the legacy
-  # seeding so num_actors=1 is byte-identical to previous runs.
-  N_ACT = 1 if offline else max(1, int(config.num_actors))
-  coll_envs = [env] + [envs.make_env(config.env_name, Config(
-      env_name=config.env_name), seed=config.seed + 7919 * i)
-      for i in range(1, N_ACT)]
-  coll_rngs = [np.random.default_rng(config.seed + 104729 * i)
-               for i in range(N_ACT)]
+    # --- STRICT OFFLINE MODE ---------------------------------------------
+    # No TRAINING environment is ever created: `env` stays None and the
+    # collection lists are empty, so collect_episode/collect_block cannot run.
+    # The eval env is the ONLY env; it fills the config dims and is stepped
+    # solely inside evaluate(). Online-only knobs are rejected / disabled.
+    if int(config.num_actors) > 1:
+      raise ValueError(
+          f'offline mode rejects num_actors={config.num_actors} (>1): there '
+          'is no collection to parallelize.')
+    eval_env = envs.make_env(config.env_name, config, seed=config.seed + 10_000)
+    env = None
+    N_ACT = 1
+    coll_envs, coll_rngs = [], []
+    # random_steps / min_replay_size are meaningless with a frozen dataset.
+    if config.random_steps:
+      print(f'  [offline] disabling random_steps={config.random_steps} -> 0')
+    config.random_steps = 0
+  else:
+    # --- Env (fills obs/goal/action dims into config) ---
+    env = envs.make_env(config.env_name, config, seed=config.seed)
+    eval_env = envs.make_env(config.env_name, config, seed=config.seed + 10_000)
+    # Additional logical actors (original multi-actor recipe): distinct env
+    # seeds + distinct warmup RNG streams per actor; actor 0 keeps the legacy
+    # seeding so num_actors=1 is byte-identical to previous runs.
+    N_ACT = max(1, int(config.num_actors))
+    coll_envs = [env] + [envs.make_env(config.env_name, Config(
+        env_name=config.env_name), seed=config.seed + 7919 * i)
+        for i in range(1, N_ACT)]
+    coll_rngs = [np.random.default_rng(config.seed + 104729 * i)
+                 for i in range(N_ACT)]
   print(f'obs_dim={config.obs_dim} goal_dim={config.goal_dim} '
         f'action_dim={config.action_dim} '
         f'max_episode_steps={config.max_episode_steps} '
@@ -236,51 +244,71 @@ def train(config: Config):
   multi_update = jax.jit(_multi_update) if config.jit else _multi_update
 
   # --- Replay ---
-  # Offline: size the ring to EXACTLY the dataset so nothing wraps/overwrites.
-  capacity = (off_obs.shape[0] * off_obs.shape[1] if offline
-              else config.max_replay_size)
-  buffer = TrajectoryBuffer(
-      capacity_steps=capacity,
-      ep_len_obs=config.max_episode_steps + 1,
-      full_obs_dim=config.obs_dim + config.goal_dim,
-      action_dim=config.action_dim, obs_dim=config.obs_dim,
-      start_index=config.start_index, end_index=config.end_index,
-      discount=config.discount, seed=config.seed,
-      goal_indices=config.goal_indices,
-      obs_dtype=np.uint8 if config.use_image_obs else np.float32)
   min_replay = config.min_replay_size
   if offline:
-    for i in range(off_obs.shape[0]):
-      buffer.add_episode(off_obs[i], off_act[i])
+    # Load the fixed dataset ONCE, sized exactly to it, and FREEZE it. Then run
+    # the full static + buffer audit BEFORE any gradient step; a single failed
+    # gate aborts training. See crl/offline_audit.py for the gate definitions.
+    from crl import offline_audit
+    buffer, off_fp = offline_audit.build_offline_buffer(
+        config.offline_dataset, config)
+    passed, gates, audit_report = offline_audit.run_static_audit(
+        config.offline_dataset, config, buffer=buffer)
+    print('OFFLINE AUDIT (pre-training gates):')
+    for gname, ok in gates.items():
+      print(f'  {"PASS" if ok else "FAIL"}  {gname}')
+    print(f'  dataset={config.offline_dataset}')
+    print(f'  sha256={off_fp["sha256"][:16]}...  eps={off_fp["n_episodes"]}  '
+          f'trans={off_fp["n_transitions"]}  obs={off_fp["obs_shape"]}  '
+          f'act={off_fp["act_shape"]}  ep_len<=[{off_fp["ep_lengths_min"]},'
+          f'{off_fp["ep_lengths_max"]}]')
+    if off_fp['keys']['audit']:
+      print(f'  audit-only fields kept OUT of the learner: '
+            f'{off_fp["keys"]["audit"]}')
+    if not passed:
+      raise RuntimeError(
+          f'OFFLINE AUDIT FAILED (gates={gates}); refusing to train.')
+    if config.min_replay_size:
+      print(f'  [offline] disabling min_replay_size={config.min_replay_size} '
+            '-> 0 (the frozen dataset IS the buffer)')
     min_replay = 0   # the frozen dataset IS the buffer; learn from step one.
-    print(f'Offline dataset: {off_obs.shape[0]} episodes '
-          f'({buffer.ready_steps} transitions) from {config.offline_dataset}; '
-          'env collection DISABLED.')
-    del off_obs, off_act, data
-    # ---- HARD offline contract (asserted throughout training) ----
-    # 1) replay is immutable after this point (pointers + full content hash);
-    # 2) the collection env must NEVER step (poisoned);
-    # 3) the eval env steps ONLY inside evaluate() (exact step accounting).
-    import hashlib as _hashlib
-    offline_frozen = (buffer._num_eps, buffer._write, buffer.ready_steps)
-    def _replay_sha():
-      h = _hashlib.sha256()
-      h.update(buffer._obs[:buffer._num_eps].tobytes())
-      h.update(buffer._act[:buffer._num_eps].tobytes())
-      return h.hexdigest()
-    offline_frozen_sha = _replay_sha()
-    print(f'  offline replay frozen: eps={offline_frozen[0]} '
-          f'sha256={offline_frozen_sha[:16]}...')
-    def _poisoned_step(*a, **k):
-      raise AssertionError(
-          'offline contract violated: collection env.step() was called')
-    env.step = _poisoned_step
+
+    # Resume must use the identical dataset; a fresh run records its hash.
+    if config.ckpt_dir:
+      if config.resume:
+        same, recorded = offline_audit.require_same_dataset_hash(
+            config.ckpt_dir, off_fp['sha256'])
+        if not same:
+          raise RuntimeError(
+              'OFFLINE RESUME dataset MISMATCH: this checkpoint was trained on '
+              f'{recorded} but the current dataset hashes {off_fp["sha256"]}.')
+      else:
+        offline_audit.record_dataset_hash(
+            config.ckpt_dir, off_fp['sha256'], off_fp['meta'])
+
+    # Runtime immutability watchdog (checked at every eval): the collection env
+    # does not exist (env is None) and the buffer is frozen, so collection is
+    # structurally impossible; here we also pin the content hash and count the
+    # eval env's steps so eval cannot mutate or over-step.
+    offline_frozen_sha = buffer.content_sha256()
+    offline_frozen_ptr = (buffer._num_eps, buffer.ready_steps)
     offline_eval_steps = {'n': 0, 'evals': 0}
     _real_eval_step = eval_env.step
     def _counted_eval_step(a):
       offline_eval_steps['n'] += 1
       return _real_eval_step(a)
     eval_env.step = _counted_eval_step
+  else:
+    # Online: growable ring sized by max_replay_size.
+    buffer = TrajectoryBuffer(
+        capacity_steps=config.max_replay_size,
+        ep_len_obs=config.max_episode_steps + 1,
+        full_obs_dim=config.obs_dim + config.goal_dim,
+        action_dim=config.action_dim, obs_dim=config.obs_dim,
+        start_index=config.start_index, end_index=config.end_index,
+        discount=config.discount, seed=config.seed,
+        goal_indices=config.goal_indices,
+        obs_dtype=np.uint8 if config.use_image_obs else np.float32)
 
   G = max(1, config.num_sgd_steps_per_step)
   B = config.batch_size
@@ -360,6 +388,7 @@ def train(config: Config):
     if offline:
       pass                       # frozen dataset: no collection, ever.
     elif N_ACT == 1:
+      assert env is not None, 'online collection requires an env'
       obs_buf, act_buf, _ = collect_episode(
           env, act_fn, state.policy_params, key_collect, random_action,
           config.action_dim, np_rng)
@@ -428,6 +457,11 @@ def train(config: Config):
 
     # Eval.
     if env_steps - last_eval >= config.eval_every_steps:
+      # Snapshot the eval-env step counter BEFORE evaluate() so the offline
+      # contract can check evaluate()'s OWN consumption via a delta -- the
+      # read-only maze/antmaze scalar rollouts below also legitimately step the
+      # eval env (never touching replay), so an absolute count would be wrong.
+      eval_n_before = offline_eval_steps['n'] if offline else 0
       succ, fdist, mdist = evaluate(
           eval_env, eval_act_fn, state.policy_params, config.eval_episodes,
           np_rng, config.action_dim, config.obs_dim, config.start_index,
@@ -436,18 +470,21 @@ def train(config: Config):
             f'final_dist={fdist:.3f} min_dist={mdist:.3f}', flush=True)
       last_eval = env_steps
       if offline:
-        # HARD offline contract checks (see preload block above).
-        assert (buffer._num_eps, buffer._write,
-                buffer.ready_steps) == offline_frozen, \
+        # HARD offline contract (see the audit block above): the frozen dataset
+        # is immutable (pointers + full content hash unchanged), and evaluate()
+        # consumed EXACTLY eval_episodes*max_episode_steps eval-env steps this
+        # eval. There is no collection env (env is None) and the buffer is
+        # frozen, so collection is structurally impossible.
+        assert (buffer._num_eps, buffer.ready_steps) == offline_frozen_ptr, \
             'offline contract violated: replay pointers changed'
-        assert _replay_sha() == offline_frozen_sha, \
+        assert buffer.content_sha256() == offline_frozen_sha, \
             'offline contract violated: replay CONTENT changed'
         offline_eval_steps['evals'] += 1
-        expected = (offline_eval_steps['evals'] * config.eval_episodes
-                    * eval_env.max_episode_steps)
-        assert offline_eval_steps['n'] == expected, (
-            'offline contract violated: eval env stepped outside evaluate() '
-            f"({offline_eval_steps['n']} != {expected})")
+        consumed = offline_eval_steps['n'] - eval_n_before
+        expected = config.eval_episodes * eval_env.max_episode_steps
+        assert consumed == expected, (
+            'offline contract violated: evaluate() eval-env steps '
+            f'{consumed} != {expected} (per-eval)')
       rec = {'step': int(env_steps), 'success': float(succ),
              'final_dist': float(fdist), 'min_dist': float(mdist),
              'learner_updates': int(learner_updates),
@@ -490,7 +527,7 @@ def train(config: Config):
 
   # Final offline-contract check (content hash) before the last save.
   if offline:
-    assert _replay_sha() == offline_frozen_sha, \
+    assert buffer.content_sha256() == offline_frozen_sha, \
         'offline contract violated: replay CONTENT changed by end of run'
   # Final save (also runs after a guard abort's break).
   if config.ckpt_dir:

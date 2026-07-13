@@ -74,14 +74,24 @@ def collect(env_name, episodes, noise, random_frac, seed, out):
   meta = {
       'env_name': env_name, 'episodes': episodes, 'seed': seed,
       'noise': noise, 'random_frac': random_frac,
+      # Self-describing dims so the offline audit needs no env to validate.
       'obs_dim': cfg.obs_dim, 'goal_dim': cfg.goal_dim, 'action_dim': A,
+      'start_index': cfg.start_index, 'end_index': cfg.end_index,
+      'goal_indices': (None if cfg.goal_indices is None
+                       else list(cfg.goal_indices)),
+      'use_image_obs': bool(cfg.use_image_obs),
       'max_episode_steps': env.max_episode_steps,
       'behavior_success': float(succ.mean()),
       'behavior_success_oracle': float(succ[is_orc].mean()) if is_orc.any() else None,
       'behavior_success_random': float(succ[~is_orc].mean()) if (~is_orc).any() else None,
   }
   os.makedirs(os.path.dirname(out) or '.', exist_ok=True)
+  # obs/act are the ONLY learner tensors; per-episode kinds go to an AUDIT-ONLY
+  # field (audit_*), which the offline audit verifies never enters the learner.
+  audit_kind = np.array([0 if k == 'noisy_oracle' else 1 for k in kinds],
+                        dtype=np.int64)
   np.savez_compressed(out, obs=obs_out, act=act_out,
+                      audit_behavior_kind=audit_kind,
                       meta=np.array(json.dumps(meta)))
   size_mb = os.path.getsize(out) / 1e6
   print(f'\nDataset -> {out} ({size_mb:.0f} MB)')

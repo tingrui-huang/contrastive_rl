@@ -70,12 +70,35 @@ class TrajectoryBuffer:
                          dtype=self._obs_dtype)
     self._act = np.zeros((self._capacity_eps, self._L, action_dim),
                          dtype=np.float32)
+    # Per-episode VALID observation count (incl. the terminal obs). All fixed
+    # at L unless add_episode is given an explicit shorter length -- used so
+    # future-goal relabeling never samples across a padded tail (see sample()).
+    self._lengths_arr = np.full(self._capacity_eps, self._L, dtype=np.int64)
+    self._use_lengths = False
     self._write = 0      # next episode slot to write (ring).
     self._num_eps = 0    # number of valid episodes stored.
+    self._frozen = False  # offline mode locks the buffer (see freeze()).
     self._log_discount = float(np.log(discount)) if discount > 0 else -np.inf
 
-  def add_episode(self, obs, act):
-    """Store one episode. obs: [L, full_obs_dim], act: [L, action_dim]."""
+  def freeze(self):
+    """Make the buffer immutable: any later add_episode() raises. Used by the
+    strict offline audit so environment collection is structurally impossible
+    once the fixed dataset is loaded."""
+    self._frozen = True
+
+  @property
+  def frozen(self):
+    return self._frozen
+
+  def add_episode(self, obs, act, length=None):
+    """Store one episode. obs: [L, full_obs_dim], act: [L, action_dim].
+
+    ``length`` (optional) = number of VALID observations (<= L); the rest of
+    the row is padding the relabeler must not sample. Raises if frozen."""
+    if self._frozen:
+      raise RuntimeError(
+          'TrajectoryBuffer is frozen (offline mode): add_episode() is '
+          'disabled -- the fixed dataset must never grow or change.')
     obs = np.asarray(obs, dtype=self._obs_dtype)
     act = np.asarray(act, dtype=np.float32)
     assert obs.shape[0] == self._L, (
@@ -83,16 +106,40 @@ class TrajectoryBuffer:
     slot = self._write
     self._obs[slot] = obs
     self._act[slot] = act
+    if length is None:
+      self._lengths_arr[slot] = self._L
+    else:
+      length = int(length)
+      assert 2 <= length <= self._L, f'episode length {length} out of [2, {self._L}]'
+      self._lengths_arr[slot] = length
+      if length != self._L:
+        self._use_lengths = True
     self._write = (self._write + 1) % self._capacity_eps
     self._num_eps = min(self._num_eps + 1, self._capacity_eps)
 
   def __len__(self):
     """Number of transitions currently available."""
+    if self._use_lengths:
+      return int(np.sum(self._lengths_arr[:self._num_eps] - 1))
     return self._num_eps * (self._L - 1)
 
   @property
   def ready_steps(self):
     return len(self)
+
+  @property
+  def lengths(self):
+    """Per-episode valid observation counts for the stored episodes."""
+    return self._lengths_arr[:self._num_eps].copy()
+
+  def content_sha256(self):
+    """SHA-256 over the stored obs+act tensors (immutability checksum)."""
+    import hashlib
+    h = hashlib.sha256()
+    h.update(np.ascontiguousarray(self._obs[:self._num_eps]).tobytes())
+    h.update(np.ascontiguousarray(self._act[:self._num_eps]).tobytes())
+    h.update(np.ascontiguousarray(self._lengths_arr[:self._num_eps]).tobytes())
+    return h.hexdigest()
 
   def save(self, path):
     """Atomic snapshot (tmp + replace) of contents, pointers, and RNG state."""
@@ -126,23 +173,41 @@ class TrajectoryBuffer:
           d['rng_state'].tobytes().decode())
     return n
 
-  def sample(self, batch_size):
-    """Sample a relabeled Transition batch (numpy arrays of size batch_size)."""
+  def _draw_indices(self, batch_size):
+    """Draw (traj, i, j): anchor time i and future goal time j>i, BOTH in the
+    SAME trajectory (so relabeling never crosses an episode boundary) and both
+    within the episode's valid length (so it never samples a padded tail)."""
     L = self._L
     ne = self._num_eps
     rng = self._rng
 
     traj = rng.integers(0, ne, size=batch_size)          # which trajectory.
-    i = rng.integers(0, L - 1, size=batch_size)          # anchor time in [0,L-2].
-
-    # Future-goal index j > i with prob proportional to discount**(j-i).
-    arange = np.arange(L)                                 # [L]
-    future = arange[None, :] > i[:, None]                # [B, L]
+    if not self._use_lengths:
+      # Fixed-length path -- byte-identical RNG stream to the original.
+      i = rng.integers(0, L - 1, size=batch_size)        # anchor in [0, L-2].
+      arange = np.arange(L)                              # [L]
+      future = arange[None, :] > i[:, None]              # [B, L]
+    else:
+      # Variable-length: mask the padded tail per row (valid = arange < len).
+      Lt = self._lengths_arr[traj]                       # [B] valid obs counts.
+      i = np.floor(rng.random(batch_size) * (Lt - 1)).astype(np.int64)
+      arange = np.arange(L)                              # [L]
+      valid = arange[None, :] < Lt[:, None]              # [B, L] within episode.
+      future = (arange[None, :] > i[:, None]) & valid    # [B, L]
     logp = (arange[None, :] - i[:, None]) * self._log_discount  # [B, L]
     logits = np.where(future, logp, -np.inf)
     # Gumbel-max categorical sample over the same distribution as flatten_fn.
     g = -np.log(-np.log(rng.uniform(size=logits.shape).clip(1e-20, 1.0)))
     j = np.argmax(logits + g, axis=1)                    # [B]
+    return traj, i, j
+
+  def sampled_indices(self, batch_size):
+    """Public alias of _draw_indices for the offline relabel-boundary audit."""
+    return self._draw_indices(batch_size)
+
+  def sample(self, batch_size):
+    """Sample a relabeled Transition batch (numpy arrays of size batch_size)."""
+    traj, i, j = self._draw_indices(batch_size)
 
     # .astype(float32): no-op for state envs; uint8 -> float32 for image envs
     # (networks normalize by /255 themselves).
