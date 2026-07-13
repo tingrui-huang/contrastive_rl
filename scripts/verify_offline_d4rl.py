@@ -31,6 +31,7 @@ import json
 import os
 import sys
 import contextlib
+import tempfile
 
 import numpy as np
 import jax
@@ -52,8 +53,11 @@ NPZ = os.environ.get(
     'OFFLINE_NPZ',
     r'D:\Users\trhua\Research\datasets\d4rl\antmaze_umaze_v2_offline.npz')
 OUT = 'artifacts/offline_d4rl'
+# Dry-run scratch: use the OS temp dir (Linux/Colab have no TEMP env, which
+# previously defaulted to '.', writing the scratch INTO the repo and dirtying
+# the tree so the next git checkout refused to run).
 SCRATCH = os.environ.get('OFFLINE_DRYRUN_DIR', os.path.join(
-    os.environ.get('TEMP', '.'), 'crl_offline_dryrun'))
+    tempfile.gettempdir(), 'crl_offline_dryrun'))
 GATE = {}
 
 
