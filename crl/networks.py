@@ -77,6 +77,30 @@ class _AtariTorso(hk.Module):
     return hk.Flatten()(conv(x))
 
 
+class _LayerNormMLP(hk.Module):
+  """MLP with LayerNorm before each ReLU (Linear -> LayerNorm -> ReLU per hidden
+  layer); the final layer is a plain Linear unless ``activate_final``. Being a
+  hk.Module, twin-critic reuse auto-numbers the second instance (sa_encoder,
+  sa_encoder_1), exactly like hk.nets.MLP -- so the two critic heads stay
+  independent. Used only when use_layer_norm=True (Stabilizing-Contrastive-RL)."""
+
+  def __init__(self, sizes, w_init, activate_final, name=None):
+    super().__init__(name=name)
+    self._sizes = list(sizes)
+    self._w_init = w_init
+    self._activate_final = activate_final
+
+  def __call__(self, x):
+    n = len(self._sizes)
+    for i, w in enumerate(self._sizes):
+      x = hk.Linear(w, w_init=self._w_init, name=f'linear_{i}')(x)
+      if i < n - 1 or self._activate_final:
+        x = hk.LayerNorm(axis=-1, create_scale=True, create_offset=True,
+                         name=f'ln_{i}')(x)
+        x = jax.nn.relu(x)
+    return x
+
+
 class FeedForward(NamedTuple):
   """Minimal replacement for acme's FeedForwardNetwork."""
   init: Callable
@@ -105,6 +129,7 @@ def make_networks(
     actor_min_std: float = 1e-6,
     twin_q: bool = False,
     use_image_obs: bool = False,
+    use_layer_norm: bool = False,
 ) -> ContrastiveNetworks:
   """Creates the contrastive RL networks.
 
@@ -137,19 +162,19 @@ def make_networks(
     else:
       state, goal = hidden
 
-    sa_encoder = hk.nets.MLP(
-        list(hidden_layer_sizes) + [repr_dim],
-        w_init=hk.initializers.VarianceScaling(1.0, 'fan_avg', 'uniform'),
-        activation=jax.nn.relu,
-        name='sa_encoder')
-    sa_repr = sa_encoder(jnp.concatenate([state, action], axis=-1))
-
-    g_encoder = hk.nets.MLP(
-        list(hidden_layer_sizes) + [repr_dim],
-        w_init=hk.initializers.VarianceScaling(1.0, 'fan_avg', 'uniform'),
-        activation=jax.nn.relu,
-        name='g_encoder')
-    g_repr = g_encoder(goal)
+    enc_w_init = hk.initializers.VarianceScaling(1.0, 'fan_avg', 'uniform')
+    enc_sizes = list(hidden_layer_sizes) + [repr_dim]
+    sa_in = jnp.concatenate([state, action], axis=-1)
+    if use_layer_norm:
+      sa_repr = _LayerNormMLP(enc_sizes, enc_w_init, False,
+                              name='sa_encoder')(sa_in)
+      g_repr = _LayerNormMLP(enc_sizes, enc_w_init, False,
+                             name='g_encoder')(goal)
+    else:
+      sa_repr = hk.nets.MLP(enc_sizes, w_init=enc_w_init,
+                            activation=jax.nn.relu, name='sa_encoder')(sa_in)
+      g_repr = hk.nets.MLP(enc_sizes, w_init=enc_w_init,
+                           activation=jax.nn.relu, name='g_encoder')(goal)
 
     if repr_norm:
       sa_repr = sa_repr / jnp.linalg.norm(sa_repr, axis=1, keepdims=True)
@@ -178,11 +203,14 @@ def make_networks(
       state, goal = _unflatten_obs(obs)
       obs = jnp.concatenate([state, goal], axis=-1)
       obs = _AtariTorso()(obs)
-    h = hk.nets.MLP(
-        list(hidden_layer_sizes),
-        w_init=hk.initializers.VarianceScaling(1.0, 'fan_in', 'uniform'),
-        activation=jax.nn.relu,
-        activate_final=True)(obs)
+    act_w_init = hk.initializers.VarianceScaling(1.0, 'fan_in', 'uniform')
+    if use_layer_norm:
+      h = _LayerNormMLP(list(hidden_layer_sizes), act_w_init, True,
+                        name='actor_torso')(obs)
+    else:
+      h = hk.nets.MLP(
+          list(hidden_layer_sizes), w_init=act_w_init,
+          activation=jax.nn.relu, activate_final=True)(obs)
     loc = hk.Linear(
         action_dim,
         w_init=hk.initializers.VarianceScaling(1.0, 'fan_in', 'uniform'),

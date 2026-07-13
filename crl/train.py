@@ -197,7 +197,8 @@ def train(config: Config):
       action_dim=config.action_dim, repr_dim=int(config.repr_dim),
       repr_norm=config.repr_norm, repr_norm_temp=config.repr_norm_temp,
       hidden_layer_sizes=config.hidden_layer_sizes,
-      twin_q=config.twin_q, use_image_obs=config.use_image_obs)
+      twin_q=config.twin_q, use_image_obs=config.use_image_obs,
+      use_layer_norm=config.use_layer_norm)
 
   policy_optimizer = optax.adam(config.actor_learning_rate, eps=1e-7)
   q_optimizer = optax.adam(config.learning_rate, eps=1e-7)

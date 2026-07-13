@@ -45,6 +45,10 @@ class Config:
   repr_dim: Union[int, str] = 64           # representation size.
   repr_norm: bool = False
   repr_norm_temp: bool = True
+  # LayerNorm in the critic encoders + actor torso (Stabilizing-Contrastive-RL
+  # arm). Default False = faithful google-research recipe (byte-identical net,
+  # so faithful checkpoints load). The LayerNorm notebook sets this True.
+  use_layer_norm: bool = False
 
   # Algorithm selector flags (see losses.py). Defaults => contrastive_nce.
   use_cpc: bool = False        # CPC (softmax) instead of NCE (binary).

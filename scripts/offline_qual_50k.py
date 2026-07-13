@@ -122,7 +122,7 @@ _CFG_KEYS = ('env_name', 'bc_coef', 'twin_q', 'random_goals',
              'entropy_coefficient', 'target_entropy', 'batch_size', 'repr_dim',
              'hidden_layer_sizes', 'discount', 'actor_learning_rate',
              'learning_rate', 'num_sgd_steps_per_step', 'updates_per_step',
-             'seed', 'num_actors')
+             'seed', 'num_actors', 'use_layer_norm')
 
 
 def persist_and_check_config():
@@ -135,7 +135,11 @@ def persist_and_check_config():
   p = os.path.join(RUN_DIR, 'config.json')
   if os.path.exists(p):
     prev = json.load(open(p))
-    mism = {k: (prev.get(k), cur.get(k)) for k in cur if prev.get(k) != cur.get(k)}
+    # Only flag keys PRESENT in the recorded config; a newly-added key (absent
+    # from an older run's config.json, e.g. use_layer_norm) must not break the
+    # resume of a run started before the key existed.
+    mism = {k: (prev.get(k), cur.get(k))
+            for k in cur if k in prev and prev.get(k) != cur.get(k)}
     if mism:
       raise RuntimeError(f'offline config MISMATCH on resume: {mism}')
     print('  config unchanged on resume:', p, flush=True)
@@ -214,7 +218,7 @@ def resume_test():
       repr_dim=int(cfg.repr_dim), repr_norm=cfg.repr_norm,
       repr_norm_temp=cfg.repr_norm_temp,
       hidden_layer_sizes=cfg.hidden_layer_sizes, twin_q=cfg.twin_q,
-      use_image_obs=cfg.use_image_obs)
+      use_image_obs=cfg.use_image_obs, use_layer_norm=cfg.use_layer_norm)
   def o2g(s):
     return s[:, jnp.arange(29)]
   _, upd = losses_mod.build_learner(nets, cfg, o2g,

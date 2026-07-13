@@ -66,6 +66,9 @@ def build_offline_cfg(max_steps=1_000_000, ckpt_dir=''):
   return Config(
       env_name='offline_ant_umaze',
       offline_dataset=NPZ,
+      # LayerNorm arm toggled by env (OFFLINE_LAYER_NORM=1); default off keeps
+      # the faithful google-research recipe.
+      use_layer_norm=os.environ.get('OFFLINE_LAYER_NORM', '0') == '1',
       num_actors=0,                         # OFFLINE: zero collection actors
       use_td=False, use_cpc=False,          # binary NCE
       twin_q=True,                          # 2 critics; actor uses min

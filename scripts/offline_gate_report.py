@@ -67,7 +67,7 @@ def main():
       repr_dim=int(cfg.repr_dim), repr_norm=cfg.repr_norm,
       repr_norm_temp=cfg.repr_norm_temp,
       hidden_layer_sizes=cfg.hidden_layer_sizes, twin_q=cfg.twin_q,
-      use_image_obs=cfg.use_image_obs)
+      use_image_obs=cfg.use_image_obs, use_layer_norm=cfg.use_layer_norm)
   step, st = ckpt_mod.load_checkpoint(args.ckpt)
   R = {'tag': args.tag, 'ckpt': args.ckpt, 'step': int(step)}
   stop = []
