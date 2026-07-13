@@ -1,0 +1,35 @@
+{
+  "tag": "d4rl_20000",
+  "env": "d4rl_ant_umaze_gfull",
+  "step": 21000,
+  "k_way": 64,
+  "chance_acc": 0.015625,
+  "baseline_acc": 0.78125,
+  "positive_rank_median": 0.0,
+  "blocks": {
+    "xy": {
+      "n_dims": 2,
+      "knockout_acc": 0.16666666666666666,
+      "reliance": 0.6145833333333334,
+      "only_block_acc": 0.3958333333333333
+    },
+    "pose": {
+      "n_dims": 5,
+      "knockout_acc": 0.4375,
+      "reliance": 0.34375,
+      "only_block_acc": 0.08333333333333333
+    },
+    "velocity": {
+      "n_dims": 6,
+      "knockout_acc": 0.8125,
+      "reliance": -0.03125,
+      "only_block_acc": 0.041666666666666664
+    },
+    "joints": {
+      "n_dims": 16,
+      "knockout_acc": 0.7395833333333334,
+      "reliance": 0.04166666666666663,
+      "only_block_acc": 0.020833333333333332
+    }
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "tag": "d4rl_gfull_te8_10000",
+  "ckpt": "qual_open_near/d4rl_gfull_te8_s0/gate_10000.pkl",
+  "step": 10500,
+  "policy_head": {
+    "scale_median": 0.8436965942382812,
+    "scale_p10": 0.7814362645149231,
+    "scale_p90": 0.9088780283927917,
+    "log_scale_median": -0.1699623316526413,
+    "frac_at_min_std": 0.0,
+    "sample_vs_mode_dist": 1.6249995231628418,
+    "mode_sat": 0.0,
+    "sample_sat": 0.0009375,
+    "alpha": 0.8152041435241699,
+    "entropy_mean": 5.351016998291016,
+    "entropy_median": 5.341913223266602,
+    "entropy_clip_artifact_frac": 0.0,
+    "target_entropy": -8.0,
+    "alpha_direction_implied": "DOWN",
+    "alpha_direction_reliable": true
+  },
+  "collection": {
+    "moving_transition_frac": 0.9894047619047619,
+    "disp_p50": 0.04340837523341179,
+    "disp_p90": 0.08422175273299218,
+    "disp_max": 0.16924548149108887,
+    "speed_mean": 0.04731934735059007,
+    "torso_z_mean": 0.5586444451872563,
+    "fall_step_frac": 0.0,
+    "action_eff_rank": 7.987683016426585,
+    "action_per_dim_std_mean": 0.5793396234512329,
+    "action_sat": 0.0019940476190476192,
+    "unique_cells": 128,
+    "n_episodes": 12,
+    "n_unique_goals": 12
+  },
+  "eval_deterministic": {
+    "success": 0.0,
+    "d0": 7.151286196708679,
+    "dmin": 7.0957561254501345,
+    "progress": 0.05553007125854492,
+    "path_len": 0.3374377456643881,
+    "speed": 0.0004820539223776972,
+    "static_frac": 0.8864285714285713,
+    "fall_frac": 0.0,
+    "goal_vel": -0.0019353866577148438,
+    "sat": 0.0
+  },
+  "coverage_gates": {
+    "n_unique": 1680,
+    "n_unique_ok": true,
+    "n_episodes": 12,
+    "episodes_ok": true,
+    "n_goals": 12,
+    "goals_ok": true,
+    "moving_frac_pool": 0.9875,
+    "moving_ok": true,
+    "stationary_n_pool": 21,
+    "selected": 30,
+    "selected_moving": 20,
+    "no_duplicate_domination": true,
+    "pass": true
+  },
+  "controllability": {
+    "sigma_0.05": {
+      "std_proj1_median": 0.0007130991010274254,
+      "rng_prog1_median": 0.003642308910411618,
+      "spearman_prog1_median": 0.017078754578754577,
+      "critic_decile_gap_mean": -4.6266239549169204e-05,
+      "true_decile_gap_mean": 0.002732650153761388,
+      "decile_usefulness": -0.016930904773358787,
+      "fall3_frac": 0.0
+    },
+    "sigma_0.2": {
+      "std_proj1_median": 0.002667658572692846,
+      "rng_prog1_median": 0.012166556281694496,
+      "spearman_prog1_median": 0.048992673992673985,
+      "critic_decile_gap_mean": 0.00021384023614502015,
+      "true_decile_gap_mean": 0.009897477235149095,
+      "decile_usefulness": 0.02160552947411688,
+      "fall3_frac": 0.0
+    },
+    "actor_disp1_median": 0.03620173449424085
+  }
+}
