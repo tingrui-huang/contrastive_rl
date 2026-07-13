@@ -1,0 +1,50 @@
+{
+  "reframing": "offline D4RL AntMaze reproduction; online-exploration diagnosis retired",
+  "executed_run_data_source": {
+    "run": "d4rl_ant_umaze_gfull_gfull29_alpha0_4actor_s0_250k",
+    "source": "ONLINE self-collected replay (360 eps = 252000 transitions = env-step count, per-actor 90/90/90/90)",
+    "d4rl_dataset_present_in_repo": false,
+    "dataset_ingestion_code_in_crl": false
+  },
+  "data_route_content": {
+    "episodes": 360,
+    "bfs_span0_local": 0.7417,
+    "bfs_span1_short": 0.2083,
+    "bfs_span_ge2_route": 0.05,
+    "detour_containing": 0.0,
+    "corner_passage": 0.0361,
+    "positive_pairs_sampled": 102400,
+    "positive_bfs0": 0.9614,
+    "positive_bfs1": 0.0372,
+    "positive_bfs_ge2": 0.00137,
+    "positive_detour_separated": 5.86e-05
+  },
+  "offline_objective_audit": {
+    "gc_bc_term": "MISSING (upstream master: bc_coef*bc_loss + (1-bc_coef)*actor_loss)",
+    "bc_coef": "MISSING (upstream offline: 0.05)",
+    "dataset_action_alignment": "convention matches (actions [-1,1], action[t-1] -> obs[t])",
+    "action_normalization": "matches (clip to +-1, ctrl +-30 gear 1)",
+    "num_critics": "DIVERGENT (upstream offline twin_q=True; run used twin_q=False)",
+    "min_over_critics_actor": "DIVERGENT (upstream master jnp.min; port and stale vendored snapshot use jnp.mean)",
+    "random_goals": "DIVERGENT (upstream offline 0.0; run used 0.5)",
+    "arch_batch": "DIVERGENT (upstream offline batch 1024, repr 16, hidden (1024,1024); run 256/64/(256,256))",
+    "eval_goal": "DIVERGENT for offline (upstream offline: zeros(29) with xy; our env: settled full state = upstream ONLINE contract)",
+    "entropy": "match (alpha=0 in both; offline stabilized by BC anchor)",
+    "relabeling": "match (full-future-state geometric relabeling)",
+    "vendored_snapshot_stale": true
+  },
+  "critic_route_ranking": {
+    "probe_states": 60,
+    "best_235200": {"q_geodesic": -19.82, "q_euclid": -19.4, "q_other": -21.11,
+                    "p_geo_gt_euclid": 0.404, "sp_q_cos_euclid": 0.143,
+                    "sp_q_cos_geodesic": 0.102, "actor_q": -15.46},
+    "final_252000": {"q_geodesic": -20.1, "q_euclid": -19.74, "q_other": -20.93,
+                     "p_geo_gt_euclid": 0.465, "sp_q_cos_euclid": 0.167,
+                     "sp_q_cos_geodesic": 0.071, "actor_q": -14.93},
+    "reading": "critic weakly prefers Euclidean shortcut; actor's own saturated action outscores every physically-classified real action by ~4-5 logits (OOD exploitation)"
+  },
+  "entropy_collapse_interpretation": "actor optimization / OOD-action instability; original offline recipe also uses alpha=0 but anchors the actor with BC",
+  "verdict": "MIXED_FAILURE: route positives absent in consumed data (ROUTE_PAIRS_UNDERSAMPLED) AND offline objective (BC + twin-min + dataset) not implemented; critic Euclidean preference is downstream of missing route positives",
+  "adaptive_alpha_experiment": "NOT run (stopped at 22k and deleted per instruction); blocked until offline objective verified",
+  "next_experiment": "implement faithful offline path (BC 0.05, twin_q min, random_goals 0, 1024/16/(1024,1024), dataset ingestion from antmaze-umaze-v2 hdf5, zero-padded XY eval goal), then re-audit dataset route content + critic ranking"
+}
