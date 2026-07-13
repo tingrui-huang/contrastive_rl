@@ -54,6 +54,17 @@ class Config:
   twin_q: bool = False
   random_goals: float = 0.5    # actor-loss goal mixing: 0.0 / 0.5 / 1.0.
   use_image_obs: bool = False
+  # Offline actor regularization (paper Eq 7-8 / WindyCorridor recipe):
+  # loss = (1-bc_coef)*(alpha*logp - Q) + bc_coef*(-log pi(a_orig|s,g)).
+  # 0.0 = pure online SAC-style actor (unchanged default); offline runs use 0.5.
+  bc_coef: float = 0.0
+
+  # --- Offline mode ---
+  # Path to an .npz episode dataset (obs [N,L,obs+goal], act [N,L,A], see
+  # scripts/collect_push_dataset.py). Non-empty => the buffer is preloaded once
+  # and NO env interaction happens during training (env used for eval only);
+  # 'steps' then count the gradient clock, not env steps.
+  offline_dataset: str = ''
 
   # --- Replay ---
   min_replay_size: int = 10_000     # env steps before learning starts.

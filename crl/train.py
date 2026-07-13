@@ -157,10 +157,22 @@ def train(config: Config):
   # --- Env (fills obs/goal/action dims into config) ---
   env = envs.make_env(config.env_name, config, seed=config.seed)
   eval_env = envs.make_env(config.env_name, config, seed=config.seed + 10_000)
+  # Offline mode: train on a frozen episode dataset; the env is used for EVAL
+  # ONLY and 'steps' below count the gradient clock, not env interaction.
+  offline = bool(config.offline_dataset)
+  off_obs = off_act = None
+  if offline:
+    data = np.load(config.offline_dataset)
+    off_obs, off_act = data['obs'], data['act']    # [N, L, D], [N, L, A]
+    assert off_obs.shape[1] == config.max_episode_steps + 1, (
+        f'dataset ep_len {off_obs.shape[1]} != env {config.max_episode_steps + 1}')
+    assert off_obs.shape[2] == config.obs_dim + config.goal_dim, (
+        f'dataset obs width {off_obs.shape[2]} != '
+        f'{config.obs_dim + config.goal_dim}')
   # Additional logical actors (original multi-actor recipe): distinct env
   # seeds + distinct warmup RNG streams per actor; actor 0 keeps the legacy
   # seeding so num_actors=1 is byte-identical to previous runs.
-  N_ACT = max(1, int(config.num_actors))
+  N_ACT = 1 if offline else max(1, int(config.num_actors))
   coll_envs = [env] + [envs.make_env(config.env_name, Config(
       env_name=config.env_name), seed=config.seed + 7919 * i)
       for i in range(1, N_ACT)]
@@ -224,8 +236,11 @@ def train(config: Config):
   multi_update = jax.jit(_multi_update) if config.jit else _multi_update
 
   # --- Replay ---
+  # Offline: size the ring to EXACTLY the dataset so nothing wraps/overwrites.
+  capacity = (off_obs.shape[0] * off_obs.shape[1] if offline
+              else config.max_replay_size)
   buffer = TrajectoryBuffer(
-      capacity_steps=config.max_replay_size,
+      capacity_steps=capacity,
       ep_len_obs=config.max_episode_steps + 1,
       full_obs_dim=config.obs_dim + config.goal_dim,
       action_dim=config.action_dim, obs_dim=config.obs_dim,
@@ -233,6 +248,15 @@ def train(config: Config):
       discount=config.discount, seed=config.seed,
       goal_indices=config.goal_indices,
       obs_dtype=np.uint8 if config.use_image_obs else np.float32)
+  min_replay = config.min_replay_size
+  if offline:
+    for i in range(off_obs.shape[0]):
+      buffer.add_episode(off_obs[i], off_act[i])
+    min_replay = 0   # the frozen dataset IS the buffer; learn from step one.
+    print(f'Offline dataset: {off_obs.shape[0]} episodes '
+          f'({buffer.ready_steps} transitions) from {config.offline_dataset}; '
+          'env collection DISABLED.')
+    del off_obs, off_act, data
 
   G = max(1, config.num_sgd_steps_per_step)
   B = config.batch_size
@@ -309,7 +333,9 @@ def train(config: Config):
   while env_steps < config.max_number_of_steps:
     random_action = env_steps < config.random_steps
     key, key_collect = jax.random.split(key)
-    if N_ACT == 1:
+    if offline:
+      pass                       # frozen dataset: no collection, ever.
+    elif N_ACT == 1:
       obs_buf, act_buf, _ = collect_episode(
           env, act_fn, state.policy_params, key_collect, random_action,
           config.action_dim, np_rng)
@@ -325,7 +351,7 @@ def train(config: Config):
     # Learn. Ratio preserved: 1 update-batch per TOTAL env step, so the
     # learner budget scales with N_ACT episodes per block, NOT per actor.
     metrics = {}
-    if buffer.ready_steps >= config.min_replay_size:
+    if buffer.ready_steps >= min_replay:
       learner_steps = max(1, config.updates_per_step *
                           (N_ACT * config.max_episode_steps) // G)
       for _ in range(learner_steps):
@@ -369,8 +395,10 @@ def train(config: Config):
         msg += (f' critic={m.get("critic_loss", 0):.3f}'
                 f' actor={m.get("actor_loss", 0):.3f}'
                 f' cat_acc={m.get("categorical_accuracy", 0):.3f}')
-      elif buffer.ready_steps < config.min_replay_size:
-        msg += f' (filling buffer {buffer.ready_steps}/{config.min_replay_size})'
+        if 'bc_nll' in m:
+          msg += f' bc_nll={m["bc_nll"]:.3f}'
+      elif buffer.ready_steps < min_replay:
+        msg += f' (filling buffer {buffer.ready_steps}/{min_replay})'
       print(msg, flush=True)
       last_log = env_steps
 

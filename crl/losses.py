@@ -169,20 +169,24 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
       dist_params = networks.policy_network.apply(policy_params, obs)
       log_prob = networks.log_prob(dist_params, transitions.action)
       loss = -1.0 * jnp.mean(log_prob)
-      return loss
+      return loss, {}
 
     state = obs[:, :obs_dim]
     goal = obs[:, obs_dim:]
     if config.random_goals == 0.0:
       new_state = state
       new_goal = goal
+      orig_action = transitions.action
     elif config.random_goals == 0.5:
       new_state = jnp.concatenate([state, state], axis=0)
       new_goal = jnp.concatenate([goal, jnp.roll(goal, 1, axis=0)], axis=0)
+      orig_action = jnp.concatenate(
+          [transitions.action, transitions.action], axis=0)
     else:
       assert config.random_goals == 1.0
       new_state = state
       new_goal = jnp.roll(goal, 1, axis=0)
+      orig_action = transitions.action
 
     new_obs = jnp.concatenate([new_state, new_goal], axis=1)
     dist_params = networks.policy_network.apply(policy_params, new_obs)
@@ -192,12 +196,22 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
     if len(q_action.shape) == 3:  # twin q trick
       assert q_action.shape[2] == 2
       q_action = jnp.mean(q_action, axis=-1)
-    loss = alpha * log_prob - jnp.diag(q_action)
-    return jnp.mean(loss)
+    q_term = alpha * log_prob - jnp.diag(q_action)
+    if config.bc_coef > 0:
+      # Offline actor objective (paper Eq 7-8 / WindyCorridor recipe):
+      # max (1-bc)*E_pi[f] + bc*log pi(a_orig|s,g). log_prob clips boundary
+      # actions internally, so dataset actions at exactly +/-1 are safe.
+      bc_nll = -networks.log_prob(dist_params, orig_action)
+      loss = config.bc_coef * bc_nll + (1 - config.bc_coef) * q_term
+      aux = {'actor_q_term': jnp.mean(q_term), 'bc_nll': jnp.mean(bc_nll)}
+    else:
+      loss = q_term
+      aux = {}
+    return jnp.mean(loss), aux
 
   alpha_grad = jax.value_and_grad(alpha_loss)
   critic_grad = jax.value_and_grad(critic_loss, has_aux=True)
-  actor_grad = jax.value_and_grad(actor_loss)
+  actor_grad = jax.value_and_grad(actor_loss, has_aux=True)
 
   # ------------------------------------------------------------- update step
   def update_step(state, transitions):
@@ -214,7 +228,7 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
           state.q_params, state.policy_params, state.target_q_params,
           transitions, key_critic)
 
-    actor_loss_value, actor_grads = actor_grad(
+    (actor_loss_value, actor_aux), actor_grads = actor_grad(
         state.policy_params, state.q_params, alpha, transitions, key_actor)
 
     actor_update, policy_optimizer_state = policy_optimizer.update(
@@ -240,6 +254,7 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
         'critic_loss': critic_loss_value,
         'actor_loss': actor_loss_value,
     })
+    metrics.update(actor_aux)
 
     new_state = TrainingState(
         policy_optimizer_state=policy_optimizer_state,
