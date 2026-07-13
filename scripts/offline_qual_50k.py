@@ -179,6 +179,8 @@ def resume_test():
   # determinism: two independent loads + one update on the same batch must
   # produce IDENTICAL params (proves optimizer + RNG state fully restored).
   cfg = build_offline_cfg()
+  from crl import envs as envs_mod
+  envs_mod.make_env('offline_ant_umaze', cfg, seed=777)  # fill obs/goal/act dims
   buffer, fp = offline_audit.build_offline_buffer(NPZ, cfg)
   nets = networks_mod.make_networks(
       obs_dim=cfg.obs_dim, goal_dim=cfg.goal_dim, action_dim=cfg.action_dim,
@@ -249,7 +251,18 @@ def main():
             indent=2)
   from crl.train import train
 
-  done_extra = 0
+  # Resume/checkpoint verification at ~10k. Decoupled from the gate loop so it
+  # still runs on a relaunch where gate_10000.pkl already exists; idempotent
+  # via its output file. It advances the clock by one block (proves counter
+  # continuity), which the 25k stage then builds on.
+  latest = os.path.join(CKPT_DIR, 'latest.pkl')
+  rt_path = os.path.join(RUN_DIR, 'reports', 'resume_test.json')
+  if (os.path.exists(latest) and ckpt_step(latest) >= GATES[10000]
+      and not os.path.exists(rt_path)):
+    print('=== resume/checkpoint verification at ~10k ===', flush=True)
+    resume_test()
+    mirror_to_drive()
+
   for nominal, actual in GATES.items():
     gate_pkl = os.path.join(RUN_DIR, 'gates', f'gate_{nominal}.pkl')
     if os.path.exists(gate_pkl):
@@ -257,7 +270,7 @@ def main():
       continue
     latest = os.path.join(CKPT_DIR, 'latest.pkl')
     ls = ckpt_step(latest) if os.path.exists(latest) else None
-    target = max(actual, done_extra)
+    target = actual
     if ls is None or ls < target:
       cfg = stage_cfg(target, resume=ls is not None)
       print(f'=== stage -> {target} (nominal {nominal}, resume={ls is not None},'
@@ -287,10 +300,6 @@ def main():
       print(f'!! STOP CONDITION at gate {nominal}: {rep["stop_flags"]} -- '
             'qualification ABORTED.', flush=True)
       break
-
-    if nominal == 10000:
-      done_extra = resume_test()      # advances the clock by one block
-      mirror_to_drive()
 
   mirror_to_drive()
   print('QUALIFICATION RUN COMPLETE.', flush=True)
