@@ -30,7 +30,8 @@ from crl.config import Config
 from crl import envs as envs_mod
 from crl.replay import TrajectoryBuffer
 
-OUT = 'D:/Users/trhua/Research/contrastive_rl/artifacts/d4rl_ant_verification.json'
+OUT = os.path.join(os.path.dirname(_HERE), 'artifacts',
+                   'd4rl_ant_verification.json')       # repo-relative (Colab-safe)
 
 
 def action_sensitivity(env, rng, n=64):
@@ -162,6 +163,7 @@ def main():
   assert cov['pass'], cov
   rep['coverage'] = cov
 
+  os.makedirs(os.path.dirname(OUT), exist_ok=True)
   json.dump(rep, open(OUT, 'w'), indent=2)
   print(json.dumps(rep, indent=1))
   print('ALL GATES PASS ->', OUT)
