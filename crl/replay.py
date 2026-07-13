@@ -94,6 +94,38 @@ class TrajectoryBuffer:
   def ready_steps(self):
     return len(self)
 
+  def save(self, path):
+    """Atomic snapshot (tmp + replace) of contents, pointers, and RNG state."""
+    import json as _json
+    import os as _os
+    tmp = path + '.tmp'
+    with open(tmp, 'wb') as f:
+      np.savez_compressed(
+          f, obs=self._obs[:self._num_eps], act=self._act[:self._num_eps],
+          write=self._write, num_eps=self._num_eps,
+          rng_state=np.frombuffer(
+              _json.dumps(self._rng.bit_generator.state).encode(),
+              dtype=np.uint8))
+    _os.replace(tmp, path)
+
+  def load(self, path):
+    """Restore a snapshot produced by save() into this (same-shape) buffer.
+
+    Context-managed np.load: the file handle MUST be closed, or Windows will
+    refuse the atomic os.replace of the next snapshot onto this path."""
+    import json as _json
+    with np.load(path) as d:
+      n = int(d['num_eps'])
+      assert d['obs'].shape[1:] == self._obs.shape[1:], 'buffer shape mismatch'
+      assert n <= self._capacity_eps
+      self._obs[:n] = d['obs']
+      self._act[:n] = d['act']
+      self._num_eps = n
+      self._write = int(d['write']) % self._capacity_eps
+      self._rng.bit_generator.state = _json.loads(
+          d['rng_state'].tobytes().decode())
+    return n
+
   def sample(self, batch_size):
     """Sample a relabeled Transition batch (numpy arrays of size batch_size)."""
     L = self._L

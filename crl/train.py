@@ -86,6 +86,34 @@ def collect_episode(env, act_fn, params, key, random_action, action_dim,
   return obs_buf, act_buf, key
 
 
+def collect_block(envs, act_fn, params, key, random_action, action_dim,
+                  np_rngs):
+  """One fixed-length episode from EACH of N logical actors, in lockstep.
+
+  Replicates the original multi-actor recipe's data flow in-process: each
+  actor has its own env instance (distinct seed) and its own numpy RNG for
+  the random warmup; the policy is evaluated as ONE batched forward pass per
+  timestep (per-row independent sampling noise). Returns obs [N, L, D] and
+  act [N, L, A]."""
+  N = len(envs)
+  L = envs[0].max_episode_steps + 1
+  obs = np.stack([e.reset() for e in envs])
+  obs_buf = np.zeros((N, L, obs.shape[1]), obs.dtype)
+  act_buf = np.zeros((N, L, action_dim), np.float32)
+  for t in range(L - 1):
+    obs_buf[:, t] = obs
+    if random_action:
+      a = np.stack([r.uniform(-1.0, 1.0, action_dim).astype(np.float32)
+                    for r in np_rngs])
+    else:
+      key, sub = jax.random.split(key)
+      a = np.asarray(act_fn(params, jnp.asarray(obs), sub))
+    act_buf[:, t] = a
+    obs = np.stack([envs[i].step(a[i])[0] for i in range(N)])
+  obs_buf[:, -1] = obs
+  return obs_buf, act_buf, key
+
+
 def evaluate(env, eval_act_fn, params, episodes, np_rng, action_dim,
              obs_dim, start_index, end_index, goal_indices=None):
   """Greedy rollouts. Returns (success, final_dist, min_dist), each a mean.
@@ -129,6 +157,15 @@ def train(config: Config):
   # --- Env (fills obs/goal/action dims into config) ---
   env = envs.make_env(config.env_name, config, seed=config.seed)
   eval_env = envs.make_env(config.env_name, config, seed=config.seed + 10_000)
+  # Additional logical actors (original multi-actor recipe): distinct env
+  # seeds + distinct warmup RNG streams per actor; actor 0 keeps the legacy
+  # seeding so num_actors=1 is byte-identical to previous runs.
+  N_ACT = max(1, int(config.num_actors))
+  coll_envs = [env] + [envs.make_env(config.env_name, Config(
+      env_name=config.env_name), seed=config.seed + 7919 * i)
+      for i in range(1, N_ACT)]
+  coll_rngs = [np.random.default_rng(config.seed + 104729 * i)
+               for i in range(N_ACT)]
   print(f'obs_dim={config.obs_dim} goal_dim={config.goal_dim} '
         f'action_dim={config.action_dim} '
         f'max_episode_steps={config.max_episode_steps} '
@@ -259,22 +296,41 @@ def train(config: Config):
             'ant_fall_fraction': a['fell_mean'],
             'ant_goal_velocity': a['goal_directed_velocity_mean']}
 
+  # Restore the replay snapshot for staged/multi-stage runs (exact resume).
+  learner_updates = 0
+  replay_path = (os.path.join(config.ckpt_dir, 'replay.npz')
+                 if config.ckpt_dir else None)
+  if config.save_replay and config.resume and replay_path and \
+     os.path.exists(replay_path):
+    n = buffer.load(replay_path)
+    print(f'Restored replay snapshot: {n} episodes '
+          f'({buffer.ready_steps} transitions).')
+
   while env_steps < config.max_number_of_steps:
     random_action = env_steps < config.random_steps
     key, key_collect = jax.random.split(key)
-    obs_buf, act_buf, _ = collect_episode(
-        env, act_fn, state.policy_params, key_collect, random_action,
-        config.action_dim, np_rng)
-    buffer.add_episode(obs_buf, act_buf)
-    env_steps += config.max_episode_steps
+    if N_ACT == 1:
+      obs_buf, act_buf, _ = collect_episode(
+          env, act_fn, state.policy_params, key_collect, random_action,
+          config.action_dim, np_rng)
+      buffer.add_episode(obs_buf, act_buf)
+    else:
+      obs_blk, act_blk, _ = collect_block(
+          coll_envs, act_fn, state.policy_params, key_collect, random_action,
+          config.action_dim, coll_rngs)
+      for i in range(N_ACT):
+        buffer.add_episode(obs_blk[i], act_blk[i])
+    env_steps += N_ACT * config.max_episode_steps
 
-    # Learn.
+    # Learn. Ratio preserved: 1 update-batch per TOTAL env step, so the
+    # learner budget scales with N_ACT episodes per block, NOT per actor.
     metrics = {}
     if buffer.ready_steps >= config.min_replay_size:
       learner_steps = max(1, config.updates_per_step *
-                          (config.max_episode_steps) // G)
+                          (N_ACT * config.max_episode_steps) // G)
       for _ in range(learner_steps):
         state, metrics = multi_update(state, sample_G())
+      learner_updates += learner_steps * G
 
     # Numerical guard (opt-in): abort on non-finite / exploding learner state.
     if config.guard_abort and metrics:
@@ -328,7 +384,10 @@ def train(config: Config):
             f'final_dist={fdist:.3f} min_dist={mdist:.3f}', flush=True)
       last_eval = env_steps
       rec = {'step': int(env_steps), 'success': float(succ),
-             'final_dist': float(fdist), 'min_dist': float(mdist)}
+             'final_dist': float(fdist), 'min_dist': float(mdist),
+             'learner_updates': int(learner_updates),
+             'num_actors': N_ACT,
+             'per_actor_steps': int(env_steps // N_ACT)}
       rec.update({k: float(v) for k, v in metrics.items()})
       if is_point_maze:
         try:
@@ -364,11 +423,15 @@ def train(config: Config):
             ckpt_mod.save_named(config.ckpt_dir, nm, env_steps, state)
             saved_phases.add(nm)
 
-  # Final save.
+  # Final save (also runs after a guard abort's break).
   if config.ckpt_dir:
     ckpt_mod.save_named(config.ckpt_dir, 'final', env_steps, state)
     ckpt_mod.save_checkpoint(config.ckpt_dir, env_steps, state,
                              metrics_history, None, best_success)
+  if config.save_replay and replay_path:
+    buffer.save(replay_path)
+    print(f'Replay snapshot saved: {buffer.ready_steps} transitions '
+          f'-> {replay_path}', flush=True)
   if writer is not None:
     writer.close()
   return state

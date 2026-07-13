@@ -68,6 +68,16 @@ class Config:
   num_sgd_steps_per_step: int = 1
   # Take uniformly random actions for this many initial env steps.
   random_steps: int = 10_000
+  # Number of data-collection actors. >1 replicates the original recipe's
+  # multi-actor collection with N logical env instances (distinct seeds/RNGs)
+  # stepped in lockstep in-process, one batched policy forward per step.
+  # env-step accounting and the learner-updates-per-TOTAL-env-step ratio are
+  # unchanged (the budget is TOTAL across actors, as in acme's layout).
+  num_actors: int = 1
+  # Snapshot the replay buffer to <ckpt_dir>/replay.npz when train() exits
+  # (incl. guard aborts) and restore it on --resume, so staged runs keep
+  # their data. Off by default (large file).
+  save_replay: bool = False
 
   jit: bool = True
   seed: int = 0

@@ -1,0 +1,66 @@
+{
+  "per_block_diversity": [
+    {
+      "distinct_starts": 4,
+      "distinct_goals": 4
+    },
+    {
+      "distinct_starts": 4,
+      "distinct_goals": 4
+    },
+    {
+      "distinct_starts": 4,
+      "distinct_goals": 4
+    },
+    {
+      "distinct_starts": 4,
+      "distinct_goals": 4
+    }
+  ],
+  "per_actor_unique_cells": [
+    7,
+    9,
+    10,
+    10
+  ],
+  "pairwise_cell_jaccard": [
+    [
+      1.0,
+      0.23,
+      0.31,
+      0.21
+    ],
+    [
+      0.23,
+      1.0,
+      0.46,
+      0.36
+    ],
+    [
+      0.31,
+      0.46,
+      1.0,
+      0.18
+    ],
+    [
+      0.21,
+      0.36,
+      0.18,
+      1.0
+    ]
+  ],
+  "rng_streams_distinct": true,
+  "accounting": {
+    "total_steps": 11200,
+    "per_actor_steps": 2800,
+    "learner_updates": 8400,
+    "steady_state_updates_per_block": 2800,
+    "cumulative_ratio_vs_total": 0.75
+  },
+  "resume": {
+    "episodes_after_resume": 24,
+    "first16_bit_exact": true,
+    "final_step": 16800
+  },
+  "pass": true
+}
