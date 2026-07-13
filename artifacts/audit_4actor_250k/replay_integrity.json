@@ -1,0 +1,41 @@
+{
+  "checkpoints/replay.npz": {
+    "episodes": 360,
+    "transitions": 252000,
+    "obs_shape": [
+      360,
+      701,
+      58
+    ],
+    "finite": true,
+    "per_actor_episodes": [
+      90,
+      90,
+      90,
+      90
+    ],
+    "unique_start_xy_0.5m": 58
+  },
+  "gates/replay_250000.npz": {
+    "episodes": 360,
+    "transitions": 252000,
+    "obs_shape": [
+      360,
+      701,
+      58
+    ],
+    "finite": true,
+    "per_actor_episodes": [
+      90,
+      90,
+      90,
+      90
+    ],
+    "unique_start_xy_0.5m": 58
+  },
+  "replay.npz == replay_250000.npz": true,
+  "episodes*700_vs_final_step": {
+    "episodes*700": 252000,
+    "final_checkpoint_step": 252000
+  }
+}

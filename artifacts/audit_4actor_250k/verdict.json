@@ -1,0 +1,36 @@
+{
+  "verdict": "PARTIAL_ROUTE_SPECIALIZATION",
+  "basis": {
+    "fixed_eval_100_success_best": [
+      0.18,
+      [
+        0.11,
+        0.25
+      ]
+    ],
+    "fixed_eval_100_success_final": [
+      0.18,
+      [
+        0.11,
+        0.26
+      ]
+    ],
+    "paired_delta_best_minus_final": [
+      0.0,
+      [
+        -0.08,
+        0.07
+      ]
+    ],
+    "success_bfs0_samecell": 0.69,
+    "success_bfs1_adjacent": 0.21,
+    "success_bfs2plus": 0.0,
+    "detour_success_bfs3plus": 0.0,
+    "policy_scale_floor_frac_250k": 0.9616,
+    "saturation_250k": 0.239,
+    "moving_frac_250k": 0.69,
+    "fall_rate": 0.014,
+    "training_eval_0.4_explained": "10-episode eval at 235200 drew easy pairs; same checkpoint scores 0.18 on 100 fixed episodes and 0.0 on the gate tool eval seeds",
+    "best_tracker": "resets each staged resume; best.pkl = stage-5 local best (step 235200, success 0.4/10eps); globally best by luck, and statistically indistinguishable from final"
+  }
+}
