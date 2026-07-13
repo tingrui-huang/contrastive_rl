@@ -1,0 +1,49 @@
+{
+  "G1_bc_tuple_alignment": {
+    "pass": true,
+    "pairs_checked": 512,
+    "note": "sampled (s,a,g)=(obs[traj,i],act[traj,i],obs[traj,j>i]) bit-exact vs hdf5-derived npz; same-episode future goals"
+  },
+  "G2_zero_padded_goal": {
+    "pass": true,
+    "distinct_goals_in_10_resets": 10,
+    "reward_at_goal": 1.0
+  },
+  "G3_twin_min_in_actor": {
+    "pass": true,
+    "reported_actor_loss": 13.090609550476074,
+    "manual_min_version": 13.090609550476074,
+    "manual_mean_version": 12.89590835571289
+  },
+  "G4_bc_gradient_ascends_logprob": {
+    "pass": true,
+    "mean_logprob_trajectory": [
+      -652.3012,
+      -47.3969,
+      -6.2895,
+      5.7941
+    ]
+  },
+  "G5_dry_run": {
+    "pass": true,
+    "evidence": [
+      "Offline dataset: 1426 episodes (998200 transitions) from D:\\Users\\trhua\\Research\\datasets\\d4rl\\antmaze_umaze_v2_offline.npz; env collection DISABLED.",
+      "offline replay frozen: eps=1426 sha256=2853b1f088d2fd09..."
+    ]
+  },
+  "G6_runtime_asserts_armed": {
+    "pass": true,
+    "checks": [
+      "_poisoned_step",
+      "offline_frozen_sha",
+      "_replay_sha() == offline_frozen_sha",
+      "offline_eval_steps['n'] == expected",
+      "replay CONTENT changed by end of run"
+    ]
+  },
+  "G7_run_config": {
+    "pass": true,
+    "objective": "L_actor = mean[0.05*(-log pi(a_data|s,g)) + 0.95*(0*log pi(a|s,g) - min(Q1,Q2)(s,a,g))]; critic: binary NCE on twin logits; goals: geometric future-state relabels gamma=0.99; budget: 1e6 gradient updates (offline step clock)"
+  },
+  "ALL": true
+}

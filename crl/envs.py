@@ -946,6 +946,18 @@ def make_env(env_name, config, seed=0, render_mode=None):
   elif env_name == 'd4rl_ant_umaze_gfull':
     from crl.d4rl_ant import D4rlAntUMazeEnv
     env = D4rlAntUMazeEnv(seed=seed, render_mode=render_mode)
+  elif env_name == 'offline_ant_umaze':
+    # OFFLINE d4rl antmaze-umaze contract: zero-padded XY goal; eval goals
+    # come from the offline dataset's empirical per-episode goals when the
+    # config points at an offline .npz that carries an 'eval_goals' array.
+    from crl.d4rl_ant import OfflineD4rlAntUMazeEnv
+    eval_goals = None
+    if getattr(config, 'offline_dataset', ''):
+      with np.load(config.offline_dataset) as _d:
+        if 'eval_goals' in _d:
+          eval_goals = _d['eval_goals'].copy()
+    env = OfflineD4rlAntUMazeEnv(seed=seed, render_mode=render_mode,
+                                 eval_goals=eval_goals)
   elif env_name.startswith('antmaze_'):
     env_id, steps = _MAZE_IDS[env_name]
     env = MazeEnv(env_id, max_episode_steps=steps, seed=seed,

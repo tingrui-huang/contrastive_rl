@@ -1,0 +1,20 @@
+{
+  "dataset": "antmaze-umaze-v2",
+  "source_url": "http://rail.eecs.berkeley.edu/datasets/offline_rl/ant_maze_v2/Ant_maze_u-maze_noisy_multistart_False_multigoal_False_sparse_fixed.hdf5",
+  "url_authority": "d4rl/infos.py DATASET_URLS['antmaze-umaze-v2'] (Farama-Foundation/D4RL master)",
+  "dataset_version": "v2 (ant_maze_v2, 'sparse_fixed'; server Last-Modified: Fri, 05 Nov 2021 22:20:21 GMT)",
+  "download_timestamp_local": "2026-07-13 18:20:11 (+0200)",
+  "size_bytes": 232532949,
+  "sha256": "5ef15257771c50ef4d23c7de001750e96c8bb5d9b6a5e4a821dcfb3065fbd130",
+  "local_path": "D:\\Users\\trhua\\Research\\datasets\\d4rl\\antmaze-umaze-v2.hdf5",
+  "derived_npz": {
+    "path": "D:\\Users\\trhua\\Research\\datasets\\d4rl\\antmaze_umaze_v2_offline.npz",
+    "producer": "scripts/convert_d4rl_to_npz.py",
+    "size_mb": 133.8,
+    "episodes": 1426,
+    "transitions": 998200,
+    "note": "single 374-row episode dropped (0.04% of transitions)"
+  },
+  "storage_note": "both files live OUTSIDE the git repository and are NOT committed; regenerate via curl + scripts/convert_d4rl_to_npz.py",
+  "colab_note": "for Colab runs, copy the .npz to Drive (e.g. /content/drive/MyDrive/contrastive_rl_runs/datasets/) and point Config.offline_dataset at it"
+}

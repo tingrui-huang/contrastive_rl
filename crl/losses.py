@@ -195,7 +195,9 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
     q_action = networks.q_network.apply(q_params, new_obs, action)
     if len(q_action.shape) == 3:  # twin q trick
       assert q_action.shape[2] == 2
-      q_action = jnp.mean(q_action, axis=-1)
+      # Upstream master uses the pessimistic MIN over the twin critics in the
+      # actor objective (learning.py); the 2022 snapshot's jnp.mean is stale.
+      q_action = jnp.min(q_action, axis=-1)
     q_term = alpha * log_prob - jnp.diag(q_action)
     if config.bc_coef > 0:
       # Offline actor objective (paper Eq 7-8 / WindyCorridor recipe):

@@ -257,6 +257,30 @@ def train(config: Config):
           f'({buffer.ready_steps} transitions) from {config.offline_dataset}; '
           'env collection DISABLED.')
     del off_obs, off_act, data
+    # ---- HARD offline contract (asserted throughout training) ----
+    # 1) replay is immutable after this point (pointers + full content hash);
+    # 2) the collection env must NEVER step (poisoned);
+    # 3) the eval env steps ONLY inside evaluate() (exact step accounting).
+    import hashlib as _hashlib
+    offline_frozen = (buffer._num_eps, buffer._write, buffer.ready_steps)
+    def _replay_sha():
+      h = _hashlib.sha256()
+      h.update(buffer._obs[:buffer._num_eps].tobytes())
+      h.update(buffer._act[:buffer._num_eps].tobytes())
+      return h.hexdigest()
+    offline_frozen_sha = _replay_sha()
+    print(f'  offline replay frozen: eps={offline_frozen[0]} '
+          f'sha256={offline_frozen_sha[:16]}...')
+    def _poisoned_step(*a, **k):
+      raise AssertionError(
+          'offline contract violated: collection env.step() was called')
+    env.step = _poisoned_step
+    offline_eval_steps = {'n': 0, 'evals': 0}
+    _real_eval_step = eval_env.step
+    def _counted_eval_step(a):
+      offline_eval_steps['n'] += 1
+      return _real_eval_step(a)
+    eval_env.step = _counted_eval_step
 
   G = max(1, config.num_sgd_steps_per_step)
   B = config.batch_size
@@ -411,11 +435,24 @@ def train(config: Config):
       print(f'  >> EVAL step {env_steps}: success_rate={succ:.3f} '
             f'final_dist={fdist:.3f} min_dist={mdist:.3f}', flush=True)
       last_eval = env_steps
+      if offline:
+        # HARD offline contract checks (see preload block above).
+        assert (buffer._num_eps, buffer._write,
+                buffer.ready_steps) == offline_frozen, \
+            'offline contract violated: replay pointers changed'
+        assert _replay_sha() == offline_frozen_sha, \
+            'offline contract violated: replay CONTENT changed'
+        offline_eval_steps['evals'] += 1
+        expected = (offline_eval_steps['evals'] * config.eval_episodes
+                    * eval_env.max_episode_steps)
+        assert offline_eval_steps['n'] == expected, (
+            'offline contract violated: eval env stepped outside evaluate() '
+            f"({offline_eval_steps['n']} != {expected})")
       rec = {'step': int(env_steps), 'success': float(succ),
              'final_dist': float(fdist), 'min_dist': float(mdist),
              'learner_updates': int(learner_updates),
-             'num_actors': N_ACT,
-             'per_actor_steps': int(env_steps // N_ACT)}
+             'num_actors': 0 if offline else N_ACT,
+             'per_actor_steps': 0 if offline else int(env_steps // N_ACT)}
       rec.update({k: float(v) for k, v in metrics.items()})
       if is_point_maze:
         try:
@@ -451,6 +488,10 @@ def train(config: Config):
             ckpt_mod.save_named(config.ckpt_dir, nm, env_steps, state)
             saved_phases.add(nm)
 
+  # Final offline-contract check (content hash) before the last save.
+  if offline:
+    assert _replay_sha() == offline_frozen_sha, \
+        'offline contract violated: replay CONTENT changed by end of run'
   # Final save (also runs after a guard abort's break).
   if config.ckpt_dir:
     ckpt_mod.save_named(config.ckpt_dir, 'final', env_steps, state)

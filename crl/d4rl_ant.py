@@ -202,3 +202,45 @@ class D4rlAntUMazeEnv:
 
   def render(self):
     raise NotImplementedError
+
+
+class OfflineD4rlAntUMazeEnv(D4rlAntUMazeEnv):
+  """OFFLINE antmaze-umaze contract (upstream OfflineAntWrapper, ant_env.py).
+
+  Differences from the online task above:
+    * goal observation = ``zeros(29)`` with ``[:2] = goal xy`` -- the exact
+      zero-padded goal the original offline experiments trained/evaluated
+      with. NO settled full-state goal, no goal-settling simulation.
+    * reset at the R cell only (the dataset's single start cell): plain
+      d4rl reset noise around INIT_QPOS, no non_zero_reset teleport.
+    * eval goals are drawn from the EMPIRICAL per-episode dataset goals
+      (``eval_goals`` array from the offline .npz) when provided; falls
+      back to the G-cell sampler otherwise.
+
+  Everything else (physics, action scaling, 700-step horizon, reward =
+  dist(xy, goal_xy) <= 0.5, goal_indices=range(29) relabeling contract)
+  is inherited unchanged.
+  """
+
+  def __init__(self, max_episode_steps=700, seed=0, render_mode=None,
+               eval_goals=None):
+    super().__init__(max_episode_steps=max_episode_steps, seed=seed,
+                     render_mode=render_mode)
+    self._eval_goals = (None if eval_goals is None
+                        else np.asarray(eval_goals, np.float32))
+
+  def reset(self):
+    u = self._env
+    u.reset_model()                      # INIT_QPOS +-0.1 noise at the R cell
+    mujoco.mj_forward(u.model, u.data)
+    if self._eval_goals is not None:
+      gxy = self._eval_goals[self._rng.integers(len(self._eval_goals))]
+    else:
+      gxy = self._sample_goal_xy()
+    self._goal_vec = np.zeros(29, np.float32)
+    self._goal_vec[:2] = gxy             # zero-padded XY goal contract
+    self._goal_state_full = self._goal_vec.copy()
+    u.goal = np.asarray(gxy, float).copy()
+    obs = u._obs_dict()
+    self._last_obs = obs
+    return self._flatten(obs)
