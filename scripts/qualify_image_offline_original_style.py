@@ -273,6 +273,10 @@ def main():
   ap.add_argument('--resume', action='store_true')
   ap.add_argument('--smoke', action='store_true',
                   help='tiny fast self-test of the whole pipeline')
+  ap.add_argument('--posthoc-only', dest='posthoc_only', action='store_true',
+                  help='skip preflight+training; regenerate the physical fixed-eval, '
+                       'checkpoint diagnostics, GIFs and verdict from checkpoints '
+                       'already in --run_dir (e.g. after a Colab disconnect).')
   ap.add_argument('--out', default='artifacts/image_conedir_offline_original_style')
   args = ap.parse_args()
 
@@ -308,19 +312,27 @@ def main():
   assert cfg.twin_q and cfg.random_goals == 0.0 and cfg.physical_eval_push
 
   os.makedirs(args.out, exist_ok=True)
-  ok, audit = preflight(args.dataset, cfg, args.run_dir)
-  with open(os.path.join(args.out, 'preflight_audit.json'), 'w') as f:
-    json.dump(audit, f, indent=2)
-  with open(os.path.join(args.out, 'config.json'), 'w') as f:
-    json.dump({'target_config': cfg.__dict__,
-               'objective': 'actor_loss = 0.05*BC_NLL + 0.95*(-min_Q)'},
-              f, indent=2, default=str)
-  if not ok:
-    print('PREFLIGHT FAILED -> aborting before training.', audit['checks'])
-    return
+  if args.posthoc_only:
+    # Reuse checkpoints already in --run_dir; do NOT preflight or retrain. Fill
+    # cfg dims from the env (preflight/train normally do this) so the post-hoc
+    # network build below matches the trained graph.
+    envs_mod.make_env(cfg.env_name, cfg, seed=cfg.seed)
+    print(f'POSTHOC-ONLY: skipping preflight+train; using checkpoints in '
+          f'{args.run_dir}', flush=True)
+  else:
+    ok, audit = preflight(args.dataset, cfg, args.run_dir)
+    with open(os.path.join(args.out, 'preflight_audit.json'), 'w') as f:
+      json.dump(audit, f, indent=2)
+    with open(os.path.join(args.out, 'config.json'), 'w') as f:
+      json.dump({'target_config': cfg.__dict__,
+                 'objective': 'actor_loss = 0.05*BC_NLL + 0.95*(-min_Q)'},
+                f, indent=2, default=str)
+    if not ok:
+      print('PREFLIGHT FAILED -> aborting before training.', audit['checks'])
+      return
 
-  # ------------------------------------------------------------------ TRAIN
-  train(cfg)
+    # ---------------------------------------------------------------- TRAIN
+    train(cfg)
 
   # ------------------------------------------------------- POST-HOC ANALYSIS
   rcfg = Config(env_name=cfg.env_name)
