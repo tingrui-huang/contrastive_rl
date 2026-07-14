@@ -199,16 +199,49 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
       # actor objective (learning.py); the 2022 snapshot's jnp.mean is stale.
       q_action = jnp.min(q_action, axis=-1)
     q_term = alpha * log_prob - jnp.diag(q_action)
+
+    # --- Actor-behavior diagnostics (additive; do not affect the loss) --------
+    # These surface the saturation/collapse signatures that a fixed alpha=0 run
+    # needs to be judged by (see crl/train.py logging). loc/scale are the
+    # pre-tanh Gaussian params; the deterministic (mode) action is tanh(loc).
+    loc = dist_params.loc
+    scale = dist_params.scale
+    mode_action = jnp.tanh(loc)
+    diag = {
+        # SAC-style entropy estimate of the current policy: E[-log pi(a|s)].
+        'policy_entropy': jnp.mean(-log_prob),
+        'policy_scale_median': jnp.median(scale),
+        # fraction of action-dim scales pinned near the actor_min_std floor.
+        'policy_scale_floor_fraction': jnp.mean((scale < 1e-3).astype(jnp.float32)),
+        'pre_tanh_loc_abs_mean': jnp.mean(jnp.abs(loc)),
+        'pre_tanh_loc_abs_max': jnp.max(jnp.abs(loc)),
+        # fraction of mode-action components saturated against the tanh bound.
+        'action_saturation_fraction':
+            jnp.mean((jnp.abs(mode_action) > 0.99).astype(jnp.float32)),
+    }
+
     if config.bc_coef > 0:
       # Offline actor objective (paper Eq 7-8 / WindyCorridor recipe):
       # max (1-bc)*E_pi[f] + bc*log pi(a_orig|s,g). log_prob clips boundary
       # actions internally, so dataset actions at exactly +/-1 are safe.
       bc_nll = -networks.log_prob(dist_params, orig_action)
       loss = config.bc_coef * bc_nll + (1 - config.bc_coef) * q_term
-      aux = {'actor_q_term': jnp.mean(q_term), 'bc_nll': jnp.mean(bc_nll)}
+      bc_nll_mean = jnp.mean(bc_nll)
+      q_term_mean = jnp.mean(q_term)
+      aux = {
+          'actor_q_term': q_term_mean, 'bc_nll': bc_nll_mean,
+          # raw = unweighted component means; weighted = as they enter the loss.
+          'bc_nll_raw': bc_nll_mean,
+          'bc_loss_weighted': config.bc_coef * bc_nll_mean,
+          'critic_actor_term_raw': q_term_mean,
+          'critic_actor_term_weighted': (1 - config.bc_coef) * q_term_mean,
+      }
     else:
       loss = q_term
-      aux = {}
+      q_term_mean = jnp.mean(q_term)
+      aux = {'critic_actor_term_raw': q_term_mean,
+             'critic_actor_term_weighted': q_term_mean}
+    aux.update(diag)
     return jnp.mean(loss), aux
 
   alpha_grad = jax.value_and_grad(alpha_loss)
@@ -255,6 +288,11 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
     metrics.update({
         'critic_loss': critic_loss_value,
         'actor_loss': actor_loss_value,
+        # Gradient-norm health (additive diagnostics): a collapsed actor tends to
+        # a near-zero actor grad norm; a diverging critic shows a growing one.
+        'actor_grad_norm': optax.global_norm(actor_grads),
+        'critic_grad_norm': (optax.global_norm(critic_grads)
+                             if not config.use_gcbc else 0.0),
     })
     metrics.update(actor_aux)
 

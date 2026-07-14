@@ -149,6 +149,37 @@ def evaluate(env, eval_act_fn, params, episodes, np_rng, action_dim,
           float(np.mean(min_dists)))
 
 
+def evaluate_push_physical(env, eval_act_fn, params, episodes, np_rng):
+  """Greedy rollouts for a FetchPush IMAGE env, scored on PHYSICAL coordinates.
+
+  Returns (success, final_dist, min_dist) where success is the sparse env
+  reward (object within 0.05 m of the goal, from sim state) and the distances
+  are ``||object_xyz - desired_goal_xyz||`` read from the simulator -- NOT the
+  flattened image-L2 that ``evaluate`` would compute for image observations.
+  ``env`` must be a ``crl.envs.FetchEnv`` (exposes ``_env.unwrapped._get_obs``).
+  """
+  u = env._env.unwrapped
+  successes, final_dists, min_dists = [], [], []
+  for _ in range(episodes):
+    env.reset()
+    desired = np.asarray(env._desired, dtype=np.float32)
+    obs_img = np.concatenate([env._frame(), env._goal_img])
+    hit = 0.0
+    dists = []
+    for _ in range(env.max_episode_steps):
+      a = np.asarray(eval_act_fn(params, jnp.asarray(obs_img[None]))[0])
+      obs_img, r, _, _ = env.step(a)
+      hit = max(hit, float(r))
+      d = u._get_obs()
+      obj = np.asarray(d['achieved_goal'], dtype=np.float32)
+      dists.append(float(np.linalg.norm(obj - desired)))
+    successes.append(hit)
+    final_dists.append(dists[-1])
+    min_dists.append(min(dists))
+  return (float(np.mean(successes)), float(np.mean(final_dists)),
+          float(np.mean(min_dists)))
+
+
 def train(config: Config):
   print('Config:', config)
   key = jax.random.PRNGKey(config.seed)
@@ -463,12 +494,21 @@ def train(config: Config):
       # read-only maze/antmaze scalar rollouts below also legitimately step the
       # eval env (never touching replay), so an absolute count would be wrong.
       eval_n_before = offline_eval_steps['n'] if offline else 0
-      succ, fdist, mdist = evaluate(
-          eval_env, eval_act_fn, state.policy_params, config.eval_episodes,
-          np_rng, config.action_dim, config.obs_dim, config.start_index,
-          config.end_index, config.goal_indices)
+      if config.physical_eval_push:
+        # FetchPush image run: score on PHYSICAL object-goal coordinates, never
+        # flattened image-L2 (which is meaningless as a control metric).
+        succ, fdist, mdist = evaluate_push_physical(
+            eval_env, eval_act_fn, state.policy_params, config.eval_episodes,
+            np_rng)
+        dist_tag = 'phys_dist'
+      else:
+        succ, fdist, mdist = evaluate(
+            eval_env, eval_act_fn, state.policy_params, config.eval_episodes,
+            np_rng, config.action_dim, config.obs_dim, config.start_index,
+            config.end_index, config.goal_indices)
+        dist_tag = 'final_dist'
       print(f'  >> EVAL step {env_steps}: success_rate={succ:.3f} '
-            f'final_dist={fdist:.3f} min_dist={mdist:.3f}', flush=True)
+            f'{dist_tag}={fdist:.3f} min_dist={mdist:.3f}', flush=True)
       last_eval = env_steps
       if offline:
         # HARD offline contract (see the audit block above): the frozen dataset
@@ -491,6 +531,12 @@ def train(config: Config):
              'learner_updates': int(learner_updates),
              'num_actors': 0 if offline else N_ACT,
              'per_actor_steps': 0 if offline else int(env_steps // N_ACT)}
+      if config.physical_eval_push:
+        # Unambiguous physical aliases (final_dist/min_dist above are already
+        # physical in this mode; image-L2 is never logged).
+        rec['physical_success_rate'] = float(succ)
+        rec['physical_final_object_goal_distance'] = float(fdist)
+        rec['physical_min_object_goal_distance'] = float(mdist)
       rec.update({k: float(v) for k, v in metrics.items()})
       if is_point_maze:
         try:
@@ -516,7 +562,7 @@ def train(config: Config):
       if config.ckpt_dir and env_steps - last_ckpt >= ckpt_every:
         best_success = ckpt_mod.save_checkpoint(
             config.ckpt_dir, env_steps, state, metrics_history, succ,
-            best_success)
+            best_success, strict=config.best_strict_improvement)
         last_ckpt = env_steps
 
       # Milestone checkpoints at 25% / 50% of the budget.
@@ -525,6 +571,15 @@ def train(config: Config):
           if nm not in saved_phases and env_steps >= frac * config.max_number_of_steps:
             ckpt_mod.save_named(config.ckpt_dir, nm, env_steps, state)
             saved_phases.add(nm)
+
+      # Explicit step-numbered milestones (e.g. 10k/20k/30k/50k/70k) saved as
+      # <step>.pkl the first eval at or past each target.
+      if config.ckpt_dir and config.ckpt_milestone_steps:
+        for ms in config.ckpt_milestone_steps:
+          tag = f'ckpt_{int(ms)}'
+          if tag not in saved_phases and env_steps >= ms:
+            ckpt_mod.save_named(config.ckpt_dir, str(int(ms)), env_steps, state)
+            saved_phases.add(tag)
 
   # Final offline-contract check (content hash) before the last save.
   if offline:

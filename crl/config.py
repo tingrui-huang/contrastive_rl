@@ -113,3 +113,15 @@ class Config:
   ckpt_dir: str = ''            # '' disables checkpointing.
   ckpt_every_steps: int = 0     # 0 => checkpoint on every eval.
   resume: bool = False          # resume params/optimizer from ckpt_dir/latest.pkl.
+  # Extra named milestone checkpoints saved as <step>.pkl the first eval at or
+  # past each step (in ADDITION to init/early/mid/final/latest/best). Empty =>
+  # legacy behavior. Used by the image-conedir qualification (10k..70k).
+  ckpt_milestone_steps: Tuple[int, ...] = ()
+  # best.pkl update rule. False (default) => save when success >= best (legacy,
+  # ties overwrite). True => save only on STRICT improvement success > best, so
+  # best.pkl stays at the earliest checkpoint that reached the top success.
+  best_strict_improvement: bool = False
+  # FetchPush image runs: compute eval success/final_dist/min_dist from the
+  # SIMULATOR object-goal coordinates (physical) instead of flattened image-L2.
+  # No effect on non-FetchPush or state-obs runs.
+  physical_eval_push: bool = False
