@@ -27,8 +27,13 @@ def _to_jax(tree):
 
 
 def save_checkpoint(ckpt_dir, step, state, metrics_history, success,
-                    best_success):
+                    best_success, strict=False):
   """Writes latest.pkl + metrics.json (+ best.pkl if success improved).
+
+  ``strict=False`` (legacy): best.pkl updates when ``success >= best_success``
+  (ties overwrite, keeping the latest top checkpoint). ``strict=True``: updates
+  only on STRICT improvement ``success > best_success``, so best.pkl stays at the
+  earliest checkpoint that reached the top success.
 
   Returns the (possibly updated) best_success.
   """
@@ -47,7 +52,8 @@ def save_checkpoint(ckpt_dir, step, state, metrics_history, success,
   with open(os.path.join(ckpt_dir, 'metrics.json'), 'w') as f:
     json.dump(metrics_history, f, indent=2)
 
-  if success is not None and success >= best_success:
+  improved = (success > best_success) if strict else (success >= best_success)
+  if success is not None and improved:
     best_success = success
     with open(os.path.join(ckpt_dir, 'best.pkl'), 'wb') as f:
       pickle.dump(payload, f)

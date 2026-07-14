@@ -294,6 +294,20 @@ def main():
     resume_test()
     mirror_to_drive()
 
+  # Self-diagnosis: say up front which gates will actually be TRAINED vs skipped
+  # (already done). Catches a mis-typed OFFLINE_EXTRA_GATES where every listed
+  # gate is already complete -> nothing new to do (looks like "it just stopped").
+  todo = [g for g in GATES if not os.path.exists(
+      os.path.join(RUN_DIR, 'gates', f'gate_{g}.pkl'))]
+  done = [g for g in GATES if g not in todo]
+  print(f'GATES this run: {sorted(GATES)}', flush=True)
+  print(f'  already done (skip): {sorted(done)}', flush=True)
+  print(f'  to train:            {sorted(todo)}', flush=True)
+  if not todo:
+    print('  >> nothing new to train. If you meant to extend, set '
+          'OFFLINE_EXTRA_GATES to gate(s) BEYOND the last done one '
+          f'(> {max(done) if done else 0}).', flush=True)
+
   for nominal, actual in GATES.items():
     gate_pkl = os.path.join(RUN_DIR, 'gates', f'gate_{nominal}.pkl')
     if os.path.exists(gate_pkl):
