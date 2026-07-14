@@ -63,6 +63,13 @@ class Config:
   # 0.0 = pure online SAC-style actor (unchanged default); offline runs use 0.5.
   bc_coef: float = 0.0
 
+  # offline_ant_umaze eval goal source. 'd4rl' (default) = the benchmark
+  # goal_sampler (single U_MAZE goal cell + [0,1.5] noise, resampled per
+  # episode) == the protocol the paper/D4RL score with. 'dataset' = replay the
+  # empirical infos/goal (~2x noise, HARDER, provenance only). 'fixed' = single
+  # (0.75, 8.75). No effect on non-offline-ant envs.
+  eval_goal_mode: str = 'd4rl'
+
   # --- Offline mode ---
   # Path to an .npz episode dataset (obs [N,L,obs+goal], act [N,L,A], see
   # scripts/collect_push_dataset.py). Non-empty => the buffer is preloaded once

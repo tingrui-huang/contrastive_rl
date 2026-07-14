@@ -204,6 +204,13 @@ class D4rlAntUMazeEnv:
     raise NotImplementedError
 
 
+#: d4rl U_MAZE goal cell for antmaze-umaze (the SINGLE 'G' in the upstream
+#: collection/eval maze, d4rl/locomotion/maze_env.py U_MAZE). In our frame
+#: (R at cell (1,1) -> origin) this is xy (0, 8): the interior of the U's far
+#: corner where every good trajectory ends.
+D4RL_EVAL_GOAL_CELL = (3, 1)
+
+
 class OfflineD4rlAntUMazeEnv(D4rlAntUMazeEnv):
   """OFFLINE antmaze-umaze contract (upstream OfflineAntWrapper, ant_env.py).
 
@@ -213,9 +220,20 @@ class OfflineD4rlAntUMazeEnv(D4rlAntUMazeEnv):
       with. NO settled full-state goal, no goal-settling simulation.
     * reset at the R cell only (the dataset's single start cell): plain
       d4rl reset noise around INIT_QPOS, no non_zero_reset teleport.
-    * eval goals are drawn from the EMPIRICAL per-episode dataset goals
-      (``eval_goals`` array from the offline .npz) when provided; falls
-      back to the G-cell sampler otherwise.
+
+  Evaluation goal source (``eval_goal_mode``):
+    * ``'d4rl'`` (DEFAULT, the benchmark protocol): the exact d4rl
+      ``goal_sampler`` on the single U_MAZE goal cell (3,1) -- cell xy
+      ``(0, 8)`` plus per-coordinate noise ``U(0, 0.25*S) + U(0, 0.5)*0.25*S``
+      (S = scaling = 4 -> noise in [0, 1.5]), resampled every episode
+      (matches d4rl v2_resets). This is what the paper / D4RL score report.
+    * ``'dataset'``: replay the EMPIRICAL per-episode dataset ``infos/goal``
+      (``eval_goals`` from the .npz). NOTE these were collected with ~2x the
+      benchmark noise (mean (1.5, 9.5) vs the benchmark's (0.75, 8.75)), so
+      this distribution is FARTHER into the maze and materially HARDER than
+      the standard eval -- kept only for provenance/comparison.
+    * ``'fixed'``: a single fixed goal = cell(3,1) + mean noise (0.75, 8.75),
+      held constant across episodes.
 
   Everything else (physics, action scaling, 700-step horizon, reward =
   dist(xy, goal_xy) <= 0.5, goal_indices=range(29) relabeling contract)
@@ -223,20 +241,40 @@ class OfflineD4rlAntUMazeEnv(D4rlAntUMazeEnv):
   """
 
   def __init__(self, max_episode_steps=700, seed=0, render_mode=None,
-               eval_goals=None):
+               eval_goals=None, eval_goal_mode='d4rl'):
     super().__init__(max_episode_steps=max_episode_steps, seed=seed,
                      render_mode=render_mode)
     self._eval_goals = (None if eval_goals is None
                         else np.asarray(eval_goals, np.float32))
+    if eval_goal_mode not in ('d4rl', 'dataset', 'fixed'):
+      raise ValueError(f'unknown eval_goal_mode {eval_goal_mode!r}')
+    if eval_goal_mode == 'dataset' and self._eval_goals is None:
+      raise ValueError("eval_goal_mode='dataset' needs an eval_goals array")
+    self.eval_goal_mode = eval_goal_mode
+    self._eval_goal_cell_xy = self._cell_xy(D4RL_EVAL_GOAL_CELL)  # (0, 8)
+
+  def _d4rl_goal_sampler(self):
+    """Verbatim d4rl goal_sampler noise on the single U_MAZE goal cell."""
+    base = self._eval_goal_cell_xy
+    noise = (self._rng.uniform(0.0, 0.25 * SCALING, 2)
+             + self._rng.uniform(0.0, 0.5, 2) * 0.25 * SCALING)
+    return np.maximum(base + noise, 0.0).astype(np.float32)
+
+  def _eval_goal_xy(self):
+    if self.eval_goal_mode == 'd4rl':
+      return self._d4rl_goal_sampler()
+    if self.eval_goal_mode == 'fixed':
+      # cell(3,1) + MEAN d4rl noise: E[U(0,0.25S)+U(0,0.5)*0.25S] = 0.1875*S
+      # per coord = (0.75, 0.75) at S=4 -> the canonical (0.75, 8.75).
+      return (self._eval_goal_cell_xy
+              + np.array([0.1875 * SCALING, 0.1875 * SCALING])).astype(np.float32)
+    return self._eval_goals[self._rng.integers(len(self._eval_goals))]
 
   def reset(self):
     u = self._env
     u.reset_model()                      # INIT_QPOS +-0.1 noise at the R cell
     mujoco.mj_forward(u.model, u.data)
-    if self._eval_goals is not None:
-      gxy = self._eval_goals[self._rng.integers(len(self._eval_goals))]
-    else:
-      gxy = self._sample_goal_xy()
+    gxy = self._eval_goal_xy()
     self._goal_vec = np.zeros(29, np.float32)
     self._goal_vec[:2] = gxy             # zero-padded XY goal contract
     self._goal_state_full = self._goal_vec.copy()

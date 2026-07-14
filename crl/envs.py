@@ -405,6 +405,24 @@ class TwoRouteSwampEnv:
     return obs, reward, False, {}
 
 
+class TwoRouteSwampMatchedEnv(TwoRouteSwampEnv):
+  """MiniGrid-matched variant of the swamp env (point_two_route_swamp_matched_v0).
+
+  IDENTICAL geometry, dynamics, and freeze/resample timing to the strong
+  TwoRouteSwampEnv -- the ONLY change is the per-cell swamp activation
+  probability p=0.10 (vs 0.20 in the strong stress-test setting), to line up
+  with the MiniGrid WindyCorridor confounder strength. The MiniGrid-matched
+  TEACHER (5% episode-level force-safe, wait-until-clear) is a behavior policy
+  that lives in the collector/qualifier, NOT in the env. The strong
+  point_two_route_swamp_v0 env is left completely unchanged."""
+
+  def __init__(self, action_noise=0.01, max_episode_steps=50, seed=0,
+               active_prob=0.10, slow_factor=0.02):
+    super().__init__(action_noise=action_noise,
+                     max_episode_steps=max_episode_steps, seed=seed,
+                     active_prob=active_prob, slow_factor=slow_factor)
+
+
 # ---------------------------------------------------------------------------
 # Fetch (gymnasium-robotics wrapper). Colab-oriented; needs `mujoco` +
 # `gymnasium-robotics`. Flattens Dict obs to concat([state, desired_goal]).
@@ -926,7 +944,9 @@ def make_env(env_name, config, seed=0, render_mode=None):
   action_dim, max_episode_steps, start_index, end_index.
   ``render_mode='rgb_array'`` enables Fetch frame rendering (for GIFs on Colab).
   """
-  if env_name == 'point_two_route_swamp_v0':
+  if env_name == 'point_two_route_swamp_matched_v0':
+    env = TwoRouteSwampMatchedEnv(max_episode_steps=50, seed=seed)
+  elif env_name == 'point_two_route_swamp_v0':
     env = TwoRouteSwampEnv(max_episode_steps=50, seed=seed)
   elif env_name == 'point_two_route_gate_v0':   # superseded v0 (kept as ablation)
     env = TwoRouteGateEnv(max_episode_steps=50, seed=seed)
@@ -957,7 +977,9 @@ def make_env(env_name, config, seed=0, render_mode=None):
         if 'eval_goals' in _d:
           eval_goals = _d['eval_goals'].copy()
     env = OfflineD4rlAntUMazeEnv(seed=seed, render_mode=render_mode,
-                                 eval_goals=eval_goals)
+                                 eval_goals=eval_goals,
+                                 eval_goal_mode=getattr(config,
+                                                        'eval_goal_mode', 'd4rl'))
   elif env_name.startswith('antmaze_'):
     env_id, steps = _MAZE_IDS[env_name]
     env = MazeEnv(env_id, max_episode_steps=steps, seed=seed,
