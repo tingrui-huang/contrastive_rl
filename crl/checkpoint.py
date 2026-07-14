@@ -52,8 +52,9 @@ def save_checkpoint(ckpt_dir, step, state, metrics_history, success,
   with open(os.path.join(ckpt_dir, 'metrics.json'), 'w') as f:
     json.dump(metrics_history, f, indent=2)
 
-  improved = (success > best_success) if strict else (success >= best_success)
-  if success is not None and improved:
+  improved = success is not None and (
+      (success > best_success) if strict else (success >= best_success))
+  if improved:
     best_success = success
     with open(os.path.join(ckpt_dir, 'best.pkl'), 'wb') as f:
       pickle.dump(payload, f)
