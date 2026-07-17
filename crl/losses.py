@@ -171,6 +171,42 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
       loss = -1.0 * jnp.mean(log_prob)
       return loss, {}
 
+    if config.use_awr:
+      # AWR extraction (the discrete WindyCorridor recipe, SUMMARY item 6:
+      # "greedy-critic just spins" / OOD-action overestimation). Clone DATA
+      # actions weighted by the critic advantage -- the critic's route-level
+      # signal drives which demonstrations get cloned, and no objective ever
+      # maximizes f over out-of-data actions:
+      #   adv = f(s, a_data, g) - mean_{a'~U} f(s, a', g)
+      #   w   = clip(exp(adv / beta), 0, w_max)      [stop-gradient]
+      #   loss = -mean(w * log pi(a_data | s, g))
+      # Goals are the sampler's relabeled goals (d_lb walk endpoints for the
+      # causal arm); random_goals mixing is intentionally not applied.
+      dist_params = networks.policy_network.apply(policy_params, obs)
+      f_data = networks.q_network.apply(q_params, obs, transitions.action)
+      if len(f_data.shape) == 3:
+        f_data = jnp.min(f_data, axis=-1)
+      f_data = jnp.diag(f_data)
+      base = []
+      for k in jax.random.split(key, config.awr_n_baseline):
+        a_rand = jax.random.uniform(k, transitions.action.shape,
+                                    minval=-1.0, maxval=1.0)
+        fb = networks.q_network.apply(q_params, obs, a_rand)
+        if len(fb.shape) == 3:
+          fb = jnp.min(fb, axis=-1)
+        base.append(jnp.diag(fb))
+      adv = f_data - jnp.mean(jnp.stack(base), axis=0)
+      w = jax.lax.stop_gradient(
+          jnp.clip(jnp.exp(adv / config.awr_beta), 0.0, config.awr_wmax))
+      bc_nll = -networks.log_prob(dist_params, transitions.action)
+      aux = {'awr_w_mean': jnp.mean(w), 'awr_adv_mean': jnp.mean(adv),
+             'awr_w_max_frac':
+                 jnp.mean((w >= config.awr_wmax - 1e-6).astype(jnp.float32)),
+             'bc_nll': jnp.mean(bc_nll),
+             'policy_entropy': jnp.mean(-networks.log_prob(
+                 dist_params, networks.sample(dist_params, key)))}
+      return jnp.mean(w * bc_nll), aux
+
     state = obs[:, :obs_dim]
     goal = obs[:, obs_dim:]
     if config.random_goals == 0.0:

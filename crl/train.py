@@ -318,6 +318,23 @@ def train(config: Config):
         offline_audit.record_dataset_hash(
             config.ckpt_dir, off_fp['sha256'], off_fp['meta'])
 
+    # Causal Manski positives: wrap the frozen buffer so sample()'s goal comes
+    # from the Thm-2 d_lb walk (audit surface + content delegate to the frozen
+    # base; see crl/manski.py). p_override=1.0 is the matched baseline arm.
+    if config.manski_positives:
+      from crl import manski as manski_mod
+      p_ov = (None if config.manski_p_override < 0
+              else float(config.manski_p_override))
+      hz = (tuple(eval_env.SWAMP_CELLS)
+            if (config.manski_hazard or config.manski_reachable) else ())
+      buffer = manski_mod.build_positive_buffer(
+          buffer, config.manski_table, eval_env._walls, eval_env.GOAL,
+          config.discount, seed=config.seed + 31337, p_override=p_ov,
+          hazard_cells=hz, reachable_n=config.manski_reachable)
+      print(f'  [manski] d_lb positives: table={config.manski_table} '
+            f'gamma={config.discount} p_override={p_ov} hazard={hz} '
+            f'reachable={config.manski_reachable}')
+
     # Runtime immutability watchdog (checked at every eval): the collection env
     # does not exist (env is None) and the buffer is frozen, so collection is
     # structurally impossible; here we also pin the content hash and count the

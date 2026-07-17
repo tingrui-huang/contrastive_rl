@@ -77,6 +77,36 @@ class Config:
   # 'steps' then count the gradient clock, not env steps.
   offline_dataset: str = ''
 
+  # --- Causal Manski positives (offline point-maze only) ---
+  # When True, offline positives come from the Thm-2 d_lb walk
+  # (crl.manski.ManskiPositiveBuffer) instead of the same-trajectory
+  # truncated-geometric future. Needs manski_table (the propensity table from
+  # scripts/fit_propensity.py). The walk's gamma is config.discount.
+  manski_positives: bool = False
+  manski_table: str = 'artifacts/manski_port/propensity_table.npz'
+  # <0 => None (full pessimism, the causal arm). 1.0 => teleports off but the
+  # identical walk machinery: the matched no-pessimism BASELINE arm.
+  manski_p_override: float = -1.0
+  # Treat the env's static SWAMP_CELLS as V_lb=0 absorbing hazards in the
+  # worst-case branch (the continuous analogue of the discrete WindyCorridor
+  # lava penalty). Static geometry only -- never the hidden bits.
+  manski_hazard: bool = False
+  # Action-dependent reachable-set N(s,x) (the faithful discrete
+  # worst_case_kernel semantics): the pessimistic branch exists ONLY for
+  # u-affected (swamp-involving) actions, whose worst outcome is stuck-in-
+  # swamp (absorbing). Everything else walks the data. Implies hazard cells.
+  manski_reachable: bool = False
+
+  # --- AWR actor extraction (the discrete WindyCorridor actor recipe) ---
+  # Replaces the (Q-max + BC) actor with advantage-weighted cloning of data
+  # actions: w = clip(exp((f(s,a,g) - E_a' f)/beta), 0, wmax). Fixes both
+  # failure modes seen without it: the BC-vs-critic tug-of-war and greedy-
+  # critic OOD spinning. beta=0.5 is the discrete recipe's value.
+  use_awr: bool = False
+  awr_beta: float = 0.5
+  awr_wmax: float = 20.0
+  awr_n_baseline: int = 8
+
   # --- Replay ---
   min_replay_size: int = 10_000     # env steps before learning starts.
   max_replay_size: int = 1_000_000  # env steps kept in the buffer.
