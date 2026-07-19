@@ -135,8 +135,10 @@ def run_episode(env, act, arm, slow_spec, ep=0):
       break
   contacts = dict(getattr(env, 'episode_contacts', {'pile': 0, 'rubble': 0}))
   return {'success': hit, 'min_dist': dmin, 'u_side': u_side,
-          'falls': falls, 'zone_steps': zone_steps,
-          'steps': t + 1, **{f'{k}_contacts': v for k, v in contacts.items()}}
+          'falls': falls, 'zone_steps': zone_steps, 'steps': t + 1,
+          'dead': bool(getattr(env, 'dead', False)),
+          'max_force': float(getattr(env, 'episode_max_force', 0.0)),
+          **{f'{k}_contacts': v for k, v in contacts.items()}}
 
 
 def run_arm(cfg, act, arm, eps, slow_spec):
@@ -153,7 +155,11 @@ def run_arm(cfg, act, arm, eps, slow_spec):
          'mean_pile_contacts': float(np.mean([r.get('pile_contacts', 0)
                                               for r in rows])),
          'mean_rubble_contacts': float(np.mean([r.get('rubble_contacts', 0)
-                                                for r in rows]))}
+                                                for r in rows])),
+         'dead_frac': float(np.mean([r['dead'] for r in rows])),
+         'max_force_p50': float(np.median([r['max_force'] for r in rows])),
+         'max_force_p90': float(np.percentile([r['max_force'] for r in rows],
+                                              90))}
   for u in (0, 1):
     sel = [r['success'] for r in rows if r['u_side'] == u]
     out[f'success_u{u}'] = float(np.mean(sel)) if sel else None

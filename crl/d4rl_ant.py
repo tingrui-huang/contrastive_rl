@@ -314,6 +314,17 @@ LITTER_SKIRT_H1 = (0.16, 0.34)  # height range at the pile edge
 LITTER_SLICK_Y = (0.0, 0.9)     # |y| band of the slick plate
 LITTER_SLICK_H = 0.02           # flush: never trips by geometry
 LITTER_SLICK_FRICTION = '0.08 0.005 0.0001'
+#: Collapse semantics: the pile is UNSTABLE. A contact with any pile/skirt
+#: geom whose normal force exceeds this threshold buries the ant -- it is
+#: dead (absorbing) for the rest of the episode: physics frozen, actions
+#: ignored, reward can never fire, done stays False (fixed-length episode
+#: contract, exactly the windy-lethal freeze pattern). Slow, low-impact
+#: contact (careful stepping/grinding) stays safe. Forces are checked every
+#: SUBSTEP so frame_skip cannot swallow an impact spike. The slick plate is
+#: excluded (liquid cannot collapse; weight-bearing on it is harmless).
+#: None disables collapse (calibration mode). Value set by the Stage-1
+#: calibration run (see artifacts/litter_env/collapse_calibration.json).
+LITTER_COLLAPSE_FORCE = None    # placeholder until calibrated
 #: Skirt layout is generated ONCE from this seed and mirrored exactly, so
 #: the two U configurations are geometrically identical up to reflection --
 #: frozen across episodes, env instances and env seeds (a second hidden
@@ -425,9 +436,24 @@ class LitterOfflineAntUMazeEnv(OfflineD4rlAntUMazeEnv):
                         for u, gids in self._side_gids.items()}
     self._home_pos = {g: m.geom_pos[g].copy()
                       for gids in self._side_gids.values() for g in gids}
+    self._slick_gids = frozenset(
+        gid(f'litter_slick_{s}') for s in ('pos', 'neg'))
+    #: geoms whose hard impact collapses the pile (slick excluded)
+    self._collapsible_gids = {
+        u: frozenset(g for g in gids if g not in self._slick_gids)
+        for u, gids in self._side_gids.items()}
     self._u_rng = np.random.default_rng(seed + 20260719)
     self.u_side = None
+    self.collapse_force = LITTER_COLLAPSE_FORCE
+    self._dead = False
+    self._force_buf = np.zeros(6)
     self.episode_contacts = {'pile': 0, 'rubble': 0}
+    self.episode_max_force = 0.0
+
+  @property
+  def dead(self):
+    """Buried by a collapsed pile: absorbing until episode end."""
+    return self._dead
 
   @property
   def privileged_u(self):
@@ -456,6 +482,8 @@ class LitterOfflineAntUMazeEnv(OfflineD4rlAntUMazeEnv):
     """``u_side`` override is for probes/gates only; normal use samples U."""
     self._apply_u(self._u_rng.integers(2) if u_side is None else u_side)
     self.episode_contacts = {'pile': 0, 'rubble': 0}
+    self.episode_max_force = 0.0
+    self._dead = False
     return super().reset()               # mj_forward runs after _apply_u
 
   def _count_litter_contacts(self):
@@ -471,15 +499,55 @@ class LitterOfflineAntUMazeEnv(OfflineD4rlAntUMazeEnv):
           rubble += 1
     return pile, rubble
 
+  def _max_collapsible_force(self):
+    """Largest contact normal force against any collapsible litter geom at
+    the CURRENT physics state (call after each substep)."""
+    d = self._env.data
+    active = self._collapsible_gids[self.u_side]
+    fmax = 0.0
+    for i in range(d.ncon):
+      c = d.contact[i]
+      if c.geom1 in active or c.geom2 in active:
+        mujoco.mj_contactForce(self._env.model, d, i, self._force_buf)
+        f = abs(float(self._force_buf[0]))
+        if f > fmax:
+          fmax = f
+    return fmax
+
+  def _info(self, pile, rubble, step_force):
+    xy = np.asarray(self._last_obs['achieved_goal'])
+    return {'u_side': self.u_side, 'pile_contacts': pile,
+            'rubble_contacts': rubble, 'dead': self._dead,
+            'litter_force': step_force,
+            'in_zone': bool(LITTER_ZONE_X[0] <= xy[0] <= LITTER_ZONE_X[1]
+                            and abs(xy[1]) < 2.0)}
+
   def step(self, action):
-    obs, reward, done, info = super().step(action)
+    if self._dead:                       # buried: frozen until episode end
+      return (self._flatten(self._last_obs), 0.0, False,
+              self._info(0, 0, 0.0))
+    u = self._env
+    a = np.clip(np.asarray(action, np.float64), -1.0, 1.0)
+    u.data.ctrl[:] = a * CTRL_SCALE
+    step_force = 0.0
+    for _ in range(u.frame_skip):        # substep force checks: frame_skip
+      mujoco.mj_step(u.model, u.data)    # must not swallow an impact spike
+      f = self._max_collapsible_force()
+      if f > step_force:
+        step_force = f
+    self._last_obs = u._obs_dict()
+    self.episode_max_force = max(self.episode_max_force, step_force)
+    if (self.collapse_force is not None
+        and step_force > self.collapse_force):
+      self._dead = True                  # pile collapsed onto the ant
     pile, rubble = self._count_litter_contacts()
     self.episode_contacts['pile'] += pile
     self.episode_contacts['rubble'] += rubble
-    xy = np.asarray(self._last_obs['achieved_goal'])
-    info = dict(info)
-    info.update(u_side=self.u_side, pile_contacts=pile,
-                rubble_contacts=rubble,
-                in_zone=bool(LITTER_ZONE_X[0] <= xy[0] <= LITTER_ZONE_X[1]
-                             and abs(xy[1]) < 2.0))
-    return obs, reward, done, info
+    if self._dead:
+      reward = 0.0
+    else:
+      dist = float(np.linalg.norm(np.asarray(self._last_obs['achieved_goal'])
+                                  - np.asarray(u.goal)))
+      reward = float(dist <= SUCCESS_DIST)
+    return (self._flatten(self._last_obs), reward, False,
+            self._info(pile, rubble, step_force))
