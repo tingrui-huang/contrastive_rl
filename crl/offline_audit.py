@@ -36,6 +36,9 @@ AUDIT_KEY_PREFIXES = ('audit_',)
 KNOWN_AUDIT_KEYS = frozenset({
     'swamp_bits', 'route_label', 'route_labels', 'u', 'hidden_u',
     'gate', 'gate_open', 'confounder', 'wind',
+    # MiniGrid-matched teacher audit fields (behavior-mode labels; never fed to
+    # the learner). Additive vocabulary only -- no gate logic changes.
+    'teacher_mode', 'force_safe', 'wait_count', 'entered_active_swamp',
 })
 LEARNER_KEYS = frozenset({'obs', 'act'})
 META_KEYS = frozenset({'meta'})

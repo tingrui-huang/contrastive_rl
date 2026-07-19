@@ -423,6 +423,68 @@ class TwoRouteSwampMatchedEnv(TwoRouteSwampEnv):
                      active_prob=active_prob, slow_factor=slow_factor)
 
 
+class TwoRouteSwampWindyEnv(TwoRouteSwampEnv):
+  """Windy-LETHAL swamp (point_two_route_swamp_windy_v0) -- the wind+lava
+  design: per-step confounder + terminal trap.
+
+  Differences from TwoRouteSwampEnv (same geometry, obs, action, horizon):
+    * bits resample at the END of EVERY step, inside or outside the corridor
+      -- wind semantics, NO entry freeze.
+    * ending a step inside an ACTIVE swamp cell is TERMINAL (lava semantics):
+      the agent is dead for the rest of the episode -- frozen in place,
+      actions ignored, reward can never fire. done stays False (fixed-length
+      episode contract; the pipeline layout is unchanged).
+  Timing contract: the bits a policy reads BEFORE acting are exactly the
+  bits used for THIS step's death check; they redraw afterwards. So a
+  bits-aware teacher can look one cell ahead ("is the cell I would land in
+  active right now?") -- the per-step u->a reaction, WindyCorridor-style.
+  slow_factor is unused (lethality replaces the slowdown trap).
+  """
+
+  def __init__(self, action_noise=0.01, max_episode_steps=50, seed=0,
+               active_prob=0.10, slow_factor=0.02):
+    self._dead = False
+    super().__init__(action_noise=action_noise,
+                     max_episode_steps=max_episode_steps, seed=seed,
+                     active_prob=active_prob, slow_factor=slow_factor)
+
+  @property
+  def dead(self):
+    return self._dead
+
+  def reset(self):
+    self._dead = False
+    return super().reset()
+
+  def step(self, action):
+    if self._dead:                       # absorbing: frozen until episode end
+      if self._auto_resample:
+        self._resample()
+      return self._get_obs(), 0.0, False, {}
+    action = np.array(action, dtype=float).copy()
+    if self._action_noise > 0:
+      action += self._rng.normal(0, self._action_noise, (2,))
+    action = np.clip(action, -1.0, 1.0)
+    num_substeps = 10
+    dt = 1.0 / num_substeps
+    for _ in range(num_substeps):        # full speed -- no slowdown trap
+      for axis in range(len(action)):
+        new_state = self.state.copy()
+        new_state[axis] += dt * action[axis]
+        if not self._is_blocked(new_state):
+          self.state = new_state
+    # death check with the bits that governed THIS step, then redraw
+    if self._in_active_swamp(self.state):
+      self._dead = True
+    if self._auto_resample:
+      self._resample()
+    obs = self._get_obs()
+    if self._dead:
+      return obs, 0.0, False, {}
+    dist = np.linalg.norm(self.goal - self.state)
+    return obs, float(dist < 2.0), False, {}
+
+
 # ---------------------------------------------------------------------------
 # Fetch (gymnasium-robotics wrapper). Colab-oriented; needs `mujoco` +
 # `gymnasium-robotics`. Flattens Dict obs to concat([state, desired_goal]).
@@ -946,6 +1008,8 @@ def make_env(env_name, config, seed=0, render_mode=None):
   """
   if env_name == 'point_two_route_swamp_matched_v0':
     env = TwoRouteSwampMatchedEnv(max_episode_steps=50, seed=seed)
+  elif env_name == 'point_two_route_swamp_windy_v0':
+    env = TwoRouteSwampWindyEnv(max_episode_steps=50, seed=seed)
   elif env_name == 'point_two_route_swamp_v0':
     env = TwoRouteSwampEnv(max_episode_steps=50, seed=seed)
   elif env_name == 'point_two_route_gate_v0':   # superseded v0 (kept as ablation)
