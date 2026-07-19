@@ -63,7 +63,13 @@ EVAL_EVERY = 10_000
 COMMANDS = [(y, v) for y in (-probe.LANE_Y, 0.0, probe.LANE_Y)
             for v in (probe.V_SLOW, probe.V_FAST)]
 
-CP, CY, CV, CPSI, CC, CU = 10.0, 1.0, 0.5, 0.3, 0.5, 0.1
+#: progress is CAPPED at the commanded speed (min(dx, v_ref*dt)): running
+#: faster than v_ref earns nothing, otherwise the progress term dominates
+#: both the lane and the speed penalties and the residual learns to ignore
+#: commands and sprint down the middle (observed at 30k steps: y_err stuck
+#: at 1.8, slow_vx 1.24).
+CP, CY, CV, CPSI, CC, CU = 10.0, 2.5, 1.0, 0.3, 0.5, 0.1
+DT = 0.1
 FALL_PENALTY, DONE_BONUS = 5.0, 5.0
 
 
@@ -86,7 +92,7 @@ class Trainer:
     key = jax.random.PRNGKey(seed)
     k1, k2 = jax.random.split(key)
     dummy_o = jnp.zeros((1, probe.RES_OBS_DIM))
-    dummy_a = jnp.zeros((1, 8))
+    dummy_a = jnp.zeros((1, probe.ACT_DIM))
     self.pi = self.actor_t.init(k1, dummy_o)
     self.q = self.critic_t.init(k2, dummy_o, dummy_a)
     self.pi_targ, self.q_targ = self.pi, self.q
@@ -97,7 +103,7 @@ class Trainer:
     self.updates = 0
 
     self.obs = np.zeros((BUFFER, probe.RES_OBS_DIM), np.float32)
-    self.act = np.zeros((BUFFER, 8), np.float32)
+    self.act = np.zeros((BUFFER, probe.ACT_DIM), np.float32)
     self.rew = np.zeros(BUFFER, np.float32)
     self.nobs = np.zeros((BUFFER, probe.RES_OBS_DIM), np.float32)
     self.mask = np.zeros(BUFFER, np.float32)   # 0 where terminal
@@ -105,13 +111,15 @@ class Trainer:
 
     actor_t, critic_t = self.actor_t, self.critic_t
 
+    act_lo, act_hi = jnp.asarray(probe.ACT_LO), jnp.asarray(probe.ACT_HI)
+
     @jax.jit
     def q_step(q, q_state, pi_targ, q_targ, batch, key):
       o, a, r, no, m = batch
-      noise = jnp.clip(POLICY_NOISE * jax.random.normal(key, (BATCH, 8)),
-                       -NOISE_CLIP, NOISE_CLIP)
-      na = jnp.clip(actor_t.apply(pi_targ, no) + noise,
-                    -probe.ALPHA, probe.ALPHA)
+      noise = jnp.clip(
+          POLICY_NOISE * jax.random.normal(key, (BATCH, probe.ACT_DIM)),
+          -NOISE_CLIP, NOISE_CLIP) * act_hi
+      na = jnp.clip(actor_t.apply(pi_targ, no) + noise, act_lo, act_hi)
       tq1, tq2 = critic_t.apply(q_targ, no, na)
       target = r + GAMMA * m * jnp.minimum(tq1, tq2)
 
@@ -178,8 +186,8 @@ class Trainer:
   def residual(self, ro, explore):
     a = np.asarray(self._res_act(self.pi, jnp.asarray(ro[None]))[0])
     if explore:
-      a = a + self.rng.normal(0, EXPL_NOISE * probe.ALPHA, 8)
-    return np.clip(a, -probe.ALPHA, probe.ALPHA)
+      a = a + self.rng.normal(0, EXPL_NOISE, probe.ACT_DIM) * probe.ACT_HI
+    return np.clip(a, probe.ACT_LO, probe.ACT_HI)
 
 
 def make_train_env(phase, cfg, seed):
@@ -194,20 +202,20 @@ def run_episode(env, base_act, trainer, y_ref, v_ref, explore, store=True):
   o = env.reset()
   prev_x = o[0]
   stats = {'y_err': [], 'vx': [], 'contact': 0, 'fell': False, 'reached': False}
-  prev_a_res = np.zeros(8)
+  prev_a_res = np.zeros(probe.ACT_DIM)
   ro = None
   for t in range(EP_LEN):
     xy = o[:2]
     g = np.array([min(xy[0] + probe.LOOKAHEAD, probe.CARROT_CAP_X), y_ref],
                  np.float32)
-    o_cmd = o.copy()
-    o_cmd[29:] = 0.0
-    o_cmd[29:31] = g
-    a_base = np.asarray(base_act(jnp.asarray(o_cmd[None]))[0])
     ro_new = probe.residual_obs(o[:29], g, y_ref, v_ref)
     a_res = (trainer.residual(ro_new, explore) if trainer is not None
-             else np.zeros(8))
-    a = np.clip(a_base + a_res, -1.0, 1.0)
+             else np.zeros(probe.ACT_DIM))
+    o_cmd = o.copy()
+    o_cmd[29:] = 0.0
+    o_cmd[29:31] = (g[0], np.clip(g[1] + a_res[8], -1.5, 1.5))
+    a_base = np.asarray(base_act(jnp.asarray(o_cmd[None]))[0])
+    a = np.clip(a_base + a_res[:8], -1.0, 1.0)
     o2, _, _, info = env.step(a)
     q = env._env.data.qpos
     qv = env._env.data.qvel
@@ -216,7 +224,7 @@ def run_episode(env, base_act, trainer, y_ref, v_ref, explore, store=True):
                   or info.get('rubble_contacts', 0) > 0)
     fell = torso_up_z(np.asarray(q)) < 0.3 or float(q[2]) < 0.2
     reached = float(o2[0]) >= X_DONE
-    r = (CP * (float(o2[0]) - prev_x) - CY * abs(y - y_ref)
+    r = (CP * min(float(o2[0]) - prev_x, v_ref * DT) - CY * abs(y - y_ref)
          - CV * abs(vx - v_ref) - CPSI * min(yaw, np.pi - yaw)
          - CC * contact - CU * float(np.sum((a_res - prev_a_res) ** 2)))
     if fell:
@@ -245,7 +253,7 @@ def run_episode(env, base_act, trainer, y_ref, v_ref, explore, store=True):
 def evaluate(env, base_act, trainer):
   rows = []
   for y_ref, v_ref in COMMANDS:
-    for _ in range(3):
+    for _ in range(5):
       s = run_episode(env, base_act, trainer, y_ref, v_ref,
                       explore=False, store=False)
       zone = [e for i, e in enumerate(s['y_err'])]   # whole run

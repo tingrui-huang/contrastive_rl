@@ -27,31 +27,55 @@ import numpy as np
 
 LANE_Y = 1.1
 V_FAST = 1.4          # ~natural corridor speed of the base actor (1.3-1.6)
-V_SLOW = 0.4
-ALPHA = 0.3           # residual action amplitude cap
+V_SLOW = 0.6          # 0.4 fought the base gait's stability envelope; 0.6
+                      # still gives ~5x kinetic-energy separation vs fast
+ALPHA = 0.6           # residual action amplitude cap; 0.3 lacked the
+                      # authority to brake 1.4->0.4 or hold side lanes
+                      # (carrot distance does NOT modulate speed: measured
+                      # vx 1.06-1.42 across LOOKAHEAD 0.6-3.0)
 LOOKAHEAD = 3.0       # carrot distance (matches litter_geometry_gate)
 CARROT_CAP_X = 7.0
-RES_OBS_DIM = 29 + 2 + 1 + 1   # state, carrot xy, y_ref, v_ref
+#: state, carrot xy, y_ref, v_ref, and EXPLICIT tracking errors (y - y_ref,
+#: vx - v_ref): both are derivable from the state, but making them linearly
+#: available shortcuts what TD3 was failing to discover on its own (60k
+#: steps with zero speed-command separation before this change).
+RES_OBS_DIM = 29 + 2 + 1 + 1 + 2
 
 
 def residual_obs(state29, carrot_xy, y_ref, v_ref):
+  y_err = state29[1] - y_ref
+  v_err = state29[15] - v_ref            # qvel[0] = forward speed
   return np.concatenate([state29, carrot_xy,
-                         [y_ref, v_ref]]).astype(np.float32)
+                         [y_ref, v_ref, y_err, v_err]]).astype(np.float32)
+
+
+#: carrot-steering head: the residual's 9th output is a lateral OFFSET added
+#: to the carrot goal's y before the base actor sees it. Steering the base
+#: through its own goal input has far more lateral authority than fighting
+#: its torques (pure 8-dim torque residual plateaued at y_err ~1.3 for 150k
+#: steps), and the base keeps its own balance while turning.
+DY_CAP = 0.8
+ACT_DIM = 9            # 8 torque residual + 1 carrot dy
+ACT_LO = np.array([-ALPHA] * 8 + [-DY_CAP], np.float32)
+ACT_HI = -ACT_LO
 
 
 def make_residual_networks(hidden=(256, 256)):
   """Returns (actor, critic) haiku transforms.
 
-  actor(obs[RES_OBS_DIM]) -> residual in [-ALPHA, ALPHA]^8
-  critic(obs, act8) -> (q1, q2) twin scalars
+  actor(obs[RES_OBS_DIM]) -> [torque residual (8, +-ALPHA), carrot dy
+  (+-DY_CAP)]
+  critic(obs, act9) -> (q1, q2) twin scalars
   """
+  scale = jnp.asarray(ACT_HI)
+
   def actor_fn(obs):
     h = obs
     for w in hidden:
       h = jax.nn.relu(hk.Linear(w)(h))
-    out = hk.Linear(8, w_init=hk.initializers.VarianceScaling(1e-4),
+    out = hk.Linear(ACT_DIM, w_init=hk.initializers.VarianceScaling(1e-4),
                     b_init=jnp.zeros)(h)
-    return ALPHA * jnp.tanh(out)
+    return scale * jnp.tanh(out)
 
   def critic_fn(obs, act):
     x = jnp.concatenate([obs, act], axis=-1)
@@ -87,14 +111,17 @@ class ProbeController:
   def __call__(self, obs58, y_ref, v_ref, carrot=None):
     xy = obs58[:2]
     g = self.carrot_goal(xy, y_ref) if carrot is None else carrot
-    o_cmd = obs58.copy()
-    o_cmd[29:] = 0.0
-    o_cmd[29:31] = g
-    a = np.asarray(self._base(o_cmd[None])[0])
+    da = np.zeros(ACT_DIM, np.float32)
     if self._params is not None:
       ro = residual_obs(obs58[:29], g, y_ref, v_ref)
-      a = a + np.asarray(self._res(self._params, ro[None])[0])
-    return np.clip(a, -1.0, 1.0), g
+      da = np.asarray(self._res(self._params, ro[None])[0])
+    g_steered = np.array([g[0], np.clip(g[1] + da[8], -1.5, 1.5)],
+                         np.float32)
+    o_cmd = obs58.copy()
+    o_cmd[29:] = 0.0
+    o_cmd[29:31] = g_steered
+    a = np.asarray(self._base(o_cmd[None])[0]) + da[:8]
+    return np.clip(a, -1.0, 1.0), g_steered
 
 
 def save_residual(path, params, meta):
