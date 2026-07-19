@@ -449,6 +449,8 @@ class LitterOfflineAntUMazeEnv(OfflineD4rlAntUMazeEnv):
     self._force_buf = np.zeros(6)
     self.episode_contacts = {'pile': 0, 'rubble': 0}
     self.episode_max_force = 0.0
+    self.episode_max_hforce = 0.0
+    self.episode_max_himpulse = 0.0
 
   @property
   def dead(self):
@@ -483,6 +485,8 @@ class LitterOfflineAntUMazeEnv(OfflineD4rlAntUMazeEnv):
     self._apply_u(self._u_rng.integers(2) if u_side is None else u_side)
     self.episode_contacts = {'pile': 0, 'rubble': 0}
     self.episode_max_force = 0.0
+    self.episode_max_hforce = 0.0
+    self.episode_max_himpulse = 0.0
     self._dead = False
     return super().reset()               # mj_forward runs after _apply_u
 
@@ -499,46 +503,82 @@ class LitterOfflineAntUMazeEnv(OfflineD4rlAntUMazeEnv):
           rubble += 1
     return pile, rubble
 
-  def _max_collapsible_force(self):
-    """Largest contact normal force against any collapsible litter geom at
-    the CURRENT physics state (call after each substep)."""
+  def _litter_contact_forces(self):
+    """Contact-force stats against collapsible litter geoms at the CURRENT
+    physics state (call after each substep).
+
+    Returns (max_normal, max_horizontal, normal_z_at_max_horizontal).
+    ``horizontal`` projects the normal force onto the ground plane: a foot
+    bearing weight ON TOP of low rubble has a near-vertical contact normal
+    (harmless), while a body/leg ramming the SIDE of the litter has a normal
+    with a large horizontal component -- only the latter can "collapse" the
+    pile. contact.frame[:3] is the contact normal in world coordinates."""
     d = self._env.data
     active = self._collapsible_gids[self.u_side]
-    fmax = 0.0
+    fmax = hmax = 0.0
+    nz_at_hmax = 1.0
     for i in range(d.ncon):
       c = d.contact[i]
       if c.geom1 in active or c.geom2 in active:
         mujoco.mj_contactForce(self._env.model, d, i, self._force_buf)
         f = abs(float(self._force_buf[0]))
+        n = c.frame[:3]
+        h = f * float(np.hypot(n[0], n[1]))
         if f > fmax:
           fmax = f
-    return fmax
+        if h > hmax:
+          hmax = h
+          nz_at_hmax = abs(float(n[2]))
+    return fmax, hmax, nz_at_hmax
 
-  def _info(self, pile, rubble, step_force):
+  def _info(self, pile, rubble, stats):
     xy = np.asarray(self._last_obs['achieved_goal'])
-    return {'u_side': self.u_side, 'pile_contacts': pile,
-            'rubble_contacts': rubble, 'dead': self._dead,
-            'litter_force': step_force,
-            'in_zone': bool(LITTER_ZONE_X[0] <= xy[0] <= LITTER_ZONE_X[1]
-                            and abs(xy[1]) < 2.0)}
+    out = {'u_side': self.u_side, 'pile_contacts': pile,
+           'rubble_contacts': rubble, 'dead': self._dead,
+           'litter_force': stats.get('max_litter_normal_force', 0.0),
+           'in_zone': bool(LITTER_ZONE_X[0] <= xy[0] <= LITTER_ZONE_X[1]
+                           and abs(xy[1]) < 2.0)}
+    out.update(stats)
+    return out
+
+  _ZERO_STATS = {'max_litter_normal_force': 0.0,
+                 'max_horizontal_normal_force': 0.0,
+                 'max_horizontal_impulse': 0.0,
+                 'contact_normal_z': 1.0,
+                 'precontact_planar_speed': 0.0}
 
   def step(self, action):
     if self._dead:                       # buried: frozen until episode end
       return (self._flatten(self._last_obs), 0.0, False,
-              self._info(0, 0, 0.0))
+              self._info(0, 0, dict(self._ZERO_STATS)))
     u = self._env
     a = np.clip(np.asarray(action, np.float64), -1.0, 1.0)
     u.data.ctrl[:] = a * CTRL_SCALE
-    step_force = 0.0
+    pre_speed = float(np.hypot(u.data.qvel[0], u.data.qvel[1]))
+    sub_dt = u.model.opt.timestep
+    fmax = hmax = himp = 0.0
+    nz = 1.0
     for _ in range(u.frame_skip):        # substep force checks: frame_skip
       mujoco.mj_step(u.model, u.data)    # must not swallow an impact spike
-      f = self._max_collapsible_force()
-      if f > step_force:
-        step_force = f
+      f, h, nz_h = self._litter_contact_forces()
+      himp += h * sub_dt                 # horizontal impulse over the step
+      if f > fmax:
+        fmax = f
+      if h > hmax:
+        hmax, nz = h, nz_h
+    stats = {'max_litter_normal_force': fmax,
+             'max_horizontal_normal_force': hmax,
+             'max_horizontal_impulse': himp,
+             'contact_normal_z': nz,
+             'precontact_planar_speed': pre_speed}
     self._last_obs = u._obs_dict()
-    self.episode_max_force = max(self.episode_max_force, step_force)
+    self.episode_max_force = max(self.episode_max_force, fmax)
+    self.episode_max_hforce = max(self.episode_max_hforce, hmax)
+    self.episode_max_himpulse = max(self.episode_max_himpulse, himp)
+    #: collapse trigger uses the HORIZONTAL normal force: weight bearing on
+    #: top of rubble (vertical normal) can never bury the ant.
     if (self.collapse_force is not None
-        and step_force > self.collapse_force):
+        and hmax > self.collapse_force):
       self._dead = True                  # pile collapsed onto the ant
     pile, rubble = self._count_litter_contacts()
     self.episode_contacts['pile'] += pile
@@ -550,4 +590,4 @@ class LitterOfflineAntUMazeEnv(OfflineD4rlAntUMazeEnv):
                                   - np.asarray(u.goal)))
       reward = float(dist <= SUCCESS_DIST)
     return (self._flatten(self._last_obs), reward, False,
-            self._info(pile, rubble, step_force))
+            self._info(pile, rubble, stats))
