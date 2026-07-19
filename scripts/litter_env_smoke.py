@@ -24,7 +24,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import mujoco  # noqa: E402
 from crl.config import Config  # noqa: E402
 from crl.envs import make_env  # noqa: E402
-from crl.d4rl_ant import (LITTER_HIDE_Z, LITTER_PILE_Y, LITTER_RUBBLE_Y,  # noqa: E402
+from crl.d4rl_ant import (LITTER_HIDE_Z, LITTER_PILE_Y, LITTER_SKIRT_Y,  # noqa: E402
                           LITTER_ZONE_X)
 
 OUT_DIR = os.path.join('artifacts', 'litter_env')
@@ -68,15 +68,16 @@ def main():
   checks['S2_u_sampling'] = bool(0.4 <= rate <= 0.6 and placement_ok
                                  and override_ok)
 
-  # S3: rubble layout frozen across instances/seeds.
+  # S3: litter layout frozen across instances/seeds, and exactly mirrored.
   cfg2 = Config()
   env2 = make_env('offline_ant_umaze_litter', cfg2, seed=123)
-  same_layout = env.rubble_layout == env2.rubble_layout
-  same_geoms = all(
-      np.allclose(env.rubble_layout[i]['x'],
-                  env2._env.model.geom_pos[g][0])
-      for i, g in enumerate(sorted(env2._rubble_gids)))
-  checks['S3_rubble_frozen'] = bool(same_layout and same_geoms)
+  same_layout = env.litter_layout == env2.litter_layout
+  by_name = {it['name']: it for it in env.litter_layout}
+  mirrored = all(
+      by_name[n]['y'] == -by_name[n.replace('_pos', '_neg')]['y']
+      and by_name[n]['height'] == by_name[n.replace('_pos', '_neg')]['height']
+      for n in by_name if n.endswith('_pos'))
+  checks['S3_layout_frozen_mirrored'] = bool(same_layout and mirrored)
 
   # S4: forced U does not perturb the reset-noise/goal rng streams.
   a = make_env('offline_ant_umaze_litter', Config(), seed=7)
@@ -113,7 +114,8 @@ def main():
   env.reset(u_side=0)                    # pile on -y; +y band must be CLEAR
   ghost_hits, _ = contacts_at(env, (zone_cx, pile_cy))
   env.reset(u_side=1)
-  box = env.rubble_layout[0]
+  box = next(it for it in env.litter_layout
+             if it['side'] == 'pos' and 'skirt' in it['name'])
   _, rubble_hits = contacts_at(env, (box['x'], box['y']), steps=10, z=0.2)
   checks['S5_collisions'] = bool(pile_hits > 0 and ghost_hits == 0
                                  and rubble_hits > 0)
@@ -129,9 +131,9 @@ def main():
             'u_rate_200_resets': rate,
             'probe_counts': {'pile_hits': pile_hits, 'ghost_hits': ghost_hits,
                              'rubble_hits': rubble_hits},
-            'rubble_layout': env.rubble_layout,
+            'litter_layout': env.litter_layout,
             'geometry': {'zone_x': LITTER_ZONE_X, 'pile_y': LITTER_PILE_Y,
-                         'rubble_half_width': LITTER_RUBBLE_Y},
+                         'skirt_y': LITTER_SKIRT_Y},
             'all_pass': all(checks.values())}
   path = os.path.join(OUT_DIR, 'smoke_report.json')
   with open(path, 'w') as f:

@@ -292,28 +292,43 @@ class OfflineD4rlAntUMazeEnv(D4rlAntUMazeEnv):
 #: Obstacle zone in the bottom corridor (y ~ 0, interior |y| < 2): the
 #: straight segment before the right turn at (8, 0). World-frame x-range.
 LITTER_ZONE_X = (2.5, 5.5)
-#: Main pile |y| band on the active side (from rubble-adjacent edge to wall).
-LITTER_PILE_Y = (0.8, 2.0)
+#: Main pile |y| band on the active side (skirt edge to wall).
+LITTER_PILE_Y = (0.7, 2.0)
 LITTER_PILE_HEIGHT = 1.0        # tall: not traversable (walls are 2.0)
-#: Fixed middle rubble strip: |y| <= this, IDENTICAL under both U.
-LITTER_RUBBLE_Y = 0.45
-LITTER_RUBBLE_N = 12
-LITTER_RUBBLE_HALF_XY = (0.10, 0.22)   # half-extent range per box
-LITTER_RUBBLE_H = (0.08, 0.18)         # full height range (low: step-over)
-#: Rubble layout is generated ONCE from this seed -- frozen across episodes,
-#: env instances and env seeds (a second hidden variable would pollute both
-#: the hiddenness gate and attribution).
+#: Skirt: rubble spilled from the pile toward the centerline, on the SAME
+#: side as the pile (it moves with U -- both mirrored copies are compiled in
+#: and the inactive side is buried with its pile). Height tapers UP toward
+#: the pile: the centerline edge is steppable at low speed, deeper skirt
+#: trips a fast ant. The opposite half-corridor stays completely clean, so
+#: the clean lane is ~2.0 wide (an ant's gait wander fits comfortably).
+LITTER_SKIRT_Y = (0.05, 0.75)   # |y| band of skirt box centers
+LITTER_SKIRT_N = 14
+LITTER_SKIRT_HALF_XY = (0.10, 0.22)    # half-extent range per box
+LITTER_SKIRT_H0 = (0.10, 0.16)  # height range at the centerline edge
+LITTER_SKIRT_H1 = (0.16, 0.34)  # height range at the pile edge
+#: Slick strip ("leachate" seeping from the pile): a flush, low-friction
+#: plate under the skirt band, same side as the pile. Friction -- unlike box
+#: height -- is intrinsically speed-sensitive: fast push-off exceeds the
+#: friction cone and the ant sprawls; slow careful steps hold. priority=1
+#: makes the contact pair use the slick's friction against the ant's feet.
+LITTER_SLICK_Y = (0.0, 0.9)     # |y| band of the slick plate
+LITTER_SLICK_H = 0.02           # flush: never trips by geometry
+LITTER_SLICK_FRICTION = '0.08 0.005 0.0001'
+#: Skirt layout is generated ONCE from this seed and mirrored exactly, so
+#: the two U configurations are geometrically identical up to reflection --
+#: frozen across episodes, env instances and env seeds (a second hidden
+#: variable would pollute both the hiddenness gate and attribution).
 LITTER_LAYOUT_SEED = 7
-LITTER_HIDE_Z = -10.0           # buried z for the inactive pile
+LITTER_HIDE_Z = -10.0           # buried z for the inactive side
 
 
 def build_litter_xml(maze_map=U_MAZE, scaling=SCALING, height=MAZE_HEIGHT):
   """Maze xml + litter geoms.
 
-  Adds two mirrored main-pile boxes (litter_pile_pos / litter_pile_neg; the
-  inactive one is buried below the floor at reset) and LITTER_RUBBLE_N low
-  rubble boxes in the middle strip (fixed layout, U-independent). Returns
-  (xml_string, torso_offset, rubble_layout).
+  Adds, per corridor side, one main-pile box plus LITTER_SKIRT_N skirt boxes
+  (exact mirror images between sides; per episode the inactive side is buried
+  below the floor). Returns (xml_string, torso_offset, layout) where layout
+  lists every litter geom with its side ('pos'/'neg') and geometry.
   """
   xml, offset = build_maze_xml(maze_map, scaling, height)
   root = ET.fromstring(xml)
@@ -323,28 +338,51 @@ def build_litter_xml(maze_map=U_MAZE, scaling=SCALING, height=MAZE_HEIGHT):
   y0, y1 = LITTER_PILE_Y
   cy, hy = (y0 + y1) / 2, (y1 - y0) / 2
   hz = LITTER_PILE_HEIGHT / 2
-  for name, sign in (('litter_pile_pos', 1.0), ('litter_pile_neg', -1.0)):
-    ET.SubElement(worldbody, 'geom', name=name, type='box',
+  layout = []
+  for side, sign in (('pos', 1.0), ('neg', -1.0)):
+    ET.SubElement(worldbody, 'geom', name=f'litter_pile_{side}', type='box',
                   pos=f'{cx} {sign * cy} {hz}', size=f'{hx} {hy} {hz}',
                   material='', contype='1', conaffinity='1',
                   rgba='0.35 0.55 0.3 1.0')
+    layout.append({'name': f'litter_pile_{side}', 'side': side, 'x': cx,
+                   'y': sign * cy, 'half_x': hx, 'half_y': hy,
+                   'height': LITTER_PILE_HEIGHT, 'yaw_deg': 0.0})
+  k0, k1 = LITTER_SLICK_Y
+  kc, kh = (k0 + k1) / 2, (k1 - k0) / 2
+  for side, sign in (('pos', 1.0), ('neg', -1.0)):
+    tag = f'litter_slick_{side}'
+    ET.SubElement(worldbody, 'geom', name=tag, type='box',
+                  pos=f'{cx} {sign * kc} {LITTER_SLICK_H / 2}',
+                  size=f'{hx} {kh} {LITTER_SLICK_H / 2}',
+                  friction=LITTER_SLICK_FRICTION, priority='1',
+                  material='', contype='1', conaffinity='1',
+                  rgba='0.25 0.25 0.3 0.9')
+    layout.append({'name': tag, 'side': side, 'x': cx, 'y': sign * kc,
+                   'half_x': hx, 'half_y': kh, 'height': LITTER_SLICK_H,
+                   'yaw_deg': 0.0})
   rng = np.random.default_rng(LITTER_LAYOUT_SEED)
-  rubble = []
-  for i in range(LITTER_RUBBLE_N):
-    sx, sy = rng.uniform(*LITTER_RUBBLE_HALF_XY, size=2)
+  s0, s1 = LITTER_SKIRT_Y
+  for i in range(LITTER_SKIRT_N):
+    sx, sy = rng.uniform(*LITTER_SKIRT_HALF_XY, size=2)
     rx = rng.uniform(x0 + sx, x1 - sx)
-    ry = rng.uniform(-LITTER_RUBBLE_Y + sy, LITTER_RUBBLE_Y - sy)
-    rh = rng.uniform(*LITTER_RUBBLE_H)
+    ry = rng.uniform(s0, s1)
+    frac = (ry - s0) / (s1 - s0)       # 0 at centerline edge, 1 at pile edge
+    h0 = rng.uniform(*LITTER_SKIRT_H0)
+    h1 = rng.uniform(*LITTER_SKIRT_H1)
+    rh = h0 + frac * (h1 - h0)
     yaw = rng.uniform(0.0, 180.0)      # compiler angle="degree"
-    name = f'litter_rubble_{i}'
-    ET.SubElement(worldbody, 'geom', name=name, type='box',
-                  pos=f'{rx} {ry} {rh / 2}', size=f'{sx} {sy} {rh / 2}',
-                  euler=f'0 0 {yaw}', material='', contype='1',
-                  conaffinity='1', rgba='0.45 0.4 0.35 1.0')
-    rubble.append({'name': name, 'x': float(rx), 'y': float(ry),
-                   'half_x': float(sx), 'half_y': float(sy),
-                   'height': float(rh), 'yaw_deg': float(yaw)})
-  return ET.tostring(root, encoding='unicode'), offset, rubble
+    for side, sign in (('pos', 1.0), ('neg', -1.0)):
+      tag = f'litter_skirt_{i}_{side}'
+      ET.SubElement(worldbody, 'geom', name=tag, type='box',
+                    pos=f'{rx} {sign * ry} {rh / 2}',
+                    size=f'{sx} {sy} {rh / 2}', euler=f'0 0 {sign * yaw}',
+                    material='', contype='1', conaffinity='1',
+                    rgba='0.45 0.4 0.35 1.0')
+      layout.append({'name': tag, 'side': side, 'x': float(rx),
+                     'y': float(sign * ry), 'half_x': float(sx),
+                     'half_y': float(sy), 'height': float(rh),
+                     'yaw_deg': float(sign * yaw)})
+  return ET.tostring(root, encoding='unicode'), offset, layout
 
 
 class LitterOfflineAntUMazeEnv(OfflineD4rlAntUMazeEnv):
@@ -352,12 +390,12 @@ class LitterOfflineAntUMazeEnv(OfflineD4rlAntUMazeEnv):
 
   Hidden episode variable ``U`` in {0, 1}, P = 0.5 each, sampled ONCE per
   reset from an rng stream independent of the reset-noise / goal streams:
-    * U = 1: main litter pile on the +y side of the bottom corridor;
-    * U = 0: pile mirrored to the -y side.
-  A fixed low rubble strip (identical under both U) occupies the middle of
-  the zone; the side opposite the pile is clean. The 58-dim learner obs is
-  UNCHANGED (pure proprioception + zero-padded goal): U leaves no trace in
-  the observation until contact.
+    * U = 1: litter (pile + spilled skirt) on the +y side of the corridor;
+    * U = 0: exact mirror image on the -y side.
+  The skirt tapers down toward the centerline (steppable at low speed near
+  y=0, tripping height near the pile); the opposite half-corridor is clean.
+  The 58-dim learner obs is UNCHANGED (pure proprioception + zero-padded
+  goal): U leaves no trace in the observation until contact.
 
   Teacher code reads ``privileged_u``; step() reports diagnostics
   (u_side, pile/rubble contact counts at the post-step state, in_zone) in
@@ -369,17 +407,24 @@ class LitterOfflineAntUMazeEnv(OfflineD4rlAntUMazeEnv):
     super().__init__(max_episode_steps=max_episode_steps, seed=seed,
                      render_mode=render_mode, eval_goals=eval_goals,
                      eval_goal_mode=eval_goal_mode)
-    xml, offset, rubble = build_litter_xml()
+    xml, offset, layout = build_litter_xml()
     self._env = _Sim(xml, seed)          # replace sim with the litter model
     self._torso_offset = offset          # same maze -> same origin
-    self.rubble_layout = rubble
+    self.litter_layout = layout
     m = self._env.model
     def gid(n):
       return mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_GEOM, n)
-    self._pile_gid = {1: gid('litter_pile_pos'), 0: gid('litter_pile_neg')}
-    self._pile_home = {u: m.geom_pos[g].copy()
-                       for u, g in self._pile_gid.items()}
-    self._rubble_gids = frozenset(gid(r['name']) for r in rubble)
+    side_u = {'pos': 1, 'neg': 0}
+    self._side_gids = {1: [], 0: []}     # every litter geom, grouped by side
+    for item in layout:
+      self._side_gids[side_u[item['side']]].append(gid(item['name']))
+    self._pile_gid = {u: gid(f'litter_pile_{s}')
+                      for s, u in side_u.items()}
+    self._skirt_gids = {u: frozenset(g for g in gids
+                                     if g != self._pile_gid[u])
+                        for u, gids in self._side_gids.items()}
+    self._home_pos = {g: m.geom_pos[g].copy()
+                      for gids in self._side_gids.values() for g in gids}
     self._u_rng = np.random.default_rng(seed + 20260719)
     self.u_side = None
     self.episode_contacts = {'pile': 0, 'rubble': 0}
@@ -392,19 +437,19 @@ class LitterOfflineAntUMazeEnv(OfflineD4rlAntUMazeEnv):
   def zone_info(self):
     """Geometry handles for waypoint controllers / probes."""
     clean_sign = -1.0 if self.u_side == 1 else 1.0
-    lane_lo, lane_hi = LITTER_RUBBLE_Y, LITTER_PILE_Y[1]
     return {'zone_x': LITTER_ZONE_X,
-            'clean_lane_y': clean_sign * (lane_lo + lane_hi) / 2,
+            'clean_lane_y': clean_sign * 1.05,
             'middle_lane_y': 0.0,
             'pile_y_band': LITTER_PILE_Y,
-            'rubble_half_width': LITTER_RUBBLE_Y}
+            'skirt_y_band': LITTER_SKIRT_Y}
 
   def _apply_u(self, u_side):
     m = self._env.model
-    for u, g in self._pile_gid.items():
-      m.geom_pos[g] = self._pile_home[u]
-      if u != u_side:
-        m.geom_pos[g][2] = LITTER_HIDE_Z
+    for u, gids in self._side_gids.items():
+      for g in gids:
+        m.geom_pos[g] = self._home_pos[g]
+        if u != u_side:
+          m.geom_pos[g][2] = LITTER_HIDE_Z
     self.u_side = int(u_side)
 
   def reset(self, u_side=None):
@@ -416,12 +461,13 @@ class LitterOfflineAntUMazeEnv(OfflineD4rlAntUMazeEnv):
   def _count_litter_contacts(self):
     d = self._env.data
     active_pile = self._pile_gid[self.u_side]
+    active_skirt = self._skirt_gids[self.u_side]
     pile = rubble = 0
     for i in range(d.ncon):
       for g in (d.contact[i].geom1, d.contact[i].geom2):
         if g == active_pile:
           pile += 1
-        elif g in self._rubble_gids:
+        elif g in active_skirt:
           rubble += 1
     return pile, rubble
 
