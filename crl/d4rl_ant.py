@@ -282,3 +282,158 @@ class OfflineD4rlAntUMazeEnv(D4rlAntUMazeEnv):
     obs = u._obs_dict()
     self._last_obs = obs
     return self._flatten(obs)
+
+
+# ---------------------------------------------------------------------------
+# Litter corridor: hidden one-sided obstacle ("blind ant in a cluttered
+# corridor"). Confounded variant of the OFFLINE task above.
+# ---------------------------------------------------------------------------
+
+#: Obstacle zone in the bottom corridor (y ~ 0, interior |y| < 2): the
+#: straight segment before the right turn at (8, 0). World-frame x-range.
+LITTER_ZONE_X = (2.5, 5.5)
+#: Main pile |y| band on the active side (from rubble-adjacent edge to wall).
+LITTER_PILE_Y = (0.8, 2.0)
+LITTER_PILE_HEIGHT = 1.0        # tall: not traversable (walls are 2.0)
+#: Fixed middle rubble strip: |y| <= this, IDENTICAL under both U.
+LITTER_RUBBLE_Y = 0.45
+LITTER_RUBBLE_N = 12
+LITTER_RUBBLE_HALF_XY = (0.10, 0.22)   # half-extent range per box
+LITTER_RUBBLE_H = (0.08, 0.18)         # full height range (low: step-over)
+#: Rubble layout is generated ONCE from this seed -- frozen across episodes,
+#: env instances and env seeds (a second hidden variable would pollute both
+#: the hiddenness gate and attribution).
+LITTER_LAYOUT_SEED = 7
+LITTER_HIDE_Z = -10.0           # buried z for the inactive pile
+
+
+def build_litter_xml(maze_map=U_MAZE, scaling=SCALING, height=MAZE_HEIGHT):
+  """Maze xml + litter geoms.
+
+  Adds two mirrored main-pile boxes (litter_pile_pos / litter_pile_neg; the
+  inactive one is buried below the floor at reset) and LITTER_RUBBLE_N low
+  rubble boxes in the middle strip (fixed layout, U-independent). Returns
+  (xml_string, torso_offset, rubble_layout).
+  """
+  xml, offset = build_maze_xml(maze_map, scaling, height)
+  root = ET.fromstring(xml)
+  worldbody = root.find('.//worldbody')
+  x0, x1 = LITTER_ZONE_X
+  cx, hx = (x0 + x1) / 2, (x1 - x0) / 2
+  y0, y1 = LITTER_PILE_Y
+  cy, hy = (y0 + y1) / 2, (y1 - y0) / 2
+  hz = LITTER_PILE_HEIGHT / 2
+  for name, sign in (('litter_pile_pos', 1.0), ('litter_pile_neg', -1.0)):
+    ET.SubElement(worldbody, 'geom', name=name, type='box',
+                  pos=f'{cx} {sign * cy} {hz}', size=f'{hx} {hy} {hz}',
+                  material='', contype='1', conaffinity='1',
+                  rgba='0.35 0.55 0.3 1.0')
+  rng = np.random.default_rng(LITTER_LAYOUT_SEED)
+  rubble = []
+  for i in range(LITTER_RUBBLE_N):
+    sx, sy = rng.uniform(*LITTER_RUBBLE_HALF_XY, size=2)
+    rx = rng.uniform(x0 + sx, x1 - sx)
+    ry = rng.uniform(-LITTER_RUBBLE_Y + sy, LITTER_RUBBLE_Y - sy)
+    rh = rng.uniform(*LITTER_RUBBLE_H)
+    yaw = rng.uniform(0.0, 180.0)      # compiler angle="degree"
+    name = f'litter_rubble_{i}'
+    ET.SubElement(worldbody, 'geom', name=name, type='box',
+                  pos=f'{rx} {ry} {rh / 2}', size=f'{sx} {sy} {rh / 2}',
+                  euler=f'0 0 {yaw}', material='', contype='1',
+                  conaffinity='1', rgba='0.45 0.4 0.35 1.0')
+    rubble.append({'name': name, 'x': float(rx), 'y': float(ry),
+                   'half_x': float(sx), 'half_y': float(sy),
+                   'height': float(rh), 'yaw_deg': float(yaw)})
+  return ET.tostring(root, encoding='unicode'), offset, rubble
+
+
+class LitterOfflineAntUMazeEnv(OfflineD4rlAntUMazeEnv):
+  """Confounded 'cluttered corridor' variant of the offline umaze task.
+
+  Hidden episode variable ``U`` in {0, 1}, P = 0.5 each, sampled ONCE per
+  reset from an rng stream independent of the reset-noise / goal streams:
+    * U = 1: main litter pile on the +y side of the bottom corridor;
+    * U = 0: pile mirrored to the -y side.
+  A fixed low rubble strip (identical under both U) occupies the middle of
+  the zone; the side opposite the pile is clean. The 58-dim learner obs is
+  UNCHANGED (pure proprioception + zero-padded goal): U leaves no trace in
+  the observation until contact.
+
+  Teacher code reads ``privileged_u``; step() reports diagnostics
+  (u_side, pile/rubble contact counts at the post-step state, in_zone) in
+  the info dict -- sidecar only, NEVER part of the observation.
+  """
+
+  def __init__(self, max_episode_steps=700, seed=0, render_mode=None,
+               eval_goals=None, eval_goal_mode='d4rl'):
+    super().__init__(max_episode_steps=max_episode_steps, seed=seed,
+                     render_mode=render_mode, eval_goals=eval_goals,
+                     eval_goal_mode=eval_goal_mode)
+    xml, offset, rubble = build_litter_xml()
+    self._env = _Sim(xml, seed)          # replace sim with the litter model
+    self._torso_offset = offset          # same maze -> same origin
+    self.rubble_layout = rubble
+    m = self._env.model
+    def gid(n):
+      return mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_GEOM, n)
+    self._pile_gid = {1: gid('litter_pile_pos'), 0: gid('litter_pile_neg')}
+    self._pile_home = {u: m.geom_pos[g].copy()
+                       for u, g in self._pile_gid.items()}
+    self._rubble_gids = frozenset(gid(r['name']) for r in rubble)
+    self._u_rng = np.random.default_rng(seed + 20260719)
+    self.u_side = None
+    self.episode_contacts = {'pile': 0, 'rubble': 0}
+
+  @property
+  def privileged_u(self):
+    """Teacher-only obstacle-side bit. Learners must never read this."""
+    return self.u_side
+
+  def zone_info(self):
+    """Geometry handles for waypoint controllers / probes."""
+    clean_sign = -1.0 if self.u_side == 1 else 1.0
+    lane_lo, lane_hi = LITTER_RUBBLE_Y, LITTER_PILE_Y[1]
+    return {'zone_x': LITTER_ZONE_X,
+            'clean_lane_y': clean_sign * (lane_lo + lane_hi) / 2,
+            'middle_lane_y': 0.0,
+            'pile_y_band': LITTER_PILE_Y,
+            'rubble_half_width': LITTER_RUBBLE_Y}
+
+  def _apply_u(self, u_side):
+    m = self._env.model
+    for u, g in self._pile_gid.items():
+      m.geom_pos[g] = self._pile_home[u]
+      if u != u_side:
+        m.geom_pos[g][2] = LITTER_HIDE_Z
+    self.u_side = int(u_side)
+
+  def reset(self, u_side=None):
+    """``u_side`` override is for probes/gates only; normal use samples U."""
+    self._apply_u(self._u_rng.integers(2) if u_side is None else u_side)
+    self.episode_contacts = {'pile': 0, 'rubble': 0}
+    return super().reset()               # mj_forward runs after _apply_u
+
+  def _count_litter_contacts(self):
+    d = self._env.data
+    active_pile = self._pile_gid[self.u_side]
+    pile = rubble = 0
+    for i in range(d.ncon):
+      for g in (d.contact[i].geom1, d.contact[i].geom2):
+        if g == active_pile:
+          pile += 1
+        elif g in self._rubble_gids:
+          rubble += 1
+    return pile, rubble
+
+  def step(self, action):
+    obs, reward, done, info = super().step(action)
+    pile, rubble = self._count_litter_contacts()
+    self.episode_contacts['pile'] += pile
+    self.episode_contacts['rubble'] += rubble
+    xy = np.asarray(self._last_obs['achieved_goal'])
+    info = dict(info)
+    info.update(u_side=self.u_side, pile_contacts=pile,
+                rubble_contacts=rubble,
+                in_zone=bool(LITTER_ZONE_X[0] <= xy[0] <= LITTER_ZONE_X[1]
+                             and abs(xy[1]) < 2.0))
+    return obs, reward, done, info
