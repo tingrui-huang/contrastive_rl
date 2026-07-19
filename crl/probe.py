@@ -124,6 +124,63 @@ class ProbeController:
     return np.clip(a, -1.0, 1.0), g_steered
 
 
+# ---------------------------------------------------------------------------
+# From-scratch walker (Stage 1A, revised): direct-torque lane/speed policy.
+# The residual line was terminated (negative results kept in git history):
+# no outer loop could steer the 0.89 base below ~0.5 lane error. The walker
+# owns its own gait. It is a CORRIDOR specialist (+x direction only); at
+# deployment the route after the corridor is handed back to the 0.89 base
+# policy with the true goal (the validated 0.93 route-follower).
+# ---------------------------------------------------------------------------
+
+#: walker obs: state29 WITHOUT absolute x (irrelevant to corridor control,
+#: hurts generalization along the corridor) + y_ref + v_ref + explicit
+#: tracking errors.
+WALKER_OBS_DIM = 28 + 2 + 2
+
+
+def walker_obs(state29, y_ref, v_ref):
+  y_err = state29[1] - y_ref
+  v_err = state29[15] - v_ref            # qvel[0] = forward speed
+  return np.concatenate([state29[1:], [y_ref, v_ref, y_err, v_err]]
+                        ).astype(np.float32)
+
+
+def make_walker_networks(hidden=(256, 256)):
+  """actor(obs[WALKER_OBS_DIM]) -> torque in [-1,1]^8; critic -> twin q."""
+  def actor_fn(obs):
+    h = obs
+    for w in hidden:
+      h = jax.nn.relu(hk.Linear(w)(h))
+    return jnp.tanh(hk.Linear(8)(h))
+
+  def critic_fn(obs, act):
+    x = jnp.concatenate([obs, act], axis=-1)
+    qs = []
+    for _ in range(2):
+      h = x
+      for w in hidden:
+        h = jax.nn.relu(hk.Linear(w)(h))
+      qs.append(hk.Linear(1)(h)[..., 0])
+    return tuple(qs)
+
+  return (hk.without_apply_rng(hk.transform(actor_fn)),
+          hk.without_apply_rng(hk.transform(critic_fn)))
+
+
+class WalkerController:
+  """Deployment: frozen walker in the corridor, by (y_ref, v_ref) command."""
+
+  def __init__(self, walker_params, actor=None):
+    self._actor = actor or make_walker_networks()[0]
+    self._params = walker_params
+    self._act = jax.jit(lambda p, o: self._actor.apply(p, o))
+
+  def __call__(self, obs58, y_ref, v_ref):
+    wo = walker_obs(obs58[:29], y_ref, v_ref)
+    return np.asarray(self._act(self._params, wo[None])[0])
+
+
 def save_residual(path, params, meta):
   with open(path, 'wb') as f:
     pickle.dump({'params': jax.device_get(params), 'meta': meta}, f)
