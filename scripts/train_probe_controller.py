@@ -220,6 +220,7 @@ def run_episode(env, base_act, trainer, y_ref, v_ref, explore, store=True):
     q = env._env.data.qpos
     qv = env._env.data.qvel
     y, vx, yaw = float(o2[1]), float(qv[0]), abs(torso_yaw(np.asarray(q)))
+    in_zone_m = 2.5 <= float(o2[0]) <= 5.5
     contact = int(info.get('pile_contacts', 0) > 0
                   or info.get('rubble_contacts', 0) > 0)
     fell = torso_up_z(np.asarray(q)) < 0.3 or float(q[2]) < 0.2
@@ -238,8 +239,12 @@ def run_episode(env, base_act, trainer, y_ref, v_ref, explore, store=True):
           np.array([min(o2[0] + probe.LOOKAHEAD, probe.CARROT_CAP_X), y_ref],
                    np.float32), y_ref, v_ref)
       trainer.store(ro_new, a_res, r, ro2, 0.0 if terminal else 1.0)
-    stats['y_err'].append(abs(y - y_ref))
-    stats['vx'].append(vx)
+    # in-zone stats only: whole-episode stats have a ~1.0 floor for side
+    # lanes (the lateral entry transient dominates short fast episodes) and
+    # mask real tracking progress. The gate requirement is in-zone anyway.
+    if in_zone_m:
+      stats['y_err'].append(abs(y - y_ref))
+      stats['vx'].append(vx)
     stats['contact'] += contact
     prev_x, prev_a_res, o, ro = float(o2[0]), a_res, o2, ro_new
     if terminal:
@@ -256,10 +261,10 @@ def evaluate(env, base_act, trainer):
     for _ in range(5):
       s = run_episode(env, base_act, trainer, y_ref, v_ref,
                       explore=False, store=False)
-      zone = [e for i, e in enumerate(s['y_err'])]   # whole run
+      zone = s['y_err'] or [2.0]         # fell before the zone: worst-case
       rows.append({'y_ref': y_ref, 'v_ref': v_ref,
                    'y_err_p90': float(np.percentile(zone, 90)),
-                   'vx_mean': float(np.mean(s['vx'])),
+                   'vx_mean': float(np.mean(s['vx'] or [0.0])),
                    'reached': bool(s['reached']), 'fell': bool(s['fell']),
                    'steps': s['steps'], 'contact': s['contact']})
   agg = {
