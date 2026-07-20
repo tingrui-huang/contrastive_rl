@@ -322,9 +322,18 @@ LITTER_SLICK_FRICTION = '0.08 0.005 0.0001'
 #: contact (careful stepping/grinding) stays safe. Forces are checked every
 #: SUBSTEP so frame_skip cannot swallow an impact spike. The slick plate is
 #: excluded (liquid cannot collapse; weight-bearing on it is harmless).
-#: None disables collapse (calibration mode). Value set by the Stage-1
-#: calibration run (see artifacts/litter_env/collapse_calibration.json).
-LITTER_COLLAPSE_FORCE = None    # placeholder until calibrated
+#: None disables collapse (calibration mode). CALIBRATED 2026-07-20 on the
+#: frozen phase-1 walker (artifacts/litter_env/walker_calibrate*.json,
+#: seed 311): horizontal-normal-force alone separates the clean lane
+#: perfectly (0 deaths at >=80N) but NOT slow-vs-fast wading (grinding peak
+#: force comes from geometry, not approach speed) -- and horizontal IMPULSE
+#: separates no better. The discriminator is the precontact planar speed
+#: (the walker genuinely tracks commanded speed), so collapse fires only on
+#: FAST hard contact: hforce > LITTER_COLLAPSE_FORCE AND the step's
+#: precontact planar speed > LITTER_COLLAPSE_SPEED. Projected gate at
+#: (80, 1.2): clean 0.92 / middle_slow 0.78 / middle_fast 0.46 / pile 0.12.
+LITTER_COLLAPSE_FORCE = 80.0
+LITTER_COLLAPSE_SPEED = 1.2
 #: Skirt layout is generated ONCE from this seed and mirrored exactly, so
 #: the two U configurations are geometrically identical up to reflection --
 #: frozen across episodes, env instances and env seeds (a second hidden
@@ -445,6 +454,7 @@ class LitterOfflineAntUMazeEnv(OfflineD4rlAntUMazeEnv):
     self._u_rng = np.random.default_rng(seed + 20260719)
     self.u_side = None
     self.collapse_force = LITTER_COLLAPSE_FORCE
+    self.collapse_speed = LITTER_COLLAPSE_SPEED
     self._dead = False
     self._force_buf = np.zeros(6)
     self.episode_contacts = {'pile': 0, 'rubble': 0}
@@ -575,10 +585,14 @@ class LitterOfflineAntUMazeEnv(OfflineD4rlAntUMazeEnv):
     self.episode_max_force = max(self.episode_max_force, fmax)
     self.episode_max_hforce = max(self.episode_max_hforce, hmax)
     self.episode_max_himpulse = max(self.episode_max_himpulse, himp)
-    #: collapse trigger uses the HORIZONTAL normal force: weight bearing on
-    #: top of rubble (vertical normal) can never bury the ant.
+    #: collapse trigger: HORIZONTAL normal force (weight bearing on top of
+    #: rubble is vertical and can never bury the ant) gated by the step's
+    #: precontact planar speed (slow careful contact is safe; fast ramming
+    #: collapses the pile).
     if (self.collapse_force is not None
-        and hmax > self.collapse_force):
+        and hmax > self.collapse_force
+        and (self.collapse_speed is None
+             or pre_speed > self.collapse_speed)):
       self._dead = True                  # pile collapsed onto the ant
     pile, rubble = self._count_litter_contacts()
     self.episode_contacts['pile'] += pile

@@ -130,6 +130,8 @@ def main():
   ap.add_argument('--calibrate', action='store_true')
   ap.add_argument('--collapse', type=float, default=None,
                   help='collapse_force (horizontal N) for the gate run')
+  ap.add_argument('--collapse-speed', type=float, default=None,
+                  help='precontact planar speed gate for collapse')
   ap.add_argument('--arms', nargs='+', default=list(ARMS))
   ap.add_argument('--out', default=None)
   args = ap.parse_args()
@@ -164,6 +166,7 @@ def main():
     env = envs_mod.make_env(env_name, cfg, seed=args.seed)
     if hasattr(env, 'collapse_force'):
       env.collapse_force = args.collapse
+      env.collapse_speed = args.collapse_speed
     rows = [run_episode(env, walker, base_act, arm, ep,
                         u_side=(ep % 2 if arm != 'nolitter' else None),
                         record=records)
