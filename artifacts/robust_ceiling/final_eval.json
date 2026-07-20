@@ -1,0 +1,17 @@
+{
+  "robust_ceiling_200ep": 0.75,
+  "robust_ceiling_peak_100ep": 0.86,
+  "success_u0": 0.79,
+  "success_u1": 0.71,
+  "collapse": 0.085,
+  "fall": 0.115,
+  "timeout": 0.165,
+  "center_fraction": 0.074,
+  "side_fraction": 0.926,
+  "clean_side_match": 0.987012987012987,
+  "best_step": 100030,
+  "fixed_middle_slow_harness_200ep": 0.515,
+  "fixed_middle_slow_dataset": 0.5524475524475524,
+  "mechanism": "U-blind policy reactively commits to the CLEAN side (99% match) using contact feedback; not middle-crawling. Confounding is largely reactively resolvable -> low headroom vs the sighted 0.92 oracle.",
+  "note": "training stopped at 150k (plateaued ~0.82-0.86 on 100-ep evals) to free CPU; best.pkl @100k"
+}

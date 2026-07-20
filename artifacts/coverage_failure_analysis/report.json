@@ -1,0 +1,171 @@
+{
+  "n_coverage": 143,
+  "n_success": 79,
+  "n_fail": 64,
+  "success_rate": 0.5524475524475524,
+  "success_rate_by_U": {
+    "u0": 0.47058823529411764,
+    "u1": 0.6266666666666667
+  },
+  "category_counts": {
+    "1_collapse_litter": 24,
+    "2_fall_litter": 10,
+    "3_wedged_before_exit": 16,
+    "4_cleared_timeout": 6,
+    "5_fail_after_handoff": 8,
+    "6_other": 0
+  },
+  "category_pct_of_failures": {
+    "1_collapse_litter": 37.5,
+    "2_fall_litter": 15.6,
+    "3_wedged_before_exit": 25.0,
+    "4_cleared_timeout": 9.4,
+    "5_fail_after_handoff": 12.5,
+    "6_other": 0.0
+  },
+  "category_by_U": {
+    "1_collapse_litter": {
+      "u0": 9,
+      "u1": 15
+    },
+    "2_fall_litter": {
+      "u0": 9,
+      "u1": 1
+    },
+    "3_wedged_before_exit": {
+      "u0": 13,
+      "u1": 3
+    },
+    "4_cleared_timeout": {
+      "u0": 2,
+      "u1": 4
+    },
+    "5_fail_after_handoff": {
+      "u0": 3,
+      "u1": 5
+    },
+    "6_other": {
+      "u0": 0,
+      "u1": 0
+    }
+  },
+  "failures_before_handoff": 46,
+  "failures_after_handoff": 18,
+  "unstick": {
+    "eps_with_nudges": 95,
+    "total_nudges": 542,
+    "total_recovered": 117,
+    "recovery_rate": 0.2158671586715867,
+    "mean_nudges_success": 1.3924050632911393,
+    "mean_nudges_fail": 6.75
+  },
+  "succ_vs_fail": {
+    "max_hforce": {
+      "success": 76.74903106689453,
+      "fail": 84.42915344238281
+    },
+    "pre_contact_speed": {
+      "success": 0.8753170371055603,
+      "fail": 0.9495997428894043
+    },
+    "zone_traversal_steps": {
+      "success": 83.0,
+      "fail": 104.0
+    },
+    "n_nudges": {
+      "success": 1.0,
+      "fail": 4.0
+    }
+  },
+  "fail_step_distribution": {
+    "p10": 94.3,
+    "p50": 282.0,
+    "p90": 699.0
+  },
+  "fail_location_x_hist": [
+    0,
+    5,
+    8,
+    16,
+    4,
+    11,
+    5,
+    9,
+    5,
+    0
+  ],
+  "fail_location_x_bins": [
+    0,
+    1,
+    2,
+    2.5,
+    3.2,
+    4,
+    5,
+    5.5,
+    6,
+    8,
+    10
+  ],
+  "gif_selection": {
+    "1_collapse_litter": [
+      27,
+      108,
+      129
+    ],
+    "2_fall_litter": [
+      128,
+      255,
+      321
+    ],
+    "3_wedged_before_exit": [
+      126,
+      510,
+      531
+    ],
+    "4_cleared_timeout": [
+      50,
+      153,
+      534
+    ],
+    "5_fail_after_handoff": [
+      84,
+      133,
+      238
+    ],
+    "6_other": [],
+    "success": [
+      10,
+      24,
+      34
+    ]
+  },
+  "clustering": {
+    "failures_in_corridor_pre_handoff_pct": 71.9,
+    "failures_post_handoff_pct": 28.1,
+    "fails_reached_handoff": "20/64",
+    "collapse_locations": {
+      "in_reef_2.5_3.2": "8/24",
+      "deeper_zone_x>3.2": "13/24",
+      "before_reef_x<2.5": "3/24",
+      "median_collapse_x": 4.45,
+      "collapse_max_hforce_median": 89.4,
+      "note": "collapses spread across the litter zone leaning DEEPER (skirt), median x 4.45; hforce ~89>80 gate. v=0.8 COMMAND still yields stride speed bursts >1.2 that trip the collapse gate on hard contact."
+    },
+    "wedged": {
+      "median_nudges": 14,
+      "median_stuck_x": 4.22,
+      "note": "wedged eps thrash ~14 unstick nudges and never exit; unstick recovery only 21.6% overall."
+    },
+    "fail_x_peak": "entry reef 2.5-3.2 (16) + zone-exit 5.5-6 (9) + mid 4-5 (11)"
+  },
+  "diagnosis": {
+    "dominant_failure_mode": "in-corridor loss BEFORE handoff (72% of failures): collapse 37.5% + wedged 25% + fall-in-litter 15.6%. Collapse is the single largest category. Only 22% of failures are post-handoff.",
+    "primary_cause": "The FIXED middle-crawl strategy at v=0.8 is the root. (1) It is not contact-aware: the walker stride produces instantaneous planar-speed bursts >1.2 that trip the (calibrated) collapse gate on hard litter contact (hforce ~89>80) -> 37.5% collapse. (2) The alternating-nudge unstick is ineffective (21.6% recovery; failing eps thrash ~14 nudges) -> 25% wedged. The collapse RULE is not the culprit (it is calibrated), the episode HORIZON is minor (9.4% clean timeouts), and the post-handoff BASE policy is minor (12.5%).",
+    "why_it_is_structural": "middle-slow deliberately crawls the CENTER, which is exactly where the reef+skirt sit, so it always faces litter. The robust-ceiling diagnostic policy instead reactively commits to the CLEAN side (99% clean-side, center 0.07) and reaches 0.75-0.86 -- it AVOIDS the litter rather than wading it.",
+    "smallest_targeted_intervention": "contact-aware speed cut: on detecting litter contact / entering the reef, drop commanded speed to <=0.4 to keep instantaneous planar speed under the 1.2 collapse gate. This directly attacks the 37.5% collapse category. Secondary: replace the alternating-nudge unstick with a more effective recovery (current 21.6%). Both keep the middle strategy.",
+    "is_retrain_necessary": "Not strictly for a meaningful gain -- the two drivers (speed-burst collapse, weak unstick) are addressable by a small scripted change, likely landing ~0.65-0.75. But the learned adaptive U-blind ceiling is 0.75-0.86 (vs 0.55) by SIDE-committing, so a retrain/adaptive controller captures the full headroom. Retrain is sufficient but not necessary; the minimal scripted fix (contact-aware slowdown) is the smaller first step.",
+    "u_asymmetry": "coverage u0 0.471 vs u1 0.627. u0 fails via falls(9) + wedged(13); u1 fails via collapse(15). Different failure texture per side."
+  },
+  "resim_note": "re-sim outcome-faithful for 134/143 coverage eps; 9 borderline eps [304,324,447,531,539,867,938,1171,1342] diverged cross-process (JAX/BLAS float non-determinism over 700-step chaotic rollouts) -> their FALL flag is unreliable and never used to assign the fall category. All other fields are sidecar-authoritative. GIF 3_wedged ep531 is one such unreliable re-sim."
+}
