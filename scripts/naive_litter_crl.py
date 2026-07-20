@@ -30,10 +30,13 @@ def main():
   ap.add_argument('--seed', type=int, default=0)
   ap.add_argument('--ckpt-dir', default='artifacts/naive_litter_crl')
   ap.add_argument('--npz', default=LITTER_NPZ)
+  ap.add_argument('--resume', action='store_true',
+                  help='resume from <ckpt-dir>/latest.pkl (Colab disconnect)')
   args = ap.parse_args()
   os.makedirs(args.ckpt_dir, exist_ok=True)
 
   cfg = build_offline_cfg(max_steps=args.steps, ckpt_dir=args.ckpt_dir)
+  cfg.resume = args.resume
   # train + EVAL on the litter env (collapse ON) so lane/collapse are visible;
   # dataset is the litter learner npz (obs/act only). Everything else is the
   # byte-identical faithful offline recipe (bc 0.05, twin-min, alpha 0, etc.).
