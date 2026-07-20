@@ -34,7 +34,8 @@ ENV_SEED = 12_450_067         # balanced; brand-new
 DATASET_SEED = 14_760_053     # dedicated mixture-assignment RNG (independent)
 # every seed consumed by ANY prior development / gate / teacher / pilot run
 CONSUMED = [311, 500, 622, 777, 888, 999, 1234,
-            8_150_023, 5_090_023, 9_271_033, 6_330_047]
+            8_150_023, 5_090_023, 9_271_033, 6_330_047,
+            12_450_067, 14_760_053]        # + Stage-3A mixture-pilot seeds
 # Stage-3 dataset mixture (user-approved 2026-07-20), EXACT per-episode counts:
 MIX = {'sighted': 0.85, 'blind': 0.05, 'coverage': 0.10}
 EPSILON = 0.05                # = blind fraction (confounding component)
@@ -137,12 +138,17 @@ def main():
   ap.add_argument('--episodes', type=int, default=200)
   ap.add_argument('--smoke', type=int, default=0)
   ap.add_argument('--out', default=None)
+  ap.add_argument('--env-seed', type=int, default=ENV_SEED)
+  ap.add_argument('--dataset-seed', type=int, default=DATASET_SEED)
+  ap.add_argument('--name', default='antmaze_litter_pilot',
+                  help='npz basename (learner + _sidecar)')
   args = ap.parse_args()
   n = args.smoke or args.episodes
+  env_seed, dataset_seed, name = args.env_seed, args.dataset_seed, args.name
 
   # --- A1 gate BEFORE any collection ---
   hard_ok, disc, info = C.check_frozen_integrity()
-  clash = C.seed_reuse(CONSUMED, [ENV_SEED], [DATASET_SEED])
+  clash = C.seed_reuse(CONSUMED, [env_seed], [dataset_seed])
   print('A1 frozen integrity: hard_ok =', hard_ok, '| seed clash =', clash)
   for d in disc:
     print('   discrepancy:', json.dumps(d))
@@ -153,7 +159,7 @@ def main():
   # versioned output dir; never overwrite an existing pilot
   out = args.out or os.path.join(OUT_ROOT, 'smoke' if args.smoke else 'pilot')
   if not args.smoke and os.path.exists(os.path.join(out,
-                                                    'antmaze_litter_pilot.npz')):
+                                                    f'{name}.npz')):
     v = 2
     while os.path.exists(out + f'_v{v}'):
       v += 1
@@ -167,9 +173,9 @@ def main():
   # litter env; empty offline_dataset so make_env does not load the 133MB npz
   # (eval goals come from the frozen d4rl goal sampler, not the dataset).
   cfg.offline_dataset = ''
-  env = envs_mod.make_env('offline_ant_umaze_litter', cfg, seed=ENV_SEED)
+  env = envs_mod.make_env('offline_ant_umaze_litter', cfg, seed=env_seed)
   assert env.collapse_force == 80.0 and env.collapse_speed == 1.2
-  dataset_rng = np.random.default_rng(DATASET_SEED)   # independent stream
+  dataset_rng = np.random.default_rng(dataset_seed)   # independent stream
   # EXACT-count mixture, assigned to episode slots and shuffled by the
   # dataset RNG (independent of the env's U stream -> mode is U-independent).
   n_blind = int(round(MIX['blind'] * n))
@@ -198,7 +204,7 @@ def main():
     for k in step_keys:
       step_side[k][e] = sc[k]
     ep['episode_id'] = e
-    ep['collection_seed'] = ENV_SEED
+    ep['collection_seed'] = env_seed
     ep_rows.append(ep)
     if (e + 1) % 25 == 0:
       print(f'  collected {e + 1}/{n}', flush=True)
@@ -208,14 +214,14 @@ def main():
           'start_index': 0, 'end_index': -1, 'goal_indices': list(range(29)),
           'note': 'Stage-3A litter pilot; learner keys are obs/act only.'}
 
-  npz_path = os.path.join(out, 'antmaze_litter_pilot.npz')
+  npz_path = os.path.join(out, f'{name}.npz')
   tmp = npz_path + '.tmp'
   with open(tmp, 'wb') as f:
     np.savez_compressed(f, obs=obs_all, act=act_all, eval_goals=eval_goals,
                         lengths=lengths, meta=json.dumps(meta))
   os.replace(tmp, npz_path)
 
-  side_path = os.path.join(out, 'antmaze_litter_pilot_sidecar.npz')
+  side_path = os.path.join(out, f'{name}_sidecar.npz')
   ep_arr = {k: np.array([r[k] for r in ep_rows]) for k in
             ('episode_id', 'u_side', 'blind', 'u_independent',
              'active_pile_side', 'teacher_mode', 'speed_cmd_nominal',
@@ -246,8 +252,8 @@ def main():
       'walker_sha256': info['walker_sha256'], 'walker_step': int(wmeta['step']),
       'base_policy_path': 'offline_umaze_bc005_twinmin_s0_50k/checkpoints/best.pkl',
       'base_policy_sha256': info['base_sha256'], 'base_policy_step': base_step,
-      'env_seed': ENV_SEED, 'dataset_rng_seed': DATASET_SEED,
-      'collection_seeds': [ENV_SEED, DATASET_SEED],
+      'env_seed': env_seed, 'dataset_rng_seed': dataset_seed,
+      'collection_seeds': [env_seed, dataset_seed],
       'consumed_seeds_checked': CONSUMED, 'seed_reuse': clash,
       'mixture': MIX,
       'mixture_counts': {'sighted': n_sight, 'blind': n_blind,

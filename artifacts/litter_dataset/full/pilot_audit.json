@@ -1,0 +1,210 @@
+{
+  "dir": "artifacts/litter_dataset/full",
+  "status": "PILOT_PASS_READY_FOR_FULL_COLLECTION",
+  "core_gates_pass": true,
+  "coverage_decision": null,
+  "gates": {
+    "A1": {
+      "pass": true,
+      "checkpoint_hashes_match": true,
+      "npz_hash_match": true,
+      "sidecar_hash_match": true,
+      "seed_reuse": [],
+      "hard_discrepancies": [],
+      "doc_discrepancies": []
+    },
+    "A2": {
+      "obs_shape": [
+        1426,
+        701,
+        58
+      ],
+      "act_shape": [
+        1426,
+        701,
+        8
+      ],
+      "obs58": true,
+      "act8": true,
+      "lengths_len_ok": true,
+      "obs_finite": true,
+      "act_finite": true,
+      "act_in_bounds": true,
+      "transitions": 977630,
+      "states": 979056,
+      "lengths_valid": true,
+      "key_classification": {
+        "learner": [
+          "act",
+          "obs"
+        ],
+        "audit": [],
+        "meta": [],
+        "structural": [
+          "eval_goals",
+          "lengths"
+        ],
+        "other": []
+      },
+      "pass": true
+    },
+    "A3": {
+      "pass": true,
+      "leaked_learner_keys": [],
+      "paired_reset_precontact_identical": true,
+      "first_divergence_step": null
+    },
+    "A4": {
+      "pass": true,
+      "relabel_all_in_episode": true,
+      "lengths_match_dataset": true,
+      "save_load_roundtrip_sha_match": true,
+      "n_relabel_samples_checked": 200000
+    },
+    "A5": {
+      "pass": true,
+      "n_u1": 716,
+      "n_u0": 710,
+      "frac_u1": 0.5021037868162693,
+      "balance_gate_45_55": true,
+      "mode_counts": {
+        "sighted": 1212,
+        "blind": 71,
+        "coverage": 143
+      },
+      "success_by_u": {
+        "u1": 0.861731843575419,
+        "u0": 0.8718309859154929
+      },
+      "collapse_by_u": {
+        "u1": 0.03770949720670391,
+        "u0": 0.016901408450704224
+      },
+      "u1_frac_within_mode": {
+        "sighted": 0.49504950495049505,
+        "blind": 0.5774647887323944,
+        "coverage": 0.5244755244755245
+      },
+      "blind_vs_u_chi2": 1.697460146103524,
+      "u_independent_vs_u_chi2": 1.6076135916516274,
+      "mode_independent_of_u_chi2_lt_3_84": true,
+      "env_u_rng_seed": "env_seed(25770061)+20260719",
+      "dataset_rng_seed": 28110043
+    },
+    "A6": {
+      "pass": true,
+      "command_compliance_deterministic": 1.0,
+      "sighted_trajectory_compliance_rate": 0.9762962962962963,
+      "sighted_zone_mean_y_u1": -0.9773512209086149,
+      "sighted_zone_mean_y_u0": 0.994094650691686,
+      "sighted_lane_separation_effect_size": 1.971445871600301,
+      "privileged_command_u0_lane": 1.1,
+      "privileged_command_u1_lane": -1.1,
+      "blind_action_invariance_max_diff": 0.0
+    },
+    "A7": {
+      "pass": true,
+      "near_median_l2": 2.8254690170288086,
+      "far_median_l2": 0.0,
+      "near_max_l2": 4.602428436279297,
+      "far_max_l2": 0.0,
+      "near_median_dxy": 0.08352876454591751,
+      "near_median_dv": 1.047456683947901,
+      "near_collapse_frac": 0.7,
+      "n_near": 30,
+      "n_far": 30
+    },
+    "A8": {
+      "pass": true,
+      "environmental_hiddenness_coverage_only": {
+        "probe_acc": 0.5187252149655388,
+        "probe_auc": 0.5427149237815849,
+        "acc_ci95": [
+          0.5023794769025564,
+          0.6234216464419378
+        ],
+        "perm_null_mean": 0.4898388770018489,
+        "perm_null_p95": 0.5235049872885169,
+        "perm_pvalue": 0.1,
+        "n_states": 1851,
+        "n_episodes": 143,
+        "significant": false
+      },
+      "environmental_hiddenness_blind_only": {
+        "probe_acc": 0.5414093497650849,
+        "probe_auc": 0.5856610658247497,
+        "acc_ci95": [
+          0.50503128779552,
+          0.6761827396258157
+        ],
+        "perm_null_mean": 0.532186452141307,
+        "perm_null_p95": 0.5691729936053358,
+        "perm_pvalue": 0.38,
+        "n_states": 1125,
+        "n_episodes": 71,
+        "significant": false
+      },
+      "mixed_u_independent_probe_confounded": {
+        "probe_acc": 0.5572553149263051,
+        "probe_auc": 0.5770320992549167,
+        "acc_ci95": [
+          0.5448469646324121,
+          0.6190979736769706
+        ],
+        "perm_null_mean": 0.51083921254653,
+        "perm_null_p95": 0.546924483044928,
+        "perm_pvalue": 0.0,
+        "n_states": 2976,
+        "n_episodes": 214,
+        "significant": true
+      },
+      "confounding_strength_probe_full": {
+        "probe_acc": 0.9276479082747056,
+        "probe_auc": 0.9885763088377658,
+        "acc_ci95": [
+          0.9125583232580448,
+          0.9421241686497495
+        ],
+        "perm_null_mean": 0.49211216003538694,
+        "perm_null_p95": 0.5346305162352638,
+        "perm_pvalue": 0.0,
+        "n_states": 20000,
+        "n_episodes": 1426,
+        "significant": true
+      },
+      "a3_paired_reset_identical": true,
+      "interpretation": "Environmental hiddenness holds: A3 proves the observation is byte-identical under U-flip, and WITHIN each single U-independent behaviour the pre-contact probe is not significant (coverage-only acc=0.519 p=0.100; blind-only acc=0.541 p=0.380). The mixed U-independent probe is CONFOUNDED (speed->subset->U-prior) and must not be used. The HIGH full-dataset predictability (acc=0.928) is the intended U->A->S confounding (sighted teacher steers by U), not leakage.",
+      "significant_predictability_detected_full": true
+    },
+    "A9": {
+      "pass": true,
+      "raw_near_complete_coverage": true,
+      "meaningful_support": true,
+      "coverage_resolved_by_approved_mixture": true,
+      "mixture_coverage_fraction_of_episodes": 0.1,
+      "n_reference_middle_slow_states": 1647,
+      "n_pilot_zone_states": 67008,
+      "nn_state_dist_median": 2.3723134994506836,
+      "nn_state_dist_p90": 3.282946538925171,
+      "coverage_threshold": 2.397874593734741,
+      "coverage_fraction": 0.5112325440194293,
+      "nn_action_dist_median": 1.495286464691162,
+      "nn_action_dist_p90": 2.5593408107757574,
+      "k5_action_dist_median": 1.6381534337997437,
+      "center_slow_zone_transitions": 19720,
+      "total_zone_transitions": 67008,
+      "center_slow_fraction": 0.2942932187201528,
+      "episodes_with_sustained_center_slow": 205,
+      "lateral_pos_p10_p50_p90": [
+        -1.0795493006706238,
+        0.11542390659451485,
+        1.1211194276809693
+      ]
+    }
+  },
+  "npz_sha256": "715aaeb832283f2b52bd2569e96002c238d5082f2f660eeed104d933f1157703",
+  "sidecar_sha256": "f913a5ba40d334f87a543b0598584faba518ab3271c669d49448813d60bb97bc",
+  "n_episodes": 1426,
+  "n_states": 979056,
+  "n_transitions": 977630
+}
