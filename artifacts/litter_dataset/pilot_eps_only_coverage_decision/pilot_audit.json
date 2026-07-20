@@ -1,0 +1,178 @@
+{
+  "dir": "artifacts/litter_dataset/pilot",
+  "status": "COVERAGE_DECISION_REQUIRED",
+  "core_gates_pass": true,
+  "coverage_decision": "COVERAGE_DECISION_REQUIRED",
+  "gates": {
+    "A1": {
+      "pass": true,
+      "checkpoint_hashes_match": true,
+      "npz_hash_match": true,
+      "sidecar_hash_match": true,
+      "seed_reuse": [],
+      "hard_discrepancies": [],
+      "doc_discrepancies": [
+        {
+          "field": "commands.slow_v",
+          "severity": "doc",
+          "code_teacher_blind_v": 0.6,
+          "manifest_slow_v": 0.8,
+          "note": "manifest slow_v documents the GATE middle_slow arm (--slow-v 0.8); the frozen QUALIFIED teacher blind policy uses WG.SLOW_V=probe.V_SLOW=0.6. Data generation uses the code value. Manifest should split gate_middle_slow_v from teacher_blind_v before full collection."
+        }
+      ]
+    },
+    "A2": {
+      "obs_shape": [
+        200,
+        701,
+        58
+      ],
+      "act_shape": [
+        200,
+        701,
+        8
+      ],
+      "obs58": true,
+      "act8": true,
+      "lengths_len_ok": true,
+      "obs_finite": true,
+      "act_finite": true,
+      "act_in_bounds": true,
+      "transitions": 138613,
+      "states": 138813,
+      "lengths_valid": true,
+      "key_classification": {
+        "learner": [
+          "act",
+          "obs"
+        ],
+        "audit": [],
+        "meta": [],
+        "structural": [
+          "eval_goals",
+          "lengths"
+        ],
+        "other": []
+      },
+      "pass": true
+    },
+    "A3": {
+      "pass": true,
+      "leaked_learner_keys": [],
+      "paired_reset_precontact_identical": true,
+      "first_divergence_step": null
+    },
+    "A4": {
+      "pass": true,
+      "relabel_all_in_episode": true,
+      "lengths_match_dataset": true,
+      "save_load_roundtrip_sha_match": true,
+      "n_relabel_samples_checked": 200000
+    },
+    "A5": {
+      "pass": true,
+      "n_u1": 103,
+      "n_u0": 97,
+      "frac_u1": 0.515,
+      "balance_gate_45_55": true,
+      "success_by_u": {
+        "u1": 0.8737864077669902,
+        "u0": 0.9175257731958762
+      },
+      "collapse_by_u": {
+        "u1": 0.02912621359223301,
+        "u0": 0.0
+      },
+      "blind_rate_by_u": {
+        "u1": 0.038834951456310676,
+        "u0": 0.07216494845360824
+      },
+      "blind_vs_u_chi2": 1.0677141895238185,
+      "blind_vs_u_independent_chi2_lt_3_84": true,
+      "env_u_rng_seed": "env_seed(9271033)+20260719",
+      "dataset_rng_seed": 6330047
+    },
+    "A6": {
+      "pass": true,
+      "sighted_compliance_rate": 1.0,
+      "sighted_zone_mean_y_u1": -1.0383059899417721,
+      "sighted_zone_mean_y_u0": 1.0569704532623292,
+      "sighted_lane_separation_effect_size": 2.095276443204101,
+      "privileged_command_u0_lane": 1.1,
+      "privileged_command_u1_lane": -1.1,
+      "blind_action_invariance_max_diff": 0.0
+    },
+    "A7": {
+      "pass": true,
+      "near_median_l2": 2.8254690170288086,
+      "far_median_l2": 0.0,
+      "near_max_l2": 4.602428436279297,
+      "far_max_l2": 0.0,
+      "near_median_dxy": 0.08352876454591751,
+      "near_median_dv": 1.047456683947901,
+      "near_collapse_frac": 0.7,
+      "n_near": 30,
+      "n_far": 30
+    },
+    "A8": {
+      "pass": true,
+      "environmental_hiddenness_probe_blind_only": {
+        "probe_acc": 0.5177420932188472,
+        "probe_auc": 0.47765721120984284,
+        "acc_ci95": [
+          0.3896720480616757,
+          0.9909722222222223
+        ],
+        "perm_null_mean": 0.5121651882361056,
+        "perm_null_p95": 0.5984392168933296,
+        "perm_pvalue": 0.46,
+        "n_states": 218,
+        "n_episodes": 11,
+        "significant": false
+      },
+      "confounding_strength_probe_full": {
+        "probe_acc": 0.9629919938885708,
+        "probe_auc": 0.9971024288787793,
+        "acc_ci95": [
+          0.9399671853878311,
+          0.9953552430289966
+        ],
+        "perm_null_mean": 0.49001419049070194,
+        "perm_null_p95": 0.5462105418960971,
+        "perm_pvalue": 0.0,
+        "n_states": 2961,
+        "n_episodes": 200,
+        "significant": true
+      },
+      "a3_paired_reset_identical": true,
+      "interpretation": "Environmental hiddenness holds: the observation carries no U label (A3 exact identity; blind-only probe not significant). The HIGH full-dataset predictability (acc=0.963) is the confounding pathway U->A->S (sighted teacher steers by U pre-contact), which is the intended mechanism, not leakage.",
+      "significant_predictability_detected_full": true
+    },
+    "A9": {
+      "pass": false,
+      "n_reference_middle_slow_states": 1799,
+      "n_pilot_zone_states": 8108,
+      "nn_state_dist_median": 3.0971572399139404,
+      "nn_state_dist_p90": 4.46711654663086,
+      "coverage_threshold": 2.4574332237243652,
+      "coverage_fraction": 0.25514174541411894,
+      "nn_action_dist_median": 2.133216381072998,
+      "nn_action_dist_p90": 3.0666205883026123,
+      "k5_action_dist_median": 2.1368565559387207,
+      "center_slow_zone_transitions": 1048,
+      "total_zone_transitions": 8108,
+      "center_slow_fraction": 0.1292550567340898,
+      "episodes_with_sustained_center_slow": 11,
+      "lateral_pos_p10_p50_p90": [
+        -1.112852394580841,
+        0.09941085055470467,
+        1.1077605485916138
+      ]
+    }
+  },
+  "npz_sha256": "5d45416c9f2497ef01ebd9764e1e85e4d3c9f7f211bd707ed8e8dd1e36adc987",
+  "sidecar_sha256": "da5507e98adf44c385565429c851dfe6033a60e13a6148332b5b29260980c7a9",
+  "n_episodes": 200,
+  "n_states": 138813,
+  "n_transitions": 138613
+}

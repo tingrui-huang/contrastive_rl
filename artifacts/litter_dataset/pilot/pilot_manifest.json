@@ -1,25 +1,20 @@
 {
   "collection_date_utc": "2026-07-20",
-  "git_commit": "28915e3bb3ecf3027a50af7996377a2633e3f274",
+  "git_commit": "d1edde2047f88b3250888fb920994b41135dc365",
   "freeze_manifest_path": "artifacts/freeze_signature/litter_freeze.json",
-  "freeze_manifest_sha256": "6fb3328a5a6ead3a81246e2bb716f9ac015d85ec5a6810f5ef94ca8252db83f1",
+  "freeze_manifest_sha256": "d30ef28ccee19bf83ca1c08978c04a113934e100e174291d7c5d769bb380ed9d",
   "walker_path": "artifacts/walker/phase1/walker_best.pkl",
   "walker_sha256": "70b0a460b2e38332821f1846b48c75fbcdc884dd315b29c97ebc69083388cdd5",
   "walker_step": 1950016,
   "base_policy_path": "offline_umaze_bc005_twinmin_s0_50k/checkpoints/best.pkl",
   "base_policy_sha256": "6bece3e37c6e994fa612d721ff6e4320bebf36df8fdf3a11d6ea354a39a286ac",
   "base_policy_step": 959000,
-  "env_seed": 9271033,
-  "dataset_rng_seed": 6330047,
+  "env_seed": 12450067,
+  "dataset_rng_seed": 14760053,
   "collection_seeds": [
-    9271033,
-    6330047
+    12450067,
+    14760053
   ],
-  "rejected_seeds_imbalanced": [
-    8150023,
-    5090023
-  ],
-  "rejected_reason": "env_seed 8150023 gave frac_u1=0.42 (<0.45 balance gate); reselected by pre-screening the u_side stream",
   "consumed_seeds_checked": [
     311,
     500,
@@ -29,15 +24,27 @@
     999,
     1234,
     8150023,
-    5090023
+    5090023,
+    9271033,
+    6330047
   ],
   "seed_reuse": [],
+  "mixture": {
+    "sighted": 0.85,
+    "blind": 0.05,
+    "coverage": 0.1
+  },
+  "mixture_counts": {
+    "sighted": 170,
+    "blind": 10,
+    "coverage": 20
+  },
   "n_episodes": 200,
   "ep_len_obs": 701,
   "horizon": 700,
-  "n_states_total": 138813,
-  "n_transitions_total": 138613,
-  "buffer_ready_transitions": 138613,
+  "n_states_total": 134965,
+  "n_transitions_total": 134765,
+  "buffer_ready_transitions": 134765,
   "env_name": "offline_ant_umaze_litter",
   "obs_dim_learner": 58,
   "state_dim": 29,
@@ -45,25 +52,18 @@
   "action_dim": 8,
   "episode_horizon_convention": "L=701 obs rows/episode (700 transitions); dead episodes truncated via lengths (relabeler ignores the padded tail). obs=state29 + zero-padded goal29 ([:2]=d4rl-sampled goal xy).",
   "epsilon": 0.05,
-  "epsilon_semantics": "per-episode blind ~ dataset_rng.random() < epsilon; blind teacher commands middle lane at WG.SLOW_V (frozen 0.6) with the unstick probe; sighted commands the clean side (opposite the active pile) at V_FAST.",
-  "teacher_blind_v_used": 0.6,
+  "epsilon_semantics": "EXACT-count 3-way mixture assigned to episode slots and shuffled by the dataset RNG (independent of the env U stream): 85% sighted (clean side opposite the active pile at V_FAST=1.4), 5% blind (epsilon confounding component: middle lane + unstick at the frozen qualified teacher_blind_v=0.6), 10% coverage (deliberate robust support: SAME middle-lane+unstick control law at coverage_middle_slow_v=0.8). blind and coverage are both U-independent; only blind carries epsilon_override.",
+  "teacher_blind_v": 0.6,
+  "coverage_middle_slow_v": 0.8,
   "a1_hard_ok": true,
-  "a1_discrepancies": [
-    {
-      "field": "commands.slow_v",
-      "severity": "doc",
-      "code_teacher_blind_v": 0.6,
-      "manifest_slow_v": 0.8,
-      "note": "manifest slow_v documents the GATE middle_slow arm (--slow-v 0.8); the frozen QUALIFIED teacher blind policy uses WG.SLOW_V=probe.V_SLOW=0.6. Data generation uses the code value. Manifest should split gate_middle_slow_v from teacher_blind_v before full collection."
-    }
-  ],
-  "npz_sha256": "5d45416c9f2497ef01ebd9764e1e85e4d3c9f7f211bd707ed8e8dd1e36adc987",
-  "sidecar_sha256": "da5507e98adf44c385565429c851dfe6033a60e13a6148332b5b29260980c7a9",
+  "a1_discrepancies": [],
+  "npz_sha256": "deb46545169d8f3116415253dbf45f423bdcbd9e9dfd6eb043ab61694bf26685",
+  "sidecar_sha256": "8cdb965c7475563d64e140f31ac30412f5aaff7a44e28f52470737c93370f1f5",
   "fingerprint": {
     "path": "D:\\Users\\trhua\\Research\\contrastive_rl\\artifacts\\litter_dataset\\pilot\\antmaze_litter_pilot.npz",
-    "sha256": "5d45416c9f2497ef01ebd9764e1e85e4d3c9f7f211bd707ed8e8dd1e36adc987",
+    "sha256": "deb46545169d8f3116415253dbf45f423bdcbd9e9dfd6eb043ab61694bf26685",
     "n_episodes": 200,
-    "n_transitions": 138613,
+    "n_transitions": 134765,
     "obs_shape": [
       200,
       701,

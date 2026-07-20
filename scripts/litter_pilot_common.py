@@ -111,26 +111,20 @@ def check_frozen_integrity(manifest_path=FREEZE_PATH):
   hard('unstick.nudge_steps', WG.NUDGE_STEPS,
        cmd['unstick_middle_slow_only']['nudge_steps'])
 
-  # slow_v: the frozen QUALIFIED teacher's blind speed is WG.SLOW_V (code),
-  # which equals probe.V_SLOW. The manifest records commands.slow_v for the
-  # GATE middle_slow validation arm (0.8, --slow-v). These are two distinct
-  # roles; flag any divergence as a DOC discrepancy (data generation uses the
-  # code value, never the manifest value).
+  # three distinct slow-speed roles, now separated in the manifest:
+  #   walker_v_slow_default = probe.V_SLOW (0.6)
+  #   teacher_blind_v       = WG.SLOW_V (0.6, frozen qualified epsilon-blind)
+  #   coverage_middle_slow_v= 0.8 (gate arm / Stage-3 coverage component)
   teacher_blind_v = WG.SLOW_V
-  if not _approx(teacher_blind_v, cmd['slow_v']):
-    disc.append({
-        'field': 'commands.slow_v', 'severity': 'doc',
-        'code_teacher_blind_v': teacher_blind_v,
-        'manifest_slow_v': cmd['slow_v'],
-        'note': ('manifest slow_v documents the GATE middle_slow arm '
-                 '(--slow-v 0.8); the frozen QUALIFIED teacher blind policy '
-                 'uses WG.SLOW_V=probe.V_SLOW=%.3g. Data generation uses the '
-                 'code value. Manifest should split gate_middle_slow_v from '
-                 'teacher_blind_v before full collection.' % teacher_blind_v)})
+  hard('probe.V_SLOW (walker_v_slow_default)', P.V_SLOW,
+       cmd['walker_v_slow_default'])
+  hard('WG.SLOW_V (teacher_blind_v)', teacher_blind_v, cmd['teacher_blind_v'])
+  coverage_v = cmd['coverage_middle_slow_v']   # 0.8, Stage-3 data choice
 
   # (4) u_side semantics sanity (code truth: side_u={'pos':1,'neg':0})
   info = {'walker_sha256': wsha, 'base_sha256': bsha,
-          'teacher_blind_v': teacher_blind_v, 'v_fast': P.V_FAST,
+          'teacher_blind_v': teacher_blind_v, 'coverage_middle_slow_v':
+          coverage_v, 'v_fast': P.V_FAST,
           'lane': WG.LANE, 'handoff_x': WG.HANDOFF_X,
           'collapse_force': D.LITTER_COLLAPSE_FORCE,
           'collapse_speed': D.LITTER_COLLAPSE_SPEED,

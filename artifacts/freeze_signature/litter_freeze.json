@@ -84,8 +84,15 @@
   "commands": {
     "lane": 1.1,
     "v_fast": 1.4,
-    "slow_v": 0.8,
-    "slow_v_note": "middle_slow/blind arm speed, passed via --slow-v 0.8; NOT probe.V_SLOW (default 0.6, used only in the walker training command-sampling range)",
+    "walker_v_slow_default": 0.6,
+    "teacher_blind_v": 0.6,
+    "coverage_middle_slow_v": 0.8,
+    "slow_speed_semantics": {
+      "walker_v_slow_default": "probe.V_SLOW = 0.6; the walker training command-sampling lower speed and module default of WG.SLOW_V.",
+      "teacher_blind_v": "WG.SLOW_V = probe.V_SLOW = 0.6; speed of the frozen QUALIFIED epsilon-blind teacher component (litter_teacher.py never overrides WG.SLOW_V). Teacher qualification T1-T5 passed at 0.6.",
+      "coverage_middle_slow_v": "0.8; the GATE middle_slow arm speed (walker_gate.py --slow-v 0.8, at which G3 was validated) and the Stage-3 middle_slow COVERAGE component speed. NOT the blind teacher.",
+      "note": "The earlier single commands.slow_v=0.8 field conflated these three roles; the qualified teacher blind speed is 0.6, only the gate/coverage middle_slow speed is 0.8. Frozen code unchanged."
+    },
     "handoff": {
       "handoff_x": 6.0,
       "condition": "latch handoff to base policy when xy[0] >= handoff_x OR xy[1] >= 2.0",
@@ -131,6 +138,7 @@
     "The G3 0.15 criterion was frozen (freeze_protocol_commit) BEFORE the independent confirmation runs.",
     "Seeds 777 and 888 were used only AFTER freezing, for zero-tuning confirmation, and must not be reused.",
     "The walker checkpoint and the base-policy checkpoint are BOTH immutable dependencies (pinned by sha256).",
-    "Dataset generation must use exactly this frozen environment + controller configuration; no constant here may change."
+    "Dataset generation must use exactly this frozen environment + controller configuration; no constant here may change.",
+    "Slow-speed semantics corrected 2026-07-20: commands.slow_v split into walker_v_slow_default (0.6), teacher_blind_v (0.6), and coverage_middle_slow_v (0.8). Documentation only; no frozen process changed."
   ]
 }
