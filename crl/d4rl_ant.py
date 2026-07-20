@@ -306,6 +306,17 @@ LITTER_SKIRT_N = 14
 LITTER_SKIRT_HALF_XY = (0.10, 0.22)    # half-extent range per box
 LITTER_SKIRT_H0 = (0.10, 0.16)  # height range at the centerline edge
 LITTER_SKIRT_H1 = (0.16, 0.34)  # height range at the pile edge
+#: Entry reef: a denser, taller row of skirt boxes at the zone's LEADING
+#: edge. Inside the rubble field every gait is ground down to the same slow
+#: speed, so the commanded-speed contrast is only physically real at the
+#: FIRST impact -- the reef makes that first impact decisive: a fast
+#: arrival (1.4) meets tall boxes at full precontact speed (collapse rule
+#: fires), a slow arrival (0.8) threads them under the speed gate. Mirrored
+#: per side with the skirt; the clean lane never reaches it.
+LITTER_REEF_X = (2.5, 3.2)
+LITTER_REEF_PAIRS = 5
+LITTER_REEF_Y = (0.05, 0.60)
+LITTER_REEF_H = (0.20, 0.32)
 #: Slick strip ("leachate" seeping from the pile): a flush, low-friction
 #: plate under the skirt band, same side as the pile. Friction -- unlike box
 #: height -- is intrinsically speed-sensitive: fast push-off exceeds the
@@ -381,6 +392,25 @@ def build_litter_xml(maze_map=U_MAZE, scaling=SCALING, height=MAZE_HEIGHT):
                    'half_x': hx, 'half_y': kh, 'height': LITTER_SLICK_H,
                    'yaw_deg': 0.0})
   rng = np.random.default_rng(LITTER_LAYOUT_SEED)
+  rx0, rx1 = LITTER_REEF_X
+  ry0, ry1 = LITTER_REEF_Y
+  for i in range(LITTER_REEF_PAIRS):
+    sx, sy = rng.uniform(*LITTER_SKIRT_HALF_XY, size=2)
+    rx = rng.uniform(rx0 + sx, rx1 - sx)
+    ry = rng.uniform(ry0, ry1)
+    rh = rng.uniform(*LITTER_REEF_H)
+    yaw = rng.uniform(0.0, 180.0)
+    for side, sign in (('pos', 1.0), ('neg', -1.0)):
+      tag = f'litter_reef_{i}_{side}'
+      ET.SubElement(worldbody, 'geom', name=tag, type='box',
+                    pos=f'{rx} {sign * ry} {rh / 2}',
+                    size=f'{sx} {sy} {rh / 2}', euler=f'0 0 {sign * yaw}',
+                    material='', contype='1', conaffinity='1',
+                    rgba='0.5 0.42 0.3 1.0')
+      layout.append({'name': tag, 'side': side, 'x': float(rx),
+                     'y': float(sign * ry), 'half_x': float(sx),
+                     'half_y': float(sy), 'height': float(rh),
+                     'yaw_deg': float(sign * yaw)})
   s0, s1 = LITTER_SKIRT_Y
   for i in range(LITTER_SKIRT_N):
     sx, sy = rng.uniform(*LITTER_SKIRT_HALF_XY, size=2)

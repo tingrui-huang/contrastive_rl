@@ -53,6 +53,12 @@ def torso_up_z(qpos):
   return 1.0 - 2.0 * (x * x + y * y)
 
 
+SLOW_V = probe.V_SLOW      # middle_slow command speed (--slow-v overrides:
+                           # 0.6 wades at ~0.17 u/s effective and TIMES OUT
+                           # the 700-step budget; 0.8 stays well under the
+                           # 1.2 collapse speed gate but finishes)
+
+
 def arm_command(arm, u_side, ep):
   """(y_ref, v_ref) for the arm given the episode's U."""
   clean = -1.0 if u_side == 1 else 1.0
@@ -63,8 +69,22 @@ def arm_command(arm, u_side, ep):
   if arm == 'middle_fast':
     return 0.0, probe.V_FAST
   if arm == 'middle_slow':
-    return 0.0, probe.V_SLOW
+    return 0.0, SLOW_V
   return (LANE if ep % 2 == 0 else -LANE), probe.V_FAST   # nolitter
+
+
+#: Blind-safe unstick heuristic (middle_slow ONLY -- it is part of the
+#: cautious policy's DEFINITION, not given to the naive arms): a blind slow
+#: wader that stalls probes sideways. Without it the deterministic walker
+#: wedges against the same rubble blockage forever (holdout3: 20/23
+#: middle_slow "timeouts" never left the corridor).
+STALL_WINDOW = 40
+STALL_MIN_DX = 0.25
+NUDGE_Y = 0.5
+NUDGE_STEPS = 25
+NUDGE_V = None             # None: keep the arm's own v while nudging.
+                           # (gentler nudge variants measured WORSE within
+                           # noise -- do not re-tune these on gate seeds)
 
 
 def run_episode(env, walker, base_act, arm, ep, u_side=None, record=None):
@@ -77,6 +97,7 @@ def run_episode(env, walker, base_act, arm, ep, u_side=None, record=None):
   hit, dmin = 0.0, float(np.linalg.norm(o[:2] - true_goal))
   falls = corridor_steps = 0
   dead_at = None
+  x_hist, nudge_until, nudge_sign = [], -1, 1.0
   for t in range(env.max_episode_steps):
     xy = o[:2]
     if not handoff and (xy[0] >= HANDOFF_X or xy[1] >= 2.0):
@@ -87,7 +108,19 @@ def run_episode(env, walker, base_act, arm, ep, u_side=None, record=None):
       o_cmd[29:31] = true_goal
       a = np.asarray(base_act(jnp.asarray(o_cmd[None]))[0])
     else:
-      a = walker(o, y_ref, v_ref)
+      y_cmd, v_cmd = y_ref, v_ref
+      if arm == 'middle_slow':
+        x_hist.append(float(xy[0]))
+        nv = v_ref if NUDGE_V is None else NUDGE_V
+        if t < nudge_until:
+          y_cmd, v_cmd = nudge_sign * NUDGE_Y, nv
+        elif (len(x_hist) > STALL_WINDOW
+              and x_hist[-1] - x_hist[-STALL_WINDOW] < STALL_MIN_DX):
+          nudge_until = t + NUDGE_STEPS
+          nudge_sign = -nudge_sign
+          x_hist.clear()
+          y_cmd, v_cmd = nudge_sign * NUDGE_Y, nv
+      a = walker(o, y_cmd, v_cmd)
       corridor_steps += 1
     speed_before = float(np.hypot(env._env.data.qvel[0],
                                   env._env.data.qvel[1]))
@@ -132,11 +165,16 @@ def main():
                   help='collapse_force (horizontal N) for the gate run')
   ap.add_argument('--collapse-speed', type=float, default=None,
                   help='precontact planar speed gate for collapse')
+  ap.add_argument('--slow-v', type=float, default=None,
+                  help='override middle_slow command speed')
   ap.add_argument('--arms', nargs='+', default=list(ARMS))
   ap.add_argument('--out', default=None)
   args = ap.parse_args()
   mode = 'calibrate' if args.calibrate else 'gate'
   out = args.out or f'artifacts/litter_env/walker_{mode}.json'
+  if args.slow_v is not None:
+    global SLOW_V
+    SLOW_V = args.slow_v
 
   cfg = build_offline_cfg()
   envs_mod.make_env('offline_ant_umaze', cfg, seed=1)
