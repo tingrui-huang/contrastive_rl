@@ -192,8 +192,9 @@ def randomize_start(env, rng):
   mujoco.mj_forward(u.model, u.data)
 
 
-def run_episode(env, trainer, y_ref, v_ref, mode, rng=None, store=True):
-  o = env.reset()
+def run_episode(env, trainer, y_ref, v_ref, mode, rng=None, store=True,
+                u_side=None):
+  o = (env.reset(u_side=u_side) if u_side is not None else env.reset())
   if rng is not None:
     randomize_start(env, rng)
     o = env._flatten(env._env._obs_dict())
@@ -238,10 +239,18 @@ def run_episode(env, trainer, y_ref, v_ref, mode, rng=None, store=True):
 
 
 def evaluate(env, trainer, eps=3):
+  """Phase 2 (litter env): side-lane commands are evaluated on the CLEAN
+  side (u_side forced opposite to y_ref) -- that is the capability phase 2
+  must preserve; middle commands alternate U. Phase 1 env ignores u_side."""
+  litter = hasattr(env, 'u_side')
   rows = []
   for y_ref, v_ref in EVAL_COMMANDS:
-    for _ in range(eps):
-      s = run_episode(env, trainer, y_ref, v_ref, mode='eval', store=False)
+    for k in range(eps):
+      u = None
+      if litter:
+        u = (k % 2) if y_ref == 0.0 else (0 if y_ref > 0 else 1)
+      s = run_episode(env, trainer, y_ref, v_ref, mode='eval', store=False,
+                      u_side=u)
       zone = s['y_err'] or [2.0]
       rows.append({'y_ref': y_ref, 'v_ref': v_ref,
                    'y_err_p90': float(np.percentile(zone, 90)),
