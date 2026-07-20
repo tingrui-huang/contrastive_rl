@@ -75,7 +75,7 @@ def torso_yaw(qpos):
 
 class Trainer:
 
-  def __init__(self, seed):
+  def __init__(self, seed, actor_lr=LR):
     self.rng = np.random.default_rng(seed)
     self.actor_t, self.critic_t = probe.make_walker_networks()
     k1, k2 = jax.random.split(jax.random.PRNGKey(seed))
@@ -84,7 +84,7 @@ class Trainer:
     self.pi = self.actor_t.init(k1, dummy_o)
     self.q = self.critic_t.init(k2, dummy_o, dummy_a)
     self.pi_targ, self.q_targ = self.pi, self.q
-    self.opt_pi = optax.adam(LR)
+    self.opt_pi = optax.adam(actor_lr)
     self.opt_q = optax.adam(LR)
     self.pi_state = self.opt_pi.init(self.pi)
     self.q_state = self.opt_q.init(self.q)
@@ -155,16 +155,20 @@ class Trainer:
             jnp.asarray(self.rew[idx]), jnp.asarray(self.nobs[idx]),
             jnp.asarray(self.mask[idx]))
 
-  def update(self):
+  def update(self, actor_update=True):
+    """actor_update=False: critic-only phase for warm starts -- a randomly
+    initialized critic otherwise rips a pretrained actor apart within a few
+    thousand pi steps (observed: phase-2 walker frozen by the 25k eval)."""
     self.key, k = jax.random.split(self.key)
     batch = self.sample()
     self.q, self.q_state, qloss = self._q_step(
         self.q, self.q_state, self.pi_targ, self.q_targ, batch, k)
     self.updates += 1
     if self.updates % POLICY_DELAY == 0:
-      self.pi, self.pi_state, _ = self._pi_step(
-          self.pi, self.pi_state, self.q, batch)
-      self.pi_targ = self._polyak(self.pi_targ, self.pi)
+      if actor_update:
+        self.pi, self.pi_state, _ = self._pi_step(
+            self.pi, self.pi_state, self.q, batch)
+        self.pi_targ = self._polyak(self.pi_targ, self.pi)
       self.q_targ = self._polyak(self.q_targ, self.q)
     return float(qloss)
 
@@ -279,13 +283,17 @@ def main():
   ap.add_argument('--steps', type=int, default=2_000_000)
   ap.add_argument('--seed', type=int, default=0)
   ap.add_argument('--init-from', default=None)
+  ap.add_argument('--critic-warmup', type=int, default=0,
+                  help='env steps with critic-only updates (use ~100k when '
+                       'initializing from a pretrained actor)')
+  ap.add_argument('--actor-lr', type=float, default=LR)
   ap.add_argument('--out', default=None)
   args = ap.parse_args()
   out = args.out or f'artifacts/walker/phase{args.phase}'
   os.makedirs(out, exist_ok=True)
 
   cfg = build_offline_cfg()
-  trainer = Trainer(args.seed)
+  trainer = Trainer(args.seed, actor_lr=args.actor_lr)
   if args.init_from:
     trainer.pi, meta = probe.load_residual(args.init_from)
     trainer.pi_targ = trainer.pi
@@ -303,12 +311,14 @@ def main():
     while steps < args.steps:
       y_ref = float(start_rng.uniform(-1.2, 1.2))
       v_ref = float(start_rng.uniform(0.4, 1.6))
-      mode = 'random' if steps < WARMUP else 'explore'
+      warm = args.init_from is not None
+      mode = ('explore' if warm or steps >= WARMUP else 'random')
       s = run_episode(env, trainer, y_ref, v_ref, mode, rng=start_rng)
       n = s['steps']
-      if steps > WARMUP:
+      if steps > (2_000 if warm else WARMUP):
+        actor_on = steps >= args.critic_warmup
         for _ in range(n):
-          trainer.update()
+          trainer.update(actor_update=actor_on)
       new_steps = steps + n
       if new_steps // EVAL_EVERY > steps // EVAL_EVERY:
         agg, rows = evaluate(eval_env, trainer)
