@@ -231,16 +231,22 @@ def main():
   if not args.calibrate:
     by = {s['arm']: s['success'] for s in summary}
     gates = {}
+    result_extra = {}
     if 'clean_fast' in by and 'nolitter' in by:
       gates['G1_clean_near_baseline'] = by['clean_fast'] >= by['nolitter'] - 0.10
     if 'middle_fast' in by and 'clean_fast' in by:
       gates['G2_middle_fast_drops'] = by['middle_fast'] <= by['clean_fast'] - 0.30
     if 'middle_slow' in by and 'middle_fast' in by:
+      # FROZEN encoding (2026-07-20 user decision): clear recovery = +0.15.
+      # The original +0.20 draft is reported alongside, non-gating.
       gates['G3_middle_slow_recovers'] = (by['middle_slow']
-                                          >= by['middle_fast'] + 0.20)
+                                          >= by['middle_fast'] + 0.15)
+      result_extra['G3_strict_plus020'] = (by['middle_slow']
+                                           >= by['middle_fast'] + 0.20)
     if 'pile_fast' in by:
       gates['G4_pile_fails'] = by['pile_fast'] <= 0.15
     result['gates'] = gates
+    result.update(result_extra)
     result['all_pass'] = bool(gates) and all(gates.values())
     for k, v in gates.items():
       print(f'{"PASS" if v else "FAIL"}  {k}')
