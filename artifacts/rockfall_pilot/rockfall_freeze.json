@@ -1,0 +1,174 @@
+{
+  "frozen_code_commit": "225b2b01ebc39a7418dcb6a0eb6c0bd68335d9e5",
+  "frozen_date_utc": "2026-07-21",
+  "env_name": "offline_ant_umaze_rockfall",
+  "env_class": "crl/rockfall_ant.py RockfallOfflineAntUMazeEnv",
+  "config": {
+    "sites": [
+      {
+        "name": "left_1",
+        "x": 3.0,
+        "side": 1.0
+      },
+      {
+        "name": "left_2",
+        "x": 4.3,
+        "side": 1.0
+      },
+      {
+        "name": "right_1",
+        "x": 3.6,
+        "side": -1.0
+      },
+      {
+        "name": "right_2",
+        "x": 4.9,
+        "side": -1.0
+      }
+    ],
+    "site_lane_y": 1.05,
+    "trig_half_x": 0.6,
+    "trig_y_band": [
+      1.0,
+      2.0
+    ],
+    "trig_dwell": 3,
+    "trig_min_vx": 0.1,
+    "p_active": 0.2,
+    "severity_probs": [
+      0.55,
+      0.3,
+      0.15
+    ],
+    "rock_drop_offsets": [
+      [
+        0.1,
+        0.0,
+        1.5
+      ],
+      [
+        0.45,
+        0.3,
+        1.9
+      ],
+      [
+        -0.3,
+        -0.25,
+        2.3
+      ]
+    ],
+    "rock_radii": [
+      0.17,
+      0.14,
+      0.12
+    ],
+    "rock_density": 65.0,
+    "rock_drop_vz": 6.0,
+    "rock_drop_lead": 0.25,
+    "rock_jitter": 0.08,
+    "center_mud": {
+      "x": [
+        2.4,
+        5.6
+      ],
+      "core_y": 0.5,
+      "edge_y": 1.0,
+      "drag": 40.0
+    },
+    "center_scatter_visual_only": {
+      "n": 14,
+      "half_xy": [
+        0.08,
+        0.16
+      ],
+      "h": [
+        0.03,
+        0.07
+      ],
+      "edge": 0.45,
+      "layout_seed": 11
+    },
+    "impair_legs": 2,
+    "impair_gear_scale": 0.15,
+    "impair_damping_mult": 3.5
+  },
+  "route_protocol": {
+    "lane": 1.1,
+    "v_side": 1.1,
+    "v_center": 0.8,
+    "handoff_x": 6.0,
+    "nudge_y": 0.35,
+    "side_nudge_out": 1.45,
+    "side_nudge_in": 1.3,
+    "stall_window": 40,
+    "stall_min_dx": 0.25,
+    "nudge_steps": 25,
+    "teacher_rule": "clear side if unique; center if both sides active; balanced rng if both clear"
+  },
+  "walker": {
+    "path": "artifacts/walker/phase1/walker_best.pkl",
+    "sha256": "70b0a460b2e38332821f1846b48c75fbcdc884dd315b29c97ebc69083388cdd5"
+  },
+  "base_policy": {
+    "path": "offline_umaze_bc005_twinmin_s0_50k/checkpoints/best.pkl",
+    "sha256": "6bece3e37c6e994fa612d721ff6e4320bebf36df8fdf3a11d6ea354a39a286ac"
+  },
+  "qualification": {
+    "rule": "structural gaps (user decision 2026-07-21): clear>=center+0.05, teacher>=center+0.05, center>=blind+0.10, hazard<=0.25, zero physical center rockfall, hiddenness, side-trigger reliability>=0.85",
+    "seeds": [
+      62001,
+      63001,
+      64001,
+      65001,
+      66001,
+      67001,
+      68001,
+      69001
+    ],
+    "eps_per_condition_per_seed": 30,
+    "success": {
+      "clear_side": 0.9083333333333333,
+      "hazard_side": 0.24583333333333332,
+      "center": 0.7708333333333334,
+      "teacher": 0.9,
+      "blind_left": 0.6708333333333333
+    },
+    "checks": {
+      "gap_clear_ge_center_plus_0.05": true,
+      "gap_teacher_ge_center_plus_0.05": true,
+      "gap_center_ge_blind_plus_0.10": true,
+      "hazard_le_0.25": true,
+      "center_zero_physical_rockfall": true,
+      "paired_hiddenness_all_ok": true,
+      "side_trigger_reliability_ge_0.85": true,
+      "activation_near_0.2": true
+    },
+    "all_pass": true,
+    "report": "artifacts/rockfall_pilot/report.json"
+  },
+  "development_seeds_consumed": [
+    60001,
+    60002,
+    60777,
+    61020,
+    61030,
+    61040,
+    61050,
+    65030,
+    66050,
+    66060,
+    67030,
+    68030,
+    62001,
+    62100,
+    62200,
+    62300,
+    63001,
+    64001,
+    65001,
+    66001,
+    67001,
+    68001,
+    69001
+  ]
+}
