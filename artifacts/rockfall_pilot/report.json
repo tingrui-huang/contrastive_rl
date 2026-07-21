@@ -1,0 +1,465 @@
+{
+  "config": {
+    "sites": [
+      {
+        "name": "left_1",
+        "x": 3.0,
+        "side": 1.0
+      },
+      {
+        "name": "left_2",
+        "x": 4.3,
+        "side": 1.0
+      },
+      {
+        "name": "right_1",
+        "x": 3.6,
+        "side": -1.0
+      },
+      {
+        "name": "right_2",
+        "x": 4.9,
+        "side": -1.0
+      }
+    ],
+    "site_lane_y": 1.05,
+    "trig_half_x": 0.6,
+    "trig_y_band": [
+      1.0,
+      2.0
+    ],
+    "trig_dwell": 3,
+    "trig_min_vx": 0.1,
+    "p_active": 0.2,
+    "severity_probs": [
+      0.55,
+      0.3,
+      0.15
+    ],
+    "rock_drop_offsets": [
+      [
+        0.1,
+        0.0,
+        1.5
+      ],
+      [
+        0.45,
+        0.3,
+        1.9
+      ],
+      [
+        -0.3,
+        -0.25,
+        2.3
+      ]
+    ],
+    "rock_radii": [
+      0.17,
+      0.14,
+      0.12
+    ],
+    "rock_density": 65.0,
+    "rock_drop_vz": 6.0,
+    "rock_drop_lead": 0.25,
+    "rock_jitter": 0.08,
+    "center_mud": {
+      "x": [
+        2.4,
+        5.6
+      ],
+      "core_y": 0.5,
+      "edge_y": 1.0,
+      "drag": 40.0
+    },
+    "center_scatter_visual_only": {
+      "n": 14,
+      "half_xy": [
+        0.08,
+        0.16
+      ],
+      "h": [
+        0.03,
+        0.07
+      ],
+      "edge": 0.45,
+      "layout_seed": 11
+    },
+    "impair_legs": 2,
+    "impair_gear_scale": 0.15,
+    "impair_damping_mult": 3.5
+  },
+  "walker": {
+    "path": "artifacts/walker/phase1/walker_best.pkl",
+    "step": 1950016
+  },
+  "base_policy": {
+    "path": "offline_umaze_bc005_twinmin_s0_50k/checkpoints/best.pkl",
+    "step": 959000
+  },
+  "routes": {
+    "lane": 1.1,
+    "v_side": 1.1,
+    "v_center": 0.8,
+    "handoff_x": 6.0,
+    "center_unstick": {
+      "window": 40,
+      "min_dx": 0.25,
+      "nudge_y": 0.35,
+      "nudge_steps": 25
+    }
+  },
+  "seeds": [
+    62001,
+    63001,
+    64001,
+    65001,
+    66001,
+    67001,
+    68001,
+    69001
+  ],
+  "eps_per_condition_per_seed": 30,
+  "activation": {
+    "resets": 1000,
+    "freq": {
+      "left_1": 0.19575,
+      "left_2": 0.20475,
+      "right_1": 0.19575,
+      "right_2": 0.197125
+    }
+  },
+  "paired_hiddenness": {
+    "pairs": [
+      {
+        "obs_div_step": 34,
+        "act_div_step": 34,
+        "drop_step": 33,
+        "first_rock_contact": 33,
+        "first_rock_ant_contact": 33,
+        "ok": true
+      },
+      {
+        "obs_div_step": 32,
+        "act_div_step": 32,
+        "drop_step": 31,
+        "first_rock_contact": 31,
+        "first_rock_ant_contact": 31,
+        "ok": true
+      },
+      {
+        "obs_div_step": 34,
+        "act_div_step": 34,
+        "drop_step": 33,
+        "first_rock_contact": 33,
+        "first_rock_ant_contact": 33,
+        "ok": true
+      },
+      {
+        "obs_div_step": 25,
+        "act_div_step": 25,
+        "drop_step": 23,
+        "first_rock_contact": 24,
+        "first_rock_ant_contact": 24,
+        "ok": true
+      },
+      {
+        "obs_div_step": 26,
+        "act_div_step": 26,
+        "drop_step": 25,
+        "first_rock_contact": 25,
+        "first_rock_ant_contact": 25,
+        "ok": true
+      },
+      {
+        "obs_div_step": 52,
+        "act_div_step": 52,
+        "drop_step": 51,
+        "first_rock_contact": 51,
+        "first_rock_ant_contact": 51,
+        "ok": true
+      },
+      {
+        "obs_div_step": 24,
+        "act_div_step": 24,
+        "drop_step": 23,
+        "first_rock_contact": 23,
+        "first_rock_ant_contact": 23,
+        "ok": true
+      },
+      {
+        "obs_div_step": 33,
+        "act_div_step": 33,
+        "drop_step": 32,
+        "first_rock_contact": 32,
+        "first_rock_ant_contact": 32,
+        "ok": true
+      },
+      {
+        "obs_div_step": 27,
+        "act_div_step": 27,
+        "drop_step": 25,
+        "first_rock_contact": 26,
+        "first_rock_ant_contact": 26,
+        "ok": true
+      },
+      {
+        "obs_div_step": 29,
+        "act_div_step": 29,
+        "drop_step": 28,
+        "first_rock_contact": 28,
+        "first_rock_ant_contact": 28,
+        "ok": true
+      },
+      {
+        "obs_div_step": 36,
+        "act_div_step": 36,
+        "drop_step": 35,
+        "first_rock_contact": 35,
+        "first_rock_ant_contact": 35,
+        "ok": true
+      },
+      {
+        "obs_div_step": 54,
+        "act_div_step": 54,
+        "drop_step": 53,
+        "first_rock_contact": 53,
+        "first_rock_ant_contact": 53,
+        "ok": true
+      },
+      {
+        "obs_div_step": 27,
+        "act_div_step": 27,
+        "drop_step": 26,
+        "first_rock_contact": 26,
+        "first_rock_ant_contact": 26,
+        "ok": true
+      },
+      {
+        "obs_div_step": 33,
+        "act_div_step": 33,
+        "drop_step": 32,
+        "first_rock_contact": 32,
+        "first_rock_ant_contact": 32,
+        "ok": true
+      },
+      {
+        "obs_div_step": 59,
+        "act_div_step": 59,
+        "drop_step": 58,
+        "first_rock_contact": 58,
+        "first_rock_ant_contact": 58,
+        "ok": true
+      },
+      {
+        "obs_div_step": 30,
+        "act_div_step": 30,
+        "drop_step": 29,
+        "first_rock_contact": 29,
+        "first_rock_ant_contact": 29,
+        "ok": true
+      }
+    ],
+    "n_ok": 16
+  },
+  "success": {
+    "clear_side": 0.9083333333333333,
+    "hazard_side": 0.24583333333333332,
+    "center": 0.7708333333333334,
+    "teacher": 0.9,
+    "blind_left": 0.6708333333333333
+  },
+  "conditions": {
+    "clear_side": {
+      "eps": 240,
+      "success": 0.9083333333333333,
+      "outcomes": {
+        "success": 0.908,
+        "collapse": 0.0,
+        "fall": 0.075,
+        "timeout": 0.017
+      },
+      "mean_steps": 241.19583333333333,
+      "route_identifiable": 1.0,
+      "wobble_std_y": 0.09767986797218042,
+      "mean_abs_y": 1.0310185666603566,
+      "skipped_resets": 38,
+      "success_per_seed": {
+        "62001": 0.933,
+        "63001": 0.9,
+        "64001": 0.867,
+        "65001": 0.967,
+        "66001": 0.833,
+        "67001": 0.967,
+        "68001": 0.867,
+        "69001": 0.933
+      }
+    },
+    "hazard_side": {
+      "eps": 240,
+      "success": 0.24583333333333332,
+      "outcomes": {
+        "success": 0.246,
+        "collapse": 0.546,
+        "fall": 0.013,
+        "timeout": 0.196
+      },
+      "mean_steps": 250.44583333333333,
+      "route_identifiable": 1.0,
+      "wobble_std_y": 0.09710906989727901,
+      "mean_abs_y": 1.0608227345732344,
+      "skipped_resets": 141,
+      "success_per_seed": {
+        "62001": 0.233,
+        "63001": 0.267,
+        "64001": 0.3,
+        "65001": 0.2,
+        "66001": 0.3,
+        "67001": 0.2,
+        "68001": 0.3,
+        "69001": 0.167
+      }
+    },
+    "center": {
+      "eps": 240,
+      "success": 0.7708333333333334,
+      "outcomes": {
+        "success": 0.771,
+        "collapse": 0.0,
+        "fall": 0.058,
+        "timeout": 0.171
+      },
+      "mean_steps": 665.0625,
+      "route_identifiable": 1.0,
+      "wobble_std_y": 0.05180804104533108,
+      "mean_abs_y": 0.029866228617614187,
+      "skipped_resets": 0,
+      "success_per_seed": {
+        "62001": 0.8,
+        "63001": 0.733,
+        "64001": 0.733,
+        "65001": 0.867,
+        "66001": 0.767,
+        "67001": 0.8,
+        "68001": 0.767,
+        "69001": 0.7
+      }
+    },
+    "teacher": {
+      "eps": 240,
+      "success": 0.9,
+      "outcomes": {
+        "success": 0.9,
+        "collapse": 0.0,
+        "fall": 0.037,
+        "timeout": 0.062
+      },
+      "mean_steps": 283.825,
+      "route_identifiable": 1.0,
+      "wobble_std_y": 0.09265389890818801,
+      "mean_abs_y": 0.8909675208463826,
+      "skipped_resets": 0,
+      "success_per_seed": {
+        "62001": 0.8,
+        "63001": 0.933,
+        "64001": 0.933,
+        "65001": 0.9,
+        "66001": 0.9,
+        "67001": 0.933,
+        "68001": 0.967,
+        "69001": 0.833
+      }
+    },
+    "blind_left": {
+      "eps": 240,
+      "success": 0.6708333333333333,
+      "outcomes": {
+        "success": 0.671,
+        "collapse": 0.221,
+        "fall": 0.029,
+        "timeout": 0.079
+      },
+      "mean_steps": 233.72916666666666,
+      "route_identifiable": 1.0,
+      "wobble_std_y": 0.08807866031840655,
+      "mean_abs_y": 1.000287959783421,
+      "skipped_resets": 0,
+      "success_per_seed": {
+        "62001": 0.6,
+        "63001": 0.7,
+        "64001": 0.733,
+        "65001": 0.767,
+        "66001": 0.767,
+        "67001": 0.6,
+        "68001": 0.6,
+        "69001": 0.6
+      }
+    }
+  },
+  "hazard_breakdown": {
+    "eps": 240,
+    "hit_frac": 0.9916666666666667,
+    "severe_collapse_rate": 0.5458333333333333,
+    "impaired_rate": 0.31666666666666665,
+    "mild_hit_rate": 0.12916666666666668,
+    "recovery_success": 0.5327102803738317,
+    "recovery_success_mild": 0.9032258064516129,
+    "recovery_success_impaired": 0.3815789473684211,
+    "lateral_escape_rate": 0.7850467289719626,
+    "outcomes": {
+      "success": 0.246,
+      "collapse": 0.546,
+      "fall": 0.013,
+      "timeout": 0.196
+    }
+  },
+  "route_stats": {
+    "clear_side": {
+      "route_identifiable": 1.0,
+      "wobble_std_y": 0.09767986797218042,
+      "mean_abs_y": 1.0310185666603566
+    },
+    "hazard_side": {
+      "route_identifiable": 1.0,
+      "wobble_std_y": 0.09710906989727901,
+      "mean_abs_y": 1.0608227345732344
+    },
+    "center": {
+      "route_identifiable": 1.0,
+      "wobble_std_y": 0.05180804104533108,
+      "mean_abs_y": 0.029866228617614187
+    },
+    "teacher": {
+      "route_identifiable": 1.0,
+      "wobble_std_y": 0.09265389890818801,
+      "mean_abs_y": 0.8909675208463826
+    },
+    "blind_left": {
+      "route_identifiable": 1.0,
+      "wobble_std_y": 0.08807866031840655,
+      "mean_abs_y": 1.000287959783421
+    },
+    "center_trigger_rate": 0.0,
+    "center_drop_rate": 0.0
+  },
+  "targets": {
+    "gap_clear_over_center": 0.05,
+    "gap_teacher_over_center": 0.05,
+    "gap_center_over_blind": 0.1,
+    "hazard_max": 0.25,
+    "center_tuning_band": [
+      0.74,
+      0.8
+    ]
+  },
+  "checks": {
+    "gap_clear_ge_center_plus_0.05": true,
+    "gap_teacher_ge_center_plus_0.05": true,
+    "gap_center_ge_blind_plus_0.10": true,
+    "hazard_le_0.25": true,
+    "center_zero_physical_rockfall": true,
+    "paired_hiddenness_all_ok": true,
+    "side_trigger_reliability_ge_0.85": true,
+    "activation_near_0.2": true
+  },
+  "all_targets_pass": true
+}

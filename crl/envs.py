@@ -1030,6 +1030,18 @@ def make_env(env_name, config, seed=0, render_mode=None):
   elif env_name == 'd4rl_ant_umaze_gfull':
     from crl.d4rl_ant import D4rlAntUMazeEnv
     env = D4rlAntUMazeEnv(seed=seed, render_mode=render_mode)
+  elif env_name == 'offline_ant_umaze_rockfall':
+    # Rockfall variant (hidden 4-bit hazard map). Separate module; leaves
+    # the frozen litter benchmark untouched. Same 58-dim obs contract.
+    from crl.rockfall_ant import RockfallOfflineAntUMazeEnv
+    eval_goals = None
+    if getattr(config, 'offline_dataset', ''):
+      with np.load(config.offline_dataset) as _d:
+        if 'eval_goals' in _d:
+          eval_goals = _d['eval_goals'].copy()
+    env = RockfallOfflineAntUMazeEnv(
+        seed=seed, render_mode=render_mode, eval_goals=eval_goals,
+        eval_goal_mode=getattr(config, 'eval_goal_mode', 'd4rl'))
   elif env_name in ('offline_ant_umaze', 'offline_ant_umaze_litter'):
     # OFFLINE d4rl antmaze-umaze contract: zero-padded XY goal; eval goals
     # come from the offline dataset's empirical per-episode goals when the
