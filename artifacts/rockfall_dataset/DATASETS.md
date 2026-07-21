@@ -2,17 +2,21 @@
 
 The full learner NPZs exceed GitHub's 100 MB limit, so they are delivered via
 Google Drive (their sidecars, manifests, audit reports and `.sha256` files are
-tracked in git for provenance). Upload the three NPZs below to:
+tracked in git for provenance). The notebook reads them from, mirroring this
+repo's subfolder layout:
 
 ```
-/content/drive/MyDrive/contrastive_rl_datasets/rockfall/
+/content/drive/MyDrive/contrastive_rl_datasets/rockfall_dataset/
+  full/antmaze_rockfall_full.npz
+  oracle/antmaze_rockfall_full_center_only.npz
+  oracle/antmaze_rockfall_full_reweight_c50.npz
 ```
 
-| dataset | file | transitions | sha256 (prefix) | purpose |
+| dataset | Drive path | transitions | sha256 (prefix) | purpose |
 |---|---|---|---|---|
-| full | `antmaze_rockfall_full.npz` | 971,516 | `d9722c9142…` | main naive full-data CRL (≥300k) |
-| center-only (oracle) | `antmaze_rockfall_full_center_only.npz` | 203,700 | `7deba09d43…` | is center behaviour learnable |
-| reweight c50 (oracle) | `antmaze_rockfall_full_reweight_c50.npz` | 1,582,616 | `47cf12eba3…` | can weighting push CRL to center |
+| full | `full/antmaze_rockfall_full.npz` | 971,516 | `d9722c9142…` | main naive full-data CRL (≥300k) |
+| center-only (oracle) | `oracle/antmaze_rockfall_full_center_only.npz` | 203,700 | `7deba09d43…` | is center behaviour learnable |
+| reweight c50 (oracle) | `oracle/antmaze_rockfall_full_reweight_c50.npz` | 1,582,616 | `47cf12eba3…` | can weighting push CRL to center |
 
 **Provenance** (see `full/pilot_manifest.json`, `oracle/*_manifest.json`):
 - frozen env commit `225b2b0`; full-data collected with `collect_rockfall_pilot.py`
