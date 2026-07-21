@@ -1,0 +1,237 @@
+{
+  "dataset": "artifacts/rockfall_dataset/full\\antmaze_rockfall_full.npz",
+  "n_episodes": 1400,
+  "gates": {
+    "R1_frozen_integrity": true,
+    "R2_contract_loader": true,
+    "R3_hiddenness": true,
+    "R4_boundaries": true,
+    "R5_mask_stream": true,
+    "R6_route_compliance": true,
+    "R7_outcomes": true,
+    "R8_predrop_probe": true,
+    "R9_support": true,
+    "R10_mixture_85_5_10": true,
+    "R11_coverage": true,
+    "R12_severity_coverage": true,
+    "R13_center_zero_rockfall": true
+  },
+  "notes": {
+    "R1": {
+      "litter_hard_ok": true,
+      "rockfall_ok": true,
+      "sha_match": true,
+      "discrepancies": []
+    },
+    "R2": {
+      "keys": [
+        "act",
+        "eval_goals",
+        "lengths",
+        "meta",
+        "obs"
+      ],
+      "loader_transitions": 971516,
+      "manifest_transitions": 971516
+    },
+    "R3": {
+      "extra_keys": [],
+      "pairs": [
+        {
+          "obs_div_step": 32,
+          "act_div_step": 32,
+          "drop_step": 31,
+          "first_rock_contact": 31,
+          "first_rock_ant_contact": 31,
+          "ok": true
+        },
+        {
+          "obs_div_step": 31,
+          "act_div_step": 31,
+          "drop_step": 30,
+          "first_rock_contact": 30,
+          "first_rock_ant_contact": 30,
+          "ok": true
+        },
+        {
+          "obs_div_step": 40,
+          "act_div_step": 40,
+          "drop_step": 39,
+          "first_rock_contact": 39,
+          "first_rock_ant_contact": 39,
+          "ok": true
+        },
+        {
+          "obs_div_step": 29,
+          "act_div_step": 29,
+          "drop_step": 28,
+          "first_rock_contact": 28,
+          "first_rock_ant_contact": 28,
+          "ok": true
+        }
+      ]
+    },
+    "R4": {
+      "pad_ok": true,
+      "trunc_ok": true,
+      "dead_eps": 13
+    },
+    "R5": {
+      "site_freq": [
+        0.211,
+        0.205,
+        0.211,
+        0.203
+      ],
+      "max_abs_pairwise_corr": 0.083,
+      "mode_vs_mask_maxdev": [
+        0.009,
+        0.061
+      ]
+    },
+    "R6": {
+      "sighted_rule_ok": true,
+      "blind_alternation": true,
+      "coverage_center": true,
+      "trajectory_follow_rate": 1.0,
+      "both_clear_left_frac": 0.516
+    },
+    "R7": {
+      "success_by_mode": {
+        "sighted": 0.91,
+        "blind": 0.757,
+        "coverage": 0.786
+      },
+      "bands": {
+        "sighted": [
+          0.75,
+          0.97
+        ],
+        "blind": [
+          0.2,
+          0.9
+        ],
+        "coverage": [
+          0.55,
+          0.95
+        ]
+      },
+      "overall": 0.89,
+      "dead_frac": 0.009
+    },
+    "R8": {
+      "coverage_eps": 140,
+      "states": 11200,
+      "per_site": {
+        "site0": {
+          "acc": 0.849,
+          "base": 0.85,
+          "auc": 0.48,
+          "margin": -0.001
+        },
+        "site1": {
+          "acc": 0.83,
+          "base": 0.829,
+          "auc": 0.514,
+          "margin": 0.001
+        },
+        "site2": {
+          "acc": 0.779,
+          "base": 0.779,
+          "auc": 0.493,
+          "margin": 0.0
+        },
+        "site3": {
+          "acc": 0.771,
+          "base": 0.771,
+          "auc": 0.48,
+          "margin": -0.0
+        }
+      }
+    },
+    "R9": {
+      "successes_by_route": {
+        "left": 515,
+        "right": 506,
+        "center": 225
+      },
+      "collapse_eps": 13,
+      "impaired_eps": 4,
+      "rock_hit_eps": 18
+    },
+    "R10": {
+      "counts": {
+        "sighted": 1190,
+        "blind": 70,
+        "coverage": 140
+      },
+      "manifest_counts": {
+        "sighted": 1190,
+        "blind": 70,
+        "coverage": 140
+      },
+      "fractions": {
+        "sighted": 0.85,
+        "blind": 0.05,
+        "coverage": 0.1
+      }
+    },
+    "R11": {
+      "site_active": [
+        295,
+        287,
+        296,
+        284
+      ],
+      "site_min_required": 210.0,
+      "mask_class_counts": {
+        "all_clear": 538,
+        "right_only": 340,
+        "both_sides": 172,
+        "left_only": 350
+      },
+      "mask_pattern_histogram": {
+        "0000": 538,
+        "0001": 136,
+        "0010": 155,
+        "0011": 49,
+        "0100": 144,
+        "0101": 34,
+        "0110": 38,
+        "0111": 11,
+        "1000": 156,
+        "1001": 39,
+        "1010": 32,
+        "1011": 8,
+        "1100": 50,
+        "1101": 7,
+        "1110": 3
+      },
+      "route_counts": {
+        "left": 553,
+        "right": 556,
+        "center": 291
+      }
+    },
+    "R12": {
+      "realized_among_hits": {
+        "severe": 13,
+        "impaired": 4,
+        "mild": 2
+      },
+      "presampled_over_active_sites": {
+        "severe": 608,
+        "impaired": 364,
+        "mild": 190
+      },
+      "note": "hits are rare by design (teacher avoids hazards; exposure comes from blind + unlucky sighted)"
+    },
+    "R13": {
+      "center_eps": 291,
+      "center_drop_eps": 0,
+      "center_hit_eps": 0
+    }
+  },
+  "all_pass": true,
+  "git_commit": "b04d977f195968ea57fb1788dfb5bf6c636245c5"
+}

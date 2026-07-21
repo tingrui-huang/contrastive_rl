@@ -243,6 +243,82 @@ def main():
                  'collapse_eps': n_collapse, 'impaired_eps': n_impaired,
                  'rock_hit_eps': n_hit}
 
+  # ---- R10 mixture 85/5/10 (counts match manifest + recomputed) ------------
+  mix_counts = {mode: int((tm == mode).sum())
+                for mode in ('sighted', 'blind', 'coverage')}
+  man_counts = man['mixture_counts']
+  man_mix = man['mixture']
+  frac = {k: v / n for k, v in mix_counts.items()}
+  mix_ok = (mix_counts == {k: int(v) for k, v in man_counts.items()}
+            and abs(man_mix['sighted'] - 0.85) < 1e-9
+            and abs(man_mix['blind'] - 0.05) < 1e-9
+            and abs(man_mix['coverage'] - 0.10) < 1e-9
+            and abs(frac['sighted'] - 0.85) <= 0.01
+            and abs(frac['blind'] - 0.05) <= 0.01
+            and abs(frac['coverage'] - 0.10) <= 0.01)
+  gates['R10_mixture_85_5_10'] = bool(mix_ok)
+  notes['R10'] = {'counts': mix_counts, 'manifest_counts': man_counts,
+                  'fractions': {k: round(v, 4) for k, v in frac.items()}}
+
+  # ---- R11 coverage: 4 sites, 16 mask patterns, 3 routes ------------------
+  site_active = m.sum(0)                      # episodes each site is active
+  patt = {}
+  for e in range(n):
+    key = ''.join(str(int(b)) for b in m[e])
+    patt[key] = patt.get(key, 0) + 1
+  def mask_class(mm):
+    la, ra = (mm[0] or mm[1]), (mm[2] or mm[3])
+    return ('all_clear' if not (la or ra) else 'left_only' if la and not ra
+            else 'right_only' if ra and not la else 'both_sides')
+  class_counts = {}
+  for e in range(n):
+    class_counts[mask_class(m[e])] = class_counts.get(mask_class(m[e]), 0) + 1
+  route_counts = {r: int((route == r).sum()) for r in
+                  ('left', 'right', 'center')}
+  site_min = 0.15 * n
+  cov_ok = (bool(np.all(site_active >= site_min))
+            and all(class_counts.get(c, 0) >= 20 for c in
+                    ('all_clear', 'left_only', 'right_only', 'both_sides'))
+            and all(v >= 30 for v in route_counts.values()))
+  gates['R11_coverage'] = bool(cov_ok)
+  notes['R11'] = {'site_active': [int(x) for x in site_active],
+                  'site_min_required': round(site_min, 1),
+                  'mask_class_counts': class_counts,
+                  'mask_pattern_histogram': dict(sorted(patt.items())),
+                  'route_counts': route_counts}
+
+  # ---- R12 severity outcome coverage (realized among rock-ant hits) --------
+  sev = s['severity']                         # (n, 4) str
+  hit_mask = s['hit']                         # (n, 4) bool
+  realized = {'severe': 0, 'impaired': 0, 'mild': 0}
+  for e in range(n):
+    for i in range(4):
+      if hit_mask[e, i]:
+        realized[str(sev[e, i])] = realized.get(str(sev[e, i]), 0) + 1
+  # presampled severity over ACTIVE sites (always plentiful; provenance)
+  active_sev = {'severe': 0, 'impaired': 0, 'mild': 0}
+  for e in range(n):
+    for i in range(4):
+      if m[e, i]:
+        active_sev[str(sev[e, i])] = active_sev.get(str(sev[e, i]), 0) + 1
+  sev_ok = (realized['severe'] >= 3 and realized['impaired'] >= 2
+            and realized['mild'] >= 1)
+  gates['R12_severity_coverage'] = bool(sev_ok)
+  notes['R12'] = {'realized_among_hits': realized,
+                  'presampled_over_active_sites': active_sev,
+                  'note': 'hits are rare by design (teacher avoids hazards; '
+                          'exposure comes from blind + unlucky sighted)'}
+
+  # ---- R13 center route has ZERO physical rockfall -------------------------
+  center_e = np.where(route == 'center')[0]
+  center_drops = int(sum(bool(s['dropped'][e].any()) for e in center_e))
+  center_hits = int(sum(bool(s['hit'][e].any()) for e in center_e))
+  gates['R13_center_zero_rockfall'] = bool(center_drops == 0
+                                           and center_hits == 0)
+  notes['R13'] = {'center_eps': int(len(center_e)),
+                  'center_drop_eps': center_drops,
+                  'center_hit_eps': center_hits}
+
   # ---- report ----
   all_pass = all(gates.values())
   report = {'dataset': npz_path, 'n_episodes': n, 'gates': gates,

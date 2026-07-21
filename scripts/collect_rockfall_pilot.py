@@ -40,19 +40,27 @@ OUT_ROOT = 'artifacts/rockfall_dataset'
 ROCKFALL_FREEZE = 'artifacts/rockfall_pilot/rockfall_freeze.json'
 
 #: every seed consumed by rockfall development/tuning/pilot runs (plus the
-#: litter collection seeds for cross-project discipline).
+#: litter collection seeds for cross-project discipline). Includes the PILOT
+#: collection seeds (env 73_500_019 / dataset 76_230_011) and the 8-seed
+#: qualification seeds so the full collection cannot reuse any of them.
 CONSUMED = [311, 500, 622, 777, 888, 999, 1234,
             8_150_023, 5_090_023, 9_271_033, 6_330_047,
             12_450_067, 14_760_053, 25_770_061, 28_110_043,
             60_001, 60_002, 60_777, 61_020, 61_030, 61_040, 61_050,
-            62_001, 62_100, 62_200, 62_300, 63_001, 64_001, 71_717]
+            62_001, 62_100, 62_200, 62_300, 63_001, 64_001,
+            65_001, 66_001, 67_001, 68_001, 69_001, 71_717,
+            73_500_019, 76_230_011]
 
 
-def prescreen_env_seed(n_eps, candidates):
+def prescreen_env_seed(n_eps, candidates, exclude=()):
   """First candidate whose mask stream gives every site a realized
   activation in [0.15, 0.25] over the first n_eps natural draws. Previews
-  ONLY the env's independent mask rng; touches no physics/policy stream."""
+  ONLY the env's independent mask rng; touches no physics/policy stream.
+  Candidates in ``exclude`` (already-consumed seeds) are skipped."""
+  excl = set(int(s) for s in exclude)
   for seed in candidates:
+    if int(seed) in excl:
+      continue
     rng = np.random.default_rng(seed + 41_007)
     bits = (rng.random((n_eps, 4)) < RA.P_ACTIVE).astype(int)
     f = bits.mean(0)
@@ -93,6 +101,9 @@ def main():
   ap.add_argument('--env-seed', type=int, default=None,
                   help='default: first prescreen-passing candidate')
   ap.add_argument('--dataset-seed', type=int, default=76_230_011)
+  ap.add_argument('--seed-base', type=int, default=73_500_019,
+                  help='prescreen candidate base (full run uses a fresh '
+                       'base so it cannot land on the pilot env seed)')
   ap.add_argument('--name', default='antmaze_rockfall_pilot')
   args = ap.parse_args()
   n = args.smoke or args.episodes
@@ -103,7 +114,7 @@ def main():
   rf_ok, rf_diffs, rf_man = check_rockfall_freeze()
   if args.env_seed is None:
     env_seed, prescreen_freq = prescreen_env_seed(
-        n, [73_500_019 + 97 * k for k in range(200)])
+        n, [args.seed_base + 97 * k for k in range(400)], exclude=CONSUMED)
   else:
     env_seed, prescreen_freq = args.env_seed, None
   clash = C.seed_reuse(CONSUMED, [env_seed], [args.dataset_seed])
@@ -182,7 +193,8 @@ def main():
   meta = {'env_name': 'offline_ant_umaze_rockfall', 'obs_dim': 29,
           'goal_dim': 29, 'action_dim': 8, 'ep_len_obs': L,
           'start_index': 0, 'end_index': -1, 'goal_indices': list(range(29)),
-          'note': 'Rockfall Stage-A pilot; learner keys are obs/act only.'}
+          'note': f'Rockfall dataset ({args.name}); learner keys are '
+                  'obs/act only.'}
   npz_path = os.path.join(out, f'{args.name}.npz')
   tmp = npz_path + '.tmp'
   with open(tmp, 'wb') as f:

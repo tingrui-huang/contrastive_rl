@@ -144,3 +144,9 @@ artifacts/offline_d4rl/pretraining_gates.json
 # Stage 3A litter pilot: large data blobs (keep json/md audit records only)
 artifacts/litter_dataset/**/antmaze_litter_pilot*.npz
 artifacts/litter_dataset/**/*.npz
+
+# Rockfall FULL learner npzs exceed GitHub's 100MB limit -> delivered via Drive
+# for Colab. Their sidecars, manifests, audit reports and .sha256 files ARE
+# tracked (provenance); the big obs/act arrays are not.
+artifacts/rockfall_dataset/full/antmaze_rockfall_full.npz
+artifacts/rockfall_dataset/oracle/*.npz
