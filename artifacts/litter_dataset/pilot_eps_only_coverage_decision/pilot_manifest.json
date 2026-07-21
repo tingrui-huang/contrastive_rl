@@ -1,0 +1,146 @@
+{
+  "collection_date_utc": "2026-07-20",
+  "git_commit": "28915e3bb3ecf3027a50af7996377a2633e3f274",
+  "freeze_manifest_path": "artifacts/freeze_signature/litter_freeze.json",
+  "freeze_manifest_sha256": "6fb3328a5a6ead3a81246e2bb716f9ac015d85ec5a6810f5ef94ca8252db83f1",
+  "walker_path": "artifacts/walker/phase1/walker_best.pkl",
+  "walker_sha256": "70b0a460b2e38332821f1846b48c75fbcdc884dd315b29c97ebc69083388cdd5",
+  "walker_step": 1950016,
+  "base_policy_path": "offline_umaze_bc005_twinmin_s0_50k/checkpoints/best.pkl",
+  "base_policy_sha256": "6bece3e37c6e994fa612d721ff6e4320bebf36df8fdf3a11d6ea354a39a286ac",
+  "base_policy_step": 959000,
+  "env_seed": 9271033,
+  "dataset_rng_seed": 6330047,
+  "collection_seeds": [
+    9271033,
+    6330047
+  ],
+  "rejected_seeds_imbalanced": [
+    8150023,
+    5090023
+  ],
+  "rejected_reason": "env_seed 8150023 gave frac_u1=0.42 (<0.45 balance gate); reselected by pre-screening the u_side stream",
+  "consumed_seeds_checked": [
+    311,
+    500,
+    622,
+    777,
+    888,
+    999,
+    1234,
+    8150023,
+    5090023
+  ],
+  "seed_reuse": [],
+  "n_episodes": 200,
+  "ep_len_obs": 701,
+  "horizon": 700,
+  "n_states_total": 138813,
+  "n_transitions_total": 138613,
+  "buffer_ready_transitions": 138613,
+  "env_name": "offline_ant_umaze_litter",
+  "obs_dim_learner": 58,
+  "state_dim": 29,
+  "goal_dim": 29,
+  "action_dim": 8,
+  "episode_horizon_convention": "L=701 obs rows/episode (700 transitions); dead episodes truncated via lengths (relabeler ignores the padded tail). obs=state29 + zero-padded goal29 ([:2]=d4rl-sampled goal xy).",
+  "epsilon": 0.05,
+  "epsilon_semantics": "per-episode blind ~ dataset_rng.random() < epsilon; blind teacher commands middle lane at WG.SLOW_V (frozen 0.6) with the unstick probe; sighted commands the clean side (opposite the active pile) at V_FAST.",
+  "teacher_blind_v_used": 0.6,
+  "a1_hard_ok": true,
+  "a1_discrepancies": [
+    {
+      "field": "commands.slow_v",
+      "severity": "doc",
+      "code_teacher_blind_v": 0.6,
+      "manifest_slow_v": 0.8,
+      "note": "manifest slow_v documents the GATE middle_slow arm (--slow-v 0.8); the frozen QUALIFIED teacher blind policy uses WG.SLOW_V=probe.V_SLOW=0.6. Data generation uses the code value. Manifest should split gate_middle_slow_v from teacher_blind_v before full collection."
+    }
+  ],
+  "npz_sha256": "5d45416c9f2497ef01ebd9764e1e85e4d3c9f7f211bd707ed8e8dd1e36adc987",
+  "sidecar_sha256": "da5507e98adf44c385565429c851dfe6033a60e13a6148332b5b29260980c7a9",
+  "fingerprint": {
+    "path": "D:\\Users\\trhua\\Research\\contrastive_rl\\artifacts\\litter_dataset\\pilot\\antmaze_litter_pilot.npz",
+    "sha256": "5d45416c9f2497ef01ebd9764e1e85e4d3c9f7f211bd707ed8e8dd1e36adc987",
+    "n_episodes": 200,
+    "n_transitions": 138613,
+    "obs_shape": [
+      200,
+      701,
+      58
+    ],
+    "act_shape": [
+      200,
+      701,
+      8
+    ],
+    "obs_dtype": "float32",
+    "act_dtype": "float32",
+    "ep_len_obs": 701,
+    "ep_lengths_min": 20,
+    "ep_lengths_max": 701,
+    "keys": {
+      "learner": [
+        "act",
+        "obs"
+      ],
+      "audit": [],
+      "meta": [
+        "meta"
+      ],
+      "structural": [
+        "eval_goals",
+        "lengths"
+      ],
+      "other": []
+    },
+    "meta": {
+      "env_name": "offline_ant_umaze_litter",
+      "obs_dim": 29,
+      "goal_dim": 29,
+      "action_dim": 8,
+      "ep_len_obs": 701,
+      "start_index": 0,
+      "end_index": -1,
+      "goal_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28
+      ],
+      "note": "Stage-3A litter pilot; learner keys are obs/act only."
+    }
+  },
+  "code_locations": {
+    "env": "crl/d4rl_ant.py LitterOfflineAntUMazeEnv",
+    "teacher_selector": "scripts/litter_teacher.py run_teacher_episode (replicated in collect_litter_pilot.rollout)",
+    "collector": "scripts/collect_litter_pilot.py",
+    "loader": "crl/offline_audit.py build_offline_buffer / fingerprint",
+    "replay_buffer": "crl/replay.py TrajectoryBuffer"
+  }
+}
