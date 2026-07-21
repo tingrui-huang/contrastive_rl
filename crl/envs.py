@@ -1039,9 +1039,13 @@ def make_env(env_name, config, seed=0, render_mode=None):
       with np.load(config.offline_dataset) as _d:
         if 'eval_goals' in _d:
           eval_goals = _d['eval_goals'].copy()
+    # optional per-run severity override (v2.1 protocol sets 0.80/0.15/0.05);
+    # absent -> the env's frozen default (0.55/0.30/0.15), so v1 is unchanged.
+    _sev = getattr(config, 'rockfall_severity', None)
+    _sev_kw = {} if _sev is None else {'severity_probs': tuple(_sev)}
     env = RockfallOfflineAntUMazeEnv(
         seed=seed, render_mode=render_mode, eval_goals=eval_goals,
-        eval_goal_mode=getattr(config, 'eval_goal_mode', 'd4rl'))
+        eval_goal_mode=getattr(config, 'eval_goal_mode', 'd4rl'), **_sev_kw)
   elif env_name in ('offline_ant_umaze', 'offline_ant_umaze_litter'):
     # OFFLINE d4rl antmaze-umaze contract: zero-padded XY goal; eval goals
     # come from the offline dataset's empirical per-episode goals when the

@@ -149,9 +149,17 @@ def main():
   ap.add_argument('--ckpt', default='artifacts/naive_rockfall_crl/best.pkl')
   ap.add_argument('--n', type=int, default=N_EVAL)
   ap.add_argument('--pairs', type=int, default=N_PAIRS)
+  ap.add_argument('--out-dir', default=OUT)
+  ap.add_argument('--v2', action='store_true',
+                  help='evaluate under the v2.1 severity 0.80/0.15/0.05')
   args = ap.parse_args()
-  os.makedirs(OUT, exist_ok=True)
+  out_dir = args.out_dir
+  os.makedirs(out_dir, exist_ok=True)
   cfg, act, step = build_policy(args.ckpt)
+  if args.v2:
+    from rockfall_v2_teacher import SEVERITY_V2
+    cfg.rockfall_severity = SEVERITY_V2
+    print('v2.1 eval severity', SEVERITY_V2, flush=True)
   print(f'checkpoint {args.ckpt} @ step {step}', flush=True)
 
   # ---- 1+2+3: balanced evaluation ----
@@ -303,7 +311,7 @@ def main():
       'verdict': verdict,
       'gap_to_center_anchor': round(anchors['center'] - succ, 3),
       'gap_to_teacher_anchor': round(anchors['teacher'] - succ, 3)}
-  json.dump(report, open(os.path.join(OUT, 'diagnosis.json'), 'w'),
+  json.dump(report, open(os.path.join(out_dir, 'diagnosis.json'), 'w'),
             indent=2,
             default=lambda o: o.tolist() if hasattr(o, 'tolist') else str(o))
   # deterministic GIF selection: first 2 successes + first 2 fails per route
@@ -313,8 +321,8 @@ def main():
       ids = [i for i, r in enumerate(rows)
              if r['route'] == rt and (r['success'] > 0) == (kind == 'succ')]
       sel[f'{kind}_{rt}'] = ids[:2]
-  json.dump(sel, open(os.path.join(OUT, 'gif_selection.json'), 'w'))
-  print('verdict:', verdict, '| success', succ, '->', OUT, flush=True)
+  json.dump(sel, open(os.path.join(out_dir, 'gif_selection.json'), 'w'))
+  print('verdict:', verdict, '| success', succ, '->', out_dir, flush=True)
 
 
 if __name__ == '__main__':

@@ -1,0 +1,129 @@
+{
+  "variant": "local_detour_v2",
+  "git_commit": "ce711c70174537cf654a288c12c2e7caff03a6d5",
+  "rockfall_frozen_code_commit": "225b2b01ebc39a7418dcb6a0eb6c0bd68335d9e5",
+  "teacher": "scripts/rockfall_v2_teacher.py local-detour",
+  "detour_params": {
+    "detour_y": 0.72,
+    "pre": 1.1,
+    "post": 0.8,
+    "base_lane": 1.1
+  },
+  "walker_path": "artifacts/walker/phase1/walker_best.pkl",
+  "walker_sha256": "70b0a460b2e38332821f1846b48c75fbcdc884dd315b29c97ebc69083388cdd5",
+  "walker_step": 1950016,
+  "base_policy_path": "offline_umaze_bc005_twinmin_s0_50k/checkpoints/best.pkl",
+  "base_policy_sha256": "6bece3e37c6e994fa612d721ff6e4320bebf36df8fdf3a11d6ea354a39a286ac",
+  "base_policy_step": 959000,
+  "env_seed": 52400019,
+  "dataset_rng_seed": 51990013,
+  "base_side_rng_seed": 51990014,
+  "mask_prescreen_freq": [
+    0.21333333333333335,
+    0.19666666666666666,
+    0.19,
+    0.19666666666666666
+  ],
+  "seed_reuse": [],
+  "mixture": {
+    "sighted": 0.9,
+    "blind": 0.0,
+    "coverage": 0.1
+  },
+  "mixture_counts": {
+    "sighted": 270,
+    "blind": 0,
+    "coverage": 30
+  },
+  "n_episodes": 300,
+  "ep_len_obs": 701,
+  "horizon": 700,
+  "n_transitions_total": 208005,
+  "buffer_ready_transitions": 208005,
+  "env_name": "offline_ant_umaze_rockfall",
+  "obs_dim_learner": 58,
+  "npz_sha256": "ac2618c3715be61f1a85835c87a67681f1ec87b5b93dd52d59963f631edb659d",
+  "sidecar_sha256": "072a104c64a4a3018cf889aecb32ef0c219094787500073550c7c4bab166e65c",
+  "fingerprint": {
+    "path": "D:\\Users\\trhua\\Research\\contrastive_rl\\artifacts\\rockfall_v2_dataset\\pilot\\antmaze_rockfall_v2_pilot.npz",
+    "sha256": "ac2618c3715be61f1a85835c87a67681f1ec87b5b93dd52d59963f631edb659d",
+    "n_episodes": 300,
+    "n_transitions": 208005,
+    "obs_shape": [
+      300,
+      701,
+      58
+    ],
+    "act_shape": [
+      300,
+      701,
+      8
+    ],
+    "obs_dtype": "float32",
+    "act_dtype": "float32",
+    "ep_len_obs": 701,
+    "ep_lengths_min": 27,
+    "ep_lengths_max": 701,
+    "keys": {
+      "learner": [
+        "act",
+        "obs"
+      ],
+      "audit": [],
+      "meta": [
+        "meta"
+      ],
+      "structural": [
+        "eval_goals",
+        "lengths"
+      ],
+      "other": []
+    },
+    "meta": {
+      "env_name": "offline_ant_umaze_rockfall",
+      "obs_dim": 29,
+      "goal_dim": 29,
+      "action_dim": 8,
+      "ep_len_obs": 701,
+      "start_index": 0,
+      "end_index": -1,
+      "goal_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28
+      ],
+      "note": "Rockfall v2 LOCAL-DETOUR pilot (antmaze_rockfall_v2_pilot); learner keys obs/act only."
+    }
+  },
+  "integrity": {
+    "litter_hard_ok": true,
+    "rockfall_ok": true,
+    "discrepancies": []
+  }
+}
