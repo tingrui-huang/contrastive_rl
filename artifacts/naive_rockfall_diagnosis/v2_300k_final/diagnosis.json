@@ -1,0 +1,258 @@
+{
+  "checkpoint": "naive_rockfall_v2_s0_300k/final.pkl",
+  "step": 300300,
+  "n_eval": 200,
+  "naive_success": 0.78,
+  "naive_center_fraction": 0.325,
+  "naive_left_fraction": 0.56,
+  "naive_right_fraction": 0.115,
+  "naive_hazard_exposure_rate": 0.515,
+  "naive_drop_rate": 0.13,
+  "naive_impact_recovery_rate": 0.2,
+  "naive_trigger_avoidance_rate": 0.072,
+  "naive_success_by_mask_pattern": {
+    "all_clear": {
+      "n": 84,
+      "success": 0.869
+    },
+    "both_sides": {
+      "n": 18,
+      "success": 0.444
+    },
+    "left_only": {
+      "n": 53,
+      "success": 0.774
+    },
+    "right_only": {
+      "n": 45,
+      "success": 0.756
+    }
+  },
+  "route_distribution": {
+    "left": 0.56,
+    "right": 0.115,
+    "center": 0.325
+  },
+  "dominant_route": "left",
+  "success_conditioned": {
+    "chosen_side_clear": {
+      "n": 80,
+      "success": 0.838
+    },
+    "chosen_side_active": {
+      "n": 55,
+      "success": 0.491
+    },
+    "center": {
+      "n": 65,
+      "success": 0.954
+    }
+  },
+  "shortcut_scan": {
+    "region_entries": 180,
+    "avoided_entries": 13,
+    "avoided_via_lowvx_stop_and_go": 0,
+    "avoided_via_short_dwell_crossing": 13,
+    "eps_with_lowvx_in_region": 9,
+    "mean_lowvx_steps_in_regions": 0.155,
+    "band_edge_eps_ge10": 133,
+    "mean_vx_zone": 0.08755346761963295,
+    "trigger_rate": 0.51,
+    "hit_rate": 0.13,
+    "success_given_any_hit": 0.038
+  },
+  "paired_maskflip": {
+    "pairs": [
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      },
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      },
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      },
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      },
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      },
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      },
+      {
+        "div": 40,
+        "first_drop": 39,
+        "first_contact": 39,
+        "ok": true
+      },
+      {
+        "div": 156,
+        "first_drop": 155,
+        "first_contact": 155,
+        "ok": true
+      },
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      },
+      {
+        "div": 41,
+        "first_drop": 40,
+        "first_contact": 40,
+        "ok": true
+      },
+      {
+        "div": 65,
+        "first_drop": 64,
+        "first_contact": 64,
+        "ok": true
+      },
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      },
+      {
+        "div": 84,
+        "first_drop": 82,
+        "first_contact": 83,
+        "ok": true
+      },
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      },
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      },
+      {
+        "div": 40,
+        "first_drop": 39,
+        "first_contact": 39,
+        "ok": true
+      },
+      {
+        "div": 32,
+        "first_drop": 31,
+        "first_contact": 31,
+        "ok": true
+      },
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      },
+      {
+        "div": 65,
+        "first_drop": 63,
+        "first_contact": 64,
+        "ok": true
+      },
+      {
+        "div": 29,
+        "first_drop": 28,
+        "first_contact": 28,
+        "ok": true
+      },
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      },
+      {
+        "div": 50,
+        "first_drop": 48,
+        "first_contact": 49,
+        "ok": true
+      },
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      },
+      {
+        "div": 35,
+        "first_drop": 34,
+        "first_contact": 34,
+        "ok": true
+      },
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      },
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      },
+      {
+        "div": 115,
+        "first_drop": 114,
+        "first_contact": 114,
+        "ok": true
+      },
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      },
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      },
+      {
+        "div": 123,
+        "first_drop": 122,
+        "first_contact": 122,
+        "ok": true
+      }
+    ],
+    "n_ok": 30,
+    "leakage": "none"
+  },
+  "anchors": {
+    "blind_side": 0.6,
+    "center": 0.82,
+    "teacher": 0.88
+  },
+  "verdict": "mixed-routes",
+  "gap_to_center_anchor": 0.04,
+  "gap_to_teacher_anchor": 0.1
+}
