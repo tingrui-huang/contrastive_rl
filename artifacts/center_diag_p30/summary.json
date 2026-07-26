@@ -1,0 +1,336 @@
+{
+  "provenance": {
+    "seed": 20260726,
+    "p_active": 0.3,
+    "base_horizon": 700,
+    "stuck_vx": 0.1,
+    "stuck_steps": 100,
+    "near_goal_dist": 1.5,
+    "route_dev_y": 0.9,
+    "success_dist": 0.5,
+    "controllers": {
+      "walker": "artifacts/walker/phase1/walker_best.pkl",
+      "base": "offline_umaze_bc005_twinmin_s0_50k/checkpoints/best.pkl"
+    }
+  },
+  "baseline": {
+    "label": "baseline_p30",
+    "n": 600,
+    "success_rate": 0.7967,
+    "n_success": 478,
+    "n_fail": 122,
+    "env_bug_episodes_nonzero_rockfall": [],
+    "category_counts": {
+      "timeout_near_goal": 38,
+      "timeout_insufficient_progress": 0,
+      "physical_fall": 36,
+      "stuck_oscillating": 2,
+      "route_deviation_wall": 0,
+      "controller_handoff_failure": 46,
+      "numerical_unknown": 0
+    },
+    "category_pct": {
+      "timeout_near_goal": 6.33,
+      "timeout_insufficient_progress": 0.0,
+      "physical_fall": 6.0,
+      "stuck_oscillating": 0.33,
+      "route_deviation_wall": 0.0,
+      "controller_handoff_failure": 7.67,
+      "numerical_unknown": 0.0
+    },
+    "mean_ep_length_success": 653.1,
+    "mean_ep_length_fail": 700.0,
+    "final_dist_all": {
+      "mean": 1.1,
+      "p10": 0.353,
+      "p50": 0.463,
+      "p90": 2.698,
+      "min": 0.229,
+      "max": 11.258
+    },
+    "final_dist_fail": {
+      "mean": 3.73,
+      "p10": 0.737,
+      "p50": 2.689,
+      "p90": 8.793,
+      "min": 0.523,
+      "max": 11.258
+    },
+    "max_x_fail": {
+      "mean": 8.73,
+      "p10": 8.059,
+      "p50": 8.941,
+      "p90": 9.309,
+      "min": 4.301,
+      "max": 9.738
+    },
+    "min_torso_z_all": {
+      "mean": 0.37,
+      "p10": 0.354,
+      "p50": 0.376,
+      "p90": 0.394,
+      "min": 0.228,
+      "max": 0.431
+    },
+    "min_torso_z_fail": {
+      "mean": 0.34,
+      "p10": 0.245,
+      "p50": 0.369,
+      "p90": 0.39,
+      "min": 0.228,
+      "max": 0.425
+    },
+    "failure_x_hist_1m_bins_0to11": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      8,
+      66,
+      46,
+      0,
+      0
+    ],
+    "longest_low_vx_fail": {
+      "mean": 40.721,
+      "p10": 19.0,
+      "p50": 35.5,
+      "p90": 67.7,
+      "min": 11.0,
+      "max": 165.0
+    }
+  },
+  "ablation_A_mud_off": {
+    "label": "ablationA_mud_off",
+    "n": 600,
+    "success_rate": 0.9383,
+    "n_success": 563,
+    "n_fail": 37,
+    "env_bug_episodes_nonzero_rockfall": [],
+    "category_counts": {
+      "timeout_near_goal": 0,
+      "timeout_insufficient_progress": 0,
+      "physical_fall": 30,
+      "stuck_oscillating": 0,
+      "route_deviation_wall": 0,
+      "controller_handoff_failure": 7,
+      "numerical_unknown": 0
+    },
+    "category_pct": {
+      "timeout_near_goal": 0.0,
+      "timeout_insufficient_progress": 0.0,
+      "physical_fall": 5.0,
+      "stuck_oscillating": 0.0,
+      "route_deviation_wall": 0.0,
+      "controller_handoff_failure": 1.17,
+      "numerical_unknown": 0.0
+    },
+    "mean_ep_length_success": 193.4,
+    "mean_ep_length_fail": 700.0,
+    "final_dist_all": {
+      "mean": 0.832,
+      "p10": 0.358,
+      "p50": 0.45,
+      "p90": 0.496,
+      "min": 0.172,
+      "max": 11.153
+    },
+    "final_dist_fail": {
+      "mean": 6.923,
+      "p10": 3.17,
+      "p50": 7.625,
+      "p90": 10.155,
+      "min": 1.258,
+      "max": 11.153
+    },
+    "max_x_fail": {
+      "mean": 8.517,
+      "p10": 7.628,
+      "p50": 8.578,
+      "p90": 9.22,
+      "min": 6.939,
+      "max": 9.437
+    },
+    "min_torso_z_all": {
+      "mean": 0.374,
+      "p10": 0.355,
+      "p50": 0.378,
+      "p90": 0.403,
+      "min": 0.227,
+      "max": 0.464
+    },
+    "min_torso_z_fail": {
+      "mean": 0.275,
+      "p10": 0.239,
+      "p50": 0.252,
+      "p90": 0.38,
+      "min": 0.227,
+      "max": 0.424
+    },
+    "failure_x_hist_1m_bins_0to11": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      8,
+      18,
+      10,
+      0,
+      0
+    ],
+    "longest_low_vx_fail": {
+      "mean": 419.73,
+      "p10": 282.6,
+      "p50": 449.0,
+      "p90": 558.8,
+      "min": 35.0,
+      "max": 590.0
+    }
+  },
+  "ablation_B_long_horizon": {
+    "label": "ablationB_long_horizon",
+    "n": 600,
+    "success_rate": 0.9267,
+    "n_success": 556,
+    "n_fail": 44,
+    "env_bug_episodes_nonzero_rockfall": [],
+    "category_counts": {
+      "timeout_near_goal": 0,
+      "timeout_insufficient_progress": 0,
+      "physical_fall": 38,
+      "stuck_oscillating": 0,
+      "route_deviation_wall": 0,
+      "controller_handoff_failure": 6,
+      "numerical_unknown": 0
+    },
+    "category_pct": {
+      "timeout_near_goal": 0.0,
+      "timeout_insufficient_progress": 0.0,
+      "physical_fall": 6.33,
+      "stuck_oscillating": 0.0,
+      "route_deviation_wall": 0.0,
+      "controller_handoff_failure": 1.0,
+      "numerical_unknown": 0.0
+    },
+    "mean_ep_length_success": 666.7,
+    "mean_ep_length_fail": 1400.0,
+    "final_dist_all": {
+      "mean": 0.885,
+      "p10": 0.352,
+      "p50": 0.452,
+      "p90": 0.497,
+      "min": 0.229,
+      "max": 11.133
+    },
+    "final_dist_fail": {
+      "mean": 6.618,
+      "p10": 2.905,
+      "p50": 7.697,
+      "p90": 9.666,
+      "min": 0.966,
+      "max": 11.133
+    },
+    "max_x_fail": {
+      "mean": 8.842,
+      "p10": 8.081,
+      "p50": 8.943,
+      "p90": 9.327,
+      "min": 7.45,
+      "max": 9.738
+    },
+    "min_torso_z_all": {
+      "mean": 0.369,
+      "p10": 0.353,
+      "p50": 0.376,
+      "p90": 0.394,
+      "min": 0.228,
+      "max": 0.431
+    },
+    "min_torso_z_fail": {
+      "mean": 0.267,
+      "p10": 0.239,
+      "p50": 0.254,
+      "p90": 0.358,
+      "min": 0.228,
+      "max": 0.389
+    },
+    "failure_x_hist_1m_bins_0to11": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      22,
+      18,
+      0,
+      0
+    ],
+    "longest_low_vx_fail": {
+      "mean": 522.205,
+      "p10": 130.7,
+      "p50": 604.0,
+      "p90": 758.8,
+      "min": 41.0,
+      "max": 814.0
+    }
+  },
+  "mask_invariance": {
+    "k_paired_inits": 40,
+    "per_pattern_success": {
+      "all_clear": 0.9,
+      "left_only": 0.9,
+      "right_only": 0.9,
+      "both_sides": 0.9
+    },
+    "paired_success_disagreements": 0,
+    "max_final_xy_spread_across_masks": 0.0
+  },
+  "representative_failure_ids": {
+    "timeout_near_goal": [
+      9,
+      24,
+      41,
+      53,
+      97,
+      107,
+      109,
+      111
+    ],
+    "timeout_insufficient_progress": [],
+    "physical_fall": [
+      3,
+      13,
+      32,
+      37,
+      52,
+      54,
+      58,
+      64
+    ],
+    "stuck_oscillating": [
+      301,
+      527
+    ],
+    "route_deviation_wall": [],
+    "controller_handoff_failure": [
+      4,
+      12,
+      14,
+      23,
+      33,
+      56,
+      70,
+      83
+    ],
+    "numerical_unknown": []
+  }
+}
