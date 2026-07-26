@@ -1,0 +1,389 @@
+{
+  "provenance": {
+    "seed": 20260726,
+    "p_active": 0.3,
+    "horizons": [
+      700,
+      800,
+      900,
+      1000
+    ],
+    "severity": [
+      0.8,
+      0.15,
+      0.05
+    ],
+    "n_natural": 500,
+    "k_balanced": 60,
+    "naive_ckpt": "naive_rockfall_v2_p30_s0_300k/final.pkl",
+    "naive_step": 300300,
+    "natural_weights": {
+      "all_clear": 0.2401,
+      "left_only": 0.2499,
+      "right_only": 0.2499,
+      "both_sides": 0.2601
+    },
+    "note_partB": "EVALUATION-ONLY post-training horizon sensitivity of the H=700-trained naive final.pkl; NOT a trained baseline for H>700. Behavioural metrics (leakage/trigger-gaming) are horizon-invariant; see the committed v2_p30_final diagnosis."
+  },
+  "partA_scripted": {
+    "teacher": {
+      "700": {
+        "natural_success": 0.892,
+        "mean_steps_to_success": 235.7,
+        "median_steps_to_success": 212,
+        "success_by_700": 0.892,
+        "rescued_after_700": 0.0,
+        "timeout_count": 34,
+        "physical_fall_count": 27,
+        "post_handoff_timeout_count": 34,
+        "dead_count": 20,
+        "final_dist_timeout_median": 7.071,
+        "per_pattern_success": {
+          "all_clear": 0.943,
+          "left_only": 0.917,
+          "right_only": 0.878,
+          "both_sides": 0.817
+        },
+        "balanced_macro": 0.8887,
+        "worst_mask": 0.817,
+        "natural_analytic": 0.8875
+      },
+      "800": {
+        "natural_success": 0.892,
+        "mean_steps_to_success": 235.7,
+        "median_steps_to_success": 212,
+        "success_by_700": 0.892,
+        "rescued_after_700": 0.0,
+        "timeout_count": 34,
+        "physical_fall_count": 27,
+        "post_handoff_timeout_count": 34,
+        "dead_count": 20,
+        "final_dist_timeout_median": 7.079,
+        "per_pattern_success": {
+          "all_clear": 0.943,
+          "left_only": 0.917,
+          "right_only": 0.878,
+          "both_sides": 0.817
+        },
+        "balanced_macro": 0.8887,
+        "worst_mask": 0.817,
+        "natural_analytic": 0.8875
+      },
+      "900": {
+        "natural_success": 0.892,
+        "mean_steps_to_success": 235.7,
+        "median_steps_to_success": 212,
+        "success_by_700": 0.892,
+        "rescued_after_700": 0.0,
+        "timeout_count": 34,
+        "physical_fall_count": 27,
+        "post_handoff_timeout_count": 34,
+        "dead_count": 20,
+        "final_dist_timeout_median": 7.068,
+        "per_pattern_success": {
+          "all_clear": 0.943,
+          "left_only": 0.917,
+          "right_only": 0.878,
+          "both_sides": 0.817
+        },
+        "balanced_macro": 0.8887,
+        "worst_mask": 0.817,
+        "natural_analytic": 0.8875
+      },
+      "1000": {
+        "natural_success": 0.892,
+        "mean_steps_to_success": 235.7,
+        "median_steps_to_success": 212,
+        "success_by_700": 0.892,
+        "rescued_after_700": 0.0,
+        "timeout_count": 34,
+        "physical_fall_count": 27,
+        "post_handoff_timeout_count": 34,
+        "dead_count": 20,
+        "final_dist_timeout_median": 7.062,
+        "per_pattern_success": {
+          "all_clear": 0.943,
+          "left_only": 0.917,
+          "right_only": 0.878,
+          "both_sides": 0.817
+        },
+        "balanced_macro": 0.8887,
+        "worst_mask": 0.817,
+        "natural_analytic": 0.8875
+      },
+      "rockfall_totals": {
+        "episodes_with_trigger": 429,
+        "episodes_with_drop": 29,
+        "episodes_with_hit": 29
+      }
+    },
+    "center": {
+      "700": {
+        "natural_success": 0.792,
+        "mean_steps_to_success": 652.5,
+        "median_steps_to_success": 653,
+        "success_by_700": 0.792,
+        "rescued_after_700": 0.0,
+        "timeout_count": 104,
+        "physical_fall_count": 35,
+        "post_handoff_timeout_count": 103,
+        "dead_count": 0,
+        "final_dist_timeout_median": 2.494,
+        "per_pattern_success": {
+          "all_clear": 0.816,
+          "left_only": 0.793,
+          "right_only": 0.772,
+          "both_sides": 0.783
+        },
+        "balanced_macro": 0.791,
+        "worst_mask": 0.772,
+        "natural_analytic": 0.7907
+      },
+      "800": {
+        "natural_success": 0.902,
+        "mean_steps_to_success": 661.3,
+        "median_steps_to_success": 659,
+        "success_by_700": 0.792,
+        "rescued_after_700": 0.11,
+        "timeout_count": 49,
+        "physical_fall_count": 35,
+        "post_handoff_timeout_count": 48,
+        "dead_count": 0,
+        "final_dist_timeout_median": 5.673,
+        "per_pattern_success": {
+          "all_clear": 0.908,
+          "left_only": 0.893,
+          "right_only": 0.919,
+          "both_sides": 0.887
+        },
+        "balanced_macro": 0.9018,
+        "worst_mask": 0.887,
+        "natural_analytic": 0.9015
+      },
+      "900": {
+        "natural_success": 0.918,
+        "mean_steps_to_success": 664.3,
+        "median_steps_to_success": 660,
+        "success_by_700": 0.792,
+        "rescued_after_700": 0.126,
+        "timeout_count": 41,
+        "physical_fall_count": 35,
+        "post_handoff_timeout_count": 40,
+        "dead_count": 0,
+        "final_dist_timeout_median": 7.514,
+        "per_pattern_success": {
+          "all_clear": 0.922,
+          "left_only": 0.909,
+          "right_only": 0.927,
+          "both_sides": 0.913
+        },
+        "balanced_macro": 0.9178,
+        "worst_mask": 0.909,
+        "natural_analytic": 0.9177
+      },
+      "1000": {
+        "natural_success": 0.918,
+        "mean_steps_to_success": 664.3,
+        "median_steps_to_success": 660,
+        "success_by_700": 0.792,
+        "rescued_after_700": 0.126,
+        "timeout_count": 41,
+        "physical_fall_count": 35,
+        "post_handoff_timeout_count": 40,
+        "dead_count": 0,
+        "final_dist_timeout_median": 7.514,
+        "per_pattern_success": {
+          "all_clear": 0.922,
+          "left_only": 0.909,
+          "right_only": 0.927,
+          "both_sides": 0.913
+        },
+        "balanced_macro": 0.9178,
+        "worst_mask": 0.909,
+        "natural_analytic": 0.9177
+      },
+      "rockfall_totals": {
+        "episodes_with_trigger": 0,
+        "episodes_with_drop": 0,
+        "episodes_with_hit": 0
+      }
+    },
+    "blind": {
+      "700": {
+        "natural_success": 0.55,
+        "mean_steps_to_success": 203.4,
+        "median_steps_to_success": 184,
+        "success_by_700": 0.55,
+        "rescued_after_700": 0.0,
+        "timeout_count": 47,
+        "physical_fall_count": 22,
+        "post_handoff_timeout_count": 47,
+        "dead_count": 178,
+        "final_dist_timeout_median": 7.418,
+        "per_pattern_success": {
+          "all_clear": 0.936,
+          "left_only": 0.562,
+          "right_only": 0.455,
+          "both_sides": 0.165
+        },
+        "balanced_macro": 0.5295,
+        "worst_mask": 0.165,
+        "natural_analytic": 0.5218
+      },
+      "800": {
+        "natural_success": 0.552,
+        "mean_steps_to_success": 205.4,
+        "median_steps_to_success": 184,
+        "success_by_700": 0.55,
+        "rescued_after_700": 0.002,
+        "timeout_count": 46,
+        "physical_fall_count": 22,
+        "post_handoff_timeout_count": 46,
+        "dead_count": 178,
+        "final_dist_timeout_median": 7.492,
+        "per_pattern_success": {
+          "all_clear": 0.936,
+          "left_only": 0.562,
+          "right_only": 0.455,
+          "both_sides": 0.174
+        },
+        "balanced_macro": 0.5318,
+        "worst_mask": 0.174,
+        "natural_analytic": 0.5241
+      },
+      "900": {
+        "natural_success": 0.552,
+        "mean_steps_to_success": 205.4,
+        "median_steps_to_success": 184,
+        "success_by_700": 0.55,
+        "rescued_after_700": 0.002,
+        "timeout_count": 46,
+        "physical_fall_count": 22,
+        "post_handoff_timeout_count": 46,
+        "dead_count": 178,
+        "final_dist_timeout_median": 7.513,
+        "per_pattern_success": {
+          "all_clear": 0.936,
+          "left_only": 0.562,
+          "right_only": 0.455,
+          "both_sides": 0.174
+        },
+        "balanced_macro": 0.5318,
+        "worst_mask": 0.174,
+        "natural_analytic": 0.5241
+      },
+      "1000": {
+        "natural_success": 0.552,
+        "mean_steps_to_success": 205.4,
+        "median_steps_to_success": 184,
+        "success_by_700": 0.55,
+        "rescued_after_700": 0.002,
+        "timeout_count": 46,
+        "physical_fall_count": 22,
+        "post_handoff_timeout_count": 46,
+        "dead_count": 178,
+        "final_dist_timeout_median": 7.579,
+        "per_pattern_success": {
+          "all_clear": 0.936,
+          "left_only": 0.562,
+          "right_only": 0.455,
+          "both_sides": 0.174
+        },
+        "balanced_macro": 0.5318,
+        "worst_mask": 0.174,
+        "natural_analytic": 0.5241
+      },
+      "rockfall_totals": {
+        "episodes_with_trigger": 498,
+        "episodes_with_drop": 227,
+        "episodes_with_hit": 227
+      }
+    }
+  },
+  "partB_naive_eval_only": {
+    "700": {
+      "natural_success": 0.77,
+      "balanced_macro": 0.75,
+      "worst_mask": 0.667,
+      "per_pattern_success": {
+        "all_clear": 0.833,
+        "left_only": 0.667,
+        "right_only": 0.833,
+        "both_sides": 0.667
+      },
+      "mean_steps_to_success": 492.0,
+      "median_steps_to_success": 590,
+      "rescued_after_700": 0.0,
+      "route_usage": {
+        "center": 0.352,
+        "left": 0.618,
+        "right": 0.03
+      },
+      "hazard_exposure": 0.316,
+      "drop_rate": 0.106
+    },
+    "800": {
+      "natural_success": 0.81,
+      "balanced_macro": 0.7958,
+      "worst_mask": 0.683,
+      "per_pattern_success": {
+        "all_clear": 0.9,
+        "left_only": 0.683,
+        "right_only": 0.883,
+        "both_sides": 0.717
+      },
+      "mean_steps_to_success": 504.6,
+      "median_steps_to_success": 599,
+      "rescued_after_700": 0.04,
+      "route_usage": {
+        "center": 0.352,
+        "left": 0.618,
+        "right": 0.03
+      },
+      "hazard_exposure": 0.316,
+      "drop_rate": 0.106
+    },
+    "900": {
+      "natural_success": 0.816,
+      "balanced_macro": 0.8043,
+      "worst_mask": 0.7,
+      "per_pattern_success": {
+        "all_clear": 0.9,
+        "left_only": 0.7,
+        "right_only": 0.9,
+        "both_sides": 0.717
+      },
+      "mean_steps_to_success": 507.2,
+      "median_steps_to_success": 600,
+      "rescued_after_700": 0.046,
+      "route_usage": {
+        "center": 0.352,
+        "left": 0.618,
+        "right": 0.03
+      },
+      "hazard_exposure": 0.316,
+      "drop_rate": 0.106
+    },
+    "1000": {
+      "natural_success": 0.818,
+      "balanced_macro": 0.8043,
+      "worst_mask": 0.7,
+      "per_pattern_success": {
+        "all_clear": 0.9,
+        "left_only": 0.7,
+        "right_only": 0.9,
+        "both_sides": 0.717
+      },
+      "mean_steps_to_success": 508.2,
+      "median_steps_to_success": 600,
+      "rescued_after_700": 0.048,
+      "route_usage": {
+        "center": 0.352,
+        "left": 0.618,
+        "right": 0.03
+      },
+      "hazard_exposure": 0.316,
+      "drop_rate": 0.106
+    }
+  }
+}
