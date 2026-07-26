@@ -52,19 +52,23 @@ CONSUMED = [311, 500, 622, 777, 888, 999, 1234,
             73_500_019, 76_230_011]
 
 
-def prescreen_env_seed(n_eps, candidates, exclude=()):
+def prescreen_env_seed(n_eps, candidates, exclude=(), p_active=None,
+                       band=None):
   """First candidate whose mask stream gives every site a realized
-  activation in [0.15, 0.25] over the first n_eps natural draws. Previews
+  activation within ``band`` over the first n_eps natural draws. Previews
   ONLY the env's independent mask rng; touches no physics/policy stream.
-  Candidates in ``exclude`` (already-consumed seeds) are skipped."""
+  Candidates in ``exclude`` (already-consumed seeds) are skipped.
+  p_active/band default to the frozen 0.20 / [0.15, 0.25] (reference)."""
+  pa = RA.P_ACTIVE if p_active is None else float(p_active)
+  lo, hi = band if band is not None else (pa - 0.05, pa + 0.05)
   excl = set(int(s) for s in exclude)
   for seed in candidates:
     if int(seed) in excl:
       continue
     rng = np.random.default_rng(seed + 41_007)
-    bits = (rng.random((n_eps, 4)) < RA.P_ACTIVE).astype(int)
+    bits = (rng.random((n_eps, 4)) < pa).astype(int)
     f = bits.mean(0)
-    if np.all((f >= 0.15) & (f <= 0.25)):
+    if np.all((f >= lo) & (f <= hi)):
       return int(seed), [float(x) for x in f]
   raise RuntimeError('no candidate seed passed the mask prescreen')
 

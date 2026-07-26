@@ -46,11 +46,22 @@ V2_PROTOCOL_VERSION = 'local_detour_v2.1_sev0.80'
 SEVERITY_V2 = (0.80, 0.15, 0.05)
 
 
-def apply_v2_config(env):
-  """Configure an env instance for the v2.1 protocol (severity only).
-  Returns env for chaining. Does not touch the frozen module defaults."""
+def apply_v2_config(env, p_active=None):
+  """Configure an env instance for the v2.1 protocol (severity, and optional
+  mask-density p_active for the sweep). Returns env for chaining. Does not
+  touch the frozen module defaults. p_active=None keeps the env default
+  (0.20), so the reference condition is byte-identical."""
   env.severity_probs = SEVERITY_V2
+  if p_active is not None:
+    env.p_active = float(p_active)
   return env
+
+
+def protocol_version(p_active=None):
+  """Protocol-version string for a given mask density. p_active=None (or 0.20)
+  is the reference v2.1 protocol; 0.30/0.50 get their own tagged version."""
+  pa = 0.20 if p_active is None else float(p_active)
+  return f'local_detour_v2.1_sev0.80_p{int(round(pa * 100)):02d}'
 
 #: local-detour geometry. The trigger band floor is |y| = TRIG_Y_BAND[0] = 1.0;
 #: the detour must hold |y| < 1.0 (comfortably) across the site's trigger
@@ -150,7 +161,11 @@ def main():
   ap.add_argument('--eps', type=int, default=60)
   ap.add_argument('--seeds', type=int, nargs='+', default=[41_001, 42_001])
   ap.add_argument('--out', default='artifacts/rockfall_v2/qual_report.json')
+  ap.add_argument('--p-active', type=float, default=None,
+                  help='mask-density override for the sweep (0.30/0.50); '
+                       'None keeps the env default 0.20 (reference)')
   args = ap.parse_args()
+  pa = args.p_active
   os.makedirs(os.path.dirname(args.out), exist_ok=True)
 
   cfg, walker, base_act, _, _ = C.load_controllers(RP.WALKER, RP.BASE)
@@ -160,7 +175,7 @@ def main():
   # ---- 3. base-side balance + mask independence ----
   balance = []
   for seed in args.seeds:
-    env = apply_v2_config(envs_mod.make_env('offline_ant_umaze_rockfall', cfg, seed=seed))
+    env = apply_v2_config(envs_mod.make_env('offline_ant_umaze_rockfall', cfg, seed=seed), pa)
     side_rng = np.random.default_rng(seed + 999)   # INDEPENDENT of mask rng
     sides, left_active = [], []
     for _ in range(400):
@@ -180,7 +195,7 @@ def main():
   succ = {'sighted': [], 'blind': [], 'center': []}
   detour_avoid = {'active_triggered': 0, 'active_total': 0}
   for seed in args.seeds:
-    env = apply_v2_config(envs_mod.make_env('offline_ant_umaze_rockfall', cfg, seed=seed + 3))
+    env = apply_v2_config(envs_mod.make_env('offline_ant_umaze_rockfall', cfg, seed=seed + 3), pa)
     side_rng = np.random.default_rng(seed + 999)
     for i in range(args.eps):
       base = 'left' if side_rng.random() < 0.5 else 'right'
@@ -218,14 +233,14 @@ def main():
 
   # blind + center success (same base-side draw stream)
   for seed in args.seeds:
-    envb = apply_v2_config(envs_mod.make_env('offline_ant_umaze_rockfall', cfg, seed=seed + 5))
+    envb = apply_v2_config(envs_mod.make_env('offline_ant_umaze_rockfall', cfg, seed=seed + 5), pa)
     side_rng = np.random.default_rng(seed + 999)
     for i in range(args.eps):
       base = 'left' if side_rng.random() < 0.5 else 'right'
       o = envb.reset()
       succ['blind'].append(run_sighted(envb, o, walker, base_act, base,
                                        use_detour=False)['success'])
-    envc = apply_v2_config(envs_mod.make_env('offline_ant_umaze_rockfall', cfg, seed=seed + 7))
+    envc = apply_v2_config(envs_mod.make_env('offline_ant_umaze_rockfall', cfg, seed=seed + 7), pa)
     for i in range(args.eps):
       o = envc.reset()
       succ['center'].append(RP.run_route(envc, o, walker, base_act,
@@ -237,7 +252,16 @@ def main():
   active_trig_rate = (detour_avoid['active_triggered']
                       / max(detour_avoid['active_total'], 1))
   am, im, rm = ms(det['active']), ms(det['inactive']), ms(det['recover'])
+  _pa = 0.20 if pa is None else float(pa)
+  _sa = 1.0 - (1.0 - _pa) ** 2                 # a 2-site side has >=1 active
   report = {
+      'protocol_version': protocol_version(pa),
+      'p_active': _pa,
+      'expected_mask_pattern_probs': {
+          'all_clear': round((1 - _sa) ** 2, 4),
+          'left_only': round(_sa * (1 - _sa), 4),
+          'right_only': round((1 - _sa) * _sa, 4),
+          'both_sides': round(_sa * _sa, 4)},
       'detour_params': {'detour_y': DETOUR_Y, 'pre': DETOUR_PRE,
                         'post': DETOUR_POST, 'base_lane': BASE_LANE},
       'base_side_balance': balance,

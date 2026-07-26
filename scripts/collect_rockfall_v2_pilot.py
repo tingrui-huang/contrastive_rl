@@ -34,7 +34,8 @@ from crl import offline_audit as OA       # noqa: E402
 import litter_pilot_common as C           # noqa: E402
 import rockfall_pilot as RP               # noqa: E402
 import rockfall_v2_teacher as V2          # noqa: E402
-from rockfall_v2_teacher import apply_v2_config, SEVERITY_V2, V2_PROTOCOL_VERSION  # noqa: E402
+from rockfall_v2_teacher import (apply_v2_config, SEVERITY_V2,  # noqa: E402
+                                 V2_PROTOCOL_VERSION, protocol_version)
 from collect_rockfall_pilot import (check_rockfall_freeze, prescreen_env_seed,
                                     CONSUMED)  # noqa: E402
 
@@ -141,14 +142,19 @@ def main():
                   help='ABLATION ONLY: >0 puts blind episodes in the set '
                        '(primary dataset is 0)')
   ap.add_argument('--coverage-frac', type=float, default=MIX['coverage'])
+  ap.add_argument('--p-active', type=float, default=None,
+                  help='mask-density override for the sweep (0.30/0.50); '
+                       'None keeps the env default 0.20 (reference)')
   args = ap.parse_args()
   n = args.episodes
+  pa = args.p_active
 
   hard_ok, disc, info = C.check_frozen_integrity()
   rf_ok, rf_diffs, rf_man = check_rockfall_freeze()
   if args.env_seed is None:
     env_seed, prescreen_freq = prescreen_env_seed(
-        n, [args.seed_base + 97 * k for k in range(400)], exclude=V2_CONSUMED)
+        n, [args.seed_base + 97 * k for k in range(400)], exclude=V2_CONSUMED,
+        p_active=(RA.P_ACTIVE if pa is None else float(pa)))
   else:
     env_seed, prescreen_freq = args.env_seed, None
   clash = C.seed_reuse(V2_CONSUMED, [env_seed], [args.dataset_seed])
@@ -173,7 +179,8 @@ def main():
   cfg.offline_dataset = ''
   cfg.eval_goal_mode = 'd4rl'
   env = apply_v2_config(
-      envs_mod.make_env('offline_ant_umaze_rockfall', cfg, seed=env_seed))
+      envs_mod.make_env('offline_ant_umaze_rockfall', cfg, seed=env_seed), pa)
+  print(f'p_active = {env.p_active} | protocol {protocol_version(pa)}')
 
   dataset_rng = np.random.default_rng(args.dataset_seed)
   side_rng = np.random.default_rng(args.dataset_seed + 1)   # base side, indep
@@ -246,8 +253,16 @@ def main():
   buf, _ = OA.build_offline_buffer(npz_path, cfg)
   buf.freeze()
 
+  _pa_val = float(env.p_active)
+  _sa = 1.0 - (1.0 - _pa_val) ** 2
   man = {
-      'variant': V2_PROTOCOL_VERSION,
+      'variant': protocol_version(pa),
+      'p_active': _pa_val,
+      'expected_mask_pattern_probs': {
+          'all_clear': round((1 - _sa) ** 2, 4),
+          'left_only': round(_sa * (1 - _sa), 4),
+          'right_only': round((1 - _sa) * _sa, 4),
+          'both_sides': round(_sa * _sa, 4)},
       'severity_probs_v2': list(SEVERITY_V2),
       'severity_note': ('v2.1 protocol: severity 0.80/0.15/0.05 applied to the '
                         'env INSTANCE at collection time; frozen env module '

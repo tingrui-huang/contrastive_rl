@@ -1043,6 +1043,12 @@ def make_env(env_name, config, seed=0, render_mode=None):
     # absent -> the env's frozen default (0.55/0.30/0.15), so v1 is unchanged.
     _sev = getattr(config, 'rockfall_severity', None)
     _sev_kw = {} if _sev is None else {'severity_probs': tuple(_sev)}
+    # optional per-run mask density override (p_active sweep: 0.30 / 0.50);
+    # absent -> the env's frozen default (P_ACTIVE = 0.20), so v1/v2.1 p=0.20
+    # are byte-identical.
+    _pa = getattr(config, 'rockfall_p_active', None)
+    if _pa is not None:
+      _sev_kw['p_active'] = float(_pa)
     env = RockfallOfflineAntUMazeEnv(
         seed=seed, render_mode=render_mode, eval_goals=eval_goals,
         eval_goal_mode=getattr(config, 'eval_goal_mode', 'd4rl'), **_sev_kw)

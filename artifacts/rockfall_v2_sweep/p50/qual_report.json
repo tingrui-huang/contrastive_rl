@@ -1,0 +1,54 @@
+{
+  "protocol_version": "local_detour_v2.1_sev0.80_p50",
+  "p_active": 0.5,
+  "expected_mask_pattern_probs": {
+    "all_clear": 0.0625,
+    "left_only": 0.1875,
+    "right_only": 0.1875,
+    "both_sides": 0.5625
+  },
+  "detour_params": {
+    "detour_y": 0.72,
+    "pre": 1.1,
+    "post": 0.8,
+    "base_lane": 1.1
+  },
+  "base_side_balance": [
+    {
+      "seed": 41001,
+      "frac_base_left": 0.4925,
+      "corr_side_vs_leftactive": 0.014
+    },
+    {
+      "seed": 42001,
+      "frac_base_left": 0.47,
+      "corr_side_vs_leftactive": 0.014
+    }
+  ],
+  "detour_min_absy": {
+    "active_mean": 0.713,
+    "inactive_mean": 0.841,
+    "active_n": 118,
+    "inactive_n": 115,
+    "recover_mean": 0.881,
+    "recover_n": 55,
+    "separation_inactive_minus_active": 0.128
+  },
+  "active_site_trigger_rate_under_detour": 0.093,
+  "active_total": 118,
+  "success": {
+    "sighted": 0.842,
+    "blind": 0.317,
+    "center": 0.817
+  },
+  "checks": {
+    "base_side_balanced": true,
+    "base_side_mask_independent": true,
+    "active_detour_dips_inward": true,
+    "inactive_stays_near_base": true,
+    "detour_site_selective": true,
+    "returns_to_base_lane": true,
+    "detour_avoids_trigger": true,
+    "sighted_gt_blind_plus_0.10": true
+  }
+}

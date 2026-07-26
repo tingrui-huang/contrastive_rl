@@ -29,6 +29,10 @@ def main():
   ap.add_argument('--seed', type=int, default=0)
   ap.add_argument('--ckpt-dir', default='artifacts/naive_rockfall_v2_crl')
   ap.add_argument('--npz', default=PILOT_NPZ)
+  ap.add_argument('--p-active', type=float, default=None,
+                  help='mask density for eval-during-training (sweep: '
+                       '0.30/0.50). None keeps the env default 0.20. Must '
+                       'match the density the --npz dataset was collected at.')
   ap.add_argument('--resume', action='store_true')
   args = ap.parse_args()
   os.makedirs(args.ckpt_dir, exist_ok=True)
@@ -39,6 +43,8 @@ def main():
   cfg.offline_dataset = args.npz
   cfg.eval_goal_mode = 'd4rl'
   cfg.rockfall_severity = SEVERITY_V2      # v2.1 eval lethality 0.80/0.15/0.05
+  if args.p_active is not None:
+    cfg.rockfall_p_active = float(args.p_active)  # sweep: match dataset density
   cfg.seed = args.seed
   cfg.eval_every_steps = 10_000
   cfg.eval_episodes = 30

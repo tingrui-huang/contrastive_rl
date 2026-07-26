@@ -1,0 +1,164 @@
+{
+  "dataset": "artifacts/rockfall_v2_dataset_p30/pilot\\antmaze_rockfall_v2_p30_pilot.npz",
+  "variant": "local_detour_v2_primary_90_0_10",
+  "n_episodes": 300,
+  "gates": {
+    "V1_frozen_integrity": true,
+    "V2_contract_loader": true,
+    "V3_hiddenness": true,
+    "V4_boundaries": true,
+    "V5_mask_stream": true,
+    "V6_mixture_90_0_10": true,
+    "V7_base_side": true,
+    "V8_detour_behaviour": true,
+    "V9_center_compliance": true,
+    "V10_predrop_probe": true
+  },
+  "notes": {
+    "V1": {
+      "litter": true,
+      "rockfall": true,
+      "sha": true,
+      "discrepancies": []
+    },
+    "V2": {
+      "keys": [
+        "act",
+        "eval_goals",
+        "lengths",
+        "meta",
+        "obs"
+      ],
+      "transitions": 199364
+    },
+    "V3": {
+      "extra_keys": [],
+      "pairs": [
+        {
+          "obs_div_step": 27,
+          "act_div_step": 27,
+          "drop_step": 25,
+          "first_rock_contact": 26,
+          "first_rock_ant_contact": 26,
+          "ok": true
+        },
+        {
+          "obs_div_step": 29,
+          "act_div_step": 29,
+          "drop_step": 28,
+          "first_rock_contact": 28,
+          "first_rock_ant_contact": 28,
+          "ok": true
+        },
+        {
+          "obs_div_step": 25,
+          "act_div_step": 25,
+          "drop_step": 24,
+          "first_rock_contact": 24,
+          "first_rock_ant_contact": 24,
+          "ok": true
+        },
+        {
+          "obs_div_step": 31,
+          "act_div_step": 31,
+          "drop_step": 30,
+          "first_rock_contact": 30,
+          "first_rock_ant_contact": 30,
+          "ok": true
+        },
+        {
+          "obs_div_step": 28,
+          "act_div_step": 28,
+          "drop_step": 26,
+          "first_rock_contact": 27,
+          "first_rock_ant_contact": 27,
+          "ok": true
+        },
+        {
+          "obs_div_step": 28,
+          "act_div_step": 28,
+          "drop_step": 27,
+          "first_rock_contact": 27,
+          "first_rock_ant_contact": 27,
+          "ok": true
+        }
+      ]
+    },
+    "V4": {
+      "pad_ok": true,
+      "trunc_ok": true,
+      "dead_eps": 16
+    },
+    "V5": {
+      "p_active": 0.3,
+      "freq_band": [
+        0.23,
+        0.37
+      ],
+      "site_freq": [
+        0.317,
+        0.313,
+        0.31,
+        0.307
+      ],
+      "max_abs_pairwise_corr": 0.115
+    },
+    "V6": {
+      "counts": {
+        "sighted": 270,
+        "blind": 0,
+        "coverage": 30
+      },
+      "expected": {
+        "sighted": 270,
+        "blind": 0,
+        "coverage": 30
+      }
+    },
+    "V7": {
+      "frac_base_left": 0.504,
+      "corr_base_vs_leftactive": 0.111
+    },
+    "V8": {
+      "active_dip_mean": 0.711,
+      "inactive_mean": 0.871,
+      "separation": 0.16,
+      "recover_mean": 0.88,
+      "active_site_trigger_rate": 0.096,
+      "active_total": 177
+    },
+    "V9": {
+      "coverage_eps": 30,
+      "center_mean_y_ok": 30,
+      "center_drop_eps": 0
+    },
+    "V10": {
+      "coverage_eps": 30,
+      "per_site": {
+        "site0": {
+          "acc": 0.697,
+          "base": 0.7,
+          "margin": -0.003
+        },
+        "site1": {
+          "acc": 0.661,
+          "base": 0.667,
+          "margin": -0.005
+        },
+        "site2": {
+          "acc": 0.626,
+          "base": 0.633,
+          "margin": -0.007
+        },
+        "site3": {
+          "acc": 0.697,
+          "base": 0.7,
+          "margin": -0.003
+        }
+      }
+    }
+  },
+  "all_pass": true,
+  "git_commit": "e37ebf3c9935ef7a5ca8c560e8a4ca7fed634976",
+  "impact_coverage_note": "severe/impaired/mild coverage is NOT a primary-dataset gate (teacher avoids active sites by design); it is an environment qualification only."
+}

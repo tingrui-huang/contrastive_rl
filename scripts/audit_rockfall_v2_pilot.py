@@ -110,13 +110,19 @@ def main():
                  'dead_eps': int(dead.sum())}
 
   # ---- V5 mask stream ----
+  # band is centred on the dataset's own p_active (sweep: 0.20/0.30/0.50), so
+  # the reference p=0.20 keeps its original 0.13-0.27 window.
+  p_active = float(man.get('p_active', RA.P_ACTIVE))
+  lo_f, hi_f = p_active - 0.07, p_active + 0.07
   m = s['rockfall_mask'].astype(int)
   freq = m.mean(0)
   corr = np.corrcoef(m.T)
   off = corr[~np.eye(4, dtype=bool)]
-  gates['V5_mask_stream'] = bool(np.all((freq >= 0.13) & (freq <= 0.27))
+  gates['V5_mask_stream'] = bool(np.all((freq >= lo_f) & (freq <= hi_f))
                                  and np.all(np.abs(off) <= 0.15))
-  notes['V5'] = {'site_freq': [round(float(f), 3) for f in freq],
+  notes['V5'] = {'p_active': p_active,
+                 'freq_band': [round(lo_f, 3), round(hi_f, 3)],
+                 'site_freq': [round(float(f), 3) for f in freq],
                  'max_abs_pairwise_corr': round(float(np.abs(off).max()), 3)}
 
   # ---- V6 mixture 90/0/10 ----
