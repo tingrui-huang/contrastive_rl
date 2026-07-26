@@ -152,6 +152,9 @@ def main():
   ap.add_argument('--out-dir', default=OUT)
   ap.add_argument('--v2', action='store_true',
                   help='evaluate under the v2.1 severity 0.80/0.15/0.05')
+  ap.add_argument('--p-active', type=float, default=None,
+                  help='mask density for the sweep (0.30/0.50); None keeps '
+                       'the env default 0.20 (reference)')
   args = ap.parse_args()
   out_dir = args.out_dir
   os.makedirs(out_dir, exist_ok=True)
@@ -160,6 +163,9 @@ def main():
     from rockfall_v2_teacher import SEVERITY_V2
     cfg.rockfall_severity = SEVERITY_V2
     print('v2.1 eval severity', SEVERITY_V2, flush=True)
+  if args.p_active is not None:
+    cfg.rockfall_p_active = float(args.p_active)
+    print('sweep p_active', cfg.rockfall_p_active, flush=True)
   print(f'checkpoint {args.ckpt} @ step {step}', flush=True)
 
   # ---- 1+2+3: balanced evaluation ----

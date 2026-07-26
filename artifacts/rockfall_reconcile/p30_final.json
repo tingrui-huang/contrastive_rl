@@ -1,0 +1,308 @@
+{
+  "provenance": {
+    "commit": "4d9f59567760ac66ef27cd0aede358d1ba383eba",
+    "eval_seed": 20260726,
+    "severity_v2": [
+      0.8,
+      0.15,
+      0.05
+    ],
+    "p_active": 0.3,
+    "natural_pattern_weights": {
+      "all_clear": 0.2401,
+      "left_only": 0.2499,
+      "right_only": 0.2499,
+      "both_sides": 0.2601
+    },
+    "balanced_k_per_pattern": 100,
+    "natural_block_n": 200,
+    "checkpoints": {
+      "naive": {
+        "path": "naive_rockfall_v2_p30_s0_300k/final.pkl",
+        "sha256": "948019b46fb77e48cf3c069cb9506519c39f9061c6df99ad911daa4d25db6999"
+      },
+      "walker": {
+        "path": "artifacts/walker/phase1/walker_best.pkl",
+        "sha256": "70b0a460b2e38332821f1846b48c75fbcdc884dd315b29c97ebc69083388cdd5"
+      },
+      "base_handoff": {
+        "path": "offline_umaze_bc005_twinmin_s0_50k/checkpoints/best.pkl",
+        "sha256": "6bece3e37c6e994fa612d721ff6e4320bebf36df8fdf3a11d6ea354a39a286ac"
+      }
+    }
+  },
+  "results": {
+    "naive": {
+      "per_pattern_balanced": {
+        "all_clear": {
+          "n": 100,
+          "success": 0.8,
+          "wilson95": [
+            0.711,
+            0.867
+          ]
+        },
+        "left_only": {
+          "n": 100,
+          "success": 0.64,
+          "wilson95": [
+            0.542,
+            0.727
+          ]
+        },
+        "right_only": {
+          "n": 100,
+          "success": 0.76,
+          "wilson95": [
+            0.668,
+            0.833
+          ]
+        },
+        "both_sides": {
+          "n": 100,
+          "success": 0.63,
+          "wilson95": [
+            0.532,
+            0.718
+          ]
+        }
+      },
+      "balanced_macro_success": 0.7075,
+      "worst_mask": {
+        "pattern": "both_sides",
+        "success": 0.63,
+        "wilson95": [
+          0.532,
+          0.718
+        ]
+      },
+      "natural_distribution_success_analytic": 0.7058,
+      "natural_block": {
+        "pooled_success": 0.755,
+        "per_pattern_counts": {
+          "all_clear": {
+            "n": 58,
+            "success": 0.897
+          },
+          "left_only": {
+            "n": 50,
+            "success": 0.7
+          },
+          "right_only": {
+            "n": 40,
+            "success": 0.85
+          },
+          "both_sides": {
+            "n": 52,
+            "success": 0.577
+          }
+        },
+        "n_total": 200
+      }
+    },
+    "teacher": {
+      "per_pattern_balanced": {
+        "all_clear": {
+          "n": 100,
+          "success": 0.92,
+          "wilson95": [
+            0.85,
+            0.959
+          ]
+        },
+        "left_only": {
+          "n": 100,
+          "success": 0.88,
+          "wilson95": [
+            0.802,
+            0.93
+          ]
+        },
+        "right_only": {
+          "n": 100,
+          "success": 0.84,
+          "wilson95": [
+            0.756,
+            0.899
+          ]
+        },
+        "both_sides": {
+          "n": 100,
+          "success": 0.83,
+          "wilson95": [
+            0.745,
+            0.891
+          ]
+        }
+      },
+      "balanced_macro_success": 0.8675,
+      "worst_mask": {
+        "pattern": "both_sides",
+        "success": 0.83,
+        "wilson95": [
+          0.745,
+          0.891
+        ]
+      },
+      "natural_distribution_success_analytic": 0.8666,
+      "natural_block": {
+        "pooled_success": 0.845,
+        "per_pattern_counts": {
+          "all_clear": {
+            "n": 58,
+            "success": 0.914
+          },
+          "left_only": {
+            "n": 50,
+            "success": 0.8
+          },
+          "right_only": {
+            "n": 40,
+            "success": 0.85
+          },
+          "both_sides": {
+            "n": 52,
+            "success": 0.808
+          }
+        },
+        "n_total": 200
+      }
+    },
+    "blind": {
+      "per_pattern_balanced": {
+        "all_clear": {
+          "n": 100,
+          "success": 0.92,
+          "wilson95": [
+            0.85,
+            0.959
+          ]
+        },
+        "left_only": {
+          "n": 100,
+          "success": 0.56,
+          "wilson95": [
+            0.462,
+            0.653
+          ]
+        },
+        "right_only": {
+          "n": 100,
+          "success": 0.52,
+          "wilson95": [
+            0.423,
+            0.615
+          ]
+        },
+        "both_sides": {
+          "n": 100,
+          "success": 0.15,
+          "wilson95": [
+            0.093,
+            0.233
+          ]
+        }
+      },
+      "balanced_macro_success": 0.5375,
+      "worst_mask": {
+        "pattern": "both_sides",
+        "success": 0.15,
+        "wilson95": [
+          0.093,
+          0.233
+        ]
+      },
+      "natural_distribution_success_analytic": 0.5298,
+      "natural_block": {
+        "pooled_success": 0.515,
+        "per_pattern_counts": {
+          "all_clear": {
+            "n": 58,
+            "success": 0.897
+          },
+          "left_only": {
+            "n": 50,
+            "success": 0.48
+          },
+          "right_only": {
+            "n": 40,
+            "success": 0.625
+          },
+          "both_sides": {
+            "n": 52,
+            "success": 0.038
+          }
+        },
+        "n_total": 200
+      }
+    },
+    "center": {
+      "per_pattern_balanced": {
+        "all_clear": {
+          "n": 100,
+          "success": 0.75,
+          "wilson95": [
+            0.657,
+            0.825
+          ]
+        },
+        "left_only": {
+          "n": 100,
+          "success": 0.84,
+          "wilson95": [
+            0.756,
+            0.899
+          ]
+        },
+        "right_only": {
+          "n": 100,
+          "success": 0.78,
+          "wilson95": [
+            0.689,
+            0.85
+          ]
+        },
+        "both_sides": {
+          "n": 100,
+          "success": 0.81,
+          "wilson95": [
+            0.722,
+            0.875
+          ]
+        }
+      },
+      "balanced_macro_success": 0.795,
+      "worst_mask": {
+        "pattern": "all_clear",
+        "success": 0.75,
+        "wilson95": [
+          0.657,
+          0.825
+        ]
+      },
+      "natural_distribution_success_analytic": 0.7956,
+      "natural_block": {
+        "pooled_success": 0.81,
+        "per_pattern_counts": {
+          "all_clear": {
+            "n": 58,
+            "success": 0.776
+          },
+          "left_only": {
+            "n": 50,
+            "success": 0.74
+          },
+          "right_only": {
+            "n": 40,
+            "success": 0.8
+          },
+          "both_sides": {
+            "n": 52,
+            "success": 0.923
+          }
+        },
+        "n_total": 200
+      }
+    }
+  }
+}
