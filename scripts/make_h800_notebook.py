@@ -66,6 +66,18 @@ def main():
           out.append("HORIZON     = 800         # H=800 experiment "
                      "(H=700 default is untouched)\n")
       c['source'] = out
+    elif any('run_static_audit' in l for l in src):
+      # G1-G8 static audit must validate against the H=800 contract (obs len
+      # 801, ep-lengths <= 800), else G3/G5 fail. make_env RESETS
+      # _c.max_episode_steps to the env default (700), so we set it AFTER
+      # make_env, right before run_static_audit reads config.max_episode_steps+1.
+      out = []
+      for ln in src:
+        if ln.lstrip().startswith('passed, gates, rep = offline_audit.run_static_audit'):
+          out.append('_c.max_episode_steps = HORIZON   '
+                     '# H=800: audit against the 801-long contract\n')
+        out.append(ln)
+      c['source'] = out
     elif any("naive_rockfall_v2_crl.py'" in l for l in src):
       out = []
       for ln in src:
