@@ -96,8 +96,14 @@ def main():
           "(['--reset-fix'] if RESET_FIX else []) + ['--horizon', str(HORIZON)]")
           for l in src]
     elif c['cell_type'] == 'code' and any('diagnose_naive_rockfall.py' in l for l in src):
-      c['source'] = [l.replace("'--reset-fix',",
-                               "'--reset-fix','--horizon','800',") for l in src]
+      # this cell used RES/os defined by the (dropped) anchor-eval cell -> define here
+      setup = ["import subprocess, sys, os\n",
+               "os.chdir('/content/'+REPO)\n",
+               "RES = f'{RUN_DRIVE_DIR}/eval_h800_resetfix'\n",
+               "os.makedirs(RES, exist_ok=True)\n"]
+      c['source'] = setup + [l.replace("'--reset-fix',",
+                                       "'--reset-fix','--horizon','800',")
+                             for l in src]
     cells.append(c)
   nb['cells'] = cells
 
