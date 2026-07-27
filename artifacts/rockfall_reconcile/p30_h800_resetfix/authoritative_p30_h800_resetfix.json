@@ -1,0 +1,167 @@
+{
+  "provenance": {
+    "tag": "p30_h800_resetfix",
+    "bank_sha256": "e94abc57d6b327053fbf5a613b30bd5492b41918c49709c46b20aac9d615a839",
+    "n": 1000,
+    "horizon": 800,
+    "p_active": 0.3,
+    "env_seed": 20260726,
+    "bank_seed": 20265726,
+    "reset_fix_version": "resetfix_v1",
+    "primary_metric": "natural_sample_pooled_success",
+    "checkpoints": {
+      "naive_final": "naive_rockfall_v2_p30_h800_resetfix_s0_300k/final.pkl",
+      "naive_best": "naive_rockfall_v2_p30_h800_resetfix_s0_300k/best.pkl",
+      "legacy_naive": "naive_rockfall_v2_p30_h800_s0_300k/final.pkl"
+    }
+  },
+  "results": {
+    "teacher": {
+      "pooled_success": 0.87,
+      "n_success": 870,
+      "median_steps": 223,
+      "mean_steps": 243.9,
+      "timeout_rate": 0.073,
+      "fall_rate": 0.061,
+      "route_center": 0.07,
+      "route_left": 0.869,
+      "route_right": 0.061,
+      "hazard_exposure": 0.91,
+      "trigger_rate": 0.828,
+      "drop_rate": 0.07,
+      "impact_rate": 0.07,
+      "per_pattern": {
+        "all_clear": 0.926,
+        "left_only": 0.877,
+        "right_only": 0.894,
+        "both_sides": 0.791
+      },
+      "balanced_macro": 0.872,
+      "worst_mask": 0.791
+    },
+    "center": {
+      "pooled_success": 0.899,
+      "n_success": 899,
+      "median_steps": 659,
+      "mean_steps": 662.3,
+      "timeout_rate": 0.101,
+      "fall_rate": 0.069,
+      "route_center": 0.828,
+      "route_left": 0.172,
+      "route_right": 0.0,
+      "hazard_exposure": 0.0,
+      "trigger_rate": 0.0,
+      "drop_rate": 0.0,
+      "impact_rate": 0.0,
+      "per_pattern": {
+        "all_clear": 0.9,
+        "left_only": 0.909,
+        "right_only": 0.898,
+        "both_sides": 0.89
+      },
+      "balanced_macro": 0.8993,
+      "worst_mask": 0.89
+    },
+    "blind": {
+      "pooled_success": 0.503,
+      "n_success": 503,
+      "median_steps": 186,
+      "mean_steps": 212.7,
+      "timeout_rate": 0.078,
+      "fall_rate": 0.033,
+      "route_center": 0.003,
+      "route_left": 0.739,
+      "route_right": 0.258,
+      "hazard_exposure": 1.0,
+      "trigger_rate": 0.993,
+      "drop_rate": 0.51,
+      "impact_rate": 0.51,
+      "per_pattern": {
+        "all_clear": 0.926,
+        "left_only": 0.526,
+        "right_only": 0.506,
+        "both_sides": 0.11
+      },
+      "balanced_macro": 0.517,
+      "worst_mask": 0.11
+    },
+    "naive_final": {
+      "pooled_success": 0.492,
+      "n_success": 492,
+      "median_steps": 202,
+      "mean_steps": 240.8,
+      "timeout_rate": 0.116,
+      "fall_rate": 0.037,
+      "route_center": 0.066,
+      "route_left": 0.453,
+      "route_right": 0.481,
+      "hazard_exposure": 0.974,
+      "trigger_rate": 0.964,
+      "drop_rate": 0.48,
+      "impact_rate": 0.48,
+      "per_pattern": {
+        "all_clear": 0.913,
+        "left_only": 0.889,
+        "right_only": 0.106,
+        "both_sides": 0.118
+      },
+      "balanced_macro": 0.5065,
+      "worst_mask": 0.106,
+      "paired_maskflip_ok": 30,
+      "pairs": 30,
+      "leakage": "none"
+    },
+    "naive_best": {
+      "pooled_success": 0.542,
+      "n_success": 542,
+      "median_steps": 215,
+      "mean_steps": 290.7,
+      "timeout_rate": 0.098,
+      "fall_rate": 0.033,
+      "route_center": 0.126,
+      "route_left": 0.453,
+      "route_right": 0.421,
+      "hazard_exposure": 0.903,
+      "trigger_rate": 0.891,
+      "drop_rate": 0.434,
+      "impact_rate": 0.434,
+      "per_pattern": {
+        "all_clear": 0.917,
+        "left_only": 0.905,
+        "right_only": 0.204,
+        "both_sides": 0.194
+      },
+      "balanced_macro": 0.555,
+      "worst_mask": 0.194,
+      "paired_maskflip_ok": 30,
+      "pairs": 30,
+      "leakage": "none"
+    },
+    "legacy_naive_corrected_eval": {
+      "pooled_success": 0.655,
+      "n_success": 655,
+      "median_steps": 323,
+      "mean_steps": 384.9,
+      "timeout_rate": 0.093,
+      "fall_rate": 0.046,
+      "route_center": 0.244,
+      "route_left": 0.495,
+      "route_right": 0.261,
+      "hazard_exposure": 0.68,
+      "trigger_rate": 0.653,
+      "drop_rate": 0.303,
+      "impact_rate": 0.303,
+      "per_pattern": {
+        "all_clear": 0.943,
+        "left_only": 0.822,
+        "right_only": 0.486,
+        "both_sides": 0.407
+      },
+      "balanced_macro": 0.6645,
+      "worst_mask": 0.407,
+      "paired_maskflip_ok": 30,
+      "pairs": 30,
+      "leakage": "none"
+    }
+  }
+}
