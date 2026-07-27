@@ -1,0 +1,258 @@
+{
+  "checkpoint": "/content/runs/naive_rockfall_v2_p30_h800_s0_300k/final.pkl",
+  "step": 300000,
+  "n_eval": 200,
+  "naive_success": 0.68,
+  "naive_center_fraction": 0.235,
+  "naive_left_fraction": 0.535,
+  "naive_right_fraction": 0.23,
+  "naive_hazard_exposure_rate": 0.615,
+  "naive_drop_rate": 0.25,
+  "naive_impact_recovery_rate": 0.273,
+  "naive_trigger_avoidance_rate": 0.091,
+  "naive_success_by_mask_pattern": {
+    "all_clear": {
+      "n": 48,
+      "success": 0.833
+    },
+    "both_sides": {
+      "n": 45,
+      "success": 0.467
+    },
+    "left_only": {
+      "n": 53,
+      "success": 0.83
+    },
+    "right_only": {
+      "n": 54,
+      "success": 0.574
+    }
+  },
+  "route_distribution": {
+    "left": 0.535,
+    "right": 0.23,
+    "center": 0.235
+  },
+  "dominant_route": "left",
+  "success_conditioned": {
+    "chosen_side_clear": {
+      "n": 58,
+      "success": 0.845
+    },
+    "chosen_side_active": {
+      "n": 95,
+      "success": 0.484
+    },
+    "center": {
+      "n": 47,
+      "success": 0.872
+    }
+  },
+  "shortcut_scan": {
+    "region_entries": 198,
+    "avoided_entries": 18,
+    "avoided_via_lowvx_stop_and_go": 2,
+    "avoided_via_short_dwell_crossing": 16,
+    "eps_with_lowvx_in_region": 12,
+    "mean_lowvx_steps_in_regions": 3.12,
+    "band_edge_eps_ge10": 127,
+    "mean_vx_zone": 0.17451237813417295,
+    "trigger_rate": 0.57,
+    "hit_rate": 0.25,
+    "success_given_any_hit": 0.06
+  },
+  "paired_maskflip": {
+    "pairs": [
+      {
+        "div": 48,
+        "first_drop": 47,
+        "first_contact": 47,
+        "ok": true
+      },
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      },
+      {
+        "div": 50,
+        "first_drop": 48,
+        "first_contact": 49,
+        "ok": true
+      },
+      {
+        "div": 31,
+        "first_drop": 30,
+        "first_contact": 30,
+        "ok": true
+      },
+      {
+        "div": 39,
+        "first_drop": 37,
+        "first_contact": 38,
+        "ok": true
+      },
+      {
+        "div": 36,
+        "first_drop": 35,
+        "first_contact": 35,
+        "ok": true
+      },
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      },
+      {
+        "div": 138,
+        "first_drop": 136,
+        "first_contact": 137,
+        "ok": true
+      },
+      {
+        "div": 37,
+        "first_drop": 36,
+        "first_contact": 36,
+        "ok": true
+      },
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      },
+      {
+        "div": 32,
+        "first_drop": 31,
+        "first_contact": 31,
+        "ok": true
+      },
+      {
+        "div": 42,
+        "first_drop": 41,
+        "first_contact": 41,
+        "ok": true
+      },
+      {
+        "div": 40,
+        "first_drop": 38,
+        "first_contact": 39,
+        "ok": true
+      },
+      {
+        "div": 39,
+        "first_drop": 38,
+        "first_contact": 38,
+        "ok": true
+      },
+      {
+        "div": 60,
+        "first_drop": 59,
+        "first_contact": 59,
+        "ok": true
+      },
+      {
+        "div": 39,
+        "first_drop": 38,
+        "first_contact": 38,
+        "ok": true
+      },
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      },
+      {
+        "div": 32,
+        "first_drop": 31,
+        "first_contact": 31,
+        "ok": true
+      },
+      {
+        "div": 93,
+        "first_drop": 91,
+        "first_contact": 92,
+        "ok": true
+      },
+      {
+        "div": 36,
+        "first_drop": 35,
+        "first_contact": 35,
+        "ok": true
+      },
+      {
+        "div": 30,
+        "first_drop": 29,
+        "first_contact": 29,
+        "ok": true
+      },
+      {
+        "div": 65,
+        "first_drop": 64,
+        "first_contact": 64,
+        "ok": true
+      },
+      {
+        "div": 68,
+        "first_drop": 67,
+        "first_contact": 67,
+        "ok": true
+      },
+      {
+        "div": 41,
+        "first_drop": 40,
+        "first_contact": 40,
+        "ok": true
+      },
+      {
+        "div": 41,
+        "first_drop": 39,
+        "first_contact": 40,
+        "ok": true
+      },
+      {
+        "div": 38,
+        "first_drop": 37,
+        "first_contact": 37,
+        "ok": true
+      },
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      },
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      },
+      {
+        "div": 113,
+        "first_drop": 111,
+        "first_contact": 112,
+        "ok": true
+      },
+      {
+        "div": null,
+        "first_drop": null,
+        "first_contact": null,
+        "ok": true
+      }
+    ],
+    "n_ok": 30,
+    "leakage": "none"
+  },
+  "anchors": {
+    "blind_side": 0.6,
+    "center": 0.82,
+    "teacher": 0.88
+  },
+  "verdict": "mixed-routes",
+  "gap_to_center_anchor": 0.14,
+  "gap_to_teacher_anchor": 0.2
+}
