@@ -84,12 +84,21 @@ class _Sim:
     self.frame_skip = FRAME_SKIP
     self.goal = np.zeros(2)
     self._rng = np.random.default_rng(seed)
+    #: CANONICAL FULL RESET toggle (episode-independence fix). False = legacy
+    #: (byte-identical to the frozen behaviour). True = zero ALL persistent
+    #: mujoco state (mj_resetData) before reapplying the sampled qpos/qvel, so
+    #: no solver warmstart / qacc / qfrc / act / ctrl / time bleeds across
+    #: episodes. Does NOT change the initial-state distribution, physics,
+    #: reward, obs, or controllers -- only removes cross-episode contamination.
+    self.full_reset = False
 
   @property
   def unwrapped(self):
     return self
 
   def reset_model(self):
+    if self.full_reset:
+      mujoco.mj_resetData(self.model, self.data)   # zero ALL persistent state
     qpos = INIT_QPOS + self._rng.uniform(-0.1, 0.1, self.model.nq)
     qvel = self._rng.standard_normal(self.model.nv) * 0.1
     self.data.qpos[:] = qpos

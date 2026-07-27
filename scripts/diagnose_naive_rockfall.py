@@ -157,6 +157,8 @@ def main():
                        'the env default 0.20 (reference)')
   ap.add_argument('--horizon', type=int, default=None,
                   help='episode horizon (H=800 experiment); None keeps 700')
+  ap.add_argument('--reset-fix', action='store_true',
+                  help='use the canonical episode-independent full reset')
   args = ap.parse_args()
   out_dir = args.out_dir
   os.makedirs(out_dir, exist_ok=True)
@@ -171,6 +173,9 @@ def main():
   if args.horizon is not None:
     cfg.rockfall_max_steps = int(args.horizon)
     print('horizon', cfg.rockfall_max_steps, flush=True)
+  if args.reset_fix:
+    cfg.rockfall_reset_fix = True
+    print('reset_fix ON (canonical full reset)', flush=True)
   print(f'checkpoint {args.ckpt} @ step {step}', flush=True)
 
   # ---- 1+2+3: balanced evaluation ----

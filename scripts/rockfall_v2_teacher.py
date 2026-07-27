@@ -46,14 +46,20 @@ V2_PROTOCOL_VERSION = 'local_detour_v2.1_sev0.80'
 SEVERITY_V2 = (0.80, 0.15, 0.05)
 
 
-def apply_v2_config(env, p_active=None):
-  """Configure an env instance for the v2.1 protocol (severity, and optional
-  mask-density p_active for the sweep). Returns env for chaining. Does not
-  touch the frozen module defaults. p_active=None keeps the env default
-  (0.20), so the reference condition is byte-identical."""
+#: canonical episode-independent (full) reset version tag.
+RESET_FIX_VERSION = 'resetfix_v1'
+
+
+def apply_v2_config(env, p_active=None, reset_fix=False):
+  """Configure an env instance for the v2.1 protocol (severity, optional
+  mask-density p_active, optional canonical full reset). Returns env for
+  chaining. Does not touch the frozen module defaults. p_active=None keeps the
+  env default (0.20); reset_fix=False keeps the legacy reset (byte-identical),
+  reset_fix=True enables the episode-independent full reset."""
   env.severity_probs = SEVERITY_V2
   if p_active is not None:
     env.p_active = float(p_active)
+  env._env.full_reset = bool(reset_fix)
   return env
 
 

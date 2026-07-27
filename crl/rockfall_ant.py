@@ -232,8 +232,10 @@ class _RockSim(_Sim):
     self._home_qpos = np.asarray(self.model.qpos0).copy()
 
   def reset_model(self):
-    self.data.qpos[:] = self._home_qpos        # rocks at storage, quat id
-    self.data.qvel[:] = 0.0
+    if self.full_reset:                          # canonical episode-independent
+      mujoco.mj_resetData(self.model, self.data) # reset: zero warmstart/qacc/
+    self.data.qpos[:] = self._home_qpos          # qfrc/act/ctrl/time/contacts
+    self.data.qvel[:] = 0.0                       # then reapply intended state.
     self.data.qpos[:NQ_ANT] = (INIT_QPOS
                                + self._rng.uniform(-0.1, 0.1, NQ_ANT))
     self.data.qvel[:NV_ANT] = self._rng.standard_normal(NV_ANT) * 0.1

@@ -1,0 +1,44 @@
+{
+  "reset_fix_version": "resetfix_v1",
+  "A_repeated_determinism": {
+    "pass": true,
+    "max_state_div": 0.0
+  },
+  "B_prev_episode_independence": {
+    "pass": true,
+    "max_target_div_corrected": 0.0,
+    "preceding_caps": [
+      100,
+      300,
+      500,
+      700
+    ],
+    "preceding_end_x_distinct": [
+      2.8563,
+      3.9567,
+      3.9567,
+      3.9567
+    ],
+    "legacy_target_identical": false,
+    "legacy_max_target_div": 5.38680211548126e-13,
+    "note": "corrected must be identical (pass); legacy expected to DIFFER (nonzero legacy_max_target_div confirms the bug the fix removes)"
+  },
+  "C_cap_prefix_identity": {
+    "pass": true,
+    "corrected_mismatch": 0,
+    "legacy_mismatch": 1,
+    "n": 60
+  },
+  "D_harness_agreement": {
+    "pass": true,
+    "disagreements": 0,
+    "n": 60
+  },
+  "E_center_mask_invariance": {
+    "pass": true,
+    "success_disagreements": 0,
+    "total_rockfall_events": 0,
+    "max_traj_spread_across_masks": 0.0
+  },
+  "ALL_CORRECTED_PASS": true
+}

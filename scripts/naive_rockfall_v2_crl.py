@@ -37,6 +37,9 @@ def main():
                   help='episode horizon for eval-during-training (H=800 '
                        'experiment). None keeps the env default 700. Must '
                        'match the horizon the --npz dataset was collected at.')
+  ap.add_argument('--reset-fix', action='store_true',
+                  help='use the canonical episode-independent full reset for '
+                       'eval-during-training (matches the corrected dataset)')
   ap.add_argument('--resume', action='store_true')
   args = ap.parse_args()
   os.makedirs(args.ckpt_dir, exist_ok=True)
@@ -52,6 +55,8 @@ def main():
   if args.horizon is not None:
     cfg.rockfall_max_steps = int(args.horizon)   # H=800: eval env horizon
     cfg.max_episode_steps = int(args.horizon)
+  if args.reset_fix:
+    cfg.rockfall_reset_fix = True                # corrected episode reset
   cfg.seed = args.seed
   cfg.eval_every_steps = 10_000
   cfg.eval_episodes = 30

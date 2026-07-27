@@ -149,6 +149,8 @@ def main():
                        'None keeps the env default 0.20 (reference)')
   ap.add_argument('--horizon', type=int, default=HORIZON,
                   help='episode horizon (H=800 experiment); default 700')
+  ap.add_argument('--reset-fix', action='store_true',
+                  help='use the canonical episode-independent full reset')
   args = ap.parse_args()
   n = args.episodes
   pa = args.p_active
@@ -185,8 +187,10 @@ def main():
   cfg.offline_dataset = ''
   cfg.eval_goal_mode = 'd4rl'
   env = apply_v2_config(
-      envs_mod.make_env('offline_ant_umaze_rockfall', cfg, seed=env_seed), pa)
-  print(f'p_active = {env.p_active} | protocol {protocol_version(pa)}')
+      envs_mod.make_env('offline_ant_umaze_rockfall', cfg, seed=env_seed), pa,
+      reset_fix=args.reset_fix)
+  print(f'p_active = {env.p_active} | protocol {protocol_version(pa)} | '
+        f'reset_fix={args.reset_fix} full_reset={env._env.full_reset}')
 
   dataset_rng = np.random.default_rng(args.dataset_seed)
   side_rng = np.random.default_rng(args.dataset_seed + 1)   # base side, indep
@@ -261,11 +265,14 @@ def main():
 
   _pa_val = float(env.p_active)
   _sa = 1.0 - (1.0 - _pa_val) ** 2
-  _variant = protocol_version(pa) + (f'_h{horizon}' if horizon != 700 else '')
+  _variant = (protocol_version(pa) + (f'_h{horizon}' if horizon != 700 else '')
+              + (f'_{V2.RESET_FIX_VERSION}' if args.reset_fix else ''))
   man = {
       'variant': _variant,
       'p_active': _pa_val,
       'horizon': horizon,
+      'reset_fix': bool(args.reset_fix),
+      'reset_fix_version': (V2.RESET_FIX_VERSION if args.reset_fix else None),
       'expected_mask_pattern_probs': {
           'all_clear': round((1 - _sa) ** 2, 4),
           'left_only': round(_sa * (1 - _sa), 4),
