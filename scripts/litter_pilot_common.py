@@ -152,6 +152,8 @@ def load_controllers(walker_path, base_path):
   from verify_offline_d4rl import build_offline_cfg
 
   cfg = build_offline_cfg()
+  cfg.offline_dataset = ''          # dims come from env construction, not the
+  #: d4rl npz -- avoids a hardcoded-path FileNotFoundError off the workstation.
   envs_mod.make_env('offline_ant_umaze', cfg, seed=1)
   nets = networks_mod.make_networks(
       obs_dim=cfg.obs_dim, goal_dim=cfg.goal_dim, action_dim=cfg.action_dim,
