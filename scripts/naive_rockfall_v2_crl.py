@@ -33,6 +33,10 @@ def main():
                   help='mask density for eval-during-training (sweep: '
                        '0.30/0.50). None keeps the env default 0.20. Must '
                        'match the density the --npz dataset was collected at.')
+  ap.add_argument('--horizon', type=int, default=None,
+                  help='episode horizon for eval-during-training (H=800 '
+                       'experiment). None keeps the env default 700. Must '
+                       'match the horizon the --npz dataset was collected at.')
   ap.add_argument('--resume', action='store_true')
   args = ap.parse_args()
   os.makedirs(args.ckpt_dir, exist_ok=True)
@@ -45,6 +49,9 @@ def main():
   cfg.rockfall_severity = SEVERITY_V2      # v2.1 eval lethality 0.80/0.15/0.05
   if args.p_active is not None:
     cfg.rockfall_p_active = float(args.p_active)  # sweep: match dataset density
+  if args.horizon is not None:
+    cfg.rockfall_max_steps = int(args.horizon)   # H=800: eval env horizon
+    cfg.max_episode_steps = int(args.horizon)
   cfg.seed = args.seed
   cfg.eval_every_steps = 10_000
   cfg.eval_episodes = 30

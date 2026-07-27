@@ -155,6 +155,8 @@ def main():
   ap.add_argument('--p-active', type=float, default=None,
                   help='mask density for the sweep (0.30/0.50); None keeps '
                        'the env default 0.20 (reference)')
+  ap.add_argument('--horizon', type=int, default=None,
+                  help='episode horizon (H=800 experiment); None keeps 700')
   args = ap.parse_args()
   out_dir = args.out_dir
   os.makedirs(out_dir, exist_ok=True)
@@ -166,6 +168,9 @@ def main():
   if args.p_active is not None:
     cfg.rockfall_p_active = float(args.p_active)
     print('sweep p_active', cfg.rockfall_p_active, flush=True)
+  if args.horizon is not None:
+    cfg.rockfall_max_steps = int(args.horizon)
+    print('horizon', cfg.rockfall_max_steps, flush=True)
   print(f'checkpoint {args.ckpt} @ step {step}', flush=True)
 
   # ---- 1+2+3: balanced evaluation ----

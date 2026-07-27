@@ -126,12 +126,14 @@ def rollout_naive(env, act, o):
 
 
 def eval_policy(kind, mask_seq, side_seq, cfg, walker, base_act, act,
-                seed, p_active):
+                seed, p_active, horizon=None):
   """Run one policy over a fixed forced-mask sequence. Returns per-episode
   {pattern, success}. Same seed + same forced masks => paired across kinds."""
   env = T.apply_v2_config(
       envs_mod.make_env('offline_ant_umaze_rockfall', cfg, seed=seed),
       p_active)
+  if horizon is not None:
+    env.max_episode_steps = int(horizon)
   assert tuple(env.severity_probs) == tuple(T.SEVERITY_V2)
   assert abs(float(env.p_active) - p_active) < 1e-9
   rows = []
@@ -223,6 +225,8 @@ def main():
   ap.add_argument('--p-active', type=float, default=RA.P_ACTIVE,
                   help='mask density for this condition (0.20/0.30/0.50). '
                        'Sets the env instance AND the natural weights/draws.')
+  ap.add_argument('--horizon', type=int, default=None,
+                  help='episode horizon (H=800 experiment); None keeps 700')
   args = ap.parse_args()
   os.makedirs(os.path.dirname(args.out), exist_ok=True)
   p_active = float(args.p_active)
@@ -262,9 +266,9 @@ def main():
       cfg_use = cfg
     print(f'--- {kind} ---', flush=True)
     rows_bal = eval_policy(kind, bal_masks, bal_sides, cfg_use, walker,
-                           base_act, act, args.seed, p_active)
+                           base_act, act, args.seed, p_active, args.horizon)
     rows_nat = eval_policy(kind, nat, nat_sides, cfg_use, walker, base_act,
-                           act, args.seed + 10, p_active)
+                           act, args.seed + 10, p_active, args.horizon)
     s = summarize(rows_bal, rows_nat, nat_weight)
     results[kind] = s
     print(f'{kind}: balanced_macro={s["balanced_macro_success"]} '
@@ -278,6 +282,7 @@ def main():
       'eval_seed': args.seed,
       'severity_v2': list(T.SEVERITY_V2),
       'p_active': p_active,
+      'horizon': (int(args.horizon) if args.horizon is not None else 700),
       'natural_pattern_weights': {p: round(nat_weight[p], 4)
                                   for p in PATTERNS},
       'balanced_k_per_pattern': args.k,

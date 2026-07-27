@@ -48,9 +48,11 @@ OUT_ROOT = 'artifacts/rockfall_v2_dataset'
 V2_CONSUMED = CONSUMED + [90_100_019, 88_140_077, 41_001, 42_001, 43_517]
 
 
-def rollout(env, o, walker, base_act, mode, base_side):
+def rollout(env, o, walker, base_act, mode, base_side, horizon=HORIZON):
   """One frozen v2 episode. mode in {sighted, blind, coverage}. For
-  sighted/blind, base_side in {left,right}; coverage ignores it (center)."""
+  sighted/blind, base_side in {left,right}; coverage ignores it (center).
+  horizon defaults to 700 (frozen); the H=800 experiment passes horizon=800."""
+  L = horizon + 1
   true_goal = o[29:31].copy()
   obs = np.zeros((L, 58), np.float32)
   act = np.zeros((L, 8), np.float32)
@@ -68,7 +70,7 @@ def rollout(env, o, walker, base_act, mode, base_side):
   x_hist, nudge = [], {'until': -1, 'sign': 1.0}
   dead_at, hit = -1, 0.0
   valid_len = L
-  for t in range(HORIZON):
+  for t in range(horizon):
     x, y = float(o[0]), float(o[1])
     if not handoff and (x >= RP.HANDOFF_X or y >= 2.0):
       handoff = True
@@ -145,9 +147,13 @@ def main():
   ap.add_argument('--p-active', type=float, default=None,
                   help='mask-density override for the sweep (0.30/0.50); '
                        'None keeps the env default 0.20 (reference)')
+  ap.add_argument('--horizon', type=int, default=HORIZON,
+                  help='episode horizon (H=800 experiment); default 700')
   args = ap.parse_args()
   n = args.episodes
   pa = args.p_active
+  horizon = int(args.horizon)
+  L_ep = horizon + 1                          # per-episode obs/act array length
 
   hard_ok, disc, info = C.check_frozen_integrity()
   rf_ok, rf_diffs, rf_man = check_rockfall_freeze()
@@ -194,19 +200,19 @@ def main():
   print(f'mixture: sighted={n_sight} blind={n_blind} coverage={n_cover} '
         f'({"PRIMARY 90/0/10" if is_primary else "ABLATION"})')
 
-  obs_all = np.zeros((n, L, 58), np.float32)
-  act_all = np.zeros((n, L, 8), np.float32)
+  obs_all = np.zeros((n, L_ep, 58), np.float32)
+  act_all = np.zeros((n, L_ep, 8), np.float32)
   lengths = np.zeros(n, np.int64)
   eval_goals = np.zeros((n, 2), np.float32)
   step_keys = ('handoff', 'lane_cmd', 'speed_cmd', 'torso_x', 'torso_y',
                'vx', 'rock_ant_contact', 'dead', 'in_detour')
-  step_side = {k: np.zeros((n, L), np.float32) for k in step_keys}
+  step_side = {k: np.zeros((n, L_ep), np.float32) for k in step_keys}
   ep_rows = []
   for e in range(n):
     mode = str(modes[e])
     base = 'left' if side_rng.random() < 0.5 else 'right'  # indep of mask
     o = env.reset()
-    obs, act, vlen, sc, ep = rollout(env, o, walker, base_act, mode, base)
+    obs, act, vlen, sc, ep = rollout(env, o, walker, base_act, mode, base, horizon)
     obs_all[e] = obs
     act_all[e] = act
     lengths[e] = vlen
@@ -220,7 +226,7 @@ def main():
       print(f'  collected {e + 1}/{n}', flush=True)
 
   meta = {'env_name': 'offline_ant_umaze_rockfall', 'obs_dim': 29,
-          'goal_dim': 29, 'action_dim': 8, 'ep_len_obs': L,
+          'goal_dim': 29, 'action_dim': 8, 'ep_len_obs': L_ep,
           'start_index': 0, 'end_index': -1, 'goal_indices': list(range(29)),
           'note': f'Rockfall v2 LOCAL-DETOUR pilot ({args.name}); '
                   'learner keys obs/act only.'}
@@ -248,16 +254,18 @@ def main():
   cfg.obs_dim, cfg.goal_dim, cfg.action_dim = 29, 29, 8
   cfg.start_index, cfg.end_index = 0, -1
   cfg.goal_indices = tuple(range(29))
-  cfg.max_episode_steps = HORIZON
+  cfg.max_episode_steps = horizon
   cfg.use_image_obs = False
   buf, _ = OA.build_offline_buffer(npz_path, cfg)
   buf.freeze()
 
   _pa_val = float(env.p_active)
   _sa = 1.0 - (1.0 - _pa_val) ** 2
+  _variant = protocol_version(pa) + (f'_h{horizon}' if horizon != 700 else '')
   man = {
-      'variant': protocol_version(pa),
+      'variant': _variant,
       'p_active': _pa_val,
+      'horizon': horizon,
       'expected_mask_pattern_probs': {
           'all_clear': round((1 - _sa) ** 2, 4),
           'left_only': round(_sa * (1 - _sa), 4),
@@ -285,7 +293,7 @@ def main():
                   'coverage': n_cover / n},
       'mixture_counts': {'sighted': n_sight, 'blind': n_blind,
                          'coverage': n_cover},
-      'n_episodes': int(n), 'ep_len_obs': L, 'horizon': HORIZON,
+      'n_episodes': int(n), 'ep_len_obs': L_ep, 'horizon': horizon,
       'n_transitions_total': int((lengths - 1).sum()),
       'buffer_ready_transitions': int(len(buf)),
       'env_name': 'offline_ant_umaze_rockfall', 'obs_dim_learner': 58,

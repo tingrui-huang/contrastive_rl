@@ -1049,6 +1049,11 @@ def make_env(env_name, config, seed=0, render_mode=None):
     _pa = getattr(config, 'rockfall_p_active', None)
     if _pa is not None:
       _sev_kw['p_active'] = float(_pa)
+    # optional episode-horizon override (H=800 experiment); absent -> the env's
+    # frozen default (700), so H=700 is byte-identical.
+    _ms = getattr(config, 'rockfall_max_steps', None)
+    if _ms is not None:
+      _sev_kw['max_episode_steps'] = int(_ms)
     env = RockfallOfflineAntUMazeEnv(
         seed=seed, render_mode=render_mode, eval_goals=eval_goals,
         eval_goal_mode=getattr(config, 'eval_goal_mode', 'd4rl'), **_sev_kw)

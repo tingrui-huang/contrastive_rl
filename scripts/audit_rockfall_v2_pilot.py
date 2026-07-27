@@ -55,6 +55,8 @@ def main():
   d = np.load(npz_path, allow_pickle=True)
   s = np.load(side_path, allow_pickle=True)
   n = int(d['lengths'].shape[0])
+  horizon = int(man.get('horizon', 700))       # H=800 experiment support
+  L_ep = horizon + 1
   gates, notes = {}, {}
 
   # ---- V1 integrity ----
@@ -69,7 +71,7 @@ def main():
   # ---- V2 contract & loader ----
   lengths, obs, act = d['lengths'], d['obs'], d['act']
   keys_ok = set(d.files) == LEARNER_KEYS
-  shape_ok = (obs.shape == (n, 701, 58) and act.shape == (n, 701, 8)
+  shape_ok = (obs.shape == (n, L_ep, 58) and act.shape == (n, L_ep, 8)
               and obs.dtype == np.float32)
   finite_ok = all(np.isfinite(obs[e, :lengths[e]]).all() for e in range(n))
   from verify_offline_d4rl import build_offline_cfg
@@ -77,7 +79,7 @@ def main():
   cfg.obs_dim, cfg.goal_dim, cfg.action_dim = 29, 29, 8
   cfg.start_index, cfg.end_index = 0, -1
   cfg.goal_indices = tuple(range(29))
-  cfg.max_episode_steps = 700
+  cfg.max_episode_steps = horizon
   cfg.use_image_obs = False
   buf, _ = OA.build_offline_buffer(npz_path, cfg)
   buf.freeze()
@@ -102,7 +104,7 @@ def main():
   dead = s['dead']
   cstep = s['collapse_step']
   pad_ok = all(not obs[e, lengths[e]:].any() for e in range(n))
-  trunc_ok = all((not dead[e]) or lengths[e] == min(cstep[e] + 2, 701)
+  trunc_ok = all((not dead[e]) or lengths[e] == min(cstep[e] + 2, L_ep)
                  for e in range(n))
   gates['V4_boundaries'] = bool(pad_ok and trunc_ok
                                 and (lengths >= 2).all())
