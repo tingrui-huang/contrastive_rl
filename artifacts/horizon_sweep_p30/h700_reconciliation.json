@@ -1,0 +1,312 @@
+{
+  "checkpoint": "naive_rockfall_v2_p30_s0_300k/final.pkl",
+  "sha256": "948019b46fb77e48cf3c069cb9506519c39f9061c6df99ad911daa4d25db6999",
+  "step": 300300,
+  "natural_weights": {
+    "all_clear": 0.2401,
+    "left_only": 0.2499,
+    "right_only": 0.2499,
+    "both_sides": 0.2601
+  },
+  "horizon_env+0": {
+    "env_seed": 20260726,
+    "n": 500,
+    "mismatch_reconcile_vs_horizon_at_700": 16,
+    "mismatch_detail_first10": [
+      [
+        53,
+        [
+          -1,
+          -1
+        ],
+        [
+          302,
+          -1
+        ]
+      ],
+      [
+        149,
+        [
+          -1,
+          -1
+        ],
+        [
+          375,
+          -1
+        ]
+      ],
+      [
+        157,
+        [
+          -1,
+          -1
+        ],
+        [
+          265,
+          -1
+        ]
+      ],
+      [
+        158,
+        [
+          -1,
+          -1
+        ],
+        [
+          627,
+          -1
+        ]
+      ],
+      [
+        186,
+        [
+          -1,
+          -1
+        ],
+        [
+          367,
+          -1
+        ]
+      ],
+      [
+        207,
+        [
+          -1,
+          -1
+        ],
+        [
+          651,
+          -1
+        ]
+      ],
+      [
+        217,
+        [
+          -1,
+          -1
+        ],
+        [
+          570,
+          -1
+        ]
+      ],
+      [
+        218,
+        [
+          603,
+          -1
+        ],
+        [
+          783,
+          -1
+        ]
+      ],
+      [
+        222,
+        [
+          646,
+          -1
+        ],
+        [
+          -1,
+          -1
+        ]
+      ],
+      [
+        243,
+        [
+          -1,
+          -1
+        ],
+        [
+          679,
+          -1
+        ]
+      ]
+    ],
+    "pooled_success_700": 0.75,
+    "per_pattern": {
+      "all_clear": {
+        "n": 141,
+        "success": 0.83
+      },
+      "left_only": {
+        "n": 121,
+        "success": 0.686
+      },
+      "right_only": {
+        "n": 123,
+        "success": 0.829
+      },
+      "both_sides": {
+        "n": 115,
+        "success": 0.635
+      }
+    },
+    "analytic_from_this_sample": 0.743,
+    "dead_counted_as_success": 0
+  },
+  "reconcile_env+10": {
+    "env_seed": 20260736,
+    "n": 500,
+    "mismatch_reconcile_vs_horizon_at_700": 20,
+    "mismatch_detail_first10": [
+      [
+        15,
+        [
+          401,
+          -1
+        ],
+        [
+          -1,
+          -1
+        ]
+      ],
+      [
+        16,
+        [
+          380,
+          -1
+        ],
+        [
+          -1,
+          -1
+        ]
+      ],
+      [
+        24,
+        [
+          -1,
+          -1
+        ],
+        [
+          528,
+          -1
+        ]
+      ],
+      [
+        25,
+        [
+          -1,
+          -1
+        ],
+        [
+          629,
+          -1
+        ]
+      ],
+      [
+        26,
+        [
+          225,
+          -1
+        ],
+        [
+          -1,
+          -1
+        ]
+      ],
+      [
+        32,
+        [
+          -1,
+          -1
+        ],
+        [
+          590,
+          -1
+        ]
+      ],
+      [
+        68,
+        [
+          363,
+          -1
+        ],
+        [
+          -1,
+          -1
+        ]
+      ],
+      [
+        121,
+        [
+          -1,
+          -1
+        ],
+        [
+          308,
+          -1
+        ]
+      ],
+      [
+        123,
+        [
+          -1,
+          -1
+        ],
+        [
+          625,
+          -1
+        ]
+      ],
+      [
+        201,
+        [
+          -1,
+          -1
+        ],
+        [
+          675,
+          -1
+        ]
+      ]
+    ],
+    "pooled_success_700": 0.758,
+    "per_pattern": {
+      "all_clear": {
+        "n": 141,
+        "success": 0.851
+      },
+      "left_only": {
+        "n": 121,
+        "success": 0.719
+      },
+      "right_only": {
+        "n": 123,
+        "success": 0.821
+      },
+      "both_sides": {
+        "n": 115,
+        "success": 0.617
+      }
+    },
+    "analytic_from_this_sample": 0.7497,
+    "dead_counted_as_success": 0
+  },
+  "balanced_K100": {
+    "env_seed": 20260726,
+    "k_per_pattern": 100,
+    "per_pattern": {
+      "all_clear": {
+        "n": 100,
+        "success": 0.8
+      },
+      "left_only": {
+        "n": 100,
+        "success": 0.64
+      },
+      "right_only": {
+        "n": 100,
+        "success": 0.76
+      },
+      "both_sides": {
+        "n": 100,
+        "success": 0.63
+      }
+    },
+    "balanced_macro": 0.7075,
+    "analytic_natural": 0.7058,
+    "worst_mask": 0.63
+  }
+}
