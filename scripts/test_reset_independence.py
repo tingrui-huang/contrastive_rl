@@ -33,6 +33,8 @@ from reconcile_rockfall_eval import (draw_natural_masks, mask_pattern)  # noqa
 SEED = 20_260_726
 NAIVE = 'naive_rockfall_v2_p30_s0_300k/final.pkl'
 PA = 0.30
+CAP = 700          #: native episode cap (700 default; --horizon sets 800 etc.)
+LONG = 1000        #: long cap for the cap-prefix test (must exceed CAP)
 
 
 def make(cfg, seed, reset_fix):
@@ -41,7 +43,9 @@ def make(cfg, seed, reset_fix):
       reset_fix=reset_fix)
 
 
-def naive_ep(env, act, o, cap=700, record=False):
+def naive_ep(env, act, o, cap=None, record=False):
+  if cap is None:
+    cap = CAP
   """Deterministic neural episode; returns outcome + optional obs/state trace."""
   succ = dead = -1
   obs_tr, acts, rews = [], [], []
@@ -69,7 +73,9 @@ def naive_ep(env, act, o, cap=700, record=False):
   return out
 
 
-def center_ep(env, o, walker, base_act, cap=700, record=False):
+def center_ep(env, o, walker, base_act, cap=None, record=False):
+  if cap is None:
+    cap = CAP
   true_goal = o[29:31].copy()
   handoff = False
   x_hist, nudge = [], {'until': -1, 'sign': 1.0}
@@ -117,7 +123,11 @@ def traj_equal(a, b, tol=0.0):
 def main():
   ap = argparse.ArgumentParser()
   ap.add_argument('--out', default='artifacts/reset_fix/reset_tests.json')
+  ap.add_argument('--horizon', type=int, default=700)
   args = ap.parse_args()
+  global CAP, LONG
+  CAP = int(args.horizon)
+  LONG = max(1000, CAP + 200)
   os.makedirs(os.path.dirname(args.out), exist_ok=True)
   cfg, walker, base_act, _, _ = C.load_controllers(RP.WALKER, RP.BASE)
   cfg.offline_dataset = ''
@@ -126,7 +136,7 @@ def main():
   cfgn.offline_dataset = ''
   cfgn.eval_goal_mode = 'd4rl'
   masks = draw_natural_masks(SEED + 1, 60, PA)
-  R = {'reset_fix_version': V2.RESET_FIX_VERSION}
+  R = {'reset_fix_version': V2.RESET_FIX_VERSION, 'cap': CAP, 'long_cap': LONG}
 
   # ---- Test A: repeated determinism (corrected) ----
   e1 = make(cfgn, SEED, True); e2 = make(cfgn, SEED, True)
@@ -178,14 +188,14 @@ def main():
   def run_bank(cap, reset_fix):
     env = make(cfgn, SEED, reset_fix)
     return [naive_ep(env, act, env.reset(mask=m), cap=cap) for m in masks]
-  b700 = run_bank(700, True); b1000 = run_bank(1000, True)
+  b700 = run_bank(CAP, True); b1000 = run_bank(LONG, True)
   mismC = sum(1 for r7, r10 in zip(b700, b1000)
-              if not (r7['success'] == (0 <= r10['succ'] < 700)
-                      and (r7['succ'] if r7['succ'] < 700 else -1)
-                      == (r10['succ'] if 0 <= r10['succ'] < 700 else -1)))
-  lb700 = run_bank(700, False); lb1000 = run_bank(1000, False)
+              if not (r7['success'] == (0 <= r10['succ'] < CAP)
+                      and (r7['succ'] if r7['succ'] < CAP else -1)
+                      == (r10['succ'] if 0 <= r10['succ'] < CAP else -1)))
+  lb700 = run_bank(CAP, False); lb1000 = run_bank(LONG, False)
   legC = sum(1 for r7, r10 in zip(lb700, lb1000)
-             if r7['success'] != (0 <= r10['succ'] < 700))
+             if r7['success'] != (0 <= r10['succ'] < CAP))
   R['C_cap_prefix_identity'] = {
       'pass': mismC == 0, 'corrected_mismatch': int(mismC),
       'legacy_mismatch': int(legC), 'n': len(masks)}
@@ -194,11 +204,12 @@ def main():
   # reconcile rollout_naive vs this evaluator vs horizon naive_rollout, same bank.
   from reconcile_rockfall_eval import rollout_naive as recon_roll
   from horizon_sweep_p30 import naive_rollout as horiz_roll
-  eR = make(cfgn, SEED, True); eS = make(cfgn, SEED, True)
-  eH = make(cfgn, SEED, True); eH.max_episode_steps = 1000
+  eR = make(cfgn, SEED, True); eR.max_episode_steps = CAP
+  eS = make(cfgn, SEED, True)
+  eH = make(cfgn, SEED, True); eH.max_episode_steps = LONG
   sR = [int(recon_roll(eR, act, eR.reset(mask=m)) > 0) for m in masks]
   sS = [naive_ep(eS, act, eS.reset(mask=m))['success'] for m in masks]
-  sH = [int(0 <= horiz_roll(eH, act, eH.reset(mask=m))['succ_step'] < 700)
+  sH = [int(0 <= horiz_roll(eH, act, eH.reset(mask=m))['succ_step'] < CAP)
         for m in masks]
   disD = sum(1 for i in range(len(masks)) if not (sR[i] == sS[i] == sH[i]))
   R['D_harness_agreement'] = {'pass': disD == 0, 'disagreements': int(disD),
