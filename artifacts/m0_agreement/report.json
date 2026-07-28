@@ -1,0 +1,159 @@
+{
+ "config": {
+  "dataset": "datasets/swamp_matched_teacher_s0.npz",
+  "env_name": "point_two_route_swamp_matched_v0",
+  "table": "artifacts/manski_port/propensity_table.npz",
+  "gamma": 0.95,
+  "batch": 20000,
+  "mc": 20000,
+  "min_cell_count": 500,
+  "seed": 0,
+  "out": "artifacts/m0_agreement"
+ },
+ "gates": [
+  {
+   "name": "T1a_counts_replicate_exactly",
+   "passed": true,
+   "metrics": {
+    "max_abs_diff": 0.0
+   }
+  },
+  {
+   "name": "T1b_table_is_exact_laplace",
+   "passed": true,
+   "metrics": {
+    "max_abs_diff": 0.0
+   }
+  },
+  {
+   "name": "T1c_mc_agreement_matches_empirical",
+   "passed": true,
+   "metrics": {
+    "cells_tested": 17,
+    "tests": 153,
+    "violations": 0,
+    "max_z": 2.84,
+    "worst": "(np.int64(1), np.int64(2), 0)"
+   }
+  },
+  {
+   "name": "T2a_ballN_hazard_endpoint_TV_at_null_level",
+   "passed": true,
+   "metrics": {
+    "tv_agreement_vs_table": 0.0107,
+    "null_tv": [
+     0.0095,
+     0.0073,
+     0.0118
+    ],
+    "tv_smoothing_effect": 0.0076,
+    "threshold": 0.0237
+   }
+  },
+  {
+   "name": "T2b_ballN_hazard_teleport_fraction_matches",
+   "passed": true,
+   "metrics": {
+    "table": 0.5583,
+    "agreement": 0.5581,
+    "abs_diff": 0.0003
+   }
+  },
+  {
+   "name": "T2c_ballN_hazard_pessimism_G7_stat_matches",
+   "passed": true,
+   "metrics": {
+    "table_mean_bfs": 2.61,
+    "agreement_mean_bfs": 2.604,
+    "smoothed_table_mean_bfs": 2.629,
+    "diff": 0.0059,
+    "se": 0.0285,
+    "fallback_draws": 0
+   }
+  },
+  {
+   "name": "T2a_reachableN_endpoint_TV_at_null_level",
+   "passed": true,
+   "metrics": {
+    "tv_agreement_vs_table": 0.0058,
+    "null_tv": [
+     0.0042,
+     0.0061,
+     0.0057
+    ],
+    "tv_smoothing_effect": 0.0059,
+    "threshold": 0.02
+   }
+  },
+  {
+   "name": "T2b_reachableN_teleport_fraction_matches",
+   "passed": true,
+   "metrics": {
+    "table": 0.0079,
+    "agreement": 0.0078,
+    "abs_diff": 0.0001
+   }
+  },
+  {
+   "name": "T2c_reachableN_pessimism_G7_stat_matches",
+   "passed": true,
+   "metrics": {
+    "table_mean_bfs": 1.621,
+    "agreement_mean_bfs": 1.623,
+    "smoothed_table_mean_bfs": 1.617,
+    "diff": 0.0024,
+    "se": 0.0281,
+    "fallback_draws": 0
+   }
+  },
+  {
+   "name": "T3a_agreement_estimates_propensity",
+   "passed": true,
+   "metrics": {
+    "value": 0.6988,
+    "expected": 0.7
+   }
+  },
+  {
+   "name": "T3b_source_classifier_same_dist_degenerates_to_half",
+   "passed": true,
+   "metrics": {
+    "value": [
+     0.5001,
+     0.4998
+    ],
+    "note": "outputs 0.5, NOT beta=0.7 -- source classification is not propensity estimation"
+   }
+  },
+  {
+   "name": "T3c_source_classifier_vs_pi_is_density_ratio",
+   "passed": true,
+   "metrics": {
+    "value": [
+     0.4374,
+     0.7486
+    ],
+    "expected": [
+     0.4375,
+     0.75
+    ],
+    "note": "CFQL D* = beta/(beta+pi): a discrepancy score, not beta"
+   }
+  },
+  {
+   "name": "T3d_holding_cell_real_data",
+   "passed": true,
+   "metrics": {
+    "holding_cell": "(2, 3)",
+    "bins_tested": 9,
+    "classifier_range": [
+     0.476,
+     0.518
+    ],
+    "max_agree_err": 0.0029
+   }
+  }
+ ],
+ "t1_smoothing_gap": 0.005945086609479067,
+ "all_passed": true
+}
