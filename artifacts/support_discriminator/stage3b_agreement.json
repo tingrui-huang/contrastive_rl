@@ -1,0 +1,290 @@
+{
+  "active_formulation": "D(s, g_cmd, a)",
+  "input_spec": "state_cmdgoal_action",
+  "spec": {
+    "state_dim": 29,
+    "action_dim": 8,
+    "g_cmd_dim_full": 29,
+    "g_cmd_indices": [
+      0,
+      1
+    ],
+    "hidden_sizes": [
+      256,
+      256
+    ],
+    "input_spec": "state_cmdgoal_action",
+    "g_cmd_dim": 2,
+    "input_dim": 39
+  },
+  "n_test_contexts": 8192,
+  "test_episodes": [
+    0,
+    5,
+    31,
+    36,
+    41,
+    70,
+    107,
+    116,
+    128,
+    132,
+    140,
+    148,
+    149,
+    150,
+    155,
+    162,
+    168,
+    185,
+    205,
+    209,
+    210,
+    229,
+    233,
+    255,
+    266,
+    272,
+    277,
+    282,
+    291,
+    294
+  ],
+  "dataset_sha256": "08bdc44bb7942793ea18c2628c36d8ea8bfe875169afadfa8934b1b948ef55e4",
+  "crl_checkpoint": "D:\\Users\\trhua\\Research\\contrastive_rl\\naive_rockfall_v2_p30_h800_resetfix_s0_300k\\final.pkl",
+  "crl_step": 300000,
+  "crl_dataset_sha256": "08bdc44bb7942793ea18c2628c36d8ea8bfe875169afadfa8934b1b948ef55e4",
+  "query_goal_semantics": {
+    "source": "crl/replay.py:_draw_indices (variable-length path)",
+    "discount": 0.99,
+    "eligible_future_range": "j in [t+1, L_e - 1] (same episode)",
+    "probability_rule": "P(j) proportional to discount ** (j - t)",
+    "sampling_mechanism": "Gumbel-max over masked log-probs (as in replay)",
+    "terminal_observation_selectable": true,
+    "goal_extraction": "obs[e, j, :obs_dim] restricted to goal_indices",
+    "goal_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28
+    ],
+    "crosses_episode_boundary": false,
+    "role": "g_query selects WHICH action the learner proposes; it is NOT a discriminator input (it is a descendant of the action)."
+  },
+  "g_cmd_is_input_to_D": true,
+  "g_query_is_input_to_D": false,
+  "behaviorflow_used": false,
+  "uniform_reference_used": false,
+  "neighborhood_bandwidth_used": false,
+  "environment_rollouts_used": false,
+  "is_calibrated_propensity": false,
+  "seeds": {
+    "0": {
+      "roc_auc": 0.5671548545360565,
+      "pr_auc": 0.5516349142702882,
+      "bce": 0.6902578052434385,
+      "score_real_mean": 0.49403515458106995,
+      "score_real_std": 0.10268785059452057,
+      "score_crl_mean": 0.4669033885002136,
+      "score_crl_std": 0.11137112230062485,
+      "score_real_quantiles": {
+        "mean": 0.49403515458106995,
+        "median": 0.49399368464946747,
+        "q05": 0.3143788889050484,
+        "q25": 0.4274517595767975,
+        "q75": 0.5574660301208496,
+        "q95": 0.6680915117263793
+      },
+      "score_crl_quantiles": {
+        "mean": 0.4669033885002136,
+        "median": 0.4712442308664322,
+        "q05": 0.26697288900613786,
+        "q25": 0.40526602417230606,
+        "q75": 0.5395287722349167,
+        "q95": 0.6412328839302063
+      },
+      "training_seed": 0,
+      "dev_auc": 0.5648090839385986
+    },
+    "1": {
+      "roc_auc": 0.5643261298537254,
+      "pr_auc": 0.5507451209194479,
+      "bce": 0.6909721878242,
+      "score_real_mean": 0.5215318202972412,
+      "score_real_std": 0.10138754546642303,
+      "score_crl_mean": 0.49653393030166626,
+      "score_crl_std": 0.10788074135780334,
+      "score_real_quantiles": {
+        "mean": 0.5215318202972412,
+        "median": 0.5221961438655853,
+        "q05": 0.35676828771829605,
+        "q25": 0.4553191140294075,
+        "q75": 0.5917861312627792,
+        "q95": 0.6906066775321961
+      },
+      "score_crl_quantiles": {
+        "mean": 0.49653393030166626,
+        "median": 0.4997910261154175,
+        "q05": 0.3152026042342186,
+        "q25": 0.4271029531955719,
+        "q75": 0.5705127269029617,
+        "q95": 0.6669754773378371
+      },
+      "training_seed": 1,
+      "dev_auc": 0.5707288086414337
+    },
+    "2": {
+      "roc_auc": 0.571468710899353,
+      "pr_auc": 0.5630220732592474,
+      "bce": 0.6884874291691412,
+      "score_real_mean": 0.5134485960006714,
+      "score_real_std": 0.10188471525907516,
+      "score_crl_mean": 0.4864000082015991,
+      "score_crl_std": 0.10601722449064255,
+      "score_real_quantiles": {
+        "mean": 0.5134485960006714,
+        "median": 0.5149807631969452,
+        "q05": 0.33479486405849457,
+        "q25": 0.45882517844438553,
+        "q75": 0.5762128233909607,
+        "q95": 0.6794577598571777
+      },
+      "score_crl_quantiles": {
+        "mean": 0.4864000082015991,
+        "median": 0.49198055267333984,
+        "q05": 0.28364031910896303,
+        "q25": 0.430308535695076,
+        "q75": 0.5550218522548676,
+        "q95": 0.6466650277376175
+      },
+      "training_seed": 2,
+      "dev_auc": 0.5667116045951843
+    }
+  },
+  "baselines": {
+    "A": {
+      "input_spec": "state_action",
+      "roc_auc": 0.5724108442664146,
+      "bce": 0.6895219734931775,
+      "role": "DIAGNOSTIC ONLY -- not used by the causal learner"
+    },
+    "action": {
+      "input_spec": "action",
+      "roc_auc": 0.5284662619233131,
+      "bce": 0.6919660520045378,
+      "role": "DIAGNOSTIC ONLY -- not used by the causal learner"
+    },
+    "context": {
+      "input_spec": "context",
+      "roc_auc": 0.5,
+      "bce": 0.6931568349246641,
+      "role": "DIAGNOSTIC ONLY -- not used by the causal learner"
+    }
+  },
+  "pairwise_seed_stability": {
+    "0-1": {
+      "pearson": 0.6194154994966352,
+      "spearman": 0.5669576364607872,
+      "mean_abs_difference": 0.07836854457855225,
+      "lowest_decile_overlap": 0.2742812742812743,
+      "highest_decile_overlap": 0.2792511700468019
+    },
+    "0-2": {
+      "pearson": 0.5649369569286972,
+      "spearman": 0.5063286039000449,
+      "mean_abs_difference": 0.08064169436693192,
+      "lowest_decile_overlap": 0.43356643356643354,
+      "highest_decile_overlap": 0.1739441660701503
+    },
+    "1-2": {
+      "pearson": 0.5278678667568365,
+      "spearman": 0.47442049978863493,
+      "mean_abs_difference": 0.08244715631008148,
+      "lowest_decile_overlap": 0.25766871165644173,
+      "highest_decile_overlap": 0.14685314685314685
+    }
+  },
+  "correct_vs_shuffled_context": {
+    "0": {
+      "correct_mean": 0.49403515458106995,
+      "shuffled_mean": 0.41281867027282715,
+      "paired_difference": 0.0812164694070816,
+      "fraction_correct_gt_shuffled": 0.6622314453125
+    },
+    "1": {
+      "correct_mean": 0.5215318202972412,
+      "shuffled_mean": 0.4329549968242645,
+      "paired_difference": 0.08857683837413788,
+      "fraction_correct_gt_shuffled": 0.6683349609375
+    },
+    "2": {
+      "correct_mean": 0.5134485960006714,
+      "shuffled_mean": 0.4431473910808563,
+      "paired_difference": 0.07030119001865387,
+      "fraction_correct_gt_shuffled": 0.6376953125
+    }
+  },
+  "perturbation_probe_descriptive": {
+    "deltas": [
+      0.0,
+      0.02,
+      0.05,
+      0.1,
+      0.2,
+      0.5
+    ],
+    "mean_score": [
+      0.49403515458106995,
+      0.4941667914390564,
+      0.49440664052963257,
+      0.49476855993270874,
+      0.49521955847740173,
+      0.4943763017654419
+    ],
+    "note": "DESCRIPTIVE ONLY -- monotonicity is not an acceptance criterion"
+  },
+  "averaged_score_diagnostic": {
+    "roc_auc": 0.579226516187191,
+    "cross_seed_sd_of_score_mean": 0.051745057106018066,
+    "single_model_pairwise_mad": 0.08048579841852188,
+    "leave_one_out_mad_of_average": [
+      0.022801171988248825,
+      0.023432228714227676,
+      0.023854725062847137
+    ],
+    "status": "DIAGNOSTIC ONLY -- multi-seed averaging is NOT the canonical algorithm; the canonical model is a single seed of D(s, g_cmd, a)"
+  },
+  "api_contract": {
+    "score_in_unit_interval": true,
+    "batched_shape_ok": true,
+    "leading_dims_ok": true,
+    "vmap_matches_batched": true,
+    "full_and_presliced_g_cmd_agree": true,
+    "jit_ok": true
+  }
+}

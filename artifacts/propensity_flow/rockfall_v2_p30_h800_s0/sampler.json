@@ -1,0 +1,15 @@
+{
+  "sampler": "euler_per_step_clipped",
+  "flow_steps": 10,
+  "flow_steps_provenance": "aligned with official CFQL implementation",
+  "per_step_action_clip": [
+    -1.0,
+    1.0
+  ],
+  "clip_provenance": "official CFQL sampling implementation",
+  "clip_applies_to": "action sampling / numerical integration only",
+  "training_objective_changed": false,
+  "network_output_squashed": false,
+  "offline_actions_modified": false,
+  "training_config_provenance_at_train_time": "PROTOTYPE CHOICE -- not verified against CFQL"
+}

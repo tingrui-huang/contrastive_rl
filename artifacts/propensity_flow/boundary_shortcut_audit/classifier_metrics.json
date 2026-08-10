@@ -1,0 +1,1386 @@
+[
+  {
+    "comparison": "A_flow50k_vs_crl",
+    "n_pos": 8192,
+    "n_neg": 8192,
+    "pos_p_any_boundary": 0.659423828125,
+    "neg_p_any_boundary": 0.2772216796875,
+    "train_episodes": 21,
+    "test_episodes": 9,
+    "scalar_auc": {
+      "any_boundary": 0.6532961283571678,
+      "count_boundary": 0.6783574780019049,
+      "min_dist_to_boundary": 0.5841728926727033
+    },
+    "logistic": {
+      "test_auc": 0.9720853185564563,
+      "test_accuracy": 0.9072200906871294,
+      "test_balanced_accuracy": 0.9072200906871294,
+      "n_train": 10650,
+      "n_test": 5734,
+      "coefficients": [
+        {
+          "feature": "ge099_dim5",
+          "weight": -1.348024221683523
+        },
+        {
+          "feature": "ge099_dim7",
+          "weight": -1.3337510491449494
+        },
+        {
+          "feature": "ge099_dim4",
+          "weight": -1.1744966759833435
+        },
+        {
+          "feature": "ge099_dim3",
+          "weight": -1.1661824844516002
+        },
+        {
+          "feature": "exact_dim1",
+          "weight": 1.1111128922007754
+        },
+        {
+          "feature": "count_exact_boundary",
+          "weight": 1.063374886511383
+        },
+        {
+          "feature": "ge099_dim1",
+          "weight": -1.005852181255238
+        },
+        {
+          "feature": "ge099_dim2",
+          "weight": -1.0056344607302683
+        },
+        {
+          "feature": "ge099_dim0",
+          "weight": -0.999291362209532
+        },
+        {
+          "feature": "ge099_dim6",
+          "weight": -0.7913377079790598
+        },
+        {
+          "feature": "any_exact_boundary",
+          "weight": 0.7738358933981047
+        },
+        {
+          "feature": "exact_dim3",
+          "weight": 0.5180582571852684
+        },
+        {
+          "feature": "exact_dim6",
+          "weight": 0.5115233800808604
+        },
+        {
+          "feature": "exact_dim0",
+          "weight": 0.3846668986163395
+        },
+        {
+          "feature": "exact_dim7",
+          "weight": 0.35293441088132704
+        },
+        {
+          "feature": "ge095_dim5",
+          "weight": 0.34983699452201006
+        },
+        {
+          "feature": "exact_dim5",
+          "weight": 0.33954734582225293
+        },
+        {
+          "feature": "dist_dim7",
+          "weight": -0.29729235826348166
+        },
+        {
+          "feature": "ge095_dim3",
+          "weight": 0.2953652270572157
+        },
+        {
+          "feature": "dist_dim4",
+          "weight": -0.24311473016086074
+        },
+        {
+          "feature": "ge095_dim2",
+          "weight": 0.2334934862113761
+        },
+        {
+          "feature": "dist_dim0",
+          "weight": -0.2168686863457416
+        },
+        {
+          "feature": "min_dist_to_boundary",
+          "weight": 0.18887906567719187
+        },
+        {
+          "feature": "ge095_dim4",
+          "weight": 0.1710091307954836
+        },
+        {
+          "feature": "exact_dim2",
+          "weight": 0.12960004957232904
+        },
+        {
+          "feature": "dist_dim5",
+          "weight": -0.12724869427750785
+        },
+        {
+          "feature": "dist_dim6",
+          "weight": -0.12699205038466768
+        },
+        {
+          "feature": "dist_dim2",
+          "weight": -0.12523281483849524
+        },
+        {
+          "feature": "ge095_dim1",
+          "weight": 0.12150090818096666
+        },
+        {
+          "feature": "ge095_dim6",
+          "weight": 0.09868174606611536
+        },
+        {
+          "feature": "ge095_dim7",
+          "weight": 0.08067970303613181
+        },
+        {
+          "feature": "dist_dim3",
+          "weight": -0.07454620335421792
+        },
+        {
+          "feature": "exact_dim4",
+          "weight": 0.05963697424033329
+        },
+        {
+          "feature": "ge095_dim0",
+          "weight": 0.04053427963015452
+        },
+        {
+          "feature": "dist_dim1",
+          "weight": -0.016520679622879376
+        }
+      ],
+      "top_features": [
+        "ge099_dim5",
+        "ge099_dim7",
+        "ge099_dim4",
+        "ge099_dim3",
+        "exact_dim1",
+        "count_exact_boundary",
+        "ge099_dim1",
+        "ge099_dim2"
+      ]
+    }
+  },
+  {
+    "comparison": "A_flow150k_vs_crl",
+    "n_pos": 8192,
+    "n_neg": 8192,
+    "pos_p_any_boundary": 0.6788330078125,
+    "neg_p_any_boundary": 0.2772216796875,
+    "train_episodes": 21,
+    "test_episodes": 9,
+    "scalar_auc": {
+      "any_boundary": 0.7023020579002441,
+      "count_boundary": 0.7420010051475183,
+      "min_dist_to_boundary": 0.6711474120249562
+    },
+    "logistic": {
+      "test_auc": 0.9659473734346884,
+      "test_accuracy": 0.899023369375654,
+      "test_balanced_accuracy": 0.899023369375654,
+      "n_train": 10650,
+      "n_test": 5734,
+      "coefficients": [
+        {
+          "feature": "ge099_dim3",
+          "weight": -1.3478278054453774
+        },
+        {
+          "feature": "ge099_dim1",
+          "weight": -1.1824747560363709
+        },
+        {
+          "feature": "ge099_dim0",
+          "weight": -1.1587038158953713
+        },
+        {
+          "feature": "count_exact_boundary",
+          "weight": 1.090115989784933
+        },
+        {
+          "feature": "ge099_dim7",
+          "weight": -1.0499987348339213
+        },
+        {
+          "feature": "ge099_dim6",
+          "weight": -1.0197485344384145
+        },
+        {
+          "feature": "ge099_dim5",
+          "weight": -0.9889803689970956
+        },
+        {
+          "feature": "ge099_dim4",
+          "weight": -0.9398609542317851
+        },
+        {
+          "feature": "ge099_dim2",
+          "weight": -0.9206562506294391
+        },
+        {
+          "feature": "exact_dim1",
+          "weight": 0.6865241267310305
+        },
+        {
+          "feature": "any_exact_boundary",
+          "weight": 0.6325801134089585
+        },
+        {
+          "feature": "exact_dim7",
+          "weight": 0.6182805186919704
+        },
+        {
+          "feature": "exact_dim5",
+          "weight": 0.5831240248824748
+        },
+        {
+          "feature": "exact_dim0",
+          "weight": 0.5669097272979934
+        },
+        {
+          "feature": "exact_dim4",
+          "weight": 0.4872129985056589
+        },
+        {
+          "feature": "exact_dim6",
+          "weight": 0.43529945938912623
+        },
+        {
+          "feature": "ge095_dim5",
+          "weight": 0.43248435123392487
+        },
+        {
+          "feature": "exact_dim2",
+          "weight": 0.4139282024491942
+        },
+        {
+          "feature": "ge095_dim3",
+          "weight": 0.3595255518830536
+        },
+        {
+          "feature": "ge095_dim2",
+          "weight": 0.35702282708841837
+        },
+        {
+          "feature": "exact_dim3",
+          "weight": 0.3284479569278626
+        },
+        {
+          "feature": "dist_dim7",
+          "weight": -0.24144033507192347
+        },
+        {
+          "feature": "ge095_dim7",
+          "weight": 0.20246807635395536
+        },
+        {
+          "feature": "dist_dim0",
+          "weight": -0.16570509600710254
+        },
+        {
+          "feature": "dist_dim5",
+          "weight": -0.15888084856667123
+        },
+        {
+          "feature": "dist_dim1",
+          "weight": -0.14389899309889487
+        },
+        {
+          "feature": "ge095_dim4",
+          "weight": 0.12810012640148027
+        },
+        {
+          "feature": "min_dist_to_boundary",
+          "weight": 0.12671229303956272
+        },
+        {
+          "feature": "ge095_dim6",
+          "weight": 0.12419596591750628
+        },
+        {
+          "feature": "ge095_dim1",
+          "weight": 0.10030599670751579
+        },
+        {
+          "feature": "dist_dim2",
+          "weight": -0.08385059576414729
+        },
+        {
+          "feature": "dist_dim4",
+          "weight": -0.08368986050170907
+        },
+        {
+          "feature": "dist_dim6",
+          "weight": -0.07057709016200772
+        },
+        {
+          "feature": "ge095_dim0",
+          "weight": 0.06506856176700743
+        },
+        {
+          "feature": "dist_dim3",
+          "weight": -0.04711863927199541
+        }
+      ],
+      "top_features": [
+        "ge099_dim3",
+        "ge099_dim1",
+        "ge099_dim0",
+        "count_exact_boundary",
+        "ge099_dim7",
+        "ge099_dim6",
+        "ge099_dim5",
+        "ge099_dim4"
+      ]
+    }
+  },
+  {
+    "comparison": "B_real_vs_crl",
+    "n_pos": 8192,
+    "n_neg": 8192,
+    "pos_p_any_boundary": 0.334716796875,
+    "neg_p_any_boundary": 0.2772216796875,
+    "train_episodes": 21,
+    "test_episodes": 9,
+    "scalar_auc": {
+      "any_boundary": 0.5167422392745029,
+      "count_boundary": 0.5204442041541961,
+      "min_dist_to_boundary": 0.5132217289486257
+    },
+    "logistic": {
+      "test_auc": 0.519014892169278,
+      "test_accuracy": 0.5146494593651901,
+      "test_balanced_accuracy": 0.5146494593651901,
+      "n_train": 10650,
+      "n_test": 5734,
+      "coefficients": [
+        {
+          "feature": "ge095_dim5",
+          "weight": 0.2825040185272592
+        },
+        {
+          "feature": "ge099_dim5",
+          "weight": -0.1682625836476336
+        },
+        {
+          "feature": "ge095_dim4",
+          "weight": -0.13129808065386137
+        },
+        {
+          "feature": "ge095_dim6",
+          "weight": -0.1227866275545752
+        },
+        {
+          "feature": "exact_dim2",
+          "weight": 0.12232724094861112
+        },
+        {
+          "feature": "dist_dim2",
+          "weight": 0.11573724488557287
+        },
+        {
+          "feature": "ge099_dim3",
+          "weight": -0.10833886623407646
+        },
+        {
+          "feature": "count_exact_boundary",
+          "weight": 0.09236953575532547
+        },
+        {
+          "feature": "dist_dim0",
+          "weight": -0.09226575541110053
+        },
+        {
+          "feature": "ge095_dim0",
+          "weight": 0.09006816239681378
+        },
+        {
+          "feature": "dist_dim1",
+          "weight": 0.0782518765807256
+        },
+        {
+          "feature": "exact_dim4",
+          "weight": 0.07515961537794215
+        },
+        {
+          "feature": "exact_dim3",
+          "weight": 0.07043090839465466
+        },
+        {
+          "feature": "ge099_dim1",
+          "weight": 0.07003452656593911
+        },
+        {
+          "feature": "exact_dim5",
+          "weight": -0.06157402233474585
+        },
+        {
+          "feature": "ge095_dim2",
+          "weight": 0.05503865166420386
+        },
+        {
+          "feature": "ge095_dim3",
+          "weight": 0.042852742052209174
+        },
+        {
+          "feature": "dist_dim7",
+          "weight": -0.04045656462380701
+        },
+        {
+          "feature": "exact_dim1",
+          "weight": -0.03716696060604766
+        },
+        {
+          "feature": "ge099_dim6",
+          "weight": 0.03567165649242714
+        },
+        {
+          "feature": "dist_dim3",
+          "weight": 0.03381825132605096
+        },
+        {
+          "feature": "ge095_dim1",
+          "weight": 0.03245651044972255
+        },
+        {
+          "feature": "min_dist_to_boundary",
+          "weight": 0.03178636797721714
+        },
+        {
+          "feature": "dist_dim6",
+          "weight": -0.03147298348728613
+        },
+        {
+          "feature": "ge099_dim2",
+          "weight": 0.030560372254714807
+        },
+        {
+          "feature": "ge099_dim4",
+          "weight": -0.030061159461839328
+        },
+        {
+          "feature": "ge099_dim0",
+          "weight": -0.024980476788412743
+        },
+        {
+          "feature": "dist_dim4",
+          "weight": -0.024669996716616724
+        },
+        {
+          "feature": "ge099_dim7",
+          "weight": -0.0178419044330653
+        },
+        {
+          "feature": "any_exact_boundary",
+          "weight": -0.010928696587635784
+        },
+        {
+          "feature": "dist_dim5",
+          "weight": -0.010088741876490944
+        },
+        {
+          "feature": "exact_dim6",
+          "weight": 0.008922332899787826
+        },
+        {
+          "feature": "exact_dim0",
+          "weight": 0.007438772870017106
+        },
+        {
+          "feature": "exact_dim7",
+          "weight": -0.006202952853853785
+        },
+        {
+          "feature": "ge095_dim7",
+          "weight": -0.004171409580173489
+        }
+      ],
+      "top_features": [
+        "ge095_dim5",
+        "ge099_dim5",
+        "ge095_dim4",
+        "ge095_dim6",
+        "exact_dim2",
+        "dist_dim2",
+        "ge099_dim3",
+        "count_exact_boundary"
+      ]
+    }
+  },
+  {
+    "comparison": "C_flow50k_vs_real",
+    "n_pos": 8192,
+    "n_neg": 8192,
+    "pos_p_any_boundary": 0.659423828125,
+    "neg_p_any_boundary": 0.334716796875,
+    "train_episodes": 21,
+    "test_episodes": 9,
+    "scalar_auc": {
+      "any_boundary": 0.6365538890826649,
+      "count_boundary": 0.6571221855230776,
+      "min_dist_to_boundary": 0.5637729116028599
+    },
+    "logistic": {
+      "test_auc": 0.969319277164866,
+      "test_accuracy": 0.903732124171608,
+      "test_balanced_accuracy": 0.903732124171608,
+      "n_train": 10650,
+      "n_test": 5734,
+      "coefficients": [
+        {
+          "feature": "ge099_dim7",
+          "weight": -1.4539950719030723
+        },
+        {
+          "feature": "ge099_dim5",
+          "weight": -1.3318583381692
+        },
+        {
+          "feature": "ge099_dim4",
+          "weight": -1.2078749472157448
+        },
+        {
+          "feature": "ge099_dim2",
+          "weight": -1.1527932758320365
+        },
+        {
+          "feature": "exact_dim1",
+          "weight": 1.1111616032371578
+        },
+        {
+          "feature": "ge099_dim3",
+          "weight": -1.0451041055796348
+        },
+        {
+          "feature": "count_exact_boundary",
+          "weight": 1.0089475993058912
+        },
+        {
+          "feature": "ge099_dim1",
+          "weight": -0.9972229830111466
+        },
+        {
+          "feature": "ge099_dim0",
+          "weight": -0.9899260617171564
+        },
+        {
+          "feature": "ge099_dim6",
+          "weight": -0.8129527304287668
+        },
+        {
+          "feature": "any_exact_boundary",
+          "weight": 0.803313742335205
+        },
+        {
+          "feature": "exact_dim6",
+          "weight": 0.5028176442309409
+        },
+        {
+          "feature": "exact_dim7",
+          "weight": 0.3946126992697138
+        },
+        {
+          "feature": "exact_dim5",
+          "weight": 0.39283887549829205
+        },
+        {
+          "feature": "exact_dim0",
+          "weight": 0.3733864670567229
+        },
+        {
+          "feature": "exact_dim3",
+          "weight": 0.3621643486090318
+        },
+        {
+          "feature": "ge095_dim3",
+          "weight": 0.3108243848603613
+        },
+        {
+          "feature": "ge095_dim4",
+          "weight": 0.30187573568548265
+        },
+        {
+          "feature": "ge095_dim2",
+          "weight": 0.2985520943015532
+        },
+        {
+          "feature": "dist_dim7",
+          "weight": -0.2738555485308381
+        },
+        {
+          "feature": "min_dist_to_boundary",
+          "weight": 0.20842120949006537
+        },
+        {
+          "feature": "dist_dim4",
+          "weight": -0.18585629325723452
+        },
+        {
+          "feature": "dist_dim0",
+          "weight": -0.17764776388580977
+        },
+        {
+          "feature": "ge095_dim5",
+          "weight": 0.16022359111065465
+        },
+        {
+          "feature": "dist_dim5",
+          "weight": -0.15901810411285108
+        },
+        {
+          "feature": "dist_dim2",
+          "weight": -0.15643645834283998
+        },
+        {
+          "feature": "ge095_dim7",
+          "weight": 0.14903962606724538
+        },
+        {
+          "feature": "dist_dim6",
+          "weight": -0.14863094394287538
+        },
+        {
+          "feature": "ge095_dim1",
+          "weight": 0.14442223589231606
+        },
+        {
+          "feature": "exact_dim2",
+          "weight": 0.12856333284335753
+        },
+        {
+          "feature": "ge095_dim6",
+          "weight": 0.1260608820993182
+        },
+        {
+          "feature": "dist_dim3",
+          "weight": -0.12315553715699658
+        },
+        {
+          "feature": "dist_dim1",
+          "weight": -0.043882539722539915
+        },
+        {
+          "feature": "ge095_dim0",
+          "weight": -0.01546909007019771
+        },
+        {
+          "feature": "exact_dim4",
+          "weight": 0.003559839480081841
+        }
+      ],
+      "top_features": [
+        "ge099_dim7",
+        "ge099_dim5",
+        "ge099_dim4",
+        "ge099_dim2",
+        "exact_dim1",
+        "ge099_dim3",
+        "count_exact_boundary",
+        "ge099_dim1"
+      ]
+    }
+  },
+  {
+    "comparison": "C_flow150k_vs_real",
+    "n_pos": 8192,
+    "n_neg": 8192,
+    "pos_p_any_boundary": 0.6788330078125,
+    "neg_p_any_boundary": 0.334716796875,
+    "train_episodes": 21,
+    "test_episodes": 9,
+    "scalar_auc": {
+      "any_boundary": 0.6855598186257412,
+      "count_boundary": 0.7216942757809937,
+      "min_dist_to_boundary": 0.6472878110108545
+    },
+    "logistic": {
+      "test_auc": 0.9610054589656616,
+      "test_accuracy": 0.8927450296477154,
+      "test_balanced_accuracy": 0.8927450296477154,
+      "n_train": 10650,
+      "n_test": 5734,
+      "coefficients": [
+        {
+          "feature": "ge099_dim3",
+          "weight": -1.2627428520189867
+        },
+        {
+          "feature": "ge099_dim1",
+          "weight": -1.2461443600781437
+        },
+        {
+          "feature": "ge099_dim7",
+          "weight": -1.1622374256532984
+        },
+        {
+          "feature": "ge099_dim0",
+          "weight": -1.1293887996420968
+        },
+        {
+          "feature": "ge099_dim6",
+          "weight": -1.03534996605111
+        },
+        {
+          "feature": "ge099_dim2",
+          "weight": -0.9950983544212968
+        },
+        {
+          "feature": "count_exact_boundary",
+          "weight": 0.9922556505977396
+        },
+        {
+          "feature": "ge099_dim4",
+          "weight": -0.9522112822654389
+        },
+        {
+          "feature": "ge099_dim5",
+          "weight": -0.9481820452664155
+        },
+        {
+          "feature": "any_exact_boundary",
+          "weight": 0.7446576673137999
+        },
+        {
+          "feature": "exact_dim1",
+          "weight": 0.7004728224668307
+        },
+        {
+          "feature": "exact_dim5",
+          "weight": 0.6592801422475887
+        },
+        {
+          "feature": "exact_dim7",
+          "weight": 0.6160244950074933
+        },
+        {
+          "feature": "exact_dim0",
+          "weight": 0.4881461953614164
+        },
+        {
+          "feature": "ge095_dim2",
+          "weight": 0.387514739219608
+        },
+        {
+          "feature": "ge095_dim3",
+          "weight": 0.38711002854702664
+        },
+        {
+          "feature": "exact_dim2",
+          "weight": 0.3799422409314529
+        },
+        {
+          "feature": "exact_dim6",
+          "weight": 0.3750125344788207
+        },
+        {
+          "feature": "exact_dim4",
+          "weight": 0.35691787031789834
+        },
+        {
+          "feature": "ge095_dim4",
+          "weight": 0.26583311447491803
+        },
+        {
+          "feature": "ge095_dim7",
+          "weight": 0.2566344348077452
+        },
+        {
+          "feature": "ge095_dim5",
+          "weight": 0.2284179665067319
+        },
+        {
+          "feature": "ge095_dim6",
+          "weight": 0.2162747005393997
+        },
+        {
+          "feature": "dist_dim7",
+          "weight": -0.21005255888525837
+        },
+        {
+          "feature": "dist_dim1",
+          "weight": -0.1781205000360156
+        },
+        {
+          "feature": "dist_dim5",
+          "weight": -0.16758156682408304
+        },
+        {
+          "feature": "exact_dim3",
+          "weight": 0.15519637119701424
+        },
+        {
+          "feature": "dist_dim0",
+          "weight": -0.15158889008366397
+        },
+        {
+          "feature": "min_dist_to_boundary",
+          "weight": 0.13372656471372715
+        },
+        {
+          "feature": "dist_dim2",
+          "weight": -0.11513931115895851
+        },
+        {
+          "feature": "ge095_dim1",
+          "weight": 0.09675896912315952
+        },
+        {
+          "feature": "dist_dim3",
+          "weight": -0.08760540477317358
+        },
+        {
+          "feature": "dist_dim6",
+          "weight": -0.06901238493113315
+        },
+        {
+          "feature": "dist_dim4",
+          "weight": -0.02694240622443217
+        },
+        {
+          "feature": "ge095_dim0",
+          "weight": 0.018845835419348107
+        }
+      ],
+      "top_features": [
+        "ge099_dim3",
+        "ge099_dim1",
+        "ge099_dim7",
+        "ge099_dim0",
+        "ge099_dim6",
+        "ge099_dim2",
+        "count_exact_boundary",
+        "ge099_dim4"
+      ]
+    }
+  },
+  {
+    "comparison": "A2_flow50k_vs_crlmode",
+    "n_pos": 8192,
+    "n_neg": 8192,
+    "pos_p_any_boundary": 0.659423828125,
+    "neg_p_any_boundary": 0.2279052734375,
+    "train_episodes": 21,
+    "test_episodes": 9,
+    "scalar_auc": {
+      "any_boundary": 0.6766655040111615,
+      "count_boundary": 0.6997880941724194,
+      "min_dist_to_boundary": 0.6010718288733309
+    },
+    "logistic": {
+      "test_auc": 0.9721371453348174,
+      "test_accuracy": 0.9065224973840251,
+      "test_balanced_accuracy": 0.9065224973840251,
+      "n_train": 10650,
+      "n_test": 5734,
+      "coefficients": [
+        {
+          "feature": "ge099_dim5",
+          "weight": -1.3827290399943486
+        },
+        {
+          "feature": "ge099_dim7",
+          "weight": -1.3110315977418436
+        },
+        {
+          "feature": "exact_dim1",
+          "weight": 1.1830481023908854
+        },
+        {
+          "feature": "ge099_dim4",
+          "weight": -1.1747738607263178
+        },
+        {
+          "feature": "ge099_dim3",
+          "weight": -1.1104387667741156
+        },
+        {
+          "feature": "count_exact_boundary",
+          "weight": 1.0978720485163362
+        },
+        {
+          "feature": "ge099_dim2",
+          "weight": -1.0370723411697542
+        },
+        {
+          "feature": "ge099_dim1",
+          "weight": -1.0322897431179856
+        },
+        {
+          "feature": "ge099_dim0",
+          "weight": -1.0079946019429624
+        },
+        {
+          "feature": "any_exact_boundary",
+          "weight": 0.8896973850802146
+        },
+        {
+          "feature": "ge099_dim6",
+          "weight": -0.7521747766909476
+        },
+        {
+          "feature": "exact_dim3",
+          "weight": 0.5377558364340679
+        },
+        {
+          "feature": "exact_dim6",
+          "weight": 0.517496821419667
+        },
+        {
+          "feature": "exact_dim5",
+          "weight": 0.4232723206391096
+        },
+        {
+          "feature": "exact_dim0",
+          "weight": 0.3689146306848971
+        },
+        {
+          "feature": "exact_dim7",
+          "weight": 0.34751228461980976
+        },
+        {
+          "feature": "ge095_dim2",
+          "weight": 0.3311438731480845
+        },
+        {
+          "feature": "ge095_dim3",
+          "weight": 0.2896427936097126
+        },
+        {
+          "feature": "ge095_dim5",
+          "weight": 0.27811339740332985
+        },
+        {
+          "feature": "dist_dim0",
+          "weight": -0.2724755663872253
+        },
+        {
+          "feature": "dist_dim7",
+          "weight": -0.25881222601482506
+        },
+        {
+          "feature": "dist_dim4",
+          "weight": -0.2247366228935797
+        },
+        {
+          "feature": "min_dist_to_boundary",
+          "weight": 0.1840253695581615
+        },
+        {
+          "feature": "dist_dim6",
+          "weight": -0.15661631093624
+        },
+        {
+          "feature": "ge095_dim4",
+          "weight": 0.14973635085046055
+        },
+        {
+          "feature": "dist_dim5",
+          "weight": -0.13494361731965687
+        },
+        {
+          "feature": "ge095_dim1",
+          "weight": 0.1317153945686537
+        },
+        {
+          "feature": "exact_dim2",
+          "weight": 0.11742782913194744
+        },
+        {
+          "feature": "dist_dim2",
+          "weight": -0.0943204570411325
+        },
+        {
+          "feature": "exact_dim4",
+          "weight": 0.07979389169635592
+        },
+        {
+          "feature": "ge095_dim6",
+          "weight": 0.07437872497808022
+        },
+        {
+          "feature": "ge095_dim7",
+          "weight": 0.07282854977039854
+        },
+        {
+          "feature": "dist_dim3",
+          "weight": -0.06581021106968926
+        },
+        {
+          "feature": "dist_dim1",
+          "weight": 0.019887568830729008
+        },
+        {
+          "feature": "ge095_dim0",
+          "weight": -0.0006085546387580021
+        }
+      ],
+      "top_features": [
+        "ge099_dim5",
+        "ge099_dim7",
+        "exact_dim1",
+        "ge099_dim4",
+        "ge099_dim3",
+        "count_exact_boundary",
+        "ge099_dim2",
+        "ge099_dim1"
+      ]
+    }
+  },
+  {
+    "comparison": "A2_flow150k_vs_crlmode",
+    "n_pos": 8192,
+    "n_neg": 8192,
+    "pos_p_any_boundary": 0.6788330078125,
+    "neg_p_any_boundary": 0.2279052734375,
+    "train_episodes": 21,
+    "test_episodes": 9,
+    "scalar_auc": {
+      "any_boundary": 0.7256714335542379,
+      "count_boundary": 0.7612753961859141,
+      "min_dist_to_boundary": 0.6905965055368883
+    },
+    "logistic": {
+      "test_auc": 0.9675642229286291,
+      "test_accuracy": 0.9009417509591908,
+      "test_balanced_accuracy": 0.9009417509591908,
+      "n_train": 10650,
+      "n_test": 5734,
+      "coefficients": [
+        {
+          "feature": "ge099_dim3",
+          "weight": -1.3148565483028967
+        },
+        {
+          "feature": "ge099_dim1",
+          "weight": -1.256736696419155
+        },
+        {
+          "feature": "ge099_dim0",
+          "weight": -1.189456782112766
+        },
+        {
+          "feature": "count_exact_boundary",
+          "weight": 1.109038403468806
+        },
+        {
+          "feature": "ge099_dim6",
+          "weight": -1.0137626429740532
+        },
+        {
+          "feature": "ge099_dim7",
+          "weight": -1.0122213494855623
+        },
+        {
+          "feature": "ge099_dim2",
+          "weight": -0.9917745856242713
+        },
+        {
+          "feature": "ge099_dim5",
+          "weight": -0.9862364765507509
+        },
+        {
+          "feature": "ge099_dim4",
+          "weight": -0.9231541645791913
+        },
+        {
+          "feature": "exact_dim1",
+          "weight": 0.751192203409511
+        },
+        {
+          "feature": "any_exact_boundary",
+          "weight": 0.7425349715740054
+        },
+        {
+          "feature": "exact_dim5",
+          "weight": 0.644919361689167
+        },
+        {
+          "feature": "exact_dim7",
+          "weight": 0.6170591782982638
+        },
+        {
+          "feature": "exact_dim0",
+          "weight": 0.5654608138532866
+        },
+        {
+          "feature": "exact_dim4",
+          "weight": 0.49271386854041826
+        },
+        {
+          "feature": "ge095_dim2",
+          "weight": 0.47743265839553256
+        },
+        {
+          "feature": "exact_dim6",
+          "weight": 0.45290581791790896
+        },
+        {
+          "feature": "exact_dim2",
+          "weight": 0.4094149109808673
+        },
+        {
+          "feature": "ge095_dim5",
+          "weight": 0.3717176731337131
+        },
+        {
+          "feature": "exact_dim3",
+          "weight": 0.3427254580688247
+        },
+        {
+          "feature": "ge095_dim3",
+          "weight": 0.3387475494584629
+        },
+        {
+          "feature": "dist_dim0",
+          "weight": -0.21606638669507364
+        },
+        {
+          "feature": "dist_dim7",
+          "weight": -0.19882226262881078
+        },
+        {
+          "feature": "ge095_dim7",
+          "weight": 0.19425962926579768
+        },
+        {
+          "feature": "dist_dim5",
+          "weight": -0.18134463147730914
+        },
+        {
+          "feature": "ge095_dim6",
+          "weight": 0.12583627572434497
+        },
+        {
+          "feature": "ge095_dim1",
+          "weight": 0.11693946850969365
+        },
+        {
+          "feature": "min_dist_to_boundary",
+          "weight": 0.1141151749774974
+        },
+        {
+          "feature": "dist_dim1",
+          "weight": -0.11236527376881011
+        },
+        {
+          "feature": "ge095_dim4",
+          "weight": 0.10890366051379889
+        },
+        {
+          "feature": "dist_dim6",
+          "weight": -0.08108330384298316
+        },
+        {
+          "feature": "dist_dim2",
+          "weight": -0.07219614831092797
+        },
+        {
+          "feature": "dist_dim4",
+          "weight": -0.06121898719432913
+        },
+        {
+          "feature": "dist_dim3",
+          "weight": -0.03929143410181817
+        },
+        {
+          "feature": "ge095_dim0",
+          "weight": 0.01646921586342444
+        }
+      ],
+      "top_features": [
+        "ge099_dim3",
+        "ge099_dim1",
+        "ge099_dim0",
+        "count_exact_boundary",
+        "ge099_dim6",
+        "ge099_dim7",
+        "ge099_dim2",
+        "ge099_dim5"
+      ]
+    }
+  },
+  {
+    "comparison": "B2_real_vs_crlmode",
+    "n_pos": 8192,
+    "n_neg": 8192,
+    "pos_p_any_boundary": 0.334716796875,
+    "neg_p_any_boundary": 0.2279052734375,
+    "train_episodes": 21,
+    "test_episodes": 9,
+    "scalar_auc": {
+      "any_boundary": 0.5401116149284967,
+      "count_boundary": 0.5444069112590513,
+      "min_dist_to_boundary": 0.5382946362082556
+    },
+    "logistic": {
+      "test_auc": 0.5389628488377115,
+      "test_accuracy": 0.5317404952912452,
+      "test_balanced_accuracy": 0.5317404952912452,
+      "n_train": 10650,
+      "n_test": 5734,
+      "coefficients": [
+        {
+          "feature": "ge095_dim5",
+          "weight": 0.2976115382838207
+        },
+        {
+          "feature": "ge099_dim5",
+          "weight": -0.21951512821825334
+        },
+        {
+          "feature": "ge095_dim0",
+          "weight": 0.17639700789952875
+        },
+        {
+          "feature": "ge095_dim6",
+          "weight": -0.14260890029739873
+        },
+        {
+          "feature": "dist_dim2",
+          "weight": 0.1323550242859871
+        },
+        {
+          "feature": "exact_dim2",
+          "weight": 0.1288153339862002
+        },
+        {
+          "feature": "dist_dim1",
+          "weight": 0.11594828788451633
+        },
+        {
+          "feature": "count_exact_boundary",
+          "weight": 0.11415209370770998
+        },
+        {
+          "feature": "ge095_dim1",
+          "weight": 0.11000173730399773
+        },
+        {
+          "feature": "ge099_dim3",
+          "weight": -0.10102133521784348
+        },
+        {
+          "feature": "any_exact_boundary",
+          "weight": 0.08888259271188899
+        },
+        {
+          "feature": "exact_dim3",
+          "weight": 0.08392920848260495
+        },
+        {
+          "feature": "ge095_dim4",
+          "weight": -0.07823969025030444
+        },
+        {
+          "feature": "ge099_dim4",
+          "weight": -0.07636429074952113
+        },
+        {
+          "feature": "ge095_dim2",
+          "weight": 0.06998873201420741
+        },
+        {
+          "feature": "ge099_dim0",
+          "weight": -0.06274184805571188
+        },
+        {
+          "feature": "exact_dim4",
+          "weight": 0.05158589661312201
+        },
+        {
+          "feature": "dist_dim3",
+          "weight": 0.05128879447123734
+        },
+        {
+          "feature": "ge095_dim7",
+          "weight": -0.04723951861200285
+        },
+        {
+          "feature": "ge099_dim6",
+          "weight": 0.046093666696455815
+        },
+        {
+          "feature": "dist_dim6",
+          "weight": -0.034363465420047874
+        },
+        {
+          "feature": "ge099_dim7",
+          "weight": 0.02756038954919473
+        },
+        {
+          "feature": "ge095_dim3",
+          "weight": 0.02716571758674459
+        },
+        {
+          "feature": "dist_dim7",
+          "weight": -0.02335851033987449
+        },
+        {
+          "feature": "ge099_dim2",
+          "weight": 0.022291800300225685
+        },
+        {
+          "feature": "ge099_dim1",
+          "weight": 0.021277092195320854
+        },
+        {
+          "feature": "dist_dim0",
+          "weight": -0.012997327952734488
+        },
+        {
+          "feature": "exact_dim6",
+          "weight": 0.012509399018878542
+        },
+        {
+          "feature": "dist_dim4",
+          "weight": 0.012307545516268949
+        },
+        {
+          "feature": "exact_dim0",
+          "weight": 0.012207476025850528
+        },
+        {
+          "feature": "exact_dim5",
+          "weight": -0.0105426445496563
+        },
+        {
+          "feature": "exact_dim7",
+          "weight": 0.009575961799772856
+        },
+        {
+          "feature": "min_dist_to_boundary",
+          "weight": 0.00436821476523152
+        },
+        {
+          "feature": "dist_dim5",
+          "weight": -0.0025931472113318306
+        },
+        {
+          "feature": "exact_dim1",
+          "weight": -0.0002549665923404996
+        }
+      ],
+      "top_features": [
+        "ge095_dim5",
+        "ge099_dim5",
+        "ge095_dim0",
+        "ge095_dim6",
+        "dist_dim2",
+        "exact_dim2",
+        "dist_dim1",
+        "count_exact_boundary"
+      ]
+    }
+  }
+]

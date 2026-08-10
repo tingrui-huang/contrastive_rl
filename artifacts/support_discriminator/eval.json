@@ -1,0 +1,285 @@
+{
+  "n_test_contexts": 8192,
+  "test_episodes": [
+    0,
+    5,
+    31,
+    36,
+    41,
+    70,
+    107,
+    116,
+    128,
+    132,
+    140,
+    148,
+    149,
+    150,
+    155,
+    162,
+    168,
+    185,
+    205,
+    209,
+    210,
+    229,
+    233,
+    255,
+    266,
+    272,
+    277,
+    282,
+    291,
+    294
+  ],
+  "cross_episode_shuffle_fraction": 0.9615478515625,
+  "score_semantics": "balanced behavior-vs-target classifier; an ideal model recovers p_behavior/(p_behavior + p_target) under an ARTIFICIAL 50/50 class prior. sigmoid(logit) is NOT P(A=a|S=s,G=g) and is NOT a causal branch probability or mixture weight.",
+  "NOT_a_propensity": true,
+  "behaviorflow_used": false,
+  "environment_rollouts_used": false,
+  "models": {
+    "B": {
+      "roc_auc": 0.5671548545360565,
+      "pr_auc": 0.5516349142702882,
+      "accuracy": 0.54345703125,
+      "balanced_accuracy": 0.54345703125,
+      "bce": 0.6902578052434385,
+      "score_real": {
+        "mean": -0.025375520810484886,
+        "median": -0.024026453495025635,
+        "q05": -0.7797262966632843,
+        "q25": -0.29225553572177887,
+        "q75": 0.23088431358337402,
+        "q95": 0.6995661735534663
+      },
+      "score_crl": {
+        "mean": -0.14417175948619843,
+        "median": -0.11515012383460999,
+        "q05": -1.0100355386734008,
+        "q25": -0.3835706114768982,
+        "q75": 0.1584457866847515,
+        "q95": 0.5807192504405975
+      },
+      "input_spec": "state_cmdgoal_action",
+      "dev_auc_at_selection": 0.5648090839385986,
+      "selected_step": 20000,
+      "A_correct_context_mean": -0.025375520810484886,
+      "A_shuffled_context_mean": -0.414956271648407,
+      "A_paired_difference_mean": 0.38958075642585754,
+      "A_fraction_correct_gt_shuffled": 0.6622314453125,
+      "C_correct_action_mean": -0.025375520810484886,
+      "C_cross_context_action_mean": -0.4158375561237335,
+      "C_paired_difference_mean": 0.3904620110988617,
+      "C_fraction_correct_gt_cross": 0.6744384765625,
+      "D_perturbation_deltas": [
+        0.0,
+        0.02,
+        0.05,
+        0.1,
+        0.2,
+        0.5
+      ],
+      "D_perturbation_mean_score": [
+        -0.025375520810484886,
+        -0.024851186200976372,
+        -0.023884885013103485,
+        -0.022461289539933205,
+        -0.020816605538129807,
+        -0.025512570515275
+      ]
+    },
+    "A": {
+      "roc_auc": 0.5724108442664146,
+      "pr_auc": 0.563689462340065,
+      "accuracy": 0.54852294921875,
+      "balanced_accuracy": 0.54852294921875,
+      "bce": 0.6895219734931775,
+      "score_real": {
+        "mean": 0.02068152092397213,
+        "median": -0.0013689696788787842,
+        "q05": -0.7355595707893372,
+        "q25": -0.2356969267129898,
+        "q75": 0.25907251238822937,
+        "q95": 0.784468501806259
+      },
+      "score_crl": {
+        "mean": -0.11962972581386566,
+        "median": -0.08393308520317078,
+        "q05": -1.0249513030052184,
+        "q25": -0.3598059117794037,
+        "q75": 0.16745086014270782,
+        "q95": 0.6384638786315918
+      },
+      "input_spec": "state_action",
+      "dev_auc_at_selection": 0.5726155042648315,
+      "selected_step": 20000,
+      "A_correct_context_mean": 0.02068152092397213,
+      "A_shuffled_context_mean": -0.33806514739990234,
+      "A_paired_difference_mean": 0.35874664783477783,
+      "A_fraction_correct_gt_shuffled": 0.6380615234375,
+      "C_correct_action_mean": 0.02068152092397213,
+      "C_cross_context_action_mean": -0.3385816812515259,
+      "C_paired_difference_mean": 0.35926321148872375,
+      "C_fraction_correct_gt_cross": 0.642578125,
+      "D_perturbation_deltas": [
+        0.0,
+        0.02,
+        0.05,
+        0.1,
+        0.2,
+        0.5
+      ],
+      "D_perturbation_mean_score": [
+        0.02068152092397213,
+        0.02060379460453987,
+        0.02066459134221077,
+        0.020789943635463715,
+        0.02089022472500801,
+        0.013971151784062386
+      ]
+    },
+    "action": {
+      "roc_auc": 0.5284662619233131,
+      "pr_auc": 0.5207928915807184,
+      "accuracy": 0.52001953125,
+      "balanced_accuracy": 0.52001953125,
+      "bce": 0.6919660520045378,
+      "score_real": {
+        "mean": 0.0042332252487540245,
+        "median": 0.010487385094165802,
+        "q05": -0.23757628798484803,
+        "q25": -0.0748564600944519,
+        "q75": 0.0869760662317276,
+        "q95": 0.2213663324713707
+      },
+      "score_crl": {
+        "mean": -0.011467425152659416,
+        "median": -0.0037005022168159485,
+        "q05": -0.2769351631402969,
+        "q25": -0.09258349984884262,
+        "q75": 0.07825211063027382,
+        "q95": 0.21210506111383437
+      },
+      "input_spec": "action",
+      "dev_auc_at_selection": 0.5318828523159027,
+      "selected_step": 4000,
+      "A_correct_context_mean": 0.0042332252487540245,
+      "A_shuffled_context_mean": 0.0042332252487540245,
+      "A_paired_difference_mean": 0.0,
+      "A_fraction_correct_gt_shuffled": 0.0,
+      "C_correct_action_mean": 0.0042332252487540245,
+      "C_cross_context_action_mean": 0.0042332252487540245,
+      "C_paired_difference_mean": 4.656612873077393e-10,
+      "C_fraction_correct_gt_cross": 0.4935302734375,
+      "D_perturbation_deltas": [
+        0.0,
+        0.02,
+        0.05,
+        0.1,
+        0.2,
+        0.5
+      ],
+      "D_perturbation_mean_score": [
+        0.0042332252487540245,
+        0.004264726769179106,
+        0.004331985954195261,
+        0.004520515911281109,
+        0.005040249787271023,
+        0.007767471484839916
+      ]
+    },
+    "context": {
+      "roc_auc": 0.5,
+      "pr_auc": 0.5,
+      "accuracy": 0.5,
+      "balanced_accuracy": 0.5,
+      "bce": 0.6931568349246641,
+      "score_real": {
+        "mean": 0.002995381597429514,
+        "median": 0.0022993707098066807,
+        "q05": -0.008574059791862964,
+        "q25": -0.0022728941403329372,
+        "q75": 0.007162550929933786,
+        "q95": 0.019399899616837486
+      },
+      "score_crl": {
+        "mean": 0.002995381597429514,
+        "median": 0.0022993707098066807,
+        "q05": -0.008574059791862964,
+        "q25": -0.0022728941403329372,
+        "q75": 0.007162550929933786,
+        "q95": 0.019399899616837486
+      },
+      "input_spec": "context",
+      "dev_auc_at_selection": 0.5,
+      "selected_step": 4000
+    }
+  },
+  "boundary_shortcut_control": {
+    "auc": 0.5690369793796335,
+    "balanced_accuracy": 0.562260202302058,
+    "previous_audit_auc": 0.519,
+    "note": "real behavior actions carry no boundary source signature; this is why generated positives were dropped"
+  },
+  "A_vs_B": {
+    "pearson": 0.7085867383701356,
+    "spearman": 0.5945950412040885,
+    "mean_abs_score_difference": 0.2937776446342468,
+    "mean_abs_diff_relative_to_score_std": 0.5784804821014404,
+    "decision_disagreement_at_zero": 0.282958984375,
+    "lowest_decile_jaccard": 0.4526129317980514,
+    "lowest_decile_disagreement": 0.37682926829268293,
+    "highest_decile_jaccard": 0.3268608414239482,
+    "highest_decile_disagreement": 0.5073170731707317
+  },
+  "crl_mode_sensitivity": {
+    "B": {
+      "roc_auc_vs_mode": 0.5608471482992172,
+      "roc_auc_vs_sample": 0.5671548545360565,
+      "score_crl_mode": {
+        "mean": -0.12888464331626892,
+        "median": -0.10483108460903168,
+        "q05": -1.0114712715148926,
+        "q25": -0.35766303539276123,
+        "q75": 0.15340231359004974,
+        "q95": 0.5848818063735957
+      }
+    },
+    "A": {
+      "roc_auc_vs_mode": 0.5646930709481239,
+      "roc_auc_vs_sample": 0.5724108442664146,
+      "score_crl_mode": {
+        "mean": -0.10317956656217575,
+        "median": -0.08157932758331299,
+        "q05": -0.9417409718036651,
+        "q25": -0.3397003784775734,
+        "q75": 0.1700456440448761,
+        "q95": 0.6260353147983551
+      }
+    },
+    "action": {
+      "roc_auc_vs_mode": 0.5231220871210098,
+      "roc_auc_vs_sample": 0.5284662619233131,
+      "score_crl_mode": {
+        "mean": -0.008560964837670326,
+        "median": -0.0005623288452625275,
+        "q05": -0.2696305692195892,
+        "q25": -0.08789408951997757,
+        "q75": 0.07810595631599426,
+        "q95": 0.21319731324911118
+      }
+    },
+    "context": {
+      "roc_auc_vs_mode": 0.5,
+      "roc_auc_vs_sample": 0.5,
+      "score_crl_mode": {
+        "mean": 0.002995381597429514,
+        "median": 0.0022993707098066807,
+        "q05": -0.008574059791862964,
+        "q25": -0.0022728941403329372,
+        "q75": 0.007162550929933786,
+        "q95": 0.019399899616837486
+      }
+    }
+  }
+}

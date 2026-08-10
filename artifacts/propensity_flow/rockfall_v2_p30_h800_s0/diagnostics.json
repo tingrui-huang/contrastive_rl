@@ -1,0 +1,285 @@
+{
+  "checkpoint": "artifacts/propensity_flow/rockfall_v2_p30_h800_s0\\best.pkl",
+  "step": 50000,
+  "dataset": "D:\\Users\\trhua\\Research\\contrastive_rl\\artifacts\\rockfall_v2_p30_h800_resetfix\\pilot\\antmaze_rockfall_v2_p30_h800_resetfix_pilot.npz",
+  "flow_steps": 10,
+  "context_mode": "context",
+  "sampler": {
+    "sampler": "euler_per_step_clipped",
+    "flow_steps": 10,
+    "flow_steps_provenance": "aligned with official CFQL implementation",
+    "per_step_action_clip": [
+      -1.0,
+      1.0
+    ],
+    "clip_provenance": "official CFQL sampling implementation",
+    "clip_applies_to": "action sampling / numerical integration only",
+    "training_objective_changed": false,
+    "network_output_squashed": false,
+    "offline_actions_modified": false,
+    "training_config_provenance_at_train_time": "PROTOTYPE CHOICE -- not verified against CFQL"
+  },
+  "val_flow_mse_best": 3.212281060218811,
+  "val_flow_mse_final": 3.212281060218811,
+  "A_global": {
+    "n": 8192,
+    "real": {
+      "min": [
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "max": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mean": [
+        -0.07865648716688156,
+        -0.5008517503738403,
+        -0.16521377861499786,
+        -0.5640692114830017,
+        -0.043420594185590744,
+        0.41311994194984436,
+        0.016072507947683334,
+        0.5046011209487915
+      ],
+      "std": [
+        0.8786351084709167,
+        0.7391964793205261,
+        0.8698468208312988,
+        0.7445151805877686,
+        0.8756251335144043,
+        0.7775763273239136,
+        0.8660929799079895,
+        0.7357904314994812
+      ]
+    },
+    "generated_clipped": {
+      "min": [
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "max": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mean": [
+        -0.07131095230579376,
+        -0.5552033185958862,
+        -0.1982872188091278,
+        -0.6085575819015503,
+        0.026014694944024086,
+        0.4283314645290375,
+        0.04543975368142128,
+        0.5173019170761108
+      ],
+      "std": [
+        0.8253895044326782,
+        0.680242657661438,
+        0.8223545551300049,
+        0.6670641899108887,
+        0.8220492005348206,
+        0.6972492933273315,
+        0.8085952401161194,
+        0.6754366159439087
+      ]
+    },
+    "generated_raw_unclipped": {
+      "min": [
+        -1.1877514123916626,
+        -1.2771406173706055,
+        -1.191209077835083,
+        -1.1789275407791138,
+        -1.1732743978500366,
+        -1.2614731788635254,
+        -1.2870521545410156,
+        -1.4443638324737549
+      ],
+      "max": [
+        1.222036600112915,
+        1.3051413297653198,
+        1.2636066675186157,
+        1.2538676261901855,
+        1.1701546907424927,
+        1.1361453533172607,
+        1.2328728437423706,
+        1.2702503204345703
+      ],
+      "mean": [
+        -0.061357852071523666,
+        -0.5542497038841248,
+        -0.19267737865447998,
+        -0.6009122729301453,
+        0.01968691125512123,
+        0.4192233979701996,
+        0.046615585684776306,
+        0.5027065873146057
+      ],
+      "std": [
+        0.8332823514938354,
+        0.697441816329956,
+        0.8291950821876526,
+        0.6782761216163635,
+        0.8270310759544373,
+        0.707051157951355,
+        0.8171629905700684,
+        0.6902754306793213
+      ]
+    },
+    "gen_out_of_box_entry_fraction": 0.0,
+    "gen_out_of_box_row_fraction": 0.0,
+    "real_out_of_box_entry_fraction": 0.0,
+    "raw_out_of_box_entry_fraction": 0.168914794921875,
+    "raw_out_of_box_row_fraction": 0.712158203125,
+    "clip_trigger_fraction_of_euler_updates": 0.07496185302734375,
+    "clip_trigger_count": 49127,
+    "euler_coord_updates": 655360,
+    "final_coords_at_boundary_fraction": 0.1426544189453125,
+    "final_rows_with_boundary_coord_fraction": 0.65625,
+    "real_coords_at_boundary_fraction": 0.056854248046875,
+    "mean_abs_raw_minus_corrected": 0.04423538222908974,
+    "gen_finite": true,
+    "sampler": "euler_per_step_clipped",
+    "boundary_mass_real_per_dim": [
+      0.03759765625,
+      0.0166015625,
+      0.103271484375,
+      0.0897216796875,
+      0.0987548828125,
+      0.0218505859375,
+      0.0538330078125,
+      0.033203125
+    ],
+    "boundary_mass_gen_per_dim": [
+      0.10302734375,
+      0.315185546875,
+      0.1009521484375,
+      0.2301025390625,
+      0.0743408203125,
+      0.0670166015625,
+      0.1734619140625,
+      0.0771484375
+    ],
+    "boundary_mass_ratio_per_dim": [
+      2.74025974025974,
+      18.985294117647058,
+      0.9775413711583925,
+      2.564625850340136,
+      0.7527812113720643,
+      3.0670391061452515,
+      3.2222222222222223,
+      2.323529411764706
+    ],
+    "boundary_mass_ratio_overall": 2.5091250670960816,
+    "raw_excursion_median": 0.021251797676086426,
+    "raw_excursion_p90": 0.0701848492026329,
+    "raw_excursion_max": 0.4443638324737549,
+    "clipped_coords_excursion_lt_0p05": 0.8105679751845117
+  },
+  "B_fixed_context": {
+    "n_contexts": 8,
+    "n_samples": 128,
+    "per_context_mean_std": [
+      0.20077282190322876,
+      0.10231985151767731,
+      0.18860915303230286,
+      0.22800396382808685,
+      0.13505499064922333,
+      0.15323412418365479,
+      0.04509808495640755,
+      0.2161884307861328
+    ],
+    "per_context_min_std": [
+      0.019331645220518112,
+      0.0,
+      0.006451018620282412,
+      0.005581224802881479,
+      0.0001554956688778475,
+      0.006998567841947079,
+      0.0,
+      0.013383193872869015
+    ],
+    "per_context_max_std": [
+      0.5013613700866699,
+      0.6866626143455505,
+      0.575269877910614,
+      0.5196421146392822,
+      0.5175398588180542,
+      0.44275107979774475,
+      0.15558841824531555,
+      0.483399897813797
+    ],
+    "per_context_mean_pairwise_l2": [
+      0.9412192106246948,
+      0.8626970052719116,
+      1.0928617715835571,
+      1.1269419193267822,
+      0.9093114137649536,
+      0.8472288846969604,
+      0.24946250021457672,
+      1.0909454822540283
+    ],
+    "n_collapsed": 0,
+    "all_finite": true,
+    "collapse_n_contexts": 256,
+    "per_dim_collapse_fraction": 0.0283203125,
+    "per_dim_collapse_count": 58,
+    "per_dim_collapse_pinned_at_boundary_fraction": 1.0,
+    "contexts_all_dims_collapsed": 0,
+    "contexts_any_dim_collapsed": 53,
+    "median_per_context_mean_std": 0.1789427250623703
+  },
+  "C_conditional": {
+    "n": 1024,
+    "k": 32,
+    "metric": "nearest_sample_l2",
+    "correct_mean_min_l2": 0.433231920003891,
+    "correct_median_min_l2": 0.3386004567146301,
+    "shuffled_mean_min_l2": 2.6074447631835938,
+    "shuffled_median_min_l2": 2.66532039642334,
+    "correct_mean_of_mean_l2": 1.0677683353424072,
+    "shuffled_mean_of_mean_l2": 3.071023464202881,
+    "win_rate_correct_lt_shuffled": 0.9892578125,
+    "gap_mean_min_l2": 2.17421293258667,
+    "expected": "correct < shuffled",
+    "goal_shuffled_mean_min_l2": 0.49161338806152344,
+    "goal_shuffled_median_min_l2": 0.38599276542663574,
+    "win_rate_correct_lt_goal_shuffled": 0.5888671875,
+    "gap_goal_only": 0.058381468057632446,
+    "verdict": "PASS"
+  },
+  "D_reproducibility": {
+    "same_seed_identical_samples": true,
+    "all_finite": true,
+    "stage1_gates_pass": true,
+    "index_overlap": 0,
+    "episode_overlap": 0,
+    "diagnostics_on_validation_only": true,
+    "env_constructed": false,
+    "dataset_sha256_matches": true
+  },
+  "verdict": "PASS"
+}

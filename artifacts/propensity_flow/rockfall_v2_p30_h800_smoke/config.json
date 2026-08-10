@@ -1,0 +1,51 @@
+{
+  "stage": 2,
+  "model": "conditional_flow_matching_behavior",
+  "dataset_path": "D:\\Users\\trhua\\Research\\contrastive_rl\\artifacts\\rockfall_v2_p30_h800_resetfix\\pilot\\antmaze_rockfall_v2_p30_h800_resetfix_pilot.npz",
+  "dataset_sha256": "08bdc44bb7942793ea18c2628c36d8ea8bfe875169afadfa8934b1b948ef55e4",
+  "dataset_manifest_verified": false,
+  "dataset_content_sha256": "aab1a9c808da0781071b023a528e789caa8647679c9866340539fe19ab9bc208",
+  "split_seed": 0,
+  "val_frac": 0.1,
+  "split_level": "episode",
+  "context_mode": "context",
+  "state_dim": 29,
+  "goal_dim": 29,
+  "context_dim": 58,
+  "action_dim": 8,
+  "n_transitions": 227764,
+  "n_train": 206829,
+  "n_val": 20935,
+  "training_seed": 0,
+  "batch_size": 256,
+  "learning_rate": 0.0003,
+  "steps": 3000,
+  "flow_config": {
+    "context_dim": 58,
+    "action_dim": 8,
+    "hidden_sizes": [
+      256,
+      256,
+      256
+    ],
+    "time_features": 32,
+    "time_max_freq": 1000.0,
+    "use_layer_norm": false
+  },
+  "n_params": 158984,
+  "flow_steps_default": 10,
+  "flow_steps_provenance": "PROTOTYPE CHOICE -- not verified against CFQL",
+  "val_batches": 20,
+  "val_noise_seed": 12345,
+  "action_box": [
+    -1.0,
+    1.0
+  ],
+  "actions_normalized_by_loader": false,
+  "contains_discriminator": false,
+  "contains_causal_weighting": false,
+  "final_val_flow_mse": 6.316494965553284,
+  "best_val_flow_mse": 6.316494965553284,
+  "init_val_flow_mse": 14.295091581344604,
+  "wall_clock_s": 21.48
+}
