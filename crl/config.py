@@ -77,6 +77,19 @@ class Config:
   # 'steps' then count the gradient clock, not env steps.
   offline_dataset: str = ''
 
+  # --- Failure-aware negative sampling (Part 1 experiment; OFF by default) ---
+  # Path to a failure-state bank npz with 'goals' [N_bank, obs_dim] (states in
+  # the learner state space; sliced to goal coords at load). '' disables.
+  fail_bank_path: str = ''
+  # Mixture weight alpha on the critic NEGATIVE distribution,
+  # q_alpha = (1-alpha)*p_clean + alpha*q_fail. Loss-level mixture that keeps
+  # the positive term and the total negative mass at their original weights:
+  # L = L_pos + (1-alpha)*L_ordinary-neg + alpha*L_failure-neg, with
+  # L_failure-neg the exact uniform expectation over the bank (all states
+  # scored, no sampling). 0.0 => the fail branch is skipped entirely and the
+  # critic loss/gradients are byte-identical to the baseline.
+  fail_neg_alpha: float = 0.0
+
   # --- Replay ---
   min_replay_size: int = 10_000     # env steps before learning starts.
   max_replay_size: int = 1_000_000  # env steps kept in the buffer.

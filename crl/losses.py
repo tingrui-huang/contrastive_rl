@@ -39,14 +39,47 @@ class TrainingState(NamedTuple):
 
 
 def build_learner(networks, config, obs_to_goal, policy_optimizer,
-                  q_optimizer):
+                  q_optimizer, fail_bank=None):
   """Returns ``(init_state, update_step)`` closures for the given config.
 
   ``obs_to_goal`` maps a batch of states [B, obs_dim] -> goal coords
   [B, goal_dim] (slice ``start_index:end_index``); used only by the TD path.
+
+  ``fail_bank`` (optional, [N_bank, goal_dim]): failure-state bank in GOAL
+  coordinates for failure-aware negative sampling. Used only when
+  ``config.fail_neg_alpha > 0`` (see critic_loss); ``None`` or alpha 0 leaves
+  every loss byte-identical to the baseline.
   """
   adaptive_entropy_coefficient = config.entropy_coefficient is None
   obs_dim = config.obs_dim
+
+  # --- Failure-aware negatives (Part 1): static setup -----------------------
+  # Negative-distribution mixture q_alpha = (1-alpha)*p_clean + alpha*q_fail.
+  # Implemented as a loss-level mixture that PRESERVES the original
+  # positive/negative weighting exactly (see critic_loss): the positive term
+  # keeps its original coefficient; only the negative term becomes
+  # (1-alpha)*L_ordinary-neg + alpha*L_failure-neg, where L_failure-neg is the
+  # EXACT expectation over the (small) bank -- all bank states scored, uniform
+  # average -- so no sampling noise enters. At alpha=0 the loss and gradients
+  # are byte-identical to the baseline (the fail branch is skipped entirely).
+  fail_alpha = float(getattr(config, 'fail_neg_alpha', 0.0) or 0.0)
+  fail_enabled = fail_bank is not None and fail_alpha > 0.0
+  if fail_alpha > 0.0 and fail_bank is None:
+    raise ValueError('fail_neg_alpha > 0 requires a failure bank '
+                     '(config.fail_bank_path).')
+  if fail_enabled:
+    if config.use_td or config.use_cpc or config.use_gcbc:
+      raise ValueError('failure-aware negatives are implemented only for the '
+                       'Monte-Carlo NCE critic (use_td=False, use_cpc=False).')
+    if not 0.0 < fail_alpha < 1.0:
+      raise ValueError(f'fail_neg_alpha must be in (0, 1), got {fail_alpha}')
+    fail_bank_arr = jnp.asarray(fail_bank, jnp.float32)
+    assert fail_bank_arr.ndim == 2 and fail_bank_arr.shape[0] > 0
+    if fail_bank_arr.shape[0] > config.batch_size:
+      raise ValueError(
+          f'failure bank ({fail_bank_arr.shape[0]} states) larger than '
+          f'batch_size={config.batch_size}; the padded second critic apply '
+          'requires n_bank <= batch_size.')
 
   if adaptive_entropy_coefficient:
     log_alpha_init = jnp.asarray(0., dtype=jnp.float32)
@@ -144,7 +177,62 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
       else:
         loss = loss_fn(logits)
 
-    loss = jnp.mean(loss)
+    fail_metrics = {}
+    if fail_enabled and not config.use_td:
+      # Failure-aware negatives -- loss-level mixture that PRESERVES the
+      # original positive/negative weighting. Decompose the original
+      # jnp.mean(loss) over the B x B elementwise-BCE matrix:
+      #
+      #   L_orig = S_pos/B^2 + S_neg/B^2
+      #     S_pos = sum of the B diagonal (positive) elements,
+      #     S_neg = sum of the B(B-1) off-diagonal (negative) elements
+      #           = B(B-1)/B^2 * E_offdiag[BCE]  (total negative mass (B-1)/B).
+      #
+      # Only the negative DISTRIBUTION changes, per q_alpha:
+      #
+      #   L(alpha) = S_pos/B^2                       (positive term UNCHANGED)
+      #            + (1-alpha) * S_neg/B^2           (ordinary negatives)
+      #            + alpha * (B-1)/B * E_fail[BCE]   (same total negative mass)
+      #
+      # E_fail is computed EXACTLY: every bank state scored against every
+      # in-batch anchor (s_i, a_i) via a second critic apply on the SAME
+      # states/actions with the goal half of the first n_bank rows replaced by
+      # the bank -- sa_repr rows are identical, so column j of the result is
+      # exactly critic(s_i, a_i, g_fail_j) -- then uniformly averaged
+      # (q_fail = uniform over the bank). All labels 0. At alpha=0 the
+      # expression reduces algebraically to jnp.mean(loss) (the else branch).
+      n_bank = fail_bank_arr.shape[0]
+      state = transitions.observation[:, :obs_dim]
+      goal_half = transitions.observation[:, obs_dim:]
+      goal2 = jnp.concatenate([fail_bank_arr, goal_half[n_bank:]], axis=0)
+      obs2 = jnp.concatenate([state, goal2], axis=1)
+      fail_logits = networks.q_network.apply(
+          q_params, obs2, transitions.action)[:, :n_bank]   # [B, n_bank(, 2)]
+
+      fail_loss = optax.sigmoid_binary_cross_entropy(
+          logits=fail_logits, labels=jnp.zeros_like(fail_logits))
+      if len(fail_logits.shape) == 3:  # twin q
+        fail_loss = jnp.mean(fail_loss, axis=-1)
+        fail_logits = jnp.mean(fail_logits, axis=-1)
+
+      pos_term = jnp.sum(loss * I) / (batch_size ** 2)
+      neg_ord = jnp.sum(loss * (1 - I)) / (batch_size ** 2)
+      neg_fail = (batch_size - 1) / batch_size * jnp.mean(fail_loss)
+      loss = pos_term + (1 - fail_alpha) * neg_ord + fail_alpha * neg_fail
+      fail_metrics = {
+          # exact loss decomposition (weighted terms as they enter the loss)
+          'critic_pos_term': pos_term,
+          'critic_neg_ord_term': (1 - fail_alpha) * neg_ord,
+          'critic_neg_fail_term': fail_alpha * neg_fail,
+          # unweighted components + the mixture weight for auditability
+          'critic_neg_ord_raw': neg_ord,
+          'critic_neg_fail_raw': neg_fail,
+          'fail_neg_alpha': jnp.asarray(fail_alpha, jnp.float32),
+          'fail_bank_size': jnp.asarray(n_bank, jnp.float32),
+          'logits_fail_neg': jnp.mean(fail_logits),
+      }
+    else:
+      loss = jnp.mean(loss)
     correct = (jnp.argmax(logits, axis=1) == jnp.argmax(I, axis=1))
     logits_pos = jnp.sum(logits * I) / jnp.sum(I)
     logits_neg = jnp.sum(logits * (1 - I)) / jnp.sum(1 - I)
@@ -159,6 +247,7 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
         'logits_neg': logits_neg,
         'logits_gap': logits_pos - logits_neg,  # NCE sanity: should be > 0.
         'logsumexp': logsumexp.mean(),
+        **fail_metrics,
     }
     return loss, metrics
 

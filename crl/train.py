@@ -242,8 +242,24 @@ def train(config: Config):
       return states[:, gidx]
     return states[:, start:] if end == -1 else states[:, start:end]
 
+  # Failure-aware negative sampling (Part 1): optional failure-state bank.
+  # Bank states are stored in the learner STATE space; slice them to goal
+  # coords with the same rule the relabeler uses (goal_indices / start:end).
+  fail_bank = None
+  if getattr(config, 'fail_bank_path', ''):
+    from crl.replay import obs_to_goal as np_obs_to_goal
+    with np.load(config.fail_bank_path) as fb:
+      bank_states = np.asarray(fb['goals'], np.float32)
+    fail_bank = np_obs_to_goal(
+        bank_states, config.start_index, config.end_index,
+        config.goal_indices)
+    print(f'FAILURE-NEGATIVE BANK: {config.fail_bank_path} '
+          f'({bank_states.shape[0]} states -> goal dim {fail_bank.shape[1]}), '
+          f'alpha={config.fail_neg_alpha}')
+
   init_state, update_step = losses_mod.build_learner(
-      nets, config, obs_to_goal, policy_optimizer, q_optimizer)
+      nets, config, obs_to_goal, policy_optimizer, q_optimizer,
+      fail_bank=fail_bank)
 
   key, key_init = jax.random.split(key)
   state = init_state(key_init)

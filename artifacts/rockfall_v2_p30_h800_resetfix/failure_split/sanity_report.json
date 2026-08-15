@@ -1,0 +1,80 @@
+{
+  "S1_positive_construction": "PASS (64 tuples: goal == obs[traj, j>i] within valid length, geometric relabel replicated exactly)",
+  "S2_alpha0_identical": "PASS (5 updates, param hashes identical with/without bank at alpha=0; no fail metrics emitted)",
+  "S3_bank_only_negative": "PASS (0/16 bank states occur anywhere in the 227484 valid clean observations; loss labels bank columns 0 only)",
+  "S4_loss_decomposition": {
+    "status": "PASS",
+    "baseline_L0": 6.765431,
+    "identity": "L(a) = pos + (1-a)*neg_ord_raw + a*neg_fail_raw; pos + neg_ord_raw == L(0); pos/neg_ord_raw/neg_fail_raw alpha-invariant on fixed params/batch",
+    "per_alpha": {
+      "0.1": {
+        "pos_term": 0.002416,
+        "neg_ord_weighted": 6.086714,
+        "neg_fail_weighted": 0.404363,
+        "total": 6.493492,
+        "neg_ord_raw": 6.763016,
+        "neg_fail_raw": 4.043627,
+        "logits_fail_neg": 3.9251
+      },
+      "0.3": {
+        "pos_term": 0.002416,
+        "neg_ord_weighted": 4.734111,
+        "neg_fail_weighted": 1.213088,
+        "total": 5.949615,
+        "neg_ord_raw": 6.763016,
+        "neg_fail_raw": 4.043627,
+        "logits_fail_neg": 3.9251
+      },
+      "0.5": {
+        "pos_term": 0.002416,
+        "neg_ord_weighted": 3.381508,
+        "neg_fail_weighted": 2.021814,
+        "total": 5.405737,
+        "neg_ord_raw": 6.763016,
+        "neg_fail_raw": 4.043627,
+        "logits_fail_neg": 3.9251
+      }
+    }
+  },
+  "S7_fail_branch_smoke": "PASS (alpha=0.3: critic_loss=5.9496 finite, params updated)",
+  "S7_diagnostic_example": {
+    "anchor_xy": [
+      1.4311038255691528,
+      0.9319280982017517
+    ],
+    "positive_goal_xy": [
+      3.2745468616485596,
+      0.7764348387718201
+    ],
+    "inbatch_negative_goal_xy": [
+      [
+        0.9438105821609497,
+        7.325309753417969
+      ],
+      [
+        0.6679815649986267,
+        8.96737289428711
+      ],
+      [
+        1.2176402807235718,
+        9.080352783203125
+      ]
+    ],
+    "fail_negative_goal_xy": [
+      [
+        2.7923574447631836,
+        1.0137511491775513
+      ],
+      [
+        2.7922568321228027,
+        0.9436765909194946
+      ],
+      [
+        2.7677431106567383,
+        1.1068421602249146
+      ]
+    ]
+  },
+  "S5_no_leakage": "PASS (episode partition 284+16=300 exact; transition split 227200+564=227764; zero byte-level episode overlap; all 16 bank states are terminal obs of dead episodes only)",
+  "S6_eval_separation": "PASS (buffer frozen; static audit gates all PASS on clean npz: ['G1_FINGERPRINT', 'G2_KEY_SEPARATION', 'G3_SHAPES_DIMS', 'G4_DTYPES_FINITE', 'G5_EP_LENGTHS', 'G6_NO_AUDIT_LEAK', 'G7_RELABEL_BOUNDS', 'G8_FROZEN_BUFFER']; eval episodes are fresh env rollouts and are never written to the buffer -- add_episode raises when frozen)"
+}

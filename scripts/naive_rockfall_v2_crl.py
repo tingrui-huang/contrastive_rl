@@ -40,6 +40,12 @@ def main():
   ap.add_argument('--reset-fix', action='store_true',
                   help='use the canonical episode-independent full reset for '
                        'eval-during-training (matches the corrected dataset)')
+  ap.add_argument('--fail-bank', default='',
+                  help='failure-state bank npz (goals [N,29]) for failure-'
+                       'aware negative sampling; empty disables (baseline)')
+  ap.add_argument('--fail-neg-alpha', type=float, default=0.0,
+                  help='target fraction alpha of critic negatives drawn from '
+                       'the failure bank; 0 = byte-identical baseline')
   ap.add_argument('--resume', action='store_true')
   args = ap.parse_args()
   os.makedirs(args.ckpt_dir, exist_ok=True)
@@ -57,12 +63,16 @@ def main():
     cfg.max_episode_steps = int(args.horizon)
   if args.reset_fix:
     cfg.rockfall_reset_fix = True                # corrected episode reset
+  if args.fail_bank or args.fail_neg_alpha:
+    cfg.fail_bank_path = args.fail_bank         # failure-aware negatives
+    cfg.fail_neg_alpha = args.fail_neg_alpha    # (both must be set together)
   cfg.seed = args.seed
   cfg.eval_every_steps = 10_000
   cfg.eval_episodes = 30
   cfg.log_every_steps = 5_000
   print('naive v2.1 stress test on', args.npz, '| steps', args.steps,
-        '| eval severity', SEVERITY_V2, flush=True)
+        '| eval severity', SEVERITY_V2,
+        '| fail-neg alpha', args.fail_neg_alpha, flush=True)
   train(cfg)
 
 
