@@ -1,0 +1,28 @@
+{
+  "source": "clean TRAIN split only",
+  "transform": "none (raw bounded actions)",
+  "rationale": "already bounded in [-1, 1] with per-dim std 0.68-0.88, i.e. the same scale as the normalized state/delta inputs, so no extra transform is introduced",
+  "min": -1.0,
+  "max": 1.0,
+  "per_dim_mean": [
+    -0.08341799676418304,
+    -0.4543570876121521,
+    -0.21293681859970093,
+    -0.5720267295837402,
+    -0.008558166213333607,
+    0.472284197807312,
+    -0.06069035455584526,
+    0.582217276096344
+  ],
+  "per_dim_std": [
+    0.8618519902229309,
+    0.7515318989753723,
+    0.8498351573944092,
+    0.725654661655426,
+    0.8819788098335266,
+    0.7129144668579102,
+    0.8602114915847778,
+    0.6765994429588318
+  ],
+  "frac_abs_gt_0.99": 0.48050700207468877
+}
