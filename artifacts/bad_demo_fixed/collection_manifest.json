@@ -1,0 +1,41 @@
+{
+  "name": "bad_demo_blind_p30_h800_settle80",
+  "controller": "EXISTING 'blind' teacher mode (no detours, mask-independent base side); non-privileged: uses only learner-visible obs + own position history",
+  "controller_code": "scripts/collect_rockfall_v2_pilot.py rollout(mode='blind')",
+  "protocol": "local_detour_v2.1_sev0.80_p30_h800_resetfix_v1_settle80",
+  "p_active": 0.3,
+  "horizon": 800,
+  "death_settle_substeps": 80,
+  "reset_fix": true,
+  "severity_probs_v2": [
+    0.8,
+    0.15,
+    0.05
+  ],
+  "n_episodes": 500,
+  "n_transitions": 251189,
+  "pre_registered_n_episodes": 500,
+  "env_seed": 82500019,
+  "dataset_seed": 82990013,
+  "base_side_rng_seed": 82990014,
+  "mask_prescreen_freq": [
+    0.312,
+    0.312,
+    0.278,
+    0.328
+  ],
+  "seed_reuse": [],
+  "walker_path": "artifacts/walker/phase1/walker_best.pkl",
+  "walker_sha256": "70b0a460b2e38332821f1846b48c75fbcdc884dd315b29c97ebc69083388cdd5",
+  "walker_step": 1950016,
+  "base_policy_path": "offline_umaze_bc005_twinmin_s0_50k/checkpoints/best.pkl",
+  "base_policy_sha256": "6bece3e37c6e994fa612d721ff6e4320bebf36df8fdf3a11d6ea354a39a286ac",
+  "base_policy_step": 959000,
+  "git_commit": "ec40518d5aba4284de67b83eb3062c6bd13bc282",
+  "rockfall_frozen_code_commit": "225b2b01ebc39a7418dcb6a0eb6c0bd68335d9e5",
+  "npz": "artifacts/bad_demo_fixed\\bad_demo_blind_p30_h800_settle80.npz",
+  "npz_sha256": "cfa948fe491e1461e43ba82f0d0ab335cf8b11a4c849d098f3fc56fd246ff4f0",
+  "sidecar": "artifacts/bad_demo_fixed\\bad_demo_blind_p30_h800_settle80_sidecar.npz",
+  "sidecar_sha256": "5c8f2ffa0ac052a8d3775ec126d989e26ce9ac1a58fbb09b2bcf6bf0fa8f6425",
+  "collection_rules": "no mask forcing, no death forcing, no U modification, no counterfactual worlds, no filtering of successes/failures, no collect-until-enough-deaths"
+}

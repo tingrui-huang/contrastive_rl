@@ -1,0 +1,77 @@
+{
+  "dataset": {
+    "npz": "artifacts/bad_demo_fixed\\bad_demo_blind_p30_h800_settle80.npz",
+    "npz_sha256": "cfa948fe491e1461e43ba82f0d0ab335cf8b11a4c849d098f3fc56fd246ff4f0",
+    "sidecar_sha256": "5c8f2ffa0ac052a8d3775ec126d989e26ce9ac1a58fbb09b2bcf6bf0fa8f6425",
+    "controller": "EXISTING 'blind' teacher mode (no detours, mask-independent base side); non-privileged: uses only learner-visible obs + own position history",
+    "protocol": "local_detour_v2.1_sev0.80_p30_h800_resetfix_v1_settle80",
+    "death_settle_substeps": 80,
+    "env_seed": 82500019,
+    "dataset_seed": 82990013,
+    "git_commit": "ec40518d5aba4284de67b83eb3062c6bd13bc282"
+  },
+  "episodes": 500,
+  "transitions": 251189,
+  "success_rate": 0.536,
+  "hazard_exposure_rate": 1.0,
+  "settled_fatal_episodes": 196,
+  "settled_fatal_transitions": 196,
+  "r_fatal": 0.0007802889457738994,
+  "tier1_bad_semantic_audit": {
+    "settled_rock_death_episodes": 196,
+    "fallen_non_recoverable_episodes": 86,
+    "stuck_episodes": 30,
+    "note": "semantic audit only -- never used as labels, never filters the dataset, never reaches the Flow trainer. Wall contact / mild contact / inefficiency / wrong route are explicitly NOT Tier-1."
+  },
+  "route_distribution": {
+    "left": 270,
+    "right": 230
+  },
+  "base_side_distribution": {
+    "left": 270,
+    "right": 230
+  },
+  "episode_length": {
+    "mean": 503.378,
+    "min": 25,
+    "max": 801
+  },
+  "observation_ranges": {
+    "state_min": -7.625290393829346,
+    "state_max": 9.740708351135254,
+    "torso_z_min": 0.22581329941749573,
+    "torso_z_max": 1.366252064704895
+  },
+  "action_ranges": {
+    "min": -1.0,
+    "max": 1.0
+  },
+  "implied_fatal_exposure_in_v1_training": {
+    "note": "expected settled-fatal samples seen over the 20k-step budget at batch 1024 under source-mixture beta",
+    "beta_0.05": {
+      "expected_fatal_per_batch": 0.03995079402362365,
+      "expected_fatal_samples_total": 799.015880472473,
+      "expected_repeats_per_distinct_fatal_transition": 4.076611635063638
+    },
+    "beta_0.10": {
+      "expected_fatal_per_batch": 0.0799015880472473,
+      "expected_fatal_samples_total": 1598.031760944946,
+      "expected_repeats_per_distinct_fatal_transition": 8.153223270127276
+    },
+    "beta_0.15": {
+      "expected_fatal_per_batch": 0.11985238207087094,
+      "expected_fatal_samples_total": 2397.0476414174186,
+      "expected_repeats_per_distinct_fatal_transition": 12.229834905190911
+    },
+    "beta_0.20": {
+      "expected_fatal_per_batch": 0.1598031760944946,
+      "expected_fatal_samples_total": 3196.063521889892,
+      "expected_repeats_per_distinct_fatal_transition": 16.30644654025455
+    }
+  },
+  "stop_gate": {
+    "min_required_fatal_transitions": 10,
+    "observed": 196,
+    "passed": true
+  }
+}
