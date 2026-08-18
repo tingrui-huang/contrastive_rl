@@ -1,0 +1,157 @@
+{
+  "stage": "flow V0 (clean factual, plumbing only)",
+  "flow_dir": "artifacts/flow_v0_clean",
+  "flow_config": {
+    "steps": 20000,
+    "batch": 1024,
+    "lr": 0.001,
+    "seed": 0,
+    "val_frac": 0.15,
+    "hidden": [
+      512,
+      512
+    ],
+    "objective": "straight/rectified flow matching, x_t=(1-t)x0+t x1, target x1-x0",
+    "target": "normalized delta_s = s_{t+1} - s_t",
+    "conditioning": "normalized s_t only (no action, no goal, no privileged variables)"
+  },
+  "n_params": 308253,
+  "split": {
+    "n_train_episodes": 241,
+    "n_val_episodes": 43,
+    "n_train_transitions": 192800,
+    "n_val_transitions": 34400,
+    "split_level": "trajectory (episode) -- NOT per-transition",
+    "seed": 0
+  },
+  "clean_diagnostics": {
+    "n_anchors": 256,
+    "k": 32,
+    "all_finite": true,
+    "displacement_norm_generated": {
+      "mean": 6.710455417633057,
+      "median": 6.69753360748291,
+      "p10": 2.7865371704101562,
+      "p90": 10.18510627746582,
+      "max": 15.445212364196777
+    },
+    "displacement_norm_real": {
+      "mean": 6.763802528381348,
+      "median": 6.794590950012207,
+      "p10": 2.6928820610046387,
+      "p90": 10.248452186584473,
+      "max": 14.037067413330078
+    },
+    "nearest_candidate_error_normalized": {
+      "mean": 1.2120764255523682,
+      "median": 1.125936508178711,
+      "p10": 0.6467547416687012,
+      "p90": 1.9589630365371704,
+      "max": 4.886984825134277
+    },
+    "nearest_candidate_error_marginal_reference": {
+      "mean": 4.132269382476807,
+      "median": 4.795489311218262,
+      "p10": 0.0,
+      "p90": 6.698861122131348,
+      "max": 8.48788070678711
+    },
+    "reference_note": "marginal reference = K deltas resampled from the empirical marginal delta distribution instead of the conditional flow; context only",
+    "candidate_diversity_mean_pairwise_normalized": {
+      "mean": 2.0657334327697754,
+      "median": 2.0480308532714844,
+      "p10": 1.3873180150985718,
+      "p90": 2.852748394012451,
+      "max": 3.763683557510376
+    },
+    "numerical": {
+      "max_abs_candidate_coord": 9.379473686218262,
+      "max_abs_real_state_coord": 9.337922096252441,
+      "max_abs_generated_delta": 11.54294204711914,
+      "max_abs_real_delta": 8.560937881469727,
+      "n_nonfinite": 0
+    },
+    "sampling": {
+      "n_anchors": 256,
+      "k": 32,
+      "ode_steps": 50,
+      "total_sec": 1.197866678237915,
+      "sec_per_anchor_of_k_candidates": 0.004679166711866856,
+      "candidates_per_sec": 6838.824510963599,
+      "solver": "fixed-step explicit Euler"
+    }
+  },
+  "interface_B_flow_C": {
+    "b_ckpt": "failneg_clean_p30_h800_resetfix_a01_s0_300k/best.pkl",
+    "b_step": 114400,
+    "c_ckpt": "failneg_settledbank_a01_s0_300k/failneg_settledbank_p30_h800_resetfix_a01_s0_300k/best.pkl",
+    "c_step": 208000,
+    "n_anchors": 64,
+    "k": 32,
+    "all_scores_finite": true,
+    "f1_finite": true,
+    "f2_finite": true,
+    "score_range_fmin": [
+      -14.752043724060059,
+      0.9984375834465027
+    ],
+    "score_mean_fmin": -5.232424736022949,
+    "score_std_fmin": 2.4842376708984375,
+    "within_anchor_score_spread_fmin": {
+      "mean": 4.1104736328125,
+      "median": 3.780061721801758,
+      "p10": 1.3645583391189575,
+      "p90": 7.569018840789795,
+      "max": 10.812248229980469
+    },
+    "f1_stats": {
+      "mean": -4.495199203491211,
+      "range": [
+        -14.752043724060059,
+        5.8056159019470215
+      ]
+    },
+    "f2_stats": {
+      "mean": -4.469686508178711,
+      "range": [
+        -13.496636390686035,
+        0.9984375834465027
+      ]
+    },
+    "argmin_candidate": {
+      "delta_norm": {
+        "mean": 7.007167816162109,
+        "median": 6.833747863769531,
+        "p10": 3.966205596923828,
+        "p90": 10.568077087402344,
+        "max": 12.768234252929688
+      },
+      "torso_z": {
+        "mean": 0.49927109479904175,
+        "median": 0.5268479585647583,
+        "p10": 0.30531105399131775,
+        "p90": 0.6049429178237915,
+        "max": 0.6746833324432373
+      },
+      "all_finite": true
+    },
+    "real_next_state_reference": {
+      "torso_z": {
+        "mean": 0.5018421411514282,
+        "median": 0.5275120735168457,
+        "p10": 0.3014133870601654,
+        "p90": 0.6141042113304138,
+        "max": 0.6795721650123596
+      },
+      "delta_norm": {
+        "mean": 6.880982398986816,
+        "median": 6.684456825256348,
+        "p10": 4.306396961212158,
+        "p90": 10.322040557861328,
+        "max": 12.742189407348633
+      }
+    },
+    "note": "interface/numerical check only -- argmin_k f_C over V0 candidates is NOT a causal worst case; the critic never trains or guides the flow"
+  },
+  "scope_note": "V0 learns q(s'|s) from clean factual adjacent transitions only; it has no reason to generate fatal branches and no causal claim is made."
+}
