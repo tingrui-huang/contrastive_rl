@@ -1,0 +1,90 @@
+{
+  "checkpoint": "failneg_clean_p30_h800_resetfix_a0_s0_300k/best.pkl",
+  "step": 270400,
+  "pairs": "artifacts/same_anchor_candidate_probe/pairs_heldout40.npz",
+  "pairs_label": "heldout40",
+  "n_pairs": 39,
+  "twin_aggregation_note": "f_min = actor-objective convention (pessimistic min); f_mean = critic-loss convention; f1/f2 = heads",
+  "per_convention": {
+    "f1": {
+      "n_pairs": 39,
+      "paired_win_rate": 0.5128205128205128,
+      "paired_win_rate_ci95": [
+        0.358974358974359,
+        0.6666666666666666
+      ],
+      "n_ties": 0,
+      "median_delta": 0.02510547637939453,
+      "median_delta_ci95": [
+        -0.5309100151062012,
+        0.5593886375427246
+      ],
+      "mean_delta": 0.05579259991645813,
+      "mean_delta_ci95": [
+        -0.5858220458030701,
+        0.6897709369659424
+      ],
+      "secondary_unpaired_auc": 0.4608809993425378
+    },
+    "f2": {
+      "n_pairs": 39,
+      "paired_win_rate": 0.7435897435897436,
+      "paired_win_rate_ci95": [
+        0.5897435897435898,
+        0.8717948717948718
+      ],
+      "n_ties": 0,
+      "median_delta": 1.1148452758789062,
+      "median_delta_ci95": [
+        0.36310768127441406,
+        1.4213066101074219
+      ],
+      "mean_delta": 0.9915691018104553,
+      "mean_delta_ci95": [
+        0.5859618186950684,
+        1.4326250553131104
+      ],
+      "secondary_unpaired_auc": 0.6758711374095989
+    },
+    "f_min": {
+      "n_pairs": 39,
+      "paired_win_rate": 0.7692307692307693,
+      "paired_win_rate_ci95": [
+        0.6410256410256411,
+        0.8974358974358975
+      ],
+      "n_ties": 0,
+      "median_delta": 0.4682025909423828,
+      "median_delta_ci95": [
+        0.23435020446777344,
+        1.4095497131347656
+      ],
+      "mean_delta": 0.7180711627006531,
+      "mean_delta_ci95": [
+        0.21784959733486176,
+        1.2186923027038574
+      ],
+      "secondary_unpaired_auc": 0.6226166995397765
+    },
+    "f_mean": {
+      "n_pairs": 39,
+      "paired_win_rate": 0.6410256410256411,
+      "paired_win_rate_ci95": [
+        0.48717948717948717,
+        0.7948717948717948
+      ],
+      "n_ties": 0,
+      "median_delta": 0.32166481018066406,
+      "median_delta_ci95": [
+        -0.08532857894897461,
+        1.1567304134368896
+      ],
+      "mean_delta": 0.5236808061599731,
+      "mean_delta_ci95": [
+        0.08335164189338684,
+        0.9509794116020203
+      ],
+      "secondary_unpaired_auc": 0.5877712031558185
+    }
+  }
+}

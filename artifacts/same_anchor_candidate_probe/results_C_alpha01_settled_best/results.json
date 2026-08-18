@@ -1,0 +1,90 @@
+{
+  "checkpoint": "failneg_settledbank_a01_s0_300k/failneg_settledbank_p30_h800_resetfix_a01_s0_300k/best.pkl",
+  "step": 208000,
+  "pairs": "artifacts/same_anchor_candidate_probe/pairs_heldout40.npz",
+  "pairs_label": "heldout40",
+  "n_pairs": 39,
+  "twin_aggregation_note": "f_min = actor-objective convention (pessimistic min); f_mean = critic-loss convention; f1/f2 = heads",
+  "per_convention": {
+    "f1": {
+      "n_pairs": 39,
+      "paired_win_rate": 1.0,
+      "paired_win_rate_ci95": [
+        1.0,
+        1.0
+      ],
+      "n_ties": 0,
+      "median_delta": 14.630992889404297,
+      "median_delta_ci95": [
+        13.072021484375,
+        15.642501831054688
+      ],
+      "mean_delta": 14.718765258789062,
+      "mean_delta_ci95": [
+        13.482335090637207,
+        15.96966552734375
+      ],
+      "secondary_unpaired_auc": 1.0
+    },
+    "f2": {
+      "n_pairs": 39,
+      "paired_win_rate": 1.0,
+      "paired_win_rate_ci95": [
+        1.0,
+        1.0
+      ],
+      "n_ties": 0,
+      "median_delta": 17.478017807006836,
+      "median_delta_ci95": [
+        15.87861442565918,
+        18.07009506225586
+      ],
+      "mean_delta": 16.129358291625977,
+      "mean_delta_ci95": [
+        14.899337768554688,
+        17.25534439086914
+      ],
+      "secondary_unpaired_auc": 1.0
+    },
+    "f_min": {
+      "n_pairs": 39,
+      "paired_win_rate": 1.0,
+      "paired_win_rate_ci95": [
+        1.0,
+        1.0
+      ],
+      "n_ties": 0,
+      "median_delta": 17.587467193603516,
+      "median_delta_ci95": [
+        14.789263725280762,
+        18.560522079467773
+      ],
+      "mean_delta": 16.20693016052246,
+      "mean_delta_ci95": [
+        14.984955787658691,
+        17.33561897277832
+      ],
+      "secondary_unpaired_auc": 1.0
+    },
+    "f_mean": {
+      "n_pairs": 39,
+      "paired_win_rate": 1.0,
+      "paired_win_rate_ci95": [
+        1.0,
+        1.0
+      ],
+      "n_ties": 0,
+      "median_delta": 16.009660720825195,
+      "median_delta_ci95": [
+        13.838338851928711,
+        17.651874542236328
+      ],
+      "mean_delta": 15.424059867858887,
+      "mean_delta_ci95": [
+        14.294968605041504,
+        16.521209716796875
+      ],
+      "secondary_unpaired_auc": 1.0
+    }
+  }
+}
