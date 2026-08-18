@@ -27,6 +27,11 @@ RUNS = {
     'C_alpha01_settled_bank':
         'failneg_settledbank_p30_h800_resetfix_a01_s0_300k',
 }
+# the synced-back SSH run may live nested under its transfer folder
+_ALT = ('failneg_settledbank_a01_s0_300k/'
+        'failneg_settledbank_p30_h800_resetfix_a01_s0_300k')
+if not os.path.isdir(RUNS['C_alpha01_settled_bank']) and os.path.isdir(_ALT):
+  RUNS['C_alpha01_settled_bank'] = _ALT
 BEHAVIOR_KEYS = ('naive_success', 'naive_hazard_exposure_rate',
                  'naive_drop_rate', 'naive_center_fraction',
                  'naive_left_fraction', 'naive_right_fraction',

@@ -179,8 +179,101 @@
       }
     },
     "C_alpha01_settled_bank": {
-      "dir": "failneg_settledbank_p30_h800_resetfix_a01_s0_300k",
-      "present": false
+      "dir": "failneg_settledbank_a01_s0_300k/failneg_settledbank_p30_h800_resetfix_a01_s0_300k",
+      "present": true,
+      "train_last": {
+        "logits_pos": -3.3417882919311523,
+        "logits_neg": -20.78803825378418,
+        "logits_fail_neg": -87.4097900390625,
+        "logits_gap": 17.446250915527344,
+        "critic_loss": 0.0043687159195542336,
+        "critic_pos_term": 0.0034198123030364513,
+        "critic_neg_ord_term": 0.0009489038493484259,
+        "critic_neg_fail_term": 6.852317324668178e-11,
+        "actor_loss": 2.104893684387207,
+        "binary_accuracy": 0.9990260601043701,
+        "policy_entropy": -32.99335861206055
+      },
+      "best_eval": {
+        "step": 208000,
+        "success": 0.8666666666666667
+      },
+      "logits_fail_neg_trajectory": {
+        "first": [
+          10400,
+          -31.86577033996582
+        ],
+        "last": [
+          291200,
+          -87.4097900390625
+        ],
+        "min": -87.4097900390625,
+        "max": -31.86577033996582
+      },
+      "diag_best": {
+        "checkpoint": "./failneg_settledbank_p30_h800_resetfix_a01_s0_300k/best.pkl",
+        "step": 208000,
+        "n_eval": 200,
+        "verdict": "mixed-routes",
+        "naive_success_by_mask_pattern": {
+          "all_clear": {
+            "n": 48,
+            "success": 0.875
+          },
+          "both_sides": {
+            "n": 45,
+            "success": 0.578
+          },
+          "left_only": {
+            "n": 53,
+            "success": 0.887
+          },
+          "right_only": {
+            "n": 54,
+            "success": 0.315
+          }
+        },
+        "naive_success": 0.66,
+        "naive_hazard_exposure_rate": 0.615,
+        "naive_drop_rate": 0.28,
+        "naive_center_fraction": 0.34,
+        "naive_left_fraction": 0.375,
+        "naive_right_fraction": 0.285,
+        "naive_impact_recovery_rate": 0.444,
+        "naive_trigger_avoidance_rate": 0.036
+      },
+      "diag_final": {
+        "checkpoint": "./failneg_settledbank_p30_h800_resetfix_a01_s0_300k/final.pkl",
+        "step": 300000,
+        "n_eval": 200,
+        "verdict": "mixed-routes",
+        "naive_success_by_mask_pattern": {
+          "all_clear": {
+            "n": 48,
+            "success": 0.917
+          },
+          "both_sides": {
+            "n": 45,
+            "success": 0.4
+          },
+          "left_only": {
+            "n": 53,
+            "success": 0.943
+          },
+          "right_only": {
+            "n": 54,
+            "success": 0.315
+          }
+        },
+        "naive_success": 0.645,
+        "naive_hazard_exposure_rate": 0.77,
+        "naive_drop_rate": 0.335,
+        "naive_center_fraction": 0.26,
+        "naive_left_fraction": 0.415,
+        "naive_right_fraction": 0.325,
+        "naive_impact_recovery_rate": 0.5,
+        "naive_trigger_avoidance_rate": 0.06
+      }
     }
   },
   "note": "B vs C isolates the failure-bank representation: same clean dataset/recipe/seed/steps/eval; only the 16 bank states changed (legacy frozen -> N=80 settled)."

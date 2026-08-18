@@ -1,0 +1,17 @@
+{
+  "frozen": true,
+  "primary_metric": "paired win rate P(Delta>0) under f_min (the repo actor-objective twin aggregation)",
+  "also_reported": [
+    "f1",
+    "f2",
+    "f_mean",
+    "median/mean Delta + CI95",
+    "ties",
+    "secondary unpaired AUC (descriptive only)"
+  ],
+  "evaluator": "scripts/probe_same_anchor_candidate_ranking.py",
+  "pairs_heldout": "artifacts/same_anchor_candidate_probe/pairs_heldout40.npz",
+  "pairs_heldout_sha256": "f6f6ad481e30f8b915fd6fb9e2e9baa6a3f553ed3a4285252051e6e23027a998",
+  "pairs_debug": "artifacts/same_anchor_candidate_probe/pairs_debug16_pilot.npz",
+  "note": "Definition frozen BEFORE any held-out scoring. The held-out pair scores must never be used to change the evaluator, alpha, training, checkpoint selection, or scoring aggregation."
+}

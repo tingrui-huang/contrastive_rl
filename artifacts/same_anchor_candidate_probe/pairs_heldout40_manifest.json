@@ -1,0 +1,1940 @@
+{
+  "label": "heldout40",
+  "sealed_note": "SEALED HELD-OUT SET: never in the failure bank, CRL training, alpha selection, or checkpoint selection. Do not score with production checkpoints until the settled-bank alpha=0.1 SSH run is finished and the probe definition is frozen.",
+  "n_deaths_considered": 40,
+  "n_pairs_accepted": 39,
+  "n_excluded": 1,
+  "exclusions": [
+    {
+      "pair_index_source": 22,
+      "stream_episode": 532,
+      "collapse_step": 49,
+      "teacher_mode": "sighted",
+      "base_side": "right",
+      "original_mask": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "severities": [
+        "mild",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_2"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "reason": "safe_world_observable_divergence_before_anchor_at_t49"
+    }
+  ],
+  "gates": {
+    "anchor_bitwise": "obs trajectories equal for ALL t<=c",
+    "action_bitwise": "same stored float32 action array applied to both worlds",
+    "fatal_branch": "dead at t=c, settled obs == diagnostic sweep substep-80 state (N-independence verified previously)",
+    "safe_branch": "dead=False on the paired step (task success NOT required)"
+  },
+  "transition_time_convention": "fatal branch = the patched env one-step transition with death_settle_substeps=80 (internal ctrl-free settling inside the fatal step); safe branch = the env NORMAL one-step transition. No branch is artificially advanced to match elapsed physical time.",
+  "per_pair_provenance": [
+    {
+      "pair_index_source": 0,
+      "stream_episode": 0,
+      "collapse_step": 50,
+      "teacher_mode": "sighted",
+      "base_side": "right",
+      "original_mask": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_2"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          0,
+          0,
+          1,
+          1
+        ]
+      },
+      "goal_xy": [
+        0.9055127501487732,
+        8.67039966583252
+      ]
+    },
+    {
+      "pair_index_source": 1,
+      "stream_episode": 2,
+      "collapse_step": 29,
+      "teacher_mode": "sighted",
+      "base_side": "left",
+      "original_mask": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        1,
+        1,
+        1
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "goal_xy": [
+        0.9420388340950012,
+        9.02236270904541
+      ]
+    },
+    {
+      "pair_index_source": 2,
+      "stream_episode": 36,
+      "collapse_step": 33,
+      "teacher_mode": "sighted",
+      "base_side": "left",
+      "original_mask": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "impaired",
+        "impaired",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "goal_xy": [
+        0.9265992045402527,
+        8.813799858093262
+      ]
+    },
+    {
+      "pair_index_source": 3,
+      "stream_episode": 65,
+      "collapse_step": 33,
+      "teacher_mode": "sighted",
+      "base_side": "left",
+      "original_mask": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "impaired",
+        "mild"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "goal_xy": [
+        0.7583954334259033,
+        8.85976505279541
+      ]
+    },
+    {
+      "pair_index_source": 4,
+      "stream_episode": 85,
+      "collapse_step": 24,
+      "teacher_mode": "sighted",
+      "base_side": "left",
+      "original_mask": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "goal_xy": [
+        1.092354655265808,
+        8.784719467163086
+      ]
+    },
+    {
+      "pair_index_source": 5,
+      "stream_episode": 147,
+      "collapse_step": 25,
+      "teacher_mode": "sighted",
+      "base_side": "left",
+      "original_mask": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "goal_xy": [
+        0.7364098429679871,
+        8.614518165588379
+      ]
+    },
+    {
+      "pair_index_source": 6,
+      "stream_episode": 194,
+      "collapse_step": 52,
+      "teacher_mode": "sighted",
+      "base_side": "right",
+      "original_mask": [
+        1,
+        1,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "mild",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_2"
+      ],
+      "counterfactual_mask": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          0,
+          0,
+          1,
+          1
+        ]
+      },
+      "goal_xy": [
+        1.157436490058899,
+        8.320352554321289
+      ]
+    },
+    {
+      "pair_index_source": 7,
+      "stream_episode": 225,
+      "collapse_step": 78,
+      "teacher_mode": "sighted",
+      "base_side": "right",
+      "original_mask": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "impaired",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_2"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          0,
+          0,
+          1,
+          1
+        ]
+      },
+      "goal_xy": [
+        0.2709234952926636,
+        8.419997215270996
+      ]
+    },
+    {
+      "pair_index_source": 8,
+      "stream_episode": 259,
+      "collapse_step": 42,
+      "teacher_mode": "sighted",
+      "base_side": "left",
+      "original_mask": [
+        0,
+        1,
+        0,
+        1
+      ],
+      "severities": [
+        "impaired",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_2"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          1,
+          1,
+          0,
+          0
+        ]
+      },
+      "goal_xy": [
+        0.7384631633758545,
+        9.140060424804688
+      ]
+    },
+    {
+      "pair_index_source": 9,
+      "stream_episode": 269,
+      "collapse_step": 30,
+      "teacher_mode": "sighted",
+      "base_side": "right",
+      "original_mask": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          0,
+          0,
+          1,
+          0
+        ]
+      },
+      "goal_xy": [
+        1.2175179719924927,
+        8.178993225097656
+      ]
+    },
+    {
+      "pair_index_source": 10,
+      "stream_episode": 282,
+      "collapse_step": 29,
+      "teacher_mode": "sighted",
+      "base_side": "left",
+      "original_mask": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "impaired",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "goal_xy": [
+        0.47351309657096863,
+        8.619635581970215
+      ]
+    },
+    {
+      "pair_index_source": 11,
+      "stream_episode": 328,
+      "collapse_step": 34,
+      "teacher_mode": "sighted",
+      "base_side": "left",
+      "original_mask": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "goal_xy": [
+        0.5119937658309937,
+        9.21165943145752
+      ]
+    },
+    {
+      "pair_index_source": 12,
+      "stream_episode": 362,
+      "collapse_step": 30,
+      "teacher_mode": "sighted",
+      "base_side": "left",
+      "original_mask": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "goal_xy": [
+        0.9756685495376587,
+        8.388401985168457
+      ]
+    },
+    {
+      "pair_index_source": 13,
+      "stream_episode": 368,
+      "collapse_step": 48,
+      "teacher_mode": "sighted",
+      "base_side": "right",
+      "original_mask": [
+        1,
+        1,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_2"
+      ],
+      "counterfactual_mask": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          0,
+          0,
+          1,
+          1
+        ]
+      },
+      "goal_xy": [
+        0.272978276014328,
+        8.356589317321777
+      ]
+    },
+    {
+      "pair_index_source": 14,
+      "stream_episode": 372,
+      "collapse_step": 35,
+      "teacher_mode": "sighted",
+      "base_side": "right",
+      "original_mask": [
+        1,
+        0,
+        1,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_1"
+      ],
+      "counterfactual_mask": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          0,
+          0,
+          1,
+          0
+        ]
+      },
+      "goal_xy": [
+        1.0745235681533813,
+        8.598642349243164
+      ]
+    },
+    {
+      "pair_index_source": 15,
+      "stream_episode": 374,
+      "collapse_step": 30,
+      "teacher_mode": "sighted",
+      "base_side": "left",
+      "original_mask": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "goal_xy": [
+        0.5617716312408447,
+        9.013382911682129
+      ]
+    },
+    {
+      "pair_index_source": 16,
+      "stream_episode": 393,
+      "collapse_step": 36,
+      "teacher_mode": "sighted",
+      "base_side": "left",
+      "original_mask": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "goal_xy": [
+        0.14279691874980927,
+        8.828644752502441
+      ]
+    },
+    {
+      "pair_index_source": 17,
+      "stream_episode": 422,
+      "collapse_step": 29,
+      "teacher_mode": "sighted",
+      "base_side": "left",
+      "original_mask": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "goal_xy": [
+        0.6881676912307739,
+        8.55081558227539
+      ]
+    },
+    {
+      "pair_index_source": 18,
+      "stream_episode": 479,
+      "collapse_step": 42,
+      "teacher_mode": "sighted",
+      "base_side": "right",
+      "original_mask": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          0,
+          0,
+          1,
+          0
+        ]
+      },
+      "goal_xy": [
+        0.7790939807891846,
+        8.288410186767578
+      ]
+    },
+    {
+      "pair_index_source": 19,
+      "stream_episode": 483,
+      "collapse_step": 34,
+      "teacher_mode": "sighted",
+      "base_side": "right",
+      "original_mask": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "severities": [
+        "severe",
+        "impaired",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_1"
+      ],
+      "counterfactual_mask": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          0,
+          0,
+          1,
+          0
+        ]
+      },
+      "goal_xy": [
+        1.0483646392822266,
+        9.286993026733398
+      ]
+    },
+    {
+      "pair_index_source": 20,
+      "stream_episode": 497,
+      "collapse_step": 32,
+      "teacher_mode": "sighted",
+      "base_side": "left",
+      "original_mask": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "goal_xy": [
+        0.7815197706222534,
+        9.09801197052002
+      ]
+    },
+    {
+      "pair_index_source": 21,
+      "stream_episode": 498,
+      "collapse_step": 28,
+      "teacher_mode": "sighted",
+      "base_side": "left",
+      "original_mask": [
+        1,
+        0,
+        1,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "goal_xy": [
+        1.1560168266296387,
+        8.922566413879395
+      ]
+    },
+    {
+      "pair_index_source": 23,
+      "stream_episode": 534,
+      "collapse_step": 48,
+      "teacher_mode": "sighted",
+      "base_side": "right",
+      "original_mask": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "impaired",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_2"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          0,
+          0,
+          1,
+          1
+        ]
+      },
+      "goal_xy": [
+        0.6831822395324707,
+        8.919675827026367
+      ]
+    },
+    {
+      "pair_index_source": 24,
+      "stream_episode": 571,
+      "collapse_step": 43,
+      "teacher_mode": "sighted",
+      "base_side": "right",
+      "original_mask": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_2"
+      ],
+      "counterfactual_mask": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          0,
+          0,
+          1,
+          1
+        ]
+      },
+      "goal_xy": [
+        0.8135733008384705,
+        9.277502059936523
+      ]
+    },
+    {
+      "pair_index_source": 25,
+      "stream_episode": 604,
+      "collapse_step": 29,
+      "teacher_mode": "sighted",
+      "base_side": "left",
+      "original_mask": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "goal_xy": [
+        0.503300130367279,
+        8.115377426147461
+      ]
+    },
+    {
+      "pair_index_source": 26,
+      "stream_episode": 641,
+      "collapse_step": 47,
+      "teacher_mode": "sighted",
+      "base_side": "right",
+      "original_mask": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_2"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          0,
+          0,
+          1,
+          1
+        ]
+      },
+      "goal_xy": [
+        0.7491428256034851,
+        9.266005516052246
+      ]
+    },
+    {
+      "pair_index_source": 27,
+      "stream_episode": 665,
+      "collapse_step": 32,
+      "teacher_mode": "sighted",
+      "base_side": "left",
+      "original_mask": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "impaired",
+        "impaired"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "goal_xy": [
+        0.36320456862449646,
+        8.394457817077637
+      ]
+    },
+    {
+      "pair_index_source": 28,
+      "stream_episode": 672,
+      "collapse_step": 24,
+      "teacher_mode": "sighted",
+      "base_side": "left",
+      "original_mask": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "goal_xy": [
+        0.7594074606895447,
+        9.156783103942871
+      ]
+    },
+    {
+      "pair_index_source": 29,
+      "stream_episode": 673,
+      "collapse_step": 25,
+      "teacher_mode": "sighted",
+      "base_side": "left",
+      "original_mask": [
+        1,
+        0,
+        1,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "mild",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "goal_xy": [
+        0.9637460112571716,
+        8.7135591506958
+      ]
+    },
+    {
+      "pair_index_source": 30,
+      "stream_episode": 682,
+      "collapse_step": 48,
+      "teacher_mode": "sighted",
+      "base_side": "right",
+      "original_mask": [
+        1,
+        1,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_2"
+      ],
+      "counterfactual_mask": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          0,
+          0,
+          1,
+          1
+        ]
+      },
+      "goal_xy": [
+        0.8135383129119873,
+        9.111250877380371
+      ]
+    },
+    {
+      "pair_index_source": 31,
+      "stream_episode": 763,
+      "collapse_step": 25,
+      "teacher_mode": "sighted",
+      "base_side": "left",
+      "original_mask": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "impaired",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "goal_xy": [
+        1.156203269958496,
+        8.568745613098145
+      ]
+    },
+    {
+      "pair_index_source": 32,
+      "stream_episode": 771,
+      "collapse_step": 33,
+      "teacher_mode": "sighted",
+      "base_side": "right",
+      "original_mask": [
+        0,
+        1,
+        1,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        1,
+        0,
+        1
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          0,
+          0,
+          1,
+          0
+        ]
+      },
+      "goal_xy": [
+        1.0405142307281494,
+        8.84731674194336
+      ]
+    },
+    {
+      "pair_index_source": 33,
+      "stream_episode": 804,
+      "collapse_step": 32,
+      "teacher_mode": "sighted",
+      "base_side": "left",
+      "original_mask": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "goal_xy": [
+        0.17430463433265686,
+        8.342597007751465
+      ]
+    },
+    {
+      "pair_index_source": 34,
+      "stream_episode": 809,
+      "collapse_step": 94,
+      "teacher_mode": "sighted",
+      "base_side": "right",
+      "original_mask": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_2"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          0,
+          0,
+          1,
+          1
+        ]
+      },
+      "goal_xy": [
+        0.44066596031188965,
+        9.301567077636719
+      ]
+    },
+    {
+      "pair_index_source": 35,
+      "stream_episode": 811,
+      "collapse_step": 29,
+      "teacher_mode": "sighted",
+      "base_side": "left",
+      "original_mask": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "impaired",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "goal_xy": [
+        1.3406096696853638,
+        8.793506622314453
+      ]
+    },
+    {
+      "pair_index_source": 36,
+      "stream_episode": 812,
+      "collapse_step": 31,
+      "teacher_mode": "sighted",
+      "base_side": "left",
+      "original_mask": [
+        1,
+        0,
+        1,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "impaired",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "goal_xy": [
+        1.1070207357406616,
+        8.268855094909668
+      ]
+    },
+    {
+      "pair_index_source": 37,
+      "stream_episode": 824,
+      "collapse_step": 47,
+      "teacher_mode": "sighted",
+      "base_side": "right",
+      "original_mask": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "impaired",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_2"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          0,
+          0,
+          1,
+          1
+        ]
+      },
+      "goal_xy": [
+        0.816921591758728,
+        8.722249984741211
+      ]
+    },
+    {
+      "pair_index_source": 38,
+      "stream_episode": 835,
+      "collapse_step": 49,
+      "teacher_mode": "sighted",
+      "base_side": "right",
+      "original_mask": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_2"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          0,
+          0,
+          1,
+          1
+        ]
+      },
+      "goal_xy": [
+        0.9853205680847168,
+        8.14779281616211
+      ]
+    },
+    {
+      "pair_index_source": 39,
+      "stream_episode": 842,
+      "collapse_step": 48,
+      "teacher_mode": "sighted",
+      "base_side": "right",
+      "original_mask": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_2"
+      ],
+      "counterfactual_mask": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "anchor_bitwise_identical": true,
+      "action_bitwise_identical": true,
+      "fatal_branch": {
+        "dead": true,
+        "settled_matches_sweep_n80": true
+      },
+      "safe_branch": {
+        "dead": false,
+        "rock_contact_on_paired_step": false,
+        "sites_triggered": [
+          0,
+          0,
+          1,
+          1
+        ]
+      },
+      "goal_xy": [
+        0.6711168885231018,
+        8.877734184265137
+      ]
+    }
+  ],
+  "sources": {
+    "deaths_extended_npz": "artifacts/rockfall_death_extended\\deaths_extended.npz",
+    "deaths_extended_sha256": "18a00a75a0eb3e4050a7dae54e1689ae551a6b27cae826293efa5ad99601b579",
+    "settle_traces_npz": "artifacts/rockfall_death_physics_patch/settle_traces.npz",
+    "settle_traces_sha256": "3b238dd0879bcdbd04c991d3b5a346e1a78c5cf693e74d0d18bac9e90569ca04"
+  },
+  "env": {
+    "seed": 71400019,
+    "death_settle_substeps": 80,
+    "p_active": 0.3,
+    "horizon": 800,
+    "reset_fix": true,
+    "severity_probs": [
+      0.8,
+      0.15,
+      0.05
+    ]
+  },
+  "git_commit": "527c7026683dc3d30cf8972981b9e3a0d4d683a3",
+  "pairs_npz": "artifacts/same_anchor_candidate_probe\\pairs_heldout40.npz",
+  "pairs_sha256": "f6f6ad481e30f8b915fd6fb9e2e9baa6a3f553ed3a4285252051e6e23027a998"
+}
