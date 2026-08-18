@@ -263,7 +263,8 @@ class RockfallOfflineAntUMazeEnv(OfflineD4rlAntUMazeEnv):
                impair_legs=IMPAIR_LEGS,
                impair_gear_scale=IMPAIR_GEAR_SCALE,
                impair_damping_mult=IMPAIR_DAMPING_MULT,
-               rock_density=ROCK_DENSITY, mud_drag=MUD_DRAG):
+               rock_density=ROCK_DENSITY, mud_drag=MUD_DRAG,
+               death_settle_substeps=0):
     super().__init__(max_episode_steps=max_episode_steps, seed=seed,
                      render_mode=render_mode, eval_goals=eval_goals,
                      eval_goal_mode=eval_goal_mode)
@@ -276,6 +277,24 @@ class RockfallOfflineAntUMazeEnv(OfflineD4rlAntUMazeEnv):
 
     self.p_active = float(p_active)
     self.mud_drag = float(mud_drag)
+    #: DEATH-SETTLE (physics-observability patch, opt-in; 0 = legacy freeze,
+    #: byte-identical to every existing experiment). >0: at the first FATAL
+    #: (severe) rock contact the actor loses control -- ctrl is zeroed, no
+    #: further action is applied -- and MuJoCo physics (gravity, rock
+    #: impacts, contacts, mud drag) advances this many EXTRA substeps inside
+    #: the same env.step, so the fatal transition (s_t, a_t) -> s'_fatal ends
+    #: in a physically settled post-impact ant state instead of the healthy
+    #: mid-march snapshot. The learner obs stays the ant-only 29-dim slice
+    #: (_RockSim._obs_dict); nothing rock/mask/dead-related is exposed, and
+    #: no observation entry is manually written -- the death signature must
+    #: emerge from the physics. Terminal semantics unchanged: _dead stays
+    #: absorbing and later steps return the frozen (now settled) _last_obs.
+    self.death_settle_substeps = int(death_settle_substeps)
+    #: analysis-only (privileged, NEVER learner-visible): record the 29-dim
+    #: ant state after every settle substep of a fatal step (for the
+    #: settling-horizon calibration sweep).
+    self.death_settle_record_trace = False
+    self._death_settle_trace = None
     self.severity_probs = tuple(float(p) for p in severity_probs)
     assert abs(sum(self.severity_probs) - 1.0) < 1e-9
     self.impair_legs = int(impair_legs)
@@ -394,6 +413,7 @@ class RockfallOfflineAntUMazeEnv(OfflineD4rlAntUMazeEnv):
     self._drop_step = {}
     self._hit_step = {}
     self._t = 0
+    self._death_settle_trace = None
 
   def reset(self, mask=None, severities=None):
     """``mask``/``severities`` overrides are for probes/gates/GIFs only;
@@ -532,6 +552,29 @@ class RockfallOfflineAntUMazeEnv(OfflineD4rlAntUMazeEnv):
           self._dead = True              # buried under the rockfall
         elif self._severity[i] == 'impaired':
           self._apply_impairment(i)
+      if self._dead and self.death_settle_substeps > 0:
+        break                            # fatal: actor control ends HERE;
+                                         # the settle loop below replaces the
+                                         # remaining substeps (legacy N=0
+                                         # keeps running them with actor ctrl)
+    if self._dead and self.death_settle_substeps > 0:
+      # Death-settle: one env transition (s_t, a_t) -> s'_fatal. The actor
+      # gets no further decision; ctrl is zeroed and the environment's own
+      # physics (gravity, rock bodies, contacts, mud drag) runs for N extra
+      # substeps so the fatal outcome develops and becomes visible in the
+      # ordinary ant-only observation. No obs field is manually written.
+      u.data.ctrl[:] = 0.0
+      trace = [] if self.death_settle_record_trace else None
+      for _ in range(self.death_settle_substeps):
+        c = self._mud_coverage(float(u.data.qpos[0]), float(u.data.qpos[1]))
+        u.data.qfrc_applied[0] = -self.mud_drag * c * float(u.data.qvel[0])
+        u.data.qfrc_applied[1] = -self.mud_drag * c * float(u.data.qvel[1])
+        mujoco.mj_step(u.model, u.data)
+        if trace is not None:
+          trace.append(np.concatenate(
+              [np.asarray(u.data.qpos[:NQ_ANT]),
+               np.asarray(u.data.qvel[:NV_ANT])]).astype(np.float32))
+      self._death_settle_trace = trace
     self._last_obs = u._obs_dict()
     if self._dead:
       reward = 0.0

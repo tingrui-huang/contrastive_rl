@@ -1054,6 +1054,11 @@ def make_env(env_name, config, seed=0, render_mode=None):
     _ms = getattr(config, 'rockfall_max_steps', None)
     if _ms is not None:
       _sev_kw['max_episode_steps'] = int(_ms)
+    # optional death-settle substeps (physics-observability patch); absent ->
+    # 0 = legacy freeze-at-contact, byte-identical to every existing run.
+    _dss = getattr(config, 'rockfall_death_settle_substeps', None)
+    if _dss is not None:
+      _sev_kw['death_settle_substeps'] = int(_dss)
     env = RockfallOfflineAntUMazeEnv(
         seed=seed, render_mode=render_mode, eval_goals=eval_goals,
         eval_goal_mode=getattr(config, 'eval_goal_mode', 'd4rl'), **_sev_kw)

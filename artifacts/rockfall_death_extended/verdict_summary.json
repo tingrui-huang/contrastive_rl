@@ -1,0 +1,141 @@
+{
+  "question": "is rock-death observable in the 29-dim ant obs, and when?",
+  "n_death_episodes": 56,
+  "post_death_obs_frozen_all_episodes": true,
+  "structural_note": "crl/rockfall_ant.py step(): once _dead is set the env returns _last_obs without stepping physics. obs[collapse+1+k] is bitwise-identical to obs[collapse+1] for every k, so AUC(k) is constant for k >= 1 BY CONSTRUCTION, and no post-contact physical signature (burial, collapse, stopping) exists in the observation stream at any lag.",
+  "recovery_at_k": {
+    "k": 50,
+    "n": 56,
+    "frac_upright": 1.0,
+    "frac_actually_moving": 0.0,
+    "frac_corridor_progress": 0.0,
+    "recovery_rate": 0.0,
+    "stored_velocity_nonzero_frac": 1.0,
+    "note": "the env freezes obs after death (step() returns _last_obs without mj_step), so \"moving/progress\" use measured displacement; the stored velocity field is the impact-time value and stays nonzero in the frozen obs"
+  },
+  "per_checkpoint": {
+    "a01_best": {
+      "verdict": "a_structural",
+      "inverted": true,
+      "detail": "AUC(k) never exceeds 0.6 at any lag; min AUC 0.287 with CI95 upper bound 0.361 -- at some lags significantly BELOW 0.5 (inverted: death states score higher than good states). Outside the [0.3, 0.6] band on the low side only.",
+      "auc_by_k": {
+        "0": 0.3041,
+        "1": 0.2873,
+        "2": 0.2873,
+        "5": 0.2873,
+        "10": 0.2873,
+        "20": 0.2873,
+        "30": 0.2873,
+        "50": 0.2873
+      },
+      "auc_ci_by_k": {
+        "0": [
+          0.252,
+          0.3608
+        ],
+        "1": [
+          0.2359,
+          0.3398
+        ],
+        "2": [
+          0.2389,
+          0.3397
+        ],
+        "5": [
+          0.2384,
+          0.342
+        ],
+        "10": [
+          0.2398,
+          0.3423
+        ],
+        "20": [
+          0.2431,
+          0.3435
+        ],
+        "30": [
+          0.24,
+          0.3405
+        ],
+        "50": [
+          0.2387,
+          0.3427
+        ]
+      },
+      "shuffle_control": {
+        "0": 0.4935371311844289,
+        "1": 0.5018026432368576,
+        "2": 0.5012443218575084,
+        "5": 0.50039894664304,
+        "10": 0.49933437403313363,
+        "20": 0.5049951832475459,
+        "30": 0.49975346665541587,
+        "50": 0.4969419071527017
+      },
+      "spearman_fmin_x_upright_good": -0.20050903058344305
+    },
+    "a0_best": {
+      "verdict": "a_structural",
+      "detail": "AUC(k) within [0.3, 0.6] for all k <= 50",
+      "auc_by_k": {
+        "0": 0.4346,
+        "1": 0.4415,
+        "2": 0.4415,
+        "5": 0.4415,
+        "10": 0.4415,
+        "20": 0.4415,
+        "30": 0.4415,
+        "50": 0.4415
+      },
+      "auc_ci_by_k": {
+        "0": [
+          0.3666,
+          0.5097
+        ],
+        "1": [
+          0.3769,
+          0.5122
+        ],
+        "2": [
+          0.3683,
+          0.5118
+        ],
+        "5": [
+          0.3714,
+          0.5163
+        ],
+        "10": [
+          0.3719,
+          0.5152
+        ],
+        "20": [
+          0.3746,
+          0.5201
+        ],
+        "30": [
+          0.3693,
+          0.5121
+        ],
+        "50": [
+          0.3727,
+          0.5164
+        ]
+      },
+      "shuffle_control": {
+        "0": 0.49971895831575397,
+        "1": 0.5012442075914831,
+        "2": 0.5031665488847635,
+        "5": 0.5044025381121142,
+        "10": 0.501021845906112,
+        "20": 0.5015633701797316,
+        "30": 0.5017279835738193,
+        "50": 0.5027172988214778
+      },
+      "spearman_fmin_x_upright_good": 0.15832351084162707
+    }
+  },
+  "inputs": {
+    "deaths_npz": "artifacts/rockfall_death_extended/deaths_extended.npz",
+    "probe_summary": "artifacts/critic_candidate_probe_lag/summary.json"
+  }
+}

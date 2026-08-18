@@ -1,0 +1,163 @@
+{
+  "protocol": "local_detour_v2.1_sev0.80_p30_h800_resetfix_v1",
+  "p_active": 0.3,
+  "horizon": 800,
+  "reset_fix": true,
+  "severity_probs_v2": [
+    0.8,
+    0.15,
+    0.05
+  ],
+  "extend_steps": 50,
+  "git_commit": "616c15055ce3730f25e431f2bbaf935fd0dbcba6",
+  "rockfall_frozen_code_commit": "225b2b01ebc39a7418dcb6a0eb6c0bd68335d9e5",
+  "walker_sha256": "70b0a460b2e38332821f1846b48c75fbcdc884dd315b29c97ebc69083388cdd5",
+  "base_policy_sha256": "6bece3e37c6e994fa612d721ff6e4320bebf36df8fdf3a11d6ea354a39a286ac",
+  "walker_step": 1950016,
+  "base_policy_step": 959000,
+  "pilot_manifest": "artifacts/rockfall_v2_p30_h800_resetfix/pilot\\pilot_manifest.json",
+  "pilot_env_seed": 52400019,
+  "phase_a": {
+    "n_replayed_deaths": 16,
+    "bitwise_checks": [
+      {
+        "episode_id": 1,
+        "collapse_step": 24,
+        "obs_prefix_bitwise": true,
+        "act_prefix_bitwise": true,
+        "collapse_step_match": true
+      },
+      {
+        "episode_id": 66,
+        "collapse_step": 30,
+        "obs_prefix_bitwise": true,
+        "act_prefix_bitwise": true,
+        "collapse_step_match": true
+      },
+      {
+        "episode_id": 109,
+        "collapse_step": 24,
+        "obs_prefix_bitwise": true,
+        "act_prefix_bitwise": true,
+        "collapse_step_match": true
+      },
+      {
+        "episode_id": 116,
+        "collapse_step": 28,
+        "obs_prefix_bitwise": true,
+        "act_prefix_bitwise": true,
+        "collapse_step_match": true
+      },
+      {
+        "episode_id": 121,
+        "collapse_step": 26,
+        "obs_prefix_bitwise": true,
+        "act_prefix_bitwise": true,
+        "collapse_step_match": true
+      },
+      {
+        "episode_id": 187,
+        "collapse_step": 62,
+        "obs_prefix_bitwise": true,
+        "act_prefix_bitwise": true,
+        "collapse_step_match": true
+      },
+      {
+        "episode_id": 205,
+        "collapse_step": 50,
+        "obs_prefix_bitwise": true,
+        "act_prefix_bitwise": true,
+        "collapse_step_match": true
+      },
+      {
+        "episode_id": 210,
+        "collapse_step": 28,
+        "obs_prefix_bitwise": true,
+        "act_prefix_bitwise": true,
+        "collapse_step_match": true
+      },
+      {
+        "episode_id": 223,
+        "collapse_step": 34,
+        "obs_prefix_bitwise": true,
+        "act_prefix_bitwise": true,
+        "collapse_step_match": true
+      },
+      {
+        "episode_id": 238,
+        "collapse_step": 24,
+        "obs_prefix_bitwise": true,
+        "act_prefix_bitwise": true,
+        "collapse_step_match": true
+      },
+      {
+        "episode_id": 241,
+        "collapse_step": 49,
+        "obs_prefix_bitwise": true,
+        "act_prefix_bitwise": true,
+        "collapse_step_match": true
+      },
+      {
+        "episode_id": 247,
+        "collapse_step": 25,
+        "obs_prefix_bitwise": true,
+        "act_prefix_bitwise": true,
+        "collapse_step_match": true
+      },
+      {
+        "episode_id": 252,
+        "collapse_step": 54,
+        "obs_prefix_bitwise": true,
+        "act_prefix_bitwise": true,
+        "collapse_step_match": true
+      },
+      {
+        "episode_id": 276,
+        "collapse_step": 41,
+        "obs_prefix_bitwise": true,
+        "act_prefix_bitwise": true,
+        "collapse_step_match": true
+      },
+      {
+        "episode_id": 292,
+        "collapse_step": 24,
+        "obs_prefix_bitwise": true,
+        "act_prefix_bitwise": true,
+        "collapse_step_match": true
+      },
+      {
+        "episode_id": 294,
+        "collapse_step": 25,
+        "obs_prefix_bitwise": true,
+        "act_prefix_bitwise": true,
+        "collapse_step_match": true
+      }
+    ],
+    "all_bitwise_ok": true
+  },
+  "phase_b": {
+    "env_seed": 71400019,
+    "dataset_seed": 71990013,
+    "prescreen_freq": [
+      0.29733333333333334,
+      0.31933333333333336,
+      0.2946666666666667,
+      0.31466666666666665
+    ],
+    "early_abort": true,
+    "abort_rule": "x >= 6.2 and every drop >= 25 steps old",
+    "n_episodes": 843,
+    "n_fresh_deaths": 40,
+    "death_rate": 0.0474,
+    "clean_summary": {
+      "n_clean": 803,
+      "n_aborted": 801,
+      "success_rate_completed": 0.0
+    }
+  },
+  "n_death_episodes_total": 56,
+  "post_death_obs_frozen_all_episodes": true,
+  "post_death_frames_checked": 2800,
+  "npz": "artifacts/rockfall_death_extended\\deaths_extended.npz",
+  "npz_sha256": "18a00a75a0eb3e4050a7dae54e1689ae551a6b27cae826293efa5ad99601b579"
+}

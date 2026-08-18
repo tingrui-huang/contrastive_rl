@@ -1,0 +1,31 @@
+{
+  "stage": "settled failure bank rebuild + alpha=0.1 retrain preparation",
+  "status": "stage1_complete__training_notebook_ready__awaiting_colab_run",
+  "stage1": {
+    "bank": "artifacts/settled_failure_bank_alpha01/failure_bank_settled.npz",
+    "bank_manifest": "artifacts/settled_failure_bank_alpha01/bank_manifest.json",
+    "all_validations_pass": true,
+    "n_states": 16,
+    "death_settle_substeps": 80,
+    "legacy_bank_preserved": "artifacts/rockfall_v2_p30_h800_resetfix/failure_split/failure_bank.npz",
+    "heldout_fresh_deaths": 40
+  },
+  "stage2": {
+    "smoke_test": {
+      "bank_consumed_by_fail_neg_loss": true,
+      "n_bank_in_metrics": 16,
+      "loss_identity_pos_plus_09ord_plus_01fail_equals_critic_loss": true,
+      "local_cpu_updates_per_sec": 1.22,
+      "local_full_run_estimate_hours": 68.5,
+      "decision": "300k-update run requires the standing Colab GPU workflow (previous runs trained at ~32 updates/s there); notebook generated and pinned to branch head"
+    },
+    "notebook": "notebooks/run_failneg_settledbank_a01.ipynb",
+    "run_id": "failneg_settledbank_p30_h800_resetfix_a01_s0_300k",
+    "config_frozen": "identical to failneg_clean_p30_h800_resetfix_a01_s0_300k except BANK_REPO_RELPATH/BANK_SHA256"
+  },
+  "stage3": {
+    "eval_protocol": "diagnose_naive_rockfall.py --v2 --p-active 0.30 --reset-fix --horizon 800, diag_best + diag_final, n=200, in-notebook (identical to A/B)",
+    "comparison_script": "scripts/compare_settled_bank_run.py",
+    "comparison_now": "artifacts/settled_failure_bank_alpha01/comparison.json (A/B filled, C pending)"
+  }
+}
