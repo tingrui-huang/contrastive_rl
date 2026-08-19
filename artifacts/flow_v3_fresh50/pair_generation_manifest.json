@@ -1,0 +1,6860 @@
+{
+  "target": 50,
+  "n_pairs": 50,
+  "n_episodes_run": 1103,
+  "n_death_episodes": 50,
+  "n_excluded": 0,
+  "exclusion_reasons": {},
+  "env_seed": 96500019,
+  "dataset_seed": 96990013,
+  "prescreen_freq": [
+    0.286,
+    0.29133333333333333,
+    0.30566666666666664,
+    0.2916666666666667
+  ],
+  "seed_disjointness_checked_against": [
+    311,
+    500,
+    622,
+    777,
+    888,
+    999,
+    1234,
+    8150023,
+    5090023,
+    9271033,
+    6330047,
+    12450067,
+    14760053,
+    25770061,
+    28110043,
+    60001,
+    60002,
+    60777,
+    61020,
+    61030,
+    61040,
+    61050,
+    62001,
+    62100,
+    62200,
+    62300,
+    63001,
+    64001,
+    65001,
+    66001,
+    67001,
+    68001,
+    69001,
+    71717,
+    73500019,
+    76230011,
+    90100019,
+    88140077,
+    41001,
+    42001,
+    43517,
+    52400019,
+    71400019,
+    82500019,
+    91500019,
+    92500019,
+    93500019,
+    94500019,
+    51990013,
+    51990014,
+    71990013,
+    82990013,
+    91990013,
+    92990013,
+    93990013,
+    94990013
+  ],
+  "teacher_mixture": {
+    "sighted": 0.9,
+    "coverage": 0.1
+  },
+  "p_active": 0.3,
+  "horizon": 800,
+  "death_settle_substeps": 80,
+  "reset_fix": true,
+  "severity_probs_v2": [
+    0.8,
+    0.15,
+    0.05
+  ],
+  "gates": "anchor bitwise across worlds for all t<=collapse; identical stored action; fatal branch dead with settled successor; safe branch non-fatal and finite",
+  "no_model_output_consulted": true,
+  "attempts": [
+    {
+      "episode": 0,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 2,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 3,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 4,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 5,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 6,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 7,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 8,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 9,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 10,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 25,
+      "original_mask": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 0,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 11,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 12,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 13,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 14,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 15,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 16,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 17,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 18,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 19,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 20,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 21,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 22,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 23,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 24,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 25,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 26,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 27,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 28,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 29,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 30,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 31,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 32,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 33,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 34,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 35,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 36,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 37,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 38,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 39,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 40,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 41,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 42,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 43,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 44,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 45,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 46,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 47,
+      "mode": "sighted",
+      "base_side": "right",
+      "collapse_step": 33,
+      "original_mask": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_1"
+      ],
+      "counterfactual_mask": [
+        1,
+        1,
+        0,
+        1
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 1,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 48,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 49,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 50,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 51,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 52,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 53,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 54,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 55,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 56,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 57,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 58,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 59,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 60,
+      "mode": "sighted",
+      "base_side": "right",
+      "collapse_step": 38,
+      "original_mask": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 2,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 61,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 62,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 63,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 64,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 65,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 66,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 67,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 68,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 69,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 70,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 71,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 72,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 73,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 74,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 75,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 76,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 77,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 78,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 79,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 80,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 81,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 82,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 83,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 84,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 85,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 86,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 87,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 88,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 89,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 90,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 91,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 92,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 93,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 94,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 95,
+      "mode": "sighted",
+      "base_side": "right",
+      "collapse_step": 49,
+      "original_mask": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_2"
+      ],
+      "counterfactual_mask": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 3,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 96,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 97,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 98,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 99,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 100,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 101,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 102,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 103,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 104,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 105,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 106,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 107,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 108,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 109,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 110,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 111,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 112,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 113,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 114,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 115,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 116,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 117,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 118,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 119,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 120,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 31,
+      "original_mask": [
+        1,
+        1,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        1,
+        0,
+        1
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 4,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 121,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 122,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 123,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 124,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 125,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 126,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 127,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 128,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 129,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 130,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 131,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 132,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 133,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 134,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 135,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 136,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 137,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 138,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 139,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 140,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 141,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 142,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 143,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 144,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 145,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 146,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 147,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 148,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 149,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 150,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 151,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 152,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 153,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 154,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 155,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 156,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 157,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 158,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 159,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 160,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 161,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 162,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 163,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 164,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 165,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 166,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 167,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 168,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 169,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 170,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 171,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 172,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 173,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 174,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 175,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 176,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 177,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 178,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 179,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 180,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 25,
+      "original_mask": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 5,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 181,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 182,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 183,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 184,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 185,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 186,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 187,
+      "mode": "sighted",
+      "base_side": "right",
+      "collapse_step": 45,
+      "original_mask": [
+        1,
+        1,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "impaired",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_2"
+      ],
+      "counterfactual_mask": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 6,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 188,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 189,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 190,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 191,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 192,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 193,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 194,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 195,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 196,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 197,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 198,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 199,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 200,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 201,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 23,
+      "original_mask": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "impaired",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 7,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 202,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 203,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 204,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 205,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 206,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 207,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 208,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 209,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 210,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 211,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 212,
+      "mode": "sighted",
+      "base_side": "right",
+      "collapse_step": 42,
+      "original_mask": [
+        0,
+        1,
+        1,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        1,
+        0,
+        1
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 8,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 213,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 214,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 215,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 216,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 217,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 218,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 219,
+      "mode": "sighted",
+      "base_side": "right",
+      "collapse_step": 52,
+      "original_mask": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "severities": [
+        "mild",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_2"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 9,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 220,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 221,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 222,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 223,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 224,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 225,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 226,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 227,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 228,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 229,
+      "mode": "sighted",
+      "base_side": "right",
+      "collapse_step": 36,
+      "original_mask": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "severities": [
+        "mild",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 10,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 230,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 231,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 232,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 233,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 234,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 235,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 236,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 237,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 238,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 239,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 240,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 241,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 242,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 243,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 244,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 245,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 246,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 247,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 248,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 249,
+      "mode": "sighted",
+      "base_side": "right",
+      "collapse_step": 33,
+      "original_mask": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 11,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 250,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 251,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 252,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 253,
+      "mode": "sighted",
+      "base_side": "right",
+      "collapse_step": 39,
+      "original_mask": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "severities": [
+        "impaired",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 12,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 254,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 255,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 256,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 257,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 258,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 259,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 260,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 261,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 262,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 263,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 264,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 265,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 266,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 267,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 268,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 269,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 270,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 271,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 272,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 273,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 274,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 275,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 276,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 277,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 278,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 279,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 280,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 281,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 282,
+      "mode": "sighted",
+      "base_side": "right",
+      "collapse_step": 32,
+      "original_mask": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "impaired"
+      ],
+      "fatal_site": [
+        "right_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 13,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 283,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 284,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 285,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 286,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 25,
+      "original_mask": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "mild",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 14,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 287,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 288,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 289,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 290,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 291,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 292,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 293,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 294,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 295,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 296,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 297,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 298,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 299,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 300,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 301,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 302,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 303,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 304,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 305,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 306,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 307,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 308,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 309,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 310,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 311,
+      "mode": "sighted",
+      "base_side": "right",
+      "collapse_step": 48,
+      "original_mask": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 15,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 312,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 313,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 314,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 315,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 316,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 317,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 318,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 319,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 320,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 321,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 322,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 323,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 324,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 325,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 326,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 327,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 328,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 329,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 330,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 331,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 332,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 333,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 334,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 335,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 336,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 337,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 338,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 339,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 340,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 341,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 342,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 343,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 344,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 345,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 346,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 347,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 348,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 349,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 350,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 351,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 352,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 353,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 354,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 355,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 356,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 357,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 358,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 359,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 360,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 361,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 362,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 363,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 364,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 365,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 366,
+      "mode": "sighted",
+      "base_side": "right",
+      "collapse_step": 54,
+      "original_mask": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "impaired",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_2"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 16,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 367,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 368,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 369,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 25,
+      "original_mask": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "impaired",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 17,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 370,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 371,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 372,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 373,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 374,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 375,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 376,
+      "mode": "sighted",
+      "base_side": "right",
+      "collapse_step": 32,
+      "original_mask": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "severities": [
+        "severe",
+        "impaired",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 18,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 377,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 378,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 379,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 380,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 381,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 382,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 383,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 384,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 385,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 386,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 387,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 25,
+      "original_mask": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "impaired",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 19,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 388,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 389,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 390,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 391,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 392,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 393,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 394,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 395,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 396,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 397,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 398,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 399,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 400,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 401,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 402,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 403,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 404,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 405,
+      "mode": "sighted",
+      "base_side": "right",
+      "collapse_step": 48,
+      "original_mask": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_2"
+      ],
+      "counterfactual_mask": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 20,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 406,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 407,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 408,
+      "mode": "sighted",
+      "base_side": "right",
+      "collapse_step": 51,
+      "original_mask": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_2"
+      ],
+      "counterfactual_mask": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 21,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 409,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 410,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 411,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 412,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 413,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 414,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 415,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 416,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 417,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 418,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 419,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 420,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 421,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 422,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 423,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 424,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 425,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 426,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 427,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 428,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 429,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 430,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 431,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 25,
+      "original_mask": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 22,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 432,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 24,
+      "original_mask": [
+        1,
+        0,
+        1,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "impaired",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 23,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 433,
+      "mode": "sighted",
+      "base_side": "right",
+      "collapse_step": 30,
+      "original_mask": [
+        1,
+        0,
+        1,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_1"
+      ],
+      "counterfactual_mask": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 24,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 434,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 435,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 436,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 437,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 438,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 439,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 440,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 441,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 442,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 443,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 444,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 445,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 446,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 27,
+      "original_mask": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 25,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 447,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 448,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 449,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 450,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 451,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 452,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 453,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 454,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 455,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 456,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 457,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 458,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 459,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 460,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 461,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 462,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 463,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 464,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 465,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 466,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 467,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 468,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 469,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 470,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 471,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 472,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 473,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 474,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 475,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 476,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 477,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 478,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 479,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 480,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 481,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 482,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 483,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 484,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 485,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 486,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 47,
+      "original_mask": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "impaired",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_2"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 26,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 487,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 488,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 489,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 490,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 491,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 492,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 493,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 494,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 495,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 496,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 497,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 498,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 499,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 500,
+      "mode": "sighted",
+      "base_side": "right",
+      "collapse_step": 39,
+      "original_mask": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "severities": [
+        "impaired",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 27,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 501,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 502,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 503,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 504,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 505,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 506,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 507,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 508,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 509,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 510,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 511,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 512,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 513,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 514,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 515,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 516,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 517,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 24,
+      "original_mask": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 28,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 518,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 519,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 520,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 521,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 522,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 523,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 524,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 525,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 526,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 527,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 528,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 529,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 530,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 531,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 532,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 533,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 534,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 535,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 536,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 537,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 538,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 539,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 540,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 541,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 542,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 543,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 544,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 545,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 546,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 547,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 548,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 549,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 550,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 551,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 552,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 553,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 554,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 555,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 556,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 557,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 558,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 559,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 560,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 561,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 562,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 563,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 564,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 565,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 566,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 26,
+      "original_mask": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 29,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 567,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 568,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 569,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 570,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 571,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 572,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 573,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 574,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 575,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 576,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 577,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 578,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 579,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 580,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 581,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 582,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 583,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 584,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 585,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 586,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 587,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 588,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 589,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 590,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 591,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 592,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 593,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 594,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 595,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 596,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 597,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 598,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 599,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 600,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 601,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 602,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 603,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 604,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 605,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 606,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 607,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 608,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 609,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 610,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 611,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 612,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 613,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 614,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 615,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 616,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 617,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 618,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 37,
+      "original_mask": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "impaired",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 30,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 619,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 620,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 621,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 622,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 623,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 624,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 625,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 626,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 627,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 26,
+      "original_mask": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "impaired",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 31,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 628,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 629,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 630,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 631,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 632,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 633,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 634,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 635,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 636,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 637,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 638,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 639,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 640,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 24,
+      "original_mask": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "impaired"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 32,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 641,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 642,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 643,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 644,
+      "mode": "sighted",
+      "base_side": "right",
+      "collapse_step": 52,
+      "original_mask": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "severities": [
+        "impaired",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_2"
+      ],
+      "counterfactual_mask": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 33,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 645,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 646,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 647,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 648,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 649,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 650,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 651,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 652,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 653,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 654,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 655,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 656,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 657,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 658,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 659,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 660,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 661,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 662,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 663,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 664,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 665,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 666,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 667,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 668,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 669,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 670,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 671,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 672,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 673,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 674,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 675,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 676,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 677,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 678,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 679,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 680,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 681,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 682,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 683,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 684,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 685,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 686,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 687,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 688,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 689,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 690,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 691,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 692,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 693,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 694,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 695,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 696,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 697,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 698,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 699,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 700,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 701,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 702,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 703,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 704,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 705,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 706,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 707,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 708,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 709,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 710,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 711,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 712,
+      "mode": "sighted",
+      "base_side": "right",
+      "collapse_step": 49,
+      "original_mask": [
+        0,
+        1,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "impaired",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_2"
+      ],
+      "counterfactual_mask": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 34,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 713,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 714,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 715,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 716,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 717,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 718,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 719,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 720,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 721,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 722,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 723,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 724,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 725,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 726,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 727,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 728,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 729,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 730,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 731,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 732,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 733,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 734,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 735,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 736,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 737,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 738,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 739,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 740,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 741,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 42,
+      "original_mask": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "impaired",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_2"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 35,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 742,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 743,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 744,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 745,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 746,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 747,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 748,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 749,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 750,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 751,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 752,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 753,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 754,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 755,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 756,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 757,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 758,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 759,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 760,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 761,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 762,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 763,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 764,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 765,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 766,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 767,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 768,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 769,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 770,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 771,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 772,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 773,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 774,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 775,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 776,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 777,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 778,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 779,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 780,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 781,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 34,
+      "original_mask": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 36,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 782,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 783,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 784,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 785,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 44,
+      "original_mask": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_2"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 37,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 786,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 787,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 788,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 789,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 790,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 791,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 792,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 793,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 794,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 795,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 796,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 797,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 798,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 799,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 800,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 801,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 802,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 803,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 804,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 30,
+      "original_mask": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 38,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 805,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 806,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 807,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 808,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 809,
+      "mode": "sighted",
+      "base_side": "right",
+      "collapse_step": 43,
+      "original_mask": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 39,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 810,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 811,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 812,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 813,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 814,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 815,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 816,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 817,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 818,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 819,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 820,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 821,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 822,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 823,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 824,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 825,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 826,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 827,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 828,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 829,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 830,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 831,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 832,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 833,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 834,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 835,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 836,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 837,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 838,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 839,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 840,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 841,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 842,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 843,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 844,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 845,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 846,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 847,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 848,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 849,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 850,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 851,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 852,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 853,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 854,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 855,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 856,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 857,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 29,
+      "original_mask": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "impaired",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 40,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 858,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 859,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 23,
+      "original_mask": [
+        1,
+        0,
+        1,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 41,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 860,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 861,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 862,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 863,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 864,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 865,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 866,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 867,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 868,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 869,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 870,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 871,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 872,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 873,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 874,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 875,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 876,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 877,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 878,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 879,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 29,
+      "original_mask": [
+        1,
+        0,
+        1,
+        1
+      ],
+      "severities": [
+        "severe",
+        "impaired",
+        "severe",
+        "impaired"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 42,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 880,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 881,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 882,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 25,
+      "original_mask": [
+        1,
+        0,
+        1,
+        1
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "mild",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 43,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 883,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 884,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 885,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 886,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 887,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 888,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 889,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 890,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 891,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 892,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 893,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 894,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 895,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 896,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 897,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 898,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 899,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 900,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 901,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 902,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 903,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 904,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 905,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 906,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 907,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 908,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 909,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 910,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 911,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 912,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 913,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 914,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 915,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 916,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 917,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 918,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 919,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 920,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 921,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 922,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 923,
+      "mode": "sighted",
+      "base_side": "right",
+      "collapse_step": 38,
+      "original_mask": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 44,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 924,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 925,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 926,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 927,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 928,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 929,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 930,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 931,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 932,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 933,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 934,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 935,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 936,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 42,
+      "original_mask": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "impaired",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_2"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 45,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 937,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 938,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 939,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 940,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 941,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 942,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 943,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 944,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 945,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 946,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 947,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 948,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 949,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 950,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 951,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 952,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 953,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 954,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 955,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 956,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 957,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 958,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 959,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 960,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 961,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 962,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 963,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 964,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 965,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 966,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 967,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 968,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 969,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 970,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 971,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 972,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 973,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 974,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 975,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 976,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 977,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 978,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 979,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 980,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 981,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 982,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 983,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 984,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 31,
+      "original_mask": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "impaired",
+        "severe"
+      ],
+      "fatal_site": [
+        "left_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 46,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 985,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 986,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 987,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 988,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 989,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 990,
+      "mode": "sighted",
+      "base_side": "left",
+      "collapse_step": 35,
+      "original_mask": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "mild"
+      ],
+      "fatal_site": [
+        "left_2"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 47,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 991,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 992,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 993,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 994,
+      "mode": "sighted",
+      "base_side": "right",
+      "collapse_step": 39,
+      "original_mask": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "severities": [
+        "severe",
+        "severe",
+        "severe",
+        "severe"
+      ],
+      "fatal_site": [
+        "right_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 48,
+      "safe_rock_contact_on_paired_step": false
+    },
+    {
+      "episode": 995,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 996,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 997,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 998,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 999,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1000,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 1001,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1002,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1003,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1004,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1005,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 1006,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1007,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1008,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1009,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1010,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1011,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1012,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1013,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1014,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1015,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 1016,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1017,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1018,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 1019,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1020,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1021,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1022,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1023,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1024,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1025,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1026,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1027,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1028,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1029,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1030,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1031,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1032,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1033,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1034,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1035,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1036,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1037,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1038,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1039,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 1040,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1041,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1042,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1043,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1044,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1045,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 1046,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1047,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1048,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1049,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1050,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1051,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1052,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1053,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1054,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 1055,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1056,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1057,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1058,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1059,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1060,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1061,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1062,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1063,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1064,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1065,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1066,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1067,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1068,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1069,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1070,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1071,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1072,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1073,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1074,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1075,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1076,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 1077,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1078,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1079,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1080,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1081,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1082,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1083,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1084,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1085,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1086,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1087,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1088,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1089,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 1090,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1091,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1092,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1093,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1094,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1095,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1096,
+      "mode": "coverage",
+      "status": "no_death"
+    },
+    {
+      "episode": 1097,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1098,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1099,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1100,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1101,
+      "mode": "sighted",
+      "status": "no_death"
+    },
+    {
+      "episode": 1102,
+      "mode": "sighted",
+      "base_side": "right",
+      "collapse_step": 55,
+      "original_mask": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "severities": [
+        "severe",
+        "impaired",
+        "severe",
+        "impaired"
+      ],
+      "fatal_site": [
+        "right_1"
+      ],
+      "counterfactual_mask": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "status": "ACCEPTED",
+      "pair_index": 49,
+      "safe_rock_contact_on_paired_step": false
+    }
+  ],
+  "pairs_npz": "artifacts/flow_v3_fresh50\\fresh50_pairs.npz",
+  "pairs_sha256": "b591c5b82a22ced7a9ad144eb10d9575e6d06a4e6ba3fcc543ccc23975400c43",
+  "walker_sha256": "70b0a460b2e38332821f1846b48c75fbcdc884dd315b29c97ebc69083388cdd5",
+  "git_commit": "498d19241bad46be7491a2ee44ec665cd47d7fba"
+}
