@@ -1,0 +1,193 @@
+{
+  "pathology_rule_code_condition": "(d(selected, fatal) > R_fatal) AND (f_C(s,a,selected) < f_C(s,a,fatal))",
+  "rule_source": "scripts/eval_fresh50_sealed.py (fully coded, never manual); reused verbatim, not redefined",
+  "R_fatal": 3.17,
+  "terminology": {
+    "N_success_repair": "baseline pathological case where state-NN picks a candidate with d_fatal <= R_fatal",
+    "N_pathology_eliminated": "baseline pathological case that no longer meets the pathology rule under state-NN, regardless of strict success"
+  },
+  "P_base": [
+    1,
+    6,
+    10,
+    11,
+    13,
+    16,
+    18,
+    24,
+    32,
+    39,
+    40,
+    48
+  ],
+  "n_P_base": 12,
+  "baseline_pathologies": 12,
+  "X_strictly_repaired_into_fatal_radius": 4,
+  "Y_pathologies_eliminated_regardless_of_threshold": 9,
+  "Z_baseline_pathologies_still_pathological": 3,
+  "W_new_pathologies_outside_P_base": 0,
+  "T_total_state_nn_pathologies_over_50": 3,
+  "identity_Y_plus_Z_equals_12": true,
+  "reconciliation_statement": "4/12 baseline pathologies were repaired all the way into strict selector success, while 9/12 ceased to be pathological; 5 of those 9 became non-pathological misses/near-misses rather than strict successes. The table column \"Repaired /12 = 4\" counted STRICT SUCCESS repairs, the prose \"3 pathologies\" counted TOTAL remaining state-NN pathologies (all inside P_base, since W=0), and \"zero new pathologies\" referred to W. The three numbers are consistent measurements of different quantities.",
+  "category_counts": {
+    "pathology -> strict success": 4,
+    "pathology -> near-miss": 3,
+    "pathology -> ordinary non-pathological miss": 2,
+    "pathology -> still pathology": 3
+  },
+  "transition_table": [
+    {
+      "case": 1,
+      "episode_id": 47,
+      "baseline_selected_k": 140,
+      "baseline_d_fatal": 4.641976356506348,
+      "baseline_pathology": true,
+      "state_nn_selected_k": 39,
+      "state_nn_d_fatal": 3.503232955932617,
+      "state_nn_strict_success": false,
+      "state_nn_pathology": false,
+      "category": "pathology -> near-miss"
+    },
+    {
+      "case": 6,
+      "episode_id": 187,
+      "baseline_selected_k": 152,
+      "baseline_d_fatal": 6.081122398376465,
+      "baseline_pathology": true,
+      "state_nn_selected_k": 101,
+      "state_nn_d_fatal": 5.400613784790039,
+      "state_nn_strict_success": false,
+      "state_nn_pathology": false,
+      "category": "pathology -> ordinary non-pathological miss"
+    },
+    {
+      "case": 10,
+      "episode_id": 229,
+      "baseline_selected_k": 72,
+      "baseline_d_fatal": 3.941877603530884,
+      "baseline_pathology": true,
+      "state_nn_selected_k": 16,
+      "state_nn_d_fatal": 2.713653087615967,
+      "state_nn_strict_success": true,
+      "state_nn_pathology": false,
+      "category": "pathology -> strict success"
+    },
+    {
+      "case": 11,
+      "episode_id": 249,
+      "baseline_selected_k": 78,
+      "baseline_d_fatal": 6.559678554534912,
+      "baseline_pathology": true,
+      "state_nn_selected_k": 130,
+      "state_nn_d_fatal": 5.614860534667969,
+      "state_nn_strict_success": false,
+      "state_nn_pathology": false,
+      "category": "pathology -> ordinary non-pathological miss"
+    },
+    {
+      "case": 13,
+      "episode_id": 282,
+      "baseline_selected_k": 94,
+      "baseline_d_fatal": 4.620267868041992,
+      "baseline_pathology": true,
+      "state_nn_selected_k": 176,
+      "state_nn_d_fatal": 2.3568575382232666,
+      "state_nn_strict_success": true,
+      "state_nn_pathology": false,
+      "category": "pathology -> strict success"
+    },
+    {
+      "case": 16,
+      "episode_id": 366,
+      "baseline_selected_k": 166,
+      "baseline_d_fatal": 4.480137348175049,
+      "baseline_pathology": true,
+      "state_nn_selected_k": 52,
+      "state_nn_d_fatal": 2.432859182357788,
+      "state_nn_strict_success": true,
+      "state_nn_pathology": false,
+      "category": "pathology -> strict success"
+    },
+    {
+      "case": 18,
+      "episode_id": 376,
+      "baseline_selected_k": 7,
+      "baseline_d_fatal": 3.290943145751953,
+      "baseline_pathology": true,
+      "state_nn_selected_k": 106,
+      "state_nn_d_fatal": 2.9663851261138916,
+      "state_nn_strict_success": true,
+      "state_nn_pathology": false,
+      "category": "pathology -> strict success"
+    },
+    {
+      "case": 24,
+      "episode_id": 433,
+      "baseline_selected_k": 144,
+      "baseline_d_fatal": 3.6688146591186523,
+      "baseline_pathology": true,
+      "state_nn_selected_k": 245,
+      "state_nn_d_fatal": 3.3345603942871094,
+      "state_nn_strict_success": false,
+      "state_nn_pathology": false,
+      "category": "pathology -> near-miss"
+    },
+    {
+      "case": 32,
+      "episode_id": 640,
+      "baseline_selected_k": 255,
+      "baseline_d_fatal": 3.202561140060425,
+      "baseline_pathology": true,
+      "state_nn_selected_k": 255,
+      "state_nn_d_fatal": 3.202561140060425,
+      "state_nn_strict_success": false,
+      "state_nn_pathology": true,
+      "category": "pathology -> still pathology"
+    },
+    {
+      "case": 39,
+      "episode_id": 809,
+      "baseline_selected_k": 128,
+      "baseline_d_fatal": 4.371959686279297,
+      "baseline_pathology": true,
+      "state_nn_selected_k": 199,
+      "state_nn_d_fatal": 3.364128589630127,
+      "state_nn_strict_success": false,
+      "state_nn_pathology": false,
+      "category": "pathology -> near-miss"
+    },
+    {
+      "case": 40,
+      "episode_id": 857,
+      "baseline_selected_k": 220,
+      "baseline_d_fatal": 6.300427436828613,
+      "baseline_pathology": true,
+      "state_nn_selected_k": 220,
+      "state_nn_d_fatal": 6.300427436828613,
+      "state_nn_strict_success": false,
+      "state_nn_pathology": true,
+      "category": "pathology -> still pathology"
+    },
+    {
+      "case": 48,
+      "episode_id": 994,
+      "baseline_selected_k": 33,
+      "baseline_d_fatal": 5.855555057525635,
+      "baseline_pathology": true,
+      "state_nn_selected_k": 202,
+      "state_nn_d_fatal": 3.485631227493286,
+      "state_nn_strict_success": false,
+      "state_nn_pathology": true,
+      "category": "pathology -> still pathology"
+    }
+  ],
+  "baseline_totals": {
+    "n_pathological": 12,
+    "selection_rate_given_coverage": "16/39"
+  },
+  "state_nn_totals": {
+    "n_pathological": 3,
+    "selection_rate_given_coverage": "26/39"
+  },
+  "git_commit": "7552a9000fbc7ab8c71cf8b96fcfe793f9b5e1e7"
+}

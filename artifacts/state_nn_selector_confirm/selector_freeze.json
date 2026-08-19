@@ -1,0 +1,58 @@
+{
+  "SELECTOR_FROZEN": true,
+  "statement": "state-NN selector frozen BEFORE the selector-confirm50 set was built or evaluated; no new sealed evaluation outputs exist yet",
+  "generator": {
+    "run_id": "V3-SA-diverse-l001",
+    "ckpt": "artifacts/flow_v3_diverse_failure/flow_v3/flow_v3.pkl",
+    "sha256": "7b0ac9c80afa8713155d30ee4b784b52bd6d5b58fc57ff73b6b900a11224803c",
+    "lambda": 0.01,
+    "K": 256,
+    "ode_steps": 50,
+    "solver": "fixed-step explicit Euler",
+    "sampling_seed_convention": "jax.random.PRNGKey(11), single draw",
+    "config": {
+      "steps": 20000,
+      "batch": 1024,
+      "lr": 0.001,
+      "seed": 0,
+      "hidden": [
+        512,
+        512
+      ],
+      "objective": "straight flow matching, target x1-x0",
+      "target": "normalized delta_s",
+      "conditioning": "s and a (raw); no failure label",
+      "mixture": "0.99 D_good + 0.01 D_fail^diverse (603)",
+      "purpose": "support-oriented generator, NOT calibrated"
+    }
+  },
+  "negative_bank": {
+    "name": "D_C^- (Critic-C training negatives)",
+    "path": "artifacts/settled_failure_bank_alpha01/failure_bank_settled.npz",
+    "sha256": "8c50202403317e8adc67670be716fffe5c3b3cb891017bfbe6eb070acd61d0ce",
+    "n_states": 16,
+    "state_dim": 29,
+    "note": "the 603-state expanded bank is NOT used"
+  },
+  "normalization": {
+    "path": "artifacts/flow_v0_clean/norm_stats.npz",
+    "sha256": "262daa472316773b441e0dfed897275ffac13e10966728d39d4f9e23ffe8d4ca",
+    "use": "frozen observable-state mean/std from V0"
+  },
+  "metric": "Euclidean L2 in frozen-normalized observable state space",
+  "rule": "d_neg(s') = min_{g in D_C^-} ||norm(s') - norm(g)||_2 ; select argmin_{k<=256} d_neg(s'_k)",
+  "critic_in_primary_selector": false,
+  "tie_break": "lowest candidate index k (numpy argmin semantics), pre-declared; never Critic C, true-fatal distance or physics",
+  "R_fatal": 3.17,
+  "pathology_rule": "(d(selected, fatal) > R_fatal) AND (f_C(s,a,selected) < f_C(s,a,fatal))",
+  "stage0_reconciliation": {
+    "X_strictly_repaired_into_fatal_radius": 4,
+    "Y_pathologies_eliminated_regardless_of_threshold": 9,
+    "Z_baseline_pathologies_still_pathological": 3,
+    "W_new_pathologies_outside_P_base": 0,
+    "T_total_state_nn_pathologies_over_50": 3,
+    "identity_Y_plus_Z_equals_12": true
+  },
+  "development_result_not_a_test": "26/39 on the already-opened fresh50",
+  "git_commit": "7552a9000fbc7ab8c71cf8b96fcfe793f9b5e1e7"
+}

@@ -58,7 +58,8 @@ P_ACTIVE, HORIZON, SETTLE_N, OBS_DIM = 0.30, 800, 80, 29
 SEED_BASE = 96_500_019
 DATASET_SEED = 96_990_013
 #: every seed consumed by an earlier collection / probe
-EXTRA_CONSUMED = [52_400_019, 71_400_019, 82_500_019, 91_500_019,
+EXTRA_CONSUMED = [96_500_019, 96_990_013,   # fresh50 (already used)
+                  52_400_019, 71_400_019, 82_500_019, 91_500_019,
                   92_500_019, 93_500_019, 94_500_019,
                   51_990_013, 51_990_014, 71_990_013, 82_990_013,
                   91_990_013, 92_990_013, 93_990_013, 94_990_013]
@@ -69,7 +70,11 @@ def main():
   ap.add_argument('--target', type=int, default=50)
   ap.add_argument('--max-episodes', type=int, default=3000)
   ap.add_argument('--out', default=OUT)
+  ap.add_argument('--seed-base', type=int, default=SEED_BASE)
+  ap.add_argument('--dataset-seed', type=int, default=DATASET_SEED)
+  ap.add_argument('--name', default='fresh50')
   args = ap.parse_args()
+  seed_base, dataset_seed = args.seed_base, args.dataset_seed
   os.makedirs(args.out, exist_ok=True)
 
   hard_ok, disc, info = C.check_frozen_integrity()
@@ -77,12 +82,12 @@ def main():
   assert hard_ok and rf_ok, 'frozen-integrity failure %s' % (disc + rf_diffs)
   excl = V2_CONSUMED + EXTRA_CONSUMED
   env_seed, prescreen = prescreen_env_seed(
-      args.max_episodes, [SEED_BASE + 97 * k for k in range(400)],
+      args.max_episodes, [seed_base + 97 * k for k in range(400)],
       exclude=excl, p_active=P_ACTIVE)
-  clash = C.seed_reuse(excl, [env_seed], [DATASET_SEED])
+  clash = C.seed_reuse(excl, [env_seed], [dataset_seed])
   assert not clash, 'seed clash %s' % clash
   print('fresh env_seed %d | dataset_seed %d | prescreen %s'
-        % (env_seed, DATASET_SEED, prescreen), flush=True)
+        % (env_seed, dataset_seed, prescreen), flush=True)
 
   cfg, walker, base_act, _, _ = C.load_controllers(RP.WALKER, RP.BASE)
   cfg.offline_dataset = ''
@@ -99,8 +104,8 @@ def main():
   fatal_env, safe_env = mk(env_seed), mk(env_seed)
 
   # teacher mixture, same convention as the validated stream
-  ds_rng = np.random.default_rng(DATASET_SEED)
-  side_rng = np.random.default_rng(DATASET_SEED + 1)
+  ds_rng = np.random.default_rng(dataset_seed)
+  side_rng = np.random.default_rng(dataset_seed + 1)
   n_cover = int(round(MIX['coverage'] * args.max_episodes))
   modes = np.array(['sighted'] * (args.max_episodes - n_cover)
                    + ['coverage'] * n_cover)
@@ -179,8 +184,8 @@ def main():
   assert len(pairs) >= args.target, \
       'only %d valid pairs in %d episodes' % (len(pairs), n_ep)
 
-  npz = os.path.join(args.out, 'fresh50_pairs.npz')
-  meta = {'label': 'fresh50', 'n': len(pairs),
+  npz = os.path.join(args.out, args.name + '_pairs.npz')
+  meta = {'label': args.name, 'n': len(pairs),
           'protocol': ('validated same-anchor protocol, reused verbatim; '
                        'only the seeds are new'),
           'action_source': ('anchor_action = the recorded factual action at '
@@ -190,7 +195,7 @@ def main():
                                     'transition with the internal N=80 '
                                     'settle; safe branch = the ordinary '
                                     'one-step transition'),
-          'env_seed': env_seed, 'dataset_seed': DATASET_SEED,
+          'env_seed': env_seed, 'dataset_seed': dataset_seed,
           'sealed_note': ('paired hidden-world intervention is EVALUATION '
                           'only and never enters training')}
   with open(npz + '.tmp', 'wb') as f:
@@ -219,7 +224,7 @@ def main():
                                    if a.get('reason') == r)
                             for r in sorted({a['reason'] for a in attempts
                                              if 'reason' in a})},
-      'env_seed': env_seed, 'dataset_seed': DATASET_SEED,
+      'env_seed': env_seed, 'dataset_seed': dataset_seed,
       'prescreen_freq': prescreen,
       'seed_disjointness_checked_against': excl,
       'teacher_mixture': {'sighted': 1 - MIX['coverage'],
