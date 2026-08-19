@@ -1,0 +1,64 @@
+{
+  "stage10_decision": "B. State-NN only partially confirms",
+  "criteria_evaluated_against_pre_declared_category_A": {
+    "materially_outperforms_or_clearly_improves_over_argmin_fC": {
+      "verdict": "NOT MET",
+      "state_nn": "24/31 = 0.774 (CI95 0.589-0.904)",
+      "argmin_fC": "21/31 = 0.677 (CI95 0.486-0.833)",
+      "delta": "+9.7 pp",
+      "paired_McNemar_exact_two_sided_p": 0.4531,
+      "paired": "5 state-NN wins vs 2 critic wins, 19 both, 24 both fail"
+    },
+    "pathology_rate_substantially_lower": {
+      "verdict": "MET",
+      "state_nn": "3/50 (cases 7,41,42)",
+      "argmin_fC": "8/50 (cases 0,1,7,28,38,39,41,42)",
+      "containment": "state-NN pathologies are a strict SUBSET of argmin pathologies; 5 removed, 0 new",
+      "paired_McNemar_exact_two_sided_p": 0.0625
+    },
+    "selected_candidates_physically_plausible_failure_like": {
+      "verdict": "MET",
+      "torso_z_median": {
+        "state_nn": 0.397,
+        "true_fatal": 0.38,
+        "safe": 0.562
+      },
+      "v_xy_median": {
+        "state_nn": 0.286,
+        "true_fatal": 0.004,
+        "safe": 1.388
+      },
+      "up_z_median": {
+        "state_nn": 0.999,
+        "true_fatal": 1.0,
+        "safe": 0.977
+      },
+      "coord_range": {
+        "state_nn": [
+          -2.887,
+          5.016
+        ],
+        "argmin_fC": [
+          -2.887,
+          7.21
+        ],
+        "true_fatal": [
+          -0.86,
+          5.113
+        ]
+      },
+      "note": "state-NN upper tail 5.02 stays inside the true-fatal envelope 5.11 while argmin fC reaches 7.21 -- the generated-tail exploitation signature is present in the comparator and absent in state-NN; the shared -2.887 minimum is the same candidate coordinate under both selectors, so it is not a state-NN-specific artifact"
+    },
+    "generator_coverage_adequate": {
+      "verdict": "MET BUT DEGRADED",
+      "coverage_at_256": "31/50 = 0.620 (CI95 0.472-0.753)",
+      "fresh50_reference": "39/50 = 0.780"
+    }
+  },
+  "why_not_C": "the development level reproduced and rose: state-NN 0.667 (dev, 26/39) -> 0.774 (sealed, 24/31). The dev/sealed gap narrowed because the comparator improved (0.410 -> 0.677), not because state-NN regressed.",
+  "why_not_D": "3/50 = 6% pathological, a strict subset of the comparator with zero new pathologies; not substantial off-manifold selection",
+  "why_not_A": "the primary SelectionRate advantage is directionally favourable but statistically weak on the untouched set (5 vs 2 discordant pairs, p=0.45, CIs overlap heavily)",
+  "rl_integration_verdict": "The static pipeline Flow generate -> state-space similarity to the 16 Critic-C negatives -> select worst candidate is SAFE and DIRECTIONALLY JUSTIFIED but not yet demonstrated to materially beat argmin f_C on selection accuracy. RL integration is a reasonable next step on the pathology and physical-plausibility evidence; it is not compelled by the selection-rate evidence alone. Awaiting user approval; no RL started.",
+  "pairs_sha256": "4c2d42b95ffcf6e4424bec43ad492f2f9f219fefd28db13266d15d3ae33e527e",
+  "git_commit": "39a4dfead3053cf13b1d14548e917929a1648c7f"
+}
