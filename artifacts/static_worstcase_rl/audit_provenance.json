@@ -1,0 +1,54 @@
+{
+  "audit_scope": "Phase 0-4 of the static worst-case RL integration task",
+  "audit_gate": "FAILED (G1 continuation rule, G2 branch weight) -- see integration_audit.md",
+  "rl_code_modified": false,
+  "files_modified_under_crl": [
+    "crl/static_worstcase.py (NEW, not called by anything)"
+  ],
+  "files_NOT_modified": [
+    "crl/losses.py",
+    "crl/config.py",
+    "crl/train.py",
+    "crl/replay.py"
+  ],
+  "training_started": false,
+  "module_provenance": {
+    "run_id": "V3-SA-diverse-l001",
+    "K": 256,
+    "ode_steps": 50,
+    "seed_convention": "jax.random.PRNGKey(11)",
+    "metric": "Euclidean L2 in frozen-normalized state space",
+    "tie_break": "lowest candidate index k (numpy argmin semantics)",
+    "critic_in_primary_selector": false,
+    "bank_size": 16,
+    "sha256": {
+      "v3": "7b0ac9c80afa8713155d30ee4b784b52bd6d5b58fc57ff73b6b900a11224803c",
+      "norm": "262daa472316773b441e0dfed897275ffac13e10966728d39d4f9e23ffe8d4ca",
+      "bank": "8c50202403317e8adc67670be716fffe5c3b3cb891017bfbe6eb070acd61d0ce"
+    },
+    "gates": {
+      "v3_ckpt_sha": true,
+      "normalization_sha": true,
+      "negative_bank_sha": true,
+      "bank_is_not_expanded_603": true,
+      "selector_frozen_flag": true,
+      "freeze_K": true,
+      "freeze_ode_steps": true,
+      "freeze_lambda": true,
+      "freeze_bank_sha": true,
+      "freeze_bank_size": true,
+      "freeze_norm_sha": true,
+      "freeze_metric_is_euclidean": true,
+      "critic_not_in_selector": true,
+      "tie_break_lowest_index": true,
+      "ckpt_lambda": true,
+      "ckpt_obs_dim": true,
+      "ckpt_run_id": true,
+      "bank_shape": true,
+      "bank_finite": true
+    }
+  },
+  "unit_tests": "artifacts/static_worstcase_rl/unit_tests.json",
+  "profile": "artifacts/static_worstcase_rl/profile.json",
+  "git_commit": "952ddcde5f88c600a4a7f201a16f7ad63cd99a07"
+}

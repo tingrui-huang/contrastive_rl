@@ -1,0 +1,95 @@
+{
+  "frozen_parameters": {
+    "K": 256,
+    "ode_steps": 50,
+    "note": "never reduced for speed"
+  },
+  "backend": "cpu",
+  "devices": [
+    "cpu:0"
+  ],
+  "baseline_batch": 1024,
+  "baseline_sgd_steps_per_step": 4,
+  "baseline_rss_mb_at_start": 171.2,
+  "measurements": [
+    {
+      "anchors": 1,
+      "candidates": 256,
+      "first_call_s_incl_compile": 0.965,
+      "steady_state_s": 0.046,
+      "candidates_per_s": 5561.1,
+      "ms_per_anchor": 46.034,
+      "rss_mb": 251.5
+    },
+    {
+      "anchors": 4,
+      "candidates": 1024,
+      "first_call_s_incl_compile": 1.012,
+      "steady_state_s": 0.1053,
+      "candidates_per_s": 9724.3,
+      "ms_per_anchor": 26.326,
+      "rss_mb": 292.4
+    },
+    {
+      "anchors": 16,
+      "candidates": 4096,
+      "first_call_s_incl_compile": 1.267,
+      "steady_state_s": 0.3286,
+      "candidates_per_s": 12465.5,
+      "ms_per_anchor": 20.537,
+      "rss_mb": 358.3
+    },
+    {
+      "anchors": 64,
+      "candidates": 16384,
+      "first_call_s_incl_compile": 2.275,
+      "steady_state_s": 1.3101,
+      "candidates_per_s": 12506.1,
+      "ms_per_anchor": 20.47,
+      "rss_mb": 484.7
+    },
+    {
+      "anchors": 128,
+      "candidates": 32768,
+      "first_call_s_incl_compile": 3.458,
+      "steady_state_s": 2.5886,
+      "candidates_per_s": 12658.5,
+      "ms_per_anchor": 20.224,
+      "rss_mb": 651.8
+    },
+    {
+      "anchors": 256,
+      "candidates": 65536,
+      "first_call_s_incl_compile": 6.05,
+      "steady_state_s": 5.1402,
+      "candidates_per_s": 12749.7,
+      "ms_per_anchor": 20.079,
+      "rss_mb": 960.3
+    }
+  ],
+  "best_batched": {
+    "anchors": 256,
+    "candidates": 65536,
+    "first_call_s_incl_compile": 6.05,
+    "steady_state_s": 5.1402,
+    "candidates_per_s": 12749.7,
+    "ms_per_anchor": 20.079,
+    "rss_mb": 960.3
+  },
+  "implied_overhead": {
+    "seconds_per_learner_step_if_every_anchor_needs_swc": 82.24,
+    "hours_for_300k_steps_full_rate": 6853.6,
+    "caveat": "full-rate is the WORST case: the archived worst-case semantics fire the branch only on the pessimistic coin and only at walk steps, not once per anchor per update. The true rate cannot be computed until the branch-firing rule (audit gate G2) is decided."
+  },
+  "precompute_analysis": {
+    "dataset": "artifacts/rockfall_v2_p30_h800_resetfix/failure_split/antmaze_rockfall_v2_p30_h800_resetfix_pilot_clean.npz",
+    "n_episodes": 284,
+    "ep_len_obs": 801,
+    "n_transitions": 227200,
+    "one_time_precompute_hours_this_cpu": 1.27,
+    "one_time_precompute_hours_at_50x_gpu": 0.025,
+    "cache_size_gb_float32": 0.026,
+    "implication": "s_wc is a STATIC per-transition table over the frozen dataset; precompute once, then RL training carries ZERO Flow cost per update. Throughput is therefore NOT a blocker for any branch-firing rule."
+  },
+  "git_commit": "952ddcde5f88c600a4a7f201a16f7ad63cd99a07"
+}
