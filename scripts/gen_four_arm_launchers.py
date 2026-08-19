@@ -12,6 +12,7 @@ BEYOND its mean branch rate.
 
 Usage:  python scripts/gen_four_arm_launchers.py
 """
+import argparse
 import hashlib
 import json
 import os
@@ -162,13 +163,28 @@ def wc_train_args(mode_args):
 
 
 def main():
+  ap = argparse.ArgumentParser()
+  ap.add_argument('--only', default='',
+                  help='comma-separated arm keys (S1,S2,S3,S4). Empty = all. '
+                       'S4 (blind) needs no worst-case table, so it can be '
+                       'generated before the table exists.')
+  cli = ap.parse_args()
+  only = [x.strip() for x in cli.only.split(',') if x.strip()]
   os.makedirs(OUT, exist_ok=True)
-  table_sha = sha256_file(os.path.join(_ROOT, TABLE))
+  table_path = os.path.join(_ROOT, TABLE)
+  needs_table = (not only) or any(k != 'S4' for k in only)
+  if needs_table:
+    table_sha = sha256_file(table_path)
+  else:
+    table_sha = None
+    print('NOTE: generating blind arm only -- worst-case table not required')
   dpsi_sha = sha256_dir(os.path.join(_ROOT, DPSI))
   commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'],
                                    cwd=_ROOT).decode().strip()
-  with np.load(os.path.join(_ROOT, TABLE), allow_pickle=True) as t:
-    n_rows = int(len(t['flat_index']))
+  n_rows = None
+  if needs_table:
+    with np.load(table_path, allow_pickle=True) as t:
+      n_rows = int(len(t['flat_index']))
 
   wc_vars = 'WC_TABLE="%s"\nWC_TABLE_SHA_PIN="%s"\n' % (TABLE, table_sha)
   wc_check = (
@@ -283,6 +299,8 @@ def main():
                        '16-state bank; lowest-index tie-break; no Critic C')},
       'arms': {}, 'dropped_arms': {}, 'historical_references': {}}
 
+  if only:
+    arms = [a for a in arms if a['key'] in only]
   for a in arms:
     prov = ("{'arm_name': %r, 'run_id': %r, 'git_sha': subprocess."
             "check_output(['git','rev-parse','HEAD']).decode().strip(), "
@@ -382,12 +400,15 @@ def main():
       '(n=200, fixed eval seed bank). Compare like with like: final-to-final '
       'and best-to-best.')
 
-  json.dump(manifest, open(os.path.join(OUT, 'experiment_manifest.json'), 'w'),
-            indent=2)
-  print('\ntable sha : %s  (%d rows)' % (table_sha, n_rows))
+  mf = ('experiment_manifest.json' if not only
+        else 'experiment_manifest_partial_%s.json' % '_'.join(only))
+  json.dump(manifest, open(os.path.join(OUT, mf), 'w'), indent=2)
+  if table_sha is not None and n_rows is not None:
+    print('')
+    print('table sha : %s  (%d rows)' % (table_sha, n_rows))
   print('D_psi sha : %s' % dpsi_sha)
   print('commit    : %s' % commit)
-  print('manifest  -> %s' % os.path.join(OUT, 'experiment_manifest.json'))
+  print('manifest  -> %s' % os.path.join(OUT, mf))
 
 
 if __name__ == '__main__':

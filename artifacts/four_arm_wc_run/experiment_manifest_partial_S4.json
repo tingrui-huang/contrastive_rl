@@ -1,0 +1,144 @@
+{
+  "experiment": "four-arm worst-case integration ablation",
+  "scientific_status": "MECHANISM / INTEGRATION ABLATIONS, not final causal-method validation. Arm S3 does NOT validate D_psi as a propensity; arms S1/S2 have no causal propensity interpretation; one seed is not statistical validation.",
+  "pinned_commit": "a21a3defe28ae93dee3fe85ca65e73aadd2a427c",
+  "shared": {
+    "dataset": "artifacts/rockfall_v2_p30_h800_resetfix/failure_split/antmaze_rockfall_v2_p30_h800_resetfix_pilot_clean.npz",
+    "dataset_sha256": "6bec8a52e771569c4edc14ff0c7319df4322fe6d74e6e69a6a7074fc76be1852",
+    "environment": "offline_ant_umaze_rockfall, p_active=0.30, H=800, reset_fix=True, severity v2.1 (0.80/0.15/0.05)",
+    "seed": 0,
+    "steps": 300000,
+    "batch_size": 1024,
+    "num_sgd_steps_per_step": 4,
+    "hidden": [
+      1024,
+      1024
+    ],
+    "repr_dim": 16,
+    "twin_q": true,
+    "bc_coef": 0.05,
+    "random_goals": 0.0,
+    "entropy_coefficient": 0.0,
+    "lr": 0.0003,
+    "discount": 0.99,
+    "eval_every_steps": 10000,
+    "eval_episodes": 30,
+    "eval_protocol": "scripts/diagnose_naive_rockfall.py --v2 --p-active 0.3 --reset-fix --horizon 800, n=200, FIXED eval seed bank (identical mask-pattern counts 48/45/53/54 across all runs)",
+    "worstcase_table": "artifacts/static_worstcase_rl/worstcase_table.npz",
+    "worstcase_table_sha256": null,
+    "worstcase_table_rows": null,
+    "flow_v3_sha256": "7b0ac9c80afa8713155d30ee4b784b52bd6d5b58fc57ff73b6b900a11224803c",
+    "normalization_sha256": "262daa472316773b441e0dfed897275ffac13e10966728d39d4f9e23ffe8d4ca",
+    "negative_bank_sha256": "8c50202403317e8adc67670be716fffe5c3b3cb891017bfbe6eb070acd61d0ce",
+    "K": 256,
+    "ode_steps": 50,
+    "lambda": 0.01,
+    "selector": "argmin_k min_g ||norm(s_k) - norm(g)||_2 over the 16-state bank; lowest-index tie-break; no Critic C"
+  },
+  "arms": {
+    "S4": {
+      "name": "pure blind CRL baseline (clean dataset)",
+      "run_id": "blind_crl_clean_h800_a00_s0_300k",
+      "script": "scripts/run_blind_crl_clean_h800_a00_s0_300k.sh",
+      "purpose": "Ordinary contrastive RL only: no propensity, no worst-case branch, no Flow, no similarity selector, no static table, NO failure-negative augmentation (alpha_fail = 0). Uses the CLEAN split so it is dataset-matched to the three worst-case arms and to the historical fail-neg-only reference. The historical blind run naive_rockfall_v2_p30_h800_resetfix_s0_300k used the FULL pilot (sha 08bdc44b...) and is kept only as a secondary, NOT dataset-matched reference.",
+      "git_sha": "a21a3defe28ae93dee3fe85ca65e73aadd2a427c",
+      "dataset": "artifacts/rockfall_v2_p30_h800_resetfix/failure_split/antmaze_rockfall_v2_p30_h800_resetfix_pilot_clean.npz",
+      "dataset_sha256": "6bec8a52e771569c4edc14ff0c7319df4322fe6d74e6e69a6a7074fc76be1852",
+      "environment_H": 800,
+      "seed": 0,
+      "alpha_fail": 0.0,
+      "worst_case_enabled": false,
+      "propensity_type": "none",
+      "rho_semantics": "none (blind baseline)",
+      "flow_sha256": null,
+      "worstcase_table_sha256": null,
+      "negative_bank_sha256": null,
+      "dpsi_sha256": null,
+      "total_steps": 300000,
+      "output_dir": "./blind_crl_clean_h800_a00_s0_300k",
+      "log_path": "logs/blind_crl_clean_h800_a00_s0_300k.log",
+      "eval_dir": "./blind_crl_clean_h800_a00_s0_300k/eval_h800_resetfix"
+    }
+  },
+  "dropped_arms": {
+    "historical_k3": {
+      "name": "historical k=3 propensity + worst-case",
+      "status": "DROPPED by the user after recovery failed; REPLACED by wc_fixedp50_h800_a01_s0_300k",
+      "reason": "no historical k=3 propensity exists anywhere in the repository, on any branch, or in git history; see artifacts/four_arm_wc_run/k3_recovery_report.md",
+      "not_invented": true
+    }
+  },
+  "historical_references": {
+    "fail_neg_only_alpha01_CLEAN": {
+      "run": "failneg_settledbank_a01_s0_300k/failneg_settledbank_p30_h800_resetfix_a01_s0_300k",
+      "role": "PRIMARY historical comparison reference -- DO NOT RERUN",
+      "dataset_sha256": "6bec8a52e771569c4edc14ff0c7319df4322fe6d74e6e69a6a7074fc76be1852",
+      "alpha_fail": 0.1,
+      "worst_case_enabled": false,
+      "propensity_type": "none",
+      "seed": 0,
+      "steps": 300000,
+      "final": {
+        "step": 300000,
+        "success": 0.645,
+        "hazard_exposure": 0.77,
+        "drop_rate": 0.335,
+        "center_fraction": 0.26,
+        "both_sides_success": 0.4,
+        "left_only_success": 0.943,
+        "right_only_success": 0.315,
+        "trigger_avoidance": 0.06
+      },
+      "best": {
+        "step": 208000,
+        "success": 0.66,
+        "hazard_exposure": 0.615,
+        "drop_rate": 0.28,
+        "center_fraction": 0.34,
+        "both_sides_success": 0.578,
+        "left_only_success": 0.887,
+        "right_only_success": 0.315,
+        "trigger_avoidance": 0.036
+      },
+      "protocol_match": "same trainer, dataset, env, seed, budget and eval protocol as the worst-case arms -- compatible, no rerun needed",
+      "reporting_rule": "BOTH final and best recorded; compare every new arm final-to-final and best-to-best. NEVER compare this best against a new-run final."
+    },
+    "blind_crl_FULL_dataset": {
+      "run": "naive_rockfall_v2_p30_h800_resetfix_s0_300k",
+      "role": "SECONDARY reference only -- NOT dataset-matched (FULL pilot, sha 08bdc44b...). The dataset-matched blind baseline is the new arm blind_crl_clean_h800_a00_s0_300k.",
+      "dataset_sha256": "08bdc44bb7942793ea18c2628c36d8ea8bfe875169afadfa8934b1b948ef55e4",
+      "alpha_fail": 0.0,
+      "final": {
+        "step": 300000,
+        "success": 0.515,
+        "hazard_exposure": 0.98,
+        "drop_rate": 0.45,
+        "center_fraction": 0.07,
+        "both_sides_success": 0.2,
+        "left_only_success": 0.906,
+        "right_only_success": 0.093,
+        "trigger_avoidance": 0.031
+      },
+      "best": {
+        "step": 239200,
+        "success": 0.52,
+        "hazard_exposure": 0.92,
+        "drop_rate": 0.43,
+        "center_fraction": 0.11,
+        "both_sides_success": 0.178,
+        "left_only_success": 0.925,
+        "right_only_success": 0.111,
+        "trigger_avoidance": 0.046
+      }
+    }
+  },
+  "key_matched_comparison": {
+    "pair": [
+      "wc_fixedp50_h800_a01_s0_300k",
+      "wc_dpsi_surrogate_h800_a01_s0_300k"
+    ],
+    "rationale": "approximately equal AVERAGE worst-case dose (fixed 0.500 vs D_psi empirical mean ~0.495). The only difference is that D_psi varies with (s, g_cmd, a) while the fixed arm does not, so the contrast isolates whether D_psi contributes useful state/action dependence BEYOND its mean branch rate.",
+    "dose_check": "confirm the realized worst-case rates in the smoke logs before launch; do NOT force D_psi to match 0.50"
+  },
+  "reporting_rule": "Report final AND best for every arm from the identical eval protocol (n=200, fixed eval seed bank). Compare like with like: final-to-final and best-to-best."
+}
