@@ -66,6 +66,11 @@ class PessimisticPositiveBuffer:
     self._base = base
     self._rho_fn = rho_fn
     self._coin_rng = np.random.default_rng(seed)
+    # cumulative branch accounting (diagnostics only; never feeds the loss)
+    self._n_nominal = 0
+    self._n_worstcase = 0
+    self._rho_sum = 0.0
+    self._rho_n = 0
 
     with np.load(table_npz, allow_pickle=True) as t:
       flat = np.asarray(t['flat_index'], np.int64)
@@ -133,7 +138,18 @@ class PessimisticPositiveBuffer:
         discount=np.full((batch_size,), b._discount, np.float32),
         next_observation=np.concatenate([next_state, goal], axis=1),
         next_action=next_action)
+    self._n_nominal += int(nominal.sum())
+    self._n_worstcase += int((~nominal).sum())
+    self._rho_sum += float(rho.sum())
+    self._rho_n += batch_size
     if not return_aux:
       return out
     return out, {'nominal': nominal, 'rho': rho, 'traj': traj, 'i': i, 'j': j,
                  'goal_state': goal_state}
+
+  def branch_stats(self):
+    """Cumulative branch accounting. Diagnostics only."""
+    tot = self._n_nominal + self._n_worstcase
+    return {'n_nominal': self._n_nominal, 'n_worstcase': self._n_worstcase,
+            'realized_wc_rate': (self._n_worstcase / tot) if tot else 0.0,
+            'mean_rho': (self._rho_sum / self._rho_n) if self._rho_n else 0.0}

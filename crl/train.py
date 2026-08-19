@@ -334,6 +334,53 @@ def train(config: Config):
         offline_audit.record_dataset_hash(
             config.ckpt_dir, off_fp['sha256'], off_fp['meta'])
 
+    # --- Pessimistic worst-case positives (four-arm ablation) --------------
+    # Wraps the FROZEN buffer so sample()'s POSITIVE GOAL comes from
+    #   B ~ Bernoulli(rho);  B=1 nominal future goal, B=0 obs_to_goal(s'_wc).
+    # Everything else (anchor law, losses, alpha, failure bank, ordinary
+    # negatives) is untouched. Default off => byte-identical baseline.
+    if getattr(config, 'wc_positive', False):
+      from crl import pessimistic_positive as wc_mod
+      from crl import static_worstcase as sw_mod
+      if not config.wc_table:
+        raise ValueError('wc_positive requires config.wc_table')
+      t_sha = sw_mod.sha256_file(config.wc_table)
+      if config.wc_table_sha256 and t_sha != config.wc_table_sha256:
+        raise RuntimeError(
+            'ABORT: worst-case table sha %s != pinned %s -- arms A/B/C must '
+            'consume the SAME table artifact' % (t_sha, config.wc_table_sha256))
+      mode = config.wc_rho_mode
+      if mode == 'fixed':
+        p_wc = float(config.wc_p_wc)
+        if not 0.0 <= p_wc <= 1.0:
+          raise ValueError('wc_p_wc must be in [0, 1]')
+        def rho_fn(s_, g_, a_, _p=p_wc):
+          return np.full(len(s_), 1.0 - _p)
+        rho_desc = 'fixed p_wc=%.4f (NO causal propensity interpretation)' % p_wc
+      elif mode == 'dpsi':
+        from propensity.agreement import (load_agreement_model,
+                                          agreement_score_batch)
+        _dm = load_agreement_model(config.wc_dpsi_model)
+        def rho_fn(s_, g_, a_, _m=_dm):
+          return np.asarray(agreement_score_batch(_m.params, _m.spec,
+                                                  s_, g_, a_), np.float64)
+        rho_desc = ('D_psi raw sigmoid SURROGATE (NOT a calibrated propensity; '
+                    'see the G2 calibration audit)')
+      else:
+        raise ValueError('wc_rho_mode must be "fixed" or "dpsi", got %r' % mode)
+      buffer = wc_mod.PessimisticPositiveBuffer(
+          buffer, config.wc_table, rho_fn=rho_fn, seed=config.wc_coin_seed)
+      print('=' * 70, flush=True)
+      print('ARM_NAME          : %s' % (config.arm_name or '(unnamed)'))
+      print('PROPENSITY_TYPE   : %s' % rho_desc)
+      print('WC_TABLE          : %s' % config.wc_table)
+      print('WC_TABLE_SHA      : %s' % t_sha)
+      print('WC_TABLE_ROWS     : %d' % buffer.n_table_rows)
+      print('ALPHA_FAIL        : %s' % config.fail_neg_alpha)
+      print('SEED              : %s | COIN_SEED: %s'
+            % (config.seed, config.wc_coin_seed))
+      print('=' * 70, flush=True)
+
     # Runtime immutability watchdog (checked at every eval): the collection env
     # does not exist (env is None) and the buffer is frozen, so collection is
     # structurally impossible; here we also pin the content hash and count the
@@ -498,6 +545,19 @@ def train(config: Config):
                 f' cat_acc={m.get("categorical_accuracy", 0):.3f}')
         if 'bc_nll' in m:
           msg += f' bc_nll={m["bc_nll"]:.3f}'
+        if 'critic_neg_fail_term' in m:
+          msg += f' fail_neg={m["critic_neg_fail_term"]:.4f}'
+        if 'critic_pos_term' in m:
+          msg += f' pos={m["critic_pos_term"]:.4f}'
+        if 'critic_neg_ord_term' in m:
+          msg += f' neg_ord={m["critic_neg_ord_term"]:.4f}'
+      bs = getattr(buffer, 'branch_stats', None)
+      if bs is not None:
+        st_ = bs()
+        msg += (f' | wc_rate={st_["realized_wc_rate"]:.4f}'
+                f' nominal={st_["n_nominal"]} wc={st_["n_worstcase"]}'
+                f' E[rho]={st_["mean_rho"]:.4f}'
+                f' E[p_wc]={1.0 - st_["mean_rho"]:.4f}')
       elif buffer.ready_steps < min_replay:
         msg += f' (filling buffer {buffer.ready_steps}/{min_replay})'
       print(msg, flush=True)

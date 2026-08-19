@@ -90,6 +90,34 @@ class Config:
   # critic loss/gradients are byte-identical to the baseline.
   fail_neg_alpha: float = 0.0
 
+  # --- Pessimistic worst-case positive goals (four-arm ablation; OFF by
+  # default, so an unset run is byte-identical to the baseline). The ONLY
+  # thing this changes is the distribution the contrastive POSITIVE goal is
+  # drawn from; the critic/actor losses, alpha, the failure bank and ordinary
+  # negatives are untouched. See crl/pessimistic_positive.py and
+  # artifacts/static_worstcase_rl/positive_goal_integration.md.
+  #
+  #   B_t ~ Bernoulli(rho_t);  B=1 -> nominal future goal (unchanged),
+  #                            B=0 -> obs_to_goal(s'_wc) from the static table.
+  wc_positive: bool = False
+  # Static worst-case table npz (scripts/precompute_worstcase_table.py).
+  wc_table: str = ''
+  # Expected SHA-256 of that table; '' skips the check. A/B/C must pin it so
+  # the arms provably consume the SAME artifact.
+  wc_table_sha256: str = ''
+  # Branch-probability mechanism: 'fixed' => rho = 1 - wc_p_wc for every
+  # transition (NO causal interpretation); 'dpsi' => rho = the frozen raw
+  # sigmoid of the behavior-vs-target source classifier (a SURROGATE, not a
+  # calibrated propensity -- see the G2 calibration audit).
+  wc_rho_mode: str = ''
+  wc_p_wc: float = 0.0              # 'fixed' mode only: P(pessimistic branch).
+  wc_dpsi_model: str = ''           # 'dpsi' mode only: agreement model dir.
+  # Coin RNG stream, kept SEPARATE from the replay rng so that forcing the
+  # nominal branch leaves the sampler bitwise identical to the baseline.
+  wc_coin_seed: int = 0
+  # Free-text arm label echoed into the startup banner and provenance.
+  arm_name: str = ''
+
   # --- Replay ---
   min_replay_size: int = 10_000     # env steps before learning starts.
   max_replay_size: int = 1_000_000  # env steps kept in the buffer.

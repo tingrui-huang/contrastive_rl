@@ -47,6 +47,25 @@ def main():
                   help='target fraction alpha of critic negatives drawn from '
                        'the failure bank; 0 = byte-identical baseline')
   ap.add_argument('--resume', action='store_true')
+  # --- four-arm worst-case positive-goal ablation (all default OFF, so an
+  # unset invocation is byte-identical to the historical baseline) ---------
+  ap.add_argument('--arm-name', default='',
+                  help='free-text arm label echoed into the startup banner')
+  ap.add_argument('--wc-positive', action='store_true',
+                  help='enable the pessimistic worst-case POSITIVE-GOAL branch')
+  ap.add_argument('--wc-table', default='',
+                  help='static worst-case table npz (shared by arms A/B/C)')
+  ap.add_argument('--wc-table-sha256', default='',
+                  help='pinned sha256 of that table; mismatch ABORTS')
+  ap.add_argument('--wc-rho-mode', default='',
+                  choices=['', 'fixed', 'dpsi'],
+                  help='branch-probability mechanism')
+  ap.add_argument('--wc-p-wc', type=float, default=0.0,
+                  help='fixed mode: P(pessimistic branch); rho = 1 - p_wc')
+  ap.add_argument('--wc-dpsi-model', default='',
+                  help='dpsi mode: agreement model directory')
+  ap.add_argument('--wc-coin-seed', type=int, default=0,
+                  help='RNG stream for the branch coin, SEPARATE from replay')
   args = ap.parse_args()
   os.makedirs(args.ckpt_dir, exist_ok=True)
 
@@ -67,6 +86,15 @@ def main():
     cfg.fail_bank_path = args.fail_bank         # failure-aware negatives
     cfg.fail_neg_alpha = args.fail_neg_alpha    # (both must be set together)
   cfg.seed = args.seed
+  cfg.arm_name = args.arm_name
+  if args.wc_positive:
+    cfg.wc_positive = True
+    cfg.wc_table = args.wc_table
+    cfg.wc_table_sha256 = args.wc_table_sha256
+    cfg.wc_rho_mode = args.wc_rho_mode
+    cfg.wc_p_wc = args.wc_p_wc
+    cfg.wc_dpsi_model = args.wc_dpsi_model
+    cfg.wc_coin_seed = args.wc_coin_seed
   cfg.eval_every_steps = 10_000
   cfg.eval_episodes = 30
   cfg.log_every_steps = 5_000
