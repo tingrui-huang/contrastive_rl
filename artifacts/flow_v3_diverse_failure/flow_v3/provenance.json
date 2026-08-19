@@ -1,0 +1,53 @@
+{
+  "run_id": "V3-SA-diverse-l001",
+  "lambda": 0.01,
+  "scientific_change": "196 -> 603 diverse factual failure transitions",
+  "v2_reference_ckpt": "artifacts/flow_v2_failure_local/V2-SA-l001/flow_v2.pkl",
+  "v2_reference_sha256": "a9af087eb65d05271bd044078eb3fb088ba78f5273f1ca75071b11519c00d534",
+  "v2_config": {
+    "steps": 20000,
+    "batch": 1024,
+    "lr": 0.001,
+    "seed": 0,
+    "hidden": [
+      512,
+      512
+    ],
+    "objective": "straight flow matching, target x1-x0",
+    "target": "normalized delta_s",
+    "conditioning": "s and a (raw); no failure label",
+    "mixture": "failure-local lambda over (D_good, D_fail)",
+    "purpose": "support-oriented generator, NOT calibrated"
+  },
+  "clean_npz": "artifacts/rockfall_v2_p30_h800_resetfix/failure_split/antmaze_rockfall_v2_p30_h800_resetfix_pilot_clean.npz",
+  "clean_sha256": "6bec8a52e771569c4edc14ff0c7319df4322fe6d74e6e69a6a7074fc76be1852",
+  "old_failure_pool": "bad_demo_blind_p30_h800_settle80",
+  "n_old": 196,
+  "diverse_pool_npz": "artifacts/flow_v3_diverse_failure\\failure_pool_diversity_audit\\failure_pool_diverse.npz",
+  "diverse_pool_sha256": "f257e0f0441cf9aea6c79fed084d49cbb1af3bd3bbfde1af34503be5cc1d331a",
+  "n_combined": 603,
+  "per_source_counts": {
+    "alpha0": 58,
+    "alpha01_legacy": 62,
+    "alpha01_settled": 103,
+    "naive": 184,
+    "old196": 196
+  },
+  "normalization_source": "artifacts/flow_v0_clean\\norm_stats.npz",
+  "architecture": {
+    "hidden": [
+      512,
+      512
+    ],
+    "family": "SA"
+  },
+  "training": {
+    "steps": 20000,
+    "batch": 1024,
+    "lr": 0.001,
+    "seed": 0
+  },
+  "diversity_gate_passed": true,
+  "git_commit": "43d190dfa8330ab94b032020dc33cdfe12eb4618",
+  "jax_backend": "cpu"
+}
