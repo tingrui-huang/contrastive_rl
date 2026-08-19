@@ -1,0 +1,92 @@
+{
+  "pre_registered": true,
+  "scientific_change": "failure-support DIVERSITY only",
+  "frozen_elsewhere": {
+    "lambda": 0.01,
+    "K": 256,
+    "R_fatal": 3.17,
+    "architecture": "V2-SA",
+    "critic": "C (frozen)"
+  },
+  "arms": [
+    {
+      "arm": "naive",
+      "kind": "trained_crl_policy",
+      "ckpt": "naive_rockfall_v2_p30_h800_resetfix_s0_300k/best.pkl",
+      "env_seed": 91500019,
+      "dataset_seed": 91990013,
+      "documented": {
+        "success": 0.515,
+        "hazard_exposure": 0.98,
+        "drop_rate": 0.45,
+        "center_fraction": 0.07
+      },
+      "ckpt_sha256": "b245728221d8de907a19f63c4cc607190cc2742ce8075b186076bc45bde2cc01",
+      "episodes": 500
+    },
+    {
+      "arm": "alpha0",
+      "kind": "trained_crl_policy",
+      "ckpt": "failneg_clean_p30_h800_resetfix_a0_s0_300k/best.pkl",
+      "env_seed": 92500019,
+      "dataset_seed": 92990013,
+      "documented": {
+        "success": 0.77,
+        "hazard_exposure": 0.395,
+        "drop_rate": 0.16,
+        "center_fraction": 0.28
+      },
+      "ckpt_sha256": "a04a1837bc71a630e8b95d498f3210135b32288bf2eb157a0a72e4b38bcbd1b3",
+      "episodes": 500
+    },
+    {
+      "arm": "alpha01_legacy",
+      "kind": "trained_crl_policy",
+      "ckpt": "failneg_clean_p30_h800_resetfix_a01_s0_300k/best.pkl",
+      "env_seed": 93500019,
+      "dataset_seed": 93990013,
+      "documented": {
+        "success": 0.87,
+        "hazard_exposure": 0.14,
+        "drop_rate": 0.035,
+        "center_fraction": 0.455
+      },
+      "ckpt_sha256": "d669a720a023d6c1b9c62625552d55542a5c07d3ffd1c72098135702efaa91ba",
+      "episodes": 500
+    },
+    {
+      "arm": "alpha01_settled",
+      "kind": "trained_crl_policy",
+      "ckpt": "failneg_settledbank_a01_s0_300k/failneg_settledbank_p30_h800_resetfix_a01_s0_300k/best.pkl",
+      "env_seed": 94500019,
+      "dataset_seed": 94990013,
+      "documented": {
+        "success": 0.645,
+        "hazard_exposure": 0.77,
+        "drop_rate": 0.335,
+        "center_fraction": 0.26
+      },
+      "ckpt_sha256": "09ed8cd0a85cb9cb0edbd090a704cdb1435a02bd0e6a2b620103954d03bce2b8",
+      "episodes": 500
+    }
+  ],
+  "episodes_per_arm": 500,
+  "n_arms": 4,
+  "n_total_episodes": 2000,
+  "env": {
+    "name": "offline_ant_umaze_rockfall",
+    "p_active": 0.3,
+    "horizon": 800,
+    "reset_fix": true,
+    "severity_probs": [
+      0.8,
+      0.15,
+      0.05
+    ],
+    "death_settle_substeps": 80
+  },
+  "collection_rules": "every episode retained (successes AND failures); no mask forcing, no severity forcing, no failure-only filtering, no stop-at-target-deaths, no alternate hidden worlds, no same-anchor counterfactual replay",
+  "arm_selection_basis": "behavioural distinctness from ALREADY-PUBLISHED authoritative diag_final diagnostics; arms were NOT chosen by death counts measured in this task",
+  "blind_arm_excluded_note": "D_fail^196 already covers the blind-lane failure geometry and is preserved in the combined pool",
+  "git_commit": "4d5d664e60d334112f8cbf8546c4649104a58023"
+}

@@ -1,0 +1,101 @@
+{
+  "eligibility_rule": "action must depend only on learner-visible information; any controller reading the rock mask, severity, future rock schedule, hidden U, privileged teacher state or counterfactual information is excluded",
+  "candidates": [
+    {
+      "name": "blind teacher",
+      "location": "scripts/collect_rockfall_v2_pilot.py rollout(mode='blind')",
+      "observation_inputs": "learner obs58 + own x-history; base side from an RNG independent of the mask",
+      "reads_mask_severity_U": false,
+      "reads_privileged_teacher_state": false,
+      "deterministic": "deterministic given the reset stream",
+      "route_behavior": "fixed base lane, no detours",
+      "known_hazard_exposure": 1.0,
+      "eligible": true,
+      "used_in_v3": false,
+      "reason": "eligible, but it is exactly the behaviour that produced D_fail^196; re-running it would add samples without adding failure-anchor diversity. Its geometry is retained via D_fail^196 in the combined pool."
+    },
+    {
+      "name": "center / coverage route",
+      "location": "scripts/collect_rockfall_v2_pilot.py rollout(mode='coverage') -> rockfall_pilot.route_command",
+      "observation_inputs": "learner obs58 + own x-history",
+      "reads_mask_severity_U": false,
+      "reads_privileged_teacher_state": false,
+      "deterministic": "deterministic given the reset stream",
+      "route_behavior": "centerline throughout",
+      "known_hazard_exposure": "approximately 0 by construction (center route never enters a trigger band)",
+      "eligible": true,
+      "used_in_v3": false,
+      "reason": "eligible but expected to contribute almost no settled-fatal transitions -- the center route is designed to avoid every trigger region, so it cannot broaden FAILURE geometry."
+    },
+    {
+      "name": "sighted local-detour teacher",
+      "location": "scripts/rockfall_v2_teacher.py active_site_windows(...)",
+      "observation_inputs": "learner obs58 AND env.rockfall_mask",
+      "reads_mask_severity_U": true,
+      "reads_privileged_teacher_state": true,
+      "deterministic": "deterministic",
+      "route_behavior": "lane + detours",
+      "known_hazard_exposure": "low (avoids active sites)",
+      "eligible": false,
+      "used_in_v3": false,
+      "reason": "PRIVILEGED: reads the hidden hazard mask (the U -> A confounder pathway). Excluded from all factual collection."
+    },
+    {
+      "name": "trained CRL policy: naive",
+      "location": "naive_rockfall_v2_p30_h800_resetfix_s0_300k/best.pkl via tanh(loc(policy(obs58)))",
+      "observation_inputs": "58-dim learner observation only [state(29), zero-padded goal(29)]",
+      "reads_mask_severity_U": false,
+      "reads_privileged_teacher_state": false,
+      "deterministic": "deterministic eval action tanh(loc)",
+      "route_behavior": "center fraction 0.070 (documented)",
+      "known_hazard_exposure": 0.98,
+      "eligible": true,
+      "used_in_v3": true,
+      "reason": "eligible and behaviourally distinct; selected on PRE-EXISTING published diagnostics, not on any death count measured in this task"
+    },
+    {
+      "name": "trained CRL policy: alpha0",
+      "location": "failneg_clean_p30_h800_resetfix_a0_s0_300k/best.pkl via tanh(loc(policy(obs58)))",
+      "observation_inputs": "58-dim learner observation only [state(29), zero-padded goal(29)]",
+      "reads_mask_severity_U": false,
+      "reads_privileged_teacher_state": false,
+      "deterministic": "deterministic eval action tanh(loc)",
+      "route_behavior": "center fraction 0.280 (documented)",
+      "known_hazard_exposure": 0.395,
+      "eligible": true,
+      "used_in_v3": true,
+      "reason": "eligible and behaviourally distinct; selected on PRE-EXISTING published diagnostics, not on any death count measured in this task"
+    },
+    {
+      "name": "trained CRL policy: alpha01_legacy",
+      "location": "failneg_clean_p30_h800_resetfix_a01_s0_300k/best.pkl via tanh(loc(policy(obs58)))",
+      "observation_inputs": "58-dim learner observation only [state(29), zero-padded goal(29)]",
+      "reads_mask_severity_U": false,
+      "reads_privileged_teacher_state": false,
+      "deterministic": "deterministic eval action tanh(loc)",
+      "route_behavior": "center fraction 0.455 (documented)",
+      "known_hazard_exposure": 0.14,
+      "eligible": true,
+      "used_in_v3": true,
+      "reason": "eligible and behaviourally distinct; selected on PRE-EXISTING published diagnostics, not on any death count measured in this task"
+    },
+    {
+      "name": "trained CRL policy: alpha01_settled",
+      "location": "failneg_settledbank_a01_s0_300k/failneg_settledbank_p30_h800_resetfix_a01_s0_300k/best.pkl via tanh(loc(policy(obs58)))",
+      "observation_inputs": "58-dim learner observation only [state(29), zero-padded goal(29)]",
+      "reads_mask_severity_U": false,
+      "reads_privileged_teacher_state": false,
+      "deterministic": "deterministic eval action tanh(loc)",
+      "route_behavior": "center fraction 0.260 (documented)",
+      "known_hazard_exposure": 0.77,
+      "eligible": true,
+      "used_in_v3": true,
+      "reason": "eligible and behaviourally distinct; selected on PRE-EXISTING published diagnostics, not on any death count measured in this task"
+    }
+  ],
+  "n_eligible": 6,
+  "n_used_in_v3": 4,
+  "noise_fallback_used": false,
+  "noise_fallback_note": "not required -- four behaviourally distinct EXISTING non-privileged controllers were available, and the spec prefers existing policies over synthetic action noise",
+  "git_commit": "4d5d664e60d334112f8cbf8546c4649104a58023"
+}
