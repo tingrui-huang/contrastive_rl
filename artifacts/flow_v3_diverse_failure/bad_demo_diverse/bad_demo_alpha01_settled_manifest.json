@@ -1,0 +1,29 @@
+{
+  "arm": "alpha01_settled",
+  "kind": "trained_crl_policy",
+  "policy_ckpt": "failneg_settledbank_a01_s0_300k/failneg_settledbank_p30_h800_resetfix_a01_s0_300k/best.pkl",
+  "policy_ckpt_sha256": "09ed8cd0a85cb9cb0edbd090a704cdb1435a02bd0e6a2b620103954d03bce2b8",
+  "policy_step": 208000,
+  "action_convention": "deterministic eval tanh(loc) on obs58",
+  "privileged_inputs": "none (learner observation only)",
+  "env_seed": 94500019,
+  "dataset_seed": 94990013,
+  "p_active": 0.3,
+  "horizon": 800,
+  "death_settle_substeps": 80,
+  "reset_fix": true,
+  "severity_probs_v2": [
+    0.8,
+    0.15,
+    0.05
+  ],
+  "n_episodes": 500,
+  "n_transitions": 323143,
+  "n_dead_episodes": 103,
+  "success_rate": 0.698,
+  "npz": "artifacts/flow_v3_diverse_failure\\bad_demo_diverse\\bad_demo_alpha01_settled.npz",
+  "npz_sha256": "e32c032a2f423f39b7150cdfd95a3e30ff1546e3d5da36f87a34f13a1d0056ce",
+  "sidecar_sha256": "1a2435de76c5d0eb30989f5e07427fe51384044ce9e949429ef7b0991a95ca29",
+  "walker_sha256": "70b0a460b2e38332821f1846b48c75fbcdc884dd315b29c97ebc69083388cdd5",
+  "git_commit": "3fb1d15b0dd2d96c1dc62e1c76874fd06a051fad"
+}

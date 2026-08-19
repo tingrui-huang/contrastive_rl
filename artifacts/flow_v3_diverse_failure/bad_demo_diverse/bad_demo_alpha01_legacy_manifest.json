@@ -1,0 +1,29 @@
+{
+  "arm": "alpha01_legacy",
+  "kind": "trained_crl_policy",
+  "policy_ckpt": "failneg_clean_p30_h800_resetfix_a01_s0_300k/best.pkl",
+  "policy_ckpt_sha256": "d669a720a023d6c1b9c62625552d55542a5c07d3ffd1c72098135702efaa91ba",
+  "policy_step": 114400,
+  "action_convention": "deterministic eval tanh(loc) on obs58",
+  "privileged_inputs": "none (learner observation only)",
+  "env_seed": 93500019,
+  "dataset_seed": 93990013,
+  "p_active": 0.3,
+  "horizon": 800,
+  "death_settle_substeps": 80,
+  "reset_fix": true,
+  "severity_probs_v2": [
+    0.8,
+    0.15,
+    0.05
+  ],
+  "n_episodes": 500,
+  "n_transitions": 357010,
+  "n_dead_episodes": 62,
+  "success_rate": 0.716,
+  "npz": "artifacts/flow_v3_diverse_failure\\bad_demo_diverse\\bad_demo_alpha01_legacy.npz",
+  "npz_sha256": "aba3d7fc59b971a5281f5445288497faff47af93b0be47e69bc7dcd95a6c296e",
+  "sidecar_sha256": "4e0574cc44c1332d0731b6eab23dcb29e1162b22af5603c99316402c0bb57256",
+  "walker_sha256": "70b0a460b2e38332821f1846b48c75fbcdc884dd315b29c97ebc69083388cdd5",
+  "git_commit": "3fb1d15b0dd2d96c1dc62e1c76874fd06a051fad"
+}

@@ -1,0 +1,29 @@
+{
+  "arm": "naive",
+  "kind": "trained_crl_policy",
+  "policy_ckpt": "naive_rockfall_v2_p30_h800_resetfix_s0_300k/best.pkl",
+  "policy_ckpt_sha256": "b245728221d8de907a19f63c4cc607190cc2742ce8075b186076bc45bde2cc01",
+  "policy_step": 239200,
+  "action_convention": "deterministic eval tanh(loc) on obs58",
+  "privileged_inputs": "none (learner observation only)",
+  "env_seed": 91500019,
+  "dataset_seed": 91990013,
+  "p_active": 0.3,
+  "horizon": 800,
+  "death_settle_substeps": 80,
+  "reset_fix": true,
+  "severity_probs_v2": [
+    0.8,
+    0.15,
+    0.05
+  ],
+  "n_episodes": 500,
+  "n_transitions": 265407,
+  "n_dead_episodes": 184,
+  "success_rate": 0.546,
+  "npz": "artifacts/flow_v3_diverse_failure\\bad_demo_diverse\\bad_demo_naive.npz",
+  "npz_sha256": "a2ccfba94d88f8ee8b1380ff3b386aa92fab0bb43a2a3ea9b1d19c09fc2d955a",
+  "sidecar_sha256": "9509f6379c53543fe769bc74fce181bee269e5b05a49f4f74a10b2a4293b2635",
+  "walker_sha256": "70b0a460b2e38332821f1846b48c75fbcdc884dd315b29c97ebc69083388cdd5",
+  "git_commit": "3fb1d15b0dd2d96c1dc62e1c76874fd06a051fad"
+}
