@@ -1,0 +1,516 @@
+{
+  "status": "DEVELOPMENT ONLY -- fresh50 is already open. Any selector chosen here must be frozen and tested once on a NEW untouched sealed set before any RL use.",
+  "frozen_inputs": {
+    "candidates": "artifacts/flow_v3_fresh50\\candidates.npz",
+    "K": 256,
+    "R_fatal": 3.17,
+    "n_cases": 50,
+    "n_covered": 39,
+    "baseline_reproduced": "16/39"
+  },
+  "banks": {
+    "A_critic_training_negatives": {
+      "path": "artifacts/settled_failure_bank_alpha01/failure_bank_settled.npz",
+      "sha256": "8c50202403317e8adc67670be716fffe5c3b3cb891017bfbe6eb070acd61d0ce",
+      "n": 16
+    },
+    "B_expanded_factual_reference": {
+      "path": "artifacts/flow_v3_diverse_failure/failure_pool_diversity_audit/failure_pool_diverse.npz",
+      "sha256": "f257e0f0441cf9aea6c79fed084d49cbb1af3bd3bbfde1af34503be5cc1d331a",
+      "n": 603,
+      "label": "expanded factual negative reference bank -- NOT Critic-C training negatives"
+    }
+  },
+  "table": [
+    {
+      "selector": "argmin Critic C",
+      "negative_bank": "--",
+      "selection_rate_given_coverage": {
+        "count": "16/39",
+        "rate": 0.41025641025641024,
+        "ci95": [
+          0.2556677968862327,
+          0.5790013305951471
+        ]
+      },
+      "end_to_end": {
+        "count": "16/50",
+        "rate": 0.32,
+        "ci95": [
+          0.19520419466283928,
+          0.46699384011473066
+        ]
+      },
+      "pathologies_repaired_of_12": 0,
+      "n_pathologies_own": 12,
+      "n_new_pathologies_not_in_baseline": 0
+    },
+    {
+      "selector": "state NN similarity",
+      "negative_bank": "D_C^- (Critic-C training negatives, n=16)",
+      "selection_rate_given_coverage": {
+        "count": "26/39",
+        "rate": 0.6666666666666666,
+        "ci95": [
+          0.4978277353010903,
+          0.8091190209536538
+        ]
+      },
+      "end_to_end": {
+        "count": "26/50",
+        "rate": 0.52,
+        "ci95": [
+          0.3741519450790944,
+          0.66339490839654
+        ]
+      },
+      "pathologies_repaired_of_12": 4,
+      "n_pathologies_own": 3,
+      "n_new_pathologies_not_in_baseline": 0
+    },
+    {
+      "selector": "state NN similarity",
+      "negative_bank": "D_603^- (expanded factual reference, n=603)",
+      "selection_rate_given_coverage": {
+        "count": "25/39",
+        "rate": 0.6410256410256411,
+        "ci95": [
+          0.47179511362541204,
+          0.7879628144392001
+        ]
+      },
+      "end_to_end": {
+        "count": "25/50",
+        "rate": 0.5,
+        "ci95": [
+          0.35527299712990856,
+          0.6447270028700914
+        ]
+      },
+      "pathologies_repaired_of_12": 4,
+      "n_pathologies_own": 4,
+      "n_new_pathologies_not_in_baseline": 0
+    },
+    {
+      "selector": "psi cosine similarity",
+      "negative_bank": "D_C^- (Critic-C training negatives, n=16)",
+      "selection_rate_given_coverage": {
+        "count": "22/39",
+        "rate": 0.5641025641025641,
+        "ci95": [
+          0.3962080170142713,
+          0.7218923703235907
+        ]
+      },
+      "end_to_end": {
+        "count": "22/50",
+        "rate": 0.44,
+        "ci95": [
+          0.2999072209275436,
+          0.5874558770583268
+        ]
+      },
+      "pathologies_repaired_of_12": 2,
+      "n_pathologies_own": 5,
+      "n_new_pathologies_not_in_baseline": 0
+    },
+    {
+      "selector": "psi cosine similarity",
+      "negative_bank": "D_603^- (expanded factual reference, n=603)",
+      "selection_rate_given_coverage": {
+        "count": "17/39",
+        "rate": 0.4358974358974359,
+        "ci95": [
+          0.27810762967640934,
+          0.6037919829857288
+        ]
+      },
+      "end_to_end": {
+        "count": "17/50",
+        "rate": 0.34,
+        "ci95": [
+          0.21205471343538165,
+          0.48765248772158826
+        ]
+      },
+      "pathologies_repaired_of_12": 2,
+      "n_pathologies_own": 5,
+      "n_new_pathologies_not_in_baseline": 0
+    }
+  ],
+  "per_head_diagnostics": {
+    "psi cos head1 | D_C^- (Critic-C training negatives, n=16)": {
+      "count": "21/39",
+      "rate": 0.5384615384615384,
+      "end_to_end": 0.42
+    },
+    "psi cos head2 | D_C^- (Critic-C training negatives, n=16)": {
+      "count": "19/39",
+      "rate": 0.48717948717948717,
+      "end_to_end": 0.38
+    },
+    "psi cos head1 | D_603^- (expanded factual reference, n=603)": {
+      "count": "16/39",
+      "rate": 0.41025641025641024,
+      "end_to_end": 0.32
+    },
+    "psi cos head2 | D_603^- (expanded factual reference, n=603)": {
+      "count": "20/39",
+      "rate": 0.5128205128205128,
+      "end_to_end": 0.4
+    }
+  },
+  "pathology": {
+    "baseline_pathological_cases": [
+      1,
+      6,
+      10,
+      11,
+      13,
+      16,
+      18,
+      24,
+      32,
+      39,
+      40,
+      48
+    ],
+    "n_baseline": 12
+  },
+  "near_miss": {
+    "argmin Critic C | --": {
+      "n_missed_when_covered": 23,
+      "d_selected": {
+        "mean": 4.18251923892809,
+        "median": 4.099620342254639,
+        "min": 3.202561140060425,
+        "max": 7.766946792602539,
+        "p10": 3.401094913482666,
+        "p90": 4.729785346984864
+      },
+      "n_within_4.0": 11,
+      "note": "R_fatal stays 3.17; this is a continuous readout only"
+    },
+    "state NN similarity | D_C^- (Critic-C training negatives, n=16)": {
+      "n_missed_when_covered": 13,
+      "d_selected": {
+        "mean": 3.427852300497202,
+        "median": 3.3345603942871094,
+        "min": 3.202561140060425,
+        "max": 4.088263511657715,
+        "p10": 3.210460567474365,
+        "p90": 3.722167778015137
+      },
+      "n_within_4.0": 12,
+      "note": "R_fatal stays 3.17; this is a continuous readout only"
+    },
+    "state NN similarity | D_603^- (expanded factual reference, n=603)": {
+      "n_missed_when_covered": 14,
+      "d_selected": {
+        "mean": 3.609895944595337,
+        "median": 3.4018754959106445,
+        "min": 3.180734157562256,
+        "max": 4.641976356506348,
+        "p10": 3.2035712957382203,
+        "p90": 4.323181915283204
+      },
+      "n_within_4.0": 12,
+      "note": "R_fatal stays 3.17; this is a continuous readout only"
+    },
+    "psi cosine similarity | D_C^- (Critic-C training negatives, n=16)": {
+      "n_missed_when_covered": 17,
+      "d_selected": {
+        "mean": 4.227886999354643,
+        "median": 3.969554901123047,
+        "min": 3.202561140060425,
+        "max": 7.855102062225342,
+        "p10": 3.2648148059844972,
+        "p90": 5.3486473083496096
+      },
+      "n_within_4.0": 9,
+      "note": "R_fatal stays 3.17; this is a continuous readout only"
+    },
+    "psi cosine similarity | D_603^- (expanded factual reference, n=603)": {
+      "n_missed_when_covered": 22,
+      "d_selected": {
+        "mean": 4.256522904742848,
+        "median": 3.988249659538269,
+        "min": 3.202561140060425,
+        "max": 6.54771089553833,
+        "p10": 3.244527554512024,
+        "p90": 5.544599008560182
+      },
+      "n_within_4.0": 11,
+      "note": "R_fatal stays 3.17; this is a continuous readout only"
+    }
+  },
+  "physical": {
+    "true_fatal": {
+      "torso_z": {
+        "mean": 0.39370214104652407,
+        "median": 0.3798903077840805,
+        "min": 0.37919238209724426,
+        "max": 0.4822843670845032,
+        "p10": 0.37959422171115875,
+        "p90": 0.4231601804494858
+      },
+      "v_xy": {
+        "mean": 0.010310456688457634,
+        "median": 0.006225373595952988,
+        "min": 0.00013048549590166658,
+        "max": 0.04469539597630501,
+        "p10": 0.00034446369099896403,
+        "p90": 0.02479563392698765
+      },
+      "up_z": {
+        "mean": 0.9982534837722778,
+        "median": 0.9999973773956299,
+        "min": 0.9809437394142151,
+        "max": 0.9999999403953552,
+        "p10": 0.9933712482452393,
+        "p90": 0.9999995291233063
+      },
+      "delta_norm": {
+        "mean": 7.603499174118042,
+        "median": 7.677333116531372,
+        "min": 2.9326021671295166,
+        "max": 10.879951477050781,
+        "p10": 6.030054140090942,
+        "p90": 9.507362270355225
+      },
+      "coord_range": [
+        -1.1799629926681519,
+        4.914178371429443
+      ]
+    },
+    "safe_successor": {
+      "torso_z": {
+        "mean": 0.5479540699720382,
+        "median": 0.5445826351642609,
+        "min": 0.46352553367614746,
+        "max": 0.6535553932189941,
+        "p10": 0.5130824029445649,
+        "p90": 0.5926035940647125
+      },
+      "v_xy": {
+        "mean": 1.33744393825531,
+        "median": 1.3479092717170715,
+        "min": 0.2648521959781647,
+        "max": 1.8696987628936768,
+        "p10": 1.0163505792617797,
+        "p90": 1.7205649375915528
+      },
+      "up_z": {
+        "mean": 0.9802364957332611,
+        "median": 0.9810895025730133,
+        "min": 0.9543015360832214,
+        "max": 0.9963305592536926,
+        "p10": 0.9672725617885589,
+        "p90": 0.9899275124073028
+      }
+    },
+    "argmin Critic C | --": {
+      "torso_z": {
+        "mean": 0.39005234897136687,
+        "median": 0.38437923789024353,
+        "min": 0.2943512797355652,
+        "max": 0.5340914130210876,
+        "p10": 0.3488013356924057,
+        "p90": 0.43028363585472107
+      },
+      "v_xy": {
+        "mean": 0.3453420095145702,
+        "median": 0.29807789623737335,
+        "min": 0.04465591907501221,
+        "max": 1.817774772644043,
+        "p10": 0.11224501654505731,
+        "p90": 0.5478471040725709
+      },
+      "up_z": {
+        "mean": 0.9982492184638977,
+        "median": 0.9991805553436279,
+        "min": 0.9881498217582703,
+        "max": 0.9999972581863403,
+        "p10": 0.9960442006587982,
+        "p90": 0.999949163198471
+      },
+      "delta_norm": {
+        "mean": 7.414956903457641,
+        "median": 7.4645161628723145,
+        "min": 3.3267312049865723,
+        "max": 10.28693962097168,
+        "p10": 5.847407817840576,
+        "p90": 9.69394130706787
+      },
+      "coord_range": [
+        -4.248538017272949,
+        6.74092435836792
+      ]
+    },
+    "state NN similarity | D_C^- (Critic-C training negatives, n=16)": {
+      "torso_z": {
+        "mean": 0.39278626918792725,
+        "median": 0.39024588465690613,
+        "min": 0.338492751121521,
+        "max": 0.48003244400024414,
+        "p10": 0.3595741868019104,
+        "p90": 0.42050640285015106
+      },
+      "v_xy": {
+        "mean": 0.3024384067207575,
+        "median": 0.2897552102804184,
+        "min": 0.05058388411998749,
+        "max": 0.5409594774246216,
+        "p10": 0.1513107344508171,
+        "p90": 0.47946187257766726
+      },
+      "up_z": {
+        "mean": 0.9985369324684144,
+        "median": 0.9993622601032257,
+        "min": 0.9910550713539124,
+        "max": 0.9999884366989136,
+        "p10": 0.9962553739547729,
+        "p90": 0.9999632716178894
+      },
+      "delta_norm": {
+        "mean": 7.505461277961731,
+        "median": 7.680183172225952,
+        "min": 2.0342681407928467,
+        "max": 10.372662544250488,
+        "p10": 5.5832898139953615,
+        "p90": 9.721419620513917
+      },
+      "coord_range": [
+        -2.0768651962280273,
+        4.8317084312438965
+      ]
+    },
+    "state NN similarity | D_603^- (expanded factual reference, n=603)": {
+      "torso_z": {
+        "mean": 0.39011427700519563,
+        "median": 0.38777852058410645,
+        "min": 0.338492751121521,
+        "max": 0.45686742663383484,
+        "p10": 0.35976824164390564,
+        "p90": 0.4209995150566101
+      },
+      "v_xy": {
+        "mean": 0.2825261002779007,
+        "median": 0.26225268840789795,
+        "min": 0.04465591907501221,
+        "max": 0.5317233204841614,
+        "p10": 0.08353638127446175,
+        "p90": 0.49718003273010253
+      },
+      "up_z": {
+        "mean": 0.998432446718216,
+        "median": 0.9994057714939117,
+        "min": 0.9833874106407166,
+        "max": 0.9999884366989136,
+        "p10": 0.9960773825645447,
+        "p90": 0.9999099493026733
+      },
+      "delta_norm": {
+        "mean": 7.4482103443145755,
+        "median": 7.569826126098633,
+        "min": 3.3267312049865723,
+        "max": 10.656187057495117,
+        "p10": 5.35626859664917,
+        "p90": 9.288237857818604
+      },
+      "coord_range": [
+        -2.0768651962280273,
+        4.89428186416626
+      ]
+    },
+    "psi cosine similarity | D_C^- (Critic-C training negatives, n=16)": {
+      "torso_z": {
+        "mean": 0.3997807973623276,
+        "median": 0.3945022374391556,
+        "min": 0.31916576623916626,
+        "max": 0.5452030301094055,
+        "p10": 0.34891373217105864,
+        "p90": 0.4482732176780701
+      },
+      "v_xy": {
+        "mean": 0.3408338837325573,
+        "median": 0.31814564764499664,
+        "min": 0.020487602800130844,
+        "max": 1.025725245475769,
+        "p10": 0.13981143906712534,
+        "p90": 0.6198685109615326
+      },
+      "up_z": {
+        "mean": 0.9972821664810181,
+        "median": 0.9989456534385681,
+        "min": 0.9775952100753784,
+        "max": 0.999998152256012,
+        "p10": 0.9938350737094879,
+        "p90": 0.9997742712497711
+      },
+      "delta_norm": {
+        "mean": 7.143771481513977,
+        "median": 7.388789892196655,
+        "min": 2.6334609985351562,
+        "max": 10.372662544250488,
+        "p10": 4.802052211761475,
+        "p90": 8.929779052734375
+      },
+      "coord_range": [
+        -5.676699638366699,
+        5.501805782318115
+      ]
+    },
+    "psi cosine similarity | D_603^- (expanded factual reference, n=603)": {
+      "torso_z": {
+        "mean": 0.407010680437088,
+        "median": 0.39866867661476135,
+        "min": 0.338492751121521,
+        "max": 0.5534029603004456,
+        "p10": 0.3660210967063904,
+        "p90": 0.46000777184963226
+      },
+      "v_xy": {
+        "mean": 0.33079872593283655,
+        "median": 0.2999837249517441,
+        "min": 0.04465591907501221,
+        "max": 0.9622320532798767,
+        "p10": 0.10652394518256188,
+        "p90": 0.4946945756673813
+      },
+      "up_z": {
+        "mean": 0.9975469875335693,
+        "median": 0.9990153014659882,
+        "min": 0.9655975103378296,
+        "max": 0.9999972581863403,
+        "p10": 0.9956384360790252,
+        "p90": 0.999949049949646
+      },
+      "delta_norm": {
+        "mean": 6.9943463993072506,
+        "median": 7.189815044403076,
+        "min": 2.6334609985351562,
+        "max": 10.684350967407227,
+        "p10": 4.805804014205933,
+        "p90": 8.69896230697632
+      },
+      "coord_range": [
+        -3.6377182006835938,
+        6.539638996124268
+      ]
+    }
+  },
+  "similarity_tracks_fatalness": {
+    "D_C^- (Critic-C training negatives, n=16)": {
+      "spearman_d_neg_state_vs_d_true_fatal": 0.7931780354782609,
+      "spearman_neg_sim_psi_vs_d_true_fatal": 0.40738761275482305,
+      "n_points": 12800
+    },
+    "D_603^- (expanded factual reference, n=603)": {
+      "spearman_d_neg_state_vs_d_true_fatal": 0.8081594276910079,
+      "spearman_neg_sim_psi_vs_d_true_fatal": 0.3497978260754566,
+      "n_points": 12800
+    }
+  },
+  "git_commit": "a48120664e1f06e0a3277db58e5cac816042ba73"
+}
