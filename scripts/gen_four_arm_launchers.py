@@ -1,9 +1,14 @@
 """Generate the four-arm launch scripts + experiment manifest.
 
 Run AFTER the static worst-case table is built, so the real table SHA is baked
-into every arm that consumes it. Arm A (historical k=3) is NOT generated: the
-method could not be uniquely recovered from the repository -- see
-artifacts/four_arm_wc_run/k3_recovery_report.md.
+into every arm that consumes it.
+
+The historical k=3 arm was DROPPED (it does not exist in this repository; see
+artifacts/four_arm_wc_run/k3_recovery_report.md) and REPLACED by a second
+fixed-rate arm at p_wc = 0.50. That is the scientifically load-bearing change:
+p_wc = 0.50 is dose-matched to D_psi (whose empirical mean p_wc is ~0.495), so
+the pair isolates whether D_psi contributes useful state/action dependence
+BEYOND its mean branch rate.
 
 Usage:  python scripts/gen_four_arm_launchers.py
 """
@@ -24,15 +29,15 @@ TABLE = 'artifacts/static_worstcase_rl/worstcase_table.npz'
 CLEAN = ('artifacts/rockfall_v2_p30_h800_resetfix/failure_split/'
          'antmaze_rockfall_v2_p30_h800_resetfix_pilot_clean.npz')
 CLEAN_SHA = '6bec8a52e771569c4edc14ff0c7319df4322fe6d74e6e69a6a7074fc76be1852'
+FULL_SHA = '08bdc44bb7942793ea18c2628c36d8ea8bfe875169afadfa8934b1b948ef55e4'
 BANK = 'artifacts/settled_failure_bank_alpha01/failure_bank_settled.npz'
 BANK_SHA = '8c50202403317e8adc67670be716fffe5c3b3cb891017bfbe6eb070acd61d0ce'
-V3 = 'artifacts/flow_v3_diverse_failure/flow_v3/flow_v3.pkl'
 V3_SHA = '7b0ac9c80afa8713155d30ee4b784b52bd6d5b58fc57ff73b6b900a11224803c'
-NORM = 'artifacts/flow_v0_clean/norm_stats.npz'
 NORM_SHA = '262daa472316773b441e0dfed897275ffac13e10966728d39d4f9e23ffe8d4ca'
 DPSI = 'artifacts/support_discriminator/D_state_cmdgoal_action'
 
 STEPS, SEED, ALPHA, P_ACTIVE, HORIZON = 300000, 0, 0.1, 0.3, 800
+BS = '\\'          # backslash for generated shell line-continuations
 
 
 def sha256_file(p):
@@ -44,7 +49,6 @@ def sha256_file(p):
 
 
 def sha256_dir(p):
-  """Stable digest over a model directory's files."""
   h = hashlib.sha256()
   for name in sorted(os.listdir(p)):
     fp = os.path.join(p, name)
@@ -95,14 +99,13 @@ if ! git diff --quiet HEAD -- crl scripts; then
   echo "ABORT: crl/ or scripts/ has uncommitted modifications" >&2
   exit 1
 fi
-# Commit pin. EXPECT_COMMIT is the commit this launcher was generated from; the
-# launcher itself is committed AFTER generation, so HEAD is legitimately one
-# commit ahead. Set STRICT_COMMIT=1 to force exact equality. The binding
-# scientific guarantees are the CONTENT sha256 pins below (dataset, table,
-# bank), which are commit-independent.
+# EXPECT_COMMIT is the commit these launchers were generated from; they are
+# committed immediately after, so HEAD is legitimately one commit ahead.
+# STRICT_COMMIT=1 forces exact equality. The binding scientific guarantees are
+# the CONTENT sha256 pins below, which are commit-independent.
 if [ "$GIT_SHA" != "$EXPECT_COMMIT" ]; then
   echo "NOTE: HEAD differs from the generation commit $EXPECT_COMMIT"
-  if [ "${STRICT_COMMIT:-0}" = "1" ]; then
+  if [ "${{STRICT_COMMIT:-0}}" = "1" ]; then
     echo "ABORT: STRICT_COMMIT=1 and commit mismatch" >&2; exit 1
   fi
 fi
@@ -114,7 +117,7 @@ echo "ALPHA_FAIL      : $ALPHA"
 echo "PROPENSITY_TYPE : {prop_type}"
 {extra_checks}
 echo "GPU CHECK       :"
-python -c "import jax;print('  backend',jax.default_backend());print('  devices',jax.devices());assert jax.default_backend()=='gpu' or __import__('os').environ.get('ALLOW_CPU')=='1', 'ABORT: no GPU (set ALLOW_CPU=1 only for a CPU smoke)'"
+python -c "import jax,os;print('  backend',jax.default_backend());print('  devices',jax.devices());assert jax.default_backend()=='gpu' or os.environ.get('ALLOW_CPU')=='1', 'ABORT: no GPU (set ALLOW_CPU=1 only for a CPU smoke)'"
 echo "STEPS           : $STEPS"
 echo "OUTPUT DIR      : $DIR"
 echo "======================================================================"
@@ -125,24 +128,37 @@ import json, subprocess
 print(json.dumps({prov_json}, indent=2))
 PROV
 
-python scripts/naive_rockfall_v2_crl.py \\
-    --npz "$CLEAN_NPZ" \\
-    --steps "$STEPS" --seed "$SEED" \\
-    --ckpt-dir "$DIR" \\
-    --p-active "$P_ACTIVE" --horizon "$HORIZON" --reset-fix \\
-{train_args}    ${{1:-}} \\
+python scripts/naive_rockfall_v2_crl.py {bs}
+    --npz "$CLEAN_NPZ" {bs}
+    --steps "$STEPS" --seed "$SEED" {bs}
+    --ckpt-dir "$DIR" {bs}
+    --p-active "$P_ACTIVE" --horizon "$HORIZON" --reset-fix {bs}
+{train_args}    ${{1:-}} {bs}
     2>&1 | tee -a "$DIR/train.log"
 
-# authoritative policy evaluation -- identical protocol/eval bank for all arms
+# authoritative policy evaluation -- identical protocol / fixed eval seed bank
+# for every arm. BOTH final and best are evaluated so arms are compared
+# final-to-final and best-to-best.
 for ckpt in final best; do
-  python scripts/diagnose_naive_rockfall.py \\
-      --v2 --p-active "$P_ACTIVE" --reset-fix --horizon "$HORIZON" \\
-      --ckpt "$DIR/$ckpt.pkl" \\
-      --out-dir "$DIR/eval_h800_resetfix/diag_$ckpt" \\
+  python scripts/diagnose_naive_rockfall.py {bs}
+      --v2 --p-active "$P_ACTIVE" --reset-fix --horizon "$HORIZON" {bs}
+      --ckpt "$DIR/$ckpt.pkl" {bs}
+      --out-dir "$DIR/eval_h800_resetfix/diag_$ckpt" {bs}
       2>&1 | tee -a "$DIR/diagnose.log"
 done
 echo "DONE $RUN_ID"
 '''
+
+
+def wc_train_args(mode_args):
+  a = ('    --fail-bank "$BANK_NPZ" --fail-neg-alpha "$ALPHA" %s\n'
+       '    --arm-name "$ARM_NAME" %s\n'
+       '    --wc-positive --wc-table "$WC_TABLE" %s\n'
+       '    --wc-table-sha256 "$WC_TABLE_SHA_PIN" %s\n' % (BS, BS, BS, BS))
+  for line in mode_args:
+    a += '    %s %s\n' % (line, BS)
+  a += '    --wc-coin-seed 0 %s\n' % BS
+  return a
 
 
 def main():
@@ -154,111 +170,120 @@ def main():
   with np.load(os.path.join(_ROOT, TABLE), allow_pickle=True) as t:
     n_rows = int(len(t['flat_index']))
 
-  wc_vars = ('WC_TABLE="%s"\nWC_TABLE_SHA_PIN="%s"\n' % (TABLE, table_sha))
-  wc_check = ('TABLE_SHA=$(sha_of "$WC_TABLE")\n'
-              'echo "WC_TABLE_SHA    : $TABLE_SHA"\n'
-              '[ "$TABLE_SHA" = "$WC_TABLE_SHA_PIN" ] || '
-              '{ echo "ABORT: worst-case table sha mismatch -- arms must '
-              'share ONE table" >&2; exit 1; }\n'
-              'BANK_SHA=$(sha_of "$BANK_NPZ")\n'
-              'echo "BANK_SHA        : $BANK_SHA"\n'
-              '[ "$BANK_SHA" = "$BANK_SHA_PIN" ] || '
-              '{ echo "ABORT: failure-bank sha mismatch" >&2; exit 1; }')
+  wc_vars = 'WC_TABLE="%s"\nWC_TABLE_SHA_PIN="%s"\n' % (TABLE, table_sha)
+  wc_check = (
+      'TABLE_SHA=$(sha_of "$WC_TABLE")\n'
+      'echo "WC_TABLE_SHA    : $TABLE_SHA"\n'
+      '[ "$TABLE_SHA" = "$WC_TABLE_SHA_PIN" ] || '
+      '{ echo "ABORT: worst-case table sha mismatch -- all worst-case arms '
+      'must share ONE table" >&2; exit 1; }\n'
+      'BANK_SHA=$(sha_of "$BANK_NPZ")\n'
+      'echo "BANK_SHA        : $BANK_SHA"\n'
+      '[ "$BANK_SHA" = "$BANK_SHA_PIN" ] || '
+      '{ echo "ABORT: failure-bank sha mismatch" >&2; exit 1; }')
 
-  arms = []
+  arms = [
+      dict(key='S1', fname='run_wc_fixedp10_h800_a01_s0_300k.sh',
+           run_id='wc_fixedp10_h800_a01_s0_300k',
+           arm='fixed-rate worst-case integration ablation (p_wc=0.10)',
+           title='Server 1 -- FIXED-RATE p_wc = 0.10 + worst-case branch',
+           purpose=('Low-dose fixed-rate arm. Isolates whether the worst-case '
+                    'branch itself works, independently of propensity '
+                    'quality. p_wc = 0.10 has NO causal propensity '
+                    'interpretation; B ~ Bernoulli(rho = 0.90) for every '
+                    'transition.'),
+           prop_type='fixed p_wc=0.10 (rho=0.90) -- NO causal interpretation',
+           alpha=ALPHA, wc=True, extra_vars=wc_vars, extra_checks=wc_check,
+           train_args=wc_train_args(['--wc-rho-mode fixed --wc-p-wc 0.10']),
+           propensity_type='fixed_rate_0.10'),
+      dict(key='S2', fname='run_wc_fixedp50_h800_a01_s0_300k.sh',
+           run_id='wc_fixedp50_h800_a01_s0_300k',
+           arm='fixed-rate worst-case integration ablation (p_wc=0.50)',
+           title='Server 2 -- FIXED-RATE p_wc = 0.50 (DOSE-MATCHED to D_psi)',
+           purpose=('DOSE-MATCHED CONTROL FOR D_psi, and the replacement for '
+                    'the dropped k=3 arm. p_wc = 0.50 has NO causal propensity '
+                    'interpretation; it is a fixed rate chosen to match the '
+                    'empirical mean branch rate of D_psi (~0.495). Comparing '
+                    'this arm against the D_psi arm isolates whether D_psi '
+                    'contributes useful STATE/ACTION DEPENDENCE beyond its '
+                    'mean dose: same average worst-case exposure, one '
+                    'state-dependent and one not.'),
+           prop_type=('fixed p_wc=0.50 (rho=0.50) -- dose-matched control, NO '
+                      'causal interpretation'),
+           alpha=ALPHA, wc=True, extra_vars=wc_vars, extra_checks=wc_check,
+           train_args=wc_train_args(['--wc-rho-mode fixed --wc-p-wc 0.50']),
+           propensity_type='fixed_rate_0.50'),
+      dict(key='S3', fname='run_wc_dpsi_surrogate_h800_a01_s0_300k.sh',
+           run_id='wc_dpsi_surrogate_h800_a01_s0_300k',
+           arm='Dpsi surrogate propensity ablation',
+           title='Server 3 -- D_psi SURROGATE propensity + worst-case branch',
+           purpose=('APPROXIMATE PROPENSITY STRESS TEST. D_psi is a balanced '
+                    'behavior-vs-target SOURCE CLASSIFIER, NOT a calibrated '
+                    'causal propensity (see artifacts/static_worstcase_rl/'
+                    'g2_calibration_audit.json). Used frozen and raw, exactly '
+                    'as implemented: rho = sigmoid(logit), p_wc = 1 - rho. On '
+                    'the clean training transitions E[rho] ~ 0.505, so '
+                    'E[p_wc] ~ 0.495 -- but the realized rate is NOT forced. '
+                    'This arm does NOT validate D_psi as a propensity '
+                    'estimator.'),
+           prop_type=('D_psi raw sigmoid SURROGATE -- NOT a calibrated '
+                      'propensity (expected E[rho]~0.505, not forced)'),
+           alpha=ALPHA, wc=True,
+           extra_vars=wc_vars + 'DPSI_MODEL="%s"\n' % DPSI,
+           extra_checks=wc_check + '\necho "DPSI_MODEL      : $DPSI_MODEL"',
+           train_args=wc_train_args(
+               ['--wc-rho-mode dpsi --wc-dpsi-model "$DPSI_MODEL"']),
+           propensity_type='dpsi_surrogate'),
+      dict(key='S4', fname='run_blind_crl_clean_h800_a00_s0_300k.sh',
+           run_id='blind_crl_clean_h800_a00_s0_300k',
+           arm='pure blind CRL baseline (clean dataset)',
+           title='Server 4 -- PURE BLIND CRL (alpha_fail = 0, clean dataset)',
+           purpose=('Ordinary contrastive RL only: no propensity, no '
+                    'worst-case branch, no Flow, no similarity selector, no '
+                    'static table, NO failure-negative augmentation '
+                    '(alpha_fail = 0). Uses the CLEAN split so it is '
+                    'dataset-matched to the three worst-case arms and to the '
+                    'historical fail-neg-only reference. The historical blind '
+                    'run naive_rockfall_v2_p30_h800_resetfix_s0_300k used the '
+                    'FULL pilot (sha 08bdc44b...) and is kept only as a '
+                    'secondary, NOT dataset-matched reference.'),
+           prop_type='none (blind baseline)',
+           alpha=0.0, wc=False, extra_vars='', extra_checks='',
+           train_args='    --arm-name "$ARM_NAME" %s\n' % BS,
+           propensity_type='none'),
+  ]
 
-  # ---------------- Arm B: D_psi surrogate --------------------------------
-  arms.append(dict(
-      key='B', fname='run_wc_dpsi_surrogate_h800_a01_s0_300k.sh',
-      run_id='wc_dpsi_surrogate_h800_a01_s0_300k',
-      arm='Dpsi surrogate propensity ablation',
-      title='Arm B -- D_psi SURROGATE propensity + worst-case branch',
-      purpose=('APPROXIMATE PROPENSITY STRESS TEST. D_psi is a balanced '
-               'behavior-vs-target SOURCE CLASSIFIER, NOT a calibrated causal '
-               'propensity (see artifacts/static_worstcase_rl/'
-               'g2_calibration_audit.json). Used frozen and raw, exactly as '
-               'implemented: rho = sigmoid(logit), p_wc = 1 - rho. On the '
-               'clean training transitions E[rho] ~ 0.505, so E[p_wc] ~ 0.495. '
-               'This arm does NOT validate D_psi as a propensity estimator.'),
-      prop_type='D_psi raw sigmoid SURROGATE (NOT calibrated; E[rho]~0.505)',
-      alpha=ALPHA, wc=True,
-      extra_vars=wc_vars + ('DPSI_MODEL="%s"\n' % DPSI),
-      extra_checks=wc_check + '\necho "DPSI_MODEL      : $DPSI_MODEL"',
-      train_args=('    --fail-bank "$BANK_NPZ" --fail-neg-alpha "$ALPHA" \\\n'
-                  '    --arm-name "$ARM_NAME" \\\n'
-                  '    --wc-positive --wc-table "$WC_TABLE" \\\n'
-                  '    --wc-table-sha256 "$WC_TABLE_SHA_PIN" \\\n'
-                  '    --wc-rho-mode dpsi --wc-dpsi-model "$DPSI_MODEL" \\\n'
-                  '    --wc-coin-seed 0 \\\n'),
-      propensity_type='dpsi_surrogate'))
-
-  # ---------------- Arm C: fixed rate -------------------------------------
-  arms.append(dict(
-      key='C', fname='run_wc_fixedp10_h800_a01_s0_300k.sh',
-      run_id='wc_fixedp10_h800_a01_s0_300k',
-      arm='fixed-rate worst-case integration ablation',
-      title='Arm C -- FIXED-RATE p_wc = 0.10 + worst-case branch',
-      purpose=('Isolates whether the worst-case branch itself works, '
-               'independently of propensity quality. p_wc = 0.10 has NO causal '
-               'propensity interpretation whatsoever; it is a fixed rate. '
-               'B ~ Bernoulli(rho = 0.90) for every transition.'),
-      prop_type='fixed p_wc=0.10 (rho=0.90) -- NO causal interpretation',
-      alpha=ALPHA, wc=True,
-      extra_vars=wc_vars, extra_checks=wc_check,
-      train_args=('    --fail-bank "$BANK_NPZ" --fail-neg-alpha "$ALPHA" \\\n'
-                  '    --arm-name "$ARM_NAME" \\\n'
-                  '    --wc-positive --wc-table "$WC_TABLE" \\\n'
-                  '    --wc-table-sha256 "$WC_TABLE_SHA_PIN" \\\n'
-                  '    --wc-rho-mode fixed --wc-p-wc 0.10 \\\n'
-                  '    --wc-coin-seed 0 \\\n'),
-      propensity_type='fixed_rate_0.10'))
-
-  # ---------------- Arm D: pure blind -------------------------------------
-  arms.append(dict(
-      key='D', fname='run_blind_crl_h800_a00_s0_300k.sh',
-      run_id='blind_crl_h800_a00_s0_300k',
-      arm='pure blind CRL baseline',
-      title='Arm D -- PURE BLIND CRL (alpha_fail = 0, no causal additions)',
-      purpose=('Ordinary contrastive RL only: no propensity, no worst-case '
-               'branch, no Flow, no selector, no static table, NO failure-'
-               'negative augmentation (alpha_fail = 0). NOTE: this uses the '
-               'CLEAN split so it is matched to arms B/C; the historical blind '
-               'run naive_rockfall_v2_p30_h800_resetfix_s0_300k used the FULL '
-               'pilot dataset (sha 08bdc44b...) and is therefore NOT '
-               'dataset-matched -- see the runbook.'),
-      prop_type='none (blind baseline)',
-      alpha=0.0, wc=False, extra_vars='', extra_checks='',
-      train_args='    --arm-name "$ARM_NAME" \\\n',
-      propensity_type='none'))
-
-  manifest = {'experiment': 'four-arm worst-case integration ablation',
-              'scientific_status': ('MECHANISM / INTEGRATION ABLATIONS, not '
-                                    'final causal-method validation. One seed '
-                                    'is not statistical validation.'),
-              'pinned_commit': commit,
-              'shared': {
-                  'dataset': CLEAN, 'dataset_sha256': CLEAN_SHA,
-                  'environment': 'offline_ant_umaze_rockfall, p_active=0.30, '
-                                 'H=800, reset_fix=True, severity v2.1',
-                  'seed': SEED, 'steps': STEPS,
-                  'batch_size': 1024, 'num_sgd_steps_per_step': 4,
-                  'hidden': [1024, 1024], 'repr_dim': 16, 'twin_q': True,
-                  'bc_coef': 0.05, 'random_goals': 0.0,
-                  'entropy_coefficient': 0.0, 'lr': 3e-4,
-                  'eval_every_steps': 10000, 'eval_episodes': 30,
-                  'eval_protocol': ('scripts/diagnose_naive_rockfall.py --v2 '
-                                    '--p-active 0.3 --reset-fix --horizon 800, '
-                                    'n=200, FIXED eval seed bank (identical '
-                                    'mask-pattern counts across arms)'),
-                  'worstcase_table': TABLE, 'worstcase_table_sha256': table_sha,
-                  'worstcase_table_rows': n_rows,
-                  'flow_v3_sha256': V3_SHA, 'normalization_sha256': NORM_SHA,
-                  'negative_bank_sha256': BANK_SHA, 'K': 256, 'ode_steps': 50,
-                  'lambda': 0.01},
-              'arms': {}, 'blocked_arms': {}, 'historical_references': {}}
+  manifest = {
+      'experiment': 'four-arm worst-case integration ablation',
+      'scientific_status': ('MECHANISM / INTEGRATION ABLATIONS, not final '
+                            'causal-method validation. Arm S3 does NOT '
+                            'validate D_psi as a propensity; arms S1/S2 have '
+                            'no causal propensity interpretation; one seed is '
+                            'not statistical validation.'),
+      'pinned_commit': commit,
+      'shared': {
+          'dataset': CLEAN, 'dataset_sha256': CLEAN_SHA,
+          'environment': ('offline_ant_umaze_rockfall, p_active=0.30, H=800, '
+                          'reset_fix=True, severity v2.1 (0.80/0.15/0.05)'),
+          'seed': SEED, 'steps': STEPS, 'batch_size': 1024,
+          'num_sgd_steps_per_step': 4, 'hidden': [1024, 1024], 'repr_dim': 16,
+          'twin_q': True, 'bc_coef': 0.05, 'random_goals': 0.0,
+          'entropy_coefficient': 0.0, 'lr': 3e-4, 'discount': 0.99,
+          'eval_every_steps': 10000, 'eval_episodes': 30,
+          'eval_protocol': ('scripts/diagnose_naive_rockfall.py --v2 '
+                            '--p-active 0.3 --reset-fix --horizon 800, n=200, '
+                            'FIXED eval seed bank (identical mask-pattern '
+                            'counts 48/45/53/54 across all runs)'),
+          'worstcase_table': TABLE, 'worstcase_table_sha256': table_sha,
+          'worstcase_table_rows': n_rows,
+          'flow_v3_sha256': V3_SHA, 'normalization_sha256': NORM_SHA,
+          'negative_bank_sha256': BANK_SHA,
+          'K': 256, 'ode_steps': 50, 'lambda': 0.01,
+          'selector': ('argmin_k min_g ||norm(s_k) - norm(g)||_2 over the '
+                       '16-state bank; lowest-index tie-break; no Critic C')},
+      'arms': {}, 'dropped_arms': {}, 'historical_references': {}}
 
   for a in arms:
-    path = os.path.join(_ROOT, 'scripts', a['fname'])
     prov = ("{'arm_name': %r, 'run_id': %r, 'git_sha': subprocess."
             "check_output(['git','rev-parse','HEAD']).decode().strip(), "
             "'dataset': %r, 'dataset_sha256': %r, 'seed': %d, "
@@ -273,65 +298,94 @@ def main():
         alpha=a['alpha'], p_active=P_ACTIVE, horizon=HORIZON, commit=commit,
         clean=CLEAN, clean_sha=CLEAN_SHA, bank=BANK, bank_sha=BANK_SHA,
         extra_vars=a['extra_vars'], extra_checks=a['extra_checks'],
-        prop_type=a['prop_type'], train_args=a['train_args'], prov_json=prov)
-    with open(path, 'w', newline='\n') as f:
+        prop_type=a['prop_type'], train_args=a['train_args'],
+        prov_json=prov, bs=BS)
+    with open(os.path.join(_ROOT, 'scripts', a['fname']), 'w',
+              newline='\n') as f:
       f.write(body)
     manifest['arms'][a['key']] = {
-        'name': a['arm'], 'run_id': a['run_id'], 'script': 'scripts/' + a['fname'],
-        'purpose': a['purpose'], 'git_sha': commit,
-        'dataset_sha256': CLEAN_SHA, 'environment_H': HORIZON, 'seed': SEED,
-        'alpha_fail': a['alpha'], 'worst_case_enabled': a['wc'],
+        'name': a['arm'], 'run_id': a['run_id'],
+        'script': 'scripts/' + a['fname'], 'purpose': a['purpose'],
+        'git_sha': commit, 'dataset': CLEAN, 'dataset_sha256': CLEAN_SHA,
+        'environment_H': HORIZON, 'seed': SEED, 'alpha_fail': a['alpha'],
+        'worst_case_enabled': a['wc'],
         'propensity_type': a['propensity_type'],
         'rho_semantics': a['prop_type'],
         'flow_sha256': V3_SHA if a['wc'] else None,
         'worstcase_table_sha256': table_sha if a['wc'] else None,
         'negative_bank_sha256': BANK_SHA if a['alpha'] else None,
-        'dpsi_sha256': dpsi_sha if a['propensity_type'] == 'dpsi_surrogate'
-                       else None,
-        'total_steps': STEPS,
-        'output_dir': './' + a['run_id'],
+        'dpsi_sha256': (dpsi_sha if a['propensity_type'] == 'dpsi_surrogate'
+                        else None),
+        'total_steps': STEPS, 'output_dir': './' + a['run_id'],
         'log_path': 'logs/%s.log' % a['run_id'],
         'eval_dir': './%s/eval_h800_resetfix' % a['run_id']}
     print('wrote scripts/%s' % a['fname'])
 
-  manifest['blocked_arms']['A'] = {
+  manifest['dropped_arms']['historical_k3'] = {
       'name': 'historical k=3 propensity + worst-case',
-      'status': 'BLOCKED -- NOT PREPARED, NO SCRIPT GENERATED',
-      'reason': ('the historical "k=3" propensity method could not be '
-                 'uniquely recovered from the repository; see '
+      'status': ('DROPPED by the user after recovery failed; REPLACED by '
+                 'wc_fixedp50_h800_a01_s0_300k'),
+      'reason': ('no historical k=3 propensity exists anywhere in the '
+                 'repository, on any branch, or in git history; see '
                  'artifacts/four_arm_wc_run/k3_recovery_report.md'),
-      'instruction_followed': ('task: "If the exact historical k=3 method '
-                               'cannot be uniquely recovered: STOP Arm A '
-                               'preparation and report the ambiguity. Do not '
-                               'invent a new k=3 estimator."')}
+      'not_invented': True}
 
-  manifest['historical_references']['fail_neg_only_alpha01'] = {
+  manifest['key_matched_comparison'] = {
+      'pair': ['wc_fixedp50_h800_a01_s0_300k',
+               'wc_dpsi_surrogate_h800_a01_s0_300k'],
+      'rationale': ('approximately equal AVERAGE worst-case dose (fixed 0.500 '
+                    'vs D_psi empirical mean ~0.495). The only difference is '
+                    'that D_psi varies with (s, g_cmd, a) while the fixed arm '
+                    'does not, so the contrast isolates whether D_psi '
+                    'contributes useful state/action dependence BEYOND its '
+                    'mean branch rate.'),
+      'dose_check': ('confirm the realized worst-case rates in the smoke logs '
+                     'before launch; do NOT force D_psi to match 0.50')}
+
+  manifest['historical_references']['fail_neg_only_alpha01_CLEAN'] = {
       'run': ('failneg_settledbank_a01_s0_300k/'
               'failneg_settledbank_p30_h800_resetfix_a01_s0_300k'),
-      'role': 'historical comparison reference -- DO NOT RERUN',
+      'role': 'PRIMARY historical comparison reference -- DO NOT RERUN',
       'dataset_sha256': CLEAN_SHA, 'alpha_fail': 0.1,
       'worst_case_enabled': False, 'propensity_type': 'none',
       'seed': SEED, 'steps': STEPS,
-      'best': {'step': 208000, 'success': 0.66, 'hazard_exposure': 0.615,
-               'drop_rate': 0.28, 'center_fraction': 0.34,
-               'both_sides_success': 0.578},
+      'final': {'step': 300000, 'success': 0.645, 'hazard_exposure': 0.770,
+                'drop_rate': 0.335, 'center_fraction': 0.260,
+                'both_sides_success': 0.400, 'left_only_success': 0.943,
+                'right_only_success': 0.315, 'trigger_avoidance': 0.060},
+      'best': {'step': 208000, 'success': 0.660, 'hazard_exposure': 0.615,
+               'drop_rate': 0.280, 'center_fraction': 0.340,
+               'both_sides_success': 0.578, 'left_only_success': 0.887,
+               'right_only_success': 0.315, 'trigger_avoidance': 0.036},
       'protocol_match': ('same trainer, dataset, env, seed, budget and eval '
-                         'protocol as arms B/C -- compatible, no rerun needed')}
+                         'protocol as the worst-case arms -- compatible, no '
+                         'rerun needed'),
+      'reporting_rule': ('BOTH final and best recorded; compare every new arm '
+                         'final-to-final and best-to-best. NEVER compare this '
+                         'best against a new-run final.')}
   manifest['historical_references']['blind_crl_FULL_dataset'] = {
       'run': 'naive_rockfall_v2_p30_h800_resetfix_s0_300k',
-      'role': ('historical blind baseline -- NOT dataset-matched (trained on '
-               'the FULL pilot, sha 08bdc44b...). Arm D reruns the same '
-               'configuration on the CLEAN split for a matched comparison.'),
-      'dataset_sha256': ('08bdc44bb7942793ea18c2628c36d8ea8bfe875169afadfa89'
-                         '34b1b948ef55e4'),
-      'alpha_fail': 0.0,
-      'final': {'step': 300000, 'success': 0.515, 'hazard_exposure': 0.98,
-                'drop_rate': 0.45, 'center_fraction': 0.07,
-                'both_sides_success': 0.20}}
+      'role': ('SECONDARY reference only -- NOT dataset-matched (FULL pilot, '
+               'sha 08bdc44b...). The dataset-matched blind baseline is the '
+               'new arm blind_crl_clean_h800_a00_s0_300k.'),
+      'dataset_sha256': FULL_SHA, 'alpha_fail': 0.0,
+      'final': {'step': 300000, 'success': 0.515, 'hazard_exposure': 0.980,
+                'drop_rate': 0.450, 'center_fraction': 0.070,
+                'both_sides_success': 0.200, 'left_only_success': 0.906,
+                'right_only_success': 0.093, 'trigger_avoidance': 0.031},
+      'best': {'step': 239200, 'success': 0.520, 'hazard_exposure': 0.920,
+               'drop_rate': 0.430, 'center_fraction': 0.110,
+               'both_sides_success': 0.178, 'left_only_success': 0.925,
+               'right_only_success': 0.111, 'trigger_avoidance': 0.046}}
+  manifest['reporting_rule'] = (
+      'Report final AND best for every arm from the identical eval protocol '
+      '(n=200, fixed eval seed bank). Compare like with like: final-to-final '
+      'and best-to-best.')
 
   json.dump(manifest, open(os.path.join(OUT, 'experiment_manifest.json'), 'w'),
             indent=2)
   print('\ntable sha : %s  (%d rows)' % (table_sha, n_rows))
+  print('D_psi sha : %s' % dpsi_sha)
   print('commit    : %s' % commit)
   print('manifest  -> %s' % os.path.join(OUT, 'experiment_manifest.json'))
 
