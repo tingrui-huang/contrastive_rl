@@ -1,0 +1,69 @@
+{
+  "n_anchors": 512,
+  "n_bank_goals": 16,
+  "Q1_fixed_goal_spread_across_anchors": {
+    "per_goal_std_over_anchors": {
+      "mean": 32.98822796344757,
+      "std": 7.182800488965888,
+      "median": 37.207563400268555,
+      "p10": 20.408119201660156,
+      "p90": 37.820810317993164
+    },
+    "per_anchor_std_over_goals": {
+      "mean": 18.4437172873877,
+      "std": 9.854564476842882,
+      "median": 17.29459857940674,
+      "p10": 7.79712028503418,
+      "p90": 29.778369331359865
+    },
+    "interpretation": "A globally-scored goal would give ~0 std across anchors. Non-trivial per-goal spread over anchors means f depends on the anchor, i.e. the label is pair-dependent."
+  },
+  "Q2_variance_decomposition": {
+    "goal_main_effect_frac": 0.16559032086449088,
+    "anchor_main_effect_frac": 0.6798839526580838,
+    "anchor_goal_interaction_frac": 0.15452572647742535,
+    "pair_dependent_frac": 0.8344096791355091,
+    "interpretation": "goal_main_effect_frac ~ 1 would mean the critic assigns each goal a global score and the two roles WOULD conflict. Anchor + interaction mass is the pair-dependent part."
+  },
+  "Q3_risky_vs_safe_same_failure_goals": {
+    "risky_definition": "anchor d_neg(own s_wc) <= p25 (4.203)",
+    "safe_definition": "anchor d_neg(own s_wc) >= p75 (5.748)",
+    "n_risky": 128,
+    "n_safe": 128,
+    "mean_f_failure_goals_risky": -68.97288513183594,
+    "mean_f_failure_goals_safe": -100.38844299316406,
+    "difference": 31.415557861328125,
+    "bootstrap_ci95": [
+      23.89661693572998,
+      38.85455131530759
+    ],
+    "interpretation": "The SAME 16 failure goals scored by different anchors. A non-zero, CI-excluding-zero difference is direct evidence the critic already resolves the same goal differently depending on (s, a)."
+  },
+  "Q4_role_comparison": {
+    "f_own_swc_as_positive": {
+      "mean": -4.613149744345719,
+      "std": 2.8321428080241793,
+      "median": -4.581145286560059,
+      "p10": -7.396871709823609,
+      "p90": -1.4116576552391047
+    },
+    "f_bank_goals_as_negative_all_anchors": {
+      "mean": -90.97081872972194,
+      "std": 36.95963215400158,
+      "median": -89.76283645629883,
+      "p10": -135.13210906982422,
+      "p90": -46.05366821289062
+    },
+    "f_bank_goals_for_risky_anchors": {
+      "mean": -68.9728819266893,
+      "std": 32.069942604371576,
+      "median": -65.51552200317383,
+      "p10": -113.3776008605957,
+      "p90": -29.96071701049805
+    },
+    "note": "f_own is each anchor paired with ITS OWN frozen s_wc (the pessimistic-positive role); F is the bank goals paired with unrelated anchors (the failure-negative role)."
+  },
+  "verdict": "PAIR-DEPENDENT",
+  "caveat": "Measured on the FROZEN Critic C, which was trained WITHOUT any pessimistic-positive branch. It shows the architecture resolves goals pair-dependently; it does not predict what training with the branch would do.",
+  "git_commit": "226c9b5ff5fbdaf0a4437c69df6e17134b738cab"
+}

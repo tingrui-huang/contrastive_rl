@@ -185,12 +185,21 @@ class StaticWorstCase:
     self._select_jit = _select
 
   # -------------------------------------------------------------- public API
-  def worst_case_next_state(self, s, a, return_aux=False):
+  def worst_case_next_state(self, s, a, return_aux=False, key=None):
     """(s, a) -> s'_wc. s [n, 29], a [n, 8]; both raw, numpy or jax.
 
     Returns s_wc [n, 29] (numpy float32). With ``return_aux`` also returns a
     dict with the selected index, its nearest-negative distance, and the full
     candidate block -- diagnostics only; the selection never uses them.
+
+    ``key`` overrides the frozen ``PRNGKey(11)`` draw. Default None reproduces
+    the sealed convention bit-for-bit and MUST be used for anything comparable
+    to the sealed evaluation. The override exists solely so a whole-dataset
+    precompute can vary the noise per chunk -- reusing one key across chunks
+    would hand identical x0 noise to transitions that are ``chunk`` apart. The
+    precompute uses ``fold_in(PRNGKey(11), chunk_index)``, which keeps the
+    frozen root seed and changes no selector constant (K, bank, metric,
+    tie-break and Euler steps are untouched).
     """
     s = np.atleast_2d(np.asarray(s, np.float32))
     a = np.atleast_2d(np.asarray(a, np.float32))
@@ -205,7 +214,7 @@ class StaticWorstCase:
     s_n = (s - self.nrm['state_mean']) / self.nrm['state_std']
     k, d_sel, dlt = self._select_jit(
         jnp.asarray(s), jnp.asarray(s_n), jnp.asarray(a),
-        jax.random.PRNGKey(SEED),
+        jax.random.PRNGKey(SEED) if key is None else key,
         jnp.asarray(self.nrm['state_mean']), jnp.asarray(self.nrm['state_std']),
         jnp.asarray(self.nrm['delta_mean']), jnp.asarray(self.nrm['delta_std']))
     k = np.asarray(k)

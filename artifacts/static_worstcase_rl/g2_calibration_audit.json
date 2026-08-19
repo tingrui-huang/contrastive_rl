@@ -1,0 +1,115 @@
+{
+  "A_training_objective": {
+    "loss": "bce_with_logits (propensity/discriminator.py:104-110)",
+    "labels": "1 = real behavior action, 0 = CRL target-policy action",
+    "class_balance": "balanced 50/50 by construction",
+    "network_output": "RAW LOGIT (discriminator.py:74 \"Linear(256)-ReLU-Linear(256)-ReLU-Linear(1), raw logit output\")",
+    "downstream_activation": "jax.nn.sigmoid (agreement.py:195)",
+    "no_calibration_layer": "no temperature scaling, no isotonic/Platt stage, no prior correction anywhere in propensity/",
+    "has_calibration_code": false
+  },
+  "B_estimand": {
+    "ideal_optimum": "D*(x) = p_behavior(x) / (p_behavior(x) + p_target(x))",
+    "source": "propensity/discriminator.py:5-16 (module docstring)",
+    "is_the_needed_quantity": false,
+    "needed_quantity": "rho = P(agreement / behavior support | s, g, a), the analogue of P_hat(bin(x_t)|cell) in the archived Thm-2 sampler",
+    "why_different": "D* is a RELATIVE density ratio under an ARTIFICIAL 50/50 class prior. It depends on the target policy pi in the denominator, so it is not a property of the behavior policy alone. rho must not depend on the policy being trained -- but D* does, and pi changes during RL while D_psi stays frozen.",
+    "repo_self_statements": [
+      "discriminator.py:8  \"must NOT be used as a causal mixture weight\"",
+      "agreement.py:193-195 \"NOT a literal continuous propensity probability and NOT a calibrated causal branch probability\"",
+      "agreement.py:41  \"no calibration into a claimed propensity\""
+    ]
+  },
+  "C_validation": {
+    "n_test_contexts": 8192,
+    "seeds_D_state_cmdgoal_action": {
+      "0": {
+        "roc_auc": 0.5671548545360565,
+        "pr_auc": 0.5516349142702882
+      },
+      "1": {
+        "roc_auc": 0.5643261298537254,
+        "pr_auc": 0.5507451209194479
+      },
+      "2": {
+        "roc_auc": 0.571468710899353,
+        "pr_auc": 0.5630220732592474
+      }
+    },
+    "mean_roc_auc": 0.5676498984297117,
+    "baselines": {
+      "A": 0.5724108442664146,
+      "action": 0.5284662619233131,
+      "context": 0.5
+    },
+    "test_bce": 0.6902578052434385,
+    "accuracy": 0.54345703125,
+    "interpretation": "ROC-AUC ~0.567 (3 seeds 0.564-0.571) is barely above the 0.5 chance floor, and BELOW the goal-marginalized baseline A (0.572). Test BCE 0.690 vs log 2 = 0.693 for a constant 0.5 predictor: the model is almost exactly as good as always answering \"0.5\"."
+  },
+  "D_calibration_diagnostics": {
+    "reliability_curve_present": false,
+    "brier_present": false,
+    "ece_present": false,
+    "explicit_artifact_flags": {
+      "eval.json.NOT_a_propensity": true,
+      "eval.json.score_semantics": "balanced behavior-vs-target classifier; an ideal model recovers p_behavior/(p_behavior + p_target) under an ARTIFICIAL 50/50 class prior. sigmoid(logit) is NOT P(A=a|S=s,G=g) and is NOT a causal branch probability or mixture weight.",
+      "eval_agreement.py:185 is_calibrated_propensity": false
+    },
+    "note": "No calibration diagnostic of any kind exists in the repo for this model. The only calibration-related records are explicit NEGATIVE declarations."
+  },
+  "E_M0_certification": {
+    "all_gates_passed": true,
+    "gate_names": [
+      "T1a_counts_replicate_exactly",
+      "T1b_table_is_exact_laplace",
+      "T1c_mc_agreement_matches_empirical",
+      "T2a_ballN_hazard_endpoint_TV_at_null_level",
+      "T2b_ballN_hazard_teleport_fraction_matches",
+      "T2c_ballN_hazard_pessimism_G7_stat_matches",
+      "T2a_reachableN_endpoint_TV_at_null_level",
+      "T2b_reachableN_teleport_fraction_matches",
+      "T2c_reachableN_pessimism_G7_stat_matches",
+      "T3a_agreement_estimates_propensity",
+      "T3b_source_classifier_same_dist_degenerates_to_half",
+      "T3c_source_classifier_vs_pi_is_density_ratio",
+      "T3d_holding_cell_real_data"
+    ],
+    "decisive_finding": "M0 T3 was built precisely to separate three quantities: (a) an AGREEMENT ESTIMATOR recovers beta(x|s) -- the propensity; (b) a SOURCE CLASSIFIER data-vs-BC degenerates to 0.5 and is NOT a propensity; (c) a SOURCE CLASSIFIER behavior-vs-pi recovers beta/(beta+pi) -- CFQL D. D_psi is case (c). M0 therefore already certified that D_psi is NOT the propensity coin; it certified that the AGREEMENT EVENT (case a) is.",
+    "consequence": "The coin the archived Thm-2 sampler needs is the agreement FREQUENCY, not the discriminator posterior. M0 validated the former on the discrete machinery; no continuous estimator of it has been built."
+  },
+  "F_empirical_rho": {
+    "dataset": "artifacts\\rockfall_v2_p30_h800_resetfix\\failure_split\\antmaze_rockfall_v2_p30_h800_resetfix_pilot_clean.npz",
+    "n_transitions": 227200,
+    "stats": {
+      "mean": 0.5049929311056621,
+      "median": 0.49918511509895325,
+      "p10": 0.3930017650127411,
+      "p90": 0.6181399941444397,
+      "min": 0.019597679376602173,
+      "max": 0.9817527532577515,
+      "std": 0.09858585054291914
+    },
+    "fraction_within_0.02_of_0.5": 0.21103873239436619,
+    "fraction_within_0.05_of_0.5": 0.4711795774647887,
+    "fraction_below_0.1": 7.042253521126761e-05,
+    "fraction_above_0.9": 0.007645246478873239,
+    "implied_pessimistic_branch_rate_1_minus_mean_rho": 0.4950070688943379,
+    "interpretation": "If rho = D_psi were used as the Bernoulli coin, the pessimistic branch would fire at a near-CONSTANT rate for essentially every transition. That is operationally identical to the \"fixed worst-case branch rate\" the task explicitly forbids -- it would carry no state- or action-dependent causal signal, only a hidden global coefficient."
+  },
+  "VERDICT": {
+    "section": "5B -- D_psi is NOT demonstrated to be calibrated",
+    "is_calibrated_bernoulli_probability": false,
+    "action": "STOP before the 5k smoke test; G2 remains unresolved",
+    "what_D_psi_currently_represents": "the posterior of an artificial balanced behavior-vs-target classification problem, i.e. p_behavior/(p_behavior + p_target) at the optimum -- a relative support/discrepancy RANKING score",
+    "ranking_performance": "ROC-AUC 0.567 (seeds 0.564/0.564/0.571); baselines A 0.572, action-only 0.528, context-only 0.500",
+    "why_raw_sigmoid_is_not_a_probability": [
+      "trained under an artificial 50/50 class prior, so the posterior is prior-shifted away from any real-world event rate",
+      "its denominator contains the TARGET policy pi, so it is not a property of the behavior policy alone and would drift in meaning as pi trains (while D_psi stays frozen)",
+      "the negatives came from a DIFFERENT checkpoint (naive_rockfall_..._s0_300k/final.pkl) than the policy this run would train, so even the ratio it does estimate refers to the wrong pi",
+      "no reliability curve, Brier score or ECE has ever been computed for it; the repo records only explicit NEGATIVE declarations (is_calibrated_propensity: false, NOT_a_propensity: true)",
+      "empirically it is nearly constant at ~0.5, so as a coin it degenerates to a fixed global rate"
+    ],
+    "minimal_calibration_step_required": "Build a CONTINUOUS AGREEMENT-EVENT estimator, not a source classifier -- the case (a) quantity M0 certified. Concretely: (i) use the already-trained behavior flow mu(a|s,g_cmd) (propensity/flow.py) to draw a fresh behavior action a~ at the same (s, g_cmd); (ii) define agreement as a bin/neighborhood event on a~ vs a^data, the continuous analogue of 1[bin(a~) = bin(a^data)]; (iii) estimate rho as that event frequency, which is a genuine probability by construction and needs no calibration; (iv) validate it against a held-out empirical agreement frequency with a reliability curve. Note this introduces a NEIGHBORHOOD BANDWIDTH -- itself a new coefficient requiring its own pre-registration, so it is a method decision, not an implementation detail."
+  },
+  "git_commit": "226c9b5ff5fbdaf0a4437c69df6e17134b738cab"
+}
