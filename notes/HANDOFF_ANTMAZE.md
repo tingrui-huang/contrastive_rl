@@ -49,6 +49,11 @@ Do **not** install the 2022 `requirements.txt`; it is the dead Acme pin set.
 experiment overrides them per instance. Reading the module and assuming the defaults is
 the single most common mistake here.
 
+**Nothing errors if you forget them.** The run completes normally -- you will just have
+silently trained on the old, easier pilot benchmark (sparser hazards, lower lethality,
+shorter horizon), and the numbers will not be comparable to anything. Always pass the
+overrides explicitly instead of relying on what the module says.
+
 | knob | module default (do not use) | current value | override |
 |---|---|---|---|
 | `P_ACTIVE` | 0.2 | **0.30** | `--p-active 0.3` |
