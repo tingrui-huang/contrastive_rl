@@ -30,6 +30,7 @@ import point_env
 os.environ['SDL_VIDEODRIVER'] = 'dummy'
 
 
+
 def euler2quat(euler):
   """Convert Euler angles to quaternions."""
   euler = np.asarray(euler, dtype=np.float64)
