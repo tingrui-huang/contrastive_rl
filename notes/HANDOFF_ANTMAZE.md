@@ -1,7 +1,7 @@
 # AntMaze rockfall — handoff
 
-What the current configuration is, what is deprecated, and a short description of the
-worst-case branch. No experimental results here — the worst-case branch is being redesigned.
+What the current configuration is, what is deprecated, and how positives/negatives are
+sampled. No experimental results — the worst-case branch is being redesigned.
 
 Verified at commit `8c075fa`, branch `feature/continuous-action-agreement`.
 
@@ -120,51 +120,61 @@ Do not enable it for training.
 
 ---
 
-## 5. Worst-case branch — how it currently works (being redesigned)
+## 5. Sampling: what the positives and negatives are
 
-Two independent modifications to the sampler; the loss, architecture and optimizer are
-untouched.
+### Negative samples (current, in use)
 
-**(a) Failure-aware negatives** — 16 settled failure states act as extra negative goals:
+Per anchor `(s_i, a_i)` the critic sees **two kinds** of negative goal:
 
-```
-L = L_pos + (1-alpha) * L_neg_batch + alpha * L_neg_fail      alpha = 0.1
-```
+| kind | what it is | count per anchor |
+|---|---|--:|
+| ordinary (in-batch) | goals of the *other* rows in the batch, i.e. achieved future states from **different trajectories** — the off-diagonal of the B x B logit matrix | B - 1 = 1023 |
+| failure | the **16 settled failure states** (`failure_bank_settled.npz`, sha `8c502024...`), the same 16 for every anchor | 16 |
 
-`L_neg_fail` is the exact uniform expectation over the 16-state bank (all scored against
-every anchor, no sampling). alpha = 0 reduces exactly to the baseline.
-
-**(b) Pessimistic positive goal** — with probability `1 - rho`, replace the normal
-future-state positive with a generated worst-case successor:
+They are combined at the **loss** level, not by resampling:
 
 ```
-B ~ Bernoulli(rho)
-g+ = normal future goal        if B = 1
-   = obs_to_goal(s'_wc)        if B = 0
+L = L_pos + (1 - alpha) * L_neg_ordinary + alpha * L_neg_failure     alpha = 0.1
+
+L_pos          = sum_i    BCE(f(s_i,a_i,g_i), 1) / B^2        # diagonal
+L_neg_ordinary = sum_i!=j BCE(f(s_i,a_i,g_j), 0) / B^2        # off-diagonal
+L_neg_failure  = (B-1)/B * mean_{i,b} BCE(f(s_i,a_i,g^fail_b), 0)
 ```
 
-`s'_wc` comes from a three-step frozen pipeline, conditioned on the **logged** dataset
-action `a_t^data`:
+Three properties worth knowing:
 
-1. **Generate** — V3 Flow draws 256 candidate next states, 50-step Euler.
-2. **Score** — distance of each candidate to the 16 failure states, Euclidean L2 in the
+- `L_neg_failure` is the **exact uniform expectation** over the bank — all 16 states are
+  scored against every anchor, nothing is sampled, so no extra variance enters.
+- The positive term keeps its original coefficient and the total negative mass is
+  preserved; `alpha = 0` reduces algebraically to the untouched baseline.
+- Failure goals are always labelled negative for ordinary anchors. Batch size is 1024, so
+  the bank is a small fraction of the negatives by count but carries weight `alpha`.
+
+### Positive samples
+
+Baseline: a future state from the *same* episode, `j ~ Categorical(gamma^(j-i))`, `j > i`.
+
+### Worst-case branch (being redesigned — short version)
+
+With probability `1 - rho` the positive goal is replaced by a generated worst-case
+successor `s'_wc` instead of the normal future state:
+
+1. V3 Flow draws 256 candidate next states from `(s_t, a_t^data)`, 50-step Euler.
+2. Each candidate is scored by Euclidean L2 distance to the 16 failure states, in the
    frozen normalized 29-dim state space.
-3. **Select** — take the argmin (most failure-like); ties go to the lowest index.
+3. Take the argmin (most failure-like). Critic C is not involved.
 
-Critic C never enters the selection. `s'_wc` is treated as **absorbing**: it is returned
-directly as the goal, with no trajectory continuation, no projection to a dataset state,
-and no policy query. Because everything is frozen and the dataset is fixed, the whole map
-is precomputed once into a static table (`artifacts/static_worstcase_rl/worstcase_table.npz`,
-sha `d059db0c…`, 227,200 rows), so training does a lookup and never invokes the Flow.
+`s'_wc` is treated as absorbing — returned directly as the goal, with no trajectory
+continuation, no projection to a dataset state, and no policy query. Everything is frozen,
+so the whole map is precomputed into a static table
+(`artifacts/static_worstcase_rl/worstcase_table.npz`, sha `d059db0c...`, 227,200 rows) and
+training only does a lookup.
 
-Note: `rho` is a **required injected argument** — the module deliberately does not pick or
-default it. Whatever replaces this design has to answer the same question: what decides
-when the pessimistic branch fires.
+`rho` is a required injected argument; the code deliberately does not pick one. Any
+replacement has to answer the same question: what decides when the branch fires.
 
-Status: **the whole worst-case branch is being redesigned.** Treat the above as a
-description of the existing code, not as a recommended method.
-
----
+**This whole branch is being redesigned. The above describes existing code, not a
+recommended method.** The negative-sample setup above is independent of it and stays.
 
 ## 6. Do not touch
 
