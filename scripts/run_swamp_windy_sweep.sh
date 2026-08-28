@@ -20,6 +20,7 @@ set -uo pipefail
 MODE="${1:-check}"
 SEEDS="${SEEDS:-0 1 2}"
 ALPHAS="${ALPHAS:-0.05 0.1 0.2}"
+ARMSET="${ARMSET:-default}"
 # SEQUENTIAL by default. Measured on a 3090: one process runs at 253 steps/s
 # (G=10), but five concurrent processes managed only ~22 steps/s each (~110
 # aggregate). The model is dispatch-bound, not compute-bound -- GPU utilisation
@@ -95,11 +96,25 @@ banner "MECHANISM VERIFICATION (scheme C + bank)"
 $PY scripts/verify_anchor_cut.py || { echo "verification FAILED -- refusing to sweep"; exit 1; }
 
 # ------------------------------------------------------------- arm listing
+# ARMSET: which family of arms to run.
+#   default  baseline / anchorcut / failneg(alpha)      -- uniform-row anchors
+#   balanced balanced / balancedfail(alpha)             -- + balanced (s,a)
+#   all      both
+case "$ARMSET" in
+  default|balanced|all) ;;
+  *) echo "unknown ARMSET=$ARMSET (expected default|balanced|all)"; exit 1 ;;
+esac
 ARMS=()
 for s in $SEEDS; do
-  ARMS+=("baseline|0|$s")
-  ARMS+=("anchorcut|0|$s")
-  for a in $ALPHAS; do ARMS+=("failneg|$a|$s"); done
+  if [ "$ARMSET" = "default" ] || [ "$ARMSET" = "all" ]; then
+    ARMS+=("baseline|0|$s")
+    ARMS+=("anchorcut|0|$s")
+    for a in $ALPHAS; do ARMS+=("failneg|$a|$s"); done
+  fi
+  if [ "$ARMSET" = "balanced" ] || [ "$ARMSET" = "all" ]; then
+    ARMS+=("balanced|0|$s")
+    for a in $ALPHAS; do ARMS+=("balancedfail|$a|$s"); done
+  fi
 done
 
 banner "SWEEP PLAN  (${#ARMS[@]} runs, mode=$MODE, jobs=$JOBS)"
@@ -125,8 +140,13 @@ banner "LAUNCHING"
 pids=(); names=()
 for spec in "${ARMS[@]}"; do
   IFS='|' read -r arm alpha seed <<< "$spec"
+  # Must match run_swamp_windy_failneg.py's own tag exactly, or the eval step
+  # looks in a directory that does not exist. Every bank-carrying arm needs the
+  # alpha suffix, otherwise its alpha values collide into one directory.
   tag="$arm"
-  [ "$arm" = "failneg" ] && tag="failneg_a${alpha//./}"
+  case "$arm" in
+    failneg|balancedfail) tag="${arm}_a${alpha//./}" ;;
+  esac
   tag="swamp_windy_${tag}_s${seed}"
   log="$LOGDIR/${tag}.log"
 
