@@ -25,9 +25,12 @@ LOGDIR="${LOGDIR:-logs/swamp_windy_sweep}"
 PY="${PY:-python}"
 
 DATASET="datasets/swamp_windy_teacher_s0.npz"
-DATASET_SHA="dfdbbaf7b6a62754f8c865257cea4f3d271ba524f4510c8459ca6fc901e1bfee"
 BANK="artifacts/swamp_windy_failure_bank/failure_bank.npz"
-BANK_SHA="719229969f8b025acebd11d7c15a59ff5cf58f6b5fe94b70dda49cc57e193fbf"
+# Content hashes, NOT file hashes: an .npz is a zip that embeds timestamps, so a
+# regenerated dataset has different file bytes but identical arrays. datasets/
+# is gitignored and therefore always regenerated on a fresh node.
+DATASET_CONTENT_SHA="fd41c45cdb72749fb3b5a071c6f65a3003ec3117af630222f6726bfab7ea7952"
+BANK_CONTENT_SHA="009edb4b529447f00e7ac59b088a6d9c9501084236df2aba16dfd43dda6f19a3"
 
 # Many small processes on one GPU: JAX would otherwise preallocate 75% each.
 export XLA_PYTHON_CLIENT_PREALLOCATE=false
@@ -40,9 +43,17 @@ mkdir -p "$LOGDIR"
 
 banner() { echo; echo "=============================================================="; echo "$1"; echo "=============================================================="; }
 
-sha_of() {  # portable sha256
-  if command -v sha256sum >/dev/null 2>&1; then sha256sum "$1" | awk '{print $1}'
-  else shasum -a 256 "$1" | awk '{print $1}'; fi
+content_sha() {  # sha256 over the npz ARRAY CONTENTS (zip metadata ignored)
+  $PY -c "
+import hashlib, sys, numpy as np
+h = hashlib.sha256()
+with np.load(sys.argv[1], allow_pickle=True) as d:
+    for k in sorted(d.files):
+        a = d[k]
+        h.update(k.encode()); h.update(str(a.dtype).encode())
+        h.update(str(a.shape).encode()); h.update(np.ascontiguousarray(a).tobytes())
+print(h.hexdigest())
+" "$1"
 }
 
 # ----------------------------------------------------------- preflight gate
@@ -55,17 +66,17 @@ if [ ! -f "$DATASET" ]; then
   echo "      --force_safe_prob 0.05 --teacher_noise 0.15 --seed 0 --out $DATASET"
   exit 1
 fi
-got=$(sha_of "$DATASET")
-[ "$got" = "$DATASET_SHA" ] || { echo "dataset sha mismatch"; echo "  expected $DATASET_SHA"; echo "  found    $got"; exit 1; }
-echo "dataset OK  $got"
+got=$(content_sha "$DATASET")
+[ "$got" = "$DATASET_CONTENT_SHA" ] || { echo "dataset CONTENT mismatch (arrays differ, not just the zip container)"; echo "  expected $DATASET_CONTENT_SHA"; echo "  found    $got"; exit 1; }
+echo "dataset OK  content $got"
 
 if [ ! -f "$BANK" ]; then
   echo "building failure bank..."
   $PY scripts/make_swamp_failure_bank.py || exit 1
 fi
-got=$(sha_of "$BANK")
-[ "$got" = "$BANK_SHA" ] || { echo "bank sha mismatch"; echo "  expected $BANK_SHA"; echo "  found    $got"; exit 1; }
-echo "bank OK     $got"
+got=$(content_sha "$BANK")
+[ "$got" = "$BANK_CONTENT_SHA" ] || { echo "bank CONTENT mismatch"; echo "  expected $BANK_CONTENT_SHA"; echo "  found    $got"; exit 1; }
+echo "bank OK     content $got"
 
 backend=$($PY -c "import jax;print(jax.default_backend())" 2>/dev/null)
 echo "jax backend : $backend"

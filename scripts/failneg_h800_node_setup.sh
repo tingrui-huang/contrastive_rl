@@ -28,7 +28,12 @@ pip install -U pip
 pip install "jax[cuda12]==0.10.2"
 pip install dm-haiku==0.0.16 optax==0.2.8 mujoco==3.10.0 "numpy==2.4.4" \
             etils==1.14.0 jmp==0.0.4 tabulate==0.10.0 \
+            matplotlib \
             imageio imageio-ffmpeg tensorboardX   # last three optional (gifs/TB)
+# matplotlib is NOT optional: crl/report_maze.py and
+# scripts/qualify_two_route_swamp.py import it at module scope, and the swamp
+# collectors / deployment evals import those. Without it every PointMaze
+# script dies at import on a fresh node.
 
 # --- verify -------------------------------------------------------------------
 python - <<'EOF'

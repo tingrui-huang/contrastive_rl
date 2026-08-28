@@ -51,10 +51,27 @@ from crl.config import Config                      # noqa: E402
 
 ENV = 'point_two_route_swamp_windy_v0'
 DATASET = 'datasets/swamp_windy_teacher_s0.npz'
-DATASET_SHA = 'dfdbbaf7b6a62754f8c865257cea4f3d271ba524f4510c8459ca6fc901e1bfee'
 BANK = 'artifacts/swamp_windy_failure_bank/failure_bank.npz'
-BANK_SHA = '719229969f8b025acebd11d7c15a59ff5cf58f6b5fe94b70dda49cc57e193fbf'
 BANK_N = 514
+
+# Provenance is pinned on the ARRAY CONTENTS, not the file bytes.
+#
+# An .npz is a zip container that embeds per-entry timestamps, so the file
+# sha256 of a regenerated dataset differs from the original even when every
+# array is bit-identical -- confirmed on a fresh GPU node, where the file sha
+# changed but content_sha256 matched exactly. datasets/ is gitignored, so the
+# dataset is ALWAYS regenerated on a new node; gating on the file sha would
+# reject a perfectly correct regeneration. The file shas below are recorded
+# for reference only and are never enforced.
+DATASET_CONTENT_SHA = \
+    'fd41c45cdb72749fb3b5a071c6f65a3003ec3117af630222f6726bfab7ea7952'
+BANK_CONTENT_SHA = \
+    '009edb4b529447f00e7ac59b088a6d9c9501084236df2aba16dfd43dda6f19a3'
+# informational only (valid for the git-tracked bank and the original dataset)
+DATASET_FILE_SHA_REF = \
+    'dfdbbaf7b6a62754f8c865257cea4f3d271ba524f4510c8459ca6fc901e1bfee'
+BANK_FILE_SHA_REF = \
+    '719229969f8b025acebd11d7c15a59ff5cf58f6b5fe94b70dda49cc57e193fbf'
 
 # Recipe. batch_size MUST be >= BANK_N (crl/losses.py writes the bank over the
 # first n_bank rows of the goal half), hence 1024 rather than the 256 default.
@@ -65,10 +82,29 @@ ARMS = ('baseline', 'anchorcut', 'failneg')
 
 
 def sha256(path, chunk=1 << 20):
+  """Raw file bytes. For .npz this is NOT reproducible across machines."""
   h = hashlib.sha256()
   with open(path, 'rb') as f:
     for b in iter(lambda: f.read(chunk), b''):
       h.update(b)
+  return h.hexdigest()
+
+
+def content_sha256(path):
+  """SHA-256 over the ARRAY CONTENTS of an .npz, ignoring zip metadata.
+
+  Hashes each key (sorted) with its dtype, shape and raw bytes, so it is invariant
+  to the timestamps and entry ordering the zip container embeds, and therefore
+  reproducible across machines and regenerations.
+  """
+  h = hashlib.sha256()
+  with np.load(path, allow_pickle=True) as d:
+    for k in sorted(d.files):
+      a = d[k]
+      h.update(k.encode())
+      h.update(str(a.dtype).encode())
+      h.update(str(a.shape).encode())
+      h.update(np.ascontiguousarray(a).tobytes())
   return h.hexdigest()
 
 
@@ -86,12 +122,20 @@ def gate(arm, alpha):
   print(f'  env               : {ENV}')
 
   if not os.path.exists(DATASET):
-    raise SystemExit(f'dataset missing: {DATASET}')
-  ds = sha256(DATASET)
+    raise SystemExit(f'dataset missing: {DATASET}\n'
+                     'datasets/ is gitignored -- regenerate it with:\n'
+                     '  python -m scripts.collect_swamp_windy --episodes 6000 '
+                     '--random_frac 0.2 \\\n'
+                     '      --force_safe_prob 0.05 --teacher_noise 0.15 '
+                     f'--seed 0 --out {DATASET}')
+  ds = content_sha256(DATASET)
   print(f'  dataset           : {DATASET}')
-  print(f'  dataset sha       : {ds}')
-  if ds != DATASET_SHA:
-    raise SystemExit(f'dataset sha mismatch\n  expected {DATASET_SHA}\n'
+  print(f'  dataset content   : {ds}   <- ENFORCED')
+  print(f'  dataset file sha  : {sha256(DATASET)[:16]}...  (informational; '
+        'npz zip metadata is not reproducible)')
+  if ds != DATASET_CONTENT_SHA:
+    raise SystemExit(f'dataset CONTENT mismatch -- the arrays differ, not just '
+                     f'the container\n  expected {DATASET_CONTENT_SHA}\n'
                      f'  found    {ds}')
   with np.load(DATASET, allow_pickle=True) as d:
     n_eps, L = d['obs'].shape[0], d['obs'].shape[1]
@@ -114,11 +158,12 @@ def gate(arm, alpha):
     if not os.path.exists(BANK):
       raise SystemExit(f'failure bank missing: {BANK}\n'
                        'build it with scripts/make_swamp_failure_bank.py')
-    bs = sha256(BANK)
+    bs = content_sha256(BANK)
     print(f'  failure bank      : {BANK}')
-    print(f'  failure bank sha  : {bs}')
-    if bs != BANK_SHA:
-      raise SystemExit(f'bank sha mismatch\n  expected {BANK_SHA}\n'
+    print(f'  bank content      : {bs}   <- ENFORCED')
+    print(f'  bank file sha     : {sha256(BANK)[:16]}...  (informational)')
+    if bs != BANK_CONTENT_SHA:
+      raise SystemExit(f'bank CONTENT mismatch\n  expected {BANK_CONTENT_SHA}\n'
                        f'  found    {bs}')
     with np.load(BANK, allow_pickle=True) as b:
       g = np.asarray(b['goals'])
@@ -137,8 +182,10 @@ def gate(arm, alpha):
   print(f'  batch_size        : {BATCH_SIZE}   steps: {STEPS}')
   print('=' * 70)
   print('PROVENANCE GATE PASSED')
-  return {'git_commit': commit, 'arm': arm, 'dataset_sha256': ds,
-          'bank_sha256': BANK_SHA if arm == 'failneg' else None,
+  return {'git_commit': commit, 'arm': arm,
+          'dataset_content_sha256': ds,
+          'dataset_file_sha256': sha256(DATASET),
+          'bank_content_sha256': BANK_CONTENT_SHA if arm == 'failneg' else None,
           'fail_neg_alpha': alpha if arm == 'failneg' else 0.0,
           'anchor_cut_mode': 'arrival' if use_cut else '',
           'batch_size': BATCH_SIZE, 'steps': STEPS}
