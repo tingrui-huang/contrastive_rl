@@ -211,6 +211,34 @@ def check_frozen_buffer(buffer):
 
 
 # --------------------------------------------------------------------------- #
+# G10: anchor-cut contract (only meaningful when scheme C is active)
+# --------------------------------------------------------------------------- #
+def check_anchor_cut(buffer, batch_size=4096, n_batches=8):
+  """Both halves of scheme C must hold at once:
+
+    (a) every drawn anchor i is inside its episode's [0, cut)  -- the cut bites;
+    (b) goals ARE still drawn from rows >= cut                 -- the future
+        window was NOT truncated (this is what separates scheme C from the
+        'lengths' path, and it is the half a silent regression would break).
+  """
+  if not getattr(buffer, 'use_anchor_cut', False):
+    return True, {'active': False}
+  cuts = buffer.anchor_cuts
+  bad_anchor = total = past_cut_goal = 0
+  for _ in range(n_batches):
+    traj, i, j = buffer.sampled_indices(batch_size)
+    Ct = cuts[traj]
+    bad_anchor += int(np.sum(i >= Ct))
+    past_cut_goal += int(np.sum(j >= Ct))
+    total += len(traj)
+  ok = (bad_anchor == 0 and past_cut_goal > 0)
+  return ok, {'active': True, 'samples': total,
+              'anchor_past_cut_violations': bad_anchor,
+              'goals_drawn_at_or_past_cut': past_cut_goal,
+              'goals_past_cut_fraction': past_cut_goal / max(total, 1)}
+
+
+# --------------------------------------------------------------------------- #
 # G9: resume dataset-hash guard
 # --------------------------------------------------------------------------- #
 def _hash_sidecar(ckpt_dir):
@@ -236,6 +264,65 @@ def require_same_dataset_hash(ckpt_dir, sha256):
   return (recorded == sha256), recorded
 
 
+def compute_anchor_cuts(obs, obs_dim, radius, obs_to_goal_fn=None):
+  """Per-episode anchor cut row for ``anchor_cut_mode='arrival'`` (scheme C).
+
+  cut[e] = min(first arrival row, start of the frozen terminal run), clipped
+  into [1, L-1]. Anchors are then drawn from [0, cut) only; the future-goal
+  window is untouched (see TrajectoryBuffer.set_anchor_cuts).
+
+    arrival -- first t with ||obs_to_goal(state_t) - goal_half_t|| < radius.
+               Requires the goal half of the stored observation to live in the
+               same space as obs_to_goal(state), which is the contract for
+               every env in crl.envs.
+    frozen  -- first index of the terminal run over which the STATE never
+               changes again (an absorbing/dead state, or a perfectly still
+               agent). L when the state keeps moving to the end.
+
+  Derived from the learner's own observation only -- no audit field is read,
+  so this cannot leak the confounder.
+  """
+  obs = np.asarray(obs)
+  n_eps, L = obs.shape[0], obs.shape[1]
+  state = obs[:, :, :obs_dim].astype(np.float64)
+  goal_half = obs[:, :, obs_dim:].astype(np.float64)
+  if obs_to_goal_fn is None:
+    gs = state
+  else:  # obs_to_goal slices the LAST axis; apply it on a flattened view.
+    gs = obs_to_goal_fn(state.reshape(-1, state.shape[-1]))
+    gs = gs.reshape(n_eps, L, -1)
+  if gs.shape[-1] != goal_half.shape[-1]:
+    raise ValueError(
+        f'anchor_cut_mode=arrival needs the goal half ({goal_half.shape[-1]}d) '
+        f'and obs_to_goal(state) ({gs.shape[-1]}d) in the same space')
+  hit = np.linalg.norm(gs - goal_half, axis=2) < float(radius)   # [N, L]
+  arrival = np.where(hit.any(axis=1), hit.argmax(axis=1), L)
+
+  # Start of the terminal constant run of the STATE.
+  #   moved[e, t] is True iff state[e, t+1] != state[e, t]   (t = 0 .. L-2)
+  # so the run begins one row after the LAST True. argmax on the reversed row
+  # gives the first True from the end; (L-1) - that index is already last+1.
+  moved = np.any(state[:, 1:] != state[:, :-1], axis=2)      # [N, L-1]
+  any_move = moved.any(axis=1)
+  run_start = (L - 1) - moved[:, ::-1].argmax(axis=1)        # = last True + 1
+  frozen = np.where(any_move, run_start, 0)                  # never moved -> 0
+  frozen = np.where(moved[:, -1], L, frozen)                 # no tail at all
+
+  cut = np.clip(np.minimum(arrival, frozen), 1, L - 1).astype(np.int64)
+  stats = {
+      'n_episodes': int(n_eps), 'ep_len_obs': int(L),
+      'radius': float(radius),
+      'n_arrived': int((arrival < L).sum()),
+      'n_frozen_tail': int((frozen < L).sum()),
+      'cut_min': int(cut.min()), 'cut_max': int(cut.max()),
+      'cut_mean': float(cut.mean()),
+      'anchor_rows_kept': int(cut.sum()),
+      'anchor_rows_total': int(n_eps * (L - 1)),
+      'anchor_row_fraction': float(cut.sum() / (n_eps * (L - 1))),
+  }
+  return cut, stats
+
+
 def build_offline_buffer(path, config):
   """Load the fixed dataset into a TrajectoryBuffer sized EXACTLY to it, freeze
   it, and return (buffer, fingerprint). No env, no growth room."""
@@ -257,6 +344,28 @@ def build_offline_buffer(path, config):
     for e in range(n_eps):
       buffer.add_episode(obs[e], act[e],
                          length=None if lengths is None else int(lengths[e]))
+    # Scheme C: restrict ANCHORS to the pre-parking rows. Applied before
+    # freeze(); the future-goal window is untouched, so every stored row stays
+    # samplable as a relabeled goal.
+    mode = getattr(config, 'anchor_cut_mode', '') or ''
+    if mode:
+      if mode != 'arrival':
+        raise ValueError(f'unknown anchor_cut_mode {mode!r} (expected '
+                         "'' or 'arrival')")
+      from crl.replay import obs_to_goal as _o2g
+      cuts, cut_stats = compute_anchor_cuts(
+          obs, config.obs_dim, config.anchor_cut_radius,
+          obs_to_goal_fn=lambda s: _o2g(s, config.start_index,
+                                        config.end_index, config.goal_indices))
+      buffer.set_anchor_cuts(cuts)
+      fp['anchor_cut'] = cut_stats
+      print(f'ANCHOR CUT (scheme C, mode={mode!r}, radius='
+            f'{config.anchor_cut_radius}): keeping '
+            f'{cut_stats["anchor_rows_kept"]:,}/'
+            f'{cut_stats["anchor_rows_total"]:,} anchor rows '
+            f'({cut_stats["anchor_row_fraction"]:.1%}); cut mean '
+            f'{cut_stats["cut_mean"]:.1f}, arrived {cut_stats["n_arrived"]}, '
+            f'frozen-tail {cut_stats["n_frozen_tail"]}; future window UNCHANGED')
   buffer.freeze()
   return buffer, fp
 
@@ -280,6 +389,11 @@ def run_static_audit(path, config, buffer=None):
   ok8, s8 = check_frozen_buffer(buffer)
   gates['G8_FROZEN_BUFFER'] = ok8
   report['stats']['frozen'] = s8
+
+  ok10, s10 = check_anchor_cut(buffer)
+  report['stats']['anchor_cut'] = s10
+  if s10.get('active'):                 # only a gate when scheme C is on.
+    gates['G10_ANCHOR_CUT'] = ok10
 
   all_pass = all(gates.values())
   report['gates'] = gates

@@ -1,0 +1,63 @@
+{
+  "results": {
+    "V1_default_rng_identical": {
+      "pass": true,
+      "detail": "4096 draws reproduce traj/i/j bit-for-bit from a fresh Generator (use_anchor_cut=False)"
+    },
+    "V2_scheme_C_law": {
+      "pass": true,
+      "detail": "400000 draws: anchors past cut = 0; episode-uniform max dev 0.026; within-episode row-uniform max dev 0.113"
+    },
+    "V3_cut_and_full_future": {
+      "pass": true,
+      "detail": "anchors past cut = 0 (must be 0); goals at/past cut = 154,078 = 77.0% (must be > 0, proving the goal window is still the full 51 rows)"
+    },
+    "V3b_G10_gate": {
+      "pass": true,
+      "detail": "{\"active\": true, \"samples\": 32768, \"anchor_past_cut_violations\": 0, \"goals_drawn_at_or_past_cut\": 25238, \"goals_past_cut_fraction\": 0.77020263671875}"
+    },
+    "V4_geometric_law": {
+      "pass": true,
+      "detail": "anchors at i=0 (n_on=144,920, n_off=30,260); noise floor 0.01601; TV(schemeC, default) = 0.01704; TV(schemeC, discount**(j-i)) = 0.00878; TV(default, law) = 0.01408; max j reached 50 of 50 in both"
+    },
+    "V5_effect": {
+      "pass": true,
+      "detail": "decision-point anchors 7.31% -> 24.13% (3.30x, 247 per batch of 1024); holding+swamp0-active 0.317% -> 1.104% (11.3 per batch); source composition preserved (max shift 0.0022 over 400,000 draws each, random 20.0%->20.0%) -- scheme C keeps the episode marginal, unlike a flat draw over acting rows"
+    },
+    "V6_bank_contract": {
+      "pass": true,
+      "detail": "(514, 2) float32, all 514/514 states inside a swamp cell; REQUIRES batch_size >= 514"
+    },
+    "V7_bank_positive_overlap": {
+      "pass": null,
+      "detail": {
+        "0.02": 0.066845,
+        "0.05": 0.08523,
+        "0.1": 0.10401
+      }
+    },
+    "V8a_loss_decomposition": {
+      "pass": true,
+      "detail": "pos 0.001144 + ord 3.153556 + fail 0.244015 = 3.398715 vs critic_loss 3.398715 (|diff| 0.00e+00); bank size 32, alpha 0.10000000149011612"
+    },
+    "V8b_alpha0_identical": {
+      "pass": true,
+      "detail": "5 updates: params byte-identical with and without a bank at alpha=0; no fail metrics emitted"
+    }
+  },
+  "anchor_cut_stats": {
+    "n_episodes": 6000,
+    "ep_len_obs": 51,
+    "radius": 0.5,
+    "n_arrived": 4713,
+    "n_frozen_tail": 507,
+    "cut_min": 3,
+    "cut_max": 50,
+    "cut_mean": 15.629833333333334,
+    "anchor_rows_kept": 93779,
+    "anchor_rows_total": 300000,
+    "anchor_row_fraction": 0.3125966666666667
+  },
+  "dataset": "datasets/swamp_windy_teacher_s0.npz",
+  "bank": "artifacts/swamp_windy_failure_bank/failure_bank.npz"
+}

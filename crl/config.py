@@ -118,6 +118,18 @@ class Config:
   # critic loss/gradients are byte-identical to the baseline.
   fail_neg_alpha: float = 0.0
 
+  # --- Anchor sampling ("scheme C"; OFF by default) ---
+  # '' keeps the original fixed-length draw (anchor uniform over ALL rows).
+  # 'arrival' restricts ANCHORS to rows before the episode parks -- the first
+  # row within anchor_cut_radius of its own goal, or the start of a frozen
+  # terminal run (an absorbing/dead state), whichever comes first. The
+  # future-goal window is NOT truncated: the geometric relabeling law and the
+  # set of samplable goals are unchanged, so this is not the 'lengths' path.
+  # Rationale: on a fixed-length dataset most rows can be post-arrival idling,
+  # which costs anchor budget without carrying a decision.
+  anchor_cut_mode: str = ''
+  anchor_cut_radius: float = 0.5
+
   # --- Replay ---
   min_replay_size: int = 10_000     # env steps before learning starts.
   max_replay_size: int = 1_000_000  # env steps kept in the buffer.

@@ -17,6 +17,16 @@ that make the original pipeline work for contrastive learning:
 
 Only the STATE part ``obs[:, :obs_dim]`` is used for relabeling (as in the
 original); the env's own goal half of the stored observation is discarded.
+
+Two OPT-IN deviations exist, both inactive by default so the fixed-length draw
+stays byte-identical to the original RNG stream:
+
+  * variable ``lengths`` (``add_episode(..., length=)``) -- shortens BOTH the
+    anchor range and the future-goal window, for datasets with padded tails;
+  * ``set_anchor_cuts()`` -- shortens ONLY the anchor range and leaves the
+    future-goal window at full length, for fixed-length datasets whose tails
+    are real (an agent parked on the goal, or frozen after a terminal event)
+    and should stay samplable as goals while no longer being fitted as anchors.
 """
 from typing import Optional
 
@@ -75,6 +85,13 @@ class TrajectoryBuffer:
     # future-goal relabeling never samples across a padded tail (see sample()).
     self._lengths_arr = np.full(self._capacity_eps, self._L, dtype=np.int64)
     self._use_lengths = False
+    # Per-episode ANCHOR cut: anchor times i are drawn from [0, cut) only.
+    # DISTINCT from _lengths_arr -- it does NOT shrink the future-goal window,
+    # which stays the full L rows (see set_anchor_cuts / _draw_indices).
+    # Inactive unless set_anchor_cuts() is called.
+    self._anchor_cut_arr = np.full(self._capacity_eps, self._L - 1,
+                                   dtype=np.int64)
+    self._use_anchor_cut = False
     self._write = 0      # next episode slot to write (ring).
     self._num_eps = 0    # number of valid episodes stored.
     self._frozen = False  # offline mode locks the buffer (see freeze()).
@@ -132,6 +149,51 @@ class TrajectoryBuffer:
     """Per-episode valid observation counts for the stored episodes."""
     return self._lengths_arr[:self._num_eps].copy()
 
+  def set_anchor_cuts(self, cuts):
+    """Restrict ANCHOR times to rows [0, cut_e) per episode ("scheme C").
+
+    The future-goal window is deliberately LEFT AT FULL LENGTH: j is still
+    drawn from all rows > i up to L-1, so the geometric relabeling law
+    ``P(j) prop discount**(j-i)`` is exactly the fixed-length one. Only the
+    marginal over anchors changes -- episodes are still drawn uniformly, then
+    the row is drawn uniformly inside that episode's [0, cut).
+
+    Why this is the safe half of the knob: the anchor marginal decides only
+    WHERE the critic is fitted, not the conditional target p(g|s,a) at each
+    (s, a). The induced change in the goal marginal p(g) shifts the NCE
+    optimum ``log[p(g|s,a)/p(g)]`` by a term depending on g alone, which
+    cancels in the actor's argmax over a.
+
+    Mutually exclusive with variable ``lengths`` (that path truncates the
+    future window, which is exactly what this mode must not do).
+
+    Args:
+      cuts: [num_eps] ints, clipped into [1, L-1].
+    """
+    if self._frozen:
+      raise RuntimeError('TrajectoryBuffer is frozen: set_anchor_cuts() would '
+                         'change the sampling distribution after the audit.')
+    if self._use_lengths:
+      raise ValueError(
+          'set_anchor_cuts() is incompatible with variable episode lengths: '
+          'the lengths path also truncates the future-goal window, while the '
+          'anchor cut must leave it at full length.')
+    cuts = np.asarray(cuts, dtype=np.int64)
+    if cuts.shape != (self._num_eps,):
+      raise ValueError(f'expected cuts of shape ({self._num_eps},), '
+                       f'got {cuts.shape}')
+    self._anchor_cut_arr[:self._num_eps] = np.clip(cuts, 1, self._L - 1)
+    self._use_anchor_cut = True
+
+  @property
+  def anchor_cuts(self):
+    """Per-episode anchor cut rows (L-1 for every episode when inactive)."""
+    return self._anchor_cut_arr[:self._num_eps].copy()
+
+  @property
+  def use_anchor_cut(self):
+    return self._use_anchor_cut
+
   def content_sha256(self):
     """SHA-256 over the stored obs+act tensors (immutability checksum)."""
     import hashlib
@@ -182,11 +244,21 @@ class TrajectoryBuffer:
     rng = self._rng
 
     traj = rng.integers(0, ne, size=batch_size)          # which trajectory.
-    if not self._use_lengths:
+    if not self._use_lengths and not self._use_anchor_cut:
       # Fixed-length path -- byte-identical RNG stream to the original.
       i = rng.integers(0, L - 1, size=batch_size)        # anchor in [0, L-2].
       arange = np.arange(L)                              # [L]
       future = arange[None, :] > i[:, None]              # [B, L]
+    elif self._use_anchor_cut:
+      # Scheme C: episode uniform (above), then anchor uniform inside that
+      # episode's [0, cut). The FUTURE WINDOW IS NOT TOUCHED -- j still ranges
+      # over every row > i up to L-1, so the relabeling law is identical to the
+      # fixed-length one and post-cut (parked / dead) states remain reachable
+      # as positive goals, exactly as in the original.
+      Ct = self._anchor_cut_arr[traj]                    # [B] cut per row.
+      i = np.floor(rng.random(batch_size) * Ct).astype(np.int64)
+      arange = np.arange(L)                              # [L]
+      future = arange[None, :] > i[:, None]              # [B, L] FULL length.
     else:
       # Variable-length: mask the padded tail per row (valid = arange < len).
       Lt = self._lengths_arr[traj]                       # [B] valid obs counts.
