@@ -60,10 +60,20 @@ ENV = 'point_two_route_swamp_windy_v0'
 BANK = 'artifacts/swamp_windy_failure_bank/failure_bank.npz'
 FORK = np.array([1.5, 3.5])          # the route decision point
 GOAL = np.array([8.5, 3.5])          # the ONLY goal ever commanded
-# unit moves out of the fork: +x continues to the holding cell / shortcut,
-# -y drops to (1,2) and the safe lower route.
-A_SHORTCUT = np.array([1.0, 0.0], np.float32)
-A_SAFE = np.array([0.0, -1.0], np.float32)
+
+# Out of the fork, +x continues to the holding cell / shortcut and -y drops to
+# (1,2) and the safe lower route.
+#
+# The margin is taken between the BEST action in each direction, not between
+# two hand-picked unit vectors. Measured on real checkpoints, f varies by ~8
+# logits across the action square, and both [1,0] and [0,-1] sit near the TOP
+# of it -- so differencing those two subtracts two near-optimal values and
+# yields a tiny, fragile number that says nothing about the route ranking.
+# "Best achievable going each way" is the quantity the actor is effectively
+# choosing between.
+GRID = 21                            # 21x21 sweep of [-1,1]^2
+SAFE_WARD = lambda a: a[:, 1] < -0.3       # heading down, toward (1,2)
+SHORT_WARD = lambda a: a[:, 0] > 0.3       # heading +x, toward the holding cell
 
 
 def critic_fn(nets, state, cfg):
@@ -85,31 +95,41 @@ def probe(ckpt, bank_states, jitter=0.05, n=256, seed=0):
   nets, state, _, step = load_nets(ENV, ckpt, cfg)
   rng = np.random.default_rng(seed)
 
-  # A cloud of states around the fork, so the margin is not one lucky point.
-  s = FORK[None, :] + rng.normal(0, jitter, (n, 2))
-  g = np.repeat(GOAL[None, :], n, axis=0)
-  obs_sc = np.concatenate([s, g], axis=1).astype(np.float32)
+  gx, gy = np.meshgrid(np.linspace(-1, 1, GRID), np.linspace(-1, 1, GRID))
+  acts = np.stack([gx.ravel(), gy.ravel()], axis=1).astype(np.float32)
 
-  def val(a_vec):
-    a = np.repeat(a_vec[None, :], n, axis=0)
-    out = nets.q_network.apply(state.q_params, jnp.asarray(obs_sc),
-                               jnp.asarray(a))
-    out = np.asarray(out)
-    # q_network returns [B, B] (or [B, B, 2] twin): row i vs goal j. The
-    # diagonal is f(s_i, a_i, g_i), which is what the actor maximises.
+  def sweep(state_pt):
+    """f(state_pt, a, GOAL) for every a on the grid."""
+    m = len(acts)
+    s = np.repeat(np.asarray(state_pt, np.float32)[None, :], m, axis=0)
+    g = np.repeat(GOAL[None, :], m, axis=0)
+    obs = np.concatenate([s, g], axis=1).astype(np.float32)
+    out = np.asarray(nets.q_network.apply(state.q_params, jnp.asarray(obs),
+                                          jnp.asarray(acts)))
     if out.ndim == 3:
       out = out.min(axis=-1)                   # twin-Q min, as the actor uses
-    d = np.einsum('ii->i', out) if out.ndim == 2 else out
-    return float(d.mean()), float(d.std())
+    return np.einsum('ii->i', out) if out.ndim == 2 else out
 
-  v_safe, sd_safe = val(A_SAFE)
-  v_short, sd_short = val(A_SHORTCUT)
+  # Average the action-value surface over a small cloud of fork states, so the
+  # ranking is not read off one lucky point.
+  pts = FORK[None, :] + rng.normal(0, jitter, (max(n // 8, 8), 2))
+  F = np.stack([sweep(p) for p in pts])        # [pts, actions]
+  f_mean, f_sd = F.mean(axis=0), F.std(axis=0)
+
+  m_safe, m_short = SAFE_WARD(acts), SHORT_WARD(acts)
+  i_safe = int(np.argmax(np.where(m_safe, f_mean, -np.inf)))
+  i_short = int(np.argmax(np.where(m_short, f_mean, -np.inf)))
+  v_safe, sd_safe = float(f_mean[i_safe]), float(f_sd[i_safe])
+  v_short, sd_short = float(f_mean[i_short]), float(f_sd[i_short])
+  i_best = int(np.argmax(f_mean))
+  best_a = acts[i_best].tolist()
+  spread = float(f_mean.max() - f_mean.min())
 
   # What value does the critic give the BANK states AS GOALS, from the fork?
   nb = min(len(bank_states), n)
   sb = FORK[None, :] + rng.normal(0, jitter, (nb, 2))
   ob = np.concatenate([sb, bank_states[:nb]], axis=1).astype(np.float32)
-  ab = np.repeat(A_SHORTCUT[None, :], nb, axis=0)
+  ab = np.repeat(acts[i_short][None, :], nb, axis=0)   # heading into the swamp
   outb = np.asarray(nets.q_network.apply(state.q_params, jnp.asarray(ob),
                                          jnp.asarray(ab)))
   if outb.ndim == 3:
@@ -119,7 +139,9 @@ def probe(ckpt, bank_states, jitter=0.05, n=256, seed=0):
 
   return {'step': int(step), 'v_safe': v_safe, 'v_shortcut': v_short,
           'fork_margin': v_safe - v_short, 'sd_safe': sd_safe,
-          'sd_shortcut': sd_short, 'v_bank_as_goal': vb}
+          'sd_shortcut': sd_short, 'v_bank_as_goal': vb,
+          'best_action': best_a, 'action_value_spread': spread,
+          'a_safe': acts[i_safe].tolist(), 'a_short': acts[i_short].tolist()}
 
 
 def main():
@@ -153,13 +175,19 @@ def main():
   print('  margin = f(fork, toward-safe, goal) - f(fork, toward-shortcut, goal)')
   print('  margin > 0  => critic ranks the SAFE route higher (deconfounded)')
   print('=' * 96)
-  print(f'{"run":<34}{"f(safe)":>10}{"f(short)":>10}{"margin":>10}'
-        f'{"f(bank as goal)":>18}')
+  print(f'{"run":<30}{"f(safe)":>9}{"f(short)":>9}{"margin":>9}'
+        f'{"spread":>9}{"argmax a":>15}{"f(bank)":>10}')
   print('-' * 96)
   for name, r in rows:
-    flag = '  <- safe preferred' if r['fork_margin'] > 0 else ''
-    print(f'{name:<34}{r["v_safe"]:>10.3f}{r["v_shortcut"]:>10.3f}'
-          f'{r["fork_margin"]:>10.3f}{r["v_bank_as_goal"]:>18.3f}{flag}')
+    flag = '  safe' if r['fork_margin'] > 0 else '  short'
+    ba = f'[{r["best_action"][0]:+.1f},{r["best_action"][1]:+.1f}]'
+    print(f'{name:<30}{r["v_safe"]:>9.3f}{r["v_shortcut"]:>9.3f}'
+          f'{r["fork_margin"]:>9.3f}{r["action_value_spread"]:>9.2f}'
+          f'{ba:>15}{r["v_bank_as_goal"]:>10.3f}{flag}')
+  print('\n  margin = max f over safe-ward actions - max f over shortcut-ward '
+        'actions,\n  averaged over a cloud of fork states. spread = range of f '
+        'across the whole\n  action square (a small spread would mean the '
+        'diagnostic cannot discriminate).')
 
   # group by arm
   byarm = {}
