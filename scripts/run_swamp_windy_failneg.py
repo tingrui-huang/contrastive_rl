@@ -149,8 +149,10 @@ def gate(arm, alpha):
   print(f'  episodes          : {n_eps} x {L} rows (retained WHOLE)')
 
   use_cut = arm in ('anchorcut', 'failneg')
-  print(f'  anchor_cut_mode   : '
-        f'{"arrival (scheme C)" if use_cut else "'' (original draw)"}')
+  # NB: keep nested quotes out of f-strings -- python 3.11 (the node's
+  # interpreter) predates PEP 701 and rejects them.
+  cut_desc = 'arrival (scheme C)' if use_cut else "'' (original draw)"
+  print(f'  anchor_cut_mode   : {cut_desc}')
   if use_cut:
     print(f'  anchor_cut_radius : {ANCHOR_CUT_RADIUS}')
 
