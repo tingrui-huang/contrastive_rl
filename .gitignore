@@ -152,3 +152,8 @@ artifacts/rockfall_dataset/full/antmaze_rockfall_full.npz
 artifacts/rockfall_dataset/oracle/*.npz
 # v2 severity-ablation learner npz (metadata kept; not needed for training)
 artifacts/rockfall_v2_dataset/pilot_sev055_ablation/*.npz
+
+# generated diagnostics from the windy sweep (regenerated per run; they
+# otherwise block git pull on the GPU node with local-modification conflicts)
+artifacts/swamp_windy_failure_bank/verify_anchor_cut.json
+artifacts/swamp_windy_failure_bank/critic_fork_margin.json
