@@ -41,12 +41,20 @@ _HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, _HERE)
 sys.path.insert(0, os.path.dirname(_HERE))
 
+# This probe is normally run WHILE the sweep is training. Do not let it grab
+# the default 75% of VRAM out from under the live run.
+os.environ.setdefault('XLA_PYTHON_CLIENT_PREALLOCATE', 'false')
+os.environ.setdefault('XLA_PYTHON_CLIENT_MEM_FRACTION', '0.08')
+
 import jax                                     # noqa: E402
 import jax.numpy as jnp                        # noqa: E402
 
 from crl import envs as envs_mod               # noqa: E402
-from crl.config import Config                  # noqa: E402
 from crl.report_maze import load_nets          # noqa: E402
+# Take the network shape from the launcher itself (repr_dim 16, hidden
+# 256x256, twin_q) -- a local Config() would use the library defaults
+# (repr_dim 64) and fail to load these checkpoints.
+from run_swamp_windy_failneg import build_cfg  # noqa: E402
 
 ENV = 'point_two_route_swamp_windy_v0'
 BANK = 'artifacts/swamp_windy_failure_bank/failure_bank.npz'
@@ -71,7 +79,8 @@ def critic_fn(nets, state, cfg):
 
 
 def probe(ckpt, bank_states, jitter=0.05, n=256, seed=0):
-  cfg = Config(env_name=ENV)
+  # exact training recipe; arm/alpha do not affect the network shape
+  cfg = build_cfg('baseline', 0.0, 0, '', 1)
   envs_mod.make_env(ENV, cfg, seed=0)          # fills obs/goal/action dims
   nets, state, _, step = load_nets(ENV, ckpt, cfg)
   rng = np.random.default_rng(seed)
