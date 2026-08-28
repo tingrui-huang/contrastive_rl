@@ -323,6 +323,67 @@ def compute_anchor_cuts(obs, obs_dim, radius, obs_to_goal_fn=None):
   return cut, stats
 
 
+def compute_balanced_buckets(obs, act, obs_dim, cell_size, n_sectors, cuts=None,
+                             zero_action_eps=0.1):
+  """Bucket every eligible anchor by (discretised state cell, action sector).
+
+  Returns (traj_idx, row_idx, bucket_id, stats) for TrajectoryBuffer
+  .set_balanced_buckets. Continuous states/actions have no natural buckets --
+  raw (s, a) pairs are almost all unique, so balancing over them would be a
+  no-op -- therefore the discretisation is an explicit modelling choice and is
+  recorded in stats.
+
+  Two details that are not cosmetic:
+
+  * Sector bins are ROTATED half a width so the cardinal directions land at bin
+    CENTRES. With edges on the cardinals, the dominant behaviour modes (which
+    here are essentially axis-aligned moves) get split across two bins. The
+    same correction was needed by the earlier propensity work.
+  * Near-zero actions ("wait") get their own bucket rather than being assigned
+    an arbitrary angle -- arctan2(0, 0) is 0, which would silently pile every
+    wait into the +x sector.
+
+  cuts (optional): per-episode anchor cut, so buckets are built over exactly
+  the rows the anchor-cut sampler would consider.
+  """
+  obs = np.asarray(obs)
+  act = np.asarray(act)
+  n_eps, L = obs.shape[0], obs.shape[1]
+  n_rows = L - 1                                  # anchors live in [0, L-2]
+
+  if cuts is None:
+    elig = np.ones((n_eps, n_rows), bool)
+  else:
+    cuts = np.asarray(cuts, np.int64)
+    elig = np.arange(n_rows)[None, :] < cuts[:, None]
+
+  tj, rw = np.nonzero(elig)
+  s = obs[tj, rw, :obs_dim].astype(np.float64)
+  a = act[tj, rw].astype(np.float64)
+
+  cell = np.floor(s / float(cell_size)).astype(np.int64)
+  mag = np.linalg.norm(a, axis=1)
+  ang = np.arctan2(a[:, 1], a[:, 0])
+  width = 2.0 * np.pi / int(n_sectors)
+  sector = np.floor((ang + width / 2.0) / width).astype(np.int64) % int(n_sectors)
+  sector = np.where(mag < zero_action_eps, int(n_sectors), sector)  # wait bucket
+
+  key = np.concatenate([cell, sector[:, None]], axis=1)
+  _, bucket = np.unique(key, axis=0, return_inverse=True)
+  bucket = bucket.astype(np.int64).ravel()
+  counts = np.bincount(bucket)
+  stats = {
+      'cell_size': float(cell_size), 'n_sectors': int(n_sectors),
+      'zero_action_eps': float(zero_action_eps),
+      'n_anchor_rows': int(len(bucket)), 'n_buckets': int(len(counts)),
+      'bucket_min': int(counts.min()), 'bucket_max': int(counts.max()),
+      'bucket_median': int(np.median(counts)),
+      'n_wait_bucket_rows': int((sector == int(n_sectors)).sum()),
+      'sector_bins_rotated_half_width': True,
+  }
+  return tj.astype(np.int64), rw.astype(np.int64), bucket, stats
+
+
 def build_offline_buffer(path, config):
   """Load the fixed dataset into a TrajectoryBuffer sized EXACTLY to it, freeze
   it, and return (buffer, fingerprint). No env, no growth room."""
@@ -359,6 +420,25 @@ def build_offline_buffer(path, config):
                                         config.end_index, config.goal_indices))
       buffer.set_anchor_cuts(cuts)
       fp['anchor_cut'] = cut_stats
+    else:
+      cuts = None
+    # Balanced (s, a) anchor sampling -- applied on top of the anchor cut, so
+    # the buckets cover exactly the rows the cut leaves eligible.
+    if getattr(config, 'balanced_sampling', False):
+      tj, rw, bk, bal_stats = compute_balanced_buckets(
+          obs, act, config.obs_dim, config.balanced_cell_size,
+          config.balanced_action_sectors, cuts=cuts)
+      _cap = getattr(config, 'balanced_cap', 0) or None
+      buffer.set_balanced_buckets(tj, rw, bk, cap=_cap)
+      bal_stats['cap'] = _cap
+      fp['balanced'] = bal_stats
+      print(f'BALANCED (s,a) SAMPLING: cell {bal_stats["cell_size"]}, '
+            f'{bal_stats["n_sectors"]} rotated sectors (+wait) -> '
+            f'{bal_stats["n_buckets"]} buckets over '
+            f'{bal_stats["n_anchor_rows"]:,} rows; sizes min '
+            f'{bal_stats["bucket_min"]} / median '
+            f'{bal_stats["bucket_median"]} / max {bal_stats["bucket_max"]}; '
+            f'cap {_cap}')
       print(f'ANCHOR CUT (scheme C, mode={mode!r}, radius='
             f'{config.anchor_cut_radius}): keeping '
             f'{cut_stats["anchor_rows_kept"]:,}/'

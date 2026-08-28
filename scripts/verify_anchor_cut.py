@@ -314,6 +314,41 @@ def main():
         '5 updates: params byte-identical with and without a bank at alpha=0; '
         'no fail metrics emitted')
 
+  # ---------------------------------------------------------------- V9
+  print('\nV9  balanced (s,a) sampling')
+  tj, rw, bkt, bal_stats = offline_audit.compute_balanced_buckets(
+      obs, act, OBS_DIM, 1.0, 4, cuts=cuts)
+  b_bal = TrajectoryBuffer(
+      capacity_steps=E * L, ep_len_obs=L, full_obs_dim=W, action_dim=ACT_DIM,
+      obs_dim=OBS_DIM, start_index=0, end_index=-1, discount=0.99, seed=SEED)
+  for e in range(E):
+    b_bal.add_episode(obs[e], act[e])
+  b_bal.set_anchor_cuts(cuts)
+  b_bal.set_balanced_buckets(tj, rw, bkt, cap=300)
+  b_bal.freeze()
+  tb, ib, jb = b_bal.sampled_indices(300000)
+
+  # (a) anchors still respect the cut, (b) goals still span the full window
+  past_cut = int(np.sum(ib >= cuts[tb]))
+  reach_end = int(jb.max())
+
+  def fork_ratio(t, i):
+    c = cell[t, i]
+    nx = cell[t, i + 1]
+    at = (c[:, 0] == FORK[0]) & (c[:, 1] == FORK[1])
+    f = int((at & (nx[:, 0] == HOLD[0]) & (nx[:, 1] == HOLD[1])).sum())
+    s = int((at & (nx[:, 0] == 1) & (nx[:, 1] == 2)).sum())
+    return f / max(s, 1)
+
+  r_cut = fork_ratio(t3, i3)                       # scheme C alone (from V5)
+  r_bal = fork_ratio(tb, ib)
+  ok = (past_cut == 0 and reach_end == L - 1 and r_bal < r_cut / 3)
+  check('V9_balanced_sampling', ok,
+        f'{bal_stats["n_buckets"]} buckets (cap 300, rotated sectors + wait); '
+        f'anchors past cut {past_cut} (must be 0); max j {reach_end} of {L-1} '
+        f'(future window intact); fork shortcut:safe {r_cut:.2f}x -> '
+        f'{r_bal:.2f}x')
+
   # ---------------------------------------------------------------- report
   out = 'artifacts/swamp_windy_failure_bank/verify_anchor_cut.json'
   os.makedirs(os.path.dirname(out), exist_ok=True)

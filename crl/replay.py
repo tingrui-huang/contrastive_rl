@@ -194,6 +194,77 @@ class TrajectoryBuffer:
   def use_anchor_cut(self):
     return self._use_anchor_cut
 
+  def set_balanced_buckets(self, traj_idx, row_idx, bucket_id, cap=None):
+    """Enable BALANCED (s, a) anchor sampling: pick a bucket uniformly, then a
+    row uniformly inside it.
+
+    Motivation: in an offline dataset each transition appears in proportion to
+    how often the behaviour policy chose it, so drawing anchors uniformly over
+    ROWS is really drawing them weighted by the behaviour policy's preference.
+    That fights the whole point of a pessimistic method, whose job is to move
+    the agent onto a route the behaviour policy rarely took: the safe route is
+    rare *because* it needs protecting, and rare means quiet in a
+    frequency-weighted gradient. Measured at the fork of this benchmark, the
+    shortcut outnumbers the safe branch 5:1 under uniform row sampling and
+    13.8:1 once anchor cuts are on.
+
+    Caveat, recorded rather than hidden: balancing changes the distribution the
+    loss takes its expectation over, which shifts the contrastive optimum by a
+    term depending on the goal alone. Harmless while a single fixed goal is
+    ever commanded (this env), but it must be re-derived before any
+    cross-goal/HER-style comparison.
+
+    ``cap`` guards the other end. Strictly uniform-over-buckets upweights a
+    bucket by N / (n_buckets * count), so on continuous data a bucket holding
+    one row gets amplified ~1000x: measured here, 22.5% of every batch would
+    have come from buckets backed by 348 of 93,779 rows. With a cap, a bucket
+    is drawn with probability proportional to ``min(count, cap)``, so buckets
+    at or below the cap keep their relative frequencies (no amplification of
+    near-empty ones) while over-represented buckets are flattened -- which is
+    the part that actually matters. ``None`` restores strict uniform.
+
+    Args:
+      traj_idx, row_idx: [M] eligible anchor coordinates.
+      bucket_id: [M] contiguous bucket ids in [0, n_buckets).
+      cap: weight ceiling per bucket, or None for strict uniform.
+    """
+    if self._frozen:
+      raise RuntimeError('TrajectoryBuffer is frozen: set_balanced_buckets() '
+                         'would change the sampling distribution after audit.')
+    traj_idx = np.asarray(traj_idx, np.int64)
+    row_idx = np.asarray(row_idx, np.int64)
+    bucket_id = np.asarray(bucket_id, np.int64)
+    if not (len(traj_idx) == len(row_idx) == len(bucket_id)):
+      raise ValueError('traj_idx/row_idx/bucket_id must be the same length')
+    if len(traj_idx) == 0:
+      raise ValueError('no eligible anchors for balanced sampling')
+    # Sort by bucket so each bucket is a contiguous slice (CSR-style), which
+    # makes "uniform bucket, then uniform member" a vectorised gather.
+    order = np.argsort(bucket_id, kind='stable')
+    self._bal_traj = traj_idx[order]
+    self._bal_row = row_idx[order]
+    b = bucket_id[order]
+    uniq, first, counts = np.unique(b, return_index=True, return_counts=True)
+    self._bal_offset = first.astype(np.int64)
+    self._bal_count = counts.astype(np.int64)
+    self._n_buckets = len(uniq)
+    if cap is None:
+      self._bal_cdf = None                        # strict uniform over buckets
+    else:
+      w = np.minimum(self._bal_count, int(cap)).astype(np.float64)
+      self._bal_cdf = np.cumsum(w / w.sum())
+      self._bal_cdf[-1] = 1.0                     # guard fp drift
+    self._bal_cap = cap
+    self._use_balanced = True
+
+  @property
+  def use_balanced(self):
+    return getattr(self, '_use_balanced', False)
+
+  @property
+  def balanced_bucket_sizes(self):
+    return self._bal_count.copy() if self.use_balanced else None
+
   def content_sha256(self):
     """SHA-256 over the stored obs+act tensors (immutability checksum)."""
     import hashlib
@@ -242,6 +313,25 @@ class TrajectoryBuffer:
     L = self._L
     ne = self._num_eps
     rng = self._rng
+
+    if getattr(self, '_use_balanced', False):
+      # Bucket uniform, then a row uniform inside that bucket. The future-goal
+      # window is untouched, exactly as in the anchor-cut path.
+      if self._bal_cdf is None:
+        kb = rng.integers(0, self._n_buckets, size=batch_size)
+      else:
+        kb = np.searchsorted(self._bal_cdf, rng.random(batch_size), side='right')
+        kb = np.minimum(kb, self._n_buckets - 1)
+      pos = self._bal_offset[kb] + np.floor(
+          rng.random(batch_size) * self._bal_count[kb]).astype(np.int64)
+      traj = self._bal_traj[pos]
+      i = self._bal_row[pos]
+      arange = np.arange(L)
+      future = arange[None, :] > i[:, None]              # [B, L] FULL length.
+      logp = (arange[None, :] - i[:, None]) * self._log_discount
+      logits = np.where(future, logp, -np.inf)
+      g = -np.log(-np.log(rng.uniform(size=logits.shape).clip(1e-20, 1.0)))
+      return traj, i, np.argmax(logits + g, axis=1)
 
     traj = rng.integers(0, ne, size=batch_size)          # which trajectory.
     if not self._use_lengths and not self._use_anchor_cut:

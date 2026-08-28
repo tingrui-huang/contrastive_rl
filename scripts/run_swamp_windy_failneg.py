@@ -81,7 +81,8 @@ BANK_FILE_SHA_REF = \
 BATCH_SIZE = 256
 STEPS = 150_000
 ANCHOR_CUT_RADIUS = 0.5
-ARMS = ('baseline', 'anchorcut', 'failneg')
+ARMS = ('baseline', 'anchorcut', 'failneg', 'balanced',
+        'balancedfail')
 
 # Gradient updates batched into ONE jax.lax.scan dispatch.
 #
@@ -99,6 +100,20 @@ ARMS = ('baseline', 'anchorcut', 'failneg')
 # learner_steps = updates_per_step * (N_ACT * max_episode_steps) // G, so a
 # non-divisor silently drops updates (G=4 -> 48 instead of 50 per iteration).
 SGD_STEPS_PER_STEP = 10
+
+# Balanced (s,a) bucketing. cell 1.0 x 4 rotated sectors (+wait) was chosen
+# because it is the coarsest option measured, hence the fewest near-empty
+# buckets: uniform-over-buckets amplifies noise from buckets holding one or
+# two samples, and the finer grids measured had min bucket size 1.
+BALANCED_CELL = 1.0
+BALANCED_SECTORS = 4
+# Bucket weight ceiling: draw a bucket with probability proportional to
+# min(count, cap). Strict uniform sent 22.2% of every batch to buckets backed
+# by 348 of 93,779 rows (a one-row bucket is amplified ~1000x). Measured
+# cap sweep: the fork rebalancing is flat at 1.93-1.99x for every cap, while
+# tiny-bucket draws fall 22.2% -> 2.0% at 300 (~ the median bucket size), so
+# the cap costs nothing and removes the noise.
+BALANCED_CAP = 300
 
 
 def sha256(path, chunk=1 << 20):
@@ -168,7 +183,8 @@ def gate(arm, alpha):
     raise SystemExit(f'expected 6000 x 51 episodes, found {n_eps} x {L}')
   print(f'  episodes          : {n_eps} x {L} rows (retained WHOLE)')
 
-  use_cut = arm in ('anchorcut', 'failneg')
+  use_cut = arm in ('anchorcut', 'failneg', 'balanced',
+                    'balancedfail')
   # NB: keep nested quotes out of f-strings -- python 3.11 (the node's
   # interpreter) predates PEP 701 and rejects them.
   cut_desc = 'arrival (scheme C)' if use_cut else "'' (original draw)"
@@ -176,7 +192,10 @@ def gate(arm, alpha):
   if use_cut:
     print(f'  anchor_cut_radius : {ANCHOR_CUT_RADIUS}')
 
-  if arm == 'failneg':
+  if arm in ('balanced', 'balancedfail'):
+    print(f'  balanced (s,a)    : cell {BALANCED_CELL}, {BALANCED_SECTORS} '
+          'rotated sectors + wait bucket')
+  if arm in ('failneg', 'balancedfail'):
     if not os.path.exists(BANK):
       raise SystemExit(f'failure bank missing: {BANK}\n'
                        'build it with scripts/make_swamp_failure_bank.py')
@@ -211,14 +230,20 @@ def gate(arm, alpha):
   return {'git_commit': commit, 'arm': arm,
           'dataset_content_sha256': ds,
           'dataset_file_sha256': sha256(DATASET),
-          'bank_content_sha256': BANK_CONTENT_SHA if arm == 'failneg' else None,
-          'fail_neg_alpha': alpha if arm == 'failneg' else 0.0,
+          'bank_content_sha256': (BANK_CONTENT_SHA
+                                  if arm in ('failneg', 'balancedfail')
+                                  else None),
+          'fail_neg_alpha': (alpha if arm in ('failneg', 'balancedfail')
+                             else 0.0),
+          'balanced_sampling': arm in ('balanced', 'balancedfail'),
           'anchor_cut_mode': 'arrival' if use_cut else '',
           'batch_size': BATCH_SIZE, 'steps': STEPS}
 
 
 def build_cfg(arm, alpha, seed, ckpt_dir, steps):
-  use_cut = arm in ('anchorcut', 'failneg')
+  use_cut = arm in ('anchorcut', 'failneg', 'balanced', 'balancedfail')
+  use_bal = arm in ('balanced', 'balancedfail')
+  use_bank = arm in ('failneg', 'balancedfail')
   return Config(
       env_name=ENV, offline_dataset=DATASET,
       max_number_of_steps=steps,
@@ -226,8 +251,12 @@ def build_cfg(arm, alpha, seed, ckpt_dir, steps):
       anchor_cut_mode='arrival' if use_cut else '',
       anchor_cut_radius=ANCHOR_CUT_RADIUS,
       # failure-state negatives (extra negative goals).
-      fail_bank_path=BANK if arm == 'failneg' else '',
-      fail_neg_alpha=alpha if arm == 'failneg' else 0.0,
+      fail_bank_path=BANK if use_bank else '',
+      fail_neg_alpha=alpha if use_bank else 0.0,
+      balanced_sampling=use_bal,
+      balanced_cell_size=BALANCED_CELL,
+      balanced_action_sectors=BALANCED_SECTORS,
+      balanced_cap=BALANCED_CAP,
       # THE ESTABLISHED WINDY-SWAMP RECIPE -- do not substitute the AntMaze
       # rockfall one (bc 0.05 / twin_q / repr 16 / gamma 0.99 / batch 1024).
       # Every value below is read off the Config banner of
@@ -273,7 +302,8 @@ def main():
     raise SystemExit('pass one of --check-only / --smoke / --run')
 
   tag = (f'swamp_windy_{args.arm}'
-         + (f'_a{args.alpha:g}'.replace('.', '') if args.arm == 'failneg' else '')
+         + (f'_a{args.alpha:g}'.replace('.', '')
+            if args.arm in ('failneg', 'balancedfail') else '')
          + f'_s{args.seed}')
   ckpt = args.ckpt_dir or (tag + ('_smoke' if args.smoke else ''))
   steps = 2_000 if args.smoke else STEPS

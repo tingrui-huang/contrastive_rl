@@ -130,6 +130,26 @@ class Config:
   anchor_cut_mode: str = ''
   anchor_cut_radius: float = 0.5
 
+  # --- Balanced (s, a) anchor sampling (OFF by default) ---
+  # Draw a (discretised state, action sector) bucket uniformly, then a row
+  # uniformly inside it, instead of drawing rows uniformly. Uniform-over-rows
+  # is really "weighted by how often the behaviour policy chose it", which
+  # fights any method whose goal is to move the agent onto a rarely-taken
+  # route. Continuous (s, a) pairs are almost all unique, so the discretisation
+  # below is a required modelling choice, not a convenience.
+  # NOTE: this changes the distribution the loss integrates over, shifting the
+  # contrastive optimum by a goal-only term -- harmless with a single fixed
+  # commanded goal, but re-derive before any cross-goal comparison.
+  balanced_sampling: bool = False
+  balanced_cell_size: float = 1.0
+  balanced_action_sectors: int = 4
+  # Weight ceiling per bucket: a bucket is drawn with probability
+  # proportional to min(count, cap). Strict uniform (cap None) amplifies a
+  # one-row bucket by ~1000x on continuous data; the cap leaves small
+  # buckets at their natural relative frequency and flattens only the
+  # over-represented ones. 0 => strict uniform.
+  balanced_cap: int = 0
+
   # --- Replay ---
   min_replay_size: int = 10_000     # env steps before learning starts.
   max_replay_size: int = 1_000_000  # env steps kept in the buffer.
