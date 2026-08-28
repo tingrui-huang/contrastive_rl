@@ -4,10 +4,15 @@ This is the ONLY sanctioned entry point for the V0 baseline on the
 ``feature/causal-transition-v0`` branch. It exists because
 ``scripts/naive_rockfall_v2_crl.py`` has permissive defaults -- every
 authoritative knob (dataset, p_active, horizon, reset-fix) falls back to an
-OLDER, EASIER setting when the corresponding flag is omitted, and the rockfall
-overrides are read out of the config with ``getattr(..., default)``, so a typo
-or a dropped line degrades SILENTLY instead of raising. See
+OLDER, EASIER setting when the corresponding flag is omitted. See
 ``notes/CAUSAL_TRANSITION_V0.md`` for the full inventory.
+
+(The related hazard -- the rockfall overrides being ad-hoc attributes read back
+with ``getattr(config, 'rockfall_*', default)``, so a dropped or misspelled
+assignment degraded silently -- is FIXED on this branch: they are now declared
+fields on ``crl.config.Config`` with the identical fallback values, so they also
+appear in the startup Config banner. ``assert_env_matches`` below stays as the
+end-to-end guard.)
 
 What this launcher does differently:
 
@@ -194,10 +199,10 @@ def build_v0_config(steps=DEFAULT_STEPS, seed=0, ckpt_dir='',
   cfg.eval_goal_mode = 'd4rl'
   cfg.seed = int(seed)
 
-  # Rockfall env overrides. These are NOT declared fields on Config; make_env
-  # reads them with getattr(..., default), so a missing/misspelled attribute
-  # degrades silently to the OLD easier setting. assert_env_matches() below is
-  # the guard that turns that silence into a crash.
+  # Rockfall env overrides -- declared fields on Config (defaults None/False =
+  # the legacy env behaviour), so they are type-checked at construction and
+  # recorded in the startup banner. assert_env_matches() below still verifies
+  # they LANDED on the env object, which the config layer cannot prove.
   cfg.rockfall_severity = SEVERITY
   cfg.rockfall_p_active = P_ACTIVE
   cfg.rockfall_max_steps = HORIZON

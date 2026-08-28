@@ -70,6 +70,34 @@ class Config:
   # (0.75, 8.75). No effect on non-offline-ant envs.
   eval_goal_mode: str = 'd4rl'
 
+  # --- offline_ant_umaze_rockfall env overrides ---
+  # These were previously set as AD-HOC attributes on the config instance and
+  # read back in envs.make_env with getattr(config, 'rockfall_*', <default>).
+  # That made a dropped or misspelled assignment degrade SILENTLY to the older,
+  # easier setting instead of raising, and kept the values out of the startup
+  # Config banner, so a run's log did not record which benchmark it actually
+  # ran. Declaring them changes NO defaults: every value below is exactly the
+  # fallback make_env already used, so unset runs stay byte-identical and the
+  # v1 / p=0.20 / H=700 / legacy-reset experiments are untouched.
+  #
+  # Authoritative v2.1 H800 setting (see notes/CAUSAL_TRANSITION_V0.md):
+  #   severity (0.80, 0.15, 0.05), p_active 0.30, max_steps 800,
+  #   reset_fix True, death_settle_substeps 0.
+  #
+  # Per-run eval lethality. None => the env's frozen default 0.55/0.30/0.15.
+  rockfall_severity: Optional[Tuple[float, ...]] = None
+  # Hidden hazard-mask density. None => the env's frozen default P_ACTIVE=0.20.
+  rockfall_p_active: Optional[float] = None
+  # Episode horizon. None => the env's frozen default 700.
+  rockfall_max_steps: Optional[int] = None
+  # MuJoCo substeps integrated INSIDE the fatal transition (actor ctrl zeroed)
+  # so the recorded post-fatal state is physically settled. None => 0 = legacy
+  # freeze-at-contact. This is a DATASET/BANK-construction knob; training and
+  # eval runs leave it at 0.
+  rockfall_death_settle_substeps: Optional[int] = None
+  # Canonical episode-independent full reset. False => legacy reset.
+  rockfall_reset_fix: bool = False
+
   # --- Offline mode ---
   # Path to an .npz episode dataset (obs [N,L,obs+goal], act [N,L,A], see
   # scripts/collect_push_dataset.py). Non-empty => the buffer is preloaded once

@@ -28,6 +28,33 @@ binary NCE, `twin_q=True` (actor uses min), `bc_coef=0.05`, `random_goals=0.0`,
 `hidden_layer_sizes=(1024, 1024)`, `discount=0.99`, lr `3e-4`,
 `num_sgd_steps_per_step=4`, `guard_abort=True`, `num_actors=0` (offline).
 
+### Rockfall overrides are now declared `Config` fields
+
+Previously `rockfall_severity` / `rockfall_p_active` / `rockfall_max_steps` /
+`rockfall_death_settle_substeps` / `rockfall_reset_fix` were set as **ad-hoc
+attributes** on the config instance and read back in `crl/envs.py` with
+`getattr(config, 'rockfall_*', <default>)`. Two consequences: a dropped or
+misspelled assignment degraded **silently** to the older, easier setting instead
+of raising, and the values never appeared in the startup `Config(...)` banner,
+so a run's log did not record which benchmark it actually ran.
+
+They are now **declared fields on `crl.config.Config`** with defaults
+`None / None / None / None / False` — exactly the fallbacks `make_env` already
+used. Verified: an unset `Config` still produces the legacy env
+`severity=(0.55, 0.30, 0.15)`, `p_active=0.20`, `H=700`,
+`death_settle_substeps=0`, `full_reset=False`, so every pre-existing v1 /
+p=0.20 / H=700 / legacy-reset run stays byte-identical.
+
+Audited before the change: these five were the **only** undeclared attributes
+assigned on `Config` anywhere in `crl/`, `scripts/` or `propensity/`.
+
+This does not make typos impossible (a plain dataclass still accepts unknown
+attribute assignment), which is why `run_causal_transition_v0.py` keeps its
+post-construction `assert_env_matches()`. A strict `__setattr__` was considered
+and **rejected**: Colab notebooks outside this repo also build `Config` objects,
+and a repo-wide behavioural change to the config class could break them
+silently.
+
 **`death_settle_substeps` disambiguation.** The number 80 appears in the bank's
 provenance as `death_settle_substeps=80`. That is a **bank-construction**
 parameter (80 extra MuJoCo substeps run inside the fatal transition so the
@@ -239,12 +266,8 @@ Why it exists: `scripts/naive_rockfall_v2_crl.py` defaults to the **older,
 easier** setting for every authoritative knob when a flag is omitted —
 `--npz` → the pre-H800 v2 pilot, `--p-active` → env default 0.20,
 `--horizon` → env default 700, `--reset-fix` → off, `--fail-bank` → none.
-Worse, the rockfall overrides are **not declared fields** on `crl.config.Config`;
-`crl/envs.py` reads them with `getattr(config, 'rockfall_…', default)`, so a
-dropped or misspelled assignment degrades **silently** to the old setting
-instead of raising.
 
-The V0 launcher closes both holes:
+The V0 launcher closes that hole:
 
 * the authoritative configuration is frozen in module constants — there is no
   flag to change the dataset, density, horizon, reset-fix or severity;
