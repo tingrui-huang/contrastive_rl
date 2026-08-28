@@ -77,10 +77,28 @@ def agg(vals):
   return float(np.mean(v)), (float(np.std(v, ddof=1)) if len(v) > 1 else 0.0), len(v)
 
 
+def load_critic(path):
+  """Optional critic-probe output, keyed by run dir name.
+
+  Merged in because the decisive question here is not deployment success alone
+  but whether the CRITIC and the POLICY agree: scheme C was measured to flip
+  the critic's fork preference while leaving corridor entry at 1.00. Reading
+  the two tables side by side is what makes that visible.
+  """
+  try:
+    with open(path) as f:
+      return json.load(f)
+  except (OSError, json.JSONDecodeError):
+    return {}
+
+
 def main():
   ap = argparse.ArgumentParser()
   ap.add_argument('--root', default='artifacts')
   ap.add_argument('--json', default='')
+  ap.add_argument('--critic', default='artifacts/swamp_windy_failure_bank/'
+                                      'critic_fork_margin.json',
+                  help='output of probe_swamp_windy_critic.py; merged if present')
   args = ap.parse_args()
 
   runs = collect(args.root)
@@ -123,6 +141,40 @@ def main():
     print(f'{"always-safe reference":<26}{sn:>3}'
           + f'{sm:.2f}'.rjust(W) + f'{0.00:.2f}'.rjust(W)
           + '-'.rjust(W) + f'{0.00:.2f}'.rjust(W) + '-'.rjust(W))
+
+  # ---- critic layer, merged in so the dissociation is visible per arm ----
+  crit = load_critic(args.critic)
+  if crit:
+    byarm = {}
+    for name, r in crit.items():
+      m = re.match(r'swamp_windy_(.+)_s\d+$', name)
+      if m:
+        byarm.setdefault(m.group(1), []).append(r)
+    if byarm:
+      order = [a for a in ORDER if a in byarm] + \
+              [a for a in sorted(byarm) if a not in ORDER]
+      print()
+      print('CRITIC LAYER (actor-independent; from probe_swamp_windy_critic.py)')
+      h = (f'{"arm":<26}{"n":>3}{"fork_margin":>16}{"f(bank as goal)":>18}'
+           f'{"argmax action":>20}')
+      print(h)
+      print('-' * len(h))
+      for a in order:
+        rs = byarm[a]
+        fm = np.mean([x['fork_margin'] for x in rs])
+        fs = np.std([x['fork_margin'] for x in rs], ddof=1) if len(rs) > 1 else 0.0
+        vb = np.mean([x.get('v_bank_as_goal', np.nan) for x in rs])
+        ba = rs[0].get('best_action')
+        bas = f'[{ba[0]:+.1f},{ba[1]:+.1f}]' if ba else '-'
+        pref = 'safe' if fm > 0 else 'short'
+        print(f'{LABEL.get(a, a):<26}{len(rs):>3}'
+              + f'{fm:+.3f}+-{fs:.3f}'.rjust(16)
+              + f'{vb:.3f}'.rjust(18) + f'{bas} {pref}'.rjust(20))
+      print('\n  A critic margin that turns positive while `entry` above stays '
+            'at 1.00 means\n  the critic prefers the safe route and the ACTOR '
+            'is not following it -- an\n  extraction-layer limit, not a critic '
+            'failure. Reported because that pattern\n  was already observed '
+            'on this benchmark at n=1 (anchorcut).')
 
   print()
   print('READ-OUT')
