@@ -6,9 +6,9 @@
 #   anchorcut   anchor cut ON,  alpha 0     -- scheme C alone
 #   failneg     anchor cut ON,  alpha in {0.05, 0.1, 0.2}
 #
-# The model is tiny (hidden 256x256, repr 16, obs 2) and needs well under 1 GB
-# of VRAM, so the runs are launched CONCURRENTLY on one GPU with JAX
-# preallocation disabled. --jobs controls how many run at once.
+# Runs go SEQUENTIALLY by default (see JOBS below -- concurrency measured
+# WORSE on this workload). A 150k-step run takes ~10 min on an RTX 3090, so
+# 5 arms x 3 seeds is roughly 2.5 h.
 #
 # Usage:
 #   bash scripts/run_swamp_windy_sweep.sh check          # gates only, no training
@@ -20,7 +20,11 @@ set -uo pipefail
 MODE="${1:-check}"
 SEEDS="${SEEDS:-0 1 2}"
 ALPHAS="${ALPHAS:-0.05 0.1 0.2}"
-JOBS="${JOBS:-5}"
+# SEQUENTIAL by default. Measured on a 3090: one process runs at 253 steps/s
+# (G=10), but five concurrent processes managed only ~22 steps/s each (~110
+# aggregate). The model is dispatch-bound, not compute-bound -- GPU utilisation
+# sits near 4% -- so extra processes only contend for the one CUDA context.
+JOBS="${JOBS:-1}"
 LOGDIR="${LOGDIR:-logs/swamp_windy_sweep}"
 PY="${PY:-python}"
 

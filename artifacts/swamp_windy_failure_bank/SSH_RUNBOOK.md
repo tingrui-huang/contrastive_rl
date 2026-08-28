@@ -126,30 +126,38 @@ Scratch dirs end in `_smoke/` and are ignorable.
 
 ## 5. Full sweep
 
+Always launch **detached** — this host resets long-held SSH connections:
+
 ```bash
 mkdir -p logs
-nohup env SEEDS="0 1 2" ALPHAS="0.05 0.1 0.2" JOBS=5 \
-  bash scripts/run_swamp_windy_sweep.sh run \
-  > logs/swamp_windy_sweep.log 2>&1 &
-echo $!
+setsid nohup env SEEDS="0 1 2" ALPHAS="0.05 0.1 0.2" \
+  bash -c "source ~/crlenv/bin/activate && exec bash scripts/run_swamp_windy_sweep.sh run" \
+  > logs/sweep.log 2>&1 < /dev/null &
 ```
 
-The model is tiny (hidden 256×256, repr 16, obs 2) and needs well under 1 GB of
-VRAM, so runs go **concurrently on one GPU**. The launcher exports
-`XLA_PYTHON_CLIENT_PREALLOCATE=false` and `MEM_FRACTION=0.10` — without those,
-JAX would preallocate 75% of VRAM per process and the second run would OOM.
-It also caps `OMP_NUM_THREADS=2` so the per-process numpy samplers don't
-oversubscribe the CPU.
+**Runs go sequentially, and that is deliberate.** Measured on this 3090:
 
-It refuses to start a full sweep on a CPU backend (override with `FORCE_CPU=1`).
+| setting | steps/s | 150k run |
+|---|---|---|
+| 1 process, G=1 | 114 | 21.9 min |
+| 1 process, **G=10** | **253** | **9.9 min** |
+| 5 concurrent, G=1 | ~22 each (~110 total) | — |
 
-**Expected cost.** At the ~0.0117 s/update the AntMaze H800 model hit on a
-3090 — and this model is smaller — expect roughly 30 min per 150k-step run.
-15 runs at `JOBS=5` should land in the 2–4 h range wall-clock (GPU contention
-means concurrency is not a clean 5×). On a $0.12/hr 3090 that is well under a
-dollar. Deployment eval afterwards is seconds per run (pure numpy point env).
+The model is tiny, so a step is dominated by dispatch and host sync, not GPU
+compute — utilisation sits near 4%. Extra processes just contend for the single
+CUDA context, so `JOBS=5` was *slower in aggregate* than one process. The real
+lever is `num_sgd_steps_per_step` (`SGD_STEPS_PER_STEP = 10` in the launcher),
+which batches 10 updates into one `jax.lax.scan` dispatch. It does **not**
+change the math: the buffer is frozen and its RNG is independent of the learner,
+so the 10 batches are exactly the ones G=1 would have drawn and `scan` applies
+the same updates in the same order. It must divide `max_episode_steps` (50) or
+`train.py` silently drops updates.
 
-Reduce first if you want a faster read: `SEEDS="0"` gives 5 runs, ~30–60 min.
+**Expected wall-clock**: ~10 min per run → **5 arms × 3 seeds ≈ 2.5 h**;
+one seed ≈ 50 min. At $0.12/hr that is well under a dollar. Deployment eval is
+seconds per run (pure numpy point env).
+
+The sweep refuses to start on a CPU backend (override with `FORCE_CPU=1`).
 
 ---
 

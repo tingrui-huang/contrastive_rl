@@ -80,6 +80,23 @@ STEPS = 150_000
 ANCHOR_CUT_RADIUS = 0.5
 ARMS = ('baseline', 'anchorcut', 'failneg')
 
+# Gradient updates batched into ONE jax.lax.scan dispatch.
+#
+# This model is tiny (256x256 encoders on 2-dim obs), so a step is dominated by
+# dispatch + host sync, not GPU compute -- measured on a 3090: 8.77 ms/update
+# at G=1 but 3.95 ms at G=10 (114 -> 253 steps/s, a 150k run 21.9 -> 9.9 min).
+#
+# It does NOT change the math. In offline mode the buffer is frozen and its RNG
+# is independent of the learner state, so the G batches are exactly the ones
+# G=1 would have drawn, and scan applies the same updates in the same order;
+# only the number of Python dispatches changes. Logged metrics become means
+# over the G scanned steps.
+#
+# MUST divide max_episode_steps (50): train.py computes
+# learner_steps = updates_per_step * (N_ACT * max_episode_steps) // G, so a
+# non-divisor silently drops updates (G=4 -> 48 instead of 50 per iteration).
+SGD_STEPS_PER_STEP = 10
+
 
 def sha256(path, chunk=1 << 20):
   """Raw file bytes. For .npz this is NOT reproducible across machines."""
@@ -181,7 +198,11 @@ def gate(arm, alpha):
                        f'got {alpha}')
   else:
     print('  failure bank      : (none -- ordinary negatives only)')
-  print(f'  batch_size        : {BATCH_SIZE}   steps: {STEPS}')
+  if STEPS % SGD_STEPS_PER_STEP or 50 % SGD_STEPS_PER_STEP:
+    raise SystemExit(f'SGD_STEPS_PER_STEP={SGD_STEPS_PER_STEP} must divide '
+                     'max_episode_steps (50), else train.py drops updates')
+  print(f'  batch_size        : {BATCH_SIZE}   steps: {STEPS}   '
+        f'sgd/step: {SGD_STEPS_PER_STEP}')
   print('=' * 70)
   print('PROVENANCE GATE PASSED')
   return {'git_commit': commit, 'arm': arm,
@@ -210,7 +231,7 @@ def build_cfg(arm, alpha, seed, ckpt_dir, steps):
       entropy_coefficient=0.0, target_entropy=0.0,
       batch_size=BATCH_SIZE, repr_dim=16, hidden_layer_sizes=(256, 256),
       discount=0.99, learning_rate=3e-4, actor_learning_rate=3e-4,
-      num_sgd_steps_per_step=1, num_actors=0,
+      num_sgd_steps_per_step=SGD_STEPS_PER_STEP, num_actors=0,
       guard_abort=True, jit=True, seed=seed,
       eval_every_steps=10_000, eval_episodes=50, log_every_steps=1_000,
       ckpt_dir=ckpt_dir)
