@@ -26,19 +26,19 @@
     },
     "V6_bank_contract": {
       "pass": true,
-      "detail": "(514, 2) float32, all 514/514 states inside a swamp cell; REQUIRES batch_size >= 514"
+      "detail": "(256, 2) float32, all 256/256 states inside a swamp cell; REQUIRES batch_size >= 256"
     },
     "V7_bank_positive_overlap": {
       "pass": null,
       "detail": {
-        "0.02": 0.066845,
-        "0.05": 0.08523,
-        "0.1": 0.10401
+        "0.02": 0.039515,
+        "0.05": 0.06545,
+        "0.1": 0.09501
       }
     },
     "V8a_loss_decomposition": {
       "pass": true,
-      "detail": "pos 0.001144 + ord 3.153556 + fail 0.244015 = 3.398715 vs critic_loss 3.398715 (|diff| 0.00e+00); bank size 32, alpha 0.10000000149011612"
+      "detail": "pos 0.001144 + ord 3.153556 + fail 0.254703 = 3.409404 vs critic_loss 3.409404 (|diff| 0.00e+00); bank size 32, alpha 0.10000000149011612"
     },
     "V8b_alpha0_identical": {
       "pass": true,

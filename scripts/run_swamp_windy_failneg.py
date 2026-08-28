@@ -52,7 +52,7 @@ from crl.config import Config                      # noqa: E402
 ENV = 'point_two_route_swamp_windy_v0'
 DATASET = 'datasets/swamp_windy_teacher_s0.npz'
 BANK = 'artifacts/swamp_windy_failure_bank/failure_bank.npz'
-BANK_N = 514
+BANK_N = 256
 
 # Provenance is pinned on the ARRAY CONTENTS, not the file bytes.
 #
@@ -66,16 +66,19 @@ BANK_N = 514
 DATASET_CONTENT_SHA = \
     'fd41c45cdb72749fb3b5a071c6f65a3003ec3117af630222f6726bfab7ea7952'
 BANK_CONTENT_SHA = \
-    '009edb4b529447f00e7ac59b088a6d9c9501084236df2aba16dfd43dda6f19a3'
+    'b680aab6b224ec5b1243058a54c678d5ab8897935106b84a4addab5429fa5381'
 # informational only (valid for the git-tracked bank and the original dataset)
 DATASET_FILE_SHA_REF = \
     'dfdbbaf7b6a62754f8c865257cea4f3d271ba524f4510c8459ca6fc901e1bfee'
 BANK_FILE_SHA_REF = \
-    '719229969f8b025acebd11d7c15a59ff5cf58f6b5fe94b70dda49cc57e193fbf'
+    'b236458e2e45d8bfee3420a3e0e514a804a64d165a34c2772774b294c089077d'
 
-# Recipe. batch_size MUST be >= BANK_N (crl/losses.py writes the bank over the
-# first n_bank rows of the goal half), hence 1024 rather than the 256 default.
-BATCH_SIZE = 1024
+# 256 is the established windy recipe's batch size. crl/losses.py requires
+# n_bank <= batch_size (the bank is written over the first n_bank rows of the
+# goal half), so the 514-state bank is subsampled to 256 -- see
+# make_swamp_failure_bank.py --max-bank. That changes only the RESOLUTION of
+# q_fail, not alpha's meaning: alpha is still the share of negative mass.
+BATCH_SIZE = 256
 STEPS = 150_000
 ANCHOR_CUT_RADIUS = 0.5
 ARMS = ('baseline', 'anchorcut', 'failneg')
@@ -225,12 +228,24 @@ def build_cfg(arm, alpha, seed, ckpt_dir, steps):
       # failure-state negatives (extra negative goals).
       fail_bank_path=BANK if arm == 'failneg' else '',
       fail_neg_alpha=alpha if arm == 'failneg' else 0.0,
-      # offline contrastive recipe (binary NCE, twin-min actor, BC-regularized)
-      use_td=False, use_cpc=False, use_gcbc=False, twin_q=True,
-      bc_coef=0.05, random_goals=0.0,
+      # THE ESTABLISHED WINDY-SWAMP RECIPE -- do not substitute the AntMaze
+      # rockfall one (bc 0.05 / twin_q / repr 16 / gamma 0.99 / batch 1024).
+      # Every value below is read off the Config banner of
+      # swamp_windy_manski_s0_train.log, the run behind the
+      # CONFOUNDED_SHORTCUT_BIAS reference in
+      # artifacts/windy_manski_s0_deployment/.
+      #   bc_coef 0.5      = the paper's offline actor lambda; AWR is NOT in
+      #                      the paper and measured no better, so the paper
+      #                      actor at its own lambda is the faithful choice.
+      #   discount 0.95    = gamma 0.99 is near-vacuous on a 50-step maze
+      #                      (mean geometric horizon 100 steps); the earlier
+      #                      gamma sweep picked 0.95 as the working point.
+      #   twin_q False, repr_dim 64, random_goals 0.5, batch_size 256.
+      use_td=False, use_cpc=False, use_gcbc=False, twin_q=False,
+      bc_coef=0.5, random_goals=0.5,
       entropy_coefficient=0.0, target_entropy=0.0,
-      batch_size=BATCH_SIZE, repr_dim=16, hidden_layer_sizes=(256, 256),
-      discount=0.99, learning_rate=3e-4, actor_learning_rate=3e-4,
+      batch_size=BATCH_SIZE, repr_dim=64, hidden_layer_sizes=(256, 256),
+      discount=0.95, learning_rate=3e-4, actor_learning_rate=3e-4,
       num_sgd_steps_per_step=SGD_STEPS_PER_STEP, num_actors=0,
       guard_abort=True, jit=True, seed=seed,
       eval_every_steps=10_000, eval_episodes=50, log_every_steps=1_000,

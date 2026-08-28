@@ -34,7 +34,7 @@ BANK="artifacts/swamp_windy_failure_bank/failure_bank.npz"
 # regenerated dataset has different file bytes but identical arrays. datasets/
 # is gitignored and therefore always regenerated on a fresh node.
 DATASET_CONTENT_SHA="fd41c45cdb72749fb3b5a071c6f65a3003ec3117af630222f6726bfab7ea7952"
-BANK_CONTENT_SHA="009edb4b529447f00e7ac59b088a6d9c9501084236df2aba16dfd43dda6f19a3"
+BANK_CONTENT_SHA="b680aab6b224ec5b1243058a54c678d5ab8897935106b84a4addab5429fa5381"
 
 # Many small processes on one GPU: JAX would otherwise preallocate 75% each.
 export XLA_PYTHON_CLIENT_PREALLOCATE=false

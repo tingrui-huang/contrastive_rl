@@ -6,8 +6,8 @@
   "obs_dim": 2,
   "goal_indices": "range(2)  (start=0, end=-1)",
   "n_dead_episodes_total": 514,
-  "n_bank": 514,
-  "subsampled": false,
+  "n_bank": 256,
+  "subsampled": true,
   "subsample_seed": 0,
   "deaths_per_swamp_cell_full": {
     "S0_(3, 3)": 268,
@@ -22,17 +22,17 @@
   "pipeline_note": "dataset NOT split: all 6000 episodes remain the training set; this bank is EXTRA negative goals only (crl/losses.py fail branch, alpha>0)",
   "batch_size_requirement": "crl/losses.py requires n_bank <= batch_size",
   "bank_path": "artifacts/swamp_windy_failure_bank\\failure_bank.npz",
-  "bank_sha256": "719229969f8b025acebd11d7c15a59ff5cf58f6b5fe94b70dda49cc57e193fbf",
+  "bank_sha256": "b236458e2e45d8bfee3420a3e0e514a804a64d165a34c2772774b294c089077d",
   "bank_shape": [
-    514,
+    256,
     2
   ],
   "bank_x_range": [
-    3.000439167022705,
+    3.008209228515625,
     5.9984331130981445
   ],
   "bank_y_range": [
-    3.0000433921813965,
+    3.0001418590545654,
     3.9999217987060547
   ]
 }
