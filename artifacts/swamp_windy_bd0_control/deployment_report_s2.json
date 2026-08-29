@@ -1,0 +1,48 @@
+{
+ "ckpt": "swamp_windy_baseline_bd0_s2/final.pkl",
+ "step": 150000,
+ "episodes": 100,
+ "learner": {
+  "all_clear": {
+   "success": 1.0,
+   "entry": 1.0,
+   "died": 0.0,
+   "safe": 0.0
+  },
+  "all_active": {
+   "success": 0.0,
+   "entry": 1.0,
+   "died": 1.0,
+   "safe": 0.0
+  },
+  "natural": {
+   "success": 0.7,
+   "entry": 1.0,
+   "died": 0.3,
+   "safe": 0.0
+  }
+ },
+ "always_safe": {
+  "all_clear": {
+   "success": 1.0,
+   "entry": 0.0,
+   "died": 0.0,
+   "safe": 1.0
+  },
+  "all_active": {
+   "success": 1.0,
+   "entry": 0.0,
+   "died": 0.0,
+   "safe": 1.0
+  },
+  "natural": {
+   "success": 1.0,
+   "entry": 0.0,
+   "died": 0.0,
+   "safe": 1.0
+  }
+ },
+ "gap": 1.0,
+ "worst_case": 0.0,
+ "verdict": "CONFOUNDED_SHORTCUT_BIAS"
+}

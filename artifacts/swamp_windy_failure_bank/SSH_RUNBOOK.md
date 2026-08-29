@@ -39,6 +39,15 @@ against sha `dfdbbaf7…`, which is strictly stronger than copying a file.
 head -2 /etc/os-release; nvidia-smi --query-gpu=name,driver_version,memory.total --format=csv
 command -v sudo >/dev/null || { printf '#!/bin/sh\nexec "$@"\n' > /usr/local/bin/sudo && chmod +x /usr/local/bin/sudo; }
 apt-get update && apt-get install -y git python3 python3-venv python3-dev
+
+# CHECK THE VERSION. jax==0.10.2 requires Python >= 3.11, and an Ubuntu 22.04
+# image ships 3.10 as python3 -- the setup script then dies with
+# "No matching distribution found for jax==0.10.2". Measured on the 3090 node
+# 34.48.205.138 (2026-08-29). If python3 is < 3.11:
+python3 -V
+apt-get install -y software-properties-common
+add-apt-repository -y ppa:deadsnakes/ppa && apt-get update
+apt-get install -y python3.12 python3.12-venv python3.12-dev
 ```
 
 `libegl1 libgl1` are **not needed** for this run — the windy swamp is a pure
@@ -50,7 +59,8 @@ git clone https://github.com/tingrui-huang/contrastive_rl.git ~/contrastive_rl
 cd ~/contrastive_rl
 git checkout feature/pointmaze-causal-transition
 git rev-parse HEAD
-PYTHON=python3 bash scripts/failneg_h800_node_setup.sh 2>&1 | tail -20
+# use python3.12 if the check above installed it; python3 only if it is >= 3.11
+PYTHON=python3.12 bash scripts/failneg_h800_node_setup.sh 2>&1 | tail -20
 ```
 
 That script builds `~/crlenv` with the validated set (`jax[cuda12]==0.10.2`,
@@ -207,3 +217,51 @@ scp -r <node>:~/contrastive_rl/logs/swamp_windy_sweep \
 
 Checkpoints (`swamp_windy_*_s*/`) are only needed if you want to re-evaluate
 locally; the deployment reports carry the results.
+
+---
+
+## 5. Bad-demonstrator control run (2026-08-29)
+
+The gate-aware teacher enters the corridor 0/501 times while the gate is
+active, so the branch a worst-case bound has to reason about had support only
+from the uniform-random episodes. `scripts/collect_swamp_windy_baddemo.py` adds
+600 competent-but-blind episodes; `scripts/merge_swamp_windy_baddemo.py`
+appends them to the frozen main set.
+
+Regenerate on a node (`datasets/` is gitignored, as before):
+
+```bash
+python -m scripts.collect_swamp_windy --episodes 6000 --random_frac 0.2 \
+    --force_safe_prob 0.05 --teacher_noise 0.15 --seed 0 \
+    --out datasets/swamp_windy_teacher_s0.npz
+for s in 0 1 2; do
+  python -m scripts.collect_swamp_windy_baddemo --episodes 600 --seed $s \
+      --out datasets/swamp_windy_baddemo_s$s.npz
+  python -m scripts.merge_swamp_windy_baddemo \
+      --bad datasets/swamp_windy_baddemo_s$s.npz \
+      --out datasets/swamp_windy_merged_s$s.npz
+done
+```
+
+Expected content hashes (enforced by the launcher's DATASETS registry):
+`merged_s0 61bd4ce1…`, `merged_s1 22db06de…`, `merged_s2 14040fa1…`.
+Verified identical on the workstation and on the node.
+
+The control run — does adding the data break the benchmark?
+
+```bash
+DATASET=merged_s0 ARMSET=control SEEDS="0 1 2" bash scripts/run_swamp_windy_sweep.sh run
+```
+
+`ARMSET=control` is baseline-only; run dirs are `swamp_windy_baseline_bd0_s<n>`
+(`bd0` = bad-demo collection seed, kept separate from the learner seed).
+3 runs, ~9 min each at 276 steps/s on a 3090, ~30 min with the evals.
+
+**Result: the benchmark is intact.** All three seeds reproduce the reference
+exactly — `all_active` success 0.00, entry 1.00, natural 0.70, died 0.30,
+`all_clear` 1.00, verdict CONFOUNDED_SHORTCUT_BIAS; the always-safe reference
+scores 1.00 under `all_active`. Three distinct checkpoint sha256s, so these are
+three genuinely different networks landing on identical behaviour. The critic
+probe agrees: fork margin +0.796 / −0.300 / −0.325, 1/3 seeds preferring safe,
+std larger than |mean| — the same seed-dominated non-signal the main dataset
+gives.
