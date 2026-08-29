@@ -21,6 +21,9 @@ MODE="${1:-check}"
 SEEDS="${SEEDS:-0 1 2}"
 ALPHAS="${ALPHAS:-0.05 0.1 0.2}"
 ARMSET="${ARMSET:-default}"
+# Registered dataset name, not a path: main | merged_s0 | merged_s1 | merged_s2.
+# merged_* add the 600 bad-demonstrator episodes.
+DATASET="${DATASET:-main}"
 # SEQUENTIAL by default. Measured on a 3090: one process runs at 253 steps/s
 # (G=10), but five concurrent processes managed only ~22 steps/s each (~110
 # aggregate). The model is dispatch-bound, not compute-bound -- GPU utilisation
@@ -29,13 +32,32 @@ JOBS="${JOBS:-1}"
 LOGDIR="${LOGDIR:-logs/swamp_windy_sweep}"
 PY="${PY:-python}"
 
-DATASET="datasets/swamp_windy_teacher_s0.npz"
 BANK="artifacts/swamp_windy_failure_bank/failure_bank.npz"
 # Content hashes, NOT file hashes: an .npz is a zip that embeds timestamps, so a
 # regenerated dataset has different file bytes but identical arrays. datasets/
 # is gitignored and therefore always regenerated on a fresh node.
-DATASET_CONTENT_SHA="fd41c45cdb72749fb3b5a071c6f65a3003ec3117af630222f6726bfab7ea7952"
 BANK_CONTENT_SHA="b680aab6b224ec5b1243058a54c678d5ab8897935106b84a4addab5429fa5381"
+
+# The dataset path and its expected content hash come from the launcher's
+# DATASETS registry rather than being repeated here -- two copies of a hash is
+# exactly the pair that drifts. The launcher re-checks it anyway; this
+# preflight exists to fail in one second instead of after the first XLA
+# compile. (No f-string: the node runs python 3.11, which predates PEP 701 and
+# rejects nested quotes inside one.)
+read -r DATASET DATASET_CONTENT_SHA DATASET_REGEN <<EOF
+$($PY -c "
+import sys
+sys.path.insert(0, 'scripts')
+from run_swamp_windy_failneg import DATASETS
+name = sys.argv[1]
+if name not in DATASETS:
+    sys.exit('unknown DATASET=' + name + '; registered: ' + repr(sorted(DATASETS)))
+d = DATASETS[name]
+print(d['path'], d['content_sha'], name)
+" "$DATASET")
+EOF
+[ -n "${DATASET:-}" ] || { echo "could not resolve DATASET (see above)"; exit 1; }
+echo "dataset name: $DATASET_REGEN  ->  $DATASET"
 
 # Many small processes on one GPU: JAX would otherwise preallocate 75% each.
 export XLA_PYTHON_CLIENT_PREALLOCATE=false
@@ -68,7 +90,18 @@ if [ ! -f "$DATASET" ]; then
   echo "MISSING $DATASET"
   echo "datasets/ is gitignored -- regenerate it on this node with:"
   echo "  $PY -m scripts.collect_swamp_windy --episodes 6000 --random_frac 0.2 \\"
-  echo "      --force_safe_prob 0.05 --teacher_noise 0.15 --seed 0 --out $DATASET"
+  echo "      --force_safe_prob 0.05 --teacher_noise 0.15 --seed 0 \\"
+  echo "      --out datasets/swamp_windy_teacher_s0.npz"
+  case "$DATASET_REGEN" in
+    merged_s*)
+      n="${DATASET_REGEN#merged_s}"
+      echo "  # then, for $DATASET_REGEN:"
+      echo "  $PY -m scripts.collect_swamp_windy_baddemo --episodes 600 --seed $n \\"
+      echo "      --out datasets/swamp_windy_baddemo_s${n}.npz"
+      echo "  $PY -m scripts.merge_swamp_windy_baddemo \\"
+      echo "      --bad datasets/swamp_windy_baddemo_s${n}.npz --out $DATASET"
+      ;;
+  esac
   exit 1
 fi
 got=$(content_sha "$DATASET")
@@ -97,15 +130,19 @@ $PY scripts/verify_anchor_cut.py || { echo "verification FAILED -- refusing to s
 
 # ------------------------------------------------------------- arm listing
 # ARMSET: which family of arms to run.
+#   control  baseline only                              -- the reference check
 #   default  baseline / anchorcut / failneg(alpha)      -- uniform-row anchors
 #   balanced balanced / balancedfail(alpha)             -- + balanced (s,a)
-#   all      both
+#   all      default + balanced
 case "$ARMSET" in
-  default|balanced|all) ;;
-  *) echo "unknown ARMSET=$ARMSET (expected default|balanced|all)"; exit 1 ;;
+  control|default|balanced|all) ;;
+  *) echo "unknown ARMSET=$ARMSET (expected control|default|balanced|all)"; exit 1 ;;
 esac
 ARMS=()
 for s in $SEEDS; do
+  if [ "$ARMSET" = "control" ]; then
+    ARMS+=("baseline|0|$s")
+  fi
   if [ "$ARMSET" = "default" ] || [ "$ARMSET" = "all" ]; then
     ARMS+=("baseline|0|$s")
     ARMS+=("anchorcut|0|$s")
@@ -117,7 +154,7 @@ for s in $SEEDS; do
   fi
 done
 
-banner "SWEEP PLAN  (${#ARMS[@]} runs, mode=$MODE, jobs=$JOBS)"
+banner "SWEEP PLAN  (${#ARMS[@]} runs, mode=$MODE, jobs=$JOBS, dataset=$DATASET_REGEN)"
 for spec in "${ARMS[@]}"; do
   IFS='|' read -r arm alpha seed <<< "$spec"
   printf '  %-10s alpha=%-5s seed=%s\n' "$arm" "$alpha" "$seed"
@@ -127,7 +164,8 @@ if [ "$MODE" = "check" ]; then
   for spec in "${ARMS[@]}"; do
     IFS='|' read -r arm alpha seed <<< "$spec"
     $PY scripts/run_swamp_windy_failneg.py --arm "$arm" --alpha "$alpha" \
-        --seed "$seed" --check-only >/dev/null || { echo "GATE FAILED: $spec"; exit 1; }
+        --seed "$seed" --dataset "$DATASET_REGEN" --check-only >/dev/null \
+      || { echo "GATE FAILED: $spec"; exit 1; }
   done
   echo; echo "ALL ${#ARMS[@]} GATES PASS (no training performed)"
   exit 0
@@ -147,13 +185,19 @@ for spec in "${ARMS[@]}"; do
   case "$arm" in
     failneg|balancedfail) tag="${arm}_a${alpha//./}" ;;
   esac
-  tag="swamp_windy_${tag}_s${seed}"
+  # Dataset suffix, matching the launcher: main -> nothing (the 27 existing run
+  # directories keep their names), merged_s<n> -> _bd<n>.
+  dstag=""
+  case "$DATASET_REGEN" in
+    merged_s*) dstag="_bd${DATASET_REGEN#merged_s}" ;;
+  esac
+  tag="swamp_windy_${tag}${dstag}_s${seed}"
   log="$LOGDIR/${tag}.log"
 
   while [ "$(jobs -rp | wc -l)" -ge "$JOBS" ]; do sleep 5; done
 
   $PY scripts/run_swamp_windy_failneg.py --arm "$arm" --alpha "$alpha" \
-      --seed "$seed" $FLAG > "$log" 2>&1 &
+      --seed "$seed" --dataset "$DATASET_REGEN" $FLAG > "$log" 2>&1 &
   pids+=($!); names+=("$tag")
   echo "  [$!] $tag -> $log"
   sleep 2                       # stagger XLA compilation

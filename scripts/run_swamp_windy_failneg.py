@@ -50,7 +50,6 @@ sys.path.insert(0, os.path.dirname(_HERE))
 from crl.config import Config                      # noqa: E402
 
 ENV = 'point_two_route_swamp_windy_v0'
-DATASET = 'datasets/swamp_windy_teacher_s0.npz'
 BANK = 'artifacts/swamp_windy_failure_bank/failure_bank.npz'
 BANK_N = 256
 
@@ -63,8 +62,6 @@ BANK_N = 256
 # dataset is ALWAYS regenerated on a new node; gating on the file sha would
 # reject a perfectly correct regeneration. The file shas below are recorded
 # for reference only and are never enforced.
-DATASET_CONTENT_SHA = \
-    'fd41c45cdb72749fb3b5a071c6f65a3003ec3117af630222f6726bfab7ea7952'
 BANK_CONTENT_SHA = \
     'b680aab6b224ec5b1243058a54c678d5ab8897935106b84a4addab5429fa5381'
 # informational only (valid for the git-tracked bank and the original dataset)
@@ -72,6 +69,59 @@ DATASET_FILE_SHA_REF = \
     'dfdbbaf7b6a62754f8c865257cea4f3d271ba524f4510c8459ca6fc901e1bfee'
 BANK_FILE_SHA_REF = \
     'b236458e2e45d8bfee3420a3e0e514a804a64d165a34c2772774b294c089077d'
+
+# ---------------------------------------------------------------- datasets
+# Which frozen dataset a run trains on. Swapping the dataset is a change of
+# the same weight as swapping an arm, so it goes through a REGISTRY with a
+# per-entry enforced content hash -- not a free-form --dataset-path flag,
+# which would let any file through the provenance gate.
+#
+#   main        the original 6000 teacher episodes; the run behind the
+#               CONFOUNDED_SHORTCUT_BIAS reference.
+#   merged_s{n} main + 600 bad-demonstrator episodes (teacher_mode 4) = 6600.
+#               The bad demonstrator is the BFS shortcut oracle with the dodge
+#               step removed: it restores support for the (forward | U active)
+#               branch that the gate-aware teacher visits 0/501 times. It is
+#               POSITIVE-side data and does NOT touch the failure bank -- see
+#               scripts/collect_swamp_windy_baddemo.py for why that distinction
+#               is the whole point. n indexes the bad demo's collection seed,
+#               NOT the learner seed; the main half is identical in all three.
+#
+# Content hashes below cover every array including `meta`, and the merge script
+# keeps its meta reproducible (source basenames + source CONTENT hashes, never
+# absolute paths or file shas) -- verified by regenerating into a different
+# directory and getting an identical hash.
+_REGEN_MAIN = ('python -m scripts.collect_swamp_windy --episodes 6000 '
+               '--random_frac 0.2 --force_safe_prob 0.05 '
+               '--teacher_noise 0.15 --seed 0 --out {path}')
+_REGEN_MERGED = (
+    'python -m scripts.collect_swamp_windy_baddemo --episodes 600 --seed {n} '
+    '--out datasets/swamp_windy_baddemo_s{n}.npz\n'
+    '  python -m scripts.merge_swamp_windy_baddemo '
+    '--bad datasets/swamp_windy_baddemo_s{n}.npz --out {path}')
+DATASETS = {
+    'main': dict(
+        path='datasets/swamp_windy_teacher_s0.npz',
+        content_sha='fd41c45cdb72749fb3b5a071c6f65a3003ec3117af630222f672'
+                    '6bfab7ea7952',
+        shape=(6000, 51), regen=_REGEN_MAIN),
+    'merged_s0': dict(
+        path='datasets/swamp_windy_merged_s0.npz',
+        content_sha='61bd4ce1b89a0edb951132b85ce705b64fa6753fb89f564026b3'
+                    'e98d0586e767',
+        shape=(6600, 51), regen=_REGEN_MERGED.format(n=0, path='{path}')),
+    'merged_s1': dict(
+        path='datasets/swamp_windy_merged_s1.npz',
+        content_sha='22db06deb3e04622c29e0585cb73147a0d5bb26bbba6482283d5'
+                    '5420eed17162',
+        shape=(6600, 51), regen=_REGEN_MERGED.format(n=1, path='{path}')),
+    'merged_s2': dict(
+        path='datasets/swamp_windy_merged_s2.npz',
+        content_sha='14040fa1ea52e0b46848f9ac173aa98459f130471bda02b5cbd4'
+                    '20700f3ea26a',
+        shape=(6600, 51), regen=_REGEN_MERGED.format(n=2, path='{path}')),
+}
+DATASET = DATASETS['main']['path']        # default; --dataset overrides
 
 # 256 is the established windy recipe's batch size. crl/losses.py requires
 # n_bank <= batch_size (the bank is written over the first n_bank rows of the
@@ -143,8 +193,13 @@ def content_sha256(path):
   return h.hexdigest()
 
 
-def gate(arm, alpha):
+def gate(arm, alpha, dataset='main'):
   """Refuse to start unless every artifact is the pre-registered one."""
+  if dataset not in DATASETS:
+    raise SystemExit(f'unknown --dataset {dataset!r}; '
+                     f'registered: {sorted(DATASETS)}')
+  spec = DATASETS[dataset]
+  ds_path, ds_sha, ds_shape = spec['path'], spec['content_sha'], spec['shape']
   print('=' * 70)
   print('WINDY-SWAMP FAILURE-NEGATIVE PROVENANCE GATE')
   try:
@@ -156,32 +211,49 @@ def gate(arm, alpha):
   print(f'  arm               : {arm}')
   print(f'  env               : {ENV}')
 
-  if not os.path.exists(DATASET):
-    raise SystemExit(f'dataset missing: {DATASET}\n'
-                     'datasets/ is gitignored -- regenerate it with:\n'
-                     '  python -m scripts.collect_swamp_windy --episodes 6000 '
-                     '--random_frac 0.2 \\\n'
-                     '      --force_safe_prob 0.05 --teacher_noise 0.15 '
-                     f'--seed 0 --out {DATASET}')
-  ds = content_sha256(DATASET)
-  print(f'  dataset           : {DATASET}')
+  if not os.path.exists(ds_path):
+    raise SystemExit(f'dataset missing: {ds_path}\n'
+                     'datasets/ is gitignored -- regenerate it with:\n  '
+                     + spec['regen'].format(path=ds_path))
+  ds = content_sha256(ds_path)
+  print(f'  dataset           : {dataset}  ->  {ds_path}')
   print(f'  dataset content   : {ds}   <- ENFORCED')
-  print(f'  dataset file sha  : {sha256(DATASET)[:16]}...  (informational; '
+  print(f'  dataset file sha  : {sha256(ds_path)[:16]}...  (informational; '
         'npz zip metadata is not reproducible)')
-  if ds != DATASET_CONTENT_SHA:
+  if ds != ds_sha:
     raise SystemExit(f'dataset CONTENT mismatch -- the arrays differ, not just '
-                     f'the container\n  expected {DATASET_CONTENT_SHA}\n'
-                     f'  found    {ds}')
-  with np.load(DATASET, allow_pickle=True) as d:
+                     f'the container\n  expected {ds_sha}\n'
+                     f'  found    {ds}\n'
+                     '  regenerate with:\n    '
+                     + spec['regen'].format(path=ds_path))
+  with np.load(ds_path, allow_pickle=True) as d:
     n_eps, L = d['obs'].shape[0], d['obs'].shape[1]
     if 'lengths' in d:
       raise SystemExit(
           "dataset carries a 'lengths' field: this pipeline requires the "
           'fixed-length dataset (scheme C is anchor-side only and is mutually '
           'exclusive with the length-truncation path).')
-  if (n_eps, L) != (6000, 51):
-    raise SystemExit(f'expected 6000 x 51 episodes, found {n_eps} x {L}')
+    modes = np.unique(np.asarray(d['teacher_mode'])) if 'teacher_mode' in d \
+        else np.array([])
+  if (n_eps, L) != tuple(ds_shape):
+    raise SystemExit(f'expected {ds_shape[0]} x {ds_shape[1]} episodes, '
+                     f'found {n_eps} x {L}')
   print(f'  episodes          : {n_eps} x {L} rows (retained WHOLE)')
+  # teacher_mode 4 is the bad demonstrator. Print it so the log says which
+  # dataset a checkpoint came from without re-reading the npz, and refuse the
+  # two ways the registry and the file can disagree.
+  n_bad = 0
+  if modes.size:
+    with np.load(ds_path, allow_pickle=True) as d:
+      n_bad = int((np.asarray(d['teacher_mode']) == 4).sum())
+  if dataset.startswith('merged') and n_bad == 0:
+    raise SystemExit(f'{dataset} is registered as a merged dataset but holds '
+                     'no teacher_mode==4 episodes')
+  if dataset == 'main' and n_bad:
+    raise SystemExit(f'main dataset holds {n_bad} bad-demonstrator episodes; '
+                     'it is supposed to be the untouched reference')
+  print(f'  bad-demo episodes : {n_bad}'
+        + ('  (teacher_mode 4, POSITIVE-side support)' if n_bad else ''))
 
   use_cut = arm in ('anchorcut', 'failneg', 'balanced',
                     'balancedfail')
@@ -228,8 +300,11 @@ def gate(arm, alpha):
   print('=' * 70)
   print('PROVENANCE GATE PASSED')
   return {'git_commit': commit, 'arm': arm,
+          'dataset': dataset, 'dataset_path': ds_path,
+          'dataset_n_episodes': int(n_eps),
+          'dataset_n_bad_demo': int(n_bad),
           'dataset_content_sha256': ds,
-          'dataset_file_sha256': sha256(DATASET),
+          'dataset_file_sha256': sha256(ds_path),
           'bank_content_sha256': (BANK_CONTENT_SHA
                                   if arm in ('failneg', 'balancedfail')
                                   else None),
@@ -240,12 +315,15 @@ def gate(arm, alpha):
           'batch_size': BATCH_SIZE, 'steps': STEPS}
 
 
-def build_cfg(arm, alpha, seed, ckpt_dir, steps):
+def build_cfg(arm, alpha, seed, ckpt_dir, steps, dataset='main'):
+  # `dataset` is LAST and defaults to 'main' so the existing five-positional
+  # call in scripts/probe_swamp_windy_critic.py keeps working -- that probe
+  # only needs the network shape, which no dataset choice affects.
   use_cut = arm in ('anchorcut', 'failneg', 'balanced', 'balancedfail')
   use_bal = arm in ('balanced', 'balancedfail')
   use_bank = arm in ('failneg', 'balancedfail')
   return Config(
-      env_name=ENV, offline_dataset=DATASET,
+      env_name=ENV, offline_dataset=DATASETS[dataset]['path'],
       max_number_of_steps=steps,
       # scheme C -- anchor side only; future window untouched.
       anchor_cut_mode='arrival' if use_cut else '',
@@ -287,6 +365,9 @@ def main():
   ap.add_argument('--alpha', type=float, default=0.1,
                   help='fail_neg_alpha; used by the failneg arm only')
   ap.add_argument('--seed', type=int, default=0)
+  ap.add_argument('--dataset', choices=sorted(DATASETS), default='main',
+                  help='registered frozen dataset; merged_s* add the 600 '
+                       'bad-demonstrator episodes')
   ap.add_argument('--ckpt-dir', default='')
   ap.add_argument('--check-only', action='store_true')
   ap.add_argument('--smoke', action='store_true',
@@ -294,20 +375,28 @@ def main():
   ap.add_argument('--run', action='store_true')
   args = ap.parse_args()
 
-  prov = gate(args.arm, args.alpha)
+  prov = gate(args.arm, args.alpha, args.dataset)
   if args.check_only:
     print('CHECK-ONLY COMPLETE (no training performed)')
     return 0
   if not (args.smoke or args.run):
     raise SystemExit('pass one of --check-only / --smoke / --run')
 
+  # The dataset goes in the tag for everything but 'main', so a merged-data run
+  # never overwrites the reference run of the same arm and seed. 'main' keeps
+  # its bare name so the 27 existing run directories stay addressable.
+  # merged_s<n> is abbreviated to bd<n> ("bad demo seed n"): spelling it out
+  # produced swamp_windy_baseline_merged_s0_s0, whose two _s0 mean different
+  # things (collection seed, learner seed) and read as a typo.
+  ds_tag = '' if args.dataset == 'main' \
+      else '_bd' + args.dataset.rsplit('_s', 1)[-1]
   tag = (f'swamp_windy_{args.arm}'
          + (f'_a{args.alpha:g}'.replace('.', '')
             if args.arm in ('failneg', 'balancedfail') else '')
-         + f'_s{args.seed}')
+         + ds_tag + f'_s{args.seed}')
   ckpt = args.ckpt_dir or (tag + ('_smoke' if args.smoke else ''))
   steps = 2_000 if args.smoke else STEPS
-  cfg = build_cfg(args.arm, args.alpha, args.seed, ckpt, steps)
+  cfg = build_cfg(args.arm, args.alpha, args.seed, ckpt, steps, args.dataset)
   os.makedirs(ckpt, exist_ok=True)
   prov['run_dir'] = ckpt
   prov['smoke'] = bool(args.smoke)
