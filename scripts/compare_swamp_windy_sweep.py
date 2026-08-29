@@ -32,13 +32,19 @@ import re
 
 import numpy as np
 
-ORDER = ['baseline', 'anchorcut', 'failneg_a005', 'failneg_a01', 'failneg_a02']
+ORDER = ['baseline', 'anchorcut', 'failneg_a005', 'failneg_a01', 'failneg_a02',
+         'balanced', 'balancedfail_a005', 'balancedfail_a01',
+         'balancedfail_a02']
 LABEL = {
     'baseline': 'baseline (no cut, a=0)',
     'anchorcut': 'schemeC (a=0)',
     'failneg_a005': 'schemeC + bank a=0.05',
     'failneg_a01': 'schemeC + bank a=0.10',
     'failneg_a02': 'schemeC + bank a=0.20',
+    'balanced': 'schemeC+balanced (a=0)',
+    'balancedfail_a005': 'schemeC+bal + bank a=0.05',
+    'balancedfail_a01': 'schemeC+bal + bank a=0.10',
+    'balancedfail_a02': 'schemeC+bal + bank a=0.20',
 }
 FIELDS = [('all_active', 'success', 'worst_case'),
           ('natural', 'success', 'natural'),
