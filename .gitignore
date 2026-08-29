@@ -157,3 +157,8 @@ artifacts/rockfall_v2_dataset/pilot_sev055_ablation/*.npz
 # otherwise block git pull on the GPU node with local-modification conflicts)
 artifacts/swamp_windy_failure_bank/verify_anchor_cut.json
 artifacts/swamp_windy_failure_bank/critic_fork_margin.json
+
+# Windy-swamp sweep checkpoints pulled back from the rented GPU node (523 MB,
+# 27 runs x 6 pkl). Kept locally for re-probing the critic; never committed --
+# same policy as the other large learner artifacts above.
+artifacts/swamp_windy_checkpoints/
