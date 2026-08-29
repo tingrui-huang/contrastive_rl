@@ -156,7 +156,7 @@ def main():
       print()
       print('CRITIC LAYER (actor-independent; from probe_swamp_windy_critic.py)')
       h = (f'{"arm":<26}{"n":>3}{"fork_margin":>16}{"f(bank as goal)":>18}'
-           f'{"argmax action":>20}')
+           f'{"seeds preferring":>20}')
       print(h)
       print('-' * len(h))
       for a in order:
@@ -164,12 +164,14 @@ def main():
         fm = np.mean([x['fork_margin'] for x in rs])
         fs = np.std([x['fork_margin'] for x in rs], ddof=1) if len(rs) > 1 else 0.0
         vb = np.mean([x.get('v_bank_as_goal', np.nan) for x in rs])
-        ba = rs[0].get('best_action')
-        bas = f'[{ba[0]:+.1f},{ba[1]:+.1f}]' if ba else '-'
-        pref = 'safe' if fm > 0 else 'short'
+        # Report how many SEEDS prefer each side, not one seed's argmax
+        # vector: mixing a per-seed argmax with a cross-seed mean margin reads
+        # as a contradiction (a safe-ward argmax next to a negative mean).
+        n_safe = sum(1 for x in rs if x['fork_margin'] > 0)
+        pref = f'{n_safe}/{len(rs)} seeds safe'
         print(f'{LABEL.get(a, a):<26}{len(rs):>3}'
               + f'{fm:+.3f}+-{fs:.3f}'.rjust(16)
-              + f'{vb:.3f}'.rjust(18) + f'{bas} {pref}'.rjust(20))
+              + f'{vb:.3f}'.rjust(18) + pref.rjust(20))
       print('\n  READ THE +- COLUMN FIRST. Measured on seeds 0+1, the fork'
             ' margin is\n  SEED-dominated: every scheme-C arm was positive on'
             ' seed 0 and negative on\n  seed 1, with the between-seed gap'
