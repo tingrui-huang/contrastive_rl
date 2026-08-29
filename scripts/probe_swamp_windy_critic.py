@@ -72,8 +72,13 @@ GOAL = np.array([8.5, 3.5])          # the ONLY goal ever commanded
 # "Best achievable going each way" is the quantity the actor is effectively
 # choosing between.
 GRID = 21                            # 21x21 sweep of [-1,1]^2
-SAFE_WARD = lambda a: a[:, 1] < -0.3       # heading down, toward (1,2)
-SHORT_WARD = lambda a: a[:, 0] > 0.3       # heading +x, toward the holding cell
+# The two half-planes MUST be disjoint. A first version used
+# (a_y < -0.3) and (a_x > 0.3), which overlap: [+1.0, -0.4] satisfies both, so
+# the same action could be the argmax of each side and the margin came out
+# exactly 0.000 (seen on seed 2). Classify instead by which move DOMINATES,
+# which partitions the square.
+SAFE_WARD = lambda a: (a[:, 1] < -0.3) & (a[:, 1] < -np.abs(a[:, 0]))
+SHORT_WARD = lambda a: (a[:, 0] > 0.3) & (a[:, 0] > np.abs(a[:, 1]))
 
 
 def critic_fn(nets, state, cfg):

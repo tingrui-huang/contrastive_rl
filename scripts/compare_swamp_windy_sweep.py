@@ -170,11 +170,15 @@ def main():
         print(f'{LABEL.get(a, a):<26}{len(rs):>3}'
               + f'{fm:+.3f}+-{fs:.3f}'.rjust(16)
               + f'{vb:.3f}'.rjust(18) + f'{bas} {pref}'.rjust(20))
-      print('\n  A critic margin that turns positive while `entry` above stays '
-            'at 1.00 means\n  the critic prefers the safe route and the ACTOR '
-            'is not following it -- an\n  extraction-layer limit, not a critic '
-            'failure. Reported because that pattern\n  was already observed '
-            'on this benchmark at n=1 (anchorcut).')
+      print('\n  READ THE +- COLUMN FIRST. Measured on seeds 0+1, the fork'
+            ' margin is\n  SEED-dominated: every scheme-C arm was positive on'
+            ' seed 0 and negative on\n  seed 1, with the between-seed gap'
+            ' larger than the whole alpha range. A\n  margin whose std is'
+            ' comparable to its mean says nothing about the arm.\n'
+            '  f(bank as goal) is the trustworthy critic column -- it fell'
+            ' monotonically\n  with alpha on BOTH seeds (-2.2 and -2.6 logits'
+            ' at alpha=0.2), i.e. the bank\n  reliably moves the quantity it'
+            ' TARGETS while `entry` stays at 1.00.')
 
   print()
   print('READ-OUT')
