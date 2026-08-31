@@ -54,6 +54,7 @@ Usage:
 import argparse
 import json
 import os
+import pickle
 import sys
 
 import numpy as np
@@ -244,7 +245,16 @@ def train_mlp(x_tr, y_tr, x_va, y_va, seed, epochs, batch, lr, label):
 
   def predict(x):
     return np.asarray(net.apply(best_params, jnp.asarray(nx(x))))
-  return predict
+
+  # The input standardisation is part of the fitted model, so mu/sd travel with
+  # the params. Anything reloading this (scripts/diag_action_lipschitz.py) must
+  # differentiate through the SAME normalisation or its Jacobian is off by a
+  # factor of 1/sd per input.
+  bundle = {'params': jax.tree_util.tree_map(np.asarray, best_params),
+            'mu': np.asarray(mu, np.float64), 'sd': np.asarray(sd, np.float64),
+            'hidden': list(HIDDEN), 'best_val_mse': float(best),
+            'best_epoch': int(best_ep), 'label': label}
+  return predict, bundle
 
 
 # --------------------------------------------------------------------------- #
@@ -277,6 +287,10 @@ def main():
   ap.add_argument('--lr', type=float, default=1e-3)
   ap.add_argument('--json', default='artifacts/transition_diag/'
                                     'transition_mlp_diag.json')
+  ap.add_argument('--save-params', default='artifacts/transition_diag/'
+                                           'transition_mlp_params.pkl',
+                  help='where to pickle the fitted params + input '
+                       'standardisation; pass "" to skip')
   args = ap.parse_args()
 
   print('=' * 78)
@@ -325,11 +339,23 @@ def main():
            format(int(sel('test', True).sum()), ',')))
 
   print('\n  training state-only  [x,y] -> delta_xy')
-  p_s = train_mlp(x_s[i_tr], y[i_tr], x_s[i_va], y[i_va],
-                  args.seed, args.epochs, args.batch, args.lr, 'state')
+  p_s, b_s = train_mlp(x_s[i_tr], y[i_tr], x_s[i_va], y[i_va],
+                       args.seed, args.epochs, args.batch, args.lr, 'state')
   print('\n  training state+action  [x,y,ax,ay] -> delta_xy')
-  p_sa = train_mlp(x_sa[i_tr], y[i_tr], x_sa[i_va], y[i_va],
-                   args.seed, args.epochs, args.batch, args.lr, 'state+act')
+  p_sa, b_sa = train_mlp(x_sa[i_tr], y[i_tr], x_sa[i_va], y[i_va],
+                         args.seed, args.epochs, args.batch, args.lr,
+                         'state+act')
+
+  # Persist the fitted models so downstream analyses (e.g. the action-Jacobian
+  # / local-Lipschitz probe) can load THIS model instead of retraining one.
+  if args.save_params:
+    os.makedirs(os.path.dirname(args.save_params) or '.', exist_ok=True)
+    with open(args.save_params, 'wb') as f:
+      pickle.dump({'state_only': b_s, 'state_action': b_sa,
+                   'dataset': args.dataset, 'seed': args.seed,
+                   'epochs': args.epochs, 'batch': args.batch, 'lr': args.lr},
+                  f)
+    print('\n  saved fitted params -> %s' % args.save_params)
 
   models = {
       'zero_delta': lambda i: np.zeros_like(y[i]),
