@@ -264,6 +264,11 @@ def main():
                   help='must match the diagonal training seed: it re-derives '
                        'the episode split')
   ap.add_argument('--out-dir', default=OUT_DIR)
+  ap.add_argument('--save-z', default='artifacts/transition_offdiag_v0/'
+                                      'offdiag_v0_z.pkl',
+                  help='pickle z_phi at the NOMINAL L together with the exact '
+                       'evaluation design, so a downstream audit can rebuild '
+                       'g_cf without retraining; pass "" to skip')
   args = ap.parse_args()
 
   try:
@@ -485,6 +490,23 @@ def main():
             'da_norm': dist(r_te), 'delta_phi_norm': dist(ndphi),
             'budget_fraction': dist(ratio / L)},
     }
+
+    if abs(L - args.lipschitz) < 1e-9 and args.save_z:
+      # The evaluation design travels with the params: the audit must score the
+      # SAME off-diagonal actions against the SAME negative pool, and both are
+      # drawn from RNG streams that depend on the whole sweep's call order.
+      os.makedirs(os.path.dirname(args.save_z) or '.', exist_ok=True)
+      with open(args.save_z, 'wb') as f:
+        pickle.dump({'z_params': jax.tree_util.tree_map(np.asarray, zp),
+                     'z_mu': z_mu, 'z_sd': z_sd, 'L': L, 'tau': args.tau,
+                     'alpha': args.alpha, 'eps_projection': EPS,
+                     'diag_params_path': args.diag_params,
+                     'dataset': bundle['dataset'], 'seed': args.seed,
+                     'test_index': te_keep, 's_te': s_te, 'a_te': a_te,
+                     'a_off_te': a_off_te, 'da_norm_te': r_te,
+                     'neg_eval': neg_eval, 'neg_from_bank': neg_from_bank},
+                    f)
+      print('  saved z_phi + eval design -> %s' % args.save_z)
 
     if abs(L - args.lipschitz) < 1e-9:
       # ---------------------------------------------- D. spatial examples
