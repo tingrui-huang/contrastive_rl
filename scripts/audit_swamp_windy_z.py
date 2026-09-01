@@ -70,23 +70,41 @@ def main():
   ap.add_argument('--out', default=OUT)
   args = ap.parse_args()
 
-  try:
-    commit = subprocess.check_output(
-        ['git', 'rev-parse', 'HEAD'],
-        cwd=os.path.dirname(_HERE)).decode().strip()
-  except Exception:                                # pylint: disable=broad-except
-    commit = '(unavailable)'
+  # PROVENANCE. An earlier version stamped `git rev-parse HEAD`, which records
+  # the PARENT commit whenever the audit is run before the code it audits is
+  # committed -- exactly what happened once here, leaving 754887e (a commit in
+  # which TwoRouteSwampWindyZEnv does not exist) in the artifact. Record
+  # instead the commit that last touched the audited files, plus whether the
+  # working tree is dirty, so a stale or uncommitted record is self-evident.
+  tracked = ['crl/envs.py', 'scripts/audit_swamp_windy_z.py']
+
+  def _git(*a):
+    try:
+      return subprocess.check_output(
+          ['git'] + list(a), cwd=os.path.dirname(_HERE)).decode().strip()
+    except Exception:                              # pylint: disable=broad-except
+      return ''
+
+  commit = _git('log', '-1', '--format=%H', '--', *tracked) or '(unavailable)'
+  head = _git('rev-parse', 'HEAD') or '(unavailable)'
+  dirty = bool(_git('status', '--porcelain', '--', *tracked))
 
   cfg = Config(env_name=ENV_Z)
   env = envs_mod.make_env(ENV_Z, cfg, seed=args.seed)
   out = {'commit': commit, 'env_name': ENV_Z,
+         'git_state': {'code_commit': commit, 'head_at_runtime': head,
+                       'audited_files_dirty': dirty, 'tracked_files': tracked,
+                       'note': 'code_commit is the last commit touching the '
+                               'audited files, NOT git HEAD at run time'},
          'analysis_script': 'scripts/audit_swamp_windy_z.py',
          'env_code_path': 'crl/envs.py :: TwoRouteSwampWindyZEnv'}
 
   print('=' * 92)
   print('ENV AUDIT -- %s' % ENV_Z)
   print('=' * 92)
-  print('  commit          : %s' % commit)
+  print('  code commit     : %s%s'
+        % (commit, '   (WORKING TREE DIRTY)' if dirty else ''))
+  print('  head at runtime : %s' % head)
   obs0 = env.reset()
   print('  obs_dim %d  goal_dim %d  action_dim %d  flat obs %s'
         % (cfg.obs_dim, cfg.goal_dim, cfg.action_dim, obs0.shape))

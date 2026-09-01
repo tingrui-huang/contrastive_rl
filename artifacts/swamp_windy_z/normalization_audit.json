@@ -1,0 +1,175 @@
+{
+  "analysis_script": "scripts/audit_swamp_windy_z_norm.py",
+  "1_provenance": {
+    "z_env_implementation_commit": "7da7728aacdd5a9401c0720978de9580326ae851",
+    "make_env_branch_commit": "7da7728aacdd5a9401c0720978de9580326ae851",
+    "audit_script_added_commit": "7da7728aacdd5a9401c0720978de9580326ae851",
+    "env_audit_json_added_commit": "7da7728aacdd5a9401c0720978de9580326ae851",
+    "all_four_same_commit": true,
+    "stale_field_value": "754887eb4c0f6a4a120091707e128751de506d63",
+    "stale_is_parent_of_implementation": true,
+    "z_env_present_at_stale_commit": false,
+    "stale_field_is_incorrect": true,
+    "7da7728_is_correct_implementation_commit": true,
+    "mechanism": "audit_swamp_windy_z.py stamped git rev-parse HEAD at run time and was run before the code was committed, so it recorded the parent commit rather than the code under test",
+    "remedy": "env_audit.json commit field rewritten to the commit that last touched the audited files; numbers regenerated and verified identical"
+  },
+  "2_normalization_path": {
+    "code_paths": [
+      "crl/networks.py :: make_networks._repr_fn (state = obs[:, :obs_dim], goal = obs[:, obs_dim:], both RAW)",
+      "crl/networks.py :: make_networks._unflatten_obs (/255, IMAGE only)",
+      "crl/networks.py :: repr_norm block (normalizes the OUTPUT representation, not the input; False in the windy recipe)",
+      "crl/replay.py :: TrajectoryBuffer.sample (astype(float32) only)"
+    ],
+    "xyz_normalized": false,
+    "applied_to": "nothing for state envs; /255 for image observations only",
+    "empirical_mu_sigma_computed": false,
+    "state_and_goal_stats_shared": null,
+    "z_would_get_empirical_normalization": false,
+    "consequence": "raw z enters the encoders at magnitude 0.5 against x in [0,9] and y in [1,4], so the live risk is z being UNDER-weighted, not over-amplified"
+  },
+  "3_dataset": {
+    "episodes": 400,
+    "n_states": 20400,
+    "n_z_zero": 19487,
+    "frac_z_zero": 0.9552450980392156,
+    "n_z_negative": 913,
+    "frac_z_negative": 0.04475490196078431,
+    "n_failure_entry_states": 37,
+    "n_post_failure_frozen": 876,
+    "n_primary_rows": 19524,
+    "frac_z_negative_all_rows": 0.04475490196078431,
+    "frac_z_negative_primary": 0.001895103462405245
+  },
+  "4_empirical": {
+    "A_all_rows": {
+      "n": 20400,
+      "mu": [
+        6.538560113595529,
+        3.3856246988329235,
+        -0.022377450980392156
+      ],
+      "sigma": [
+        2.957942986697054,
+        0.49210351021456883,
+        0.10338266381655818
+      ],
+      "min": [
+        8.761267235968262e-05,
+        1.0000685453414917,
+        -0.5
+      ],
+      "max": [
+        8.99329948425293,
+        3.999913215637207,
+        0.0
+      ],
+      "z_safe_standardized": 0.2164526445178335,
+      "z_fail_standardized": -4.6199481749386875,
+      "separation_standardized": 4.836400819456521
+    },
+    "B_primary_rows": {
+      "n": 19524,
+      "mu": [
+        6.635270484344235,
+        3.3841142426917505,
+        -0.0009475517312026225
+      ],
+      "sigma": [
+        2.9797222177014264,
+        0.4979287558101993,
+        0.02174575846729805
+      ],
+      "min": [
+        8.761267235968262e-05,
+        1.0000685453414917,
+        -0.5
+      ],
+      "max": [
+        8.99329948425293,
+        3.999913215637207,
+        0.0
+      ],
+      "z_safe_standardized": 0.043574094351667716,
+      "z_fail_standardized": -22.949415584620237,
+      "separation_standardized": 22.992989678971906
+    }
+  },
+  "5_scaling": {
+    "z_min_abs": 0.5,
+    "fixed_separation": 1.0,
+    "raw_separation": 0.5,
+    "empirical_separation_all_rows": 4.836400819456521,
+    "empirical_separation_primary": 22.992989678971906,
+    "empirical_amplification_vs_fixed_all_rows": 4.836400819456521,
+    "empirical_amplification_vs_fixed_primary": 22.992989678971906
+  },
+  "6_distance": {
+    "typical_safe_safe_xy_distance": {
+      "mean": 3.029259958752753,
+      "median": 1.3477954468483384,
+      "p10": 0.15123230544889912,
+      "p90": 7.78379225008352
+    },
+    "same_xy_pairs": [
+      {
+        "convention": "raw (current)",
+        "xy_distance": 0.0,
+        "z_distance": 0.5,
+        "ratio_to_median_xy": 0.37097617533075317
+      },
+      {
+        "convention": "fixed z/|z_min|",
+        "xy_distance": 0.0,
+        "z_distance": 1.0,
+        "ratio_to_median_xy": 0.7419523506615063
+      },
+      {
+        "convention": "empirical A (all)",
+        "xy_distance": 0.0,
+        "z_distance": 4.836400819456521,
+        "ratio_to_median_xy": 3.588378956737001
+      },
+      {
+        "convention": "empirical B (primary)",
+        "xy_distance": 0.0,
+        "z_distance": 22.992989678971906,
+        "ratio_to_median_xy": 17.05970274104896
+      }
+    ]
+  },
+  "7_8_unit_tests": {
+    "mode_none_is_identity": true,
+    "z0_maps_to_0": true,
+    "zmin_maps_to_-1": true,
+    "goal_z_also_scaled": true,
+    "xy_untouched": true,
+    "safe_stays_on_ground": true,
+    "failure_still_distinguishable": true,
+    "hidden_bits_do_not_move_normalized_obs": true,
+    "old_2d_env_unaffected": true
+  },
+  "7_implementation": {
+    "module": "crl/obs_norm.py",
+    "wired_into_pipeline": false,
+    "modes": [
+      "none (identity, the default and today's behaviour)",
+      "z_physical (z / |z_min| on both the state and goal halves)"
+    ],
+    "z_scale_source": "crl.obs_norm.z_scale_from_env -> abs(env.z_min); the literal 0.5 is not duplicated anywhere",
+    "empirical_mode_offered": false,
+    "why_not": "sigma_z tracks the death RATE, not a physical quantity, so the safe/failure separation would move whenever the dataset death rate moved"
+  },
+  "verdict": {
+    "empirical_would_over_amplify": true,
+    "empirical_separation_vs_median_xy": 17.05970274104896,
+    "raw_separation_vs_median_xy": 0.37097617533075317,
+    "recommended_convention": "z / |z_min|  (crl.obs_norm mode z_physical)",
+    "recommendation_reasons": [
+      "dataset-independent: does not move with the death rate",
+      "one sinking depth = 1.0, the same order as one maze cell",
+      "leaves X/Y untouched, so existing 2-D comparisons stay valid"
+    ],
+    "note": "the pipeline currently normalizes nothing, so this is a choice to be made when wiring it in, not a bug to be fixed now"
+  }
+}
