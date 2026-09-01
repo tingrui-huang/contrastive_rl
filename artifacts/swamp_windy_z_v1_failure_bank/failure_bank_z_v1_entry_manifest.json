@@ -1,0 +1,49 @@
+{
+  "definition": "first z=0 -> z<0 transition per failed episode; the landed state (x, y, z) of that transition. Exactly one entry per failed episode; post-failure frozen rows are NOT added.",
+  "env_name": "point_two_route_swamp_windy_z_v0",
+  "source_npz": "datasets/swamp_windy_z_v1_merged_s0.npz",
+  "source_content_sha256": "0e4d59865328478fab3f46d43a97f9070a5701413347d4ccfc5183407a0373f1",
+  "goal_dim": 3,
+  "goal_indices": "range(3) (start=0, end=-1)",
+  "detected_from": "z only (learner-visible); swamp_bits used ONLY to cross-check, never to select",
+  "n_episodes": 6600,
+  "n_failed_episodes": 684,
+  "n_bank_full": 684,
+  "n_bank": 256,
+  "subsampled": true,
+  "subsample_seed": 0,
+  "duplicates_full": 0,
+  "unique_full": 684,
+  "duplicates_kept": 0,
+  "z_values": [
+    -0.11999999731779099
+  ],
+  "z_stored_raw": true,
+  "z_scaling_note": "raw; z_physical is applied inside crl/networks.py so the bank is scaled by the same code as every other goal, exactly once",
+  "failed_by_teacher_mode": {
+    "0": 153,
+    "2": 13,
+    "3": 27,
+    "4": 63
+  },
+  "batch_size_requirement": "crl/losses.py requires n_bank <= batch_size",
+  "bank_path": "artifacts/swamp_windy_z_v1_failure_bank/failure_bank_z.npz",
+  "bank_sha256": "b7e0ebdde82bc47321afe4e0e8586e1abd7d19d19f6f6944e9670c3bf0807dca",
+  "bank_content_sha256": "abb6b3a4b30b950d728a401c12c3760e1069310b2168e9e51a7e6f70786f8992",
+  "bank_shape": [
+    256,
+    3
+  ],
+  "x_range": [
+    3.0045690536499023,
+    5.983985900878906
+  ],
+  "y_range": [
+    3.0000433921813965,
+    3.9989473819732666
+  ],
+  "z_range": [
+    -0.11999999731779099,
+    -0.11999999731779099
+  ]
+}

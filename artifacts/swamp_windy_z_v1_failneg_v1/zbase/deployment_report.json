@@ -1,0 +1,116 @@
+{
+  "checkpoint": "swamp_windy_z_v1_zbase_s0/final.pkl",
+  "step": 150000,
+  "env": "point_two_route_swamp_windy_z_v1",
+  "episodes": 100,
+  "seed": 123,
+  "obs_norm_mode": "z_physical",
+  "obs_norm_z_scale": 0.5,
+  "learner": {
+    "all_clear": {
+      "success": 1.0,
+      "entry": 1.0,
+      "died": 0.0,
+      "safe": 0.0,
+      "final_z": 0.0
+    },
+    "all_active": {
+      "success": 0.0,
+      "entry": 1.0,
+      "died": 1.0,
+      "safe": 0.0,
+      "final_z": -0.5
+    },
+    "natural": {
+      "success": 0.7,
+      "entry": 1.0,
+      "died": 0.3,
+      "safe": 0.0,
+      "final_z": -0.15
+    }
+  },
+  "always_safe": {
+    "all_clear": {
+      "success": 1.0,
+      "entry": 0.0,
+      "died": 0.0,
+      "safe": 1.0,
+      "final_z": 0.0
+    },
+    "all_active": {
+      "success": 1.0,
+      "entry": 0.0,
+      "died": 0.0,
+      "safe": 1.0,
+      "final_z": 0.0
+    },
+    "natural": {
+      "success": 1.0,
+      "entry": 0.0,
+      "died": 0.0,
+      "safe": 1.0,
+      "final_z": 0.0
+    }
+  },
+  "learner_by_bit_pattern": {
+    "bits_000": {
+      "success": 1.0,
+      "entry": 1.0,
+      "died": 0.0,
+      "safe": 0.0,
+      "final_z": 0.0
+    },
+    "bits_001": {
+      "success": 0.0,
+      "entry": 1.0,
+      "died": 1.0,
+      "safe": 0.0,
+      "final_z": -0.5
+    },
+    "bits_010": {
+      "success": 0.0,
+      "entry": 1.0,
+      "died": 1.0,
+      "safe": 0.0,
+      "final_z": -0.5
+    },
+    "bits_011": {
+      "success": 0.0,
+      "entry": 1.0,
+      "died": 1.0,
+      "safe": 0.0,
+      "final_z": -0.5
+    },
+    "bits_100": {
+      "success": 0.0,
+      "entry": 1.0,
+      "died": 1.0,
+      "safe": 0.0,
+      "final_z": -0.5
+    },
+    "bits_101": {
+      "success": 0.0,
+      "entry": 1.0,
+      "died": 1.0,
+      "safe": 0.0,
+      "final_z": -0.5
+    },
+    "bits_110": {
+      "success": 0.0,
+      "entry": 1.0,
+      "died": 1.0,
+      "safe": 0.0,
+      "final_z": -0.5
+    },
+    "bits_111": {
+      "success": 0.0,
+      "entry": 1.0,
+      "died": 1.0,
+      "safe": 0.0,
+      "final_z": -0.5
+    }
+  },
+  "clear_active_gap": 1.0,
+  "worst_case": 0.0,
+  "verdict": "CONFOUNDED_SHORTCUT_BIAS"
+}
