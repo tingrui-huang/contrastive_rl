@@ -589,6 +589,116 @@ class TwoRouteSwampWindyZEnv(TwoRouteSwampWindyEnv):
     return obs, reward, done, info
 
 
+class TwoRouteSwampWindyZV1Env(TwoRouteSwampWindyEnv):
+  """point_two_route_swamp_windy_z_v1 -- sinking spread over ENV STEPS.
+
+  Same design intent as TwoRouteSwampWindyZEnv (v0) with ONE change: the
+  settling is exposed across successive env steps instead of being completed
+  inside a single step() call.
+
+  v0 sinks 0 -> -0.5 within one step, so a v0 dataset only ever contains
+  z in {0, -0.5} and z behaves like a continuous-valued death flag. v1 applies
+  ONE increment per env step,
+
+      z <- max(z_min, z - sink_speed * sink_dt)          (= -0.12 by default)
+
+  so the learner-visible trajectory after entering an active swamp is
+
+      0, -0.12, -0.24, -0.36, -0.48, -0.50, -0.50, ...
+
+  and z is a genuine continuous physical trajectory. The number of steps to
+  settle is therefore DERIVED (ceil(|z_min| / (sink_speed*sink_dt)) = 5), not a
+  free parameter, which is why v0's sink_settle_substeps argument is absent
+  here rather than silently ignored.
+
+  DELIBERATELY IDENTICAL TO v0 IN EVERY OTHER RESPECT. Learner state (x, y, z),
+  goal (g_x, g_y, 0), obs_dim = goal_dim = 3, flat observation
+  [x, y, z, g_x, g_y, g_z]. XY dynamics, collision, the hidden-bit mechanism
+  and the fatal/absorbing XY semantics are inherited unchanged from
+  TwoRouteSwampWindyEnv: self.state stays the 2-D vector the parent's substep
+  loop operates on. Before contact z is 0 whatever the hidden bit is doing, so
+  U stays hidden; z is a physical outcome, never the latent swamp status. No
+  dead bit, no sinking bit, no time-since-failure, no swamp identity in the
+  observation.
+
+  This is a SEPARATE class from v0 on purpose. v0 has completed experiments and
+  a positive critic result attached to it, so it is left byte-for-byte alone
+  rather than parameterised.
+
+  After contact the parent freezes XY and ignores the action; z keeps settling
+  one increment per step regardless of what the action is, and once it reaches
+  z_min the state is fully absorbing. reset() restores z = 0.
+  """
+
+  Z_GROUND = 0.0
+
+  def __init__(self, action_noise=0.01, max_episode_steps=50, seed=0,
+               active_prob=0.10, slow_factor=0.02,
+               sink_speed=1.2, sink_dt=0.1, z_min=-0.5):
+    # Assigned BEFORE super().__init__(): TwoRouteSwampEnv.__init__ ends with
+    # reset(), which calls _get_obs(), which reads self._z.
+    self._z = self.Z_GROUND
+    self.sink_speed = float(sink_speed)
+    self.sink_dt = float(sink_dt)
+    self.z_min = float(z_min)
+    super().__init__(action_noise=action_noise,
+                     max_episode_steps=max_episode_steps, seed=seed,
+                     active_prob=active_prob, slow_factor=slow_factor)
+    self.obs_dim = 3                   # (x, y, z); U is still NOT exposed
+    self.goal_dim = 3                  # (g_x, g_y, 0)
+
+  @property
+  def z(self):
+    return float(self._z)
+
+  @property
+  def sink_step(self):
+    """Depth added per ENV step (positive magnitude)."""
+    return self.sink_speed * self.sink_dt
+
+  @property
+  def steps_to_settle(self):
+    """Env steps from first contact until z reaches z_min. Derived, not set."""
+    return int(np.ceil(abs(self.z_min) / self.sink_step))
+
+  @property
+  def state_z(self):
+    """Full 3-D learner state (x, y, z). self.state stays 2-D for the parent."""
+    return np.array([self.state[0], self.state[1], self._z], dtype=np.float32)
+
+  @property
+  def goal_z(self):
+    """3-D goal (g_x, g_y, 0) -- the task goal is on the ground."""
+    return np.array([self.goal[0], self.goal[1], self.Z_GROUND],
+                    dtype=np.float32)
+
+  def _get_obs(self):
+    # [x, y, z, g_x, g_y, g_z]. No swamp bits, no wait counter, no dead flag,
+    # no sinking flag, no time-since-failure, no swamp identity.
+    return np.concatenate([self.state_z, self.goal_z]).astype(np.float32)
+
+  def _sink_one_step(self):
+    """ONE increment. The action cannot change this, by not being read."""
+    self._z = max(self.z_min, self._z - self.sink_step)
+
+  def reset(self):
+    self._z = self.Z_GROUND
+    return super().reset()
+
+  def step(self, action):
+    obs, reward, done, info = super().step(action)
+    if self._dead:
+      # Covers both cases with one rule, which is what makes the trajectory
+      # uniform: on the step of first contact the parent has just set _dead and
+      # placed XY at the contact point, and on every later step the parent's
+      # absorbing branch returned without moving XY. Either way exactly one
+      # increment is applied per env step until z_min clamps it.
+      self._sink_one_step()
+      obs = self._get_obs()
+      reward = 0.0
+    return obs, reward, done, info
+
+
 # ---------------------------------------------------------------------------
 # Fetch (gymnasium-robotics wrapper). Colab-oriented; needs `mujoco` +
 # `gymnasium-robotics`. Flattens Dict obs to concat([state, desired_goal]).
@@ -1117,6 +1227,10 @@ def make_env(env_name, config, seed=0, render_mode=None):
   elif env_name == 'point_two_route_swamp_windy_z_v0':
     # 3-D (x, y, z) variant; the 2-D windy env above is unchanged.
     env = TwoRouteSwampWindyZEnv(max_episode_steps=50, seed=seed)
+  elif env_name == 'point_two_route_swamp_windy_z_v1':
+    # As z_v0 but the sinking is spread over ENV STEPS, so z is a continuous
+    # trajectory rather than {0, -0.5}. z_v0 is untouched and reproducible.
+    env = TwoRouteSwampWindyZV1Env(max_episode_steps=50, seed=seed)
   elif env_name == 'point_two_route_swamp_v0':
     env = TwoRouteSwampEnv(max_episode_steps=50, seed=seed)
   elif env_name == 'point_two_route_gate_v0':   # superseded v0 (kept as ablation)

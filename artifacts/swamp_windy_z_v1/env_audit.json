@@ -1,0 +1,153 @@
+{
+  "env_name": "point_two_route_swamp_windy_z_v1",
+  "env_code_path": "crl/envs.py :: TwoRouteSwampWindyZV1Env",
+  "analysis_script": "scripts/audit_swamp_windy_z_v1.py",
+  "git_state": {
+    "code_commit": "7da7728aacdd5a9401c0720978de9580326ae851",
+    "head_at_runtime": "d8442f77462427615d17b5d4ff9c58446695b16c",
+    "audited_files_dirty": true,
+    "tracked_files": [
+      "crl/envs.py",
+      "scripts/audit_swamp_windy_z_v1.py"
+    ],
+    "note": "code_commit is the last commit touching the audited files, NOT git HEAD at run time"
+  },
+  "shapes": {
+    "obs_dim": 3,
+    "goal_dim": 3,
+    "flat_obs": [
+      6
+    ],
+    "layout": "[x, y, z, g_x, g_y, g_z]",
+    "start_index": 0,
+    "end_index": -1,
+    "task_goal": [
+      8.5,
+      3.5,
+      0.0
+    ]
+  },
+  "z_update": {
+    "rule": "z <- max(z_min, z - sink_speed*sink_dt), applied ONCE PER ENV STEP (on first contact and on every subsequent step)",
+    "sink_speed": 1.2,
+    "sink_dt": 0.1,
+    "delta_z_per_env_step": 0.12,
+    "z_min": -0.5,
+    "steps_to_settle": 5,
+    "expected_sequence": [
+      0.0,
+      -0.12,
+      -0.24,
+      -0.36,
+      -0.48,
+      -0.5
+    ]
+  },
+  "hidden_bit_invariance": {
+    "obs_delta": 0.0,
+    "z_before_contact": 0.0
+  },
+  "9_paired_first_contact": {
+    "n_pairs": 600,
+    "n_entering": 594,
+    "xy_distance_max": 0.0,
+    "z_clear_unique": [
+      0.0
+    ],
+    "z_active_min": -0.11999999731779099,
+    "z_active_max": -0.11999999731779099,
+    "z_active_equals_one_increment": true,
+    "z_active_is_not_z_min": true
+  },
+  "10_multistep": {
+    "z_sequence": [
+      0.0,
+      -0.11999999731779099,
+      -0.23999999463558197,
+      -0.36000001430511475,
+      -0.47999998927116394,
+      -0.5,
+      -0.5,
+      -0.5,
+      -0.5
+    ],
+    "monotonic_non_increasing": true,
+    "min_z": -0.5,
+    "z_min": -0.5,
+    "xy_max_drift_after_contact": 0.0,
+    "actions_after_contact_varied": true
+  },
+  "11_rollout": {
+    "episodes": 400,
+    "n_states": 20400,
+    "failed_episodes": 36,
+    "first_contact_rows": 36,
+    "intermediate_sinking_rows": 140,
+    "settled_absorbing_rows": 766,
+    "z_histogram": {
+      "0.0": 19458,
+      "-0.12": 36,
+      "-0.24": 35,
+      "-0.36": 35,
+      "-0.48": 35,
+      "-0.5": 801
+    },
+    "n_distinct_z": 6,
+    "z_min_observed": -0.5,
+    "z_max_observed": 0.0
+  },
+  "12_separation": {
+    "obs_scale": [
+      1.0,
+      1.0,
+      2.0,
+      1.0,
+      1.0,
+      2.0
+    ],
+    "pairs": {
+      "safe vs early failure (-0.12)": {
+        "raw": 0.12,
+        "scaled": 0.24
+      },
+      "safe vs settled failure (-0.50)": {
+        "raw": 0.5,
+        "scaled": 1.0
+      }
+    },
+    "scaled_sequence": [
+      0.0,
+      -0.24,
+      -0.48,
+      -0.72,
+      -0.96,
+      -1.0
+    ],
+    "empirical_standardization": false
+  },
+  "13_regression": {
+    "2d": {
+      "obs_shape": [
+        4
+      ],
+      "obs_dim": 2,
+      "goal_dim": 2
+    },
+    "z_v0": {
+      "obs_shape": [
+        6
+      ],
+      "obs_dim": 3,
+      "z_after_first_contact": -0.5,
+      "jumps_to_z_min_in_one_step": true
+    },
+    "z_v1": {
+      "obs_shape": [
+        6
+      ],
+      "obs_dim": 3,
+      "z_after_first_contact": -0.12,
+      "gradual_across_env_steps": true
+    }
+  }
+}
