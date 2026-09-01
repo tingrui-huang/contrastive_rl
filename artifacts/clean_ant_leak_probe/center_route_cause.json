@@ -1,0 +1,2168 @@
+{
+  "ckpt": "failneg_clean_p30_h800_resetfix_a0_s0_300k/best.pkl",
+  "step": 270400,
+  "n_replayed": 200,
+  "T4_action_mode_averaging": {
+    "per_step": [
+      {
+        "t": 0,
+        "dist_to_left_mode": 1.9438,
+        "dist_to_right_mode": 1.8193,
+        "dist_to_midpoint": 1.5974,
+        "mode_separation": 1.9924
+      },
+      {
+        "t": 1,
+        "dist_to_left_mode": 1.2695,
+        "dist_to_right_mode": 1.1333,
+        "dist_to_midpoint": 0.3296,
+        "mode_separation": 2.3145
+      },
+      {
+        "t": 2,
+        "dist_to_left_mode": 1.1669,
+        "dist_to_right_mode": 0.6775,
+        "dist_to_midpoint": 0.4267,
+        "mode_separation": 1.7068
+      },
+      {
+        "t": 3,
+        "dist_to_left_mode": 0.9013,
+        "dist_to_right_mode": 0.7067,
+        "dist_to_midpoint": 0.1868,
+        "mode_separation": 1.5761
+      },
+      {
+        "t": 4,
+        "dist_to_left_mode": 1.0876,
+        "dist_to_right_mode": 1.0666,
+        "dist_to_midpoint": 0.1526,
+        "mode_separation": 2.1327
+      },
+      {
+        "t": 5,
+        "dist_to_left_mode": 1.0955,
+        "dist_to_right_mode": 1.0215,
+        "dist_to_midpoint": 0.1371,
+        "mode_separation": 2.1005
+      },
+      {
+        "t": 6,
+        "dist_to_left_mode": 1.0227,
+        "dist_to_right_mode": 1.2891,
+        "dist_to_midpoint": 0.2253,
+        "mode_separation": 2.283
+      },
+      {
+        "t": 7,
+        "dist_to_left_mode": 0.6216,
+        "dist_to_right_mode": 0.6644,
+        "dist_to_midpoint": 0.1956,
+        "mode_separation": 1.2258
+      },
+      {
+        "t": 8,
+        "dist_to_left_mode": 0.7797,
+        "dist_to_right_mode": 0.6449,
+        "dist_to_midpoint": 0.115,
+        "mode_separation": 1.4123
+      },
+      {
+        "t": 9,
+        "dist_to_left_mode": 0.4973,
+        "dist_to_right_mode": 0.5365,
+        "dist_to_midpoint": 0.2079,
+        "mode_separation": 0.9473
+      },
+      {
+        "t": 10,
+        "dist_to_left_mode": 0.4053,
+        "dist_to_right_mode": 0.3653,
+        "dist_to_midpoint": 0.1475,
+        "mode_separation": 0.713
+      },
+      {
+        "t": 11,
+        "dist_to_left_mode": 0.2919,
+        "dist_to_right_mode": 0.4316,
+        "dist_to_midpoint": 0.2353,
+        "mode_separation": 0.5671
+      }
+    ],
+    "nearest_counts": {
+      "left": 0,
+      "right": 0,
+      "midpoint": 12
+    },
+    "mean_dist": {
+      "left_mode": 0.9236,
+      "right_mode": 0.8631,
+      "midpoint": 0.3297
+    }
+  },
+  "dataset_lane_composition": {
+    "left": 0.444,
+    "center": 0.106,
+    "right": 0.451
+  },
+  "learner_lane_on_dataset_starts": {
+    "left": 0.505,
+    "center": 0.24,
+    "right": 0.255
+  },
+  "contingency_base_side_x_learner_lane": {
+    "rows": [
+      "data base_side left",
+      "data base_side right"
+    ],
+    "cols": [
+      "left",
+      "center",
+      "right"
+    ],
+    "table": [
+      [
+        51,
+        24,
+        18
+      ],
+      [
+        39,
+        20,
+        27
+      ]
+    ],
+    "chi_square": {
+      "chi2": 3.495,
+      "dof": 2,
+      "p": 0.1742,
+      "cramers_v": 0.14,
+      "n": 179
+    }
+  },
+  "actor_spread_by_phase": {
+    "entrance x<0.8": {
+      "n_states": 4136,
+      "mean_scale": 0.6999,
+      "median_scale": 0.6249,
+      "mean_abs_action": 0.8758,
+      "saturated_frac": 0.5281
+    },
+    "lane committed 2.3<x<5.7": {
+      "n_states": 3413,
+      "mean_scale": 0.504,
+      "median_scale": 0.4382,
+      "mean_abs_action": 0.7311,
+      "saturated_frac": 0.2525
+    },
+    "post-handoff x>6.5": {
+      "n_states": 1464,
+      "mean_scale": 0.545,
+      "median_scale": 0.5158,
+      "mean_abs_action": 0.8839,
+      "saturated_frac": 0.5362
+    }
+  },
+  "episodes": [
+    {
+      "lane": "center",
+      "mean_y": 0.158,
+      "success": 1.0,
+      "dead": false,
+      "steps": 671,
+      "ep": 0,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": 0.015,
+      "success": 1.0,
+      "dead": false,
+      "steps": 659,
+      "ep": 2,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.73,
+      "success": 1.0,
+      "dead": false,
+      "steps": 355,
+      "ep": 3,
+      "data_route": "center",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.072,
+      "success": 0.0,
+      "dead": true,
+      "steps": 47,
+      "ep": 5,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.834,
+      "success": 1.0,
+      "dead": false,
+      "steps": 384,
+      "ep": 6,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.588,
+      "success": 0.0,
+      "dead": false,
+      "steps": 800,
+      "ep": 8,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.634,
+      "success": 0.0,
+      "dead": false,
+      "steps": 800,
+      "ep": 9,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.945,
+      "success": 0.0,
+      "dead": true,
+      "steps": 76,
+      "ep": 10,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.177,
+      "success": 0.0,
+      "dead": true,
+      "steps": 35,
+      "ep": 12,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "right",
+      "mean_y": -1.087,
+      "success": 0.0,
+      "dead": true,
+      "steps": 72,
+      "ep": 13,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "center",
+      "mean_y": 0.181,
+      "success": 1.0,
+      "dead": false,
+      "steps": 741,
+      "ep": 15,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.841,
+      "success": 1.0,
+      "dead": false,
+      "steps": 294,
+      "ep": 16,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": 0.162,
+      "success": 0.0,
+      "dead": false,
+      "steps": 800,
+      "ep": 18,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.986,
+      "success": 1.0,
+      "dead": false,
+      "steps": 296,
+      "ep": 19,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "right",
+      "mean_y": -1.091,
+      "success": 0.0,
+      "dead": true,
+      "steps": 55,
+      "ep": 20,
+      "data_route": "center",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.511,
+      "success": 1.0,
+      "dead": false,
+      "steps": 591,
+      "ep": 22,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.873,
+      "success": 1.0,
+      "dead": false,
+      "steps": 312,
+      "ep": 23,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.123,
+      "success": 1.0,
+      "dead": false,
+      "steps": 204,
+      "ep": 25,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.783,
+      "success": 1.0,
+      "dead": false,
+      "steps": 359,
+      "ep": 26,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.751,
+      "success": 0.0,
+      "dead": false,
+      "steps": 800,
+      "ep": 28,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.059,
+      "success": 0.0,
+      "dead": true,
+      "steps": 47,
+      "ep": 29,
+      "data_route": "center",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.58,
+      "success": 1.0,
+      "dead": false,
+      "steps": 566,
+      "ep": 30,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": 0.036,
+      "success": 1.0,
+      "dead": false,
+      "steps": 642,
+      "ep": 32,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -1.068,
+      "success": 1.0,
+      "dead": false,
+      "steps": 186,
+      "ep": 33,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -1.167,
+      "success": 0.0,
+      "dead": true,
+      "steps": 44,
+      "ep": 35,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.831,
+      "success": 1.0,
+      "dead": false,
+      "steps": 345,
+      "ep": 36,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.968,
+      "success": 1.0,
+      "dead": false,
+      "steps": 193,
+      "ep": 37,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.518,
+      "success": 1.0,
+      "dead": false,
+      "steps": 637,
+      "ep": 39,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.133,
+      "success": 1.0,
+      "dead": false,
+      "steps": 670,
+      "ep": 40,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": 0.489,
+      "success": 1.0,
+      "dead": false,
+      "steps": 642,
+      "ep": 42,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.551,
+      "success": 1.0,
+      "dead": false,
+      "steps": 503,
+      "ep": 43,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.796,
+      "success": 1.0,
+      "dead": false,
+      "steps": 350,
+      "ep": 45,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.2,
+      "success": 0.0,
+      "dead": true,
+      "steps": 45,
+      "ep": 46,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.745,
+      "success": 0.0,
+      "dead": false,
+      "steps": 800,
+      "ep": 47,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": 0.456,
+      "success": 1.0,
+      "dead": false,
+      "steps": 603,
+      "ep": 49,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.035,
+      "success": 0.0,
+      "dead": true,
+      "steps": 38,
+      "ep": 50,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.19,
+      "success": 1.0,
+      "dead": false,
+      "steps": 626,
+      "ep": 52,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.07,
+      "success": 1.0,
+      "dead": false,
+      "steps": 302,
+      "ep": 53,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.87,
+      "success": 1.0,
+      "dead": false,
+      "steps": 252,
+      "ep": 55,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.485,
+      "success": 0.0,
+      "dead": false,
+      "steps": 800,
+      "ep": 56,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.66,
+      "success": 1.0,
+      "dead": false,
+      "steps": 470,
+      "ep": 57,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "center",
+      "mean_y": 0.168,
+      "success": 1.0,
+      "dead": false,
+      "steps": 652,
+      "ep": 59,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "right",
+      "mean_y": -1.062,
+      "success": 0.0,
+      "dead": true,
+      "steps": 44,
+      "ep": 60,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.835,
+      "success": 1.0,
+      "dead": false,
+      "steps": 270,
+      "ep": 62,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.087,
+      "success": 1.0,
+      "dead": false,
+      "steps": 646,
+      "ep": 63,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.607,
+      "success": 1.0,
+      "dead": false,
+      "steps": 527,
+      "ep": 64,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.669,
+      "success": 1.0,
+      "dead": false,
+      "steps": 463,
+      "ep": 67,
+      "data_route": "center",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.517,
+      "success": 1.0,
+      "dead": false,
+      "steps": 751,
+      "ep": 68,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.355,
+      "success": 1.0,
+      "dead": false,
+      "steps": 644,
+      "ep": 70,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.077,
+      "success": 0.0,
+      "dead": true,
+      "steps": 34,
+      "ep": 71,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.728,
+      "success": 0.0,
+      "dead": true,
+      "steps": 232,
+      "ep": 73,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.125,
+      "success": 1.0,
+      "dead": false,
+      "steps": 226,
+      "ep": 74,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.973,
+      "success": 0.0,
+      "dead": true,
+      "steps": 45,
+      "ep": 75,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": 0.211,
+      "success": 0.0,
+      "dead": false,
+      "steps": 800,
+      "ep": 77,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.878,
+      "success": 1.0,
+      "dead": false,
+      "steps": 492,
+      "ep": 78,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.047,
+      "success": 0.0,
+      "dead": true,
+      "steps": 63,
+      "ep": 80,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.939,
+      "success": 0.0,
+      "dead": true,
+      "steps": 97,
+      "ep": 81,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "center",
+      "mean_y": 0.18,
+      "success": 1.0,
+      "dead": false,
+      "steps": 630,
+      "ep": 83,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.634,
+      "success": 1.0,
+      "dead": false,
+      "steps": 496,
+      "ep": 84,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.697,
+      "success": 1.0,
+      "dead": false,
+      "steps": 433,
+      "ep": 85,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.794,
+      "success": 1.0,
+      "dead": false,
+      "steps": 332,
+      "ep": 87,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.011,
+      "success": 0.0,
+      "dead": true,
+      "steps": 59,
+      "ep": 88,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.636,
+      "success": 1.0,
+      "dead": false,
+      "steps": 493,
+      "ep": 90,
+      "data_route": "center",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.803,
+      "success": 0.0,
+      "dead": false,
+      "steps": 800,
+      "ep": 91,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.935,
+      "success": 0.0,
+      "dead": true,
+      "steps": 103,
+      "ep": 93,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.776,
+      "success": 0.0,
+      "dead": false,
+      "steps": 800,
+      "ep": 94,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.872,
+      "success": 1.0,
+      "dead": false,
+      "steps": 266,
+      "ep": 95,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.544,
+      "success": 1.0,
+      "dead": false,
+      "steps": 623,
+      "ep": 97,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.532,
+      "success": 1.0,
+      "dead": false,
+      "steps": 672,
+      "ep": 98,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.723,
+      "success": 1.0,
+      "dead": false,
+      "steps": 393,
+      "ep": 100,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.693,
+      "success": 1.0,
+      "dead": false,
+      "steps": 475,
+      "ep": 101,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.081,
+      "success": 0.0,
+      "dead": true,
+      "steps": 45,
+      "ep": 102,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.691,
+      "success": 1.0,
+      "dead": false,
+      "steps": 434,
+      "ep": 104,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.752,
+      "success": 1.0,
+      "dead": false,
+      "steps": 357,
+      "ep": 105,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.69,
+      "success": 1.0,
+      "dead": false,
+      "steps": 503,
+      "ep": 107,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.926,
+      "success": 1.0,
+      "dead": false,
+      "steps": 234,
+      "ep": 108,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.691,
+      "success": 1.0,
+      "dead": false,
+      "steps": 394,
+      "ep": 111,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": 0.118,
+      "success": 1.0,
+      "dead": false,
+      "steps": 618,
+      "ep": 112,
+      "data_route": "center",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.938,
+      "success": 0.0,
+      "dead": true,
+      "steps": 85,
+      "ep": 113,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.919,
+      "success": 1.0,
+      "dead": false,
+      "steps": 187,
+      "ep": 115,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.328,
+      "success": 1.0,
+      "dead": false,
+      "steps": 630,
+      "ep": 117,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.946,
+      "success": 0.0,
+      "dead": true,
+      "steps": 58,
+      "ep": 119,
+      "data_route": "center",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.722,
+      "success": 1.0,
+      "dead": false,
+      "steps": 401,
+      "ep": 120,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.574,
+      "success": 1.0,
+      "dead": false,
+      "steps": 540,
+      "ep": 123,
+      "data_route": "center",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -1.246,
+      "success": 0.0,
+      "dead": true,
+      "steps": 54,
+      "ep": 124,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.257,
+      "success": 1.0,
+      "dead": false,
+      "steps": 624,
+      "ep": 125,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.916,
+      "success": 0.0,
+      "dead": true,
+      "steps": 94,
+      "ep": 127,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.864,
+      "success": 1.0,
+      "dead": false,
+      "steps": 287,
+      "ep": 128,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.708,
+      "success": 1.0,
+      "dead": false,
+      "steps": 478,
+      "ep": 130,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.342,
+      "success": 1.0,
+      "dead": false,
+      "steps": 751,
+      "ep": 131,
+      "data_route": "center",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.742,
+      "success": 1.0,
+      "dead": false,
+      "steps": 384,
+      "ep": 132,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.781,
+      "success": 1.0,
+      "dead": false,
+      "steps": 300,
+      "ep": 134,
+      "data_route": "center",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.515,
+      "success": 1.0,
+      "dead": false,
+      "steps": 679,
+      "ep": 135,
+      "data_route": "center",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.685,
+      "success": 1.0,
+      "dead": false,
+      "steps": 428,
+      "ep": 137,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.769,
+      "success": 1.0,
+      "dead": false,
+      "steps": 363,
+      "ep": 138,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.853,
+      "success": 1.0,
+      "dead": false,
+      "steps": 253,
+      "ep": 140,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.126,
+      "success": 1.0,
+      "dead": false,
+      "steps": 757,
+      "ep": 141,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.547,
+      "success": 1.0,
+      "dead": false,
+      "steps": 605,
+      "ep": 142,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.413,
+      "success": 1.0,
+      "dead": false,
+      "steps": 708,
+      "ep": 144,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": 0.421,
+      "success": 1.0,
+      "dead": false,
+      "steps": 624,
+      "ep": 145,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.747,
+      "success": 1.0,
+      "dead": false,
+      "steps": 383,
+      "ep": 147,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.505,
+      "success": 1.0,
+      "dead": false,
+      "steps": 628,
+      "ep": 148,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -1.056,
+      "success": 1.0,
+      "dead": false,
+      "steps": 209,
+      "ep": 150,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.873,
+      "success": 1.0,
+      "dead": false,
+      "steps": 316,
+      "ep": 151,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.835,
+      "success": 1.0,
+      "dead": false,
+      "steps": 436,
+      "ep": 152,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.5,
+      "success": 1.0,
+      "dead": false,
+      "steps": 502,
+      "ep": 154,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.697,
+      "success": 1.0,
+      "dead": false,
+      "steps": 633,
+      "ep": 155,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.542,
+      "success": 1.0,
+      "dead": false,
+      "steps": 541,
+      "ep": 157,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.988,
+      "success": 0.0,
+      "dead": true,
+      "steps": 79,
+      "ep": 158,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.043,
+      "success": 0.0,
+      "dead": true,
+      "steps": 56,
+      "ep": 160,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.101,
+      "success": 0.0,
+      "dead": false,
+      "steps": 800,
+      "ep": 161,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.846,
+      "success": 1.0,
+      "dead": false,
+      "steps": 221,
+      "ep": 162,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.015,
+      "success": 1.0,
+      "dead": false,
+      "steps": 193,
+      "ep": 164,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.938,
+      "success": 0.0,
+      "dead": false,
+      "steps": 800,
+      "ep": 165,
+      "data_route": "center",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.326,
+      "success": 1.0,
+      "dead": false,
+      "steps": 687,
+      "ep": 167,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.127,
+      "success": 1.0,
+      "dead": false,
+      "steps": 646,
+      "ep": 168,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "center",
+      "mean_y": 0.235,
+      "success": 1.0,
+      "dead": false,
+      "steps": 679,
+      "ep": 169,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -1.135,
+      "success": 1.0,
+      "dead": false,
+      "steps": 193,
+      "ep": 171,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.782,
+      "success": 1.0,
+      "dead": false,
+      "steps": 309,
+      "ep": 172,
+      "data_route": "center",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.669,
+      "success": 1.0,
+      "dead": false,
+      "steps": 466,
+      "ep": 174,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": 0.377,
+      "success": 1.0,
+      "dead": false,
+      "steps": 620,
+      "ep": 175,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.188,
+      "success": 1.0,
+      "dead": false,
+      "steps": 638,
+      "ep": 177,
+      "data_route": "center",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.815,
+      "success": 1.0,
+      "dead": false,
+      "steps": 356,
+      "ep": 178,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.961,
+      "success": 1.0,
+      "dead": false,
+      "steps": 338,
+      "ep": 179,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.796,
+      "success": 1.0,
+      "dead": false,
+      "steps": 260,
+      "ep": 181,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.183,
+      "success": 1.0,
+      "dead": false,
+      "steps": 624,
+      "ep": 182,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.819,
+      "success": 1.0,
+      "dead": false,
+      "steps": 344,
+      "ep": 184,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -1.074,
+      "success": 1.0,
+      "dead": false,
+      "steps": 148,
+      "ep": 185,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.526,
+      "success": 1.0,
+      "dead": false,
+      "steps": 644,
+      "ep": 188,
+      "data_route": "center",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.178,
+      "success": 1.0,
+      "dead": false,
+      "steps": 298,
+      "ep": 189,
+      "data_route": "center",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.532,
+      "success": 1.0,
+      "dead": false,
+      "steps": 696,
+      "ep": 190,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "center",
+      "mean_y": 0.043,
+      "success": 1.0,
+      "dead": false,
+      "steps": 643,
+      "ep": 192,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.718,
+      "success": 1.0,
+      "dead": false,
+      "steps": 550,
+      "ep": 193,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.313,
+      "success": 1.0,
+      "dead": false,
+      "steps": 707,
+      "ep": 195,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.948,
+      "success": 1.0,
+      "dead": false,
+      "steps": 212,
+      "ep": 196,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.226,
+      "success": 1.0,
+      "dead": false,
+      "steps": 626,
+      "ep": 197,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.158,
+      "success": 1.0,
+      "dead": false,
+      "steps": 191,
+      "ep": 199,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.017,
+      "success": 1.0,
+      "dead": false,
+      "steps": 624,
+      "ep": 200,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.143,
+      "success": 1.0,
+      "dead": false,
+      "steps": 608,
+      "ep": 202,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.797,
+      "success": 1.0,
+      "dead": false,
+      "steps": 350,
+      "ep": 203,
+      "data_route": "center",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.713,
+      "success": 1.0,
+      "dead": false,
+      "steps": 404,
+      "ep": 206,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "center",
+      "mean_y": 0.037,
+      "success": 1.0,
+      "dead": false,
+      "steps": 680,
+      "ep": 207,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.132,
+      "success": 1.0,
+      "dead": false,
+      "steps": 701,
+      "ep": 208,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.719,
+      "success": 1.0,
+      "dead": false,
+      "steps": 407,
+      "ep": 211,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.093,
+      "success": 0.0,
+      "dead": false,
+      "steps": 800,
+      "ep": 212,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.873,
+      "success": 1.0,
+      "dead": false,
+      "steps": 285,
+      "ep": 214,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.773,
+      "success": 1.0,
+      "dead": false,
+      "steps": 361,
+      "ep": 215,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.577,
+      "success": 0.0,
+      "dead": false,
+      "steps": 800,
+      "ep": 217,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": 0.215,
+      "success": 0.0,
+      "dead": false,
+      "steps": 800,
+      "ep": 218,
+      "data_route": "center",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.935,
+      "success": 1.0,
+      "dead": false,
+      "steps": 215,
+      "ep": 219,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.794,
+      "success": 1.0,
+      "dead": false,
+      "steps": 323,
+      "ep": 221,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.31,
+      "success": 1.0,
+      "dead": false,
+      "steps": 684,
+      "ep": 222,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.749,
+      "success": 1.0,
+      "dead": false,
+      "steps": 346,
+      "ep": 225,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": 0.279,
+      "success": 1.0,
+      "dead": false,
+      "steps": 609,
+      "ep": 226,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.804,
+      "success": 1.0,
+      "dead": false,
+      "steps": 426,
+      "ep": 228,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "center",
+      "mean_y": 0.034,
+      "success": 1.0,
+      "dead": false,
+      "steps": 641,
+      "ep": 229,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -1.024,
+      "success": 0.0,
+      "dead": false,
+      "steps": 800,
+      "ep": 230,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.542,
+      "success": 1.0,
+      "dead": false,
+      "steps": 603,
+      "ep": 232,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -1.11,
+      "success": 0.0,
+      "dead": false,
+      "steps": 800,
+      "ep": 233,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.875,
+      "success": 0.0,
+      "dead": true,
+      "steps": 139,
+      "ep": 235,
+      "data_route": "center",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": 0.419,
+      "success": 1.0,
+      "dead": false,
+      "steps": 622,
+      "ep": 236,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.542,
+      "success": 1.0,
+      "dead": false,
+      "steps": 635,
+      "ep": 237,
+      "data_route": "center",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.784,
+      "success": 1.0,
+      "dead": false,
+      "steps": 385,
+      "ep": 240,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.355,
+      "success": 1.0,
+      "dead": false,
+      "steps": 630,
+      "ep": 242,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.572,
+      "success": 0.0,
+      "dead": false,
+      "steps": 800,
+      "ep": 244,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.989,
+      "success": 1.0,
+      "dead": false,
+      "steps": 189,
+      "ep": 245,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.926,
+      "success": 1.0,
+      "dead": false,
+      "steps": 199,
+      "ep": 248,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.612,
+      "success": 1.0,
+      "dead": false,
+      "steps": 520,
+      "ep": 249,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.53,
+      "success": 1.0,
+      "dead": false,
+      "steps": 602,
+      "ep": 250,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -1.138,
+      "success": 0.0,
+      "dead": true,
+      "steps": 46,
+      "ep": 253,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.958,
+      "success": 1.0,
+      "dead": false,
+      "steps": 195,
+      "ep": 254,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.715,
+      "success": 1.0,
+      "dead": false,
+      "steps": 368,
+      "ep": 256,
+      "data_route": "center",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.006,
+      "success": 1.0,
+      "dead": false,
+      "steps": 663,
+      "ep": 257,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.574,
+      "success": 1.0,
+      "dead": false,
+      "steps": 544,
+      "ep": 259,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.143,
+      "success": 1.0,
+      "dead": false,
+      "steps": 164,
+      "ep": 260,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.916,
+      "success": 0.0,
+      "dead": false,
+      "steps": 800,
+      "ep": 261,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.981,
+      "success": 0.0,
+      "dead": true,
+      "steps": 84,
+      "ep": 263,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.918,
+      "success": 0.0,
+      "dead": true,
+      "steps": 80,
+      "ep": 264,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.06,
+      "success": 0.0,
+      "dead": true,
+      "steps": 39,
+      "ep": 266,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.927,
+      "success": 0.0,
+      "dead": false,
+      "steps": 800,
+      "ep": 267,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.808,
+      "success": 0.0,
+      "dead": true,
+      "steps": 159,
+      "ep": 268,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.042,
+      "success": 1.0,
+      "dead": false,
+      "steps": 169,
+      "ep": 270,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.299,
+      "success": 1.0,
+      "dead": false,
+      "steps": 632,
+      "ep": 271,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.081,
+      "success": 1.0,
+      "dead": false,
+      "steps": 176,
+      "ep": 273,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.872,
+      "success": 1.0,
+      "dead": false,
+      "steps": 257,
+      "ep": 274,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.768,
+      "success": 1.0,
+      "dead": false,
+      "steps": 425,
+      "ep": 277,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.79,
+      "success": 0.0,
+      "dead": true,
+      "steps": 183,
+      "ep": 278,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.172,
+      "success": 0.0,
+      "dead": true,
+      "steps": 40,
+      "ep": 279,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "right",
+      "mean_y": -1.219,
+      "success": 0.0,
+      "dead": true,
+      "steps": 58,
+      "ep": 281,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.355,
+      "success": 1.0,
+      "dead": false,
+      "steps": 701,
+      "ep": 282,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 0.895,
+      "success": 1.0,
+      "dead": false,
+      "steps": 212,
+      "ep": 284,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.379,
+      "success": 1.0,
+      "dead": false,
+      "steps": 638,
+      "ep": 285,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.606,
+      "success": 1.0,
+      "dead": false,
+      "steps": 544,
+      "ep": 287,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "right",
+      "mean_y": -1.157,
+      "success": 1.0,
+      "dead": false,
+      "steps": 186,
+      "ep": 288,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.184,
+      "success": 0.0,
+      "dead": true,
+      "steps": 34,
+      "ep": 289,
+      "data_route": "right",
+      "data_base_side": "right"
+    },
+    {
+      "lane": "center",
+      "mean_y": -0.042,
+      "success": 1.0,
+      "dead": false,
+      "steps": 598,
+      "ep": 291,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "left",
+      "mean_y": 1.101,
+      "success": 0.0,
+      "dead": true,
+      "steps": 45,
+      "ep": 293,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -0.792,
+      "success": 1.0,
+      "dead": false,
+      "steps": 349,
+      "ep": 296,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "center",
+      "mean_y": 0.36,
+      "success": 1.0,
+      "dead": false,
+      "steps": 620,
+      "ep": 297,
+      "data_route": "left",
+      "data_base_side": "left"
+    },
+    {
+      "lane": "right",
+      "mean_y": -1.037,
+      "success": 0.0,
+      "dead": false,
+      "steps": 800,
+      "ep": 299,
+      "data_route": "left",
+      "data_base_side": "left"
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "n": 300,
+  "overall": {
+    "n": 300,
+    "success": 0.75,
+    "death": 0.153,
+    "timeout": 0.097,
+    "mean_steps": 463
+  },
+  "by_lane": {
+    "left": {
+      "n": 135,
+      "success": 0.667,
+      "death": 0.23,
+      "timeout": 0.104,
+      "mean_steps": 344
+    },
+    "right": {
+      "n": 48,
+      "success": 0.625,
+      "death": 0.312,
+      "timeout": 0.062,
+      "mean_steps": 311
+    },
+    "center": {
+      "n": 117,
+      "success": 0.897,
+      "death": 0.0,
+      "timeout": 0.103,
+      "mean_steps": 662
+    }
+  },
+  "side_by_armed": {
+    "left_armed0": {
+      "n": 62,
+      "success": 0.903,
+      "death": 0.0,
+      "timeout": 0.097,
+      "mean_steps": 406
+    },
+    "left_armed1": {
+      "n": 73,
+      "success": 0.466,
+      "death": 0.425,
+      "timeout": 0.11,
+      "mean_steps": 291
+    },
+    "right_armed0": {
+      "n": 19,
+      "success": 0.895,
+      "death": 0.0,
+      "timeout": 0.105,
+      "mean_steps": 363
+    },
+    "right_armed1": {
+      "n": 29,
+      "success": 0.448,
+      "death": 0.517,
+      "timeout": 0.034,
+      "mean_steps": 277
+    }
+  },
+  "counterfactual": {
+    "always_side": 0.656,
+    "always_center": 0.897
+  },
+  "anchors": {
+    "blind_side": 0.6,
+    "center": 0.82,
+    "teacher": 0.88
+  },
+  "note": "headline success is a 61/39 mixture of the side-lane anchor and the center-lane anchor; it is NOT evidence of hazard awareness"
+}
