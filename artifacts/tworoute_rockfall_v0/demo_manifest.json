@@ -1,0 +1,51 @@
+{
+  "mp4": "artifacts/tworoute_rockfall_v0\\antmaze_rockfall_demo.mp4",
+  "duration_s": 35.9,
+  "fps": 30,
+  "seed": 7,
+  "start_selection": {
+    "shortcut_reset_draw": 0,
+    "detour_reset_draw": 0
+  },
+  "results": {
+    "A_clear_shortcut": {
+      "outcome": "success",
+      "steps": 118,
+      "route": "shortcut",
+      "entered_hazard": true,
+      "failure": false,
+      "success": true
+    },
+    "B_active_shortcut": {
+      "outcome": "failure",
+      "steps": 26,
+      "route": "shortcut",
+      "entered_hazard": true,
+      "failure": true,
+      "success": false
+    },
+    "C_clear_detour": {
+      "outcome": "success",
+      "steps": 188,
+      "route": "detour",
+      "entered_hazard": false,
+      "failure": false,
+      "success": true
+    },
+    "D_active_detour": {
+      "outcome": "success",
+      "steps": 188,
+      "route": "detour",
+      "entered_hazard": false,
+      "failure": false,
+      "success": true
+    }
+  },
+  "expected": {
+    "A_clear_shortcut": "success",
+    "B_active_shortcut": "failure",
+    "C_clear_detour": "success",
+    "D_active_detour": "success"
+  },
+  "all_as_expected": true
+}
