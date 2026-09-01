@@ -1,0 +1,118 @@
+{
+  "commit": "754887eb4c0f6a4a120091707e128751de506d63",
+  "env_name": "point_two_route_swamp_windy_z_v0",
+  "analysis_script": "scripts/audit_swamp_windy_z.py",
+  "env_code_path": "crl/envs.py :: TwoRouteSwampWindyZEnv",
+  "shapes": {
+    "obs_dim": 3,
+    "goal_dim": 3,
+    "action_dim": 2,
+    "flat_obs": [
+      6
+    ],
+    "layout": "[x, y, z, g_x, g_y, g_z]",
+    "start_index": 0,
+    "end_index": -1,
+    "goal_indices": null
+  },
+  "sink_params": {
+    "sink_settle_substeps": 5,
+    "sink_speed": 1.2,
+    "sink_dt": 0.1,
+    "z_min": -0.5,
+    "settled_depth": -0.5
+  },
+  "6_invariants": {
+    "pre_contact_z_clear": 0.0,
+    "pre_contact_z_active": 0.0,
+    "clear_contact_z": 0.0,
+    "active_contact_z": -0.5,
+    "obs_change_when_bits_flipped": 0.0,
+    "audit_fields_in_obs": false
+  },
+  "7_paired": {
+    "n_pairs": 600,
+    "n_entering": 594,
+    "n_not_entering": 6,
+    "xy_distance_entering": {
+      "n": 594,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "std": 0.0
+    },
+    "full_state_distance_entering": {
+      "n": 594,
+      "mean": 0.5,
+      "median": 0.5,
+      "min": 0.5,
+      "max": 0.5,
+      "std": 0.0
+    },
+    "z_active_entering": {
+      "n": 594,
+      "mean": -0.5,
+      "median": -0.5,
+      "min": -0.5,
+      "max": -0.5,
+      "std": 0.0
+    },
+    "z_clear_entering": {
+      "n": 594,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "std": 0.0
+    },
+    "xy_distance_not_entering": {
+      "n": 6,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "std": 0.0
+    }
+  },
+  "8_rollout": {
+    "episodes": 300,
+    "pre_contact_with_nonzero_z": 0,
+    "pre_contact_total": 12731,
+    "clear_swamp_with_nonzero_z": 0,
+    "clear_swamp_total": 885,
+    "fatal_with_negative_z": 98,
+    "fatal_total": 98,
+    "post_failure_with_negative_z": 2171,
+    "post_failure_total": 2171,
+    "safe_on_ground": 12731,
+    "safe_total": 12731,
+    "max_xy_diff_vs_2d_env": 0.0,
+    "all_pass": true
+  },
+  "8_separability": {
+    "n_safe": 12731,
+    "n_fail": 98,
+    "xy_nn_dist_fail_to_safe": {
+      "n": 98,
+      "mean": 0.025457318108057538,
+      "median": 0.01875361791830855,
+      "min": 0.0010209966869101437,
+      "max": 0.09484558201999048,
+      "std": 0.020005419155082624
+    },
+    "frac_fail_within_0.05_xy_of_a_safe_state": 0.8775510204081632,
+    "guaranteed_3d_separation": 0.5
+  },
+  "9_replay_semantics": {
+    "can_z_negative_be_a_positive_goal": true,
+    "code_paths": [
+      "crl/replay.py :: TrajectoryBuffer._draw_indices (future = arange > i, geometric, no death mask)",
+      "crl/replay.py :: TrajectoryBuffer.sample (goal_state = _obs[traj, j, :obs_dim])",
+      "crl/replay.py :: obs_to_goal (identity at start=0/end=-1, so z is kept in the goal)"
+    ],
+    "reason": "a dead episode is frozen and fixed-length, so every row from the death row to the end carries z<0 and is inside the geometric future window of any earlier anchor",
+    "fixed_here": false,
+    "note": "z does NOT resolve the positive/negative conflict for a dead episode relabeling its own death pose; it DOES resolve the successful-passage vs death collision at equal XY"
+  }
+}

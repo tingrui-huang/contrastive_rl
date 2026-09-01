@@ -485,6 +485,110 @@ class TwoRouteSwampWindyEnv(TwoRouteSwampEnv):
     return obs, float(dist < 2.0), False, {}
 
 
+class TwoRouteSwampWindyZEnv(TwoRouteSwampWindyEnv):
+  """point_two_route_swamp_windy_z_v0 -- windy-lethal swamp whose learner state
+  carries a SINKING DEPTH.
+
+  Learner state is (x, y, z) and the goal is (g_x, g_y, 0), so the flat
+  observation is [x, y, z, g_x, g_y, g_z] with obs_dim = goal_dim = 3.
+
+  WHAT z IS, AND WHAT IT IS NOT. z is a physical OUTCOME -- the vertical depth
+  the point has settled to after contact with an active swamp cell. It is not a
+  dead flag and not a swamp-active feature. It is 0 everywhere else, including
+  while standing in the holding cell next to a swamp whose bit is ACTIVE but
+  which has not been entered. The hidden confounder U therefore stays hidden
+  BEFORE contact, which is the entire design constraint: z distinguishes
+  outcomes, it must never predict them. Two states with identical XY, one
+  reached safely and one reached fatally, differ as (x, y, 0) vs (x, y, z_fail)
+  -- the analogue of AntMaze, where a similar torso XY can sit on very
+  different proprioceptive states after an impact.
+
+  XY DYNAMICS ARE INHERITED UNCHANGED. self.state stays the 2-D XY vector that
+  the parent's substep loop, _is_blocked and _discretize_state operate on; z
+  lives beside it in self._z and is only assembled into the observation. No
+  lateral sink, no teleport, no new maze region, no extra failure coordinate in
+  XY. That keeps the existing collision, death and freeze code byte-identical
+  and is the smallest implementation consistent with it.
+
+  SETTLING. On the step where fatal contact happens, XY is held at the value
+  the parent's dynamics already produced and z is driven down by
+  sink_settle_substeps applications of
+
+      z <- max(z_min, z - sink_speed * sink_dt)
+
+  so the observation returned for THAT step already has z < 0. With the
+  defaults (5 substeps, speed 1.2, dt 0.1, z_min -0.5) the sequence is
+  -0.12, -0.24, -0.36, -0.48, then -0.60 clamped to -0.50, i.e. a gradual
+  settle that lands deterministically on z_min. These are configuration
+  parameters, not tuned quantities.
+
+  ABSORBING. After failure the parent freezes XY and ignores actions; z stays
+  at the settled depth rather than returning to ground. reset() restores
+  z = 0.
+
+  The 2-D point_two_route_swamp_windy_v0 is untouched and its datasets remain
+  valid; this is a separate versioned env.
+  """
+
+  Z_GROUND = 0.0
+
+  def __init__(self, action_noise=0.01, max_episode_steps=50, seed=0,
+               active_prob=0.10, slow_factor=0.02,
+               sink_settle_substeps=5, sink_speed=1.2, sink_dt=0.1,
+               z_min=-0.5):
+    # Assigned BEFORE super().__init__(): TwoRouteSwampEnv.__init__ ends with
+    # reset(), which calls _get_obs(), which reads self._z.
+    self._z = self.Z_GROUND
+    self.sink_settle_substeps = int(sink_settle_substeps)
+    self.sink_speed = float(sink_speed)
+    self.sink_dt = float(sink_dt)
+    self.z_min = float(z_min)
+    super().__init__(action_noise=action_noise,
+                     max_episode_steps=max_episode_steps, seed=seed,
+                     active_prob=active_prob, slow_factor=slow_factor)
+    self.obs_dim = 3                   # (x, y, z); U is still NOT exposed
+    self.goal_dim = 3                  # (g_x, g_y, 0)
+
+  @property
+  def z(self):
+    return float(self._z)
+
+  @property
+  def state_z(self):
+    """Full 3-D learner state (x, y, z). self.state stays 2-D for the parent."""
+    return np.array([self.state[0], self.state[1], self._z], dtype=np.float32)
+
+  @property
+  def goal_z(self):
+    """3-D goal (g_x, g_y, 0) -- the task goal is on the ground."""
+    return np.array([self.goal[0], self.goal[1], self.Z_GROUND],
+                    dtype=np.float32)
+
+  def _get_obs(self):
+    # [x, y, z, g_x, g_y, g_z]. Still no swamp bits, no wait counter, no flag.
+    return np.concatenate([self.state_z, self.goal_z]).astype(np.float32)
+
+  def _settle(self):
+    """Gradual vertical settling after fatal contact. XY is never touched."""
+    for _ in range(self.sink_settle_substeps):
+      self._z = max(self.z_min, self._z - self.sink_speed * self.sink_dt)
+
+  def reset(self):
+    self._z = self.Z_GROUND
+    return super().reset()
+
+  def step(self, action):
+    was_dead = self._dead
+    obs, reward, done, info = super().step(action)
+    if self._dead and not was_dead:
+      # Fatal contact occurred on THIS step, so settle within the same env step
+      # and re-read the observation: the state the learner sees for this step
+      # must already carry z < 0.
+      self._settle()
+      obs = self._get_obs()
+    return obs, reward, done, info
+
+
 # ---------------------------------------------------------------------------
 # Fetch (gymnasium-robotics wrapper). Colab-oriented; needs `mujoco` +
 # `gymnasium-robotics`. Flattens Dict obs to concat([state, desired_goal]).
@@ -1010,6 +1114,9 @@ def make_env(env_name, config, seed=0, render_mode=None):
     env = TwoRouteSwampMatchedEnv(max_episode_steps=50, seed=seed)
   elif env_name == 'point_two_route_swamp_windy_v0':
     env = TwoRouteSwampWindyEnv(max_episode_steps=50, seed=seed)
+  elif env_name == 'point_two_route_swamp_windy_z_v0':
+    # 3-D (x, y, z) variant; the 2-D windy env above is unchanged.
+    env = TwoRouteSwampWindyZEnv(max_episode_steps=50, seed=seed)
   elif env_name == 'point_two_route_swamp_v0':
     env = TwoRouteSwampEnv(max_episode_steps=50, seed=seed)
   elif env_name == 'point_two_route_gate_v0':   # superseded v0 (kept as ablation)
