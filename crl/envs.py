@@ -1066,6 +1066,32 @@ def make_env(env_name, config, seed=0, render_mode=None):
     # -> legacy reset (byte-identical), so nothing legacy changes.
     if getattr(config, 'rockfall_reset_fix', False):
       env._env.full_reset = True
+  elif env_name == 'offline_ant_umaze_tworoute_rockfall':
+    # Two-route AntMaze with a latent rockfall hazard on the shortcut
+    # (causal-transition V0 geometry). Separate module; same 58-dim obs
+    # contract; reuses the rockfall_* Config overrides where they apply.
+    from crl.tworoute_rockfall_ant import TwoRouteRockfallAntEnv
+    eval_goals = None
+    if getattr(config, 'offline_dataset', ''):
+      with np.load(config.offline_dataset) as _d:
+        if 'eval_goals' in _d:
+          eval_goals = _d['eval_goals'].copy()
+    _kw = {}
+    # optional latent-density override; absent -> the module default (0.30).
+    _pa = getattr(config, 'rockfall_p_active', None)
+    if _pa is not None:
+      _kw['p_active'] = float(_pa)
+    # optional episode-horizon override; absent -> the class default (700).
+    _ms = getattr(config, 'rockfall_max_steps', None)
+    if _ms is not None:
+      _kw['max_episode_steps'] = int(_ms)
+    env = TwoRouteRockfallAntEnv(
+        seed=seed, render_mode=render_mode, eval_goals=eval_goals,
+        eval_goal_mode=getattr(config, 'eval_goal_mode', 'd4rl'), **_kw)
+    # the env already defaults to the canonical full reset (new benchmark,
+    # no legacy byte-compat); the flag is honoured for uniformity.
+    if getattr(config, 'rockfall_reset_fix', False):
+      env._env.full_reset = True
   elif env_name in ('offline_ant_umaze', 'offline_ant_umaze_litter'):
     # OFFLINE d4rl antmaze-umaze contract: zero-padded XY goal; eval goals
     # come from the offline dataset's empirical per-episode goals when the
