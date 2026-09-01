@@ -1,0 +1,59 @@
+{
+  "ckpt": "failneg_clean_p30_h800_resetfix_a0_s0_300k/best.pkl",
+  "step": 270400,
+  "seed": 33871,
+  "severity": "severe",
+  "pairs": [
+    {
+      "pair": 0,
+      "file": "maskflip0_drop49_div50_reactive.gif",
+      "first_drop": 49,
+      "first_contact": 49,
+      "div": 50,
+      "steps_div_after_drop": 1,
+      "no_leak": true,
+      "off_world": {
+        "success": true,
+        "dead": null
+      },
+      "on_world": {
+        "success": false,
+        "dead": 49
+      }
+    },
+    {
+      "pair": 1,
+      "file": "maskflip1_drop31_div32_reactive.gif",
+      "first_drop": 31,
+      "first_contact": 31,
+      "div": 32,
+      "steps_div_after_drop": 1,
+      "no_leak": true,
+      "off_world": {
+        "success": true,
+        "dead": null
+      },
+      "on_world": {
+        "success": false,
+        "dead": 31
+      }
+    },
+    {
+      "pair": 2,
+      "file": "maskflip2_drop57_div58_reactive.gif",
+      "first_drop": 57,
+      "first_contact": 57,
+      "div": 58,
+      "steps_div_after_drop": 1,
+      "no_leak": true,
+      "off_world": {
+        "success": true,
+        "dead": null
+      },
+      "on_world": {
+        "success": false,
+        "dead": 57
+      }
+    }
+  ]
+}
