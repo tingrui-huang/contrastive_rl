@@ -52,6 +52,7 @@ from scripts.collect_swamp_windy import ROUTE, make_windy_teacher
 from scripts.collect_swamp_windy_baddemo import make_bad_demonstrator
 
 ENV = 'point_two_route_swamp_windy_z_v0'
+ENVS = ('point_two_route_swamp_windy_z_v0', 'point_two_route_swamp_windy_z_v1')
 MODE = dict(MODE_2D)
 MODE['bad_demo'] = 4
 
@@ -78,12 +79,12 @@ def content_sha(path):
 
 
 def collect(mode, episodes, random_frac, force_safe_prob, teacher_noise, seed,
-            out, force=False):
+            out, force=False, env_name=ENV):
   if os.path.exists(out) and not force:
     raise SystemExit('REFUSING to overwrite frozen dataset %s (use --force).'
                      % out)
-  cfg = Config(env_name=ENV)
-  env = envs_mod.make_env(ENV, cfg, seed=seed)
+  cfg = Config(env_name=env_name)
+  env = envs_mod.make_env(env_name, cfg, seed=seed)
   assert cfg.obs_dim == 3 and cfg.goal_dim == 3, 'not the 3-D Z env'
   rng = np.random.default_rng(seed)
   policy = (make_windy_teacher(env, rng, force_safe_prob) if mode == 'teacher'
@@ -145,7 +146,7 @@ def collect(mode, episodes, random_frac, force_safe_prob, teacher_noise, seed,
   succ = np.asarray(succ)
   z = obs_out[:, :, 2]
   meta = {
-      'env_name': ENV, 'setting': 'windy_lethal_z_%s' % mode,
+      'env_name': env_name, 'setting': 'windy_lethal_z_%s' % mode,
       'episodes': int(episodes), 'seed': int(seed), 'mode': mode,
       'behavior_policy': ('windy_reactive_teacher(force_safe=%s, per-step '
                           'dodge) + random_frac=%s' % (force_safe_prob,
@@ -161,9 +162,18 @@ def collect(mode, episodes, random_frac, force_safe_prob, teacher_noise, seed,
       'action_dim': int(A), 'max_episode_steps': int(env.max_episode_steps),
       'episode_len_rows_L': int(L), 'obs_width_D': int(D),
       'n_transitions': int(episodes * (L - 1)),
-      'z_min': float(env.z_min), 'sink_settle_substeps':
-          int(env.sink_settle_substeps), 'sink_speed': float(env.sink_speed),
+      # z_v1 has no sink_settle_substeps: its settle length is DERIVED from
+      # z_min / (sink_speed*sink_dt), so the field is absent rather than
+      # misleadingly present.
+      'z_min': float(env.z_min), 'sink_speed': float(env.sink_speed),
       'sink_dt': float(env.sink_dt),
+      'sink_settle_substeps': (int(env.sink_settle_substeps)
+                               if hasattr(env, 'sink_settle_substeps')
+                               else None),
+      'steps_to_settle': (int(env.steps_to_settle)
+                          if hasattr(env, 'steps_to_settle') else None),
+      'sinking_exposed_across_env_steps':
+          bool(hasattr(env, 'steps_to_settle')),
       'z_stored_raw': True,
       'z_scaling_note': 'z is stored RAW; z_physical is applied inside '
                         'crl/networks.py via crl.obs_norm.obs_scale_vector',
@@ -204,6 +214,10 @@ def collect(mode, episodes, random_frac, force_safe_prob, teacher_noise, seed,
 def main():
   p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
   p.add_argument('--mode', choices=('teacher', 'baddemo'), default='teacher')
+  p.add_argument('--env', choices=ENVS, default=ENV,
+                 help='z_v0 (default, unchanged) or z_v1 (sinking spread over '
+                      'env steps). The behaviour policies are identical; only '
+                      'the environment version differs.')
   p.add_argument('--episodes', type=int, default=6000)
   p.add_argument('--random_frac', type=float, default=0.2)
   p.add_argument('--force_safe_prob', type=float, default=0.05)
@@ -218,7 +232,7 @@ def main():
     except OSError:
       pass
   collect(a.mode, a.episodes, a.random_frac, a.force_safe_prob,
-          a.teacher_noise, a.seed, a.out, force=a.force)
+          a.teacher_noise, a.seed, a.out, force=a.force, env_name=a.env)
 
 
 if __name__ == '__main__':

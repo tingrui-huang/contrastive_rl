@@ -46,9 +46,24 @@ sys.path.insert(0, os.path.dirname(_HERE))
 
 from crl.config import Config                      # noqa: E402
 
-ENV = 'point_two_route_swamp_windy_z_v0'
-DATASET = 'datasets/swamp_windy_z_merged_s0.npz'
-BANK = 'artifacts/swamp_windy_z_failure_bank/failure_bank_z.npz'
+# Version registry. v0 is the accepted, already-published configuration and is
+# the DEFAULT so nothing about the existing result can change by accident; v1
+# points at its own env, dataset, bank and run tag so no v0 artifact is ever
+# overwritten.
+VERSIONS = {
+    'v0': {'env': 'point_two_route_swamp_windy_z_v0',
+           'dataset': 'datasets/swamp_windy_z_merged_s0.npz',
+           'bank': 'artifacts/swamp_windy_z_failure_bank/failure_bank_z.npz',
+           'tag': 'swamp_windy_z'},
+    'v1': {'env': 'point_two_route_swamp_windy_z_v1',
+           'dataset': 'datasets/swamp_windy_z_v1_merged_s0.npz',
+           'bank': 'artifacts/swamp_windy_z_v1_failure_bank/'
+                   'failure_bank_z_v1_entry.npz',
+           'tag': 'swamp_windy_z_v1'},
+}
+ENV = VERSIONS['v0']['env']
+DATASET = VERSIONS['v0']['dataset']
+BANK = VERSIONS['v0']['bank']
 ARMS = ('zbase', 'zfail')
 ALPHA = {'zbase': 0.0, 'zfail': 0.1}
 BATCH_SIZE = 256
@@ -67,6 +82,15 @@ def content_sha(path):
       h.update(str(a.shape).encode())
       h.update(np.ascontiguousarray(a).tobytes())
   return h.hexdigest()
+
+
+def select_version(v):
+  """Point the module-level ENV/DATASET/BANK at one version. Called once, from
+  main(), BEFORE any config is built, so build_cfg and gate() agree."""
+  global ENV, DATASET, BANK
+  spec = VERSIONS[v]
+  ENV, DATASET, BANK = spec['env'], spec['dataset'], spec['bank']
+  return spec
 
 
 def build_cfg(arm, ckpt_dir, steps=STEPS, seed=0):
@@ -100,7 +124,7 @@ def config_diff(seed=0):
   diff = {k: (a[k], b[k]) for k in a if a[k] != b[k]}
   allowed = {'fail_neg_alpha', 'fail_bank_path'}
   print('=' * 78)
-  print('CONFIG DIFF  zbase (alpha=0)  vs  zfail (alpha=0.1)')
+  print('CONFIG DIFF  zbase (alpha=0)  vs  zfail (alpha=0.1)   [%s]' % ENV)
   print('=' * 78)
   for k, (x, y) in sorted(diff.items()):
     ok = 'OK' if k in allowed else 'UNEXPECTED'
@@ -189,6 +213,9 @@ def gate(arm, seed):
 def main():
   ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
   ap.add_argument('--arm', choices=ARMS, default='zbase')
+  ap.add_argument('--version', choices=sorted(VERSIONS), default='v0',
+                  help='v0 = the accepted published config (default); v1 = the '
+                       'z_v1 env with its own dataset, bank and run tag')
   ap.add_argument('--seed', type=int, default=0)
   ap.add_argument('--ckpt-dir', default='')
   ap.add_argument('--diff', action='store_true')
@@ -196,6 +223,7 @@ def main():
   ap.add_argument('--smoke', action='store_true')
   ap.add_argument('--run', action='store_true')
   args = ap.parse_args()
+  spec = select_version(args.version)
 
   if args.diff:
     config_diff(args.seed)
@@ -209,7 +237,7 @@ def main():
   if not (args.smoke or args.run):
     raise SystemExit('pass one of --diff / --check-only / --smoke / --run')
 
-  tag = 'swamp_windy_z_%s_s%d' % (args.arm, args.seed)
+  tag = '%s_%s_s%d' % (spec['tag'], args.arm, args.seed)
   ckpt = args.ckpt_dir or (tag + ('_smoke' if args.smoke else ''))
   steps = 2_000 if args.smoke else STEPS
   cfg = build_cfg(args.arm, ckpt, steps=steps, seed=args.seed)

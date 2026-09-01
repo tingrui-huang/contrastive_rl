@@ -84,16 +84,19 @@ def main():
   ap.add_argument('--out', required=True)
   ap.add_argument('--episodes', type=int, default=100)
   ap.add_argument('--seed', type=int, default=123)
+  ap.add_argument('--env', default=ENV,
+                  help='point_two_route_swamp_windy_z_v0 (default) or _z_v1')
   args = ap.parse_args()
 
-  cfg = Config(env_name=ENV)
+  env_name = args.env
+  cfg = Config(env_name=env_name)
   # The checkpoint was trained with z_physical; load_nets rebuilds the networks
   # from cfg, so the same obs_norm settings must be present or the scaling
   # would silently not be applied at evaluation time.
   cfg.obs_norm_mode = 'z_physical'
-  env = envs_mod.make_env(ENV, cfg, seed=args.seed)
+  env = envs_mod.make_env(env_name, cfg, seed=args.seed)
   cfg.obs_norm_z_scale = abs(env.z_min)
-  nets, state, greedy_np, step = load_nets(ENV, args.ckpt, cfg)
+  nets, state, greedy_np, step = load_nets(env_name, args.ckpt, cfg)
 
   safe_oracle = make_oracle(swamp_blocked_walls(env._walls))
   learner_r = run_policy(env, greedy_np, args.episodes, True)
@@ -105,7 +108,8 @@ def main():
   strat = run_policy(env, greedy_np, args.episodes, True, pats)
 
   print('=' * 72)
-  print('Z DEPLOYMENT EVAL -- %s  (step %d)' % (args.ckpt, step))
+  print('Z DEPLOYMENT EVAL -- %s  (step %d)  env %s'
+        % (args.ckpt, step, env_name))
   print('=' * 72)
   for name, r in (('learner', learner_r), ('always-safe', safe_r)):
     print('  %s' % name)
@@ -128,7 +132,7 @@ def main():
         % (gap, worst, verdict))
 
   os.makedirs(args.out, exist_ok=True)
-  rep = {'checkpoint': args.ckpt, 'step': int(step), 'env': ENV,
+  rep = {'checkpoint': args.ckpt, 'step': int(step), 'env': env_name,
          'episodes': args.episodes, 'seed': args.seed,
          'obs_norm_mode': cfg.obs_norm_mode,
          'obs_norm_z_scale': cfg.obs_norm_z_scale,
