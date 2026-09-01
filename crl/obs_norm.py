@@ -90,3 +90,32 @@ def make_obs_normalizer(obs_dim, goal_dim, mode='none', z_scale=None):
     out[..., i_goal_z] = obs[..., i_goal_z] / zs
     return out
   return normalize
+
+
+def obs_scale_vector(obs_dim, goal_dim, mode='', z_scale=None):
+  """Per-dimension multiplier for the FLAT observation, or None for identity.
+
+  This is the form the networks consume. Returning None rather than a vector of
+  ones matters: the network path then skips the multiplication entirely, so
+  every existing environment runs the exact code it ran before.
+
+  For 'z_physical' the multiplier is 1/|z_min| on the z column of BOTH halves,
+  i.e. z = z_min maps to -1. Applying it inside the network is what makes it
+  happen EXACTLY ONCE and what lets the raw failure bank be scaled by the same
+  code: crl/losses.py splices the raw bank into the goal half and calls
+  q_network.apply, so the bank passes through this multiplier too.
+  """
+  if not mode or mode == 'none':
+    return None
+  if mode != 'z_physical':
+    raise ValueError('unknown obs_norm_mode %r (expected none|z_physical)'
+                     % mode)
+  if obs_dim != 3 or goal_dim != 3:
+    raise ValueError('z_physical expects the 3-D (x, y, z) variant, got '
+                     'obs_dim=%d goal_dim=%d' % (obs_dim, goal_dim))
+  if z_scale is None or z_scale <= 0:
+    raise ValueError('z_physical needs a positive z_scale')
+  v = np.ones(obs_dim + goal_dim, dtype=np.float32)
+  v[obs_dim - 1] = 1.0 / float(z_scale)          # state z
+  v[obs_dim + goal_dim - 1] = 1.0 / float(z_scale)   # goal z
+  return v

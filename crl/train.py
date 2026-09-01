@@ -223,13 +223,21 @@ def train(config: Config):
         f'goal_slice=[{config.start_index}:{config.end_index}]')
 
   # --- Networks + learner ---
+  from crl.obs_norm import obs_scale_vector
+  _obs_scale = obs_scale_vector(
+      config.obs_dim, config.goal_dim,
+      getattr(config, 'obs_norm_mode', '') or '',
+      getattr(config, 'obs_norm_z_scale', 0.0) or None)
+  if _obs_scale is not None:
+    print(f'  [obs_norm] mode={config.obs_norm_mode} '
+          f'scale={_obs_scale.tolist()}  (applied once, inside the networks)')
   nets = networks_mod.make_networks(
       obs_dim=config.obs_dim, goal_dim=config.goal_dim,
       action_dim=config.action_dim, repr_dim=int(config.repr_dim),
       repr_norm=config.repr_norm, repr_norm_temp=config.repr_norm_temp,
       hidden_layer_sizes=config.hidden_layer_sizes,
       twin_q=config.twin_q, use_image_obs=config.use_image_obs,
-      use_layer_norm=config.use_layer_norm)
+      use_layer_norm=config.use_layer_norm, obs_scale=_obs_scale)
 
   policy_optimizer = optax.adam(config.actor_learning_rate, eps=1e-7)
   q_optimizer = optax.adam(config.learning_rate, eps=1e-7)

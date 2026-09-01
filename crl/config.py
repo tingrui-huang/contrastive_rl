@@ -117,6 +117,11 @@ class Config:
   # scored, no sampling). 0.0 => the fail branch is skipped entirely and the
   # critic loss/gradients are byte-identical to the baseline.
   fail_neg_alpha: float = 0.0
+  # Observation preprocessing: '' / 'none' = identity (every existing run);
+  # 'z_physical' = divide the z column of state AND goal by |z_min|, for the
+  # 3-D point_two_route_swamp_windy_z_v0 only. See crl/obs_norm.py.
+  obs_norm_mode: str = ''
+  obs_norm_z_scale: float = 0.0        # 0 => taken from env.z_min
 
   # --- Anchor sampling ("scheme C"; OFF by default) ---
   # '' keeps the original fixed-length draw (anchor uniform over ALL rows).

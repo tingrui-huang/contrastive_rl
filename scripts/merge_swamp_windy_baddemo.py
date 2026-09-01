@@ -182,8 +182,16 @@ def audit(path):
   from crl import envs as envs_mod
   from crl.offline_audit import run_static_audit
 
-  cfg = Config(env_name='point_two_route_swamp_windy_v0')
+  # Take the env from the FILE's own meta, not a hard-coded name: the Z
+  # variant is 6 wide and a 2-D Config would size the buffer to 4 and fail with
+  # "could not broadcast input array from shape (51,6) into shape (51,4)".
+  with np.load(path, allow_pickle=False) as d:
+    env_name = json.loads(str(d['meta'])).get(
+        'env_name', 'point_two_route_swamp_windy_v0')
+  cfg = Config(env_name=env_name)
   envs_mod.make_env(cfg.env_name, cfg, seed=0)     # fills obs/goal/action dims
+  print('  (audit env: %s, obs_dim %d goal_dim %d)'
+        % (env_name, cfg.obs_dim, cfg.goal_dim))
   cfg.dataset_path = path
   _, gates, _ = run_static_audit(path, cfg)
   print('\nSTATIC AUDIT')

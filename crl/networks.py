@@ -130,6 +130,7 @@ def make_networks(
     twin_q: bool = False,
     use_image_obs: bool = False,
     use_layer_norm: bool = False,
+    obs_scale=None,
 ) -> ContrastiveNetworks:
   """Creates the contrastive RL networks.
 
@@ -142,6 +143,16 @@ def make_networks(
   width ``obs_dim + goal_dim``.
   """
   full_obs_dim = obs_dim + goal_dim
+  # Per-dimension multiplier on the FLAT observation (crl.obs_norm). None means
+  # identity and skips the multiplication entirely, so every pre-existing env
+  # runs exactly the code it ran before. Applied at the ONE place each network
+  # first touches the observation, which is also what scales the raw failure
+  # bank: crl/losses.py splices the bank into the goal half and calls
+  # q_network.apply, so it flows through _repr_fn's scaling below.
+  _os = None if obs_scale is None else jnp.asarray(obs_scale, jnp.float32)
+
+  def _scale(obs):
+    return obs if _os is None else obs * _os
 
   def _unflatten_obs(obs):
     state = jnp.reshape(obs[:, :obs_dim], (-1, 64, 64, 3)) / 255.0
@@ -157,6 +168,7 @@ def make_networks(
         state = img_encoder(state)
         goal = img_encoder(goal)
       else:
+        obs = _scale(obs)
         state = obs[:, :obs_dim]
         goal = obs[:, obs_dim:]
     else:
@@ -199,6 +211,8 @@ def make_networks(
 
   # ---- Actor (returns TanhNormalParams instead of a tfp distribution) ----
   def _actor_fn(obs):
+    if not use_image_obs:
+      obs = _scale(obs)
     if use_image_obs:
       state, goal = _unflatten_obs(obs)
       obs = jnp.concatenate([state, goal], axis=-1)
