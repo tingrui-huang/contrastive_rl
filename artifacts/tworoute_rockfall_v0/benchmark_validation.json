@@ -1,0 +1,45 @@
+{
+  "engineering_valid": true,
+  "engineering_evidence": "physical free-joint rocks fall under gravity (drop->contact 4 steps), 14/14 smoke gate incl. falsification tests, four-case real-dynamics MP4",
+  "causally_valid": true,
+  "causal_evidence": {
+    "P_success_shortcut_observed": 1.0,
+    "P_success_do_shortcut": 0.728,
+    "P_success_do_detour": 0.912,
+    "gap_shortcut": 0.272
+  },
+  "benchmark_valid": true,
+  "benchmark_evidence": {
+    "teacher_success": 0.9833,
+    "teacher_death": 0.0,
+    "baselines": {
+      "crl_s0_best": {
+        "success": 0.6867,
+        "death": 0.2067,
+        "shortcut_rate_from_north": 1.0,
+        "death_given_active_and_shortcut": 1.0
+      },
+      "crl_s0_final": {
+        "success": 0.7267,
+        "death": 0.2067,
+        "shortcut_rate_from_north": 1.0,
+        "death_given_active_and_shortcut": 1.0
+      },
+      "gcbc_s0_best": {
+        "success": 0.6933,
+        "death": 0.2067,
+        "shortcut_rate_from_north": 1.0,
+        "death_given_active_and_shortcut": 1.0
+      },
+      "gcbc_s0_final": {
+        "success": 0.71,
+        "death": 0.2067,
+        "shortcut_rate_from_north": 1.0,
+        "death_given_active_and_shortcut": 1.0
+      }
+    },
+    "success_drop_vs_teacher": 0.2966,
+    "death_increase_vs_teacher": 0.2067
+  },
+  "note": "Both confounding-unaware baselines imitate the observationally attractive shortcut at rate 1.0 from the north affordance and die with probability 1.0 whenever the hidden latent is active there; overall success 0.69-0.73 vs teacher 0.983, death 0.207 vs 0."
+}

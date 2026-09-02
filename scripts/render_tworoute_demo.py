@@ -48,7 +48,7 @@ import imageio                             # noqa: E402
 from PIL import Image, ImageDraw, ImageFont  # noqa: E402
 from crl import envs as envs_mod          # noqa: E402
 from crl import tworoute_rockfall_ant as TR  # noqa: E402
-from crl.d4rl_ant import build_maze_xml   # noqa: E402
+from crl.tworoute_rockfall_ant import build_tworoute_rockfall_xml  # noqa: E402
 import litter_pilot_common as C           # noqa: E402
 import rockfall_pilot as RP               # noqa: E402
 from verify_offline_d4rl import build_offline_cfg  # noqa: E402
@@ -115,7 +115,7 @@ def make_drivers(walker, base_act):
 # ---------------------------------------------------------- render model ----
 def build_render_model():
   """Env XML + ghost hazard/goal geoms. NEVER handed to the env."""
-  xml, _ = build_maze_xml(TR.TWO_ROUTE_MAZE)
+  xml, _ = build_tworoute_rockfall_xml()   # rocks included -> visible falls
   root = ET.fromstring(xml)
   vis = root.find('visual')
   if vis is None:
@@ -144,7 +144,8 @@ def font(sz):
 F_BIG, F_MED, F_SMALL = font(30), font(20), font(16)
 
 
-def compose(frame, case_tag, info, latent, step, flash=None):
+def compose(frame, case_tag, info, latent, step, flash=None,
+            extra_tag=None):
   """512x512 render + 160px debug bar on top."""
   im = Image.new('RGB', (REN_W, REN_H + BAR_H), (12, 12, 12))
   im.paste(Image.fromarray(frame), (0, BAR_H))
@@ -162,8 +163,15 @@ def compose(frame, case_tag, info, latent, step, flash=None):
   d.text((280, 68), f'SUCCESS: {info["success"]}', font=F_MED,
          fill=(80, 230, 110) if info['success'] else (160, 160, 160))
   d.text((280, 96), f'step {step}', font=F_MED, fill=(150, 150, 150))
-  d.text((14, 126), 'red band = hazard zone (render-only)   green disc = goal',
+  rock = ('CONTACT!' if info.get('rock_contact') else
+          'FALLING' if info.get('rock_dropped') else
+          'triggered (no drop)' if info.get('rock_triggered') else 'parked')
+  d.text((14, 126), f'ROCKS: {rock}', font=F_SMALL,
+         fill=(255, 120, 90) if info.get('rock_dropped') else (120, 120, 120))
+  d.text((230, 126), 'red band = trigger zone | green disc = goal',
          font=F_SMALL, fill=(120, 120, 120))
+  if extra_tag:
+    d.text((330, 8), extra_tag, font=F_MED, fill=(255, 220, 120))
   if flash:
     txt, col = flash
     tw = d.textlength(txt, font=F_BIG)
@@ -226,7 +234,9 @@ def silent_run(env, o, driver, max_steps=450):
 def run_case(env, o, driver, latent, tag, ren, rd, rm, cam, every=1,
              max_steps=650):
   frames, info = [], {'route': None, 'entered_hazard': False,
-                      'failure': False, 'success': False}
+                      'failure': False, 'success': False,
+                      'rock_triggered': False, 'rock_dropped': False,
+                      'rock_contact': False}
   outcome, t = 'timeout', 0
   true_goal = o[29:31].copy()
   for t in range(max_steps):
@@ -239,7 +249,10 @@ def run_case(env, o, driver, latent, tag, ren, rd, rm, cam, every=1,
       rd.qvel[:] = env._env.data.qvel
       mujoco.mj_forward(rm, rd)
       ren.update_scene(rd, camera=cam)
-      frames.append(compose(ren.render().copy(), tag, info, latent, t + 1))
+      slow = info.get('rock_dropped') and not info.get('success')
+      fr = compose(ren.render().copy(), tag, info, latent, t + 1,
+                   extra_tag='SLOW MOTION x0.2' if slow else None)
+      frames.extend([fr] * (5 if slow else 1))   # presentation-level slow-mo
     if done:
       outcome = 'failure'
       break
@@ -315,7 +328,8 @@ def main():
   fr, res = run_case(env, o, shortcut, True,
                      'B  ACTIVE + SHORTCUT', ren, rd, rm, cam)
   segs.append(('B. Active + Shortcut',
-               ['rockfall_active = True', 'same start, same controller'], fr))
+               ['rockfall_active = True', 'same start, same controller',
+                'rocks fall physically -- shown in slow motion'], fr))
   results['B_active_shortcut'] = res
 
   # ---- pair C/D: matched detour starts ------------------------------------
@@ -340,10 +354,11 @@ def main():
   results['D_active_detour'] = res
 
   # ---- assemble -----------------------------------------------------------
-  video = [card(['AntMaze-Rockfall V0', 'Visual Sanity Check'],
+  video = [card(['AntMaze-Rockfall V1', 'Physical Rockfall -- Visual Check'],
                 ['env: offline_ant_umaze_tworoute_rockfall',
                  'real simulation dynamics, frozen controllers,',
-                 'hidden latent: rockfall_active ~ Bernoulli(0.30)'])
+                 'hidden latent: rockfall_active ~ Bernoulli(0.30)',
+                 'active + band entry -> real rocks fall; contact = failure'])
            ] * int(2.6 * FPS)
   for title, sub, fr in segs:
     video += [card([title], sub)] * int(CARD_S * FPS)
@@ -359,7 +374,7 @@ def main():
                   f'Active + Shortcut: {"PASS (failure triggered)" if marks["B_active_shortcut"] else "FAIL"}',
                   f'Clear + Detour   : {"PASS" if marks["C_clear_detour"] else "FAIL"}',
                   f'Active + Detour  : {"PASS" if marks["D_active_detour"] else "FAIL"}',
-                  'Smoke tests: 13/13 PASS'])] * int(3.2 * FPS)
+                  'Smoke tests: 14/14 PASS'])] * int(3.2 * FPS)
   imageio.mimsave(MP4, video, fps=FPS, quality=8, macro_block_size=None)
   dur = len(video) / FPS
   print(f'MP4 -> {MP4}  ({len(video)} frames, {dur:.1f}s)', flush=True)

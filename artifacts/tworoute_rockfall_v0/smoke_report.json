@@ -14,7 +14,8 @@
     "T10_config_overrides": true,
     "T11_geometry_open": true,
     "T12_route_invariant": true,
-    "T13_success_latched": true
+    "T13_success_latched": true,
+    "T14_physical_hiddenness": true
   },
   "all_pass": true,
   "detail": {
@@ -53,7 +54,10 @@
         "failure": false,
         "entered_hazard": false,
         "route": null,
-        "success": false
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -66,7 +70,10 @@
         "failure": false,
         "entered_hazard": false,
         "route": null,
-        "success": false
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -79,7 +86,10 @@
         "failure": false,
         "entered_hazard": true,
         "route": "shortcut",
-        "success": false
+        "success": false,
+        "rock_triggered": true,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -92,7 +102,10 @@
         "failure": false,
         "entered_hazard": true,
         "route": "shortcut",
-        "success": false
+        "success": false,
+        "rock_triggered": true,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -105,7 +118,10 @@
         "failure": false,
         "entered_hazard": true,
         "route": "shortcut",
-        "success": false
+        "success": false,
+        "rock_triggered": true,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -118,7 +134,10 @@
         "failure": false,
         "entered_hazard": true,
         "route": "shortcut",
-        "success": false
+        "success": false,
+        "rock_triggered": true,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -131,11 +150,14 @@
         "failure": false,
         "entered_hazard": true,
         "route": "shortcut",
-        "success": true
+        "success": true,
+        "rock_triggered": true,
+        "rock_dropped": false,
+        "rock_contact": false
       }
     ],
     "T5": {
-      "rows": [
+      "entry_rows": [
         {
           "xy": [
             0.0,
@@ -147,7 +169,10 @@
           "failure": false,
           "entered_hazard": false,
           "route": null,
-          "success": false
+          "success": false,
+          "rock_triggered": false,
+          "rock_dropped": false,
+          "rock_contact": false
         },
         {
           "xy": [
@@ -160,7 +185,10 @@
           "failure": false,
           "entered_hazard": false,
           "route": null,
-          "success": false
+          "success": false,
+          "rock_triggered": false,
+          "rock_dropped": false,
+          "rock_contact": false
         },
         {
           "xy": [
@@ -168,54 +196,162 @@
             3.2
           ],
           "r": 0.0,
-          "done": true,
+          "done": false,
           "wall_contacts": 0,
-          "failure": true,
+          "failure": false,
           "entered_hazard": true,
+          "route": "shortcut",
+          "success": false,
+          "rock_triggered": true,
+          "rock_dropped": true,
+          "rock_contact": false
+        }
+      ],
+      "settle": [
+        {
+          "done": false,
+          "failure": false,
+          "rock_triggered": true,
+          "rock_dropped": true,
+          "rock_contact": false,
           "route": "shortcut",
           "success": false
         },
         {
-          "xy": [
-            0.0,
-            4.4
-          ],
-          "r": 0.0,
-          "done": true,
-          "wall_contacts": 0,
-          "failure": true,
-          "entered_hazard": true,
+          "done": false,
+          "failure": false,
+          "rock_triggered": true,
+          "rock_dropped": true,
+          "rock_contact": false,
           "route": "shortcut",
           "success": false
         },
         {
-          "xy": [
-            0.0,
-            5.8
-          ],
-          "r": 0.0,
-          "done": true,
-          "wall_contacts": 0,
-          "failure": true,
-          "entered_hazard": true,
+          "done": false,
+          "failure": false,
+          "rock_triggered": true,
+          "rock_dropped": true,
+          "rock_contact": false,
           "route": "shortcut",
           "success": false
         },
         {
-          "xy": [
-            0.0,
-            7.0
-          ],
-          "r": 0.0,
+          "done": false,
+          "failure": false,
+          "rock_triggered": true,
+          "rock_dropped": true,
+          "rock_contact": false,
+          "route": "shortcut",
+          "success": false
+        },
+        {
           "done": true,
-          "wall_contacts": 0,
           "failure": true,
-          "entered_hazard": true,
+          "rock_triggered": true,
+          "rock_dropped": true,
+          "rock_contact": true,
+          "route": "shortcut",
+          "success": false
+        },
+        {
+          "done": true,
+          "failure": true,
+          "rock_triggered": true,
+          "rock_dropped": true,
+          "rock_contact": true,
+          "route": "shortcut",
+          "success": false
+        },
+        {
+          "done": true,
+          "failure": true,
+          "rock_triggered": true,
+          "rock_dropped": true,
+          "rock_contact": true,
+          "route": "shortcut",
+          "success": false
+        },
+        {
+          "done": true,
+          "failure": true,
+          "rock_triggered": true,
+          "rock_dropped": true,
+          "rock_contact": true,
+          "route": "shortcut",
+          "success": false
+        },
+        {
+          "done": true,
+          "failure": true,
+          "rock_triggered": true,
+          "rock_dropped": true,
+          "rock_contact": true,
+          "route": "shortcut",
+          "success": false
+        },
+        {
+          "done": true,
+          "failure": true,
+          "rock_triggered": true,
+          "rock_dropped": true,
+          "rock_contact": true,
+          "route": "shortcut",
+          "success": false
+        },
+        {
+          "done": true,
+          "failure": true,
+          "rock_triggered": true,
+          "rock_dropped": true,
+          "rock_contact": true,
+          "route": "shortcut",
+          "success": false
+        },
+        {
+          "done": true,
+          "failure": true,
+          "rock_triggered": true,
+          "rock_dropped": true,
+          "rock_contact": true,
+          "route": "shortcut",
+          "success": false
+        },
+        {
+          "done": true,
+          "failure": true,
+          "rock_triggered": true,
+          "rock_dropped": true,
+          "rock_contact": true,
+          "route": "shortcut",
+          "success": false
+        },
+        {
+          "done": true,
+          "failure": true,
+          "rock_triggered": true,
+          "rock_dropped": true,
+          "rock_contact": true,
           "route": "shortcut",
           "success": false
         }
       ],
-      "done_at": 2,
+      "rock_z": [
+        2.004,
+        1.559,
+        1.015,
+        0.46,
+        0.133,
+        0.133,
+        0.133,
+        0.133,
+        0.133,
+        0.133,
+        0.133,
+        0.133,
+        0.133,
+        0.133
+      ],
+      "done_settle": 4,
       "frozen_ok": true
     },
     "T6": [
@@ -230,7 +366,10 @@
         "failure": false,
         "entered_hazard": false,
         "route": null,
-        "success": false
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -243,7 +382,10 @@
         "failure": false,
         "entered_hazard": false,
         "route": null,
-        "success": false
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -256,7 +398,10 @@
         "failure": false,
         "entered_hazard": false,
         "route": null,
-        "success": false
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -269,7 +414,10 @@
         "failure": false,
         "entered_hazard": false,
         "route": "detour",
-        "success": false
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -282,7 +430,10 @@
         "failure": false,
         "entered_hazard": false,
         "route": "detour",
-        "success": false
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -295,7 +446,10 @@
         "failure": false,
         "entered_hazard": false,
         "route": "detour",
-        "success": false
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -308,7 +462,10 @@
         "failure": false,
         "entered_hazard": false,
         "route": "detour",
-        "success": false
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -321,7 +478,10 @@
         "failure": false,
         "entered_hazard": false,
         "route": "detour",
-        "success": false
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -334,7 +494,10 @@
         "failure": false,
         "entered_hazard": false,
         "route": "detour",
-        "success": false
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -347,7 +510,10 @@
         "failure": false,
         "entered_hazard": false,
         "route": "detour",
-        "success": true
+        "success": true,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
       }
     ],
     "T7": [
@@ -362,7 +528,10 @@
         "failure": false,
         "entered_hazard": false,
         "route": null,
-        "success": false
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -375,7 +544,10 @@
         "failure": false,
         "entered_hazard": false,
         "route": null,
-        "success": false
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -388,7 +560,10 @@
         "failure": false,
         "entered_hazard": false,
         "route": null,
-        "success": false
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -401,7 +576,10 @@
         "failure": false,
         "entered_hazard": false,
         "route": "detour",
-        "success": false
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -414,7 +592,10 @@
         "failure": false,
         "entered_hazard": false,
         "route": "detour",
-        "success": false
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -427,7 +608,10 @@
         "failure": false,
         "entered_hazard": false,
         "route": "detour",
-        "success": false
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -440,7 +624,10 @@
         "failure": false,
         "entered_hazard": false,
         "route": "detour",
-        "success": false
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -453,7 +640,10 @@
         "failure": false,
         "entered_hazard": false,
         "route": "detour",
-        "success": false
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -466,7 +656,10 @@
         "failure": false,
         "entered_hazard": false,
         "route": "detour",
-        "success": false
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
       },
       {
         "xy": [
@@ -479,13 +672,19 @@
         "failure": false,
         "entered_hazard": false,
         "route": "detour",
-        "success": true
+        "success": true,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
       }
     ],
     "T8": {
       "below_band": {
         "rockfall_active": true,
         "entered_hazard": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false,
         "failure": false,
         "dead": false,
         "success": false,
@@ -494,6 +693,9 @@
       "above_band": {
         "rockfall_active": true,
         "entered_hazard": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false,
         "failure": false,
         "dead": false,
         "success": false,
@@ -515,83 +717,129 @@
       "n_blocks": 17,
       "stand_in_opened_cell_ok": true
     },
-    "T12": [
-      {
-        "xy": [
-          4.0,
-          0.0
-        ],
-        "r": 0.0,
-        "done": false,
-        "wall_contacts": 0,
-        "failure": false,
-        "entered_hazard": false,
-        "route": null,
-        "success": false
-      },
-      {
-        "xy": [
-          6.5,
-          0.0
-        ],
-        "r": 0.0,
-        "done": false,
-        "wall_contacts": 0,
-        "failure": false,
-        "entered_hazard": false,
-        "route": "detour",
-        "success": false
-      },
-      {
-        "xy": [
-          4.0,
-          0.0
-        ],
-        "r": 0.0,
-        "done": false,
-        "wall_contacts": 0,
-        "failure": false,
-        "entered_hazard": false,
-        "route": "detour",
-        "success": false
-      },
-      {
-        "xy": [
-          0.0,
-          1.2
-        ],
-        "r": 0.0,
-        "done": false,
-        "wall_contacts": 0,
-        "failure": false,
-        "entered_hazard": false,
-        "route": "detour",
-        "success": false
-      },
-      {
-        "xy": [
-          0.0,
-          3.2
-        ],
-        "r": 0.0,
-        "done": true,
-        "wall_contacts": 0,
-        "failure": true,
+    "T12": {
+      "rows": [
+        {
+          "xy": [
+            4.0,
+            0.0
+          ],
+          "r": 0.0,
+          "done": false,
+          "wall_contacts": 0,
+          "failure": false,
+          "entered_hazard": false,
+          "route": null,
+          "success": false,
+          "rock_triggered": false,
+          "rock_dropped": false,
+          "rock_contact": false
+        },
+        {
+          "xy": [
+            6.5,
+            0.0
+          ],
+          "r": 0.0,
+          "done": false,
+          "wall_contacts": 0,
+          "failure": false,
+          "entered_hazard": false,
+          "route": "detour",
+          "success": false,
+          "rock_triggered": false,
+          "rock_dropped": false,
+          "rock_contact": false
+        },
+        {
+          "xy": [
+            4.0,
+            0.0
+          ],
+          "r": 0.0,
+          "done": false,
+          "wall_contacts": 0,
+          "failure": false,
+          "entered_hazard": false,
+          "route": "detour",
+          "success": false,
+          "rock_triggered": false,
+          "rock_dropped": false,
+          "rock_contact": false
+        },
+        {
+          "xy": [
+            0.0,
+            1.2
+          ],
+          "r": 0.0,
+          "done": false,
+          "wall_contacts": 0,
+          "failure": false,
+          "entered_hazard": false,
+          "route": "detour",
+          "success": false,
+          "rock_triggered": false,
+          "rock_dropped": false,
+          "rock_contact": false
+        },
+        {
+          "xy": [
+            0.0,
+            3.2
+          ],
+          "r": 0.0,
+          "done": false,
+          "wall_contacts": 0,
+          "failure": false,
+          "entered_hazard": true,
+          "route": "shortcut",
+          "success": false,
+          "rock_triggered": true,
+          "rock_dropped": true,
+          "rock_contact": false
+        }
+      ],
+      "fail_info": {
+        "rockfall_active": true,
         "entered_hazard": true,
-        "route": "shortcut",
-        "success": false
+        "rock_triggered": true,
+        "rock_dropped": true,
+        "rock_contact": true,
+        "failure": true,
+        "dead": true,
+        "success": false,
+        "route": "shortcut"
       }
-    ],
+    },
     "T13": {
       "post_goal_band_step": {
         "rockfall_active": true,
         "entered_hazard": true,
+        "rock_triggered": true,
+        "rock_dropped": true,
+        "rock_contact": false,
         "failure": false,
         "dead": false,
         "success": true,
         "route": "shortcut"
       },
       "done": false
+    },
+    "T14": {
+      "parked_identical": true,
+      "inactive_trigger": {
+        "rockfall_active": false,
+        "entered_hazard": true,
+        "rock_triggered": true,
+        "rock_dropped": false,
+        "rock_contact": false,
+        "failure": false,
+        "dead": false,
+        "success": false,
+        "route": "shortcut"
+      },
+      "rock_moved": 0.012022015456064211
     }
   },
   "hazard_zone": [

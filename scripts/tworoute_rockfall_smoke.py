@@ -32,6 +32,7 @@ sys.path.insert(0, os.path.dirname(_HERE))
 import mujoco                              # noqa: E402
 from crl import envs as envs_mod          # noqa: E402
 from crl import tworoute_rockfall_ant as TR  # noqa: E402
+from crl.rockfall_ant import NQ_ANT, NV_ANT  # noqa: E402
 from verify_offline_d4rl import build_offline_cfg  # noqa: E402
 
 OUT = 'artifacts/tworoute_rockfall_v0'
@@ -55,10 +56,11 @@ def fresh_env(seed=SEED, **cfg_over):
 
 
 def teleport(env, xy):
-  """Place the torso at xy (pose kept), repo-canonical warmstart hygiene."""
+  """Place the torso at xy (pose kept), repo-canonical warmstart hygiene.
+  Touches ANT dofs only -- in-flight rocks must keep their velocity."""
   d = env._env.data
   d.qpos[0], d.qpos[1] = float(xy[0]), float(xy[1])
-  d.qvel[:] = 0.0
+  d.qvel[:NV_ANT] = 0.0
   d.qacc_warmstart[:] = 0.0
   mujoco.mj_forward(env._env.model, d)
   env._last_obs = env._env._obs_dict()
@@ -93,7 +95,8 @@ def drag(env, waypoints, then_goal=True):
     rows.append({'xy': list(xy), 'r': float(r), 'done': bool(done),
                  'wall_contacts': wall_contacts(env),
                  **{k: info[k] for k in ('failure', 'entered_hazard',
-                                         'route', 'success')}})
+                                         'route', 'success', 'rock_triggered',
+                                         'rock_dropped', 'rock_contact')}})
     if done and done_at is None:
       done_at = i
   if then_goal and done_at is None:
@@ -103,7 +106,8 @@ def drag(env, waypoints, then_goal=True):
                  'done': bool(done),
                  'wall_contacts': wall_contacts(env),
                  **{k: info[k] for k in ('failure', 'entered_hazard',
-                                         'route', 'success')}})
+                                         'route', 'success', 'rock_triggered',
+                                         'rock_dropped', 'rock_contact')}})
   return rows, done_at
 
 
@@ -174,25 +178,49 @@ def main():
       done_at is None and last['r'] == 1.0 and last['success'] is True
       and last['failure'] is False and rows[2]['entered_hazard'] is True
       and last['route'] == 'shortcut'
+      and rows[2]['rock_triggered'] is True     # trigger fires either latent
+      and all(r['rock_dropped'] is False for r in rows)   # ...but no launch
       and all(r['wall_contacts'] == 0 for r in rows))
   detail['T4'] = rows
 
+  # V1 physical rocks: band entry TRIGGERS a real drop; failure needs actual
+  # rock-ant contact a few fall-steps later. Drag into the band, then advance
+  # under the falling rocks and track the leading rock's height.
   env.reset(rockfall_active=True)
-  rows, done_at = drag(env, SHORTCUT_WAY)
-  fail_row = rows[done_at] if done_at is not None else None
+  rows, done_at = drag(env, SHORTCUT_WAY[:3], then_goal=False)
+  qa = env._rock_qadr[0]
+  rock_z, settle = [], []
+  done_settle = None
+  for k in range(14):
+    if done_settle is None:
+      teleport(env, (0.0, min(3.2 + 0.25 * k, 5.2)))   # keep walking the band
+    o_s, r_s, d_s, i_s = env.step(np.zeros(8))
+    rock_z.append(round(float(env._env.data.qpos[qa + 2]), 3))
+    settle.append({'done': bool(d_s), **{kk: i_s[kk] for kk in
+                   ('failure', 'rock_triggered', 'rock_dropped',
+                    'rock_contact', 'route', 'success')}})
+    if d_s and done_settle is None:
+      done_settle = k
+  fail_row = settle[done_settle] if done_settle is not None else None
   # absorbing after failure: teleporting to the goal must NOT score
   frozen_ok = False
-  if done_at is not None:
+  if done_settle is not None:
     teleport(env, np.asarray(env._env.goal))
     o_f, r_f, d_f, i_f = env.step(np.zeros(8))
     frozen_ok = (r_f == 0.0 and d_f is True and i_f['failure'] is True
                  and i_f['success'] is False)
+  falling = (len(rock_z) >= 3 and rock_z[0] > 1.5
+             and rock_z[min(len(rock_z) - 1, 6)] < rock_z[0])
   checks['T5_caseB_active_shortcut'] = (
-      done_at == 2                                     # first in-band waypoint
-      and fail_row['failure'] is True and fail_row['done'] is True
-      and fail_row['r'] == 0.0 and fail_row['success'] is False
-      and fail_row['route'] == 'shortcut' and frozen_ok)
-  detail['T5'] = {'rows': rows, 'done_at': done_at, 'frozen_ok': frozen_ok}
+      done_at is None                       # band entry alone no longer kills
+      and rows[-1]['rock_triggered'] is True
+      and rows[-1]['rock_dropped'] is True  # active latent -> physical launch
+      and done_settle is not None           # rocks physically reached the ant
+      and fail_row['failure'] is True and fail_row['rock_contact'] is True
+      and fail_row['success'] is False and fail_row['route'] == 'shortcut'
+      and falling and frozen_ok)
+  detail['T5'] = {'entry_rows': rows, 'settle': settle, 'rock_z': rock_z,
+                  'done_settle': done_settle, 'frozen_ok': frozen_ok}
 
   env.reset(rockfall_active=False)
   rows, done_at = drag(env, DETOUR_WAY)
@@ -202,6 +230,7 @@ def main():
       and all(r['entered_hazard'] is False for r in rows)
       and all(r['failure'] is False for r in rows)
       and last['route'] == 'detour'
+      and all(r['rock_dropped'] is False for r in rows)
       and all(r['wall_contacts'] == 0 for r in rows))
   detail['T6'] = rows
 
@@ -276,11 +305,19 @@ def main():
   env.reset(rockfall_active=True)
   rows12, done12 = drag(env, [(4.0, 0.0), (6.5, 0.0), (4.0, 0.0), (0.0, 1.2),
                               (0.0, 3.2)], then_goal=False)
-  fr = rows12[done12] if done12 is not None else None
+  fr12 = None
+  for k in range(14):                     # walk on under the falling rocks
+    teleport(env, (0.0, min(3.2 + 0.25 * (k + 1), 5.2)))
+    _, _, d12, i12 = env.step(np.zeros(8))
+    if d12:
+      fr12 = i12
+      break
   checks['T12_route_invariant'] = (
-      done12 == 4 and fr['failure'] is True and fr['route'] == 'shortcut'
-      and rows12[1]['route'] == 'detour')
-  detail['T12'] = rows12
+      done12 is None and rows12[1]['route'] == 'detour'
+      and rows12[4]['route'] == 'shortcut'
+      and fr12 is not None and fr12['failure'] is True
+      and fr12['route'] == 'shortcut')
+  detail['T12'] = {'rows': rows12, 'fail_info': fr12}
 
   # ---- T13: success is latched and immune to later band entry -------------
   env.reset(rockfall_active=True)
@@ -292,6 +329,28 @@ def main():
       and d13 is False and i13['failure'] is False
       and i13['success'] is True and i13['entered_hazard'] is True)
   detail['T13'] = {'post_goal_band_step': i13, 'done': bool(d13)}
+
+  # ---- T14: parked rocks are latent-independent; inactive trigger is inert
+  eA2, _ = fresh_env(seed=901)
+  eB2, _ = fresh_env(seed=901)
+  eA2.reset(rockfall_active=True)
+  eB2.reset(rockfall_active=False)
+  qa0 = eA2._rock_qadr[0]
+  same_park = bool(np.array_equal(
+      np.asarray(eA2._env.data.qpos)[NQ_ANT:],
+      np.asarray(eB2._env.data.qpos)[NQ_ANT:]))
+  # drag the INACTIVE env into the band: trigger flag fires, rocks stay put
+  rock_before = np.asarray(eB2._env.data.qpos)[NQ_ANT:].copy()
+  teleport(eB2, (0.0, 3.2))
+  _, _, dB, iB = eB2.step(np.zeros(8))
+  rock_after = np.asarray(eB2._env.data.qpos)[NQ_ANT:].copy()
+  checks['T14_physical_hiddenness'] = (
+      same_park and iB['rock_triggered'] is True
+      and iB['rock_dropped'] is False and not dB
+      and bool(np.allclose(rock_before, rock_after, atol=0.05)))  # contact settling only
+  detail['T14'] = {'parked_identical': same_park,
+                   'inactive_trigger': iB,
+                   'rock_moved': float(np.abs(rock_after - rock_before).max())}
 
   all_pass = all(checks.values())
   for k, v in checks.items():

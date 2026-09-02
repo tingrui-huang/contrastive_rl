@@ -1085,6 +1085,11 @@ def make_env(env_name, config, seed=0, render_mode=None):
     _ms = getattr(config, 'rockfall_max_steps', None)
     if _ms is not None:
       _kw['max_episode_steps'] = int(_ms)
+    # learner-eval heading protocol for unqualified reset() calls; None
+    # keeps the native east heading (byte-identical to before).
+    _hd = getattr(config, 'tworoute_eval_heading', None)
+    if _hd is not None:
+      _kw['default_heading'] = str(_hd)
     env = TwoRouteRockfallAntEnv(
         seed=seed, render_mode=render_mode, eval_goals=eval_goals,
         eval_goal_mode=getattr(config, 'eval_goal_mode', 'd4rl'), **_kw)
