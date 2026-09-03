@@ -12,8 +12,9 @@ npz follows the repo's strict offline contract (crl/offline_audit.py):
                input; consumed only by the causal audit.
 
 The latent is drawn by this collector's own recorded rng (Bernoulli p_active)
-and passed to reset() together with the route-matched heading (see the
-teacher module docstring for why heading is part of the teacher's action).
+and passed to reset(). Every episode starts from ONE canonical pose, so the
+t=0 observation carries no route information -- checked, not asserted, by the
+permutation leak test below and recorded in the npz meta.
 
 Usage: python scripts/collect_tworoute_dataset.py [--episodes 400]
 """
@@ -33,7 +34,10 @@ from crl import tworoute_rockfall_ant as TR  # noqa: E402
 import tworoute_teacher as TT             # noqa: E402
 
 OUT_DIR = 'artifacts/tworoute_rockfall_v0/dataset'
-NAME = 'antmaze_tworoute_rockfall_v1'
+#: v2 = the coin-free protocol (one canonical start pose). v1 is kept
+#: because its initial quaternion decoded the latent perfectly and it is
+#: the control the leak check is calibrated against; do not train on it.
+NAME = 'antmaze_tworoute_rockfall_v2'
 HORIZON = 400
 P_ACTIVE = 0.30
 
@@ -62,12 +66,13 @@ def main():
   tx = np.full((N, L), np.nan, np.float32)
   ty = np.full((N, L), np.nan, np.float32)
   rows = []
+  discarded = []
 
-  for e in range(N):
+  e = 0
+  while e < N:
     u = bool(u_rng.random() < args.p_active)
     route = 'detour' if u else 'shortcut'
-    o = env.reset(rockfall_active=u,
-                  heading=('east' if route == 'detour' else 'north'))
+    o = env.reset(rockfall_active=u)
     teacher.fresh()
     obs[e, 0] = o
     tx[e, 0], ty[e, 0] = o[0], o[1]
@@ -82,6 +87,23 @@ def main():
       ret += float(r)
       if done or r > 0:
         break
+    #: REDRAW an episode that never committed to EITHER route. Under one
+    #: canonical pose the shortcut driver turns the ant itself, and ~5% of
+    #: the time that turn fails and the ant shuffles in the start cell for
+    #: the whole horizon. That is a demonstrator failure, not a
+    #: demonstration, and it would dump ~400 junk steps into precisely the
+    #: state where the route decision is made -- the one thing the coin-free
+    #: benchmark measures. Episodes that DID commit to a route and then time
+    #: out near the goal are kept, which is the pre-existing convention (the
+    #: coin-carrying dataset shipped 2.5% such detour timeouts).
+    if info.get('route') is None:
+      discarded.append({'rockfall_active': u, 'route_intent': route,
+                        'final_xy': [round(float(tx[e, t + 1]), 3),
+                                     round(float(ty[e, t + 1]), 3)],
+                        'ep_length': int(t + 1)})
+      obs[e, :] = 0.0
+      act[e, :] = 0.0
+      continue
     lengths[e] = t + 2                     # valid obs rows (0 .. t+1)
     rows.append({'episode_id': e, 'rockfall_active': u,
                  'route_intent': route,
@@ -91,19 +113,73 @@ def main():
                  'entered_hazard': bool(info.get('entered_hazard')),
                  'rock_dropped': bool(info.get('rock_dropped')),
                  'return': ret, 'ep_length': int(t + 1)})
-    if (e + 1) % 50 == 0:
-      print(f'  {e + 1}/{N} episodes', flush=True)
+    e += 1
+    if e % 50 == 0:
+      print(f'  {e}/{N} episodes ({len(discarded)} discarded)', flush=True)
+  print(f'discarded {len(discarded)} uncommitted episodes '
+        f'({len(discarded) / (len(discarded) + N):.3f} of draws)', flush=True)
+
+  #: MEASURED latent-leak check on the t=0 observation. The previous
+  #: revision set the initial heading from the route, and because the
+  #: teacher's route is a deterministic function of the latent, obs dim 3
+  #: (quat w) and dim 6 (quat z) decoded the latent perfectly (d' = 11.93,
+  #: |obs[:,0,3]| ranges disjoint across routes on 400/400 episodes). Under
+  #: one canonical pose no dim may separate the two route groups.
+  #: Tested against a PERMUTATION NULL, not a fixed d' threshold: with
+  #: unequal group sizes the sampling noise in a per-dim d' is large (se ~
+  #: sqrt(1/n0 + 1/n1)) and we take a max over 58 dims, so any fixed cutoff
+  #: is either vacuous or trips on noise. Shuffling the route labels gives
+  #: the max-d' distribution under 'no route information at t=0' directly.
+  def _dprime(g0, g1):
+    pooled = np.sqrt((g0.var(0, ddof=1) + g1.var(0, ddof=1)) / 2.0) + 1e-9
+    return np.abs(g0.mean(0) - g1.mean(0)) / pooled
+
+  intent = np.array([r['route_intent'] for r in rows])
+  o0, m = obs[:, 0, :], intent == 'shortcut'
+  if m.sum() > 1 and (~m).sum() > 1:
+    d = _dprime(o0[m], o0[~m])
+    rng = np.random.default_rng(0)
+    k, B = int(m.sum()), 2000
+    null = np.empty(B)
+    for b in range(B):
+      p = rng.permutation(len(o0))
+      null[b] = _dprime(o0[p][:k], o0[p][k:]).max()
+    p95 = float(np.percentile(null, 95))
+    leak = {'test': 'permutation null on per-dim d-prime at t=0, B=2000',
+            'n_shortcut': int(m.sum()), 'n_detour': int((~m).sum()),
+            'max_dprime': round(float(d.max()), 4),
+            'argmax_dim': int(d.argmax()),
+            'null_p95': round(p95, 4),
+            'n_dims_above_null_p95': int((d > p95).sum()),
+            'p_value': round(float((null >= d.max()).mean()), 4),
+            'passes': bool(d.max() <= p95)}
+  else:
+    leak = {'passes': None, 'reason': 'a route group is empty'}
+  print(f"latent-leak check: max d'={leak.get('max_dprime')} (dim "
+        f"{leak.get('argmax_dim')}) vs chance p95 {leak.get('null_p95')}, "
+        f"p={leak.get('p_value')} -> "
+        f"{'PASS' if leak.get('passes') else 'FAIL'}", flush=True)
 
   meta = {'name': NAME, 'env': 'offline_ant_umaze_tworoute_rockfall',
           'obs_dim': 29, 'goal_dim': 29, 'action_dim': 8,
           'horizon': args.horizon, 'p_active': args.p_active,
           'collection_seed': args.seed,
           'teacher': 'sighted tworoute_teacher (clear->shortcut, '
-                     'active->detour); heading set toward the chosen route '
-                     'at reset (see scripts/tworoute_teacher.py)',
-          'learner_eval_protocol': "reset(heading='random') -- 50/50 coin "
-                                   'independent of the latent',
-          'latent_visibility': 'rockfall_active NEVER in obs; sidecar only'}
+                     'active->detour); BOTH drivers run from the single '
+                     'canonical pose -- the route is the driver choice, not '
+                     'an initial condition (see scripts/tworoute_teacher.py)',
+          'learner_eval_protocol': 'reset() -- one canonical pose (native '
+                                   "d4rl east); the route is the policy's "
+                                   'own action',
+          'latent_visibility': 'rockfall_active NEVER in obs; sidecar only',
+          'latent_leak_check': leak,
+          'uncommitted_discards': {
+              'n': len(discarded),
+              'frac_of_draws': round(len(discarded) / (len(discarded) + N), 4),
+              'rule': "redrawn when info['route'] is None, i.e. the ant "
+                      'never committed to either route (a failed start-cell '
+                      'turn); route-committed timeouts are KEPT',
+              'episodes': discarded}}
   learner_path = os.path.join(args.out_dir, f'{NAME}.npz')
   np.savez_compressed(learner_path, obs=obs, act=act, lengths=lengths,
                       eval_goals=eval_goals, meta=json.dumps(meta))

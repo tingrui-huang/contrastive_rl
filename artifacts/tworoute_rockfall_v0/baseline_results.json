@@ -2,58 +2,46 @@
   {
     "label": "crl_s0_best",
     "ckpt": "tworoute_crl_s0_300k/best.pkl",
-    "ckpt_step": 250000,
+    "ckpt_step": 220000,
     "n_eval": 300,
     "eval_seed": 909,
     "summary": {
       "overall": {
         "n": 300,
-        "success": 0.6867,
-        "failure": 0.2067,
-        "shortcut_rate": 0.5567,
-        "detour_rate": 0.4433,
-        "mean_return": 0.6867,
-        "mean_steps": 157.2267
+        "success": 0.72,
+        "failure": 0.1467,
+        "shortcut_rate": 0.4067,
+        "detour_rate": 0.5833,
+        "mean_return": 0.72,
+        "mean_steps": 185.7167
       },
-      "timeout": 0.1067,
-      "by_heading": {
-        "north": {
-          "n": 166,
-          "success": 0.6084,
-          "failure": 0.3735,
-          "shortcut_rate": 1.0,
-          "detour_rate": 0.0,
-          "mean_return": 0.6084,
-          "mean_steps": 82.4759
-        },
-        "east": {
-          "n": 134,
-          "success": 0.7836,
-          "failure": 0.0,
-          "shortcut_rate": 0.0075,
-          "detour_rate": 0.9925,
-          "mean_return": 0.7836,
-          "mean_steps": 249.8284
-        }
-      },
+      "timeout": 0.1333,
+      "shortcut_rate_ci95": [
+        0.3526,
+        0.4631
+      ],
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ],
       "by_latent": {
         "clear": {
           "n": 202,
-          "success": 0.8762,
+          "success": 0.8614,
           "failure": 0.0,
-          "shortcut_rate": 0.5198,
-          "detour_rate": 0.4802,
-          "mean_return": 0.8762,
-          "mean_steps": 180.0792
+          "shortcut_rate": 0.3861,
+          "detour_rate": 0.604,
+          "mean_return": 0.8614,
+          "mean_steps": 197.9505
         },
         "active": {
           "n": 98,
-          "success": 0.2959,
-          "failure": 0.6327,
-          "shortcut_rate": 0.6327,
-          "detour_rate": 0.3673,
-          "mean_return": 0.2959,
-          "mean_steps": 110.1224
+          "success": 0.4286,
+          "failure": 0.449,
+          "shortcut_rate": 0.449,
+          "detour_rate": 0.5408,
+          "mean_return": 0.4286,
+          "mean_steps": 160.5
         }
       },
       "death_given_active_and_shortcut": 1.0
@@ -68,172 +56,136 @@
     "summary": {
       "overall": {
         "n": 300,
-        "success": 0.7267,
-        "failure": 0.2067,
-        "shortcut_rate": 0.5567,
-        "detour_rate": 0.44,
-        "mean_return": 0.7267,
-        "mean_steps": 151.2733
+        "success": 0.75,
+        "failure": 0.1267,
+        "shortcut_rate": 0.3433,
+        "detour_rate": 0.6433,
+        "mean_return": 0.75,
+        "mean_steps": 186.05
       },
-      "timeout": 0.0667,
-      "by_heading": {
-        "north": {
-          "n": 166,
-          "success": 0.6145,
-          "failure": 0.3735,
-          "shortcut_rate": 1.0,
-          "detour_rate": 0.0,
-          "mean_return": 0.6145,
-          "mean_steps": 81.1446
-        },
-        "east": {
-          "n": 134,
-          "success": 0.8657,
-          "failure": 0.0,
-          "shortcut_rate": 0.0075,
-          "detour_rate": 0.9851,
-          "mean_return": 0.8657,
-          "mean_steps": 238.1493
-        }
-      },
+      "timeout": 0.1233,
+      "shortcut_rate_ci95": [
+        0.2919,
+        0.3987
+      ],
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ],
       "by_latent": {
         "clear": {
           "n": 202,
-          "success": 0.9158,
+          "success": 0.8713,
           "failure": 0.0,
-          "shortcut_rate": 0.5198,
-          "detour_rate": 0.4752,
-          "mean_return": 0.9158,
-          "mean_steps": 171.0693
+          "shortcut_rate": 0.3218,
+          "detour_rate": 0.6683,
+          "mean_return": 0.8713,
+          "mean_steps": 199.9901
         },
         "active": {
           "n": 98,
-          "success": 0.3367,
-          "failure": 0.6327,
-          "shortcut_rate": 0.6327,
-          "detour_rate": 0.3673,
-          "mean_return": 0.3367,
-          "mean_steps": 110.4694
+          "success": 0.5,
+          "failure": 0.3878,
+          "shortcut_rate": 0.3878,
+          "detour_rate": 0.5918,
+          "mean_return": 0.5,
+          "mean_steps": 157.3163
         }
       },
       "death_given_active_and_shortcut": 1.0
     }
   },
   {
-    "label": "gcbc_s0_best",
-    "ckpt": "tworoute_gcbc_s0_300k/best.pkl",
-    "ckpt_step": 250000,
+    "label": "crl_s1_best",
+    "ckpt": "tworoute_crl_s1_300k/best.pkl",
+    "ckpt_step": 270000,
     "n_eval": 300,
     "eval_seed": 909,
     "summary": {
       "overall": {
         "n": 300,
-        "success": 0.6933,
-        "failure": 0.2067,
-        "shortcut_rate": 0.5567,
-        "detour_rate": 0.4433,
-        "mean_return": 0.6933,
-        "mean_steps": 153.34
+        "success": 0.81,
+        "failure": 0.0833,
+        "shortcut_rate": 0.23,
+        "detour_rate": 0.7533,
+        "mean_return": 0.81,
+        "mean_steps": 195.06
       },
-      "timeout": 0.1,
-      "by_heading": {
-        "north": {
-          "n": 166,
-          "success": 0.6084,
-          "failure": 0.3735,
-          "shortcut_rate": 1.0,
-          "detour_rate": 0.0,
-          "mean_return": 0.6084,
-          "mean_steps": 86.2169
-        },
-        "east": {
-          "n": 134,
-          "success": 0.7985,
-          "failure": 0.0,
-          "shortcut_rate": 0.0075,
-          "detour_rate": 0.9925,
-          "mean_return": 0.7985,
-          "mean_steps": 236.4925
-        }
-      },
+      "timeout": 0.1067,
+      "shortcut_rate_ci95": [
+        0.186,
+        0.2809
+      ],
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ],
       "by_latent": {
         "clear": {
           "n": 202,
-          "success": 0.8861,
+          "success": 0.896,
           "failure": 0.0,
-          "shortcut_rate": 0.5198,
-          "detour_rate": 0.4802,
-          "mean_return": 0.8861,
-          "mean_steps": 177.0842
+          "shortcut_rate": 0.2178,
+          "detour_rate": 0.7624,
+          "mean_return": 0.896,
+          "mean_steps": 200.2376
         },
         "active": {
           "n": 98,
-          "success": 0.2959,
-          "failure": 0.6327,
-          "shortcut_rate": 0.6327,
-          "detour_rate": 0.3673,
-          "mean_return": 0.2959,
-          "mean_steps": 104.398
+          "success": 0.6327,
+          "failure": 0.2551,
+          "shortcut_rate": 0.2551,
+          "detour_rate": 0.7347,
+          "mean_return": 0.6327,
+          "mean_steps": 184.3878
         }
       },
       "death_given_active_and_shortcut": 1.0
     }
   },
   {
-    "label": "gcbc_s0_final",
-    "ckpt": "tworoute_gcbc_s0_300k/final.pkl",
+    "label": "crl_s1_final",
+    "ckpt": "tworoute_crl_s1_300k/final.pkl",
     "ckpt_step": 300000,
     "n_eval": 300,
     "eval_seed": 909,
     "summary": {
       "overall": {
         "n": 300,
-        "success": 0.71,
-        "failure": 0.2067,
-        "shortcut_rate": 0.5533,
-        "detour_rate": 0.4467,
-        "mean_return": 0.71,
-        "mean_steps": 150.9667
+        "success": 0.7567,
+        "failure": 0.0867,
+        "shortcut_rate": 0.27,
+        "detour_rate": 0.7167,
+        "mean_return": 0.7567,
+        "mean_steps": 202.5833
       },
-      "timeout": 0.0833,
-      "by_heading": {
-        "north": {
-          "n": 166,
-          "success": 0.5783,
-          "failure": 0.3735,
-          "shortcut_rate": 1.0,
-          "detour_rate": 0.0,
-          "mean_return": 0.5783,
-          "mean_steps": 93.1807
-        },
-        "east": {
-          "n": 134,
-          "success": 0.8731,
-          "failure": 0.0,
-          "shortcut_rate": 0.0,
-          "detour_rate": 1.0,
-          "mean_return": 0.8731,
-          "mean_steps": 222.5522
-        }
-      },
+      "timeout": 0.1567,
+      "shortcut_rate_ci95": [
+        0.2229,
+        0.3229
+      ],
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ],
       "by_latent": {
         "clear": {
           "n": 202,
-          "success": 0.8861,
+          "success": 0.8416,
           "failure": 0.0,
-          "shortcut_rate": 0.5149,
-          "detour_rate": 0.4851,
-          "mean_return": 0.8861,
-          "mean_steps": 177.1931
+          "shortcut_rate": 0.2723,
+          "detour_rate": 0.7178,
+          "mean_return": 0.8416,
+          "mean_steps": 209.2426
         },
         "active": {
           "n": 98,
-          "success": 0.3469,
-          "failure": 0.6327,
-          "shortcut_rate": 0.6327,
-          "detour_rate": 0.3673,
-          "mean_return": 0.3469,
-          "mean_steps": 96.9082
+          "success": 0.5816,
+          "failure": 0.2653,
+          "shortcut_rate": 0.2653,
+          "detour_rate": 0.7143,
+          "mean_return": 0.5816,
+          "mean_steps": 188.8571
         }
       },
       "death_given_active_and_shortcut": 1.0

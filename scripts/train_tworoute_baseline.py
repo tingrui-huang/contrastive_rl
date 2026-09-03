@@ -2,10 +2,10 @@
 
 Faithful reuse of the repo's offline AntMaze recipe (verify_offline_d4rl.
 build_offline_cfg: bc 0.05, twin-min, alpha 0, batch 1024, repr 16, hidden
-(1024,1024)); the ONLY changes are the env name, the dataset, the 400-step
-horizon (matches collection) and the learner-eval heading protocol
-(reset(heading='random'): a 50/50 route-affordance coin independent of the
-hidden latent).
+(1024,1024)); the ONLY changes are the env name, the dataset and the
+400-step horizon (matches collection). Nothing about the algorithm is
+adapted to the two-route decision: every episode starts from one canonical
+pose, so the route is the plain goal-conditioned actor's own output.
 
 Methods:
   --method crl    vanilla contrastive RL (bc_coef 0.05)   [default]
@@ -31,7 +31,7 @@ from crl.train import train                # noqa: E402
 from verify_offline_d4rl import build_offline_cfg  # noqa: E402
 
 NPZ = ('artifacts/tworoute_rockfall_v0/dataset/'
-       'antmaze_tworoute_rockfall_v1.npz')
+       'antmaze_tworoute_rockfall_v2.npz')
 HORIZON = 400
 
 
@@ -54,7 +54,6 @@ def main():
   cfg.eval_goal_mode = 'd4rl'
   cfg.rockfall_max_steps = HORIZON             # match the collection horizon
   cfg.max_episode_steps = HORIZON
-  cfg.tworoute_eval_heading = 'random'         # learner-eval protocol
   cfg.bc_coef = 1.0 if args.method == 'gcbc' else 0.05
   cfg.seed = args.seed
   cfg.eval_every_steps = 10_000

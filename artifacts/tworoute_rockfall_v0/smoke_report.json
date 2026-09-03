@@ -15,7 +15,9 @@
     "T11_geometry_open": true,
     "T12_route_invariant": true,
     "T13_success_latched": true,
-    "T14_physical_hiddenness": true
+    "T14_physical_hiddenness": true,
+    "T15_canonical_pose": true,
+    "T16_rng_order_pinned": true
   },
   "all_pass": true,
   "detail": {
@@ -840,6 +842,82 @@
         "route": "shortcut"
       },
       "rock_moved": 0.012022015456064211
+    },
+    "T15": {
+      "yaw_deg_range": [
+        -11.68,
+        11.27
+      ],
+      "reset_params": [
+        "rockfall_active"
+      ],
+      "has_default_heading": false
+    },
+    "T16": {
+      "expected_latents": {
+        "0": [
+          false,
+          false,
+          true,
+          false,
+          false
+        ],
+        "7": [
+          false,
+          false,
+          true,
+          false,
+          true
+        ],
+        "909": [
+          true,
+          false,
+          false,
+          false,
+          false
+        ]
+      },
+      "got": {
+        "0": {
+          "latents": [
+            false,
+            false,
+            true,
+            false,
+            false
+          ],
+          "jitter_row0": [
+            0.027365320232,
+            0.036680888082
+          ]
+        },
+        "7": {
+          "latents": [
+            false,
+            false,
+            true,
+            false,
+            true
+          ],
+          "jitter_row0": [
+            0.023794493523,
+            -0.045324846818
+          ]
+        },
+        "909": {
+          "latents": [
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          "jitter_row0": [
+            0.061394139017,
+            0.069811856466
+          ]
+        }
+      }
     }
   },
   "hazard_zone": [

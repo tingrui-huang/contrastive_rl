@@ -1,0 +1,137 @@
+{
+  "label": "crl_s0_final",
+  "ckpt": "tworoute_crl_s0_300k/final.pkl",
+  "ckpt_step": 300000,
+  "route_counts": {
+    "shortcut": 34,
+    "detour": 85,
+    "none": 1
+  },
+  "dprime_test": {
+    "n_shortcut": 34,
+    "n_detour": 85,
+    "max_dprime": 1.3026,
+    "argmax_dim": 6,
+    "top5_dims": [
+      [
+        6,
+        1.303
+      ],
+      [
+        29,
+        0.571
+      ],
+      [
+        13,
+        0.562
+      ],
+      [
+        20,
+        0.509
+      ],
+      [
+        30,
+        0.501
+      ]
+    ],
+    "null_p95": 0.6637,
+    "n_dims_above_null_p95": 1,
+    "p_value": 0.0,
+    "route_predictable_from_t0": true
+  },
+  "loo_decoder": {
+    "n": 119,
+    "n_features": 31,
+    "balanced_accuracy": 0.6324,
+    "null_mean": 0.4932,
+    "null_p95": 0.571,
+    "p_value": 0.01,
+    "beats_chance": true
+  },
+  "replay_determinism": {
+    "n": 20,
+    "agreement": 1.0,
+    "pairs": [
+      [
+        "detour",
+        "detour"
+      ],
+      [
+        "shortcut",
+        "shortcut"
+      ],
+      [
+        "detour",
+        "detour"
+      ],
+      [
+        "detour",
+        "detour"
+      ],
+      [
+        "detour",
+        "detour"
+      ],
+      [
+        "shortcut",
+        "shortcut"
+      ],
+      [
+        "shortcut",
+        "shortcut"
+      ],
+      [
+        "shortcut",
+        "shortcut"
+      ],
+      [
+        "detour",
+        "detour"
+      ],
+      [
+        "detour",
+        "detour"
+      ],
+      [
+        "detour",
+        "detour"
+      ],
+      [
+        "shortcut",
+        "shortcut"
+      ],
+      [
+        "shortcut",
+        "shortcut"
+      ],
+      [
+        "detour",
+        "detour"
+      ],
+      [
+        "shortcut",
+        "shortcut"
+      ],
+      [
+        "detour",
+        "detour"
+      ],
+      [
+        "shortcut",
+        "shortcut"
+      ],
+      [
+        "shortcut",
+        "shortcut"
+      ],
+      [
+        "detour",
+        "detour"
+      ],
+      [
+        "detour",
+        "detour"
+      ]
+    ]
+  }
+}

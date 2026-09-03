@@ -19,6 +19,7 @@ Writes artifacts/tworoute_rockfall_v0/smoke_report.json; exits 0 iff ALL PASS.
 
 Usage: python scripts/tworoute_rockfall_smoke.py
 """
+import inspect
 import json
 import os
 import sys
@@ -44,6 +45,15 @@ SHORTCUT_WAY = [(0.0, 1.2), (0.0, 2.2), (0.0, 3.2), (0.0, 4.4), (0.0, 5.8),
                 (0.0, 7.0)]
 DETOUR_WAY = [(2.0, 0.0), (4.0, 0.0), (6.0, 0.0), (8.0, 0.0), (8.0, 2.5),
               (8.0, 5.0), (8.0, 8.0), (5.5, 8.0), (3.0, 8.0)]
+
+
+def _yaw_deg(quat):
+  """Torso yaw in degrees from the (w, x, y, z) obs slice (unnormalised:
+  INIT_QPOS carries +-0.1 reset noise, so normalise first)."""
+  q = np.asarray(quat, float)
+  w, x, y, z = q / (np.linalg.norm(q) + 1e-12)
+  return float(np.degrees(np.arctan2(2 * (w * z + x * y),
+                                     1 - 2 * (y * y + z * z))))
 
 
 def fresh_env(seed=SEED, **cfg_over):
@@ -351,6 +361,53 @@ def main():
   detail['T14'] = {'parked_identical': same_park,
                    'inactive_trigger': iB,
                    'rock_moved': float(np.abs(rock_after - rock_before).max())}
+
+  # ---- T15: ONE canonical start pose, and the heading API is really gone.
+  # Every pre-existing check already ran at the native pose (none of the 22
+  # reset() calls above passes a heading), so without this the gate would
+  # report all-PASS while being completely blind to the coin's removal.
+  e15, _ = fresh_env(seed=4242)
+  yaws = []
+  for _ in range(50):
+    o15 = e15.reset()
+    yaws.append(_yaw_deg(o15[3:7]))
+  #: 15 deg is the INIT_QPOS +-0.1 reset-noise floor (measured native range
+  #: +-12.6 deg) with headroom; the retired north pose sat at 77.6-102.4 deg.
+  sig15 = set(inspect.signature(e15.reset).parameters)
+  checks['T15_canonical_pose'] = (
+      max(abs(y) for y in yaws) <= 15.0
+      and not hasattr(e15, 'default_heading')
+      and sig15 == {'rockfall_active'}
+      and not hasattr(TR, '_Q_NORTH') and not hasattr(TR, '_quat_mul'))
+  detail['T15'] = {'yaw_deg_range': [round(min(yaws), 2), round(max(yaws), 2)],
+                   'reset_params': sorted(sig15),
+                   'has_default_heading': hasattr(e15, 'default_heading')}
+
+  # ---- T16: rng draw order pinned ACROSS versions.
+  # T3 compares env A vs env B at the same seed, so it structurally cannot
+  # notice a draw-order shift introduced by an edit -- both sides move
+  # together. These values were captured from the coin-carrying env BEFORE
+  # the heading removal; they must survive it, which is the actual proof
+  # that deleting the coin draw did not perturb the latent or jitter streams.
+  pin = {'0': [False, False, True, False, False],
+         '7': [False, False, True, False, True],
+         '909': [True, False, False, False, False]}
+  pin_jit0 = {'0': (0.027365320232, 0.036680888082),
+              '7': (0.023794493523, -0.045324846818),
+              '909': (0.061394139017, 0.069811856466)}
+  ok16, got16 = True, {}
+  for s, want in pin.items():
+    e16, _ = fresh_env(seed=int(s))
+    lat, j0 = [], None
+    for i in range(5):
+      e16.reset()
+      lat.append(bool(e16.privileged_rockfall_active))
+      if i == 0:
+        j0 = tuple(float(v) for v in np.asarray(e16._drop_jitter)[0])
+    got16[s] = {'latents': lat, 'jitter_row0': [round(v, 12) for v in j0]}
+    ok16 &= (lat == want) and bool(np.allclose(j0, pin_jit0[s], atol=1e-12))
+  checks['T16_rng_order_pinned'] = bool(ok16)
+  detail['T16'] = {'expected_latents': pin, 'got': got16}
 
   all_pass = all(checks.values())
   for k, v in checks.items():

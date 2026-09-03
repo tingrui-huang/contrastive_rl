@@ -97,10 +97,6 @@ class Config:
   rockfall_death_settle_substeps: Optional[int] = None
   # Canonical episode-independent full reset. False => legacy reset.
   rockfall_reset_fix: bool = False
-  # Two-route env: default initial heading for UNQUALIFIED reset() calls
-  # (the trainer's eval loop). None => native 'east'; 'random' => 50/50
-  # east/north coin, independent of the latent (the learner eval protocol).
-  tworoute_eval_heading: Optional[str] = None
 
   # --- Offline mode ---
   # Path to an .npz episode dataset (obs [N,L,obs+goal], act [N,L,A], see

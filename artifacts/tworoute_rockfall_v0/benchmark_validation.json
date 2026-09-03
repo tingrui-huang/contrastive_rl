@@ -1,45 +1,138 @@
 {
+  "protocol_version": "v2 -- coin-free: ONE canonical start pose for every episode",
+  "supersedes": {
+    "version": "v1 -- explicit 50/50 east/north heading coin at reset",
+    "why_retired": [
+      "The coin DECIDED the route: baselines took the shortcut at rate 1.000 from the north pose and the detour at 0.99 from the east pose, so the benchmark never measured a choice.",
+      "LATENT LEAK: the teacher's route is a deterministic function of the latent and the collector set the heading from the route, so the initial quaternion decoded the latent perfectly inside the training data (max d' = 11.891 at obs dim 6, permutation null p95 = 0.348, p < 0.0001, 400/400 episodes; P(active | north pose) = 0.000). The shipped v1 meta claim 'rockfall_active NEVER in obs' was false OF THE DATASET.",
+      "Consequence for the v1 write-up: the v1 baselines had learned the ORACLE map (north->shortcut, east->detour, which in v1 data equals clear->shortcut, active->detour) off a leaked proxy, and the eval intervention on the proxy destroyed it. That is a spurious-correlate result, not the 'the latent is unobservable' result the v1 note claimed."
+    ]
+  },
+
   "engineering_valid": true,
-  "engineering_evidence": "physical free-joint rocks fall under gravity (drop->contact 4 steps), 14/14 smoke gate incl. falsification tests, four-case real-dynamics MP4",
+  "engineering_evidence": {
+    "smoke_gate": "16/16 PASS (scripts/tworoute_rockfall_smoke.py)",
+    "new_checks": {
+      "T15_canonical_pose": "50 unqualified resets all within +-15 deg yaw; reset() signature is exactly {rockfall_active}; _Q_NORTH / _quat_mul / default_heading confirmed absent",
+      "T16_rng_order_pinned": "latent and jitter draws pinned to values captured from the PRE-EDIT env at seeds 0/7/909 and reproduced exactly -- the only check that can detect an rng draw-order shift, since T3 compares env A vs env B at the same seed and would move with the edit"
+    },
+    "unchanged_and_reverified": "physical free-joint rocks under gravity, rock-ant contact as the failure detector, parked-rock physical hiddenness (T14 byte-identical), route-label latch, success latch, 58-dim obs contract",
+    "training_path": "G1-G8 offline audit gates PASS on the v2 npz (sha256 3cb4b0ff...), trainer eval loop runs under the unqualified reset()"
+  },
+
+  "dataset": {
+    "name": "antmaze_tworoute_rockfall_v2",
+    "n_episodes": 400,
+    "transitions": 49313,
+    "p_active_realised": 0.3,
+    "route_split": {"shortcut": 280, "detour": 120},
+    "teacher_success": 0.97,
+    "latent_leak_check": {
+      "test": "permutation null on per-dim d-prime at t=0, B=2000",
+      "max_dprime": 0.253,
+      "argmax_dim": 8,
+      "null_p95": 0.3451,
+      "n_dims_above_null_p95": 0,
+      "p_value": 0.485,
+      "passes": true,
+      "v1_control": {"max_dprime": 11.891, "argmax_dim": 6, "p_value": 0.0}
+    },
+    "uncommitted_discards": {
+      "n": 16,
+      "frac_of_draws": 0.0385,
+      "all_from": "shortcut arm (failed start-cell turn, final xy ~ (1.7, 1.8))",
+      "rule": "redraw when info['route'] is None; route-committed timeouts are KEPT (the pre-existing convention)"
+    },
+    "action_space_mode_separation_at_t0": {
+      "v2": 2.7574,
+      "v1_control": 0.115,
+      "within_mode_sd": "1.3 - 1.8",
+      "reading": "removing the coin moved the route distinction OUT of the observation and INTO the action, by 24x at t=0 and 8x averaged over t<12 (1.415 vs 0.178). In v1 there was effectively no action-space bimodality to average -- the mode-averaging question was misdirected there and is live here."
+    }
+  },
+
+  "teacher_valid": true,
+  "teacher_evidence": {
+    "n": 300,
+    "success": 0.9533,
+    "failure": 0.0,
+    "timeout": 0.0467,
+    "P_shortcut_given_clear": 1.0,
+    "P_detour_given_active": 1.0,
+    "mean_steps": {"shortcut": 102.3, "detour": 189.2},
+    "note": "0.9833 -> 0.9533 and shortcut 77.8 -> 102.3 steps: the coin-free shortcut driver must turn the ant itself. No new controller was written -- the frozen corridor walker aligns its body with the +x axis of whatever frame it is shown, and the shortcut driver already showed it a 90-deg-rotated frame, so from the canonical pose it corrects a -90 deg yaw error over ~25-40 steps. Measured 109/115 = 0.948 across three disjoint seed blocks.",
+    "audit_is_unfiltered": "the teacher audit does NOT apply the collector's redraw rule, so 0.9533 is the honest competence number"
+  },
+
   "causally_valid": true,
   "causal_evidence": {
-    "P_success_shortcut_observed": 1.0,
-    "P_success_do_shortcut": 0.728,
+    "P_success_shortcut_observed": 0.9964,
+    "P_success_shortcut_observed_ci95": [0.9801, 0.9994],
+    "P_success_do_shortcut": 0.688,
+    "P_success_do_shortcut_ci95": [0.6281, 0.7422],
+    "P_success_do_shortcut_given_active": 0.0,
     "P_success_do_detour": 0.912,
-    "gap_shortcut": 0.272
+    "P_success_do_detour_by_latent": {"clear": 0.9146, "active": 0.907},
+    "gap_shortcut": 0.3084,
+    "v1_gap": 0.272,
+    "verdict": "CONFOUNDING PRESENT",
+    "note": "do(route) is now purely 'which driver runs'; under v1 the heading was doing part of the interventional work. The gap GREW."
   },
+
   "benchmark_valid": true,
-  "benchmark_evidence": {
-    "teacher_success": 0.9833,
-    "teacher_death": 0.0,
-    "baselines": {
-      "crl_s0_best": {
-        "success": 0.6867,
-        "death": 0.2067,
-        "shortcut_rate_from_north": 1.0,
-        "death_given_active_and_shortcut": 1.0
-      },
-      "crl_s0_final": {
-        "success": 0.7267,
-        "death": 0.2067,
-        "shortcut_rate_from_north": 1.0,
-        "death_given_active_and_shortcut": 1.0
-      },
-      "gcbc_s0_best": {
-        "success": 0.6933,
-        "death": 0.2067,
-        "shortcut_rate_from_north": 1.0,
-        "death_given_active_and_shortcut": 1.0
-      },
-      "gcbc_s0_final": {
-        "success": 0.71,
-        "death": 0.2067,
-        "shortcut_rate_from_north": 1.0,
-        "death_given_active_and_shortcut": 1.0
-      }
-    },
-    "success_drop_vs_teacher": 0.2966,
-    "death_increase_vs_teacher": 0.2067
+  "reference_policies": {
+    "oracle_teacher": {"success": 0.9533, "death": 0.0},
+    "always_detour_blind_best": {"success": 0.912, "death": 0.0},
+    "always_shortcut_blind_worst": {"success": 0.688, "death": 0.272}
   },
-  "note": "Both confounding-unaware baselines imitate the observationally attractive shortcut at rate 1.0 from the north affordance and die with probability 1.0 whenever the hidden latent is active there; overall success 0.69-0.73 vs teacher 0.983, death 0.207 vs 0."
+  "baselines": {
+    "protocol": "reset() canonical pose, n=300, deterministic tanh(loc) actor; start_yaw_deg_range [-11.84, 12.43] on all four runs",
+    "crl_s0_best": {"step": 220000, "success": 0.72, "death": 0.1467, "timeout": 0.1333, "shortcut_rate": 0.4067, "shortcut_rate_ci95": [0.3526, 0.4631], "death_given_active_and_shortcut": 1.0},
+    "crl_s0_final": {"step": 300000, "success": 0.75, "death": 0.1267, "timeout": 0.1233, "shortcut_rate": 0.3433, "shortcut_rate_ci95": [0.2919, 0.3987], "death_given_active_and_shortcut": 1.0},
+    "crl_s1_best": {"step": 270000, "success": 0.81, "death": 0.0833, "timeout": 0.1067, "shortcut_rate": 0.23, "shortcut_rate_ci95": [0.186, 0.2809], "death_given_active_and_shortcut": 1.0},
+    "crl_s1_final": {"step": 300000, "success": 0.7567, "death": 0.0867, "timeout": 0.1567, "shortcut_rate": 0.27, "shortcut_rate_ci95": [0.2229, 0.3229], "death_given_active_and_shortcut": 1.0},
+    "gcbc": "NOT RUN under v2. The v1 gcbc numbers are void (leaked dataset, coin eval). Predicted to be strictly worse than CRL here: at bc_coef=1.0 the actor loss IS the unimodal NLL, whose optimum is the mixture mean."
+  },
+
+  "headline_finding": {
+    "claim": "The learner does not choose a route. It re-creates the retired coin out of reset noise, on the same observation dimension the explicit coin used, at ~1/10 the amplitude.",
+    "chain": [
+      "1. The dataset is bimodal at t=0: from one identical state the teacher turns north 70% of the time and walks east 30%, with action-mode separation 2.757 against a within-mode sd of 1.3-1.8.",
+      "2. The actor is a single tanh-squashed diagonal Gaussian evaluated at its mode, so it can emit only ONE action per state. Measured: its action is nearest an INTERPOLATION of the two modes (mixture or midpoint) on 11 of the first 12 phase-matched steps, and nearest an actual mode on 1 of 12 -- never the shortcut mode.",
+      "3. That interpolated action is dynamically unstable, and the perpendicular fork separates ~25x faster than a lane (0.14 world units/step vs 0.0057), so a tiny perturbation is amplified into a committed route.",
+      "4. The perturbation is the +-0.1 qpos reset jitter, which yields a random initial yaw of +-12.4 deg. MEASURED: the realised route is predictable from the t=0 observation, max d' = 1.303 (s0) / 1.104 (s1) at obs dim 6 -- the quaternion z, i.e. the initial yaw -- against permutation nulls of 0.664 / 0.711, p = 0.000, exactly 1 dim above chance in both runs. The explicit v1 coin scored 11.891 on that same dim.",
+      "5. Behaviour is therefore bimodal even though the action is averaged: jam rate 0.017-0.083, wall sector 0-4 of 60 episodes, and the 'mean heading' of 24-39 deg is an artefact of averaging two clean lobes at ~5 deg and ~85 deg, not a direction any episode travels.",
+      "6. Replay determinism 20/20 on both seeds confirms the route is a deterministic (nonlinear) function of the initial state; the LOO linear decoder recovers 0.632 / 0.672 balanced accuracy against nulls of 0.571 / 0.550, i.e. the yaw axis is dominant but not the whole function.",
+      "7. The implicit coin is INDEPENDENT of the latent (shortcut rate 0.272 clear vs 0.265 active on s1_final), so whenever it lands on the shortcut and the rocks are armed the ant dies: death_given_active_and_shortcut = 1.000 on all four checkpoints."
+    ],
+    "why_this_is_a_result_and_not_a_bug": "Under v1 the learner did not choose because the ENVIRONMENT chose for it -- a design flaw, now removed. Under v2 the environment is neutral (leak check p = 0.485, canonical-pose assertion enforced in eval) and the learner still does not choose, because the plain goal-conditioned algorithm cannot express a bimodal decision from a single state. That is a statement about the algorithm.",
+    "seed_dependence": "s0 and s1 settled on different coin biases (shortcut rate 0.343 vs 0.270; the CIs of s0_best [0.353, 0.463] and s1_final [0.223, 0.323] do not overlap), so the route preference is a property of the training run, not of the method. This is not visible with one seed per method."
+  },
+
+  "cost_of_not_choosing": {
+    "best_learner": 0.81,
+    "always_detour_blind_best": 0.912,
+    "oracle": 0.9533,
+    "note": "Both seeds are beaten by the trivial blind policy of always taking the safe route. They did not learn avoidance; they merely take the shortcut less often than a pure shortcut policy would."
+  },
+
+  "known_limitations": [
+    "POSITIVITY VIOLATION BY DESIGN: P(shortcut | active) = 0 exactly in the dataset, so P(success | do(shortcut)) is NOT point-identified from the data -- only boundable (Manski). The interventional numbers here come from fresh rollouts, not from the dataset. This must be stated explicitly; no algorithm can be expected to recover the oracle from this dataset alone.",
+    "DISCRIMINATIVE HEADROOM: under the sparse undiscounted binary reward, the blind always-detour policy already scores 0.912 against an oracle of 0.9533, so causal reasoning is worth ~4 points of success rate while its real payoff (102 vs 189 steps) is not priced by the metric. A step-penalised or discounted return would make always-detour genuinely suboptimal.",
+    "GCBC not re-run under v2 (see baselines.gcbc).",
+    "Two seeds for CRL; no seed sweep."
+  ],
+
+  "artifacts": {
+    "dataset": "artifacts/tworoute_rockfall_v0/dataset/antmaze_tworoute_rockfall_v2{,_sidecar}.npz",
+    "smoke": "artifacts/tworoute_rockfall_v0/smoke_report.json (16/16)",
+    "teacher": "artifacts/tworoute_rockfall_v0/teacher_audit.json",
+    "causal": "artifacts/tworoute_rockfall_v0/causal_audit.json",
+    "baselines": "artifacts/tworoute_rockfall_v0/baseline_results.json",
+    "probes": [
+      "artifacts/tworoute_rockfall_v0/route_choice_probe_crl_s{0,1}_{best,final}.json  (P1 mode averaging + P2 jam/sector)",
+      "artifacts/tworoute_rockfall_v0/route_trigger_probe_crl_s{0,1}_final.json  (what decides the route)"
+    ],
+    "checkpoints": "tworoute_crl_s{0,1}_300k/{best,final}.pkl (md5-verified against the training box; not in git)"
+  }
 }

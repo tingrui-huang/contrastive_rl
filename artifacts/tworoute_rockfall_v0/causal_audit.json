@@ -1,33 +1,33 @@
 {
   "observational": {
     "n_episodes": 400,
-    "teacher_success": 0.975,
+    "teacher_success": 0.97,
     "teacher_failure": 0.0,
-    "P_shortcut": 0.71,
-    "P_detour": 0.29,
+    "P_shortcut": 0.7,
+    "P_detour": 0.3,
     "P_shortcut_given_clear": 1.0,
     "P_shortcut_given_active": 0.0,
     "P_detour_given_clear": 0.0,
     "P_detour_given_active": 1.0,
-    "P_success_given_shortcut_observed": 1.0,
+    "P_success_given_shortcut_observed": 0.9964,
     "P_success_given_shortcut_observed_ci95": [
-      0.9867,
-      1.0
+      0.9801,
+      0.9994
     ],
-    "P_success_given_detour_observed": 0.9138,
-    "n_shortcut": 284,
-    "n_detour": 116
+    "P_success_given_detour_observed": 0.9083,
+    "n_shortcut": 280,
+    "n_detour": 120
   },
   "do_shortcut": {
     "n": 250,
-    "P_success": 0.728,
+    "P_success": 0.688,
     "P_success_ci95": [
-      0.6697,
-      0.7794
+      0.6281,
+      0.7422
     ],
-    "P_failure": 0.272,
+    "P_failure": 0.264,
     "P_active_drawn": 0.272,
-    "P_success_given_clear": 1.0,
+    "P_success_given_clear": 0.9451,
     "P_success_given_active": 0.0
   },
   "do_detour": {
@@ -42,6 +42,6 @@
     "P_success_given_clear": 0.9146,
     "P_success_given_active": 0.907
   },
-  "gap_shortcut_observational_minus_interventional": 0.272,
+  "gap_shortcut_observational_minus_interventional": 0.3084,
   "verdict": "CONFOUNDING PRESENT"
 }

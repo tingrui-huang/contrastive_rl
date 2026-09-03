@@ -64,8 +64,6 @@ CARD_S = 1.6
 
 #: Rz(-90): world +y becomes virtual +x (the walker's forward axis).
 QM = np.array([np.cos(-np.pi / 4), 0, 0, np.sin(-np.pi / 4)])
-#: Rz(+90): initial heading facing +y for the shortcut episodes.
-QP = np.array([np.cos(np.pi / 4), 0, 0, np.sin(np.pi / 4)])
 
 
 def qmul(a, b):
@@ -168,7 +166,7 @@ def compose(frame, case_tag, info, latent, step, flash=None,
           'triggered (no drop)' if info.get('rock_triggered') else 'parked')
   d.text((14, 126), f'ROCKS: {rock}', font=F_SMALL,
          fill=(255, 120, 90) if info.get('rock_dropped') else (120, 120, 120))
-  d.text((230, 126), 'red band = trigger zone | green disc = goal',
+  d.text((230, 126), 'red band = trigger | green = goal',
          font=F_SMALL, fill=(120, 120, 120))
   if extra_tag:
     d.text((330, 8), extra_tag, font=F_MED, fill=(255, 220, 120))
@@ -289,15 +287,6 @@ def main():
   cam.lookat[:] = (4.0, 4.0, 0.0)
   cam.distance, cam.elevation, cam.azimuth = 24.0, -90.0, 90.0
 
-  def face_north(env):
-    d = env._env.data
-    d.qpos[3:7] = qmul(QP, d.qpos[3:7].copy())
-    d.qvel[:2] = 0.0
-    d.qacc_warmstart[:] = 0.0
-    mujoco.mj_forward(env._env.model, d)
-    env._last_obs = env._env._obs_dict()
-    return env._flatten(env._last_obs)
-
   def find_start(prep, driver, fresh=None, tries=12):
     """Deterministic search over reset draws for a start whose CLEAR episode
     succeeds under the frozen controllers."""
@@ -314,7 +303,7 @@ def main():
 
   segs, results = [], {}
   # ---- pair A/B: matched shortcut starts ----------------------------------
-  q0, v0, k_sc = find_start(face_north, shortcut)
+  q0, v0, k_sc = find_start(None, shortcut)
   print(f'shortcut start: reset draw #{k_sc}', flush=True)
   env.reset(rockfall_active=False)          # clear episode flags, then match
   o = restore(env, q0, v0)
@@ -354,11 +343,13 @@ def main():
   results['D_active_detour'] = res
 
   # ---- assemble -----------------------------------------------------------
-  video = [card(['AntMaze-Rockfall V1', 'Physical Rockfall -- Visual Check'],
+  video = [card(['AntMaze-Rockfall V2', 'Two Routes, One Canonical Pose'],
                 ['env: offline_ant_umaze_tworoute_rockfall',
                  'real simulation dynamics, frozen controllers,',
                  'hidden latent: rockfall_active ~ Bernoulli(0.30)',
-                 'active + band entry -> real rocks fall; contact = failure'])
+                 'active + band entry -> real rocks fall; contact = failure',
+                 'EVERY episode starts from the SAME pose (facing +x):',
+                 'the route is a choice, not an initial condition'])
            ] * int(2.6 * FPS)
   for title, sub, fr in segs:
     video += [card([title], sub)] * int(CARD_S * FPS)
@@ -374,7 +365,8 @@ def main():
                   f'Active + Shortcut: {"PASS (failure triggered)" if marks["B_active_shortcut"] else "FAIL"}',
                   f'Clear + Detour   : {"PASS" if marks["C_clear_detour"] else "FAIL"}',
                   f'Active + Detour  : {"PASS" if marks["D_active_detour"] else "FAIL"}',
-                  'Smoke tests: 14/14 PASS'])] * int(3.2 * FPS)
+                  'Smoke tests: 16/16 PASS',
+                  'Latent leak at t=0: none (p = 0.485)'])] * int(3.2 * FPS)
   imageio.mimsave(MP4, video, fps=FPS, quality=8, macro_block_size=None)
   dur = len(video) / FPS
   print(f'MP4 -> {MP4}  ({len(video)} frames, {dur:.1f}s)', flush=True)

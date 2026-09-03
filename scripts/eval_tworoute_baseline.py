@@ -1,15 +1,23 @@
 """Authoritative evaluation of a trained baseline on the two-route benchmark.
 
-Protocol: reset(heading='random') -- the 50/50 route-affordance coin,
-independent of the hidden latent (which the env draws at its natural
-Bernoulli(0.30)). The policy is the deterministic tanh-mean actor from the
+Protocol: reset() -- ONE canonical start pose for every episode, so nothing
+in the initial observation carries route or latent information and the route
+is the policy's own decision. The latent is drawn by the env at its natural
+Bernoulli(0.30). The policy is the deterministic tanh-mean actor from the
 checkpoint, exactly as the repo's diagnosis scripts evaluate.
 
+Note what this costs in variance: with the affordance coin retired and a
+deterministic actor, the only remaining variation across episodes is the
++-0.1 qpos reset jitter. A shortcut_rate near 0.5 therefore does NOT mean
+the policy chooses 50/50; it can equally mean every episode runs the same
+averaged behaviour that gets LABELLED shortcut half the time. Read it with
+scripts/probe_tworoute_route_choice.py, not on its own.
+
 Per run reports: success, failure(death), timeout, route distribution
-(shortcut/detour/none via info['route']), P(entered hazard), success and
-death conditioned on the drawn latent, mean return and steps -- plus the same
-metrics split by the initial heading (the affordance the learner actually
-sees). Writes <ckpt_dir>/eval_tworoute.json and appends a row to
+(shortcut/detour/none via info['route']) with a Wilson CI on shortcut_rate,
+P(entered hazard), success and death conditioned on the drawn latent, mean
+return and steps, and the realised start-yaw range as a protocol receipt.
+Writes <ckpt_dir>/eval_tworoute.json and appends a row to
 artifacts/tworoute_rockfall_v0/baseline_results.json.
 
 Usage: python scripts/eval_tworoute_baseline.py --ckpt <run>/best.pkl \
@@ -35,6 +43,26 @@ from verify_offline_d4rl import build_offline_cfg  # noqa: E402
 
 OUT = 'artifacts/tworoute_rockfall_v0'
 HORIZON = 400
+
+
+def _yaw_deg(quat):
+  """Torso yaw in degrees from the (w, x, y, z) obs slice. The obs quat is
+  unnormalised (INIT_QPOS carries +-0.1 reset noise), so normalise first."""
+  q = np.asarray(quat, float)
+  w, x, y, z = q / (np.linalg.norm(q) + 1e-12)
+  return float(np.degrees(np.arctan2(2 * (w * z + x * y),
+                                     1 - 2 * (y * y + z * z))))
+
+
+def wilson(k, n, z=1.96):
+  """Wilson score interval -- shortcut_rate is now the primary readout."""
+  if n == 0:
+    return [None, None]
+  p = k / n
+  d = 1 + z * z / n
+  c = (p + z * z / (2 * n)) / d
+  h = z * np.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d
+  return [round(float(c - h), 4), round(float(c + h), 4)]
 
 
 def build_policy(ckpt_path, seed=1):
@@ -68,10 +96,14 @@ def evaluate(act, n, seed):
                           seed=seed)
   rows = []
   for k in range(n):
-    o = env.reset(heading='random')
-    #: which side of the coin this episode saw (from the initial quat: the
-    #: north yaw makes |w| ~ cos(45) < 0.85; east keeps |w| ~ 1).
-    head = 'north' if abs(float(o[3])) < 0.85 else 'east'
+    o = env.reset()
+    #: PROTOCOL ASSERTION, not a measurement: every episode must start from
+    #: the one canonical pose. Over 200 resets the native pose yaws within
+    #: +-12.6 deg (the INIT_QPOS +-0.1 reset noise) while the retired north
+    #: option sat at 77.6-102.4 deg, so 15 deg separates them with headroom
+    #: and fires loudly if a route-dependent start pose ever comes back.
+    yaw = _yaw_deg(o[3:7])
+    assert abs(yaw) <= 15.0, f'episode {k}: non-canonical start yaw {yaw:.1f}'
     u = env.privileged_rockfall_active     # audit only
     ret, info = 0.0, {}
     for t in range(HORIZON):
@@ -80,7 +112,7 @@ def evaluate(act, n, seed):
       ret += float(r)
       if done or r > 0:
         break
-    rows.append({'u': bool(u), 'heading': head,
+    rows.append({'u': bool(u), 'start_yaw_deg': round(float(yaw), 2),
                  'success': bool(info.get('success')),
                  'failure': bool(info.get('failure')),
                  'entered_hazard': bool(info.get('entered_hazard')),
@@ -106,11 +138,19 @@ def summarize(rows):
                 [x['route'] == 'detour' for x in xs])), 4) if xs else None),
             'mean_return': m(xs, 'return'), 'mean_steps': m(xs, 'steps')}
 
+  #: by_heading is GONE: under one canonical pose it emitted an all-None
+  #: phantom 'north' row and an 'east' row byte-identical to 'overall'.
+  #: shortcut_rate is the decision variable now -- with the affordance coin
+  #: removed the route is the policy's own output, so report its CI.
+  n_sc = int(sum(r['route'] == 'shortcut' for r in rows))
   out = {'overall': block(rows),
          'timeout': round(float(np.mean(
              [not r['success'] and not r['failure'] for r in rows])), 4),
-         'by_heading': {h: block([r for r in rows if r['heading'] == h])
-                        for h in ('north', 'east')},
+         'shortcut_rate_ci95': wilson(n_sc, n),
+         'start_yaw_deg_range': [round(float(min(r['start_yaw_deg']
+                                                 for r in rows)), 2),
+                                 round(float(max(r['start_yaw_deg']
+                                                 for r in rows)), 2)],
          'by_latent': {'clear': block([r for r in rows if not r['u']]),
                        'active': block([r for r in rows if r['u']])},
          'death_given_active_and_shortcut': m(

@@ -47,6 +47,16 @@ oracle code reads the ``privileged_rockfall_active`` property (the
 ``privileged_*`` convention of rockfall_ant); step() info carries it too,
 for debugging and evaluation only.
 
+ONE CANONICAL POSE: every episode starts from the native d4rl pose, so no
+component of the initial state correlates with the latent and the route is
+the POLICY's decision, not an initial condition handed to it. reset() takes
+no heading argument. This matters for more than fairness: the previous
+revision yawed shortcut episodes +90 deg, and since the teacher's route is a
+deterministic function of the latent, the initial quaternion became a perfect
+observable decoder of the latent inside the collected dataset (measured
+P(active | north pose) = 0.000 on 400/400 episodes). The claim that the
+latent never reaches the learner is only true of the DATASET under one pose.
+
 Success keeps the inherited convention: reward = (dist(xy, goal_xy) <= 0.5),
 done stays False on success (fixed-length episode contract). done=True is
 returned ONLY for the rockfall failure. Episode outcomes are EXCLUSIVE by
@@ -167,27 +177,11 @@ def _body_in_subtree(m, body, root_body):
   return False
 
 
-#: Rz(+90 deg) quat (w, x, y, z): initial yaw toward the shortcut corridor.
-_Q_NORTH = np.array([np.cos(np.pi / 4), 0.0, 0.0, np.sin(np.pi / 4)])
-#: heading-coin rng offset (learner-eval 'random' heading; latent-independent)
-_HEADING_SEED_OFFSET = 33_407
-
-
-def _quat_mul(a, b):
-  w1, x1, y1, z1 = a
-  w2, x2, y2, z2 = b
-  return np.array([w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2,
-                   w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2,
-                   w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2,
-                   w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2])
-
-
 class TwoRouteRockfallAntEnv(OfflineD4rlAntUMazeEnv):
   """Offline-contract two-route AntMaze with the latent shortcut hazard."""
 
   def __init__(self, max_episode_steps=700, seed=0, render_mode=None,
-               eval_goals=None, eval_goal_mode='d4rl', p_active=P_ACTIVE,
-               default_heading=None):
+               eval_goals=None, eval_goal_mode='d4rl', p_active=P_ACTIVE):
     super().__init__(max_episode_steps=max_episode_steps, seed=seed,
                      render_mode=render_mode, eval_goals=eval_goals,
                      eval_goal_mode=eval_goal_mode)
@@ -226,10 +220,6 @@ class TwoRouteRockfallAntEnv(OfflineD4rlAntUMazeEnv):
     self.p_active = float(p_active)
     self._active_rng = np.random.default_rng(seed + _ACTIVE_SEED_OFFSET)
     self._jitter_rng = np.random.default_rng(seed + _JITTER_SEED_OFFSET)
-    self._heading_rng = np.random.default_rng(seed + _HEADING_SEED_OFFSET)
-    #: heading used by UNQUALIFIED reset() calls (trainer eval loops);
-    #: None = native east, 'random' = the learner-eval coin protocol.
-    self.default_heading = default_heading
     self._drop_jitter = np.zeros((len(ROCK_RADII), 2))
     self._rockfall_active = False
     self._entered_hazard = False
@@ -252,20 +242,23 @@ class TwoRouteRockfallAntEnv(OfflineD4rlAntUMazeEnv):
     return bool(self._failed)
 
   # ---- episode lifecycle ---------------------------------------------------
-  def reset(self, rockfall_active=None, heading=None):
+  def reset(self, rockfall_active=None):
     """``rockfall_active`` override is for probes/gates/sanity checks only;
     normal use samples it. The rng is consumed in a fixed order regardless of
     the override, so forced-latent probes keep downstream draws identical.
 
-    ``heading`` sets the ant's INITIAL yaw (an initial condition, drawn
-    independently of the latent): None/'east' keeps the native d4rl pose
-    (facing +x), 'north' yaws it +90 deg toward the shortcut corridor,
-    'random' draws east/north 50/50 from a dedicated rng (the learner eval
-    protocol; consumed every call in fixed order for reproducibility). The
-    frozen corridor controllers cannot turn the ant in place, so route
-    execution starts from the matching heading; route CHOICE is the
-    teacher's policy and the heading is part of that action, correlated
-    with the latent only through the teacher -- never through the env."""
+    ONE CANONICAL POSE. Every episode starts from the native d4rl pose
+    (facing +x), so the initial state carries no route information at all and
+    the route is a POLICY ACTION rather than an initial condition. There is
+    no heading option and no heading rng: an earlier revision yawed the ant
+    +90 deg for shortcut episodes, which made the initial quaternion a
+    perfect observable proxy for the latent in the collected dataset
+    (measured: P(active | north pose) = 0.000 over 400/400 episodes).
+    Both routes execute from this pose -- the shortcut driver reaches north
+    by turning the ant itself, because the frozen corridor walker aligns its
+    body with the +x axis of whatever frame it is shown and the shortcut
+    driver shows it a 90-deg-rotated frame (see scripts/tworoute_teacher.py).
+    """
     drawn = bool(self._active_rng.random() < self.p_active)
     self._rockfall_active = (drawn if rockfall_active is None
                              else bool(rockfall_active))
@@ -279,22 +272,7 @@ class TwoRouteRockfallAntEnv(OfflineD4rlAntUMazeEnv):
     self._rock_triggered = False
     self._rock_dropped = False
     self._rock_contact = False
-    #: heading rng consumed every reset (fixed order), used only on 'random'
-    coin = bool(self._heading_rng.random() < 0.5)
-    obs = super().reset()
-    if heading is None:
-      heading = self.default_heading
-    if heading == 'random':
-      heading = 'north' if coin else 'east'
-    if heading == 'north':
-      d = self._env.data
-      d.qpos[3:7] = _quat_mul(_Q_NORTH, np.asarray(d.qpos[3:7]).copy())
-      d.qvel[:2] = 0.0
-      d.qacc_warmstart[:] = 0.0
-      mujoco.mj_forward(self._env.model, d)
-      self._last_obs = self._env._obs_dict()
-      obs = self._flatten(self._last_obs)
-    return obs
+    return super().reset()
 
   def _info(self, success):
     return {'rockfall_active': bool(self._rockfall_active),

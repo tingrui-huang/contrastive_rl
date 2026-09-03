@@ -37,7 +37,7 @@ import tworoute_teacher as TT             # noqa: E402
 
 OUT = 'artifacts/tworoute_rockfall_v0'
 SIDE = ('artifacts/tworoute_rockfall_v0/dataset/'
-        'antmaze_tworoute_rockfall_v1_sidecar.npz')
+        'antmaze_tworoute_rockfall_v2_sidecar.npz')
 
 
 def wilson(k, n, z=1.96):
@@ -88,7 +88,7 @@ def do_route(route, n, seed, horizon=400):
                           seed=seed)
   rows = []
   for k in range(n):
-    o = env.reset(heading=('north' if route == 'shortcut' else 'east'))
+    o = env.reset()
     u = env.privileged_rockfall_active     # read AFTER reset, audit only
     teacher.fresh()
     info = {}

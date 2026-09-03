@@ -6,25 +6,31 @@ Route policy (privileged: reads the latent the learner never sees):
     rockfall_active == True   ->  DETOUR   (long, always safe)
 
 Execution is real Ant locomotion by the repo's frozen controllers -- no
-teleportation. The corridor walker cannot turn the ant in place (it is a
-lane-tracker for a body already facing forward; every existing deployment
-turns via the base policy), so the route's initial HEADING is set at reset
-through the env's `heading` option (an initial condition):
+teleportation. BOTH routes start from the SINGLE canonical pose (the native
+d4rl east pose); the route is the choice of DRIVER, never an initial
+condition. The env has no heading option:
 
-  * shortcut: heading='north'; the walker drives +y through a 90-degree
-    world-frame observation remap (torques are body-frame), tracking x ~ 0,
-    then x -> goal_x for the final approach;
-  * detour: heading='east' (native); walker +x along the bottom corridor,
-    latched handoff to the goal-conditioned base policy at x >= 6.
+  * shortcut: the walker drives +y through a static 90-degree world-frame
+    observation remap (rot_north), tracking x ~ 0, then x -> goal_x for the
+    final approach. The walker's training reward penalises body yaw away
+    from the +x axis OF THE FRAME IT IS SHOWN, and under rot_north that axis
+    is world north -- so from the east pose it sees a -90 deg yaw error and
+    turns the ant itself over ~25-40 steps. Measured from the east pose:
+    0.948 goal rate (109/115, three disjoint seed blocks), ~88 steps, vs
+    1.000 / ~78 steps when the ant was pre-yawed north.
+  * detour: walker +x along the bottom corridor, latched handoff to the
+    goal-conditioned base policy at x >= 6. Unchanged; 0.95 from the east
+    pose. Do NOT route the shortcut through the base policy: its eastward
+    habit is a property of its goal representation (it was frozen on the
+    original U-maze, where the shortcut cell is a WALL), so north waypoints
+    score 0.733 with physical freezes.
 
 Collection/audit protocol: the episode's latent is drawn by the CALLER's rng
-(Bernoulli p_active, recorded seed) and passed to reset() together with the
-matching heading, because the heading must be coordinated with the route
-choice at reset time. The joint (latent, data) distribution is identical to
-letting the env draw; the env's own latent stream is still consumed in fixed
-order. At learner-eval time the env is reset with heading='random' (a
-50/50 coin INDEPENDENT of the latent), which is exactly an intervention on
-the route affordance.
+(Bernoulli p_active, recorded seed) and passed to reset(). The joint
+(latent, data) distribution is identical to letting the env draw; the env's
+own latent stream is still consumed in fixed order. The learner is evaluated
+from the same canonical pose, so nothing in its initial observation carries
+route or latent information.
 
 Run the audit:  python scripts/tworoute_teacher.py [--n 300]
 Writes artifacts/tworoute_rockfall_v0/teacher_audit.json.
@@ -121,8 +127,7 @@ def make_teacher():
 def teacher_episode(env, teacher, u, horizon=HORIZON, on_step=None):
   """One teacher episode under latent u. Returns the episode record."""
   route = 'detour' if u else 'shortcut'
-  o = env.reset(rockfall_active=bool(u),
-                heading=('east' if route == 'detour' else 'north'))
+  o = env.reset(rockfall_active=bool(u))
   teacher.fresh()
   ret, t = 0.0, 0
   info = {}

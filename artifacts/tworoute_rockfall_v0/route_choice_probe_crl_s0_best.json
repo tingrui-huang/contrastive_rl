@@ -1,0 +1,1136 @@
+{
+  "label": "crl_s0_best",
+  "ckpt": "tworoute_crl_s0_300k/best.pkl",
+  "ckpt_step": 220000,
+  "p1_mode_averaging": {
+    "shortcut_mass_weight": 0.7,
+    "mean_mode_separation_t_lt_12": 1.3975,
+    "separation_at_t0": 2.7574,
+    "argmin_counts": {
+      "shortcut": 0,
+      "detour": 1,
+      "mixture": 4,
+      "midpoint": 7
+    },
+    "n_steps_argmin_is_mixture": 4,
+    "mean_dist_to_mixture": 0.367,
+    "threshold_0p25_x_separation": 0.3494,
+    "mode_averaging_confirmed": false,
+    "per_step": [
+      {
+        "t": 0,
+        "mode_separation": 2.7574,
+        "dist": {
+          "shortcut": 2.3165,
+          "detour": 0.6461,
+          "mixture": 1.5116,
+          "midpoint": 0.9955
+        },
+        "argmin": "detour"
+      },
+      {
+        "t": 1,
+        "mode_separation": 2.0179,
+        "dist": {
+          "shortcut": 0.8558,
+          "detour": 1.2622,
+          "mixture": 0.3681,
+          "midpoint": 0.3806
+        },
+        "argmin": "mixture"
+      },
+      {
+        "t": 2,
+        "mode_separation": 1.8793,
+        "dist": {
+          "shortcut": 0.5831,
+          "detour": 1.3073,
+          "mixture": 0.0954,
+          "midpoint": 0.3764
+        },
+        "argmin": "mixture"
+      },
+      {
+        "t": 3,
+        "mode_separation": 2.2559,
+        "dist": {
+          "shortcut": 0.7593,
+          "detour": 1.5084,
+          "mixture": 0.1316,
+          "midpoint": 0.3918
+        },
+        "argmin": "mixture"
+      },
+      {
+        "t": 4,
+        "mode_separation": 0.8873,
+        "dist": {
+          "shortcut": 0.3337,
+          "detour": 0.6214,
+          "mixture": 0.1687,
+          "midpoint": 0.2278
+        },
+        "argmin": "mixture"
+      },
+      {
+        "t": 5,
+        "mode_separation": 1.2442,
+        "dist": {
+          "shortcut": 0.6098,
+          "detour": 0.7526,
+          "mixture": 0.3243,
+          "midpoint": 0.2866
+        },
+        "argmin": "midpoint"
+      },
+      {
+        "t": 6,
+        "mode_separation": 1.1357,
+        "dist": {
+          "shortcut": 0.7446,
+          "detour": 0.602,
+          "mixture": 0.4754,
+          "midpoint": 0.3687
+        },
+        "argmin": "midpoint"
+      },
+      {
+        "t": 7,
+        "mode_separation": 1.1288,
+        "dist": {
+          "shortcut": 0.6951,
+          "detour": 0.5653,
+          "mixture": 0.408,
+          "midpoint": 0.2877
+        },
+        "argmin": "midpoint"
+      },
+      {
+        "t": 8,
+        "mode_separation": 0.9174,
+        "dist": {
+          "shortcut": 0.4746,
+          "detour": 0.5131,
+          "mixture": 0.2448,
+          "midpoint": 0.184
+        },
+        "argmin": "midpoint"
+      },
+      {
+        "t": 9,
+        "mode_separation": 0.8787,
+        "dist": {
+          "shortcut": 0.4321,
+          "detour": 0.5004,
+          "mixture": 0.209,
+          "midpoint": 0.1598
+        },
+        "argmin": "midpoint"
+      },
+      {
+        "t": 10,
+        "mode_separation": 0.9121,
+        "dist": {
+          "shortcut": 0.4594,
+          "detour": 0.5154,
+          "mixture": 0.2297,
+          "midpoint": 0.1743
+        },
+        "argmin": "midpoint"
+      },
+      {
+        "t": 11,
+        "mode_separation": 0.7552,
+        "dist": {
+          "shortcut": 0.4297,
+          "detour": 0.3947,
+          "mixture": 0.2372,
+          "midpoint": 0.1663
+        },
+        "argmin": "midpoint"
+      }
+    ]
+  },
+  "p2_rollouts": {
+    "n": 60,
+    "success": 0.6833,
+    "failure": 0.1667,
+    "jammed": 0.0167,
+    "never_reached_3u": 0.0333,
+    "route": {
+      "shortcut": 0.45,
+      "detour": 0.5333
+    },
+    "route_none": 0.0167,
+    "sector_at_3u": {
+      "detour": 32,
+      "wall": 4,
+      "shortcut": 22,
+      "null": 2
+    },
+    "mean_heading_at_3u_deg": 39.4,
+    "mean_max_jam_run": 4.1,
+    "episodes": [
+      {
+        "u": false,
+        "success": false,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 3,
+        "reached_3u": true,
+        "heading_at_3u_deg": 7.0,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          6.981,
+          4.913
+        ],
+        "steps": 400
+      },
+      {
+        "u": false,
+        "success": false,
+        "failure": false,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 13,
+        "reached_3u": true,
+        "heading_at_3u_deg": 84.2,
+        "sector_at_3u": "shortcut",
+        "final_xy": [
+          -0.302,
+          8.963
+        ],
+        "steps": 400
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 2.1,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          0.616,
+          8.158
+        ],
+        "steps": 247
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 1,
+        "reached_3u": true,
+        "heading_at_3u_deg": 69.4,
+        "sector_at_3u": "wall",
+        "final_xy": [
+          -0.027,
+          8.897
+        ],
+        "steps": 363
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": -1.9,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          1.255,
+          9.112
+        ],
+        "steps": 256
+      },
+      {
+        "u": true,
+        "success": false,
+        "failure": true,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 87.5,
+        "sector_at_3u": "shortcut",
+        "final_xy": [
+          0.131,
+          3.005
+        ],
+        "steps": 33
+      },
+      {
+        "u": true,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 8.7,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          0.595,
+          9.114
+        ],
+        "steps": 279
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 1.7,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          1.113,
+          8.806
+        ],
+        "steps": 162
+      },
+      {
+        "u": true,
+        "success": false,
+        "failure": true,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 84.8,
+        "sector_at_3u": "shortcut",
+        "final_xy": [
+          0.391,
+          3.067
+        ],
+        "steps": 37
+      },
+      {
+        "u": true,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 1.0,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          0.296,
+          8.628
+        ],
+        "steps": 290
+      },
+      {
+        "u": true,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": -0.4,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          0.89,
+          9.019
+        ],
+        "steps": 205
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 92.5,
+        "sector_at_3u": "shortcut",
+        "final_xy": [
+          0.466,
+          8.581
+        ],
+        "steps": 89
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 1,
+        "reached_3u": true,
+        "heading_at_3u_deg": 68.9,
+        "sector_at_3u": "wall",
+        "final_xy": [
+          0.966,
+          8.51
+        ],
+        "steps": 196
+      },
+      {
+        "u": true,
+        "success": false,
+        "failure": true,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 71.2,
+        "sector_at_3u": "wall",
+        "final_xy": [
+          0.496,
+          3.11
+        ],
+        "steps": 66
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 1,
+        "reached_3u": true,
+        "heading_at_3u_deg": 6.5,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          0.798,
+          8.245
+        ],
+        "steps": 167
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 2.9,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          0.828,
+          8.724
+        ],
+        "steps": 155
+      },
+      {
+        "u": true,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 5.4,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          0.446,
+          8.942
+        ],
+        "steps": 186
+      },
+      {
+        "u": true,
+        "success": false,
+        "failure": true,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 78.8,
+        "sector_at_3u": "shortcut",
+        "final_xy": [
+          0.458,
+          3.024
+        ],
+        "steps": 39
+      },
+      {
+        "u": false,
+        "success": false,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 4,
+        "reached_3u": true,
+        "heading_at_3u_deg": 3.9,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          5.0,
+          7.091
+        ],
+        "steps": 400
+      },
+      {
+        "u": false,
+        "success": false,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 2,
+        "reached_3u": true,
+        "heading_at_3u_deg": 1.5,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          -0.93,
+          7.814
+        ],
+        "steps": 400
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 12.9,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          0.072,
+          8.997
+        ],
+        "steps": 234
+      },
+      {
+        "u": true,
+        "success": false,
+        "failure": true,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 86.6,
+        "sector_at_3u": "shortcut",
+        "final_xy": [
+          0.077,
+          3.389
+        ],
+        "steps": 82
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 1,
+        "reached_3u": true,
+        "heading_at_3u_deg": 10.2,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          1.421,
+          9.052
+        ],
+        "steps": 322
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 3.1,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          1.002,
+          8.53
+        ],
+        "steps": 181
+      },
+      {
+        "u": true,
+        "success": false,
+        "failure": true,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 91.2,
+        "sector_at_3u": "shortcut",
+        "final_xy": [
+          0.097,
+          3.245
+        ],
+        "steps": 35
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 1,
+        "reached_3u": true,
+        "heading_at_3u_deg": 84.5,
+        "sector_at_3u": "shortcut",
+        "final_xy": [
+          0.218,
+          8.901
+        ],
+        "steps": 107
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 90.0,
+        "sector_at_3u": "shortcut",
+        "final_xy": [
+          0.731,
+          8.191
+        ],
+        "steps": 96
+      },
+      {
+        "u": false,
+        "success": false,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 12,
+        "reached_3u": true,
+        "heading_at_3u_deg": 3.1,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          5.234,
+          6.884
+        ],
+        "steps": 400
+      },
+      {
+        "u": true,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 3.2,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          0.402,
+          8.553
+        ],
+        "steps": 181
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 1,
+        "reached_3u": true,
+        "heading_at_3u_deg": 4.9,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          0.387,
+          8.642
+        ],
+        "steps": 223
+      },
+      {
+        "u": true,
+        "success": false,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 1,
+        "reached_3u": true,
+        "heading_at_3u_deg": 1.2,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          5.894,
+          8.681
+        ],
+        "steps": 400
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 87.2,
+        "sector_at_3u": "shortcut",
+        "final_xy": [
+          0.654,
+          8.283
+        ],
+        "steps": 105
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 88.4,
+        "sector_at_3u": "shortcut",
+        "final_xy": [
+          1.218,
+          8.306
+        ],
+        "steps": 123
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 88.0,
+        "sector_at_3u": "shortcut",
+        "final_xy": [
+          0.772,
+          8.048
+        ],
+        "steps": 110
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": -0.5,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          0.874,
+          8.398
+        ],
+        "steps": 316
+      },
+      {
+        "u": true,
+        "success": false,
+        "failure": true,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 88.5,
+        "sector_at_3u": "shortcut",
+        "final_xy": [
+          0.097,
+          3.329
+        ],
+        "steps": 33
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 1.8,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          1.018,
+          8.855
+        ],
+        "steps": 168
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 2,
+        "reached_3u": true,
+        "heading_at_3u_deg": 65.0,
+        "sector_at_3u": "wall",
+        "final_xy": [
+          0.416,
+          7.934
+        ],
+        "steps": 182
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 89.3,
+        "sector_at_3u": "shortcut",
+        "final_xy": [
+          0.643,
+          8.465
+        ],
+        "steps": 92
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": -0.9,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          0.397,
+          8.657
+        ],
+        "steps": 178
+      },
+      {
+        "u": true,
+        "success": false,
+        "failure": true,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 91.7,
+        "sector_at_3u": "shortcut",
+        "final_xy": [
+          -0.077,
+          3.094
+        ],
+        "steps": 45
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 9.9,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          0.312,
+          8.627
+        ],
+        "steps": 349
+      },
+      {
+        "u": false,
+        "success": false,
+        "failure": false,
+        "route": null,
+        "jammed": true,
+        "max_jam_run": 172,
+        "reached_3u": false,
+        "heading_at_3u_deg": null,
+        "sector_at_3u": null,
+        "final_xy": [
+          1.024,
+          1.327
+        ],
+        "steps": 400
+      },
+      {
+        "u": false,
+        "success": false,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 2,
+        "reached_3u": true,
+        "heading_at_3u_deg": 4.2,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          6.08,
+          6.609
+        ],
+        "steps": 400
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 0.5,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          0.114,
+          9.131
+        ],
+        "steps": 176
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 8.0,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          0.756,
+          9.088
+        ],
+        "steps": 261
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": -0.7,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          0.838,
+          8.482
+        ],
+        "steps": 158
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 78.4,
+        "sector_at_3u": "shortcut",
+        "final_xy": [
+          0.891,
+          8.149
+        ],
+        "steps": 105
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 1.1,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          0.875,
+          8.347
+        ],
+        "steps": 147
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 91.4,
+        "sector_at_3u": "shortcut",
+        "final_xy": [
+          0.71,
+          8.127
+        ],
+        "steps": 88
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 85.0,
+        "sector_at_3u": "shortcut",
+        "final_xy": [
+          0.199,
+          8.106
+        ],
+        "steps": 123
+      },
+      {
+        "u": true,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 1.2,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          1.232,
+          8.901
+        ],
+        "steps": 183
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 82.3,
+        "sector_at_3u": "shortcut",
+        "final_xy": [
+          0.894,
+          8.548
+        ],
+        "steps": 94
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 83.1,
+        "sector_at_3u": "shortcut",
+        "final_xy": [
+          0.522,
+          7.826
+        ],
+        "steps": 75
+      },
+      {
+        "u": true,
+        "success": false,
+        "failure": true,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": false,
+        "heading_at_3u_deg": null,
+        "sector_at_3u": null,
+        "final_xy": [
+          -0.107,
+          2.899
+        ],
+        "steps": 46
+      },
+      {
+        "u": true,
+        "success": false,
+        "failure": true,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 87.4,
+        "sector_at_3u": "shortcut",
+        "final_xy": [
+          0.04,
+          3.215
+        ],
+        "steps": 35
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "shortcut",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 87.6,
+        "sector_at_3u": "shortcut",
+        "final_xy": [
+          0.614,
+          8.129
+        ],
+        "steps": 100
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 0.5,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          0.698,
+          8.633
+        ],
+        "steps": 201
+      },
+      {
+        "u": false,
+        "success": true,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 0,
+        "reached_3u": true,
+        "heading_at_3u_deg": 1.3,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          0.759,
+          9.263
+        ],
+        "steps": 166
+      },
+      {
+        "u": true,
+        "success": false,
+        "failure": false,
+        "route": "detour",
+        "jammed": false,
+        "max_jam_run": 28,
+        "reached_3u": true,
+        "heading_at_3u_deg": -0.5,
+        "sector_at_3u": "detour",
+        "final_xy": [
+          8.225,
+          8.774
+        ],
+        "steps": 400
+      }
+    ]
+  }
+}
