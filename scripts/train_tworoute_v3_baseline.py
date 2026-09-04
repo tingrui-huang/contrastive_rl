@@ -56,6 +56,11 @@ def main():
   #: it lowers EXECUTION difficulty for the long detour without touching the
   #: gamma=0.99 incentive references, which is the horizon-600 manipulation.
   ap.add_argument('--horizon', type=int, default=HORIZON)
+  #: CRL's reachability horizon. The critic relabels goals at offset d with
+  #: probability ~ discount**d (crl/replay.py), so this sets what the
+  #: objective considers reachable -- the knob that decides whether the
+  #: 236-step BR detour is valued at all. Default matches build_offline_cfg.
+  ap.add_argument('--discount', type=float, default=None)
   args = ap.parse_args()
 
   npz = args.npz or NPZ_TMPL.format(variant=args.variant)
@@ -67,6 +72,8 @@ def main():
   cfg.env_name = f'offline_ant_umaze_tworoute_rockfall_v3{args.variant}'
   cfg.offline_dataset = npz
   cfg.eval_goal_mode = 'd4rl'
+  if args.discount is not None:
+    cfg.discount = float(args.discount)
   cfg.rockfall_max_steps = args.horizon
   cfg.max_episode_steps = args.horizon
   cfg.bc_coef = 1.0 if args.method == 'gcbc' else 0.05

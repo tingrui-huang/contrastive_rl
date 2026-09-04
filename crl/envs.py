@@ -1066,11 +1066,18 @@ def make_env(env_name, config, seed=0, render_mode=None):
     # -> legacy reset (byte-identical), so nothing legacy changes.
     if getattr(config, 'rockfall_reset_fix', False):
       env._env.full_reset = True
-  elif env_name == 'offline_ant_umaze_tworoute_rockfall':
-    # Two-route AntMaze with a latent rockfall hazard on the shortcut
-    # (causal-transition V0 geometry). Separate module; same 58-dim obs
-    # contract; reuses the rockfall_* Config overrides where they apply.
+  elif env_name in ('offline_ant_umaze_tworoute_rockfall',
+                    'offline_ant_umaze_tworoute_rockfall_v3tr',
+                    'offline_ant_umaze_tworoute_rockfall_v3br'):
+    # Two-route AntMaze with a latent rockfall hazard on the shortcut.
+    # Base name = V2 (hazard on the west column; goal top-left). The _v3tr /
+    # _v3br variants move the hazard onto the EAST leg the canonical pose
+    # faces, and differ ONLY in the goal corner: tr = (8,8), equal-length
+    # symmetric routes (incentive ~ 0); br = (8,0), 2.9x length ratio (the
+    # discounted objective rationally prefers the hazardous shortcut). See
+    # crl/tworoute_rockfall_v3.py for the controlled-pair design.
     from crl.tworoute_rockfall_ant import TwoRouteRockfallAntEnv
+    from crl.tworoute_rockfall_v3 import TwoRouteRockfallV3Env
     eval_goals = None
     if getattr(config, 'offline_dataset', ''):
       with np.load(config.offline_dataset) as _d:
@@ -1085,9 +1092,15 @@ def make_env(env_name, config, seed=0, render_mode=None):
     _ms = getattr(config, 'rockfall_max_steps', None)
     if _ms is not None:
       _kw['max_episode_steps'] = int(_ms)
-    env = TwoRouteRockfallAntEnv(
-        seed=seed, render_mode=render_mode, eval_goals=eval_goals,
-        eval_goal_mode=getattr(config, 'eval_goal_mode', 'd4rl'), **_kw)
+    if env_name.endswith(('_v3tr', '_v3br')):
+      env = TwoRouteRockfallV3Env(
+          goal_corner=env_name[-2:], seed=seed, render_mode=render_mode,
+          eval_goals=eval_goals,
+          eval_goal_mode=getattr(config, 'eval_goal_mode', 'd4rl'), **_kw)
+    else:
+      env = TwoRouteRockfallAntEnv(
+          seed=seed, render_mode=render_mode, eval_goals=eval_goals,
+          eval_goal_mode=getattr(config, 'eval_goal_mode', 'd4rl'), **_kw)
     # the env already defaults to the canonical full reset (new benchmark,
     # no legacy byte-compat); the flag is honoured for uniformity.
     if getattr(config, 'rockfall_reset_fix', False):

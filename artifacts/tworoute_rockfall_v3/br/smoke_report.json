@@ -1,0 +1,916 @@
+{
+  "env_id": "offline_ant_umaze_tworoute_rockfall_v3br",
+  "variant": "br",
+  "seed": 12345,
+  "horizon": 400,
+  "checks": {
+    "T1_contract": true,
+    "T2_resets": true,
+    "T3_latent": true,
+    "T4_caseA_clear_shortcut": true,
+    "T5_caseB_active_shortcut": true,
+    "T6_caseC_clear_detour": true,
+    "T7_caseD_active_detour": true,
+    "T8_band_margins": true,
+    "T9_dynamics_timeout": true,
+    "T10_config_overrides": true,
+    "T11_geometry_open": true,
+    "T12_route_invariant": true,
+    "T13_success_latched": true,
+    "T14_physical_hiddenness": true,
+    "T15_canonical_pose": true,
+    "T16_rng_order_pinned": true,
+    "T17_goal_corner": true
+  },
+  "all_pass": true,
+  "detail": {
+    "T1": {
+      "obs_shape": [
+        58
+      ],
+      "goal_block_zero": true,
+      "max_episode_steps": 400
+    },
+    "T2": {
+      "start_absmax": 0.09163594245910645,
+      "goal_min": [
+        8.07614517211914,
+        0.12334563583135605
+      ],
+      "goal_max": [
+        9.235208511352539,
+        1.4452271461486816
+      ]
+    },
+    "T3": {
+      "freq_400": 0.3175,
+      "override_true": true,
+      "override_false": false,
+      "paired_obs_identical": true
+    },
+    "T4": [
+      {
+        "xy": [
+          1.2,
+          0.0
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": null,
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          2.2,
+          0.0
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": null,
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          3.2,
+          0.0
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": true,
+        "route": "shortcut",
+        "success": false,
+        "rock_triggered": true,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          4.4,
+          0.0
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": true,
+        "route": "shortcut",
+        "success": false,
+        "rock_triggered": true,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          5.8,
+          0.0
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": true,
+        "route": "shortcut",
+        "success": false,
+        "rock_triggered": true,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          7.0,
+          0.0
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": true,
+        "route": "shortcut",
+        "success": false,
+        "rock_triggered": true,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          8.327884674072266,
+          0.3503950238227844
+        ],
+        "r": 1.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": true,
+        "route": "shortcut",
+        "success": true,
+        "rock_triggered": true,
+        "rock_dropped": false,
+        "rock_contact": false
+      }
+    ],
+    "T5": {
+      "entry_rows": [
+        {
+          "xy": [
+            1.2,
+            0.0
+          ],
+          "r": 0.0,
+          "done": false,
+          "wall_contacts": 0,
+          "failure": false,
+          "entered_hazard": false,
+          "route": null,
+          "success": false,
+          "rock_triggered": false,
+          "rock_dropped": false,
+          "rock_contact": false
+        },
+        {
+          "xy": [
+            2.2,
+            0.0
+          ],
+          "r": 0.0,
+          "done": false,
+          "wall_contacts": 0,
+          "failure": false,
+          "entered_hazard": false,
+          "route": null,
+          "success": false,
+          "rock_triggered": false,
+          "rock_dropped": false,
+          "rock_contact": false
+        }
+      ],
+      "settle": [
+        {
+          "done": false,
+          "failure": false,
+          "rock_triggered": true,
+          "rock_dropped": true,
+          "rock_contact": false,
+          "route": "shortcut",
+          "success": false
+        },
+        {
+          "done": false,
+          "failure": false,
+          "rock_triggered": true,
+          "rock_dropped": true,
+          "rock_contact": false,
+          "route": "shortcut",
+          "success": false
+        },
+        {
+          "done": false,
+          "failure": false,
+          "rock_triggered": true,
+          "rock_dropped": true,
+          "rock_contact": false,
+          "route": "shortcut",
+          "success": false
+        },
+        {
+          "done": false,
+          "failure": false,
+          "rock_triggered": true,
+          "rock_dropped": true,
+          "rock_contact": false,
+          "route": "shortcut",
+          "success": false
+        },
+        {
+          "done": true,
+          "failure": true,
+          "rock_triggered": true,
+          "rock_dropped": true,
+          "rock_contact": true,
+          "route": "shortcut",
+          "success": false
+        }
+      ],
+      "rock_z": [
+        2.351,
+        2.004,
+        1.559,
+        1.015,
+        0.455
+      ],
+      "done_settle": 4,
+      "frozen_ok": true
+    },
+    "T6": [
+      {
+        "xy": [
+          0.0,
+          2.0
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": null,
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          0.0,
+          4.0
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": null,
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          0.0,
+          6.5
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": "detour",
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          0.0,
+          8.0
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": "detour",
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          2.5,
+          8.0
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": "detour",
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          5.0,
+          8.0
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": "detour",
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          8.0,
+          8.0
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": "detour",
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          8.0,
+          5.5
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": "detour",
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          8.0,
+          3.0
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": "detour",
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          8.0,
+          1.0
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": "detour",
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          8.55890941619873,
+          0.6840407848358154
+        ],
+        "r": 1.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": "detour",
+        "success": true,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      }
+    ],
+    "T7": [
+      {
+        "xy": [
+          0.0,
+          2.0
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": null,
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          0.0,
+          4.0
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": null,
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          0.0,
+          6.5
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": "detour",
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          0.0,
+          8.0
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": "detour",
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          2.5,
+          8.0
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": "detour",
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          5.0,
+          8.0
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": "detour",
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          8.0,
+          8.0
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": "detour",
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          8.0,
+          5.5
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": "detour",
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          8.0,
+          3.0
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": "detour",
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          8.0,
+          1.0
+        ],
+        "r": 0.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": "detour",
+        "success": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      },
+      {
+        "xy": [
+          9.108284950256348,
+          1.20856511592865
+        ],
+        "r": 1.0,
+        "done": false,
+        "wall_contacts": 0,
+        "failure": false,
+        "entered_hazard": false,
+        "route": "detour",
+        "success": true,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false
+      }
+    ],
+    "T8": {
+      "west_mouth": {
+        "rockfall_active": true,
+        "entered_hazard": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false,
+        "failure": false,
+        "dead": false,
+        "success": false,
+        "route": null
+      },
+      "east_mouth": {
+        "rockfall_active": true,
+        "entered_hazard": false,
+        "rock_triggered": false,
+        "rock_dropped": false,
+        "rock_contact": false,
+        "failure": false,
+        "dead": false,
+        "success": false,
+        "route": null
+      },
+      "inside": {
+        "rockfall_active": true,
+        "entered_hazard": true,
+        "rock_triggered": true,
+        "rock_dropped": true,
+        "rock_contact": false,
+        "failure": false,
+        "dead": false,
+        "success": false,
+        "route": "shortcut"
+      },
+      "predicate_width_ok": true
+    },
+    "T9": {
+      "random_ok": true,
+      "idle_failure": false,
+      "idle_success": false
+    },
+    "T10": {
+      "p_active": 0.45,
+      "max_steps": 800
+    },
+    "T11": {
+      "block_2_1_absent": true,
+      "block_2_2_present": true,
+      "n_blocks": 17,
+      "stand_in_opened_cell_ok": true,
+      "goal_cells_resolve": true,
+      "own_goal_cell_xy": [
+        8.0,
+        0.0
+      ]
+    },
+    "T12": {
+      "rows": [
+        {
+          "xy": [
+            0.0,
+            2.0
+          ],
+          "r": 0.0,
+          "done": false,
+          "wall_contacts": 0,
+          "failure": false,
+          "entered_hazard": false,
+          "route": null,
+          "success": false,
+          "rock_triggered": false,
+          "rock_dropped": false,
+          "rock_contact": false
+        },
+        {
+          "xy": [
+            0.0,
+            4.0
+          ],
+          "r": 0.0,
+          "done": false,
+          "wall_contacts": 0,
+          "failure": false,
+          "entered_hazard": false,
+          "route": null,
+          "success": false,
+          "rock_triggered": false,
+          "rock_dropped": false,
+          "rock_contact": false
+        },
+        {
+          "xy": [
+            0.0,
+            6.5
+          ],
+          "r": 0.0,
+          "done": false,
+          "wall_contacts": 0,
+          "failure": false,
+          "entered_hazard": false,
+          "route": "detour",
+          "success": false,
+          "rock_triggered": false,
+          "rock_dropped": false,
+          "rock_contact": false
+        },
+        {
+          "xy": [
+            0.0,
+            3.0
+          ],
+          "r": 0.0,
+          "done": false,
+          "wall_contacts": 0,
+          "failure": false,
+          "entered_hazard": false,
+          "route": "detour",
+          "success": false,
+          "rock_triggered": false,
+          "rock_dropped": false,
+          "rock_contact": false
+        },
+        {
+          "xy": [
+            1.2,
+            0.0
+          ],
+          "r": 0.0,
+          "done": false,
+          "wall_contacts": 0,
+          "failure": false,
+          "entered_hazard": false,
+          "route": "detour",
+          "success": false,
+          "rock_triggered": false,
+          "rock_dropped": false,
+          "rock_contact": false
+        },
+        {
+          "xy": [
+            3.2,
+            0.0
+          ],
+          "r": 0.0,
+          "done": false,
+          "wall_contacts": 0,
+          "failure": false,
+          "entered_hazard": true,
+          "route": "shortcut",
+          "success": false,
+          "rock_triggered": true,
+          "rock_dropped": true,
+          "rock_contact": false
+        }
+      ],
+      "fail_info": {
+        "rockfall_active": true,
+        "entered_hazard": true,
+        "rock_triggered": true,
+        "rock_dropped": true,
+        "rock_contact": true,
+        "failure": true,
+        "dead": true,
+        "success": false,
+        "route": "shortcut"
+      }
+    },
+    "T13": {
+      "post_goal_band_step": {
+        "rockfall_active": true,
+        "entered_hazard": true,
+        "rock_triggered": true,
+        "rock_dropped": true,
+        "rock_contact": false,
+        "failure": false,
+        "dead": false,
+        "success": true,
+        "route": "shortcut"
+      },
+      "done": false
+    },
+    "T14": {
+      "parked_identical": true,
+      "inactive_trigger": {
+        "rockfall_active": false,
+        "entered_hazard": true,
+        "rock_triggered": true,
+        "rock_dropped": false,
+        "rock_contact": false,
+        "failure": false,
+        "dead": false,
+        "success": false,
+        "route": "shortcut"
+      },
+      "rock_moved": 0.012022015456064211
+    },
+    "T15": {
+      "yaw_deg_range": [
+        -11.68,
+        11.27
+      ],
+      "reset_params": [
+        "rockfall_active"
+      ],
+      "has_default_heading": false
+    },
+    "T16": {
+      "expected_latents": {
+        "0": [
+          false,
+          false,
+          true,
+          false,
+          false
+        ],
+        "7": [
+          false,
+          false,
+          true,
+          false,
+          true
+        ],
+        "909": [
+          true,
+          false,
+          false,
+          false,
+          false
+        ]
+      },
+      "got": {
+        "0": {
+          "latents": [
+            false,
+            false,
+            true,
+            false,
+            false
+          ],
+          "jitter_row0": [
+            0.027365320232,
+            0.036680888082
+          ]
+        },
+        "7": {
+          "latents": [
+            false,
+            false,
+            true,
+            false,
+            true
+          ],
+          "jitter_row0": [
+            0.023794493523,
+            -0.045324846818
+          ]
+        },
+        "909": {
+          "latents": [
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          "jitter_row0": [
+            0.061394139017,
+            0.069811856466
+          ]
+        }
+      }
+    },
+    "T17": {
+      "own_goal_min": [
+        8.036705017089844,
+        0.14673981070518494
+      ],
+      "own_goal_max": [
+        9.388958930969238,
+        1.4012221097946167
+      ],
+      "other_goal_min": [
+        8.088497161865234,
+        8.105117797851562
+      ],
+      "other_goal_max": [
+        9.1947603225708,
+        9.264327049255371
+      ],
+      "variants_differ": true
+    }
+  },
+  "hazard_zone": [
+    2.6,
+    5.4,
+    -2.0,
+    2.0
+  ],
+  "goal_cell_xy": [
+    8.0,
+    0.0
+  ],
+  "p_active": 0.3
+}

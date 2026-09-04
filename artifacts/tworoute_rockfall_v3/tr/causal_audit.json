@@ -1,0 +1,97 @@
+{
+  "variant": "tr",
+  "env": "offline_ant_umaze_tworoute_rockfall_v3tr",
+  "observational": {
+    "n_episodes": 400,
+    "route_basis": "route_realized (band entry authoritative); the v2 audit conditioned on intent",
+    "intent_realized_mismatch": 0,
+    "teacher_success": 0.98,
+    "teacher_failure": 0.0,
+    "P_shortcut": 0.71,
+    "P_detour": 0.29,
+    "P_shortcut_given_clear": 1.0,
+    "P_shortcut_given_active": 0.0,
+    "P_detour_given_clear": 0.0,
+    "P_detour_given_active": 1.0,
+    "P_success_given_shortcut_observed": 0.9718,
+    "P_success_given_shortcut_observed_ci95": [
+      0.9454,
+      0.9857
+    ],
+    "P_success_given_detour_observed": 1.0,
+    "n_shortcut": 284,
+    "n_detour": 116
+  },
+  "do_shortcut": {
+    "n": 250,
+    "P_success": 0.7,
+    "P_success_ci95": [
+      0.6405,
+      0.7534
+    ],
+    "P_failure": 0.272,
+    "P_active_drawn": 0.272,
+    "P_success_given_clear": 0.9615,
+    "P_success_given_active": 0.0,
+    "mean_steps_given_success": 161.2,
+    "discounted_mean": 0.1414,
+    "discounted_mean_given_success": 0.202,
+    "discounted_mean_given_clear": 0.1942,
+    "discounted_mean_given_active": 0.0
+  },
+  "do_detour": {
+    "n": 250,
+    "P_success": 0.964,
+    "P_success_ci95": [
+      0.933,
+      0.9809
+    ],
+    "P_failure": 0.0,
+    "P_active_drawn": 0.344,
+    "P_success_given_clear": 0.9695,
+    "P_success_given_active": 0.9535,
+    "mean_steps_given_success": 166.9,
+    "discounted_mean": 0.1845,
+    "discounted_mean_given_success": 0.1913,
+    "discounted_mean_given_clear": 0.1841,
+    "discounted_mean_given_active": 0.1852
+  },
+  "gap_shortcut_observational_minus_interventional": 0.2718,
+  "verdict": "CONFOUNDING PRESENT",
+  "discounted": {
+    "gamma": 0.99,
+    "definition": "0.99**steps if success else 0.0; the headline mean is over ALL episodes (the pre-registered-reference convention); *_given_success averages successes only",
+    "observational": {
+      "overall": 0.1978,
+      "shortcut_observed": 0.1984,
+      "detour_observed": 0.1964
+    },
+    "do_shortcut": {
+      "discounted_mean": 0.1414,
+      "discounted_mean_given_success": 0.202
+    },
+    "do_detour": {
+      "discounted_mean": 0.1845,
+      "discounted_mean_given_success": 0.1913
+    },
+    "oracle_composition": {
+      "p_active": 0.3,
+      "formula": "(1-p)*E[.|do(shortcut), clear] + p*E[.|do(detour), active]",
+      "sparse_success": 0.9591,
+      "discounted": 0.1915
+    },
+    "reference": {
+      "sparse_success": {
+        "always_shortcut": 0.7,
+        "always_detour": 0.96,
+        "oracle": 0.988
+      },
+      "discounted_gamma_0.99": {
+        "shortcut": 0.146,
+        "detour": 0.185,
+        "oracle": 0.201,
+        "best_blind": "detour"
+      }
+    }
+  }
+}

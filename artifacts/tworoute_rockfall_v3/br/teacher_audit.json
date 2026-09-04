@@ -1,0 +1,4843 @@
+{
+  "variant": "br",
+  "env": "offline_ant_umaze_tworoute_rockfall_v3br",
+  "summary": {
+    "n": 300,
+    "n_clear": 221,
+    "n_active": 79,
+    "success": 0.9667,
+    "failure": 0.0,
+    "timeout": 0.0333,
+    "P_shortcut_given_clear": 1.0,
+    "P_detour_given_active": 0.9241,
+    "route_choice_accuracy": 0.98,
+    "route_realized_counts": {
+      "shortcut": 221,
+      "detour": 73,
+      "none": 6
+    },
+    "success_by_route": {
+      "shortcut": 1.0,
+      "detour": 0.9452
+    },
+    "failure_by_route": {
+      "shortcut": 0.0,
+      "detour": 0.0
+    },
+    "mean_steps_by_route": {
+      "shortcut": 77.9,
+      "detour": 236.1
+    },
+    "discounted_return_by_route": {
+      "shortcut": 0.4574,
+      "detour": 0.1046
+    },
+    "discounted_return": 0.3735
+  },
+  "targets_met": true,
+  "seed": 101,
+  "p_active": 0.3,
+  "horizon": 400,
+  "episodes": [
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 215,
+      "return": 1.0,
+      "final_xy": [
+        8.242,
+        1.203
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 75,
+      "return": 1.0,
+      "final_xy": [
+        8.1,
+        0.773
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.55,
+        1.162
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 76,
+      "return": 1.0,
+      "final_xy": [
+        8.407,
+        0.922
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 73,
+      "return": 1.0,
+      "final_xy": [
+        7.814,
+        0.185
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.712,
+        0.198
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 82,
+      "return": 1.0,
+      "final_xy": [
+        8.589,
+        0.871
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 72,
+      "return": 1.0,
+      "final_xy": [
+        7.782,
+        1.211
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 215,
+      "return": 1.0,
+      "final_xy": [
+        8.846,
+        0.927
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 83,
+      "return": 1.0,
+      "final_xy": [
+        8.933,
+        0.384
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 81,
+      "return": 1.0,
+      "final_xy": [
+        8.515,
+        0.898
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 77,
+      "return": 1.0,
+      "final_xy": [
+        7.866,
+        0.791
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        7.877,
+        1.335
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 74,
+      "return": 1.0,
+      "final_xy": [
+        8.258,
+        1.011
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 80,
+      "return": 1.0,
+      "final_xy": [
+        8.187,
+        0.95
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 256,
+      "return": 1.0,
+      "final_xy": [
+        8.587,
+        0.719
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 76,
+      "return": 1.0,
+      "final_xy": [
+        8.358,
+        0.698
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 83,
+      "return": 1.0,
+      "final_xy": [
+        8.824,
+        0.553
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 75,
+      "return": 1.0,
+      "final_xy": [
+        8.282,
+        0.811
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.251,
+        0.137
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.16,
+        0.135
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 72,
+      "return": 1.0,
+      "final_xy": [
+        7.714,
+        0.562
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 76,
+      "return": 1.0,
+      "final_xy": [
+        8.354,
+        0.982
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 223,
+      "return": 1.0,
+      "final_xy": [
+        8.396,
+        0.734
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.552,
+        0.402
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 77,
+      "return": 1.0,
+      "final_xy": [
+        8.22,
+        0.603
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 77,
+      "return": 1.0,
+      "final_xy": [
+        8.522,
+        0.679
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 229,
+      "return": 1.0,
+      "final_xy": [
+        8.365,
+        0.959
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 84,
+      "return": 1.0,
+      "final_xy": [
+        8.366,
+        1.215
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 81,
+      "return": 1.0,
+      "final_xy": [
+        8.506,
+        0.857
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 76,
+      "return": 1.0,
+      "final_xy": [
+        8.385,
+        0.985
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.388,
+        0.26
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 71,
+      "return": 1.0,
+      "final_xy": [
+        7.764,
+        1.021
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 81,
+      "return": 1.0,
+      "final_xy": [
+        8.65,
+        0.608
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": false,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 400,
+      "return": 0.0,
+      "final_xy": [
+        9.066,
+        -0.769
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 221,
+      "return": 1.0,
+      "final_xy": [
+        8.799,
+        0.764
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 76,
+      "return": 1.0,
+      "final_xy": [
+        7.983,
+        0.438
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 235,
+      "return": 1.0,
+      "final_xy": [
+        8.536,
+        1.072
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 227,
+      "return": 1.0,
+      "final_xy": [
+        8.368,
+        1.144
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.292,
+        0.49
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        7.783,
+        1.189
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 74,
+      "return": 1.0,
+      "final_xy": [
+        7.9,
+        0.562
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 209,
+      "return": 1.0,
+      "final_xy": [
+        8.396,
+        1.204
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 81,
+      "return": 1.0,
+      "final_xy": [
+        8.654,
+        1.646
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 77,
+      "return": 1.0,
+      "final_xy": [
+        8.425,
+        0.831
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.35,
+        0.402
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 208,
+      "return": 1.0,
+      "final_xy": [
+        8.64,
+        1.117
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 83,
+      "return": 1.0,
+      "final_xy": [
+        8.48,
+        0.26
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 214,
+      "return": 1.0,
+      "final_xy": [
+        8.792,
+        0.974
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 76,
+      "return": 1.0,
+      "final_xy": [
+        8.299,
+        0.425
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.571,
+        1.276
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 81,
+      "return": 1.0,
+      "final_xy": [
+        8.687,
+        0.982
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        7.807,
+        0.765
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.301,
+        0.705
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 206,
+      "return": 1.0,
+      "final_xy": [
+        8.1,
+        1.499
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 216,
+      "return": 1.0,
+      "final_xy": [
+        8.6,
+        0.951
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 71,
+      "return": 1.0,
+      "final_xy": [
+        8.106,
+        0.91
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 243,
+      "return": 1.0,
+      "final_xy": [
+        8.656,
+        0.885
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 204,
+      "return": 1.0,
+      "final_xy": [
+        8.116,
+        1.123
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.26,
+        1.026
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 230,
+      "return": 1.0,
+      "final_xy": [
+        8.328,
+        0.626
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 214,
+      "return": 1.0,
+      "final_xy": [
+        8.492,
+        0.862
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 216,
+      "return": 1.0,
+      "final_xy": [
+        8.76,
+        0.972
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 83,
+      "return": 1.0,
+      "final_xy": [
+        8.476,
+        1.2
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 74,
+      "return": 1.0,
+      "final_xy": [
+        8.013,
+        0.711
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.5,
+        0.98
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 72,
+      "return": 1.0,
+      "final_xy": [
+        8.083,
+        0.352
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.704,
+        0.445
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 80,
+      "return": 1.0,
+      "final_xy": [
+        8.785,
+        0.702
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 76,
+      "return": 1.0,
+      "final_xy": [
+        8.246,
+        0.682
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.192,
+        1.367
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 73,
+      "return": 1.0,
+      "final_xy": [
+        8.158,
+        0.263
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 82,
+      "return": 1.0,
+      "final_xy": [
+        8.686,
+        1.001
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.641,
+        0.969
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 218,
+      "return": 1.0,
+      "final_xy": [
+        8.647,
+        1.202
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 71,
+      "return": 1.0,
+      "final_xy": [
+        8.089,
+        0.639
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 72,
+      "return": 1.0,
+      "final_xy": [
+        7.698,
+        0.549
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 217,
+      "return": 1.0,
+      "final_xy": [
+        8.482,
+        1.055
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 68,
+      "return": 1.0,
+      "final_xy": [
+        7.792,
+        1.053
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 214,
+      "return": 1.0,
+      "final_xy": [
+        8.651,
+        0.866
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 234,
+      "return": 1.0,
+      "final_xy": [
+        8.08,
+        1.069
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 75,
+      "return": 1.0,
+      "final_xy": [
+        7.863,
+        0.646
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 229,
+      "return": 1.0,
+      "final_xy": [
+        8.29,
+        1.129
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 214,
+      "return": 1.0,
+      "final_xy": [
+        8.426,
+        0.651
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 80,
+      "return": 1.0,
+      "final_xy": [
+        8.18,
+        0.37
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 212,
+      "return": 1.0,
+      "final_xy": [
+        8.511,
+        1.063
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.706,
+        0.243
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 225,
+      "return": 1.0,
+      "final_xy": [
+        8.411,
+        0.754
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 262,
+      "return": 1.0,
+      "final_xy": [
+        8.886,
+        1.033
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 81,
+      "return": 1.0,
+      "final_xy": [
+        8.297,
+        1.034
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.588,
+        1.426
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 76,
+      "return": 1.0,
+      "final_xy": [
+        8.226,
+        0.485
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 83,
+      "return": 1.0,
+      "final_xy": [
+        8.734,
+        0.713
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": false,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 400,
+      "return": 0.0,
+      "final_xy": [
+        8.779,
+        -0.818
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 218,
+      "return": 1.0,
+      "final_xy": [
+        8.439,
+        0.711
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 217,
+      "return": 1.0,
+      "final_xy": [
+        9.081,
+        0.813
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 83,
+      "return": 1.0,
+      "final_xy": [
+        8.716,
+        1.389
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.771,
+        0.998
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.374,
+        0.388
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 76,
+      "return": 1.0,
+      "final_xy": [
+        8.461,
+        0.691
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 206,
+      "return": 1.0,
+      "final_xy": [
+        8.788,
+        0.668
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 75,
+      "return": 1.0,
+      "final_xy": [
+        7.953,
+        0.789
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.445,
+        0.908
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 221,
+      "return": 1.0,
+      "final_xy": [
+        8.772,
+        0.859
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 82,
+      "return": 1.0,
+      "final_xy": [
+        8.78,
+        0.419
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 76,
+      "return": 1.0,
+      "final_xy": [
+        8.273,
+        0.556
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 82,
+      "return": 1.0,
+      "final_xy": [
+        9.054,
+        0.497
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 80,
+      "return": 1.0,
+      "final_xy": [
+        8.766,
+        0.682
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 74,
+      "return": 1.0,
+      "final_xy": [
+        8.234,
+        1.216
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 72,
+      "return": 1.0,
+      "final_xy": [
+        8.229,
+        0.737
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 72,
+      "return": 1.0,
+      "final_xy": [
+        7.643,
+        1.276
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 71,
+      "return": 1.0,
+      "final_xy": [
+        7.767,
+        0.948
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 74,
+      "return": 1.0,
+      "final_xy": [
+        8.07,
+        0.856
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 241,
+      "return": 1.0,
+      "final_xy": [
+        8.804,
+        1.0
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 72,
+      "return": 1.0,
+      "final_xy": [
+        7.888,
+        0.095
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 75,
+      "return": 1.0,
+      "final_xy": [
+        8.278,
+        0.575
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 76,
+      "return": 1.0,
+      "final_xy": [
+        8.156,
+        1.349
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 211,
+      "return": 1.0,
+      "final_xy": [
+        8.424,
+        1.163
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 83,
+      "return": 1.0,
+      "final_xy": [
+        8.857,
+        0.452
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.747,
+        0.803
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 72,
+      "return": 1.0,
+      "final_xy": [
+        7.838,
+        0.258
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 235,
+      "return": 1.0,
+      "final_xy": [
+        8.702,
+        0.679
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 84,
+      "return": 1.0,
+      "final_xy": [
+        8.575,
+        0.882
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 77,
+      "return": 1.0,
+      "final_xy": [
+        8.372,
+        0.798
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 75,
+      "return": 1.0,
+      "final_xy": [
+        8.282,
+        0.867
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 74,
+      "return": 1.0,
+      "final_xy": [
+        7.752,
+        1.268
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.674,
+        0.897
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 76,
+      "return": 1.0,
+      "final_xy": [
+        8.159,
+        0.776
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 76,
+      "return": 1.0,
+      "final_xy": [
+        8.328,
+        0.742
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.961,
+        0.089
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 81,
+      "return": 1.0,
+      "final_xy": [
+        7.852,
+        1.041
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.397,
+        0.786
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 75,
+      "return": 1.0,
+      "final_xy": [
+        8.064,
+        0.974
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 73,
+      "return": 1.0,
+      "final_xy": [
+        7.988,
+        1.193
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": null,
+      "success": false,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 400,
+      "return": 0.0,
+      "final_xy": [
+        2.545,
+        0.892
+      ],
+      "final_leg": 1
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 225,
+      "return": 1.0,
+      "final_xy": [
+        8.432,
+        0.594
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 81,
+      "return": 1.0,
+      "final_xy": [
+        8.35,
+        0.087
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.74,
+        0.178
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 74,
+      "return": 1.0,
+      "final_xy": [
+        8.238,
+        0.64
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 81,
+      "return": 1.0,
+      "final_xy": [
+        8.494,
+        0.306
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 76,
+      "return": 1.0,
+      "final_xy": [
+        8.18,
+        1.079
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 222,
+      "return": 1.0,
+      "final_xy": [
+        8.628,
+        0.632
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 217,
+      "return": 1.0,
+      "final_xy": [
+        8.577,
+        0.917
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 72,
+      "return": 1.0,
+      "final_xy": [
+        7.999,
+        0.698
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 80,
+      "return": 1.0,
+      "final_xy": [
+        8.512,
+        1.053
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.52,
+        1.153
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 75,
+      "return": 1.0,
+      "final_xy": [
+        8.031,
+        0.368
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 80,
+      "return": 1.0,
+      "final_xy": [
+        8.603,
+        1.096
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 215,
+      "return": 1.0,
+      "final_xy": [
+        8.666,
+        1.187
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 227,
+      "return": 1.0,
+      "final_xy": [
+        8.726,
+        0.496
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 74,
+      "return": 1.0,
+      "final_xy": [
+        7.972,
+        1.153
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 80,
+      "return": 1.0,
+      "final_xy": [
+        8.548,
+        0.891
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 213,
+      "return": 1.0,
+      "final_xy": [
+        8.494,
+        1.053
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 216,
+      "return": 1.0,
+      "final_xy": [
+        8.0,
+        1.47
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 75,
+      "return": 1.0,
+      "final_xy": [
+        7.977,
+        0.822
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.77,
+        0.67
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 77,
+      "return": 1.0,
+      "final_xy": [
+        8.283,
+        0.737
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 74,
+      "return": 1.0,
+      "final_xy": [
+        8.001,
+        0.878
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.733,
+        0.206
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.429,
+        0.169
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 73,
+      "return": 1.0,
+      "final_xy": [
+        8.016,
+        0.773
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 74,
+      "return": 1.0,
+      "final_xy": [
+        8.534,
+        1.134
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 81,
+      "return": 1.0,
+      "final_xy": [
+        8.662,
+        1.132
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 81,
+      "return": 1.0,
+      "final_xy": [
+        8.516,
+        0.354
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.48,
+        1.023
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 229,
+      "return": 1.0,
+      "final_xy": [
+        8.53,
+        1.307
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 86,
+      "return": 1.0,
+      "final_xy": [
+        8.981,
+        0.492
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 80,
+      "return": 1.0,
+      "final_xy": [
+        8.556,
+        0.857
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 83,
+      "return": 1.0,
+      "final_xy": [
+        8.717,
+        0.527
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 76,
+      "return": 1.0,
+      "final_xy": [
+        8.257,
+        1.339
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 76,
+      "return": 1.0,
+      "final_xy": [
+        8.147,
+        1.16
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 123,
+      "return": 1.0,
+      "final_xy": [
+        8.308,
+        1.096
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 73,
+      "return": 1.0,
+      "final_xy": [
+        7.736,
+        0.792
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 77,
+      "return": 1.0,
+      "final_xy": [
+        8.583,
+        0.883
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 73,
+      "return": 1.0,
+      "final_xy": [
+        7.841,
+        0.701
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.399,
+        0.902
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 82,
+      "return": 1.0,
+      "final_xy": [
+        8.872,
+        0.319
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 230,
+      "return": 1.0,
+      "final_xy": [
+        8.499,
+        1.073
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 74,
+      "return": 1.0,
+      "final_xy": [
+        8.133,
+        0.951
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 76,
+      "return": 1.0,
+      "final_xy": [
+        8.279,
+        0.48
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 232,
+      "return": 1.0,
+      "final_xy": [
+        8.18,
+        1.476
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.555,
+        0.408
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 74,
+      "return": 1.0,
+      "final_xy": [
+        8.161,
+        0.153
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 74,
+      "return": 1.0,
+      "final_xy": [
+        8.225,
+        1.118
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 81,
+      "return": 1.0,
+      "final_xy": [
+        8.258,
+        0.821
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.53,
+        1.122
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 72,
+      "return": 1.0,
+      "final_xy": [
+        7.68,
+        1.054
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 72,
+      "return": 1.0,
+      "final_xy": [
+        7.783,
+        0.317
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 294,
+      "return": 1.0,
+      "final_xy": [
+        8.244,
+        1.018
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 83,
+      "return": 1.0,
+      "final_xy": [
+        8.643,
+        1.477
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 81,
+      "return": 1.0,
+      "final_xy": [
+        8.412,
+        0.828
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 74,
+      "return": 1.0,
+      "final_xy": [
+        7.978,
+        0.967
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 232,
+      "return": 1.0,
+      "final_xy": [
+        8.689,
+        0.959
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 82,
+      "return": 1.0,
+      "final_xy": [
+        8.748,
+        0.705
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 80,
+      "return": 1.0,
+      "final_xy": [
+        8.891,
+        0.675
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 75,
+      "return": 1.0,
+      "final_xy": [
+        7.961,
+        0.283
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 202,
+      "return": 1.0,
+      "final_xy": [
+        7.949,
+        1.717
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.654,
+        0.814
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": null,
+      "success": false,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 400,
+      "return": 0.0,
+      "final_xy": [
+        0.854,
+        2.173
+      ],
+      "final_leg": 1
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 80,
+      "return": 1.0,
+      "final_xy": [
+        8.367,
+        1.286
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 77,
+      "return": 1.0,
+      "final_xy": [
+        8.405,
+        0.693
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 83,
+      "return": 1.0,
+      "final_xy": [
+        8.942,
+        0.238
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 80,
+      "return": 1.0,
+      "final_xy": [
+        8.376,
+        0.73
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 82,
+      "return": 1.0,
+      "final_xy": [
+        8.295,
+        0.458
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 72,
+      "return": 1.0,
+      "final_xy": [
+        7.97,
+        0.932
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": false,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 400,
+      "return": 0.0,
+      "final_xy": [
+        8.898,
+        -0.956
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": false,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 400,
+      "return": 0.0,
+      "final_xy": [
+        8.667,
+        -0.734
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 81,
+      "return": 1.0,
+      "final_xy": [
+        8.158,
+        0.909
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 77,
+      "return": 1.0,
+      "final_xy": [
+        8.477,
+        0.455
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 213,
+      "return": 1.0,
+      "final_xy": [
+        8.866,
+        0.867
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 219,
+      "return": 1.0,
+      "final_xy": [
+        8.63,
+        1.109
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.471,
+        1.418
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 84,
+      "return": 1.0,
+      "final_xy": [
+        8.73,
+        1.115
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 77,
+      "return": 1.0,
+      "final_xy": [
+        8.525,
+        0.612
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 73,
+      "return": 1.0,
+      "final_xy": [
+        8.065,
+        0.666
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 77,
+      "return": 1.0,
+      "final_xy": [
+        8.547,
+        0.682
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 75,
+      "return": 1.0,
+      "final_xy": [
+        8.176,
+        0.309
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 241,
+      "return": 1.0,
+      "final_xy": [
+        9.024,
+        1.056
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 73,
+      "return": 1.0,
+      "final_xy": [
+        7.53,
+        0.681
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 80,
+      "return": 1.0,
+      "final_xy": [
+        8.83,
+        0.227
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 238,
+      "return": 1.0,
+      "final_xy": [
+        8.25,
+        1.566
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 74,
+      "return": 1.0,
+      "final_xy": [
+        8.194,
+        1.319
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 80,
+      "return": 1.0,
+      "final_xy": [
+        8.524,
+        0.762
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 80,
+      "return": 1.0,
+      "final_xy": [
+        8.504,
+        0.979
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 82,
+      "return": 1.0,
+      "final_xy": [
+        8.969,
+        1.003
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 77,
+      "return": 1.0,
+      "final_xy": [
+        8.422,
+        0.512
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 76,
+      "return": 1.0,
+      "final_xy": [
+        8.113,
+        0.836
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.575,
+        0.767
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 74,
+      "return": 1.0,
+      "final_xy": [
+        7.999,
+        0.924
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 75,
+      "return": 1.0,
+      "final_xy": [
+        8.116,
+        0.785
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 216,
+      "return": 1.0,
+      "final_xy": [
+        8.651,
+        0.933
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 81,
+      "return": 1.0,
+      "final_xy": [
+        8.4,
+        0.814
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 80,
+      "return": 1.0,
+      "final_xy": [
+        8.487,
+        0.913
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 82,
+      "return": 1.0,
+      "final_xy": [
+        8.883,
+        0.317
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.059,
+        1.142
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.487,
+        0.653
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.234,
+        1.005
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 222,
+      "return": 1.0,
+      "final_xy": [
+        8.64,
+        1.259
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 80,
+      "return": 1.0,
+      "final_xy": [
+        8.167,
+        0.885
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 245,
+      "return": 1.0,
+      "final_xy": [
+        8.634,
+        0.841
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 82,
+      "return": 1.0,
+      "final_xy": [
+        8.457,
+        0.755
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 81,
+      "return": 1.0,
+      "final_xy": [
+        8.816,
+        0.129
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 81,
+      "return": 1.0,
+      "final_xy": [
+        8.832,
+        0.598
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 80,
+      "return": 1.0,
+      "final_xy": [
+        8.207,
+        0.67
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 225,
+      "return": 1.0,
+      "final_xy": [
+        8.716,
+        0.623
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": null,
+      "success": false,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 400,
+      "return": 0.0,
+      "final_xy": [
+        1.668,
+        -0.87
+      ],
+      "final_leg": 1
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 82,
+      "return": 1.0,
+      "final_xy": [
+        8.667,
+        0.743
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.232,
+        0.421
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 84,
+      "return": 1.0,
+      "final_xy": [
+        8.695,
+        0.899
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 253,
+      "return": 1.0,
+      "final_xy": [
+        8.69,
+        1.272
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 75,
+      "return": 1.0,
+      "final_xy": [
+        8.053,
+        0.943
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 74,
+      "return": 1.0,
+      "final_xy": [
+        8.062,
+        0.221
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 83,
+      "return": 1.0,
+      "final_xy": [
+        8.782,
+        0.573
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 73,
+      "return": 1.0,
+      "final_xy": [
+        7.804,
+        0.364
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.206,
+        0.749
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 219,
+      "return": 1.0,
+      "final_xy": [
+        7.979,
+        1.323
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 74,
+      "return": 1.0,
+      "final_xy": [
+        8.087,
+        0.329
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 295,
+      "return": 1.0,
+      "final_xy": [
+        9.053,
+        1.074
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 77,
+      "return": 1.0,
+      "final_xy": [
+        8.503,
+        0.737
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 76,
+      "return": 1.0,
+      "final_xy": [
+        7.981,
+        0.666
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 84,
+      "return": 1.0,
+      "final_xy": [
+        8.745,
+        1.195
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 76,
+      "return": 1.0,
+      "final_xy": [
+        8.233,
+        1.132
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": null,
+      "success": false,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 400,
+      "return": 0.0,
+      "final_xy": [
+        1.098,
+        -0.49
+      ],
+      "final_leg": 1
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 247,
+      "return": 1.0,
+      "final_xy": [
+        8.685,
+        0.882
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 207,
+      "return": 1.0,
+      "final_xy": [
+        8.541,
+        0.98
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 321,
+      "return": 1.0,
+      "final_xy": [
+        8.22,
+        1.151
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 80,
+      "return": 1.0,
+      "final_xy": [
+        8.669,
+        0.797
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 82,
+      "return": 1.0,
+      "final_xy": [
+        8.318,
+        0.877
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.601,
+        0.731
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 104,
+      "return": 1.0,
+      "final_xy": [
+        9.043,
+        0.787
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.22,
+        0.737
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": null,
+      "success": false,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 400,
+      "return": 0.0,
+      "final_xy": [
+        0.995,
+        0.407
+      ],
+      "final_leg": 1
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 248,
+      "return": 1.0,
+      "final_xy": [
+        8.471,
+        1.299
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 214,
+      "return": 1.0,
+      "final_xy": [
+        8.737,
+        1.024
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 81,
+      "return": 1.0,
+      "final_xy": [
+        8.65,
+        0.953
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 74,
+      "return": 1.0,
+      "final_xy": [
+        8.265,
+        1.351
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.494,
+        0.72
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.599,
+        0.734
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 75,
+      "return": 1.0,
+      "final_xy": [
+        8.089,
+        0.599
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 214,
+      "return": 1.0,
+      "final_xy": [
+        8.63,
+        0.758
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 73,
+      "return": 1.0,
+      "final_xy": [
+        8.269,
+        0.254
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 76,
+      "return": 1.0,
+      "final_xy": [
+        8.127,
+        0.632
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 223,
+      "return": 1.0,
+      "final_xy": [
+        8.25,
+        1.403
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 76,
+      "return": 1.0,
+      "final_xy": [
+        8.328,
+        0.571
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 209,
+      "return": 1.0,
+      "final_xy": [
+        8.645,
+        0.956
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 78,
+      "return": 1.0,
+      "final_xy": [
+        8.725,
+        1.297
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 80,
+      "return": 1.0,
+      "final_xy": [
+        8.475,
+        0.572
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 77,
+      "return": 1.0,
+      "final_xy": [
+        8.392,
+        0.194
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 81,
+      "return": 1.0,
+      "final_xy": [
+        8.587,
+        0.14
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": null,
+      "success": false,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 400,
+      "return": 0.0,
+      "final_xy": [
+        1.712,
+        2.027
+      ],
+      "final_leg": 1
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.697,
+        1.135
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 230,
+      "return": 1.0,
+      "final_xy": [
+        8.332,
+        0.667
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 70,
+      "return": 1.0,
+      "final_xy": [
+        7.717,
+        0.601
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 81,
+      "return": 1.0,
+      "final_xy": [
+        8.635,
+        0.281
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 74,
+      "return": 1.0,
+      "final_xy": [
+        8.404,
+        1.037
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 80,
+      "return": 1.0,
+      "final_xy": [
+        8.378,
+        0.745
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 212,
+      "return": 1.0,
+      "final_xy": [
+        8.613,
+        1.015
+      ],
+      "final_leg": 4
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 79,
+      "return": 1.0,
+      "final_xy": [
+        8.185,
+        1.274
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": false,
+      "route_intent": "shortcut",
+      "route_realized": "shortcut",
+      "success": true,
+      "failure": false,
+      "entered_hazard": true,
+      "rock_dropped": false,
+      "steps": 74,
+      "return": 1.0,
+      "final_xy": [
+        8.138,
+        0.608
+      ],
+      "final_leg": 2
+    },
+    {
+      "rockfall_active": true,
+      "route_intent": "detour",
+      "route_realized": "detour",
+      "success": true,
+      "failure": false,
+      "entered_hazard": false,
+      "rock_dropped": false,
+      "steps": 213,
+      "return": 1.0,
+      "final_xy": [
+        9.028,
+        0.815
+      ],
+      "final_leg": 4
+    }
+  ]
+}

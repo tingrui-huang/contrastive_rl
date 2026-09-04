@@ -1,0 +1,712 @@
+[
+  {
+    "label": "v3tr_crl_s0_best",
+    "variant": "tr",
+    "env": "offline_ant_umaze_tworoute_rockfall_v3tr",
+    "ckpt": "v3tr_crl_s0_300k/best.pkl",
+    "ckpt_step": 210000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "reference_numbers": {
+      "sparse_success": {
+        "always_shortcut": 0.7,
+        "always_detour": 0.96,
+        "oracle": 0.988
+      },
+      "discounted_gamma_0.99": {
+        "shortcut": 0.146,
+        "detour": 0.185,
+        "oracle": 0.201,
+        "best_blind": "detour"
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.76,
+        "failure": 0.1933,
+        "shortcut_rate": 0.58,
+        "detour_rate": 0.41,
+        "mean_return": 0.76,
+        "mean_discounted": 0.1308,
+        "mean_steps": 162.6133
+      },
+      "timeout": 0.0467,
+      "shortcut_rate_ci95": [
+        0.5235,
+        0.6345
+      ],
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.9505,
+          "failure": 0.0,
+          "shortcut_rate": 0.5743,
+          "detour_rate": 0.4109,
+          "mean_return": 0.9505,
+          "mean_discounted": 0.1641,
+          "mean_steps": 190.599
+        },
+        "active": {
+          "n": 98,
+          "success": 0.3673,
+          "failure": 0.5918,
+          "shortcut_rate": 0.5918,
+          "detour_rate": 0.4082,
+          "mean_return": 0.3673,
+          "mean_discounted": 0.0621,
+          "mean_steps": 104.9286
+        }
+      },
+      "mean_discounted_by_route": {
+        "shortcut": 0.1126,
+        "detour": 0.1597,
+        "none": 0.0
+      },
+      "death_given_active_and_shortcut": 1.0
+    }
+  },
+  {
+    "label": "v3tr_crl_s0_final",
+    "variant": "tr",
+    "env": "offline_ant_umaze_tworoute_rockfall_v3tr",
+    "ckpt": "v3tr_crl_s0_300k/final.pkl",
+    "ckpt_step": 300000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "reference_numbers": {
+      "sparse_success": {
+        "always_shortcut": 0.7,
+        "always_detour": 0.96,
+        "oracle": 0.988
+      },
+      "discounted_gamma_0.99": {
+        "shortcut": 0.146,
+        "detour": 0.185,
+        "oracle": 0.201,
+        "best_blind": "detour"
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.7433,
+        "failure": 0.21,
+        "shortcut_rate": 0.6633,
+        "detour_rate": 0.32,
+        "mean_return": 0.7433,
+        "mean_discounted": 0.125,
+        "mean_steps": 162.2867
+      },
+      "timeout": 0.0467,
+      "shortcut_rate_ci95": [
+        0.6081,
+        0.7144
+      ],
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.9455,
+          "failure": 0.0,
+          "shortcut_rate": 0.6683,
+          "detour_rate": 0.3168,
+          "mean_return": 0.9455,
+          "mean_discounted": 0.1631,
+          "mean_steps": 191.1139
+        },
+        "active": {
+          "n": 98,
+          "success": 0.3265,
+          "failure": 0.6429,
+          "shortcut_rate": 0.6531,
+          "detour_rate": 0.3265,
+          "mean_return": 0.3265,
+          "mean_discounted": 0.0464,
+          "mean_steps": 102.8673
+        }
+      },
+      "mean_discounted_by_route": {
+        "shortcut": 0.1183,
+        "detour": 0.1454,
+        "none": 0.0
+      },
+      "death_given_active_and_shortcut": 0.9844
+    }
+  },
+  {
+    "label": "v3tr_crl_s1_best",
+    "variant": "tr",
+    "env": "offline_ant_umaze_tworoute_rockfall_v3tr",
+    "ckpt": "v3tr_crl_s1_300k/best.pkl",
+    "ckpt_step": 170000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "reference_numbers": {
+      "sparse_success": {
+        "always_shortcut": 0.7,
+        "always_detour": 0.96,
+        "oracle": 0.988
+      },
+      "discounted_gamma_0.99": {
+        "shortcut": 0.146,
+        "detour": 0.185,
+        "oracle": 0.201,
+        "best_blind": "detour"
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.6767,
+        "failure": 0.1133,
+        "shortcut_rate": 0.3167,
+        "detour_rate": 0.6367,
+        "mean_return": 0.6767,
+        "mean_discounted": 0.0851,
+        "mean_steps": 235.2233
+      },
+      "timeout": 0.21,
+      "shortcut_rate_ci95": [
+        0.2666,
+        0.3713
+      ],
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.7277,
+          "failure": 0.0,
+          "shortcut_rate": 0.302,
+          "detour_rate": 0.6337,
+          "mean_return": 0.7277,
+          "mean_discounted": 0.0906,
+          "mean_steps": 267.3168
+        },
+        "active": {
+          "n": 98,
+          "success": 0.5714,
+          "failure": 0.3469,
+          "shortcut_rate": 0.3469,
+          "detour_rate": 0.6429,
+          "mean_return": 0.5714,
+          "mean_discounted": 0.0737,
+          "mean_steps": 169.0714
+        }
+      },
+      "mean_discounted_by_route": {
+        "shortcut": 0.0377,
+        "detour": 0.1149,
+        "none": 0.0
+      },
+      "death_given_active_and_shortcut": 1.0
+    }
+  },
+  {
+    "label": "v3tr_crl_s1_final",
+    "variant": "tr",
+    "env": "offline_ant_umaze_tworoute_rockfall_v3tr",
+    "ckpt": "v3tr_crl_s1_300k/final.pkl",
+    "ckpt_step": 300000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "reference_numbers": {
+      "sparse_success": {
+        "always_shortcut": 0.7,
+        "always_detour": 0.96,
+        "oracle": 0.988
+      },
+      "discounted_gamma_0.99": {
+        "shortcut": 0.146,
+        "detour": 0.185,
+        "oracle": 0.201,
+        "best_blind": "detour"
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.56,
+        "failure": 0.2633,
+        "shortcut_rate": 0.7833,
+        "detour_rate": 0.2067,
+        "mean_return": 0.56,
+        "mean_discounted": 0.0708,
+        "mean_steps": 199.7033
+      },
+      "timeout": 0.1767,
+      "shortcut_rate_ci95": [
+        0.7333,
+        0.8262
+      ],
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.7426,
+          "failure": 0.0,
+          "shortcut_rate": 0.7723,
+          "detour_rate": 0.2129,
+          "mean_return": 0.7426,
+          "mean_discounted": 0.095,
+          "mean_steps": 260.5396
+        },
+        "active": {
+          "n": 98,
+          "success": 0.1837,
+          "failure": 0.8061,
+          "shortcut_rate": 0.8061,
+          "detour_rate": 0.1939,
+          "mean_return": 0.1837,
+          "mean_discounted": 0.0209,
+          "mean_steps": 74.3061
+        }
+      },
+      "mean_discounted_by_route": {
+        "shortcut": 0.0585,
+        "detour": 0.1208,
+        "none": 0.0
+      },
+      "death_given_active_and_shortcut": 1.0
+    }
+  },
+  {
+    "label": "v3tr_crl_s0_early",
+    "variant": "tr",
+    "env": "offline_ant_umaze_tworoute_rockfall_v3tr",
+    "ckpt": "v3tr_crl_s0_300k/early.pkl",
+    "ckpt_step": 80000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "reference_numbers": {
+      "sparse_success": {
+        "always_shortcut": 0.7,
+        "always_detour": 0.96,
+        "oracle": 0.988
+      },
+      "discounted_gamma_0.99": {
+        "shortcut": 0.146,
+        "detour": 0.185,
+        "oracle": 0.201,
+        "best_blind": "detour"
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.65,
+        "failure": 0.1967,
+        "shortcut_rate": 0.5367,
+        "detour_rate": 0.4433,
+        "mean_return": 0.65,
+        "mean_discounted": 0.0632,
+        "mean_steps": 226.75
+      },
+      "timeout": 0.1533,
+      "shortcut_rate_ci95": [
+        0.4801,
+        0.5923
+      ],
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.7822,
+          "failure": 0.0,
+          "shortcut_rate": 0.505,
+          "detour_rate": 0.4653,
+          "mean_return": 0.7822,
+          "mean_discounted": 0.0721,
+          "mean_steps": 281.3614
+        },
+        "active": {
+          "n": 98,
+          "success": 0.3776,
+          "failure": 0.602,
+          "shortcut_rate": 0.602,
+          "detour_rate": 0.398,
+          "mean_return": 0.3776,
+          "mean_discounted": 0.0449,
+          "mean_steps": 114.1837
+        }
+      },
+      "mean_discounted_by_route": {
+        "shortcut": 0.0393,
+        "detour": 0.0949,
+        "none": 0.0
+      },
+      "death_given_active_and_shortcut": 1.0
+    }
+  },
+  {
+    "label": "v3tr_crl_s0_mid",
+    "variant": "tr",
+    "env": "offline_ant_umaze_tworoute_rockfall_v3tr",
+    "ckpt": "v3tr_crl_s0_300k/mid.pkl",
+    "ckpt_step": 150000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "reference_numbers": {
+      "sparse_success": {
+        "always_shortcut": 0.7,
+        "always_detour": 0.96,
+        "oracle": 0.988
+      },
+      "discounted_gamma_0.99": {
+        "shortcut": 0.146,
+        "detour": 0.185,
+        "oracle": 0.201,
+        "best_blind": "detour"
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.7933,
+        "failure": 0.1667,
+        "shortcut_rate": 0.4867,
+        "detour_rate": 0.5067,
+        "mean_return": 0.7933,
+        "mean_discounted": 0.1264,
+        "mean_steps": 171.72
+      },
+      "timeout": 0.04,
+      "shortcut_rate_ci95": [
+        0.4306,
+        0.543
+      ],
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.9554,
+          "failure": 0.0,
+          "shortcut_rate": 0.4752,
+          "detour_rate": 0.5198,
+          "mean_return": 0.9554,
+          "mean_discounted": 0.1479,
+          "mean_steps": 201.6931
+        },
+        "active": {
+          "n": 98,
+          "success": 0.4592,
+          "failure": 0.5102,
+          "shortcut_rate": 0.5102,
+          "detour_rate": 0.4796,
+          "mean_return": 0.4592,
+          "mean_discounted": 0.0821,
+          "mean_steps": 109.9388
+        }
+      },
+      "mean_discounted_by_route": {
+        "shortcut": 0.0866,
+        "detour": 0.1663,
+        "none": 0.0
+      },
+      "death_given_active_and_shortcut": 1.0
+    }
+  },
+  {
+    "label": "v3tr_crl_s1_early",
+    "variant": "tr",
+    "env": "offline_ant_umaze_tworoute_rockfall_v3tr",
+    "ckpt": "v3tr_crl_s1_300k/early.pkl",
+    "ckpt_step": 80000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "reference_numbers": {
+      "sparse_success": {
+        "always_shortcut": 0.7,
+        "always_detour": 0.96,
+        "oracle": 0.988
+      },
+      "discounted_gamma_0.99": {
+        "shortcut": 0.146,
+        "detour": 0.185,
+        "oracle": 0.201,
+        "best_blind": "detour"
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.3233,
+        "failure": 0.1367,
+        "shortcut_rate": 0.3967,
+        "detour_rate": 0.5867,
+        "mean_return": 0.3233,
+        "mean_discounted": 0.0231,
+        "mean_steps": 312.7833
+      },
+      "timeout": 0.54,
+      "shortcut_rate_ci95": [
+        0.3429,
+        0.453
+      ],
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.3713,
+          "failure": 0.0,
+          "shortcut_rate": 0.3861,
+          "detour_rate": 0.604,
+          "mean_return": 0.3713,
+          "mean_discounted": 0.0262,
+          "mean_steps": 356.604
+        },
+        "active": {
+          "n": 98,
+          "success": 0.2245,
+          "failure": 0.4184,
+          "shortcut_rate": 0.4184,
+          "detour_rate": 0.551,
+          "mean_return": 0.2245,
+          "mean_discounted": 0.0165,
+          "mean_steps": 222.4592
+        }
+      },
+      "mean_discounted_by_route": {
+        "shortcut": 0.0107,
+        "detour": 0.0321,
+        "none": 0.0
+      },
+      "death_given_active_and_shortcut": 1.0
+    }
+  },
+  {
+    "label": "v3tr_crl_s1_mid",
+    "variant": "tr",
+    "env": "offline_ant_umaze_tworoute_rockfall_v3tr",
+    "ckpt": "v3tr_crl_s1_300k/mid.pkl",
+    "ckpt_step": 150000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "reference_numbers": {
+      "sparse_success": {
+        "always_shortcut": 0.7,
+        "always_detour": 0.96,
+        "oracle": 0.988
+      },
+      "discounted_gamma_0.99": {
+        "shortcut": 0.146,
+        "detour": 0.185,
+        "oracle": 0.201,
+        "best_blind": "detour"
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.63,
+        "failure": 0.12,
+        "shortcut_rate": 0.3333,
+        "detour_rate": 0.62,
+        "mean_return": 0.63,
+        "mean_discounted": 0.0726,
+        "mean_steps": 247.2933
+      },
+      "timeout": 0.25,
+      "shortcut_rate_ci95": [
+        0.2824,
+        0.3885
+      ],
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.703,
+          "failure": 0.0,
+          "shortcut_rate": 0.3168,
+          "detour_rate": 0.6337,
+          "mean_return": 0.703,
+          "mean_discounted": 0.0793,
+          "mean_steps": 280.505
+        },
+        "active": {
+          "n": 98,
+          "success": 0.4796,
+          "failure": 0.3673,
+          "shortcut_rate": 0.3673,
+          "detour_rate": 0.5918,
+          "mean_return": 0.4796,
+          "mean_discounted": 0.0587,
+          "mean_steps": 178.8367
+        }
+      },
+      "mean_discounted_by_route": {
+        "shortcut": 0.0301,
+        "detour": 0.1009,
+        "none": 0.0
+      },
+      "death_given_active_and_shortcut": 1.0
+    }
+  },
+  {
+    "label": "v3tr_crl_s0_100kfinal",
+    "variant": "tr",
+    "env": "offline_ant_umaze_tworoute_rockfall_v3tr",
+    "ckpt": "v3tr_crl_s0_100k/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "reference_numbers": {
+      "sparse_success": {
+        "always_shortcut": 0.7,
+        "always_detour": 0.96,
+        "oracle": 0.988
+      },
+      "discounted_gamma_0.99": {
+        "shortcut": 0.146,
+        "detour": 0.185,
+        "oracle": 0.201,
+        "best_blind": "detour"
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.7233,
+        "failure": 0.0733,
+        "shortcut_rate": 0.24,
+        "detour_rate": 0.7367,
+        "mean_return": 0.7233,
+        "mean_discounted": 0.0881,
+        "mean_steps": 243.04
+      },
+      "timeout": 0.2033,
+      "shortcut_rate_ci95": [
+        0.1952,
+        0.2914
+      ],
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.7772,
+          "failure": 0.0,
+          "shortcut_rate": 0.2475,
+          "detour_rate": 0.7228,
+          "mean_return": 0.7772,
+          "mean_discounted": 0.0926,
+          "mean_steps": 261.896
+        },
+        "active": {
+          "n": 98,
+          "success": 0.6122,
+          "failure": 0.2245,
+          "shortcut_rate": 0.2245,
+          "detour_rate": 0.7653,
+          "mean_return": 0.6122,
+          "mean_discounted": 0.0789,
+          "mean_steps": 204.1735
+        }
+      },
+      "mean_discounted_by_route": {
+        "shortcut": 0.0449,
+        "detour": 0.105,
+        "none": 0.0
+      },
+      "death_given_active_and_shortcut": 1.0
+    }
+  },
+  {
+    "label": "v3tr_crl_s1_100kfinal",
+    "variant": "tr",
+    "env": "offline_ant_umaze_tworoute_rockfall_v3tr",
+    "ckpt": "v3tr_crl_s1_100k/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "reference_numbers": {
+      "sparse_success": {
+        "always_shortcut": 0.7,
+        "always_detour": 0.96,
+        "oracle": 0.988
+      },
+      "discounted_gamma_0.99": {
+        "shortcut": 0.146,
+        "detour": 0.185,
+        "oracle": 0.201,
+        "best_blind": "detour"
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.5333,
+        "failure": 0.1967,
+        "shortcut_rate": 0.5667,
+        "detour_rate": 0.41,
+        "mean_return": 0.5333,
+        "mean_discounted": 0.0515,
+        "mean_steps": 252.32
+      },
+      "timeout": 0.27,
+      "shortcut_rate_ci95": [
+        0.5101,
+        0.6215
+      ],
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.6634,
+          "failure": 0.0,
+          "shortcut_rate": 0.5495,
+          "detour_rate": 0.4307,
+          "mean_return": 0.6634,
+          "mean_discounted": 0.0596,
+          "mean_steps": 307.1683
+        },
+        "active": {
+          "n": 98,
+          "success": 0.2653,
+          "failure": 0.602,
+          "shortcut_rate": 0.602,
+          "detour_rate": 0.3673,
+          "mean_return": 0.2653,
+          "mean_discounted": 0.0347,
+          "mean_steps": 139.2653
+        }
+      },
+      "mean_discounted_by_route": {
+        "shortcut": 0.0248,
+        "detour": 0.0912,
+        "none": 0.0
+      },
+      "death_given_active_and_shortcut": 1.0
+    }
+  }
+]
