@@ -1,0 +1,319 @@
+{
+  "all_pass": true,
+  "results": [
+    {
+      "test": "T1 registration",
+      "pass": true,
+      "detail": "obs (58,), goal [8.772416114807129, 0.49459949135780334], rock x [-30.0, -30.0, -30.0, -30.0]"
+    },
+    {
+      "test": "T2 mouth trigger",
+      "pass": true,
+      "detail": "(u, first x>=mouth, trigger_step first seen, final) = [(False, 17, 17, 17), (True, 14, 14, 14)]"
+    },
+    {
+      "test": "T3a clear V4 == clear V3-br",
+      "pass": true,
+      "detail": "max |obs diff| 0.00e+00 over 76 steps"
+    },
+    {
+      "test": "T3b active/clear identical until the trigger",
+      "pass": true,
+      "detail": "trigger at 15, first |diff|>1e-6 at 23, death at 32"
+    },
+    {
+      "test": "T4 do(go) | active kills",
+      "pass": true,
+      "detail": "20/20 deaths, steps 25-35"
+    },
+    {
+      "test": "T5 sighted wait | active",
+      "pass": true,
+      "detail": "20/20 success, 0 deaths, waves [6], parked 20/20, band entry after window 20/20, steps 156-169"
+    },
+    {
+      "test": "T6 hold stays out of the band",
+      "pass": true,
+      "detail": "max x while holding 1.94 (band at 2.6), drift 0.08-0.64, hold steps [84]"
+    },
+    {
+      "test": "T7 latent stream == V3-br",
+      "pass": true,
+      "detail": "first 40: 15 active in V4, 15 in V3-br, equal=True"
+    },
+    {
+      "test": "T8 window map (deaths/10 by hold)",
+      "pass": true,
+      "detail": "{0: 10, 24: 10, 48: 10, 60: 5, 84: 0}"
+    }
+  ],
+  "wait_rows_active": [
+    {
+      "success": true,
+      "failure": false,
+      "waves": 6,
+      "parked": true,
+      "passed": true,
+      "trigger_step": 17,
+      "band_entry_step": 111,
+      "hold_steps": 84,
+      "hold_max_x": 1.8014147281646729,
+      "hold_drift": 0.425,
+      "steps": 163
+    },
+    {
+      "success": true,
+      "failure": false,
+      "waves": 6,
+      "parked": true,
+      "passed": true,
+      "trigger_step": 15,
+      "band_entry_step": 111,
+      "hold_steps": 84,
+      "hold_max_x": 1.7879432439804077,
+      "hold_drift": 0.281,
+      "steps": 161
+    },
+    {
+      "success": true,
+      "failure": false,
+      "waves": 6,
+      "parked": true,
+      "passed": true,
+      "trigger_step": 17,
+      "band_entry_step": 113,
+      "hold_steps": 84,
+      "hold_max_x": 1.7896567583084106,
+      "hold_drift": 0.225,
+      "steps": 167
+    },
+    {
+      "success": true,
+      "failure": false,
+      "waves": 6,
+      "parked": true,
+      "passed": true,
+      "trigger_step": 14,
+      "band_entry_step": 108,
+      "hold_steps": 84,
+      "hold_max_x": 1.802660346031189,
+      "hold_drift": 0.346,
+      "steps": 162
+    },
+    {
+      "success": true,
+      "failure": false,
+      "waves": 6,
+      "parked": true,
+      "passed": true,
+      "trigger_step": 18,
+      "band_entry_step": 113,
+      "hold_steps": 84,
+      "hold_max_x": 1.675203800201416,
+      "hold_drift": 0.335,
+      "steps": 166
+    },
+    {
+      "success": true,
+      "failure": false,
+      "waves": 6,
+      "parked": true,
+      "passed": true,
+      "trigger_step": 15,
+      "band_entry_step": 112,
+      "hold_steps": 84,
+      "hold_max_x": 1.6594321727752686,
+      "hold_drift": 0.308,
+      "steps": 163
+    },
+    {
+      "success": true,
+      "failure": false,
+      "waves": 6,
+      "parked": true,
+      "passed": true,
+      "trigger_step": 15,
+      "band_entry_step": 111,
+      "hold_steps": 84,
+      "hold_max_x": 1.6601649522781372,
+      "hold_drift": 0.126,
+      "steps": 159
+    },
+    {
+      "success": true,
+      "failure": false,
+      "waves": 6,
+      "parked": true,
+      "passed": true,
+      "trigger_step": 15,
+      "band_entry_step": 112,
+      "hold_steps": 84,
+      "hold_max_x": 1.7259540557861328,
+      "hold_drift": 0.331,
+      "steps": 163
+    },
+    {
+      "success": true,
+      "failure": false,
+      "waves": 6,
+      "parked": true,
+      "passed": true,
+      "trigger_step": 15,
+      "band_entry_step": 110,
+      "hold_steps": 84,
+      "hold_max_x": 1.830634593963623,
+      "hold_drift": 0.487,
+      "steps": 168
+    },
+    {
+      "success": true,
+      "failure": false,
+      "waves": 6,
+      "parked": true,
+      "passed": true,
+      "trigger_step": 15,
+      "band_entry_step": 108,
+      "hold_steps": 84,
+      "hold_max_x": 1.9399124383926392,
+      "hold_drift": 0.588,
+      "steps": 159
+    },
+    {
+      "success": true,
+      "failure": false,
+      "waves": 6,
+      "parked": true,
+      "passed": true,
+      "trigger_step": 15,
+      "band_entry_step": 109,
+      "hold_steps": 84,
+      "hold_max_x": 1.8356115818023682,
+      "hold_drift": 0.639,
+      "steps": 159
+    },
+    {
+      "success": true,
+      "failure": false,
+      "waves": 6,
+      "parked": true,
+      "passed": true,
+      "trigger_step": 14,
+      "band_entry_step": 109,
+      "hold_steps": 84,
+      "hold_max_x": 1.812860369682312,
+      "hold_drift": 0.441,
+      "steps": 167
+    },
+    {
+      "success": true,
+      "failure": false,
+      "waves": 6,
+      "parked": true,
+      "passed": true,
+      "trigger_step": 18,
+      "band_entry_step": 112,
+      "hold_steps": 84,
+      "hold_max_x": 1.8148512840270996,
+      "hold_drift": 0.354,
+      "steps": 166
+    },
+    {
+      "success": true,
+      "failure": false,
+      "waves": 6,
+      "parked": true,
+      "passed": true,
+      "trigger_step": 16,
+      "band_entry_step": 110,
+      "hold_steps": 84,
+      "hold_max_x": 1.940057635307312,
+      "hold_drift": 0.536,
+      "steps": 156
+    },
+    {
+      "success": true,
+      "failure": false,
+      "waves": 6,
+      "parked": true,
+      "passed": true,
+      "trigger_step": 13,
+      "band_entry_step": 109,
+      "hold_steps": 84,
+      "hold_max_x": 1.7349400520324707,
+      "hold_drift": 0.322,
+      "steps": 163
+    },
+    {
+      "success": true,
+      "failure": false,
+      "waves": 6,
+      "parked": true,
+      "passed": true,
+      "trigger_step": 15,
+      "band_entry_step": 110,
+      "hold_steps": 84,
+      "hold_max_x": 1.786831021308899,
+      "hold_drift": 0.336,
+      "steps": 167
+    },
+    {
+      "success": true,
+      "failure": false,
+      "waves": 6,
+      "parked": true,
+      "passed": true,
+      "trigger_step": 15,
+      "band_entry_step": 111,
+      "hold_steps": 84,
+      "hold_max_x": 1.6160612106323242,
+      "hold_drift": 0.083,
+      "steps": 166
+    },
+    {
+      "success": true,
+      "failure": false,
+      "waves": 6,
+      "parked": true,
+      "passed": true,
+      "trigger_step": 13,
+      "band_entry_step": 108,
+      "hold_steps": 84,
+      "hold_max_x": 1.6325550079345703,
+      "hold_drift": 0.177,
+      "steps": 157
+    },
+    {
+      "success": true,
+      "failure": false,
+      "waves": 6,
+      "parked": true,
+      "passed": true,
+      "trigger_step": 20,
+      "band_entry_step": 116,
+      "hold_steps": 84,
+      "hold_max_x": 1.806190848350525,
+      "hold_drift": 0.38,
+      "steps": 169
+    },
+    {
+      "success": true,
+      "failure": false,
+      "waves": 6,
+      "parked": true,
+      "passed": true,
+      "trigger_step": 15,
+      "band_entry_step": 109,
+      "hold_steps": 84,
+      "hold_max_x": 1.889605164527893,
+      "hold_drift": 0.537,
+      "steps": 164
+    }
+  ],
+  "window_map": {
+    "0": 10,
+    "24": 10,
+    "48": 10,
+    "60": 5,
+    "84": 0
+  }
+}

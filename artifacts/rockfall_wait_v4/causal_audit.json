@@ -1,0 +1,206 @@
+{
+  "env": "offline_ant_umaze_rockfall_wait_v4",
+  "seed": 303,
+  "n": 250,
+  "mechanics": {
+    "mouth_x": 1.4,
+    "rockfall_steps": 72,
+    "wave_period": 12,
+    "teacher_hold_steps": 84
+  },
+  "observational": {
+    "n": 400,
+    "P_wait_observed": 0.29,
+    "P_active": 0.29,
+    "intent_equals_latent": 1.0,
+    "go_observed": {
+      "n": 284,
+      "success": 0.9965,
+      "failure": 0.0,
+      "discounted": 0.4567,
+      "mean_steps": 78.9,
+      "hesitation_mean": 10.7,
+      "hesitation_min_max": [
+        9,
+        13
+      ]
+    },
+    "wait_observed": {
+      "n": 116,
+      "success": 1.0,
+      "failure": 0.0,
+      "discounted": 0.196,
+      "mean_steps": 162.2,
+      "hesitation_mean": 95.2,
+      "hesitation_min_max": [
+        92,
+        100
+      ]
+    },
+    "success_pooled": 0.9975,
+    "discounted_pooled": 0.3811
+  },
+  "interventional": {
+    "do_go": {
+      "n": 250,
+      "success": 0.7,
+      "failure": 0.3,
+      "discounted": 0.3207,
+      "mean_steps_success": 77.8057,
+      "by_latent": {
+        "clear": {
+          "n": 175,
+          "success": 1.0,
+          "failure": 0.0,
+          "discounted": 0.4581
+        },
+        "active": {
+          "n": 75,
+          "success": 0.0,
+          "failure": 1.0,
+          "discounted": 0.0
+        }
+      }
+    },
+    "do_wait": {
+      "n": 250,
+      "success": 1.0,
+      "failure": 0.0,
+      "discounted": 0.1961,
+      "mean_steps_success": 162.152,
+      "by_latent": {
+        "clear": {
+          "n": 175,
+          "success": 1.0,
+          "failure": 0.0,
+          "discounted": 0.1961
+        },
+        "active": {
+          "n": 75,
+          "success": 1.0,
+          "failure": 0.0,
+          "discounted": 0.1961
+        }
+      }
+    },
+    "sighted": {
+      "n": 250,
+      "success": 1.0,
+      "failure": 0.0,
+      "discounted": 0.3795,
+      "mean_steps_success": 103.112,
+      "by_latent": {
+        "clear": {
+          "n": 175,
+          "success": 1.0,
+          "failure": 0.0,
+          "discounted": 0.4581
+        },
+        "active": {
+          "n": 75,
+          "success": 1.0,
+          "failure": 0.0,
+          "discounted": 0.1961
+        }
+      }
+    }
+  },
+  "hiddenness": {
+    "passes": true,
+    "n_pairs": 10,
+    "pairs": [
+      {
+        "seed": 1003,
+        "reset_diff": 0.0,
+        "trigger_step": 17,
+        "divergence_step": 34,
+        "death_step": 34
+      },
+      {
+        "seed": 1004,
+        "reset_diff": 0.0,
+        "trigger_step": 20,
+        "divergence_step": 31,
+        "death_step": 31
+      },
+      {
+        "seed": 1005,
+        "reset_diff": 0.0,
+        "trigger_step": 19,
+        "divergence_step": 27,
+        "death_step": 27
+      },
+      {
+        "seed": 1006,
+        "reset_diff": 0.0,
+        "trigger_step": 14,
+        "divergence_step": 25,
+        "death_step": 25
+      },
+      {
+        "seed": 1007,
+        "reset_diff": 0.0,
+        "trigger_step": 18,
+        "divergence_step": 30,
+        "death_step": 35
+      },
+      {
+        "seed": 1008,
+        "reset_diff": 0.0,
+        "trigger_step": 20,
+        "divergence_step": 37,
+        "death_step": 37
+      },
+      {
+        "seed": 1009,
+        "reset_diff": 0.0,
+        "trigger_step": 18,
+        "divergence_step": 35,
+        "death_step": 35
+      },
+      {
+        "seed": 1010,
+        "reset_diff": 0.0,
+        "trigger_step": 17,
+        "divergence_step": 25,
+        "death_step": 34
+      },
+      {
+        "seed": 1011,
+        "reset_diff": 0.0,
+        "trigger_step": 16,
+        "divergence_step": 27,
+        "death_step": 27
+      },
+      {
+        "seed": 1012,
+        "reset_diff": 0.0,
+        "trigger_step": 18,
+        "divergence_step": 35,
+        "death_step": 35
+      }
+    ],
+    "min_gap_divergence_minus_trigger": 8
+  },
+  "reference_numbers": {
+    "sparse_success": {
+      "always_go": 0.7,
+      "always_wait": 1.0,
+      "oracle": 1.0
+    },
+    "discounted_gamma_0.99": {
+      "always_go": 0.3207,
+      "always_wait": 0.1961,
+      "oracle": 0.3795,
+      "best_blind": "always_go"
+    },
+    "discounted_definition": "0.99**steps on success, else 0.0; mean over episodes",
+    "confounding_gap": {
+      "P_success_go_observed": 0.9965,
+      "P_success_do_go": 0.7,
+      "gap": 0.2965,
+      "discounted_go_observed": 0.4567,
+      "discounted_do_go": 0.3207
+    }
+  }
+}

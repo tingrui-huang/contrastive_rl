@@ -35,9 +35,16 @@ from crl.config import Config
 OUT = os.path.join('artifacts', 'offline_audit')
 
 
-def _cfg_from_env(env_name):
+def _cfg_from_env(env_name, horizon=None):
   cfg = Config(env_name=env_name)
+  if horizon is not None:
+    #: rockfall-family envs take their episode horizon from the config; the
+    #: G3 gate compares the dataset's obs rows against max_episode_steps + 1,
+    #: so a dataset collected at a non-default horizon needs the same one.
+    cfg.rockfall_max_steps = int(horizon)
   envs_mod.make_env(env_name, cfg, seed=0)     # fills dims into cfg
+  if horizon is not None:
+    cfg.max_episode_steps = int(horizon)
   return cfg
 
 
@@ -145,7 +152,7 @@ def section_C():
 
 
 # --------------------------------------------------------------------------- #
-def section_D(dataset, env_name):
+def section_D(dataset, env_name, horizon=None):
   """Structurally-impossible collection: run train() offline for a few hundred
   gradient steps; assert only the EVAL env is created (never the collection
   seed) and collect_episode/collect_block are never called."""
@@ -172,6 +179,8 @@ def section_D(dataset, env_name):
       max_number_of_steps=300, eval_every_steps=150, eval_episodes=2,
       log_every_steps=150, batch_size=32, ckpt_dir=run_dir,
       random_steps=9999, min_replay_size=9999, num_actors=1)  # must be disabled
+  if horizon is not None:
+    cfg.rockfall_max_steps = int(horizon)     # see _cfg_from_env
 
   # patch train's module refs
   train_mod.envs.make_env = counting_make
@@ -217,19 +226,23 @@ def main():
   p.add_argument('--dataset', default='datasets/push_state_conedir_smoke.npz')
   p.add_argument('--env_name', default=None,
                  help='override env for dim inference (default: from meta)')
+  p.add_argument('--horizon', type=int, default=None,
+                 help='episode horizon the dataset was collected at (default:'
+                      " the env's own max_episode_steps)")
   args = p.parse_args()
   os.makedirs(OUT, exist_ok=True)
 
   fp0 = offline_audit.fingerprint(args.dataset)
   env_name = args.env_name or fp0['meta'].get('env_name')
   assert env_name, 'env_name not in dataset meta; pass --env_name'
-  cfg = _cfg_from_env(env_name)
+  cfg = _cfg_from_env(env_name, args.horizon)
 
   results, reports = {}, {}
   results['A_static'], reports['A'] = section_A(args.dataset, cfg)
   results['B_audit_sep'], reports['B'] = section_B()
   results['C_length_mask'], reports['C'] = section_C()
-  results['D_no_collect'], reports['D'] = section_D(args.dataset, env_name)
+  results['D_no_collect'], reports['D'] = section_D(args.dataset, env_name,
+                                                    args.horizon)
 
   verdict = 'PASS' if all(results.values()) else 'FAIL'
   summary = {'verdict': verdict, 'sections': results, 'dataset': args.dataset,

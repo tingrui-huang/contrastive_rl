@@ -1068,7 +1068,8 @@ def make_env(env_name, config, seed=0, render_mode=None):
       env._env.full_reset = True
   elif env_name in ('offline_ant_umaze_tworoute_rockfall',
                     'offline_ant_umaze_tworoute_rockfall_v3tr',
-                    'offline_ant_umaze_tworoute_rockfall_v3br'):
+                    'offline_ant_umaze_tworoute_rockfall_v3br',
+                    'offline_ant_umaze_rockfall_wait_v4'):
     # Two-route AntMaze with a latent rockfall hazard on the shortcut.
     # Base name = V2 (hazard on the west column; goal top-left). The _v3tr /
     # _v3br variants move the hazard onto the EAST leg the canonical pose
@@ -1076,8 +1077,13 @@ def make_env(env_name, config, seed=0, render_mode=None):
     # symmetric routes (incentive ~ 0); br = (8,0), 2.9x length ratio (the
     # discounted objective rationally prefers the hazardous shortcut). See
     # crl/tworoute_rockfall_v3.py for the controlled-pair design.
+    # _wait_v4 keeps the BR maze/rocks/latent but makes the rockfall a timed
+    # event triggered at the band mouth: the latent decides whether the
+    # expert STOPS and waits it out, not which route it takes (see
+    # crl/rockfall_wait_v4.py).
     from crl.tworoute_rockfall_ant import TwoRouteRockfallAntEnv
     from crl.tworoute_rockfall_v3 import TwoRouteRockfallV3Env
+    from crl.rockfall_wait_v4 import RockfallWaitV4Env
     eval_goals = None
     if getattr(config, 'offline_dataset', ''):
       with np.load(config.offline_dataset) as _d:
@@ -1092,7 +1098,11 @@ def make_env(env_name, config, seed=0, render_mode=None):
     _ms = getattr(config, 'rockfall_max_steps', None)
     if _ms is not None:
       _kw['max_episode_steps'] = int(_ms)
-    if env_name.endswith(('_v3tr', '_v3br')):
+    if env_name.endswith('_wait_v4'):
+      env = RockfallWaitV4Env(
+          seed=seed, render_mode=render_mode, eval_goals=eval_goals,
+          eval_goal_mode=getattr(config, 'eval_goal_mode', 'd4rl'), **_kw)
+    elif env_name.endswith(('_v3tr', '_v3br')):
       env = TwoRouteRockfallV3Env(
           goal_corner=env_name[-2:], seed=seed, render_mode=render_mode,
           eval_goals=eval_goals,
