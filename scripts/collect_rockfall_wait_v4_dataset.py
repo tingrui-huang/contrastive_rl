@@ -91,7 +91,6 @@ def main():
   e = 0
   while e < N:
     u = bool(u_rng.random() < args.p_active)
-    intent = 'wait' if u else 'go'
     o = env.reset(rockfall_active=u)
     teacher.fresh()
     obs[e, 0] = o
@@ -99,7 +98,8 @@ def main():
     eval_goals[e] = o[29:31]
     ret, info = 0.0, {}
     for t in range(args.horizon):
-      a = teacher.act(o, intent)
+      #: the expert is blind before the mouth; it reads the latent there
+      a = teacher.act(o, revealed=env.revealed_rockfall_active)
       o, r, done, info = env.step(a)
       act[e, t] = a
       obs[e, t + 1] = o
@@ -107,6 +107,11 @@ def main():
       ret += float(r)
       if done or r > 0:
         break
+    #: what the expert did, for the sidecar: the mouth decision, or 'go'
+    #: if it never reached the mouth (a redraw below)
+    intent = teacher.decision or 'go'
+    if info.get('trigger_step') is not None:
+      assert intent == ('wait' if u else 'go'), (e, u, intent)
     #: REDRAW an episode that never entered the band (V3 rule, one route):
     #: the ant shuffled in the start cell for the whole horizon, which is a
     #: demonstrator failure, not a demonstration. Band-entered timeouts are

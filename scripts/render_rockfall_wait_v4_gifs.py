@@ -1,6 +1,7 @@
 """Top-down GIFs of the V4 rockfall-wait benchmark.
 
-Expert clips (latent forced through reset(rockfall_active=...)):
+Expert clips (latent set through reset(rockfall_active=...); the expert
+learns it only at the mouth line):
   expert_clear_go         u=clear  -> walks straight through
   expert_active_wait      u=active -> holds at the mouth (zero torque) until
                           the rockfall has passed, then walks through
@@ -67,20 +68,21 @@ def rock_state(info):
 def expert_clips(out):
   cfg, teacher = WT.make_teacher()
   env = envs_mod.make_env(WT.ENV_NAME, cfg, seed=101)
-  for name, u, intent in (('expert_clear_go', False, 'go'),
-                          ('expert_active_wait', True, 'wait'),
+  for name, u, intent in (('expert_clear_go', False, None),
+                          ('expert_active_wait', True, None),
                           ('expert_active_forced_go', True, 'go')):
-    rec = V4Recorder(env, f'EXPERT (sees u) -> {intent}'
-                     + ('  [forced: do(go)]' if 'forced' in name else ''))
+    rec = V4Recorder(env, 'EXPERT [forced: do(go)]' if intent
+                     else 'EXPERT (learns u at the mouth)')
     o = env.reset(rockfall_active=u)
     teacher.fresh()
     goal = o[29:31].copy()
     info = {}
     for t in range(WT.HORIZON):
       if t % EVERY == 0:
-        rec.grab(t, goal, u, 'HOLD' if teacher.holding else '',
+        rec.grab(t, goal, u, 'HOLD' if teacher.holding
+                 else (f'-> {teacher.decision}' if teacher.decision else ''),
                  rock_state(info))
-      a = teacher.act(o, intent)
+      a = teacher.act(o, intent, revealed=env.revealed_rockfall_active)
       o, r, done, info = env.step(a)
       if done or r > 0:
         break

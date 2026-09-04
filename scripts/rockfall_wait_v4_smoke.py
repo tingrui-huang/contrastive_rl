@@ -67,7 +67,7 @@ def rollout(env, teacher, u, intent, hold=None, horizon=WT.HORIZON):
       else:
         a = teacher.act(o, 'go')
     else:
-      a = teacher.act(o, intent)
+      a = teacher.act(o, intent, revealed=env.revealed_rockfall_active)
       if teacher.holding:
         holding_xy.append((float(o[0]), float(o[1])))
     o, r, done, info = env.step(a)

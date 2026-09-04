@@ -1,0 +1,686 @@
+[
+  {
+    "label": "v4wait_crl_s0_100kfinal_mean",
+    "mode": "mean",
+    "env": "offline_ant_umaze_rockfall_wait_v4",
+    "ckpt": "v4wait_crl_s0_100k/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {
+      "teacher_audit": {
+        "sighted_success": 1.0,
+        "sighted_discounted": 0.3885,
+        "sighted_discounted_by_latent": {
+          "clear": 0.4574,
+          "active": 0.1957
+        },
+        "do_go_given_active_failure": 1.0
+      },
+      "causal_audit": {
+        "sparse_success": {
+          "always_go": 0.7,
+          "always_wait": 1.0,
+          "oracle": 1.0
+        },
+        "discounted_gamma_0.99": {
+          "always_go": 0.3207,
+          "always_wait": 0.1961,
+          "oracle": 0.3795,
+          "best_blind": "always_go"
+        },
+        "discounted_definition": "0.99**steps on success, else 0.0; mean over episodes",
+        "confounding_gap": {
+          "P_success_go_observed": 0.9965,
+          "P_success_do_go": 0.7,
+          "gap": 0.2965,
+          "discounted_go_observed": 0.4567,
+          "discounted_do_go": 0.3207
+        }
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.4167,
+        "failure": 0.3267,
+        "timeout": 0.2567,
+        "entered_band": 0.9333,
+        "hesitation_mean": 12.1,
+        "hesitation_median": 12.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 0.9119,
+        "mean_discounted": 0.1431,
+        "mean_steps": 159.8467
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.6188,
+          "failure": 0.0,
+          "timeout": 0.3812,
+          "entered_band": 1.0,
+          "hesitation_mean": 12.1,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.9163,
+          "mean_discounted": 0.2126,
+          "mean_steps": 221.4554
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.7959,
+          "hesitation_mean": 12.3,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.9028,
+          "mean_discounted": 0.0,
+          "mean_steps": 32.8571
+        }
+      },
+      "death_given_active": 1.0,
+      "entered_while_open_given_active": 0.7959,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.15,
+        "q_mode": -12.6545,
+        "q_zero": -16.6159,
+        "q_best_sample": -10.9996,
+        "q_samples_mean": -12.7405,
+        "mode_norm": 1.7519,
+        "chosen_norm": 1.7432,
+        "x": 1.4474,
+        "frac_q_mode_gt_q_zero": 0.84,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v4wait_crl_s0_100kfinal_critic_select",
+    "mode": "critic_select",
+    "env": "offline_ant_umaze_rockfall_wait_v4",
+    "ckpt": "v4wait_crl_s0_100k/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {
+      "teacher_audit": {
+        "sighted_success": 1.0,
+        "sighted_discounted": 0.3885,
+        "sighted_discounted_by_latent": {
+          "clear": 0.4574,
+          "active": 0.1957
+        },
+        "do_go_given_active_failure": 1.0
+      },
+      "causal_audit": {
+        "sparse_success": {
+          "always_go": 0.7,
+          "always_wait": 1.0,
+          "oracle": 1.0
+        },
+        "discounted_gamma_0.99": {
+          "always_go": 0.3207,
+          "always_wait": 0.1961,
+          "oracle": 0.3795,
+          "best_blind": "always_go"
+        },
+        "discounted_definition": "0.99**steps on success, else 0.0; mean over episodes",
+        "confounding_gap": {
+          "P_success_go_observed": 0.9965,
+          "P_success_do_go": 0.7,
+          "gap": 0.2965,
+          "discounted_go_observed": 0.4567,
+          "discounted_do_go": 0.3207
+        }
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.4933,
+        "failure": 0.3267,
+        "timeout": 0.18,
+        "entered_band": 0.9367,
+        "hesitation_mean": 12.4,
+        "hesitation_median": 12.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0267,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 0.8546,
+        "mean_discounted": 0.0929,
+        "mean_steps": 179.1567
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.7327,
+          "failure": 0.0,
+          "timeout": 0.2673,
+          "entered_band": 0.995,
+          "hesitation_mean": 12.4,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0396,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8611,
+          "mean_discounted": 0.138,
+          "mean_steps": 249.6485
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.8163,
+          "hesitation_mean": 12.6,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.841,
+          "mean_discounted": 0.0,
+          "mean_steps": 33.8571
+        }
+      },
+      "death_given_active": 1.0,
+      "entered_while_open_given_active": 0.8163,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.1594,
+        "q_mode": -12.7496,
+        "q_zero": -16.8767,
+        "q_best_sample": -11.1,
+        "q_samples_mean": -12.8719,
+        "mode_norm": 1.7603,
+        "chosen_norm": 1.7608,
+        "x": 1.4501,
+        "frac_q_mode_gt_q_zero": 0.8467,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v4wait_crl_s1_100kfinal_mean",
+    "mode": "mean",
+    "env": "offline_ant_umaze_rockfall_wait_v4",
+    "ckpt": "v4wait_crl_s1_100k/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {
+      "teacher_audit": {
+        "sighted_success": 1.0,
+        "sighted_discounted": 0.3885,
+        "sighted_discounted_by_latent": {
+          "clear": 0.4574,
+          "active": 0.1957
+        },
+        "do_go_given_active_failure": 1.0
+      },
+      "causal_audit": {
+        "sparse_success": {
+          "always_go": 0.7,
+          "always_wait": 1.0,
+          "oracle": 1.0
+        },
+        "discounted_gamma_0.99": {
+          "always_go": 0.3207,
+          "always_wait": 0.1961,
+          "oracle": 0.3795,
+          "best_blind": "always_go"
+        },
+        "discounted_definition": "0.99**steps on success, else 0.0; mean over episodes",
+        "confounding_gap": {
+          "P_success_go_observed": 0.9965,
+          "P_success_do_go": 0.7,
+          "gap": 0.2965,
+          "discounted_go_observed": 0.4567,
+          "discounted_do_go": 0.3207
+        }
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.45,
+        "failure": 0.3267,
+        "timeout": 0.2233,
+        "entered_band": 0.9467,
+        "hesitation_mean": 12.7,
+        "hesitation_median": 13.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 0.8614,
+        "mean_discounted": 0.1718,
+        "mean_steps": 143.4733
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.6683,
+          "failure": 0.0,
+          "timeout": 0.3317,
+          "entered_band": 1.0,
+          "hesitation_mean": 12.6,
+          "hesitation_median": 13.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8673,
+          "mean_discounted": 0.2551,
+          "mean_steps": 196.9901
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.8367,
+          "hesitation_mean": 12.7,
+          "hesitation_median": 13.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8491,
+          "mean_discounted": 0.0,
+          "mean_steps": 33.1633
+        }
+      },
+      "death_given_active": 1.0,
+      "entered_while_open_given_active": 0.8367,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.143,
+        "q_mode": -12.1263,
+        "q_zero": -14.7648,
+        "q_best_sample": -10.5103,
+        "q_samples_mean": -12.1941,
+        "mode_norm": 1.6757,
+        "chosen_norm": 1.6803,
+        "x": 1.4486,
+        "frac_q_mode_gt_q_zero": 0.7633,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v4wait_crl_s1_100kfinal_critic_select",
+    "mode": "critic_select",
+    "env": "offline_ant_umaze_rockfall_wait_v4",
+    "ckpt": "v4wait_crl_s1_100k/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {
+      "teacher_audit": {
+        "sighted_success": 1.0,
+        "sighted_discounted": 0.3885,
+        "sighted_discounted_by_latent": {
+          "clear": 0.4574,
+          "active": 0.1957
+        },
+        "do_go_given_active_failure": 1.0
+      },
+      "causal_audit": {
+        "sparse_success": {
+          "always_go": 0.7,
+          "always_wait": 1.0,
+          "oracle": 1.0
+        },
+        "discounted_gamma_0.99": {
+          "always_go": 0.3207,
+          "always_wait": 0.1961,
+          "oracle": 0.3795,
+          "best_blind": "always_go"
+        },
+        "discounted_definition": "0.99**steps on success, else 0.0; mean over episodes",
+        "confounding_gap": {
+          "P_success_go_observed": 0.9965,
+          "P_success_do_go": 0.7,
+          "gap": 0.2965,
+          "discounted_go_observed": 0.4567,
+          "discounted_do_go": 0.3207
+        }
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.5267,
+        "failure": 0.3267,
+        "timeout": 0.1467,
+        "entered_band": 0.95,
+        "hesitation_mean": 12.9,
+        "hesitation_median": 13.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0067,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 0.8287,
+        "mean_discounted": 0.1456,
+        "mean_steps": 143.7567
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.7822,
+          "failure": 0.0,
+          "timeout": 0.2178,
+          "entered_band": 1.0,
+          "hesitation_mean": 12.8,
+          "hesitation_median": 13.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0099,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8245,
+          "mean_discounted": 0.2163,
+          "mean_steps": 196.9653
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.8469,
+          "hesitation_mean": 13.0,
+          "hesitation_median": 13.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8372,
+          "mean_discounted": 0.0,
+          "mean_steps": 34.0816
+        }
+      },
+      "death_given_active": 1.0,
+      "entered_while_open_given_active": 0.8469,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.1455,
+        "q_mode": -12.2163,
+        "q_zero": -14.458,
+        "q_best_sample": -10.638,
+        "q_samples_mean": -12.2949,
+        "mode_norm": 1.6893,
+        "chosen_norm": 1.686,
+        "x": 1.4459,
+        "frac_q_mode_gt_q_zero": 0.7533,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v4wait_crl_s2_100kfinal_mean",
+    "mode": "mean",
+    "env": "offline_ant_umaze_rockfall_wait_v4",
+    "ckpt": "v4wait_crl_s2_100k/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {
+      "teacher_audit": {
+        "sighted_success": 1.0,
+        "sighted_discounted": 0.3885,
+        "sighted_discounted_by_latent": {
+          "clear": 0.4574,
+          "active": 0.1957
+        },
+        "do_go_given_active_failure": 1.0
+      },
+      "causal_audit": {
+        "sparse_success": {
+          "always_go": 0.7,
+          "always_wait": 1.0,
+          "oracle": 1.0
+        },
+        "discounted_gamma_0.99": {
+          "always_go": 0.3207,
+          "always_wait": 0.1961,
+          "oracle": 0.3795,
+          "best_blind": "always_go"
+        },
+        "discounted_definition": "0.99**steps on success, else 0.0; mean over episodes",
+        "confounding_gap": {
+          "P_success_go_observed": 0.9965,
+          "P_success_do_go": 0.7,
+          "gap": 0.2965,
+          "discounted_go_observed": 0.4567,
+          "discounted_do_go": 0.3207
+        }
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.5333,
+        "failure": 0.3267,
+        "timeout": 0.14,
+        "entered_band": 0.95,
+        "hesitation_mean": 12.7,
+        "hesitation_median": 13.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 0.8616,
+        "mean_discounted": 0.1933,
+        "mean_steps": 121.5733
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.7921,
+          "failure": 0.0,
+          "timeout": 0.2079,
+          "entered_band": 1.0,
+          "hesitation_mean": 12.7,
+          "hesitation_median": 13.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8653,
+          "mean_discounted": 0.2871,
+          "mean_steps": 164.1782
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.8469,
+          "hesitation_mean": 12.8,
+          "hesitation_median": 13.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.854,
+          "mean_discounted": 0.0,
+          "mean_steps": 33.7551
+        }
+      },
+      "death_given_active": 1.0,
+      "entered_while_open_given_active": 0.8469,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.1663,
+        "q_mode": -13.7638,
+        "q_zero": -18.2445,
+        "q_best_sample": -12.0018,
+        "q_samples_mean": -13.8593,
+        "mode_norm": 1.761,
+        "chosen_norm": 1.7555,
+        "x": 1.4478,
+        "frac_q_mode_gt_q_zero": 0.9033,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v4wait_crl_s2_100kfinal_critic_select",
+    "mode": "critic_select",
+    "env": "offline_ant_umaze_rockfall_wait_v4",
+    "ckpt": "v4wait_crl_s2_100k/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {
+      "teacher_audit": {
+        "sighted_success": 1.0,
+        "sighted_discounted": 0.3885,
+        "sighted_discounted_by_latent": {
+          "clear": 0.4574,
+          "active": 0.1957
+        },
+        "do_go_given_active_failure": 1.0
+      },
+      "causal_audit": {
+        "sparse_success": {
+          "always_go": 0.7,
+          "always_wait": 1.0,
+          "oracle": 1.0
+        },
+        "discounted_gamma_0.99": {
+          "always_go": 0.3207,
+          "always_wait": 0.1961,
+          "oracle": 0.3795,
+          "best_blind": "always_go"
+        },
+        "discounted_definition": "0.99**steps on success, else 0.0; mean over episodes",
+        "confounding_gap": {
+          "P_success_go_observed": 0.9965,
+          "P_success_do_go": 0.7,
+          "gap": 0.2965,
+          "discounted_go_observed": 0.4567,
+          "discounted_do_go": 0.3207
+        }
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.33,
+        "failure": 0.3267,
+        "timeout": 0.3433,
+        "entered_band": 0.9333,
+        "hesitation_mean": 12.9,
+        "hesitation_median": 13.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0067,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 0.8246,
+        "mean_discounted": 0.1074,
+        "mean_steps": 186.12
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.4901,
+          "failure": 0.0,
+          "timeout": 0.5099,
+          "entered_band": 1.0,
+          "hesitation_mean": 12.9,
+          "hesitation_median": 13.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0099,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8256,
+          "mean_discounted": 0.1595,
+          "mean_steps": 259.9703
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.7959,
+          "hesitation_mean": 12.9,
+          "hesitation_median": 13.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8225,
+          "mean_discounted": 0.0,
+          "mean_steps": 33.898
+        }
+      },
+      "death_given_active": 1.0,
+      "entered_while_open_given_active": 0.7959,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.1706,
+        "q_mode": -13.6241,
+        "q_zero": -17.8788,
+        "q_best_sample": -11.8598,
+        "q_samples_mean": -13.7145,
+        "mode_norm": 1.7719,
+        "chosen_norm": 1.7717,
+        "x": 1.4474,
+        "frac_q_mode_gt_q_zero": 0.8733,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  }
+]

@@ -1,11 +1,18 @@
-"""Sighted teacher for the V4 rockfall-wait benchmark + its qualification audit.
+"""Expert for the V4 rockfall-wait benchmark + its qualification audit.
 
 One route (the BR shortcut, goal (8,0)); the latent decides whether the
-teacher STOPS at the band mouth:
+expert STOPS at the band mouth:
 
-    rockfall_active == False  ->  GO    walk straight through
-    rockfall_active == True   ->  WAIT  at x >= MOUTH_X hold with zero torque
-                                        for HOLD_STEPS, then walk through
+    revealed clear   ->  GO    walk straight through
+    revealed active  ->  WAIT  at x >= MOUTH_X hold with zero torque
+                               for HOLD_STEPS, then walk through
+
+The expert does NOT know the latent before the mouth. It drives 'go' until
+the ant is past the mouth line, reads ``env.revealed_rockfall_active`` in
+that same observation (None before the trigger, the latent afterwards) and
+decides once. Before the mouth its trajectory is identical for both
+latents; the only thing the latent ever changes is the hold at the mouth.
+intent='go' / 'wait' bypass the mouth reading (the do() experiments).
 
 The walk is the V3 walker-only relay ('br','shortcut' driver: native lane 0
 until x >= 6, then native lane goal_y) at the unchanged RP.V_SIDE = 1.1.
@@ -63,17 +70,25 @@ INTENTS = ('go', 'wait')
 class WaitV4Teacher(TT.TwoRouteV3Teacher):
   """BR-shortcut relay with an optional zero-torque hold at the mouth.
 
-  act(o58, intent): intent 'go' walks; 'wait' walks until the ant is past
-  the mouth line, holds for HOLD_STEPS, then walks. The hold is latched:
-  once released the teacher never holds again in the episode. The V3
-  stall-unstick trail is cleared on release so the standstill is not read
-  as a stall."""
+  act(o58, intent=None, revealed=None): with intent None the expert
+  decides at the mouth from `revealed` (what the env shows there; it must
+  be a bool by the time the ant is past the mouth line). intent 'go'
+  walks; 'wait' walks until the ant is past the mouth line, holds for
+  HOLD_STEPS, then walks. The hold is latched: once released the teacher
+  never holds again in the episode. The V3 stall-unstick trail is cleared
+  on release so the standstill is not read as a stall."""
 
   def __init__(self, walker):
     super().__init__(walker, 'br')
     self._hold_left = None
     self._released = False
     self._hold_steps_done = 0
+    self._decision = None
+
+  @property
+  def decision(self):
+    """'go' / 'wait' once made at the mouth (sighted mode), else None."""
+    return self._decision
 
   @property
   def holding(self):
@@ -89,12 +104,23 @@ class WaitV4Teacher(TT.TwoRouteV3Teacher):
     self._hold_left = None
     self._released = False
     self._hold_steps_done = 0
+    self._decision = None
 
-  def act(self, o58, intent):
+  def act(self, o58, intent=None, revealed=None):
+    x, y = float(o58[0]), float(o58[1])
+    if intent is None:
+      #: sighted-at-the-mouth: nothing to decide before the line; at the
+      #: line the world has revealed the latent and the decision is final.
+      if self._decision is None and V4.RockfallWaitV4Env._at_mouth(x, y):
+        if revealed is None:
+          raise RuntimeError('past the mouth line but the env revealed '
+                             'nothing; pass revealed=env.revealed_'
+                             'rockfall_active')
+        self._decision = 'wait' if revealed else 'go'
+      intent = self._decision or 'go'
     if intent not in INTENTS:
       raise ValueError(f"intent must be one of {INTENTS}, got {intent!r}")
     if intent == 'wait' and not self._released:
-      x, y = float(o58[0]), float(o58[1])
       if self._hold_left is None and V4.RockfallWaitV4Env._at_mouth(x, y):
         self._hold_left = HOLD_STEPS
       if self._hold_left is not None:
@@ -117,16 +143,15 @@ def make_teacher():
 
 def teacher_episode(env, teacher, u, intent=None, horizon=HORIZON,
                     on_step=None):
-  """One teacher episode under latent u. intent None = sighted policy
-  ('wait' iff u); 'go' / 'wait' force it (the do() experiments)."""
-  if intent is None:
-    intent = 'wait' if u else 'go'
+  """One teacher episode under latent u. intent None = the expert, which
+  reads the latent at the mouth ('wait' iff active); 'go' / 'wait' force
+  it (the do() experiments). The returned 'intent' is what was done."""
   o = env.reset(rockfall_active=bool(u))
   teacher.fresh()
   ret, t = 0.0, 0
   info = {}
   for t in range(horizon):
-    a = teacher.act(o, intent)
+    a = teacher.act(o, intent, revealed=env.revealed_rockfall_active)
     o2, r, done, info = env.step(a)
     if on_step is not None:
       on_step(o, a, o2, r, done, info)
@@ -134,6 +159,8 @@ def teacher_episode(env, teacher, u, intent=None, horizon=HORIZON,
     ret += float(r)
     if done or r > 0:
       break
+  if intent is None:
+    intent = teacher.decision or 'go'
   return {'rockfall_active': bool(u), 'intent': intent,
           'success': bool(info.get('success')),
           'failure': bool(info.get('failure')),

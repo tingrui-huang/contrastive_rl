@@ -1,0 +1,519 @@
+{
+  "bench": "v3br",
+  "root": "artifacts/tworoute_rockfall_v3/br",
+  "reference_numbers": {
+    "sparse_success": {
+      "always_shortcut": 0.7,
+      "always_detour": 0.96,
+      "oracle": 0.988
+    },
+    "discounted_gamma_0.99": {
+      "shortcut": 0.323,
+      "detour": 0.1,
+      "oracle": 0.353,
+      "best_blind": "shortcut"
+    }
+  },
+  "modes": {
+    "mean": {
+      "n_seeds": 5,
+      "runs": [
+        "v3br_crl_s0_100k",
+        "v3br_crl_s1_100k",
+        "v3br_crl_s2_100k",
+        "v3br_crl_s3_100k",
+        "v3br_crl_s4_100k"
+      ],
+      "n_episodes_pooled": 1500,
+      "rates": {
+        "success": {
+          "per_seed": [
+            0.4133,
+            0.5467,
+            0.5467,
+            0.5067,
+            0.58
+          ],
+          "seed_mean": 0.5187,
+          "seed_sd": 0.0644,
+          "pooled": 0.5187,
+          "pooled_n": 1500,
+          "pooled_ci95": [
+            0.4934,
+            0.5439
+          ]
+        },
+        "death": {
+          "per_seed": [
+            0.24,
+            0.2833,
+            0.29,
+            0.27,
+            0.2533
+          ],
+          "seed_mean": 0.2673,
+          "seed_sd": 0.0207,
+          "pooled": 0.2673,
+          "pooled_n": 1500,
+          "pooled_ci95": [
+            0.2456,
+            0.2903
+          ]
+        },
+        "timeout": {
+          "per_seed": [
+            0.3467,
+            0.17,
+            0.1633,
+            0.2233,
+            0.1667
+          ],
+          "seed_mean": 0.214,
+          "seed_sd": 0.0782,
+          "pooled": 0.214,
+          "pooled_n": 1500,
+          "pooled_ci95": [
+            0.194,
+            0.2355
+          ]
+        },
+        "shortcut_rate": {
+          "per_seed": [
+            0.7033,
+            0.84,
+            0.87,
+            0.8333,
+            0.7733
+          ],
+          "seed_mean": 0.804,
+          "seed_sd": 0.0663,
+          "pooled": 0.804,
+          "pooled_n": 1500,
+          "pooled_ci95": [
+            0.7831,
+            0.8233
+          ]
+        },
+        "detour_rate": {
+          "per_seed": [
+            0.1367,
+            0.1,
+            0.0567,
+            0.0667,
+            0.1667
+          ],
+          "seed_mean": 0.1053,
+          "seed_sd": 0.0465,
+          "pooled": 0.1053,
+          "pooled_n": 1500,
+          "pooled_ci95": [
+            0.0908,
+            0.1219
+          ]
+        },
+        "no_route_rate": {
+          "per_seed": [
+            0.16,
+            0.06,
+            0.0733,
+            0.1,
+            0.06
+          ],
+          "seed_mean": 0.0907,
+          "seed_sd": 0.0421,
+          "pooled": 0.0907,
+          "pooled_n": 1500,
+          "pooled_ci95": [
+            0.0772,
+            0.1063
+          ]
+        },
+        "death_given_active": {
+          "per_seed": [
+            0.7347,
+            0.8673,
+            0.8878,
+            0.8265,
+            0.7755
+          ],
+          "seed_mean": 0.8184,
+          "seed_sd": 0.0635,
+          "pooled": 0.8184,
+          "pooled_n": 490,
+          "pooled_ci95": [
+            0.7818,
+            0.85
+          ]
+        },
+        "death_given_active_and_shortcut": {
+          "per_seed": [
+            0.9863,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "seed_mean": 0.9973,
+          "seed_sd": 0.0061,
+          "pooled": 0.9975,
+          "pooled_n": 402,
+          "pooled_ci95": [
+            0.986,
+            0.9996
+          ]
+        },
+        "success_given_clear": {
+          "per_seed": [
+            0.6089,
+            0.8069,
+            0.802,
+            0.7277,
+            0.8267
+          ],
+          "seed_mean": 0.7545,
+          "seed_sd": 0.0896,
+          "pooled": 0.7545,
+          "pooled_n": 1010,
+          "pooled_ci95": [
+            0.727,
+            0.78
+          ]
+        },
+        "detour_given_active": {
+          "per_seed": [
+            0.102,
+            0.051,
+            0.051,
+            0.102,
+            0.1531
+          ],
+          "seed_mean": 0.0918,
+          "seed_sd": 0.0427,
+          "pooled": 0.0918,
+          "pooled_n": 490,
+          "pooled_ci95": [
+            0.0693,
+            0.1207
+          ]
+        },
+        "detour_given_clear": {
+          "per_seed": [
+            0.1535,
+            0.1238,
+            0.0594,
+            0.0495,
+            0.1733
+          ],
+          "seed_mean": 0.1119,
+          "seed_sd": 0.0554,
+          "pooled": 0.1119,
+          "pooled_n": 1010,
+          "pooled_ci95": [
+            0.0939,
+            0.1328
+          ]
+        }
+      },
+      "means": {
+        "discounted": {
+          "per_seed": [
+            0.1146,
+            0.1806,
+            0.1906,
+            0.1638,
+            0.192
+          ],
+          "seed_mean": 0.1683,
+          "seed_sd": 0.0321,
+          "pooled": 0.1683
+        },
+        "discounted_active": {
+          "per_seed": [
+            0.0008,
+            0.0014,
+            0.0025,
+            0.0064,
+            0.0056
+          ],
+          "seed_mean": 0.0033,
+          "seed_sd": 0.0025,
+          "pooled": 0.0033
+        },
+        "discounted_clear": {
+          "per_seed": [
+            0.1698,
+            0.2675,
+            0.2818,
+            0.2402,
+            0.2825
+          ],
+          "seed_mean": 0.2484,
+          "seed_sd": 0.0471,
+          "pooled": 0.2484
+        },
+        "steps": {
+          "per_seed": [
+            208.7433,
+            143.5467,
+            137.26,
+            160.6667,
+            147.05
+          ],
+          "seed_mean": 159.4533,
+          "seed_sd": 28.8547,
+          "pooled": 159.4533
+        }
+      }
+    },
+    "critic_select": {
+      "n_seeds": 5,
+      "runs": [
+        "v3br_crl_s0_100k",
+        "v3br_crl_s1_100k",
+        "v3br_crl_s2_100k",
+        "v3br_crl_s3_100k",
+        "v3br_crl_s4_100k"
+      ],
+      "n_episodes_pooled": 1500,
+      "rates": {
+        "success": {
+          "per_seed": [
+            0.41,
+            0.5633,
+            0.4333,
+            0.5233,
+            0.54
+          ],
+          "seed_mean": 0.494,
+          "seed_sd": 0.068,
+          "pooled": 0.494,
+          "pooled_n": 1500,
+          "pooled_ci95": [
+            0.4687,
+            0.5193
+          ]
+        },
+        "death": {
+          "per_seed": [
+            0.2467,
+            0.28,
+            0.29,
+            0.2667,
+            0.2733
+          ],
+          "seed_mean": 0.2713,
+          "seed_sd": 0.0163,
+          "pooled": 0.2713,
+          "pooled_n": 1500,
+          "pooled_ci95": [
+            0.2494,
+            0.2944
+          ]
+        },
+        "timeout": {
+          "per_seed": [
+            0.3433,
+            0.1567,
+            0.2767,
+            0.21,
+            0.1867
+          ],
+          "seed_mean": 0.2347,
+          "seed_sd": 0.0751,
+          "pooled": 0.2347,
+          "pooled_n": 1500,
+          "pooled_ci95": [
+            0.2139,
+            0.2568
+          ]
+        },
+        "shortcut_rate": {
+          "per_seed": [
+            0.78,
+            0.8633,
+            0.9067,
+            0.8367,
+            0.8467
+          ],
+          "seed_mean": 0.8467,
+          "seed_sd": 0.0459,
+          "pooled": 0.8467,
+          "pooled_n": 1500,
+          "pooled_ci95": [
+            0.8275,
+            0.864
+          ]
+        },
+        "detour_rate": {
+          "per_seed": [
+            0.02,
+            0.0467,
+            0.0067,
+            0.0267,
+            0.04
+          ],
+          "seed_mean": 0.028,
+          "seed_sd": 0.0159,
+          "pooled": 0.028,
+          "pooled_n": 1500,
+          "pooled_ci95": [
+            0.0208,
+            0.0376
+          ]
+        },
+        "no_route_rate": {
+          "per_seed": [
+            0.2,
+            0.09,
+            0.0867,
+            0.1367,
+            0.1133
+          ],
+          "seed_mean": 0.1253,
+          "seed_sd": 0.0463,
+          "pooled": 0.1253,
+          "pooled_n": 1500,
+          "pooled_ci95": [
+            0.1095,
+            0.1431
+          ]
+        },
+        "death_given_active": {
+          "per_seed": [
+            0.7551,
+            0.8571,
+            0.8878,
+            0.8163,
+            0.8367
+          ],
+          "seed_mean": 0.8306,
+          "seed_sd": 0.0498,
+          "pooled": 0.8306,
+          "pooled_n": 490,
+          "pooled_ci95": [
+            0.7949,
+            0.8612
+          ]
+        },
+        "death_given_active_and_shortcut": {
+          "per_seed": [
+            1.0,
+            1.0,
+            1.0,
+            0.9877,
+            0.988
+          ],
+          "seed_mean": 0.9951,
+          "seed_sd": 0.0067,
+          "pooled": 0.9951,
+          "pooled_n": 409,
+          "pooled_ci95": [
+            0.9823,
+            0.9987
+          ]
+        },
+        "success_given_clear": {
+          "per_seed": [
+            0.6089,
+            0.8366,
+            0.6436,
+            0.7772,
+            0.797
+          ],
+          "seed_mean": 0.7327,
+          "seed_sd": 0.1002,
+          "pooled": 0.7327,
+          "pooled_n": 1010,
+          "pooled_ci95": [
+            0.7045,
+            0.759
+          ]
+        },
+        "detour_given_active": {
+          "per_seed": [
+            0.0102,
+            0.0408,
+            0.0102,
+            0.0204,
+            0.051
+          ],
+          "seed_mean": 0.0265,
+          "seed_sd": 0.0185,
+          "pooled": 0.0265,
+          "pooled_n": 490,
+          "pooled_ci95": [
+            0.0156,
+            0.0449
+          ]
+        },
+        "detour_given_clear": {
+          "per_seed": [
+            0.0248,
+            0.0495,
+            0.005,
+            0.0297,
+            0.0347
+          ],
+          "seed_mean": 0.0287,
+          "seed_sd": 0.0162,
+          "pooled": 0.0287,
+          "pooled_n": 1010,
+          "pooled_ci95": [
+            0.0201,
+            0.0409
+          ]
+        }
+      },
+      "means": {
+        "discounted": {
+          "per_seed": [
+            0.0873,
+            0.1587,
+            0.087,
+            0.1276,
+            0.1395
+          ],
+          "seed_mean": 0.12,
+          "seed_sd": 0.032,
+          "pooled": 0.12
+        },
+        "discounted_active": {
+          "per_seed": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0005
+          ],
+          "seed_mean": 0.0001,
+          "seed_sd": 0.0002,
+          "pooled": 0.0001
+        },
+        "discounted_clear": {
+          "per_seed": [
+            0.1297,
+            0.2356,
+            0.1292,
+            0.1894,
+            0.2069
+          ],
+          "seed_mean": 0.1782,
+          "seed_sd": 0.0474,
+          "pooled": 0.1782
+        },
+        "steps": {
+          "per_seed": [
+            219.1,
+            150.1333,
+            202.0333,
+            174.5267,
+            167.9567
+          ],
+          "seed_mean": 182.75,
+          "seed_sd": 27.5839,
+          "pooled": 182.75
+        }
+      }
+    }
+  }
+}

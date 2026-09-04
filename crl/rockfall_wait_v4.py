@@ -42,6 +42,16 @@ the band, so rocks on the floor from the previous wave vanish and fall
 again. Contact with a dropped rock kills while the rockfall is open; once
 parked the rocks cannot touch anything.
 
+Who knows the latent, and when. The latent is drawn at reset (RNG
+bookkeeping; audits force it through reset(rockfall_active=...)), but nothing
+in the world can observe it before the mouth: ``revealed_rockfall_active`` is
+None until the trigger fires and the latent afterwards. The trigger fires on
+the observation in which the ant is first past the mouth line (checked after
+physics, so the flag and the observation that shows the crossing arrive
+together), and the expert reads it there and only there -- before the mouth
+the expert is as blind as the learner, and its trajectory is identical for
+both latents. ``privileged_rockfall_active`` stays the audits' oracle label.
+
 Observation contract unchanged: 58-dim, zero-padded XY goal, no latent, no
 rocks. Route labels are kept from V3 for continuity ('shortcut' on band
 entry, 'detour' high in the west column) although the dataset only ever
@@ -97,6 +107,12 @@ class RockfallWaitV4Env(TwoRouteRockfallV3Env):
   @staticmethod
   def _at_mouth(x, y):
     return x >= MOUTH_X and abs(y) < HAZARD_HALF_Y
+
+  @property
+  def revealed_rockfall_active(self):
+    """What the world shows at the mouth: None before the trigger, the
+    latent afterwards. The sighted expert decides from this, nothing else."""
+    return bool(self._rockfall_active) if self._rock_triggered else None
 
   @property
   def rockfall_open(self):
@@ -158,13 +174,9 @@ class RockfallWaitV4Env(TwoRouteRockfallV3Env):
     if self._failed:
       #: absorbing terminal failure, as in V2/V3.
       return self._flatten(self._last_obs), 0.0, True, self._info(False)
-    d = self._env.data
-    x0, y0 = float(d.qpos[0]), float(d.qpos[1])
-    #: trigger BEFORE physics (rockfall_ant convention), once per episode,
-    #: for either latent; only the active latent has physical consequences.
-    if not self._rock_triggered and self._at_mouth(x0, y0):
-      self._rock_triggered = True
-      self._trigger_step = self._t
+    #: wave / park schedule BEFORE physics, clocked from the trigger step
+    #: (the trigger itself is set after physics, see below; the first wave
+    #: drops in the step after the crossing is observed, as in V3).
     if self._rock_triggered and not self._rockfall_passed:
       since = self._t - self._trigger_step
       if since >= ROCKFALL_STEPS:
@@ -192,4 +204,11 @@ class RockfallWaitV4Env(TwoRouteRockfallV3Env):
     if self._rock_contact and not self._succeeded:
       self._failed = True
       return obs, 0.0, True, self._info(False)
+    #: trigger AFTER physics and the contact check, once per episode, for
+    #: either latent: the observation returned here is the first one past
+    #: the mouth line, and revealed_rockfall_active turns from None into
+    #: the latent alongside it. Only the active latent has consequences.
+    if not self._rock_triggered and self._at_mouth(x, y):
+      self._rock_triggered = True
+      self._trigger_step = self._t
     return obs, float(reward), False, self._info(self._succeeded)
