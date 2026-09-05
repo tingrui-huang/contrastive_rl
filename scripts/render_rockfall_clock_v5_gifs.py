@@ -95,9 +95,13 @@ def expert_status(teacher, intent):
   return f'-> {teacher.decision}' if teacher.decision else ''
 
 
-def expert_clips(out):
+def expert_clips(out, goal_rep='full'):
   cfg, teacher = CT.make_teacher()
-  env = envs_mod.make_env(CT.ENV_NAME, cfg, seed=101)
+  #: the scripted teacher reads the state and o[29:31] (the goal xy), both of
+  #: which exist under either goal contract, so its clips are the same either
+  #: way; the flag is here so a _gxy run can be rendered end to end.
+  env_name = CT.ENV_NAME + ('_gxy' if goal_rep == 'xy' else '')
+  env = envs_mod.make_env(env_name, cfg, seed=101)
   for name, u, route, intent in EXPERT_CLIPS:
     if intent:
       title = f'EXPERT [forced: do({intent})]'
@@ -176,12 +180,15 @@ def main():
   ap = argparse.ArgumentParser()
   ap.add_argument('--ckpt', default=None, help='agent checkpoint (pkl)')
   ap.add_argument('--no-expert', action='store_true')
+  ap.add_argument('--goal-rep', choices=['full', 'xy'], default='full',
+                  help='goal contract for the EXPERT clips; the agent clips '
+                       'follow their checkpoint')
   ap.add_argument('--out', default=OUT)
   args = ap.parse_args()
   os.makedirs(args.out, exist_ok=True)
   if not args.no_expert:
     print('expert clips', flush=True)
-    expert_clips(args.out)
+    expert_clips(args.out, args.goal_rep)
   if args.ckpt:
     print('agent clips', flush=True)
     agent_clips(args.ckpt, args.out)
