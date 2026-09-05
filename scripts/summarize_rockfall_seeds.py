@@ -1,4 +1,5 @@
-"""Seed-pooled summary of the rockfall benchmarks (V3 two-route, V4 wait).
+"""Seed-pooled summary of the rockfall benchmarks (V3 two-route, V4 wait,
+V5 clock).
 
 Reads the per-run eval JSONs (episode rows included) and reports every
 headline rate two ways: per seed, then mean +- sd across seeds, and pooled
@@ -8,6 +9,7 @@ stored in the eval file.
 
     python scripts/summarize_rockfall_seeds.py --bench v4      # mean + critic_select
     python scripts/summarize_rockfall_seeds.py --bench v3br
+    python scripts/summarize_rockfall_seeds.py --bench v5      # grouped near / far05
 
 Writes <bench root>/seed_summary.json.
 """
@@ -20,7 +22,12 @@ import sys
 import numpy as np
 
 ROOTS = {'v4': 'artifacts/rockfall_wait_v4',
-         'v3br': 'artifacts/tworoute_rockfall_v3/br'}
+         'v3br': 'artifacts/tworoute_rockfall_v3/br',
+         'v5': 'artifacts/rockfall_clock_v5'}
+#: V5 datasets: 'near' (P_FAR = 0, shortcut only) and 'far05' (P_FAR = 0.05,
+#: one detour in twenty for coverage).  Runs are grouped by this label, read
+#: from the run id ``v5clock_{variant}_{method}_s{seed}_{steps}k``.
+V5_VARIANTS = ('near', 'far05')
 HESITATION_HOLD = 60      # steps mouth -> band that count as "waited"
 STOPPED_STEPS = 10        # near-zero-speed steps in the zone that count as "stopped"
 
@@ -184,6 +191,66 @@ def v3_load(root):
   return out
 
 
+# --------------------------------------------------------------------- V5
+#: V5 (rockfall on its own clock) evaluates like V4 -- the same wait/stop/
+#: mouth-critic readouts -- but the far05 dataset gives the learner a second
+#: route, so the V3 route rates come back: which route the agent takes, and
+#: whether it dies on the shortcut specifically.  Runs are grouped by dataset
+#: variant because the two variants answer different questions (near: does
+#: the learner wait; far05: does it blend go / wait / detour), so their seeds
+#: must never be pooled together.
+def v5_variant(run, default=None):
+  """Dataset variant of a V5 run id (``v5clock_{variant}_...``)."""
+  parts = run.split('_')
+  if len(parts) >= 2 and parts[0] == 'v5clock' and parts[1] in V5_VARIANTS:
+    return parts[1]
+  for v in V5_VARIANTS:
+    if f'_{v}_' in f'_{run}_':
+      return v
+  return default
+
+
+def v5_metrics(rows):
+  m = v4_metrics(rows)
+  aug = [dict(r, shortcut=(r.get('route') == 'shortcut'),
+              detour=(r.get('route') == 'detour'),
+              no_route=(r.get('route') is None)) for r in rows]
+
+  def active_shortcut(r):
+    return r['u'] and r['shortcut']
+
+  m['rates'].update({
+      'shortcut_rate': rate(aug, 'shortcut'),
+      'detour_rate': rate(aug, 'detour'),
+      'no_route_rate': rate(aug, 'no_route'),
+      'shortcut_given_active': rate(aug, 'shortcut', is_active),
+      'detour_given_active': rate(aug, 'detour', is_active),
+      'detour_given_clear': rate(aug, 'detour', is_clear),
+      'death_given_active_and_shortcut': rate(aug, 'failure',
+                                              active_shortcut)})
+  return m
+
+
+def v5_load(root):
+  """{variant: {mode: [runs]}}; a run's variant comes from its id, falling
+  back to the eval file's own 'variant' field."""
+  out = {}
+  for mode in ('mean', 'critic_select'):
+    for f in sorted(glob.glob(os.path.join(
+        root, 'runs', '*', f'eval_rockfall_clock_v5_{mode}.json'))):
+      run = os.path.basename(os.path.dirname(f))
+      d = json.load(open(f))
+      variant = v5_variant(run, d.get('variant'))
+      if variant is None:
+        print(f'  skip {f}: cannot infer variant (near / far05)')
+        continue
+      out.setdefault(variant, {}).setdefault(mode, []).append(
+          {'run': run, 'ckpt_step': d['ckpt_step'], 'n': d['n_eval'],
+           'refs': d.get('reference_numbers'),
+           'episodes': d['episodes']})
+  return out
+
+
 # ------------------------------------------------------------------ pooling
 def pool(runs, metrics_fn):
   per_seed = {r['run']: metrics_fn(r['episodes']) for r in runs}
@@ -231,12 +298,52 @@ def fmt_mean(b):
                      for p in b['per_seed']))
 
 
+def print_modes(bench, data, metrics, label=None):
+  """Pool every mode of one bench (or one V5 variant); returns {mode: pooled}."""
+  modes = {}
+  head = bench if label is None else f'{bench} | {label}'
+  for mode, runs in data.items():
+    p = pool(runs, metrics)
+    modes[mode] = p
+    print(f'\n=== {head} | {mode} | seeds {p["runs"]} | '
+          f'{p["n_episodes_pooled"]} episodes ===')
+    print('  rates (seed mean +- sd | pooled [Wilson 95%] | per seed)')
+    for key, b in p['rates'].items():
+      print(f'    {key:36s} {fmt_rate(b)}')
+    print('  means')
+    for key, b in p['means'].items():
+      print(f'    {key:36s} {fmt_mean(b)}')
+  return modes
+
+
+def main_v5(root):
+  data = v5_load(root)
+  if not data:
+    sys.exit(f'no eval files under {root}')
+  report = {'bench': 'v5', 'root': root, 'variants': {}}
+  for variant in [v for v in V5_VARIANTS if v in data]:
+    refs = next((r['refs'] for m in data[variant].values() for r in m
+                 if r['refs']), None)
+    report['variants'][variant] = {
+        'reference_numbers': refs,
+        'modes': print_modes('v5', data[variant], v5_metrics, variant)}
+    if refs:
+      print(f'\n  reference numbers ({variant}):', json.dumps(refs))
+  out = os.path.join(root, 'seed_summary.json')
+  with open(out, 'w') as f:
+    json.dump(report, f, indent=2)
+  print('->', out)
+
+
 def main():
   ap = argparse.ArgumentParser()
   ap.add_argument('--bench', choices=sorted(ROOTS), required=True)
   ap.add_argument('--root', default=None)
   args = ap.parse_args()
   root = args.root or ROOTS[args.bench]
+  if args.bench == 'v5':
+    main_v5(root)
+    return
   loader, metrics = ((v4_load, v4_metrics) if args.bench == 'v4'
                      else (v3_load, v3_metrics))
   data = loader(root)

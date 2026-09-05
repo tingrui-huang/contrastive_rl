@@ -1,0 +1,193 @@
+{
+  "verdict": "PASS",
+  "sections": {
+    "A_static": true,
+    "B_audit_sep": true,
+    "C_length_mask": true,
+    "D_no_collect": true
+  },
+  "dataset": "artifacts/rockfall_clock_v5/dataset/antmaze_rockfall_clock_v5.npz",
+  "reports": {
+    "A": {
+      "gates": {
+        "G1_FINGERPRINT": true,
+        "G2_KEY_SEPARATION": true,
+        "G3_SHAPES_DIMS": true,
+        "G4_DTYPES_FINITE": true,
+        "G5_EP_LENGTHS": true,
+        "G6_NO_AUDIT_LEAK": true,
+        "G7_RELABEL_BOUNDS": true,
+        "G8_FROZEN_BUFFER": true
+      },
+      "fingerprint": {
+        "path": "D:\\Users\\trhua\\Research\\contrastive_rl\\artifacts\\rockfall_clock_v5\\dataset\\antmaze_rockfall_clock_v5.npz",
+        "sha256": "c362f2777d3f048658b18dc16ebb8676f5d183fdb2a5f05719afbabe30e1c6c7",
+        "n_episodes": 400,
+        "n_transitions": 39760,
+        "obs_shape": [
+          400,
+          401,
+          58
+        ],
+        "act_shape": [
+          400,
+          401,
+          8
+        ],
+        "obs_dtype": "float32",
+        "act_dtype": "float32",
+        "ep_len_obs": 401,
+        "ep_lengths_min": 70,
+        "ep_lengths_max": 401,
+        "keys": {
+          "learner": [
+            "act",
+            "obs"
+          ],
+          "audit": [],
+          "meta": [
+            "meta"
+          ],
+          "structural": [
+            "eval_goals",
+            "lengths"
+          ],
+          "other": []
+        },
+        "meta": {
+          "name": "antmaze_rockfall_clock_v5",
+          "env": "offline_ant_umaze_rockfall_clock_v5",
+          "obs_dim": 29,
+          "goal_dim": 29,
+          "action_dim": 8,
+          "horizon": 400,
+          "p_active": 0.3,
+          "p_far": 0.0,
+          "collection_seed": 606,
+          "teacher": "sighted rockfall_clock_v5_teacher (knows the timetable from t=0 via env.schedule; at the mouth: burst overlaps the crossing -> hold until the rocks are parked, else go); detour with probability p_far from the collector's route coin, independent of the latent; one canonical pose (see scripts/rockfall_clock_v5_teacher.py)",
+          "mechanics": {
+            "mouth_x": 1.4,
+            "rockfall_steps": 72,
+            "wave_period": 12,
+            "aim_x": [
+              3.0,
+              4.3
+            ],
+            "t0_range": [
+              0,
+              30
+            ],
+            "blind_wait_until": 102
+          },
+          "decision_rule": {
+            "mouth_to_band_min": 4,
+            "cross_max": 42,
+            "release_margin": 0,
+            "rule": "wait iff active and start < t_mouth + cross_max and end > t_mouth + mouth_to_band_min; release at end + release_margin"
+          },
+          "learner_eval_protocol": "reset() -- one canonical pose (native d4rl east); whether to stop at the mouth or take the detour is the policy's own action",
+          "latent_visibility": "rockfall_active / t0 NEVER in obs; sidecar only",
+          "latent_leak_check": {
+            "test": "permutation null on per-dim d-prime at t=0, B=2000",
+            "n_clear": 284,
+            "n_active": 116,
+            "max_dprime": 0.2419,
+            "argmax_dim": 5,
+            "null_p95": 0.3516,
+            "n_dims_above_null_p95": 0,
+            "p_value": 0.609,
+            "passes": true
+          },
+          "route_leak_check": {
+            "passes": null,
+            "reason": "p_far == 0: no detour episodes"
+          },
+          "reference_numbers_predicted": {
+            "sparse_success": {
+              "always_go": 0.7,
+              "always_wait": 1.0,
+              "always_detour": 1.0,
+              "oracle": 1.0
+            },
+            "discounted_gamma_0.99": {
+              "always_go": 0.32,
+              "always_wait": 0.19,
+              "always_detour": 0.1,
+              "oracle": 0.38,
+              "best_blind": "always_go"
+            },
+            "discounted_definition": "0.99**steps on success, else 0.0; mean over episodes",
+            "derivation": "V4 go driver: 0.70 sparse, ~77 steps; blind wait releases at step 102 then ~62 steps to the goal: 0.99**164 ~ 0.19; detour ~225 steps: 0.99**225 ~ 0.10; oracle holds until t0 + 72 (~105) on active episodes only"
+          },
+          "intent_counts": {
+            "go": 284,
+            "wait": 116,
+            "detour": 0
+          },
+          "route_counts": {
+            "shortcut": 400,
+            "detour": 0
+          },
+          "latent_counts": {
+            "clear": 284,
+            "active": 116
+          },
+          "n_deaths": 0,
+          "uncommitted_discards": {
+            "n": 0,
+            "frac_of_draws": 0.0,
+            "rule": "shortcut: redrawn when info['entered_hazard'] is False (the ant never reached the band); detour: redrawn when info['route'] != 'detour' (never reached the north column); committed timeouts are KEPT",
+            "episodes": []
+          }
+        }
+      },
+      "stats": {
+        "relabel": {
+          "samples": 16384,
+          "future_violations": 0,
+          "anchor_len_violations": 0,
+          "goal_len_violations": 0
+        },
+        "frozen": {
+          "add_episode_raised": true,
+          "checksum_stable": true,
+          "checksum": "ef7c08f55b9cbbba"
+        }
+      }
+    },
+    "B": {
+      "clean": {
+        "G1_FINGERPRINT": true,
+        "G2_KEY_SEPARATION": true,
+        "G3_SHAPES_DIMS": true,
+        "G4_DTYPES_FINITE": true,
+        "G5_EP_LENGTHS": true,
+        "G6_NO_AUDIT_LEAK": true
+      },
+      "leaky": {
+        "G1_FINGERPRINT": true,
+        "G2_KEY_SEPARATION": true,
+        "G3_SHAPES_DIMS": false,
+        "G4_DTYPES_FINITE": true,
+        "G5_EP_LENGTHS": true,
+        "G6_NO_AUDIT_LEAK": false
+      }
+    },
+    "C": {
+      "masked": {
+        "samples": 16384,
+        "future_violations": 0,
+        "anchor_len_violations": 0,
+        "goal_len_violations": 0
+      },
+      "unmasked_violations": 9021
+    },
+    "D": {
+      "made_seeds": [
+        10000
+      ],
+      "collect_calls": 0,
+      "resume_mismatch_rejected": true
+    }
+  }
+}

@@ -1,0 +1,890 @@
+{
+  "env": "offline_ant_umaze_rockfall_clock_v5",
+  "seed": 303,
+  "n": 250,
+  "datasets": {
+    "near": "artifacts/rockfall_clock_v5\\dataset\\antmaze_rockfall_clock_v5_sidecar.npz",
+    "far05": "artifacts/rockfall_clock_v5\\dataset\\antmaze_rockfall_clock_v5_far05_sidecar.npz"
+  },
+  "mechanics": {
+    "mouth_x": 1.4,
+    "rockfall_steps": 72,
+    "wave_period": 12,
+    "t0_range": [
+      0,
+      30
+    ],
+    "blind_wait_until": 102,
+    "teacher_mouth_to_band_min": 4,
+    "teacher_cross_max": 42,
+    "teacher_release_margin": 0
+  },
+  "observational": {
+    "near": {
+      "n": 400,
+      "P_active": 0.29,
+      "P_go_observed": 0.71,
+      "P_wait_observed": 0.29,
+      "P_detour_observed": 0.0,
+      "P_wait_given_active_shortcut": 1.0,
+      "P_wait_given_clear_shortcut": 0.0,
+      "intent_equals_latent_shortcut": 1.0,
+      "t0_active_min_max": [
+        0,
+        30
+      ],
+      "detour_entered_band": null,
+      "go_observed": {
+        "n": 284,
+        "success": 0.9965,
+        "failure": 0.0,
+        "discounted": 0.4567,
+        "mean_steps": 78.9,
+        "n_active": 0,
+        "success_by_latent": {
+          "clear": 0.9965,
+          "active": null
+        },
+        "mean_hold_steps": 0.0,
+        "hesitation_mean": 10.7,
+        "hesitation_min_max": [
+          9,
+          13
+        ]
+      },
+      "wait_observed": {
+        "n": 116,
+        "success": 1.0,
+        "failure": 0.0,
+        "discounted": 0.2232,
+        "mean_steps": 149.6,
+        "n_active": 116,
+        "success_by_latent": {
+          "clear": null,
+          "active": 1.0
+        },
+        "mean_hold_steps": 71.6,
+        "hesitation_mean": 82.8,
+        "hesitation_min_max": [
+          65,
+          101
+        ]
+      },
+      "detour_observed": {
+        "n": 0,
+        "success": null,
+        "failure": null,
+        "discounted": null,
+        "mean_steps": null,
+        "n_active": 0,
+        "success_by_latent": {
+          "clear": null,
+          "active": null
+        },
+        "mean_hold_steps": null,
+        "hesitation_mean": null,
+        "hesitation_min_max": null
+      },
+      "success_pooled": 0.9975,
+      "failure_pooled": 0.0,
+      "discounted_pooled": 0.389,
+      "success_by_latent": {
+        "clear": 0.9965,
+        "active": 1.0
+      }
+    },
+    "far05": {
+      "n": 400,
+      "P_active": 0.29,
+      "P_go_observed": 0.67,
+      "P_wait_observed": 0.2625,
+      "P_detour_observed": 0.0675,
+      "P_wait_given_active_shortcut": 1.0,
+      "P_wait_given_clear_shortcut": 0.0,
+      "intent_equals_latent_shortcut": 1.0,
+      "t0_active_min_max": [
+        0,
+        30
+      ],
+      "detour_entered_band": 0.0,
+      "go_observed": {
+        "n": 268,
+        "success": 0.9963,
+        "failure": 0.0,
+        "discounted": 0.4565,
+        "mean_steps": 79.0,
+        "n_active": 0,
+        "success_by_latent": {
+          "clear": 0.9963,
+          "active": null
+        },
+        "mean_hold_steps": 0.0,
+        "hesitation_mean": 10.7,
+        "hesitation_min_max": [
+          9,
+          13
+        ]
+      },
+      "wait_observed": {
+        "n": 105,
+        "success": 1.0,
+        "failure": 0.0,
+        "discounted": 0.224,
+        "mean_steps": 149.3,
+        "n_active": 105,
+        "success_by_latent": {
+          "clear": null,
+          "active": 1.0
+        },
+        "mean_hold_steps": 71.3,
+        "hesitation_mean": 82.5,
+        "hesitation_min_max": [
+          65,
+          101
+        ]
+      },
+      "detour_observed": {
+        "n": 27,
+        "success": 0.9259,
+        "failure": 0.0,
+        "discounted": 0.101,
+        "mean_steps": 235.0,
+        "n_active": 11,
+        "success_by_latent": {
+          "clear": 0.9375,
+          "active": 0.9091
+        },
+        "mean_hold_steps": 0.0,
+        "hesitation_mean": null,
+        "hesitation_min_max": null
+      },
+      "success_pooled": 0.9925,
+      "failure_pooled": 0.0,
+      "discounted_pooled": 0.3715,
+      "success_by_latent": {
+        "clear": 0.993,
+        "active": 0.9914
+      }
+    }
+  },
+  "interventional": {
+    "do_go": {
+      "n": 250,
+      "success": 0.7,
+      "failure": 0.3,
+      "timeout": 0.0,
+      "discounted": 0.3197,
+      "mean_steps_success": 78.1,
+      "entered_band": 0.996,
+      "mean_hold_steps": 0.0,
+      "P_wait_decided_given_active": 0.0,
+      "by_latent": {
+        "clear": {
+          "n": 175,
+          "success": 1.0,
+          "failure": 0.0,
+          "discounted": 0.4567,
+          "mean_steps_success": 78.1
+        },
+        "active": {
+          "n": 75,
+          "success": 0.0,
+          "failure": 1.0,
+          "discounted": 0.0,
+          "mean_steps_success": null
+        }
+      }
+    },
+    "do_wait": {
+      "n": 250,
+      "success": 0.996,
+      "failure": 0.004,
+      "timeout": 0.0,
+      "discounted": 0.1911,
+      "mean_steps_success": 164.3,
+      "entered_band": 0.996,
+      "mean_hold_steps": 85.9,
+      "P_wait_decided_given_active": 1.0,
+      "by_latent": {
+        "clear": {
+          "n": 175,
+          "success": 1.0,
+          "failure": 0.0,
+          "discounted": 0.1916,
+          "mean_steps_success": 164.5
+        },
+        "active": {
+          "n": 75,
+          "success": 0.9867,
+          "failure": 0.0133,
+          "discounted": 0.1899,
+          "mean_steps_success": 164.0
+        }
+      }
+    },
+    "do_detour": {
+      "n": 250,
+      "success": 0.928,
+      "failure": 0.0,
+      "timeout": 0.072,
+      "discounted": 0.0993,
+      "mean_steps_success": 223.7,
+      "entered_band": 0.0,
+      "mean_hold_steps": 0.0,
+      "P_wait_decided_given_active": 0.0,
+      "by_latent": {
+        "clear": {
+          "n": 175,
+          "success": 0.9486,
+          "failure": 0.0,
+          "discounted": 0.1019,
+          "mean_steps_success": 223.2
+        },
+        "active": {
+          "n": 75,
+          "success": 0.88,
+          "failure": 0.0,
+          "discounted": 0.0931,
+          "mean_steps_success": 225.0
+        }
+      }
+    },
+    "sighted": {
+      "n": 250,
+      "success": 0.996,
+      "failure": 0.004,
+      "timeout": 0.0,
+      "discounted": 0.3855,
+      "mean_steps_success": 99.5,
+      "entered_band": 0.996,
+      "mean_hold_steps": 21.5,
+      "P_wait_decided_given_active": 1.0,
+      "by_latent": {
+        "clear": {
+          "n": 175,
+          "success": 1.0,
+          "failure": 0.0,
+          "discounted": 0.4567,
+          "mean_steps_success": 78.1
+        },
+        "active": {
+          "n": 75,
+          "success": 0.9867,
+          "failure": 0.0133,
+          "discounted": 0.2194,
+          "mean_steps_success": 150.0
+        }
+      }
+    },
+    "paired_latent_and_t0": true,
+    "n_active": 75
+  },
+  "hiddenness": {
+    "passes": true,
+    "n_pairs": 40,
+    "tolerance": 1e-06,
+    "n_diverged": 40,
+    "n_died_active": 40,
+    "min_gap_divergence_minus_within_reach": 0,
+    "min_gap_divergence_minus_band_entry": -3,
+    "mean_gap_divergence_minus_band_entry": 2.5,
+    "pairs": [
+      {
+        "seed": 1003,
+        "reset_diff": 0.0,
+        "rockfall_start": 24,
+        "rockfall_end": 96,
+        "divergence_step": 30,
+        "divergence_step_exact0": 30,
+        "within_reach_step": 28,
+        "contact_step": 30,
+        "death_step": 30,
+        "band_entry_step": 28,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1004,
+        "reset_diff": 0.0,
+        "rockfall_start": 15,
+        "rockfall_end": 87,
+        "divergence_step": 32,
+        "divergence_step_exact0": 32,
+        "within_reach_step": 23,
+        "contact_step": 37,
+        "death_step": 37,
+        "band_entry_step": 30,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1005,
+        "reset_diff": 0.0,
+        "rockfall_start": 25,
+        "rockfall_end": 97,
+        "divergence_step": 34,
+        "divergence_step_exact0": 34,
+        "within_reach_step": 29,
+        "contact_step": 34,
+        "death_step": 34,
+        "band_entry_step": 30,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1006,
+        "reset_diff": 0.0,
+        "rockfall_start": 23,
+        "rockfall_end": 95,
+        "divergence_step": 28,
+        "divergence_step_exact0": 28,
+        "within_reach_step": 27,
+        "contact_step": 28,
+        "death_step": 28,
+        "band_entry_step": 24,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1007,
+        "reset_diff": 0.0,
+        "rockfall_start": 5,
+        "rockfall_end": 77,
+        "divergence_step": 34,
+        "divergence_step_exact0": 34,
+        "within_reach_step": 24,
+        "contact_step": 34,
+        "death_step": 34,
+        "band_entry_step": 30,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1008,
+        "reset_diff": 0.0,
+        "rockfall_start": 21,
+        "rockfall_end": 93,
+        "divergence_step": 26,
+        "divergence_step_exact0": 26,
+        "within_reach_step": 26,
+        "contact_step": 26,
+        "death_step": 26,
+        "band_entry_step": null,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1009,
+        "reset_diff": 0.0,
+        "rockfall_start": 7,
+        "rockfall_end": 79,
+        "divergence_step": 31,
+        "divergence_step_exact0": 31,
+        "within_reach_step": 24,
+        "contact_step": 31,
+        "death_step": 31,
+        "band_entry_step": 29,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1010,
+        "reset_diff": 0.0,
+        "rockfall_start": 30,
+        "rockfall_end": 102,
+        "divergence_step": 35,
+        "divergence_step_exact0": 35,
+        "within_reach_step": 33,
+        "contact_step": 35,
+        "death_step": 35,
+        "band_entry_step": 28,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1011,
+        "reset_diff": 0.0,
+        "rockfall_start": 13,
+        "rockfall_end": 85,
+        "divergence_step": 30,
+        "divergence_step_exact0": 30,
+        "within_reach_step": 20,
+        "contact_step": 30,
+        "death_step": 30,
+        "band_entry_step": 26,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1012,
+        "reset_diff": 0.0,
+        "rockfall_start": 1,
+        "rockfall_end": 73,
+        "divergence_step": 30,
+        "divergence_step_exact0": 30,
+        "within_reach_step": 20,
+        "contact_step": 30,
+        "death_step": 30,
+        "band_entry_step": 29,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1013,
+        "reset_diff": 0.0,
+        "rockfall_start": 23,
+        "rockfall_end": 95,
+        "divergence_step": 28,
+        "divergence_step_exact0": 28,
+        "within_reach_step": 27,
+        "contact_step": 28,
+        "death_step": 28,
+        "band_entry_step": 26,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1014,
+        "reset_diff": 0.0,
+        "rockfall_start": 19,
+        "rockfall_end": 91,
+        "divergence_step": 25,
+        "divergence_step_exact0": 25,
+        "within_reach_step": 23,
+        "contact_step": 31,
+        "death_step": 31,
+        "band_entry_step": 26,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1015,
+        "reset_diff": 0.0,
+        "rockfall_start": 9,
+        "rockfall_end": 81,
+        "divergence_step": 31,
+        "divergence_step_exact0": 31,
+        "within_reach_step": 19,
+        "contact_step": 31,
+        "death_step": 31,
+        "band_entry_step": 27,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1016,
+        "reset_diff": 0.0,
+        "rockfall_start": 22,
+        "rockfall_end": 94,
+        "divergence_step": 28,
+        "divergence_step_exact0": 28,
+        "within_reach_step": 26,
+        "contact_step": 29,
+        "death_step": 29,
+        "band_entry_step": 27,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1017,
+        "reset_diff": 0.0,
+        "rockfall_start": 10,
+        "rockfall_end": 82,
+        "divergence_step": 27,
+        "divergence_step_exact0": 27,
+        "within_reach_step": 18,
+        "contact_step": 27,
+        "death_step": 27,
+        "band_entry_step": 25,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1018,
+        "reset_diff": 0.0,
+        "rockfall_start": 20,
+        "rockfall_end": 92,
+        "divergence_step": 29,
+        "divergence_step_exact0": 29,
+        "within_reach_step": 24,
+        "contact_step": 31,
+        "death_step": 31,
+        "band_entry_step": 27,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1019,
+        "reset_diff": 0.0,
+        "rockfall_start": 4,
+        "rockfall_end": 76,
+        "divergence_step": 28,
+        "divergence_step_exact0": 28,
+        "within_reach_step": 20,
+        "contact_step": 28,
+        "death_step": 28,
+        "band_entry_step": 25,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1020,
+        "reset_diff": 0.0,
+        "rockfall_start": 28,
+        "rockfall_end": 100,
+        "divergence_step": 33,
+        "divergence_step_exact0": 33,
+        "within_reach_step": 32,
+        "contact_step": 33,
+        "death_step": 33,
+        "band_entry_step": 25,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1021,
+        "reset_diff": 0.0,
+        "rockfall_start": 30,
+        "rockfall_end": 102,
+        "divergence_step": 35,
+        "divergence_step_exact0": 35,
+        "within_reach_step": 34,
+        "contact_step": 35,
+        "death_step": 35,
+        "band_entry_step": 27,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1022,
+        "reset_diff": 0.0,
+        "rockfall_start": 10,
+        "rockfall_end": 82,
+        "divergence_step": 28,
+        "divergence_step_exact0": 28,
+        "within_reach_step": 21,
+        "contact_step": 28,
+        "death_step": 28,
+        "band_entry_step": 28,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1023,
+        "reset_diff": 0.0,
+        "rockfall_start": 4,
+        "rockfall_end": 76,
+        "divergence_step": 25,
+        "divergence_step_exact0": 25,
+        "within_reach_step": 21,
+        "contact_step": 25,
+        "death_step": 25,
+        "band_entry_step": 24,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1024,
+        "reset_diff": 0.0,
+        "rockfall_start": 1,
+        "rockfall_end": 73,
+        "divergence_step": 25,
+        "divergence_step_exact0": 25,
+        "within_reach_step": 17,
+        "contact_step": 25,
+        "death_step": 25,
+        "band_entry_step": 25,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1025,
+        "reset_diff": 0.0,
+        "rockfall_start": 10,
+        "rockfall_end": 82,
+        "divergence_step": 27,
+        "divergence_step_exact0": 27,
+        "within_reach_step": 18,
+        "contact_step": 28,
+        "death_step": 28,
+        "band_entry_step": 26,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1026,
+        "reset_diff": 0.0,
+        "rockfall_start": 22,
+        "rockfall_end": 94,
+        "divergence_step": 28,
+        "divergence_step_exact0": 28,
+        "within_reach_step": 26,
+        "contact_step": 39,
+        "death_step": 39,
+        "band_entry_step": 28,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1027,
+        "reset_diff": 0.0,
+        "rockfall_start": 23,
+        "rockfall_end": 95,
+        "divergence_step": 29,
+        "divergence_step_exact0": 29,
+        "within_reach_step": 27,
+        "contact_step": 35,
+        "death_step": 35,
+        "band_entry_step": 32,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1028,
+        "reset_diff": 0.0,
+        "rockfall_start": 7,
+        "rockfall_end": 79,
+        "divergence_step": 24,
+        "divergence_step_exact0": 24,
+        "within_reach_step": 18,
+        "contact_step": 24,
+        "death_step": 24,
+        "band_entry_step": null,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1029,
+        "reset_diff": 0.0,
+        "rockfall_start": 28,
+        "rockfall_end": 100,
+        "divergence_step": 33,
+        "divergence_step_exact0": 33,
+        "within_reach_step": 32,
+        "contact_step": 33,
+        "death_step": 33,
+        "band_entry_step": 26,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1030,
+        "reset_diff": 0.0,
+        "rockfall_start": 3,
+        "rockfall_end": 75,
+        "divergence_step": 27,
+        "divergence_step_exact0": 27,
+        "within_reach_step": 19,
+        "contact_step": 32,
+        "death_step": 32,
+        "band_entry_step": 26,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1031,
+        "reset_diff": 0.0,
+        "rockfall_start": 24,
+        "rockfall_end": 96,
+        "divergence_step": 29,
+        "divergence_step_exact0": 29,
+        "within_reach_step": 28,
+        "contact_step": 31,
+        "death_step": 31,
+        "band_entry_step": 27,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1032,
+        "reset_diff": 0.0,
+        "rockfall_start": 4,
+        "rockfall_end": 76,
+        "divergence_step": 26,
+        "divergence_step_exact0": 26,
+        "within_reach_step": 20,
+        "contact_step": 26,
+        "death_step": 26,
+        "band_entry_step": 24,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1033,
+        "reset_diff": 0.0,
+        "rockfall_start": 12,
+        "rockfall_end": 84,
+        "divergence_step": 29,
+        "divergence_step_exact0": 29,
+        "within_reach_step": 18,
+        "contact_step": 29,
+        "death_step": 29,
+        "band_entry_step": 26,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1034,
+        "reset_diff": 0.0,
+        "rockfall_start": 9,
+        "rockfall_end": 81,
+        "divergence_step": 27,
+        "divergence_step_exact0": 27,
+        "within_reach_step": 17,
+        "contact_step": 27,
+        "death_step": 27,
+        "band_entry_step": 24,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1035,
+        "reset_diff": 0.0,
+        "rockfall_start": 4,
+        "rockfall_end": 76,
+        "divergence_step": 27,
+        "divergence_step_exact0": 27,
+        "within_reach_step": 22,
+        "contact_step": 27,
+        "death_step": 27,
+        "band_entry_step": 26,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1036,
+        "reset_diff": 0.0,
+        "rockfall_start": 18,
+        "rockfall_end": 90,
+        "divergence_step": 26,
+        "divergence_step_exact0": 26,
+        "within_reach_step": 23,
+        "contact_step": 26,
+        "death_step": 26,
+        "band_entry_step": null,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1037,
+        "reset_diff": 0.0,
+        "rockfall_start": 11,
+        "rockfall_end": 83,
+        "divergence_step": 29,
+        "divergence_step_exact0": 29,
+        "within_reach_step": 19,
+        "contact_step": 29,
+        "death_step": 29,
+        "band_entry_step": 27,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1038,
+        "reset_diff": 0.0,
+        "rockfall_start": 26,
+        "rockfall_end": 98,
+        "divergence_step": 31,
+        "divergence_step_exact0": 31,
+        "within_reach_step": 30,
+        "contact_step": 31,
+        "death_step": 31,
+        "band_entry_step": 29,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1039,
+        "reset_diff": 0.0,
+        "rockfall_start": 21,
+        "rockfall_end": 93,
+        "divergence_step": 29,
+        "divergence_step_exact0": 29,
+        "within_reach_step": 25,
+        "contact_step": 38,
+        "death_step": 38,
+        "band_entry_step": 28,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1040,
+        "reset_diff": 0.0,
+        "rockfall_start": 13,
+        "rockfall_end": 85,
+        "divergence_step": 30,
+        "divergence_step_exact0": 30,
+        "within_reach_step": 18,
+        "contact_step": 30,
+        "death_step": 30,
+        "band_entry_step": 25,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1041,
+        "reset_diff": 0.0,
+        "rockfall_start": 21,
+        "rockfall_end": 93,
+        "divergence_step": 29,
+        "divergence_step_exact0": 29,
+        "within_reach_step": 25,
+        "contact_step": 29,
+        "death_step": 29,
+        "band_entry_step": 25,
+        "active_success": false,
+        "clear_success": false
+      },
+      {
+        "seed": 1042,
+        "reset_diff": 0.0,
+        "rockfall_start": 10,
+        "rockfall_end": 82,
+        "divergence_step": 27,
+        "divergence_step_exact0": 27,
+        "within_reach_step": 17,
+        "contact_step": 27,
+        "death_step": 27,
+        "band_entry_step": 26,
+        "active_success": false,
+        "clear_success": false
+      }
+    ]
+  },
+  "reference_numbers": {
+    "sparse_success": {
+      "always_go": 0.7,
+      "always_wait": 0.996,
+      "always_detour": 0.928,
+      "oracle": 0.996
+    },
+    "discounted_gamma_0.99": {
+      "always_go": 0.3197,
+      "always_wait": 0.1911,
+      "always_detour": 0.0993,
+      "oracle": 0.3855,
+      "best_blind": "always_go"
+    },
+    "discounted_definition": "0.99**steps on success, else 0.0; mean over episodes",
+    "P_success_go_observed": {
+      "near": 0.9965,
+      "far05": 0.9963
+    },
+    "confounding_gap": {
+      "P_success_go_observed": {
+        "near": 0.9965,
+        "far05": 0.9963
+      },
+      "P_success_do_go": 0.7,
+      "gap": {
+        "near": 0.2965,
+        "far05": 0.2963
+      },
+      "discounted_go_observed": {
+        "near": 0.4567,
+        "far05": 0.4565
+      },
+      "discounted_do_go": 0.3197
+    }
+  }
+}
