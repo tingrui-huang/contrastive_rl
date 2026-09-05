@@ -1,0 +1,2030 @@
+[
+  {
+    "label": "v5clock_near_crl_s0_100kfinal_mean",
+    "mode": "mean",
+    "variant": "near",
+    "env": "offline_ant_umaze_rockfall_clock_v5",
+    "ckpt": "v5clock_near_crl_s0_100k/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {},
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.3933,
+        "failure": 0.3267,
+        "timeout": 0.28,
+        "entered_band": 0.99,
+        "route": {
+          "shortcut": 0.99,
+          "detour": 0.0,
+          "no_route": 0.01
+        },
+        "hesitation_n": 297,
+        "hesitation_mean": 12.4,
+        "hesitation_median": 12.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 0.8754,
+        "mean_discounted": 0.1349,
+        "mean_steps": 168.9567
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.5842,
+          "failure": 0.0,
+          "timeout": 0.4158,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 202,
+          "hesitation_mean": 12.4,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8715,
+          "mean_discounted": 0.2003,
+          "mean_steps": 234.6535
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.9694,
+          "route": {
+            "shortcut": 0.9694,
+            "detour": 0.0,
+            "no_route": 0.0306
+          },
+          "hesitation_n": 95,
+          "hesitation_mean": 12.3,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8833,
+          "mean_discounted": 0.0,
+          "mean_steps": 33.5408
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 297,
+          "success": 0.3973,
+          "failure": 0.3199,
+          "timeout": 0.2828,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 297,
+          "hesitation_mean": 12.4,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8743,
+          "mean_discounted": 0.1362,
+          "mean_steps": 170.4007
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 3,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.9791,
+          "mean_discounted": 0.0,
+          "mean_steps": 26.0
+        }
+      },
+      "death_given_active": 1.0,
+      "death_given_active_and_shortcut": 1.0,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.9694,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.1546,
+        "q_mode": -12.4998,
+        "q_zero": -17.814,
+        "q_best_sample": -10.8001,
+        "q_samples_mean": -12.623,
+        "mode_norm": 1.744,
+        "chosen_norm": 1.7421,
+        "x": 1.4463,
+        "frac_q_mode_gt_q_zero": 0.89,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v5clock_near_crl_s0_100kfinal_critic_select",
+    "mode": "critic_select",
+    "variant": "near",
+    "env": "offline_ant_umaze_rockfall_clock_v5",
+    "ckpt": "v5clock_near_crl_s0_100k/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {},
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.3167,
+        "failure": 0.3267,
+        "timeout": 0.3567,
+        "entered_band": 0.98,
+        "route": {
+          "shortcut": 0.98,
+          "detour": 0.0,
+          "no_route": 0.02
+        },
+        "hesitation_n": 294,
+        "hesitation_mean": 12.4,
+        "hesitation_median": 12.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 0.8764,
+        "mean_discounted": 0.0828,
+        "mean_steps": 200.0767
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.4703,
+          "failure": 0.0,
+          "timeout": 0.5297,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 202,
+          "hesitation_mean": 12.4,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8798,
+          "mean_discounted": 0.123,
+          "mean_steps": 280.7822
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.9388,
+          "route": {
+            "shortcut": 0.9388,
+            "detour": 0.0,
+            "no_route": 0.0612
+          },
+          "hesitation_n": 92,
+          "hesitation_mean": 12.5,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8695,
+          "mean_discounted": 0.0,
+          "mean_steps": 33.7245
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 294,
+          "success": 0.3231,
+          "failure": 0.3129,
+          "timeout": 0.3639,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 294,
+          "hesitation_mean": 12.4,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8777,
+          "mean_discounted": 0.0845,
+          "mean_steps": 203.568
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 6,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.813,
+          "mean_discounted": 0.0,
+          "mean_steps": 29.0
+        }
+      },
+      "death_given_active": 1.0,
+      "death_given_active_and_shortcut": 1.0,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.9388,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.1606,
+        "q_mode": -12.372,
+        "q_zero": -17.2157,
+        "q_best_sample": -10.6712,
+        "q_samples_mean": -12.5028,
+        "mode_norm": 1.7299,
+        "chosen_norm": 1.7368,
+        "x": 1.4474,
+        "frac_q_mode_gt_q_zero": 0.87,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v5clock_near_crl_s1_100kfinal_mean",
+    "mode": "mean",
+    "variant": "near",
+    "env": "offline_ant_umaze_rockfall_clock_v5",
+    "ckpt": "v5clock_near_crl_s1_100k/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {},
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.5433,
+        "failure": 0.3267,
+        "timeout": 0.13,
+        "entered_band": 0.9767,
+        "route": {
+          "shortcut": 0.9767,
+          "detour": 0.0,
+          "no_route": 0.0233
+        },
+        "hesitation_n": 293,
+        "hesitation_mean": 12.5,
+        "hesitation_median": 13.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 0.8754,
+        "mean_discounted": 0.2047,
+        "mean_steps": 116.4167
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.8069,
+          "failure": 0.0,
+          "timeout": 0.1931,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 202,
+          "hesitation_mean": 12.6,
+          "hesitation_median": 13.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8774,
+          "mean_discounted": 0.304,
+          "mean_steps": 156.3911
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.9286,
+          "route": {
+            "shortcut": 0.9286,
+            "detour": 0.0,
+            "no_route": 0.0714
+          },
+          "hesitation_n": 91,
+          "hesitation_mean": 12.4,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8715,
+          "mean_discounted": 0.0,
+          "mean_steps": 34.0204
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 293,
+          "success": 0.5563,
+          "failure": 0.3106,
+          "timeout": 0.1331,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 293,
+          "hesitation_mean": 12.5,
+          "hesitation_median": 13.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8753,
+          "mean_discounted": 0.2096,
+          "mean_steps": 118.5563
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 7,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8819,
+          "mean_discounted": 0.0,
+          "mean_steps": 26.8571
+        }
+      },
+      "death_given_active": 1.0,
+      "death_given_active_and_shortcut": 1.0,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.9286,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.1573,
+        "q_mode": -13.9317,
+        "q_zero": -18.7083,
+        "q_best_sample": -11.7599,
+        "q_samples_mean": -14.0605,
+        "mode_norm": 1.7249,
+        "chosen_norm": 1.7141,
+        "x": 1.4502,
+        "frac_q_mode_gt_q_zero": 0.7667,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v5clock_near_crl_s1_100kfinal_critic_select",
+    "mode": "critic_select",
+    "variant": "near",
+    "env": "offline_ant_umaze_rockfall_clock_v5",
+    "ckpt": "v5clock_near_crl_s1_100k/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {},
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.53,
+        "failure": 0.3267,
+        "timeout": 0.1433,
+        "entered_band": 0.96,
+        "route": {
+          "shortcut": 0.96,
+          "detour": 0.0,
+          "no_route": 0.04
+        },
+        "hesitation_n": 288,
+        "hesitation_mean": 12.9,
+        "hesitation_median": 13.0,
+        "waited_rate": 0.0035,
+        "stop_steps_mean": 0.18,
+        "stopped_rate": 0.0067,
+        "zone_vmin_mean": 0.8487,
+        "mean_discounted": 0.1774,
+        "mean_steps": 129.8233
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.7871,
+          "failure": 0.0,
+          "timeout": 0.2129,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 202,
+          "hesitation_mean": 13.0,
+          "hesitation_median": 13.0,
+          "waited_rate": 0.005,
+          "stop_steps_mean": 0.2673,
+          "stopped_rate": 0.0099,
+          "zone_vmin_mean": 0.8477,
+          "mean_discounted": 0.2634,
+          "mean_steps": 175.8812
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.8776,
+          "route": {
+            "shortcut": 0.8776,
+            "detour": 0.0,
+            "no_route": 0.1224
+          },
+          "hesitation_n": 86,
+          "hesitation_mean": 12.7,
+          "hesitation_median": 13.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8508,
+          "mean_discounted": 0.0,
+          "mean_steps": 34.8878
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 288,
+          "success": 0.5521,
+          "failure": 0.2986,
+          "timeout": 0.1493,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 288,
+          "hesitation_mean": 12.9,
+          "hesitation_median": 13.0,
+          "waited_rate": 0.0035,
+          "stop_steps_mean": 0.1875,
+          "stopped_rate": 0.0069,
+          "zone_vmin_mean": 0.8494,
+          "mean_discounted": 0.1848,
+          "mean_steps": 133.9965
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 12,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8314,
+          "mean_discounted": 0.0,
+          "mean_steps": 29.6667
+        }
+      },
+      "death_given_active": 1.0,
+      "death_given_active_and_shortcut": 1.0,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.8776,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.1811,
+        "q_mode": -14.4583,
+        "q_zero": -19.0457,
+        "q_best_sample": -12.0547,
+        "q_samples_mean": -14.6176,
+        "mode_norm": 1.7078,
+        "chosen_norm": 1.6952,
+        "x": 1.4476,
+        "frac_q_mode_gt_q_zero": 0.7767,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v5clock_near_crl_s2_100kfinal_mean",
+    "mode": "mean",
+    "variant": "near",
+    "env": "offline_ant_umaze_rockfall_clock_v5",
+    "ckpt": "v5clock_near_crl_s2_100k/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {},
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.5367,
+        "failure": 0.3267,
+        "timeout": 0.1367,
+        "entered_band": 0.9867,
+        "route": {
+          "shortcut": 0.9867,
+          "detour": 0.0,
+          "no_route": 0.0133
+        },
+        "hesitation_n": 296,
+        "hesitation_mean": 12.4,
+        "hesitation_median": 12.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 0.8682,
+        "mean_discounted": 0.1612,
+        "mean_steps": 134.0733
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.797,
+          "failure": 0.0,
+          "timeout": 0.203,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 202,
+          "hesitation_mean": 12.4,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8672,
+          "mean_discounted": 0.2394,
+          "mean_steps": 182.9901
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.9592,
+          "route": {
+            "shortcut": 0.9592,
+            "detour": 0.0,
+            "no_route": 0.0408
+          },
+          "hesitation_n": 94,
+          "hesitation_mean": 12.5,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8702,
+          "mean_discounted": 0.0,
+          "mean_steps": 33.2449
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 296,
+          "success": 0.5439,
+          "failure": 0.3176,
+          "timeout": 0.1385,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 296,
+          "hesitation_mean": 12.4,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8674,
+          "mean_discounted": 0.1634,
+          "mean_steps": 135.5135
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 4,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.9287,
+          "mean_discounted": 0.0,
+          "mean_steps": 27.5
+        }
+      },
+      "death_given_active": 1.0,
+      "death_given_active_and_shortcut": 1.0,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.9592,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.1462,
+        "q_mode": -12.8417,
+        "q_zero": -19.1857,
+        "q_best_sample": -11.014,
+        "q_samples_mean": -12.9134,
+        "mode_norm": 1.7752,
+        "chosen_norm": 1.7877,
+        "x": 1.4465,
+        "frac_q_mode_gt_q_zero": 0.9267,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v5clock_near_crl_s2_100kfinal_critic_select",
+    "mode": "critic_select",
+    "variant": "near",
+    "env": "offline_ant_umaze_rockfall_clock_v5",
+    "ckpt": "v5clock_near_crl_s2_100k/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {},
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.53,
+        "failure": 0.3267,
+        "timeout": 0.1433,
+        "entered_band": 0.9733,
+        "route": {
+          "shortcut": 0.9733,
+          "detour": 0.0,
+          "no_route": 0.0267
+        },
+        "hesitation_n": 292,
+        "hesitation_mean": 12.5,
+        "hesitation_median": 12.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0133,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 0.8561,
+        "mean_discounted": 0.1083,
+        "mean_steps": 163.89
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.7871,
+          "failure": 0.0,
+          "timeout": 0.2129,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 202,
+          "hesitation_mean": 12.5,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0198,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8513,
+          "mean_discounted": 0.1609,
+          "mean_steps": 227.1832
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.9184,
+          "route": {
+            "shortcut": 0.9184,
+            "detour": 0.0,
+            "no_route": 0.0816
+          },
+          "hesitation_n": 90,
+          "hesitation_mean": 12.5,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8661,
+          "mean_discounted": 0.0,
+          "mean_steps": 33.4286
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 292,
+          "success": 0.5445,
+          "failure": 0.3082,
+          "timeout": 0.1473,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 292,
+          "hesitation_mean": 12.5,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0137,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8554,
+          "mean_discounted": 0.1113,
+          "mean_steps": 167.613
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 8,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.882,
+          "mean_discounted": 0.0,
+          "mean_steps": 28.0
+        }
+      },
+      "death_given_active": 1.0,
+      "death_given_active_and_shortcut": 1.0,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.9184,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.1533,
+        "q_mode": -12.8133,
+        "q_zero": -19.1332,
+        "q_best_sample": -10.9874,
+        "q_samples_mean": -12.8836,
+        "mode_norm": 1.7864,
+        "chosen_norm": 1.7862,
+        "x": 1.4507,
+        "frac_q_mode_gt_q_zero": 0.8867,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v5clock_far05_crl_s0_100kfinal_mean",
+    "mode": "mean",
+    "variant": "far05",
+    "env": "offline_ant_umaze_rockfall_clock_v5",
+    "ckpt": "v5clock_far05_crl_s0_100k/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {},
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.4767,
+        "failure": 0.3267,
+        "timeout": 0.1967,
+        "entered_band": 0.99,
+        "route": {
+          "shortcut": 0.99,
+          "detour": 0.0,
+          "no_route": 0.01
+        },
+        "hesitation_n": 297,
+        "hesitation_mean": 12.6,
+        "hesitation_median": 12.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0067,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 0.8609,
+        "mean_discounted": 0.1421,
+        "mean_steps": 151.1533
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.7079,
+          "failure": 0.0,
+          "timeout": 0.2921,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 202,
+          "hesitation_mean": 12.6,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0099,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8573,
+          "mean_discounted": 0.2111,
+          "mean_steps": 207.5149
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.9694,
+          "route": {
+            "shortcut": 0.9694,
+            "detour": 0.0,
+            "no_route": 0.0306
+          },
+          "hesitation_n": 95,
+          "hesitation_mean": 12.5,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8683,
+          "mean_discounted": 0.0,
+          "mean_steps": 34.9796
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 297,
+          "success": 0.4815,
+          "failure": 0.3199,
+          "timeout": 0.1987,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 297,
+          "hesitation_mean": 12.6,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0067,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8611,
+          "mean_discounted": 0.1435,
+          "mean_steps": 152.3973
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 3,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8434,
+          "mean_discounted": 0.0,
+          "mean_steps": 28.0
+        }
+      },
+      "death_given_active": 1.0,
+      "death_given_active_and_shortcut": 1.0,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.9694,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.1987,
+        "q_mode": -12.6724,
+        "q_zero": -16.099,
+        "q_best_sample": -10.5586,
+        "q_samples_mean": -12.7298,
+        "mode_norm": 1.7018,
+        "chosen_norm": 1.6948,
+        "x": 1.4484,
+        "frac_q_mode_gt_q_zero": 0.71,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v5clock_far05_crl_s0_100kfinal_critic_select",
+    "mode": "critic_select",
+    "variant": "far05",
+    "env": "offline_ant_umaze_rockfall_clock_v5",
+    "ckpt": "v5clock_far05_crl_s0_100k/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {},
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.4267,
+        "failure": 0.3233,
+        "timeout": 0.25,
+        "entered_band": 0.9567,
+        "route": {
+          "shortcut": 0.9567,
+          "detour": 0.0,
+          "no_route": 0.0433
+        },
+        "hesitation_n": 287,
+        "hesitation_mean": 14.1,
+        "hesitation_median": 13.0,
+        "waited_rate": 0.007,
+        "stop_steps_mean": 0.0567,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 0.8261,
+        "mean_discounted": 0.0724,
+        "mean_steps": 200.31
+      },
+      "death_rate_ci95": [
+        0.2729,
+        0.3782
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.6337,
+          "failure": 0.0,
+          "timeout": 0.3663,
+          "entered_band": 0.995,
+          "route": {
+            "shortcut": 0.995,
+            "detour": 0.0,
+            "no_route": 0.005
+          },
+          "hesitation_n": 201,
+          "hesitation_mean": 14.6,
+          "hesitation_median": 13.0,
+          "waited_rate": 0.01,
+          "stop_steps_mean": 0.0842,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8238,
+          "mean_discounted": 0.1076,
+          "mean_steps": 278.3267
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 0.9898,
+          "timeout": 0.0102,
+          "entered_band": 0.8776,
+          "route": {
+            "shortcut": 0.8776,
+            "detour": 0.0,
+            "no_route": 0.1224
+          },
+          "hesitation_n": 86,
+          "hesitation_mean": 12.7,
+          "hesitation_median": 13.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.831,
+          "mean_discounted": 0.0,
+          "mean_steps": 39.5
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 287,
+          "success": 0.446,
+          "failure": 0.2962,
+          "timeout": 0.2578,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 287,
+          "hesitation_mean": 14.1,
+          "hesitation_median": 13.0,
+          "waited_rate": 0.007,
+          "stop_steps_mean": 0.0592,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.826,
+          "mean_discounted": 0.0757,
+          "mean_steps": 206.676
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 13,
+          "success": 0.0,
+          "failure": 0.9231,
+          "timeout": 0.0769,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8306,
+          "mean_discounted": 0.0,
+          "mean_steps": 59.7692
+        }
+      },
+      "death_given_active": 0.9898,
+      "death_given_active_and_shortcut": 0.9884,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.8673,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.2177,
+        "q_mode": -12.9564,
+        "q_zero": -15.053,
+        "q_best_sample": -10.7745,
+        "q_samples_mean": -13.0636,
+        "mode_norm": 1.7668,
+        "chosen_norm": 1.7708,
+        "x": 1.447,
+        "frac_q_mode_gt_q_zero": 0.6522,
+        "n": 299
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v5clock_far05_crl_s1_100kfinal_mean",
+    "mode": "mean",
+    "variant": "far05",
+    "env": "offline_ant_umaze_rockfall_clock_v5",
+    "ckpt": "v5clock_far05_crl_s1_100k/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {},
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.3867,
+        "failure": 0.3267,
+        "timeout": 0.2867,
+        "entered_band": 0.9767,
+        "route": {
+          "shortcut": 0.9767,
+          "detour": 0.0,
+          "no_route": 0.0233
+        },
+        "hesitation_n": 293,
+        "hesitation_mean": 12.4,
+        "hesitation_median": 12.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0167,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 0.8818,
+        "mean_discounted": 0.1267,
+        "mean_steps": 172.3867
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.5743,
+          "failure": 0.0,
+          "timeout": 0.4257,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 202,
+          "hesitation_mean": 12.4,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8889,
+          "mean_discounted": 0.1881,
+          "mean_steps": 239.7079
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.9286,
+          "route": {
+            "shortcut": 0.9286,
+            "detour": 0.0,
+            "no_route": 0.0714
+          },
+          "hesitation_n": 91,
+          "hesitation_mean": 12.3,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.051,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8672,
+          "mean_discounted": 0.0,
+          "mean_steps": 33.6224
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 293,
+          "success": 0.3959,
+          "failure": 0.3106,
+          "timeout": 0.2935,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 293,
+          "hesitation_mean": 12.4,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0171,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8828,
+          "mean_discounted": 0.1297,
+          "mean_steps": 175.8498
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 7,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8424,
+          "mean_discounted": 0.0,
+          "mean_steps": 27.4286
+        }
+      },
+      "death_given_active": 1.0,
+      "death_given_active_and_shortcut": 1.0,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.9286,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.1673,
+        "q_mode": -12.6967,
+        "q_zero": -16.0253,
+        "q_best_sample": -10.5333,
+        "q_samples_mean": -12.7233,
+        "mode_norm": 1.734,
+        "chosen_norm": 1.7404,
+        "x": 1.4507,
+        "frac_q_mode_gt_q_zero": 0.7567,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v5clock_far05_crl_s1_100kfinal_critic_select",
+    "mode": "critic_select",
+    "variant": "far05",
+    "env": "offline_ant_umaze_rockfall_clock_v5",
+    "ckpt": "v5clock_far05_crl_s1_100k/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {},
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.6233,
+        "failure": 0.3233,
+        "timeout": 0.0533,
+        "entered_band": 0.9667,
+        "route": {
+          "shortcut": 0.9667,
+          "detour": 0.0,
+          "no_route": 0.0333
+        },
+        "hesitation_n": 290,
+        "hesitation_mean": 13.7,
+        "hesitation_median": 13.0,
+        "waited_rate": 0.0034,
+        "stop_steps_mean": 0.0733,
+        "stopped_rate": 0.0033,
+        "zone_vmin_mean": 0.8401,
+        "mean_discounted": 0.1526,
+        "mean_steps": 129.3667
+      },
+      "death_rate_ci95": [
+        0.2729,
+        0.3782
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.9257,
+          "failure": 0.0,
+          "timeout": 0.0743,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 202,
+          "hesitation_mean": 12.8,
+          "hesitation_median": 13.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.005,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8461,
+          "mean_discounted": 0.2266,
+          "mean_steps": 173.3911
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 0.9898,
+          "timeout": 0.0102,
+          "entered_band": 0.898,
+          "route": {
+            "shortcut": 0.898,
+            "detour": 0.0,
+            "no_route": 0.102
+          },
+          "hesitation_n": 88,
+          "hesitation_mean": 15.8,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0114,
+          "stop_steps_mean": 0.2143,
+          "stopped_rate": 0.0102,
+          "zone_vmin_mean": 0.8276,
+          "mean_discounted": 0.0,
+          "mean_steps": 38.6224
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 290,
+          "success": 0.6448,
+          "failure": 0.3,
+          "timeout": 0.0552,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 290,
+          "hesitation_mean": 13.7,
+          "hesitation_median": 13.0,
+          "waited_rate": 0.0034,
+          "stop_steps_mean": 0.0276,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8422,
+          "mean_discounted": 0.1578,
+          "mean_steps": 132.5759
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 10,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 1.4,
+          "stopped_rate": 0.1,
+          "zone_vmin_mean": 0.7773,
+          "mean_discounted": 0.0,
+          "mean_steps": 36.3
+        }
+      },
+      "death_given_active": 0.9898,
+      "death_given_active_and_shortcut": 0.9886,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.8878,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.2056,
+        "q_mode": -13.6879,
+        "q_zero": -16.2543,
+        "q_best_sample": -11.1704,
+        "q_samples_mean": -13.732,
+        "mode_norm": 1.765,
+        "chosen_norm": 1.7744,
+        "x": 1.4527,
+        "frac_q_mode_gt_q_zero": 0.7,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v5clock_far05_crl_s2_100kfinal_mean",
+    "mode": "mean",
+    "variant": "far05",
+    "env": "offline_ant_umaze_rockfall_clock_v5",
+    "ckpt": "v5clock_far05_crl_s2_100k/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {},
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.4867,
+        "failure": 0.3267,
+        "timeout": 0.1867,
+        "entered_band": 0.9767,
+        "route": {
+          "shortcut": 0.9767,
+          "detour": 0.0,
+          "no_route": 0.0233
+        },
+        "hesitation_n": 293,
+        "hesitation_mean": 12.4,
+        "hesitation_median": 12.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 0.8743,
+        "mean_discounted": 0.1706,
+        "mean_steps": 138.38
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.7228,
+          "failure": 0.0,
+          "timeout": 0.2772,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 202,
+          "hesitation_mean": 12.4,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8743,
+          "mean_discounted": 0.2534,
+          "mean_steps": 188.6436
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.9286,
+          "route": {
+            "shortcut": 0.9286,
+            "detour": 0.0,
+            "no_route": 0.0714
+          },
+          "hesitation_n": 91,
+          "hesitation_mean": 12.4,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8742,
+          "mean_discounted": 0.0,
+          "mean_steps": 34.7755
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 293,
+          "success": 0.4983,
+          "failure": 0.3106,
+          "timeout": 0.1911,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 293,
+          "hesitation_mean": 12.4,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8743,
+          "mean_discounted": 0.1747,
+          "mean_steps": 140.9693
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 7,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8739,
+          "mean_discounted": 0.0,
+          "mean_steps": 30.0
+        }
+      },
+      "death_given_active": 1.0,
+      "death_given_active_and_shortcut": 1.0,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.9286,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.1593,
+        "q_mode": -13.4194,
+        "q_zero": -16.3207,
+        "q_best_sample": -11.8623,
+        "q_samples_mean": -13.46,
+        "mode_norm": 1.7304,
+        "chosen_norm": 1.7299,
+        "x": 1.4479,
+        "frac_q_mode_gt_q_zero": 0.7633,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v5clock_far05_crl_s2_100kfinal_critic_select",
+    "mode": "critic_select",
+    "variant": "far05",
+    "env": "offline_ant_umaze_rockfall_clock_v5",
+    "ckpt": "v5clock_far05_crl_s2_100k/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {},
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.57,
+        "failure": 0.3267,
+        "timeout": 0.1033,
+        "entered_band": 0.97,
+        "route": {
+          "shortcut": 0.97,
+          "detour": 0.0,
+          "no_route": 0.03
+        },
+        "hesitation_n": 291,
+        "hesitation_mean": 13.1,
+        "hesitation_median": 12.0,
+        "waited_rate": 0.0034,
+        "stop_steps_mean": 0.0667,
+        "stopped_rate": 0.0033,
+        "zone_vmin_mean": 0.8246,
+        "mean_discounted": 0.1517,
+        "mean_steps": 134.93
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.8465,
+          "failure": 0.0,
+          "timeout": 0.1535,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 202,
+          "hesitation_mean": 13.5,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.005,
+          "stop_steps_mean": 0.099,
+          "stopped_rate": 0.005,
+          "zone_vmin_mean": 0.8184,
+          "mean_discounted": 0.2253,
+          "mean_steps": 183.3317
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.9082,
+          "route": {
+            "shortcut": 0.9082,
+            "detour": 0.0,
+            "no_route": 0.0918
+          },
+          "hesitation_n": 89,
+          "hesitation_mean": 12.4,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.8375,
+          "mean_discounted": 0.0,
+          "mean_steps": 35.1633
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 291,
+          "success": 0.5876,
+          "failure": 0.3058,
+          "timeout": 0.1065,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 291,
+          "hesitation_mean": 13.1,
+          "hesitation_median": 12.0,
+          "waited_rate": 0.0034,
+          "stop_steps_mean": 0.0687,
+          "stopped_rate": 0.0034,
+          "zone_vmin_mean": 0.8242,
+          "mean_discounted": 0.1564,
+          "mean_steps": 138.1546
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 9,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.839,
+          "mean_discounted": 0.0,
+          "mean_steps": 30.6667
+        }
+      },
+      "death_given_active": 1.0,
+      "death_given_active_and_shortcut": 1.0,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.9082,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.1763,
+        "q_mode": -13.3803,
+        "q_zero": -16.4298,
+        "q_best_sample": -11.7421,
+        "q_samples_mean": -13.4414,
+        "mode_norm": 1.7641,
+        "chosen_norm": 1.7696,
+        "x": 1.4499,
+        "frac_q_mode_gt_q_zero": 0.7767,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  }
+]
