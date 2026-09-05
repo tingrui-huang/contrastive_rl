@@ -49,7 +49,10 @@ HORIZON = 400
 
 def main():
   ap = argparse.ArgumentParser()
-  ap.add_argument('--variant', choices=sorted(NPZ_BY_VARIANT), default='near')
+  #: far05 is the headline variant: it carries the 5% latent-independent
+  #: detour demonstrations, so the dataset contains a safe alternative.
+  ap.add_argument('--variant', choices=sorted(NPZ_BY_VARIANT),
+                  default='far05')
   ap.add_argument('--method', choices=['crl', 'gcbc'], default='crl')
   ap.add_argument('--steps', type=int, default=100_000)
   ap.add_argument('--seed', type=int, default=0)
@@ -60,10 +63,12 @@ def main():
   ap.add_argument('--horizon', type=int, default=HORIZON)
   #: CRL's reachability horizon (goal relabel offset ~ discount**d).
   ap.add_argument('--discount', type=float, default=None)
-  #: 'full' = this port's historical 29-dim goal (relabeled goals are full
-  #: future states, the commanded goal is XY + 27 zeros); 'xy' = the upstream
-  #: ant contract (end_index=2), where both are the XY pair.
-  ap.add_argument('--goal-rep', choices=['full', 'xy'], default='full')
+  #: 'xy' (DEFAULT) = the upstream ant contract (lp_contrastive sets
+  #: end_index=2 for every 'ant_' env): the relabeled goal and the commanded
+  #: goal are both the XY pair. 'full' = this port's historical 29-dim goal,
+  #: which commands XY + 27 zeros at evaluation time -- a vector no training
+  #: goal ever has, worth ~0.3 success. Kept only to reproduce old runs.
+  ap.add_argument('--goal-rep', choices=['full', 'xy'], default='xy')
   args = ap.parse_args()
 
   #: the XY-goal arm trains on the 31-column copy of the same dataset
