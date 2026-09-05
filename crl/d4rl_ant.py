@@ -157,6 +157,21 @@ class D4rlAntUMazeEnv:
           self._goal_cells.append((r, c))
     self._last_obs = None
 
+  def set_goal_indices(self, indices):
+    """Choose which state columns form the goal the learner is given.
+
+    ``(0, 1)`` reproduces the upstream ant setting (goal = XY, goal_dim 2);
+    ``range(29)`` is this port's historical full-state goal. Must be called
+    before the first reset; the replay buffer reads the same indices off the
+    config, so training and evaluation stay in step.
+    """
+    indices = tuple(int(i) for i in indices)
+    assert indices[:2] == (0, 1), 'goal must start with XY'
+    assert max(indices) < 29 and len(set(indices)) == len(indices)
+    self.goal_indices = indices
+    self.goal_dim = len(indices)
+    self._goal_vec = np.zeros(self.goal_dim, np.float32)
+
   def _cell_xy(self, rc):
     tx, ty = self._torso_offset
     return np.array([rc[1] * SCALING - tx, rc[0] * SCALING - ty])
@@ -284,9 +299,17 @@ class OfflineD4rlAntUMazeEnv(D4rlAntUMazeEnv):
     u.reset_model()                      # INIT_QPOS +-0.1 noise at the R cell
     mujoco.mj_forward(u.model, u.data)
     gxy = self._eval_goal_xy()
-    self._goal_vec = np.zeros(29, np.float32)
-    self._goal_vec[:2] = gxy             # zero-padded XY goal contract
-    self._goal_state_full = self._goal_vec.copy()
+    full = np.zeros(29, np.float32)
+    full[:2] = gxy                       # zero-padded XY goal contract
+    self._goal_state_full = full
+    #: ``goal_indices`` decides what the LEARNER sees of that vector. The
+    #: historical default range(29) hands it over whole, so the actor is
+    #: evaluated on 27 zeros that no relabeled training goal ever has (the
+    #: buffer builds goals from real future states). (0, 1) is the upstream
+    #: ant contract: lp_contrastive.py sets end_index=2 for every env whose
+    #: name contains 'ant_', offline_ant_* included, so both the relabeled
+    #: goal and the commanded goal are the XY pair. See set_goal_indices.
+    self._goal_vec = full[list(self.goal_indices)]
     u.goal = np.asarray(gxy, float).copy()
     obs = u._obs_dict()
     self._last_obs = obs

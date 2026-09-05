@@ -1070,7 +1070,8 @@ def make_env(env_name, config, seed=0, render_mode=None):
                     'offline_ant_umaze_tworoute_rockfall_v3tr',
                     'offline_ant_umaze_tworoute_rockfall_v3br',
                     'offline_ant_umaze_rockfall_wait_v4',
-                    'offline_ant_umaze_rockfall_clock_v5'):
+                    'offline_ant_umaze_rockfall_clock_v5',
+                    'offline_ant_umaze_rockfall_clock_v5_gxy'):
     # Two-route AntMaze with a latent rockfall hazard on the shortcut.
     # Base name = V2 (hazard on the west column; goal top-left). The _v3tr /
     # _v3br variants move the hazard onto the EAST leg the canonical pose
@@ -1103,10 +1104,15 @@ def make_env(env_name, config, seed=0, render_mode=None):
     _ms = getattr(config, 'rockfall_max_steps', None)
     if _ms is not None:
       _kw['max_episode_steps'] = int(_ms)
-    if env_name.endswith('_clock_v5'):
+    if env_name.endswith(('_clock_v5', '_clock_v5_gxy')):
       env = RockfallClockV5Env(
           seed=seed, render_mode=render_mode, eval_goals=eval_goals,
           eval_goal_mode=getattr(config, 'eval_goal_mode', 'd4rl'), **_kw)
+      # _gxy commands the goal the way upstream does for ant: XY only, so
+      # the relabeled training goal and the evaluation goal have the same
+      # shape (see OfflineD4rlAntUMazeEnv.set_goal_indices).
+      if env_name.endswith('_gxy'):
+        env.set_goal_indices((0, 1))
     elif env_name.endswith('_wait_v4'):
       env = RockfallWaitV4Env(
           seed=seed, render_mode=render_mode, eval_goals=eval_goals,

@@ -130,7 +130,14 @@ def expert_clips(out):
 
 def agent_clips(ckpt, out, seed=909):
   import jax.numpy as jnp
+  import eval_rockfall_clock_v5_baseline as EV
   from eval_rockfall_clock_v5_baseline import build_policy, make_env
+  #: a checkpoint trained on the upstream XY-goal env needs that env here too;
+  #: build_policy asserts the widths, so a mismatch aborts rather than
+  #: rendering a meaningless clip.
+  if EV.infer_goal_rep(ckpt) == 'xy':
+    EV.ENV_NAME = EV.ENV_NAME + '_gxy'
+    print(f'  agent clips use {EV.ENV_NAME}', flush=True)
   act, _, _ = build_policy(ckpt)
   _, env = make_env(seed)
   done_u = {False: 0, True: 0}

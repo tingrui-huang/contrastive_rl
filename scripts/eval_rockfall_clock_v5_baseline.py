@@ -99,6 +99,12 @@ def infer_variant(ckpt_path):
   return 'far05' if 'far05' in ckpt_path.replace('\\', '/') else 'near'
 
 
+def infer_goal_rep(ckpt_path):
+  """'xy' if the checkpoint was trained on the upstream XY-goal env."""
+  path = ckpt_path.replace(os.sep, '/')
+  return 'xy' if '_gxy' in path else 'full'
+
+
 def make_env(seed, horizon=HORIZON):
   cfg = build_offline_cfg()
   cfg.offline_dataset = ''
@@ -120,6 +126,15 @@ def build_policy(ckpt_path, k=K, horizon=HORIZON):
       use_image_obs=cfg.use_image_obs, use_layer_norm=cfg.use_layer_norm)
   step, st = ckpt_mod.load_checkpoint(ckpt_path)
   pp, qp = st.policy_params, st.q_params
+  #: guard against evaluating a checkpoint under the wrong goal contract: a
+  #: 'full' (58-wide) policy silently paired with the 31-wide XY-goal env, or
+  #: the reverse, would otherwise fail deep inside jax or, worse, not at all.
+  trained_width = int(pp['mlp/~/linear_0']['w'].shape[0])
+  env_width = int(cfg.obs_dim) + int(cfg.goal_dim)
+  assert trained_width == env_width, (
+      f'checkpoint expects {trained_width}-dim observations but '
+      f'{ENV_NAME} produces {env_width}; pass --goal-rep '
+      f'{"xy" if trained_width < env_width else "full"}')
 
   @jax.jit
   def act_mean(o):
@@ -327,11 +342,17 @@ def main():
   ap.add_argument('--horizon', type=int, default=HORIZON)
   ap.add_argument('--out-dir', default=None)
   ap.add_argument('--results-root', default=OUT_ROOT)
+  #: must match how the checkpoint was trained; inferred from its path.
+  ap.add_argument('--goal-rep', choices=['full', 'xy'], default=None)
   args = ap.parse_args()
   variant = args.variant or infer_variant(args.ckpt)
+  goal_rep = args.goal_rep or infer_goal_rep(args.ckpt)
+  global ENV_NAME
+  if goal_rep == 'xy':
+    ENV_NAME = ENV_NAME + '_gxy'
   act_mean, candidates, step = build_policy(args.ckpt, args.k, args.horizon)
   print(f'ckpt {args.ckpt} @ step {step} | mode {args.mode} | '
-        f'variant {variant}', flush=True)
+        f'variant {variant} | goal {goal_rep} ({ENV_NAME})', flush=True)
   rows = evaluate(act_mean, candidates, args.mode, args.n, args.seed,
                   horizon=args.horizon)
   s = summarize(rows)
@@ -339,6 +360,7 @@ def main():
   label = args.method_label or os.path.basename(os.path.dirname(args.ckpt))
   label = f'{label}_{args.mode}'
   rec = {'label': label, 'mode': args.mode, 'variant': variant,
+         'goal_rep': goal_rep,
          'env': ENV_NAME, 'ckpt': args.ckpt, 'ckpt_step': step,
          'n_eval': args.n, 'eval_seed': args.seed, 'horizon': args.horizon,
          'k': args.k, 'reference_numbers': load_refs(), 'summary': s}

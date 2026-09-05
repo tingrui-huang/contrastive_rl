@@ -1,0 +1,2642 @@
+[
+  {
+    "label": "v5clock_near_crl_s0_100k_gxyfinal_mean",
+    "mode": "mean",
+    "variant": "near",
+    "goal_rep": "xy",
+    "env": "offline_ant_umaze_rockfall_clock_v5_gxy",
+    "ckpt": "v5clock_near_crl_s0_100k_gxy/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {
+      "teacher_audit": {
+        "sighted_success": 0.9933,
+        "sighted_discounted": 0.3846,
+        "sighted_discounted_by_latent": {
+          "clear": 0.4413,
+          "active": 0.2217
+        },
+        "sighted_discounted_by_route": {
+          "shortcut": 0.3953,
+          "detour": 0.1046
+        },
+        "do_go_given_active_failure": 1.0
+      },
+      "causal_audit": {
+        "sparse_success": {
+          "always_go": 0.7,
+          "always_wait": 0.996,
+          "always_detour": 0.928,
+          "oracle": 0.996
+        },
+        "discounted_gamma_0.99": {
+          "always_go": 0.3197,
+          "always_wait": 0.1911,
+          "always_detour": 0.0993,
+          "oracle": 0.3855,
+          "best_blind": "always_go"
+        },
+        "discounted_definition": "0.99**steps on success, else 0.0; mean over episodes",
+        "P_success_go_observed": {
+          "near": 0.9965,
+          "far05": 0.9963
+        },
+        "confounding_gap": {
+          "P_success_go_observed": {
+            "near": 0.9965,
+            "far05": 0.9963
+          },
+          "P_success_do_go": 0.7,
+          "gap": {
+            "near": 0.2965,
+            "far05": 0.2963
+          },
+          "discounted_go_observed": {
+            "near": 0.4567,
+            "far05": 0.4565
+          },
+          "discounted_do_go": 0.3197
+        }
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.6633,
+        "failure": 0.3267,
+        "timeout": 0.01,
+        "entered_band": 0.9967,
+        "route": {
+          "shortcut": 0.9967,
+          "detour": 0.0,
+          "no_route": 0.0033
+        },
+        "hesitation_n": 299,
+        "hesitation_mean": 10.8,
+        "hesitation_median": 11.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 1.0249,
+        "mean_discounted": 0.3016,
+        "mean_steps": 65.8967
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.9851,
+          "failure": 0.0,
+          "timeout": 0.0149,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 202,
+          "hesitation_mean": 10.8,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0303,
+          "mean_discounted": 0.4479,
+          "mean_steps": 83.2673
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.9898,
+          "route": {
+            "shortcut": 0.9898,
+            "detour": 0.0,
+            "no_route": 0.0102
+          },
+          "hesitation_n": 97,
+          "hesitation_mean": 10.8,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0137,
+          "mean_discounted": 0.0,
+          "mean_steps": 30.0918
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 299,
+          "success": 0.6656,
+          "failure": 0.3244,
+          "timeout": 0.01,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 299,
+          "hesitation_mean": 10.8,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0247,
+          "mean_discounted": 0.3026,
+          "mean_steps": 66.0334
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 1,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.074,
+          "mean_discounted": 0.0,
+          "mean_steps": 25.0
+        }
+      },
+      "death_given_active": 1.0,
+      "death_given_active_and_shortcut": 1.0,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.9898,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.0815,
+        "q_mode": -9.2681,
+        "q_zero": -10.9366,
+        "q_best_sample": -8.9289,
+        "q_samples_mean": -9.2782,
+        "mode_norm": 1.7619,
+        "chosen_norm": 1.758,
+        "x": 1.4534,
+        "frac_q_mode_gt_q_zero": 0.9033,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v5clock_near_crl_s0_100k_gxyfinal_critic_select",
+    "mode": "critic_select",
+    "variant": "near",
+    "goal_rep": "xy",
+    "env": "offline_ant_umaze_rockfall_clock_v5_gxy",
+    "ckpt": "v5clock_near_crl_s0_100k_gxy/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {
+      "teacher_audit": {
+        "sighted_success": 0.9933,
+        "sighted_discounted": 0.3846,
+        "sighted_discounted_by_latent": {
+          "clear": 0.4413,
+          "active": 0.2217
+        },
+        "sighted_discounted_by_route": {
+          "shortcut": 0.3953,
+          "detour": 0.1046
+        },
+        "do_go_given_active_failure": 1.0
+      },
+      "causal_audit": {
+        "sparse_success": {
+          "always_go": 0.7,
+          "always_wait": 0.996,
+          "always_detour": 0.928,
+          "oracle": 0.996
+        },
+        "discounted_gamma_0.99": {
+          "always_go": 0.3197,
+          "always_wait": 0.1911,
+          "always_detour": 0.0993,
+          "oracle": 0.3855,
+          "best_blind": "always_go"
+        },
+        "discounted_definition": "0.99**steps on success, else 0.0; mean over episodes",
+        "P_success_go_observed": {
+          "near": 0.9965,
+          "far05": 0.9963
+        },
+        "confounding_gap": {
+          "P_success_go_observed": {
+            "near": 0.9965,
+            "far05": 0.9963
+          },
+          "P_success_do_go": 0.7,
+          "gap": {
+            "near": 0.2965,
+            "far05": 0.2963
+          },
+          "discounted_go_observed": {
+            "near": 0.4567,
+            "far05": 0.4565
+          },
+          "discounted_do_go": 0.3197
+        }
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.6733,
+        "failure": 0.3267,
+        "timeout": 0.0,
+        "entered_band": 0.98,
+        "route": {
+          "shortcut": 0.98,
+          "detour": 0.0,
+          "no_route": 0.02
+        },
+        "hesitation_n": 294,
+        "hesitation_mean": 10.7,
+        "hesitation_median": 11.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 1.0292,
+        "mean_discounted": 0.2989,
+        "mean_steps": 64.6967
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 1.0,
+          "failure": 0.0,
+          "timeout": 0.0,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 202,
+          "hesitation_mean": 10.8,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0271,
+          "mean_discounted": 0.4439,
+          "mean_steps": 81.2871
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.9388,
+          "route": {
+            "shortcut": 0.9388,
+            "detour": 0.0,
+            "no_route": 0.0612
+          },
+          "hesitation_n": 92,
+          "hesitation_mean": 10.7,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0335,
+          "mean_discounted": 0.0,
+          "mean_steps": 30.5
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 294,
+          "success": 0.6871,
+          "failure": 0.3129,
+          "timeout": 0.0,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 294,
+          "hesitation_mean": 10.7,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0303,
+          "mean_discounted": 0.305,
+          "mean_steps": 65.4966
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 6,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.9741,
+          "mean_discounted": 0.0,
+          "mean_steps": 25.5
+        }
+      },
+      "death_given_active": 1.0,
+      "death_given_active_and_shortcut": 1.0,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.9388,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.0877,
+        "q_mode": -9.3357,
+        "q_zero": -10.8319,
+        "q_best_sample": -9.0094,
+        "q_samples_mean": -9.3407,
+        "mode_norm": 1.7809,
+        "chosen_norm": 1.7746,
+        "x": 1.457,
+        "frac_q_mode_gt_q_zero": 0.89,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v5clock_near_crl_s1_100k_gxyfinal_mean",
+    "mode": "mean",
+    "variant": "near",
+    "goal_rep": "xy",
+    "env": "offline_ant_umaze_rockfall_clock_v5_gxy",
+    "ckpt": "v5clock_near_crl_s1_100k_gxy/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {
+      "teacher_audit": {
+        "sighted_success": 0.9933,
+        "sighted_discounted": 0.3846,
+        "sighted_discounted_by_latent": {
+          "clear": 0.4413,
+          "active": 0.2217
+        },
+        "sighted_discounted_by_route": {
+          "shortcut": 0.3953,
+          "detour": 0.1046
+        },
+        "do_go_given_active_failure": 1.0
+      },
+      "causal_audit": {
+        "sparse_success": {
+          "always_go": 0.7,
+          "always_wait": 0.996,
+          "always_detour": 0.928,
+          "oracle": 0.996
+        },
+        "discounted_gamma_0.99": {
+          "always_go": 0.3197,
+          "always_wait": 0.1911,
+          "always_detour": 0.0993,
+          "oracle": 0.3855,
+          "best_blind": "always_go"
+        },
+        "discounted_definition": "0.99**steps on success, else 0.0; mean over episodes",
+        "P_success_go_observed": {
+          "near": 0.9965,
+          "far05": 0.9963
+        },
+        "confounding_gap": {
+          "P_success_go_observed": {
+            "near": 0.9965,
+            "far05": 0.9963
+          },
+          "P_success_do_go": 0.7,
+          "gap": {
+            "near": 0.2965,
+            "far05": 0.2963
+          },
+          "discounted_go_observed": {
+            "near": 0.4567,
+            "far05": 0.4565
+          },
+          "discounted_do_go": 0.3197
+        }
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.6667,
+        "failure": 0.3267,
+        "timeout": 0.0067,
+        "entered_band": 0.9933,
+        "route": {
+          "shortcut": 0.9933,
+          "detour": 0.0,
+          "no_route": 0.0067
+        },
+        "hesitation_n": 298,
+        "hesitation_mean": 10.7,
+        "hesitation_median": 11.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 1.0276,
+        "mean_discounted": 0.3036,
+        "mean_steps": 64.74
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.9901,
+          "failure": 0.0,
+          "timeout": 0.0099,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 202,
+          "hesitation_mean": 10.7,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.029,
+          "mean_discounted": 0.4508,
+          "mean_steps": 81.5297
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.9796,
+          "route": {
+            "shortcut": 0.9796,
+            "detour": 0.0,
+            "no_route": 0.0204
+          },
+          "hesitation_n": 96,
+          "hesitation_mean": 10.8,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0247,
+          "mean_discounted": 0.0,
+          "mean_steps": 30.1327
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 298,
+          "success": 0.6711,
+          "failure": 0.3221,
+          "timeout": 0.0067,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 298,
+          "hesitation_mean": 10.7,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0277,
+          "mean_discounted": 0.3056,
+          "mean_steps": 65.0067
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 2,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0072,
+          "mean_discounted": 0.0,
+          "mean_steps": 25.0
+        }
+      },
+      "death_given_active": 1.0,
+      "death_given_active_and_shortcut": 1.0,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.9796,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.0689,
+        "q_mode": -9.2782,
+        "q_zero": -10.9725,
+        "q_best_sample": -8.9939,
+        "q_samples_mean": -9.2844,
+        "mode_norm": 1.7906,
+        "chosen_norm": 1.7832,
+        "x": 1.4544,
+        "frac_q_mode_gt_q_zero": 0.9067,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v5clock_near_crl_s1_100k_gxyfinal_critic_select",
+    "mode": "critic_select",
+    "variant": "near",
+    "goal_rep": "xy",
+    "env": "offline_ant_umaze_rockfall_clock_v5_gxy",
+    "ckpt": "v5clock_near_crl_s1_100k_gxy/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {
+      "teacher_audit": {
+        "sighted_success": 0.9933,
+        "sighted_discounted": 0.3846,
+        "sighted_discounted_by_latent": {
+          "clear": 0.4413,
+          "active": 0.2217
+        },
+        "sighted_discounted_by_route": {
+          "shortcut": 0.3953,
+          "detour": 0.1046
+        },
+        "do_go_given_active_failure": 1.0
+      },
+      "causal_audit": {
+        "sparse_success": {
+          "always_go": 0.7,
+          "always_wait": 0.996,
+          "always_detour": 0.928,
+          "oracle": 0.996
+        },
+        "discounted_gamma_0.99": {
+          "always_go": 0.3197,
+          "always_wait": 0.1911,
+          "always_detour": 0.0993,
+          "oracle": 0.3855,
+          "best_blind": "always_go"
+        },
+        "discounted_definition": "0.99**steps on success, else 0.0; mean over episodes",
+        "P_success_go_observed": {
+          "near": 0.9965,
+          "far05": 0.9963
+        },
+        "confounding_gap": {
+          "P_success_go_observed": {
+            "near": 0.9965,
+            "far05": 0.9963
+          },
+          "P_success_do_go": 0.7,
+          "gap": {
+            "near": 0.2965,
+            "far05": 0.2963
+          },
+          "discounted_go_observed": {
+            "near": 0.4567,
+            "far05": 0.4565
+          },
+          "discounted_do_go": 0.3197
+        }
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.67,
+        "failure": 0.3267,
+        "timeout": 0.0033,
+        "entered_band": 0.99,
+        "route": {
+          "shortcut": 0.99,
+          "detour": 0.0,
+          "no_route": 0.01
+        },
+        "hesitation_n": 297,
+        "hesitation_mean": 10.6,
+        "hesitation_median": 11.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 1.0318,
+        "mean_discounted": 0.3025,
+        "mean_steps": 64.31
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.995,
+          "failure": 0.0,
+          "timeout": 0.005,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 202,
+          "hesitation_mean": 10.7,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0296,
+          "mean_discounted": 0.4493,
+          "mean_steps": 80.7871
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.9694,
+          "route": {
+            "shortcut": 0.9694,
+            "detour": 0.0,
+            "no_route": 0.0306
+          },
+          "hesitation_n": 95,
+          "hesitation_mean": 10.6,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0363,
+          "mean_discounted": 0.0,
+          "mean_steps": 30.3469
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 297,
+          "success": 0.6768,
+          "failure": 0.3199,
+          "timeout": 0.0034,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 297,
+          "hesitation_mean": 10.6,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0317,
+          "mean_discounted": 0.3056,
+          "mean_steps": 64.6734
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 3,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0402,
+          "mean_discounted": 0.0,
+          "mean_steps": 28.3333
+        }
+      },
+      "death_given_active": 1.0,
+      "death_given_active_and_shortcut": 1.0,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.9694,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.0723,
+        "q_mode": -9.5003,
+        "q_zero": -10.9709,
+        "q_best_sample": -9.1834,
+        "q_samples_mean": -9.5066,
+        "mode_norm": 1.7514,
+        "chosen_norm": 1.7446,
+        "x": 1.456,
+        "frac_q_mode_gt_q_zero": 0.8733,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v5clock_near_crl_s2_100k_gxyfinal_mean",
+    "mode": "mean",
+    "variant": "near",
+    "goal_rep": "xy",
+    "env": "offline_ant_umaze_rockfall_clock_v5_gxy",
+    "ckpt": "v5clock_near_crl_s2_100k_gxy/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {
+      "teacher_audit": {
+        "sighted_success": 0.9933,
+        "sighted_discounted": 0.3846,
+        "sighted_discounted_by_latent": {
+          "clear": 0.4413,
+          "active": 0.2217
+        },
+        "sighted_discounted_by_route": {
+          "shortcut": 0.3953,
+          "detour": 0.1046
+        },
+        "do_go_given_active_failure": 1.0
+      },
+      "causal_audit": {
+        "sparse_success": {
+          "always_go": 0.7,
+          "always_wait": 0.996,
+          "always_detour": 0.928,
+          "oracle": 0.996
+        },
+        "discounted_gamma_0.99": {
+          "always_go": 0.3197,
+          "always_wait": 0.1911,
+          "always_detour": 0.0993,
+          "oracle": 0.3855,
+          "best_blind": "always_go"
+        },
+        "discounted_definition": "0.99**steps on success, else 0.0; mean over episodes",
+        "P_success_go_observed": {
+          "near": 0.9965,
+          "far05": 0.9963
+        },
+        "confounding_gap": {
+          "P_success_go_observed": {
+            "near": 0.9965,
+            "far05": 0.9963
+          },
+          "P_success_do_go": 0.7,
+          "gap": {
+            "near": 0.2965,
+            "far05": 0.2963
+          },
+          "discounted_go_observed": {
+            "near": 0.4567,
+            "far05": 0.4565
+          },
+          "discounted_do_go": 0.3197
+        }
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.6667,
+        "failure": 0.3267,
+        "timeout": 0.0067,
+        "entered_band": 0.98,
+        "route": {
+          "shortcut": 0.98,
+          "detour": 0.0,
+          "no_route": 0.02
+        },
+        "hesitation_n": 294,
+        "hesitation_mean": 10.7,
+        "hesitation_median": 11.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 1.0295,
+        "mean_discounted": 0.302,
+        "mean_steps": 65.12
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.9901,
+          "failure": 0.0,
+          "timeout": 0.0099,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 202,
+          "hesitation_mean": 10.6,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.025,
+          "mean_discounted": 0.4486,
+          "mean_steps": 82.2673
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.9388,
+          "route": {
+            "shortcut": 0.9388,
+            "detour": 0.0,
+            "no_route": 0.0612
+          },
+          "hesitation_n": 92,
+          "hesitation_mean": 10.7,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0387,
+          "mean_discounted": 0.0,
+          "mean_steps": 29.7755
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 294,
+          "success": 0.6803,
+          "failure": 0.3129,
+          "timeout": 0.0068,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 294,
+          "hesitation_mean": 10.7,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0286,
+          "mean_discounted": 0.3082,
+          "mean_steps": 65.915
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 6,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0721,
+          "mean_discounted": 0.0,
+          "mean_steps": 26.1667
+        }
+      },
+      "death_given_active": 1.0,
+      "death_given_active_and_shortcut": 1.0,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.9388,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.0746,
+        "q_mode": -9.7052,
+        "q_zero": -11.5378,
+        "q_best_sample": -9.3334,
+        "q_samples_mean": -9.7102,
+        "mode_norm": 1.7636,
+        "chosen_norm": 1.7629,
+        "x": 1.4569,
+        "frac_q_mode_gt_q_zero": 0.8867,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v5clock_near_crl_s2_100k_gxyfinal_critic_select",
+    "mode": "critic_select",
+    "variant": "near",
+    "goal_rep": "xy",
+    "env": "offline_ant_umaze_rockfall_clock_v5_gxy",
+    "ckpt": "v5clock_near_crl_s2_100k_gxy/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {
+      "teacher_audit": {
+        "sighted_success": 0.9933,
+        "sighted_discounted": 0.3846,
+        "sighted_discounted_by_latent": {
+          "clear": 0.4413,
+          "active": 0.2217
+        },
+        "sighted_discounted_by_route": {
+          "shortcut": 0.3953,
+          "detour": 0.1046
+        },
+        "do_go_given_active_failure": 1.0
+      },
+      "causal_audit": {
+        "sparse_success": {
+          "always_go": 0.7,
+          "always_wait": 0.996,
+          "always_detour": 0.928,
+          "oracle": 0.996
+        },
+        "discounted_gamma_0.99": {
+          "always_go": 0.3197,
+          "always_wait": 0.1911,
+          "always_detour": 0.0993,
+          "oracle": 0.3855,
+          "best_blind": "always_go"
+        },
+        "discounted_definition": "0.99**steps on success, else 0.0; mean over episodes",
+        "P_success_go_observed": {
+          "near": 0.9965,
+          "far05": 0.9963
+        },
+        "confounding_gap": {
+          "P_success_go_observed": {
+            "near": 0.9965,
+            "far05": 0.9963
+          },
+          "P_success_do_go": 0.7,
+          "gap": {
+            "near": 0.2965,
+            "far05": 0.2963
+          },
+          "discounted_go_observed": {
+            "near": 0.4567,
+            "far05": 0.4565
+          },
+          "discounted_do_go": 0.3197
+        }
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.6633,
+        "failure": 0.3267,
+        "timeout": 0.01,
+        "entered_band": 0.9867,
+        "route": {
+          "shortcut": 0.9867,
+          "detour": 0.0,
+          "no_route": 0.0133
+        },
+        "hesitation_n": 296,
+        "hesitation_mean": 10.7,
+        "hesitation_median": 11.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0033,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 1.0227,
+        "mean_discounted": 0.2976,
+        "mean_steps": 66.95
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.9851,
+          "failure": 0.0,
+          "timeout": 0.0149,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 202,
+          "hesitation_mean": 10.7,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0264,
+          "mean_discounted": 0.442,
+          "mean_steps": 84.6535
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.9592,
+          "route": {
+            "shortcut": 0.9592,
+            "detour": 0.0,
+            "no_route": 0.0408
+          },
+          "hesitation_n": 94,
+          "hesitation_mean": 10.7,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0102,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0149,
+          "mean_discounted": 0.0,
+          "mean_steps": 30.4592
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 296,
+          "success": 0.6723,
+          "failure": 0.3176,
+          "timeout": 0.0101,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 296,
+          "hesitation_mean": 10.7,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0034,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0221,
+          "mean_discounted": 0.3017,
+          "mean_steps": 67.5068
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 4,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0644,
+          "mean_discounted": 0.0,
+          "mean_steps": 25.75
+        }
+      },
+      "death_given_active": 1.0,
+      "death_given_active_and_shortcut": 1.0,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.9592,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.0757,
+        "q_mode": -9.7058,
+        "q_zero": -11.447,
+        "q_best_sample": -9.3336,
+        "q_samples_mean": -9.7066,
+        "mode_norm": 1.8061,
+        "chosen_norm": 1.8018,
+        "x": 1.4568,
+        "frac_q_mode_gt_q_zero": 0.91,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v5clock_far05_crl_s0_100k_gxyfinal_mean",
+    "mode": "mean",
+    "variant": "far05",
+    "goal_rep": "xy",
+    "env": "offline_ant_umaze_rockfall_clock_v5_gxy",
+    "ckpt": "v5clock_far05_crl_s0_100k_gxy/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {
+      "teacher_audit": {
+        "sighted_success": 0.9933,
+        "sighted_discounted": 0.3846,
+        "sighted_discounted_by_latent": {
+          "clear": 0.4413,
+          "active": 0.2217
+        },
+        "sighted_discounted_by_route": {
+          "shortcut": 0.3953,
+          "detour": 0.1046
+        },
+        "do_go_given_active_failure": 1.0
+      },
+      "causal_audit": {
+        "sparse_success": {
+          "always_go": 0.7,
+          "always_wait": 0.996,
+          "always_detour": 0.928,
+          "oracle": 0.996
+        },
+        "discounted_gamma_0.99": {
+          "always_go": 0.3197,
+          "always_wait": 0.1911,
+          "always_detour": 0.0993,
+          "oracle": 0.3855,
+          "best_blind": "always_go"
+        },
+        "discounted_definition": "0.99**steps on success, else 0.0; mean over episodes",
+        "P_success_go_observed": {
+          "near": 0.9965,
+          "far05": 0.9963
+        },
+        "confounding_gap": {
+          "P_success_go_observed": {
+            "near": 0.9965,
+            "far05": 0.9963
+          },
+          "P_success_do_go": 0.7,
+          "gap": {
+            "near": 0.2965,
+            "far05": 0.2963
+          },
+          "discounted_go_observed": {
+            "near": 0.4567,
+            "far05": 0.4565
+          },
+          "discounted_do_go": 0.3197
+        }
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.67,
+        "failure": 0.3267,
+        "timeout": 0.0033,
+        "entered_band": 0.98,
+        "route": {
+          "shortcut": 0.98,
+          "detour": 0.0,
+          "no_route": 0.02
+        },
+        "hesitation_n": 294,
+        "hesitation_mean": 10.7,
+        "hesitation_median": 11.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 1.0274,
+        "mean_discounted": 0.3017,
+        "mean_steps": 64.6767
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.995,
+          "failure": 0.0,
+          "timeout": 0.005,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 202,
+          "hesitation_mean": 10.7,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0282,
+          "mean_discounted": 0.448,
+          "mean_steps": 81.4901
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.9388,
+          "route": {
+            "shortcut": 0.9388,
+            "detour": 0.0,
+            "no_route": 0.0612
+          },
+          "hesitation_n": 92,
+          "hesitation_mean": 10.7,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0256,
+          "mean_discounted": 0.0,
+          "mean_steps": 30.0204
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 294,
+          "success": 0.6837,
+          "failure": 0.3129,
+          "timeout": 0.0034,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 294,
+          "hesitation_mean": 10.7,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0273,
+          "mean_discounted": 0.3078,
+          "mean_steps": 65.483
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 6,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0288,
+          "mean_discounted": 0.0,
+          "mean_steps": 25.1667
+        }
+      },
+      "death_given_active": 1.0,
+      "death_given_active_and_shortcut": 1.0,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.9388,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.0733,
+        "q_mode": -9.3191,
+        "q_zero": -11.2161,
+        "q_best_sample": -9.0311,
+        "q_samples_mean": -9.3249,
+        "mode_norm": 1.789,
+        "chosen_norm": 1.7882,
+        "x": 1.4591,
+        "frac_q_mode_gt_q_zero": 0.93,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v5clock_far05_crl_s0_100k_gxyfinal_critic_select",
+    "mode": "critic_select",
+    "variant": "far05",
+    "goal_rep": "xy",
+    "env": "offline_ant_umaze_rockfall_clock_v5_gxy",
+    "ckpt": "v5clock_far05_crl_s0_100k_gxy/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {
+      "teacher_audit": {
+        "sighted_success": 0.9933,
+        "sighted_discounted": 0.3846,
+        "sighted_discounted_by_latent": {
+          "clear": 0.4413,
+          "active": 0.2217
+        },
+        "sighted_discounted_by_route": {
+          "shortcut": 0.3953,
+          "detour": 0.1046
+        },
+        "do_go_given_active_failure": 1.0
+      },
+      "causal_audit": {
+        "sparse_success": {
+          "always_go": 0.7,
+          "always_wait": 0.996,
+          "always_detour": 0.928,
+          "oracle": 0.996
+        },
+        "discounted_gamma_0.99": {
+          "always_go": 0.3197,
+          "always_wait": 0.1911,
+          "always_detour": 0.0993,
+          "oracle": 0.3855,
+          "best_blind": "always_go"
+        },
+        "discounted_definition": "0.99**steps on success, else 0.0; mean over episodes",
+        "P_success_go_observed": {
+          "near": 0.9965,
+          "far05": 0.9963
+        },
+        "confounding_gap": {
+          "P_success_go_observed": {
+            "near": 0.9965,
+            "far05": 0.9963
+          },
+          "P_success_do_go": 0.7,
+          "gap": {
+            "near": 0.2965,
+            "far05": 0.2963
+          },
+          "discounted_go_observed": {
+            "near": 0.4567,
+            "far05": 0.4565
+          },
+          "discounted_do_go": 0.3197
+        }
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.6567,
+        "failure": 0.3267,
+        "timeout": 0.0167,
+        "entered_band": 0.97,
+        "route": {
+          "shortcut": 0.97,
+          "detour": 0.0,
+          "no_route": 0.03
+        },
+        "hesitation_n": 291,
+        "hesitation_mean": 10.8,
+        "hesitation_median": 11.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 1.0091,
+        "mean_discounted": 0.2914,
+        "mean_steps": 69.7833
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.9752,
+          "failure": 0.0,
+          "timeout": 0.0248,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 202,
+          "hesitation_mean": 10.9,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0117,
+          "mean_discounted": 0.4328,
+          "mean_steps": 88.9307
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.9082,
+          "route": {
+            "shortcut": 0.9082,
+            "detour": 0.0,
+            "no_route": 0.0918
+          },
+          "hesitation_n": 89,
+          "hesitation_mean": 10.8,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0036,
+          "mean_discounted": 0.0,
+          "mean_steps": 30.3163
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 291,
+          "success": 0.677,
+          "failure": 0.3058,
+          "timeout": 0.0172,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 291,
+          "hesitation_mean": 10.8,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0091,
+          "mean_discounted": 0.3004,
+          "mean_steps": 71.1615
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 9,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0092,
+          "mean_discounted": 0.0,
+          "mean_steps": 25.2222
+        }
+      },
+      "death_given_active": 1.0,
+      "death_given_active_and_shortcut": 1.0,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.9082,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.0824,
+        "q_mode": -9.1555,
+        "q_zero": -10.9611,
+        "q_best_sample": -8.8694,
+        "q_samples_mean": -9.168,
+        "mode_norm": 1.8201,
+        "chosen_norm": 1.8192,
+        "x": 1.4565,
+        "frac_q_mode_gt_q_zero": 0.92,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v5clock_far05_crl_s1_100k_gxyfinal_mean",
+    "mode": "mean",
+    "variant": "far05",
+    "goal_rep": "xy",
+    "env": "offline_ant_umaze_rockfall_clock_v5_gxy",
+    "ckpt": "v5clock_far05_crl_s1_100k_gxy/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {
+      "teacher_audit": {
+        "sighted_success": 0.9933,
+        "sighted_discounted": 0.3846,
+        "sighted_discounted_by_latent": {
+          "clear": 0.4413,
+          "active": 0.2217
+        },
+        "sighted_discounted_by_route": {
+          "shortcut": 0.3953,
+          "detour": 0.1046
+        },
+        "do_go_given_active_failure": 1.0
+      },
+      "causal_audit": {
+        "sparse_success": {
+          "always_go": 0.7,
+          "always_wait": 0.996,
+          "always_detour": 0.928,
+          "oracle": 0.996
+        },
+        "discounted_gamma_0.99": {
+          "always_go": 0.3197,
+          "always_wait": 0.1911,
+          "always_detour": 0.0993,
+          "oracle": 0.3855,
+          "best_blind": "always_go"
+        },
+        "discounted_definition": "0.99**steps on success, else 0.0; mean over episodes",
+        "P_success_go_observed": {
+          "near": 0.9965,
+          "far05": 0.9963
+        },
+        "confounding_gap": {
+          "P_success_go_observed": {
+            "near": 0.9965,
+            "far05": 0.9963
+          },
+          "P_success_do_go": 0.7,
+          "gap": {
+            "near": 0.2965,
+            "far05": 0.2963
+          },
+          "discounted_go_observed": {
+            "near": 0.4567,
+            "far05": 0.4565
+          },
+          "discounted_do_go": 0.3197
+        }
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.6667,
+        "failure": 0.3267,
+        "timeout": 0.0067,
+        "entered_band": 0.9833,
+        "route": {
+          "shortcut": 0.9833,
+          "detour": 0.0,
+          "no_route": 0.0167
+        },
+        "hesitation_n": 295,
+        "hesitation_mean": 10.6,
+        "hesitation_median": 11.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 1.0357,
+        "mean_discounted": 0.3,
+        "mean_steps": 65.41
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.9901,
+          "failure": 0.0,
+          "timeout": 0.0099,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 202,
+          "hesitation_mean": 10.7,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.03,
+          "mean_discounted": 0.4456,
+          "mean_steps": 82.8119
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.949,
+          "route": {
+            "shortcut": 0.949,
+            "detour": 0.0,
+            "no_route": 0.051
+          },
+          "hesitation_n": 93,
+          "hesitation_mean": 10.6,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0476,
+          "mean_discounted": 0.0,
+          "mean_steps": 29.5408
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 295,
+          "success": 0.678,
+          "failure": 0.3153,
+          "timeout": 0.0068,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 295,
+          "hesitation_mean": 10.6,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0352,
+          "mean_discounted": 0.3051,
+          "mean_steps": 66.0881
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 5,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0684,
+          "mean_discounted": 0.0,
+          "mean_steps": 25.4
+        }
+      },
+      "death_given_active": 1.0,
+      "death_given_active_and_shortcut": 1.0,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.949,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.0719,
+        "q_mode": -9.557,
+        "q_zero": -10.5997,
+        "q_best_sample": -9.2451,
+        "q_samples_mean": -9.5639,
+        "mode_norm": 1.8111,
+        "chosen_norm": 1.8052,
+        "x": 1.4574,
+        "frac_q_mode_gt_q_zero": 0.7667,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v5clock_far05_crl_s1_100k_gxyfinal_critic_select",
+    "mode": "critic_select",
+    "variant": "far05",
+    "goal_rep": "xy",
+    "env": "offline_ant_umaze_rockfall_clock_v5_gxy",
+    "ckpt": "v5clock_far05_crl_s1_100k_gxy/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {
+      "teacher_audit": {
+        "sighted_success": 0.9933,
+        "sighted_discounted": 0.3846,
+        "sighted_discounted_by_latent": {
+          "clear": 0.4413,
+          "active": 0.2217
+        },
+        "sighted_discounted_by_route": {
+          "shortcut": 0.3953,
+          "detour": 0.1046
+        },
+        "do_go_given_active_failure": 1.0
+      },
+      "causal_audit": {
+        "sparse_success": {
+          "always_go": 0.7,
+          "always_wait": 0.996,
+          "always_detour": 0.928,
+          "oracle": 0.996
+        },
+        "discounted_gamma_0.99": {
+          "always_go": 0.3197,
+          "always_wait": 0.1911,
+          "always_detour": 0.0993,
+          "oracle": 0.3855,
+          "best_blind": "always_go"
+        },
+        "discounted_definition": "0.99**steps on success, else 0.0; mean over episodes",
+        "P_success_go_observed": {
+          "near": 0.9965,
+          "far05": 0.9963
+        },
+        "confounding_gap": {
+          "P_success_go_observed": {
+            "near": 0.9965,
+            "far05": 0.9963
+          },
+          "P_success_do_go": 0.7,
+          "gap": {
+            "near": 0.2965,
+            "far05": 0.2963
+          },
+          "discounted_go_observed": {
+            "near": 0.4567,
+            "far05": 0.4565
+          },
+          "discounted_do_go": 0.3197
+        }
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.6533,
+        "failure": 0.3267,
+        "timeout": 0.02,
+        "entered_band": 0.98,
+        "route": {
+          "shortcut": 0.98,
+          "detour": 0.0,
+          "no_route": 0.02
+        },
+        "hesitation_n": 294,
+        "hesitation_mean": 10.8,
+        "hesitation_median": 11.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 1.0238,
+        "mean_discounted": 0.2903,
+        "mean_steps": 70.92
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.9703,
+          "failure": 0.0,
+          "timeout": 0.0297,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 202,
+          "hesitation_mean": 10.8,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0254,
+          "mean_discounted": 0.4311,
+          "mean_steps": 90.4257
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.9388,
+          "route": {
+            "shortcut": 0.9388,
+            "detour": 0.0,
+            "no_route": 0.0612
+          },
+          "hesitation_n": 92,
+          "hesitation_mean": 10.7,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0206,
+          "mean_discounted": 0.0,
+          "mean_steps": 30.7143
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 294,
+          "success": 0.6667,
+          "failure": 0.3129,
+          "timeout": 0.0204,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 294,
+          "hesitation_mean": 10.8,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.026,
+          "mean_discounted": 0.2962,
+          "mean_steps": 71.8197
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 6,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.9171,
+          "mean_discounted": 0.0,
+          "mean_steps": 26.8333
+        }
+      },
+      "death_given_active": 1.0,
+      "death_given_active_and_shortcut": 1.0,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.9388,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.0751,
+        "q_mode": -9.3938,
+        "q_zero": -10.5062,
+        "q_best_sample": -9.076,
+        "q_samples_mean": -9.4002,
+        "mode_norm": 1.7817,
+        "chosen_norm": 1.7858,
+        "x": 1.4565,
+        "frac_q_mode_gt_q_zero": 0.7933,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v5clock_far05_crl_s2_100k_gxyfinal_mean",
+    "mode": "mean",
+    "variant": "far05",
+    "goal_rep": "xy",
+    "env": "offline_ant_umaze_rockfall_clock_v5_gxy",
+    "ckpt": "v5clock_far05_crl_s2_100k_gxy/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {
+      "teacher_audit": {
+        "sighted_success": 0.9933,
+        "sighted_discounted": 0.3846,
+        "sighted_discounted_by_latent": {
+          "clear": 0.4413,
+          "active": 0.2217
+        },
+        "sighted_discounted_by_route": {
+          "shortcut": 0.3953,
+          "detour": 0.1046
+        },
+        "do_go_given_active_failure": 1.0
+      },
+      "causal_audit": {
+        "sparse_success": {
+          "always_go": 0.7,
+          "always_wait": 0.996,
+          "always_detour": 0.928,
+          "oracle": 0.996
+        },
+        "discounted_gamma_0.99": {
+          "always_go": 0.3197,
+          "always_wait": 0.1911,
+          "always_detour": 0.0993,
+          "oracle": 0.3855,
+          "best_blind": "always_go"
+        },
+        "discounted_definition": "0.99**steps on success, else 0.0; mean over episodes",
+        "P_success_go_observed": {
+          "near": 0.9965,
+          "far05": 0.9963
+        },
+        "confounding_gap": {
+          "P_success_go_observed": {
+            "near": 0.9965,
+            "far05": 0.9963
+          },
+          "P_success_do_go": 0.7,
+          "gap": {
+            "near": 0.2965,
+            "far05": 0.2963
+          },
+          "discounted_go_observed": {
+            "near": 0.4567,
+            "far05": 0.4565
+          },
+          "discounted_do_go": 0.3197
+        }
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.6567,
+        "failure": 0.3267,
+        "timeout": 0.0167,
+        "entered_band": 0.99,
+        "route": {
+          "shortcut": 0.99,
+          "detour": 0.0,
+          "no_route": 0.01
+        },
+        "hesitation_n": 297,
+        "hesitation_mean": 10.7,
+        "hesitation_median": 11.0,
+        "waited_rate": 0.0,
+        "stop_steps_mean": 0.0,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 1.0284,
+        "mean_discounted": 0.2937,
+        "mean_steps": 69.4533
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.9752,
+          "failure": 0.0,
+          "timeout": 0.0248,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 202,
+          "hesitation_mean": 10.7,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.03,
+          "mean_discounted": 0.4362,
+          "mean_steps": 88.1931
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.9694,
+          "route": {
+            "shortcut": 0.9694,
+            "detour": 0.0,
+            "no_route": 0.0306
+          },
+          "hesitation_n": 95,
+          "hesitation_mean": 10.7,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0253,
+          "mean_discounted": 0.0,
+          "mean_steps": 30.8265
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 297,
+          "success": 0.6633,
+          "failure": 0.3199,
+          "timeout": 0.0168,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 297,
+          "hesitation_mean": 10.7,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.0276,
+          "mean_discounted": 0.2967,
+          "mean_steps": 69.899
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 3,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 1.1112,
+          "mean_discounted": 0.0,
+          "mean_steps": 25.3333
+        }
+      },
+      "death_given_active": 1.0,
+      "death_given_active_and_shortcut": 1.0,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.9694,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.0818,
+        "q_mode": -9.6692,
+        "q_zero": -11.1788,
+        "q_best_sample": -9.2962,
+        "q_samples_mean": -9.6729,
+        "mode_norm": 1.8093,
+        "chosen_norm": 1.8024,
+        "x": 1.4582,
+        "frac_q_mode_gt_q_zero": 0.86,
+        "n": 300
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  },
+  {
+    "label": "v5clock_far05_crl_s2_100k_gxyfinal_critic_select",
+    "mode": "critic_select",
+    "variant": "far05",
+    "goal_rep": "xy",
+    "env": "offline_ant_umaze_rockfall_clock_v5_gxy",
+    "ckpt": "v5clock_far05_crl_s2_100k_gxy/final.pkl",
+    "ckpt_step": 100000,
+    "n_eval": 300,
+    "eval_seed": 909,
+    "horizon": 400,
+    "k": 64,
+    "reference_numbers": {
+      "teacher_audit": {
+        "sighted_success": 0.9933,
+        "sighted_discounted": 0.3846,
+        "sighted_discounted_by_latent": {
+          "clear": 0.4413,
+          "active": 0.2217
+        },
+        "sighted_discounted_by_route": {
+          "shortcut": 0.3953,
+          "detour": 0.1046
+        },
+        "do_go_given_active_failure": 1.0
+      },
+      "causal_audit": {
+        "sparse_success": {
+          "always_go": 0.7,
+          "always_wait": 0.996,
+          "always_detour": 0.928,
+          "oracle": 0.996
+        },
+        "discounted_gamma_0.99": {
+          "always_go": 0.3197,
+          "always_wait": 0.1911,
+          "always_detour": 0.0993,
+          "oracle": 0.3855,
+          "best_blind": "always_go"
+        },
+        "discounted_definition": "0.99**steps on success, else 0.0; mean over episodes",
+        "P_success_go_observed": {
+          "near": 0.9965,
+          "far05": 0.9963
+        },
+        "confounding_gap": {
+          "P_success_go_observed": {
+            "near": 0.9965,
+            "far05": 0.9963
+          },
+          "P_success_do_go": 0.7,
+          "gap": {
+            "near": 0.2965,
+            "far05": 0.2963
+          },
+          "discounted_go_observed": {
+            "near": 0.4567,
+            "far05": 0.4565
+          },
+          "discounted_do_go": 0.3197
+        }
+      }
+    },
+    "summary": {
+      "overall": {
+        "n": 300,
+        "success": 0.67,
+        "failure": 0.3267,
+        "timeout": 0.0033,
+        "entered_band": 0.98,
+        "route": {
+          "shortcut": 0.98,
+          "detour": 0.0,
+          "no_route": 0.02
+        },
+        "hesitation_n": 294,
+        "hesitation_mean": 11.8,
+        "hesitation_median": 11.0,
+        "waited_rate": 0.0068,
+        "stop_steps_mean": 0.04,
+        "stopped_rate": 0.0,
+        "zone_vmin_mean": 0.9908,
+        "mean_discounted": 0.2899,
+        "mean_steps": 68.4967
+      },
+      "death_rate_ci95": [
+        0.2761,
+        0.3816
+      ],
+      "by_latent": {
+        "clear": {
+          "n": 202,
+          "success": 0.995,
+          "failure": 0.0,
+          "timeout": 0.005,
+          "entered_band": 0.995,
+          "route": {
+            "shortcut": 0.995,
+            "detour": 0.0,
+            "no_route": 0.005
+          },
+          "hesitation_n": 201,
+          "hesitation_mean": 12.1,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.01,
+          "stop_steps_mean": 0.0545,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.9952,
+          "mean_discounted": 0.4305,
+          "mean_steps": 86.099
+        },
+        "active": {
+          "n": 98,
+          "success": 0.0,
+          "failure": 1.0,
+          "timeout": 0.0,
+          "entered_band": 0.949,
+          "route": {
+            "shortcut": 0.949,
+            "detour": 0.0,
+            "no_route": 0.051
+          },
+          "hesitation_n": 93,
+          "hesitation_mean": 11.0,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0,
+          "stop_steps_mean": 0.0102,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.9818,
+          "mean_discounted": 0.0,
+          "mean_steps": 32.2143
+        }
+      },
+      "by_route": {
+        "shortcut": {
+          "n": 294,
+          "success": 0.6837,
+          "failure": 0.3163,
+          "timeout": 0.0,
+          "entered_band": 1.0,
+          "route": {
+            "shortcut": 1.0,
+            "detour": 0.0,
+            "no_route": 0.0
+          },
+          "hesitation_n": 294,
+          "hesitation_mean": 11.8,
+          "hesitation_median": 11.0,
+          "waited_rate": 0.0068,
+          "stop_steps_mean": 0.0408,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.9919,
+          "mean_discounted": 0.2958,
+          "mean_steps": 68.051
+        },
+        "detour": {
+          "n": 0,
+          "success": null,
+          "failure": null,
+          "timeout": null,
+          "entered_band": null,
+          "route": {
+            "shortcut": null,
+            "detour": null,
+            "no_route": null
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": null,
+          "stopped_rate": null,
+          "zone_vmin_mean": null,
+          "mean_discounted": null,
+          "mean_steps": null
+        },
+        "no_route": {
+          "n": 6,
+          "success": 0.0,
+          "failure": 0.8333,
+          "timeout": 0.1667,
+          "entered_band": 0.0,
+          "route": {
+            "shortcut": 0.0,
+            "detour": 0.0,
+            "no_route": 1.0
+          },
+          "hesitation_n": 0,
+          "hesitation_mean": null,
+          "hesitation_median": null,
+          "waited_rate": null,
+          "stop_steps_mean": 0.0,
+          "stopped_rate": 0.0,
+          "zone_vmin_mean": 0.9298,
+          "mean_discounted": 0.0,
+          "mean_steps": 90.3333
+        }
+      },
+      "death_given_active": 1.0,
+      "death_given_active_and_shortcut": 1.0,
+      "detour_given_active": 0.0,
+      "entered_while_open_given_active": 0.949,
+      "mouth_diagnostic": {
+        "sigma_mean": 0.0962,
+        "q_mode": -9.8622,
+        "q_zero": -11.1223,
+        "q_best_sample": -9.4414,
+        "q_samples_mean": -9.8766,
+        "mode_norm": 1.8359,
+        "chosen_norm": 1.8292,
+        "x": 1.4523,
+        "frac_q_mode_gt_q_zero": 0.7793,
+        "n": 299
+      },
+      "start_yaw_deg_range": [
+        -11.84,
+        12.43
+      ]
+    }
+  }
+]

@@ -60,15 +60,26 @@ def main():
   ap.add_argument('--horizon', type=int, default=HORIZON)
   #: CRL's reachability horizon (goal relabel offset ~ discount**d).
   ap.add_argument('--discount', type=float, default=None)
+  #: 'full' = this port's historical 29-dim goal (relabeled goals are full
+  #: future states, the commanded goal is XY + 27 zeros); 'xy' = the upstream
+  #: ant contract (end_index=2), where both are the XY pair.
+  ap.add_argument('--goal-rep', choices=['full', 'xy'], default='full')
   args = ap.parse_args()
 
+  #: the XY-goal arm trains on the 31-column copy of the same dataset
+  #: (scripts/make_v5_gxy_dataset.py: a column selection, same states
+  #: and actions), because the buffer stores the env observation.
   npz = args.npz or NPZ_BY_VARIANT[args.variant]
+  env_name = ENV_NAME + ('_gxy' if args.goal_rep == 'xy' else '')
+  if args.goal_rep == 'xy' and args.npz is None:
+    npz = npz.replace('.npz', '_gxy.npz')
+  suffix = '_gxy' if args.goal_rep == 'xy' else ''
   run_id = (args.ckpt_dir or
             f'v5clock_{args.variant}_{args.method}_s{args.seed}_'
-            f'{args.steps // 1000}k')
+            f'{args.steps // 1000}k{suffix}')
   cfg = build_offline_cfg(max_steps=args.steps, ckpt_dir=run_id)
   cfg.resume = args.resume
-  cfg.env_name = ENV_NAME
+  cfg.env_name = env_name
   cfg.offline_dataset = npz
   cfg.eval_goal_mode = 'd4rl'
   if args.discount is not None:
@@ -82,6 +93,7 @@ def main():
   cfg.log_every_steps = 5_000
   print(f'rockfall-clock v5 baseline {args.variant} {args.method} | '
         f'steps {args.steps} | seed {args.seed} | bc_coef {cfg.bc_coef} | '
+        f'goal {args.goal_rep} ({env_name}) | '
         f'npz {npz} | -> {run_id}', flush=True)
   train(cfg)
 
