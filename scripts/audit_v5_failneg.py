@@ -447,8 +447,10 @@ def main():
     res['4_overall_mean_logit'] = mu
 
     # --- 5 SYNTHETIC DIAGNOSTIC (labelled; not evidence about real states) -
-    stopped = band_states[probe_stopped].copy()
+    moving = band_states[probe_stopped].copy()
+    stopped = moving.copy()
     stopped[:, 15:21] = 0.0            # the same ant, at rest, same XY
+    f_moving = score(S, A, as_goal(moving))
     f_stop = score(S, A, as_goal(stopped))
     res['5_synthetic_stopped_in_band'] = {
         'SYNTHETIC': True,
@@ -456,9 +458,10 @@ def main():
                         'torso velocity columns set to zero: the same ant, at '
                         'the same point, stopped. Under goal rep xy this is '
                         'identical to the unmodified state and the section is '
-                        'vacuous by design.',
+        'vacuous by design.',
+        'f_moving_in_band': dist(f_moving),
         'f_stopped_in_band': dist(f_stop),
-        'margin_moving_minus_stopped': dist(f_alive - f_stop)}
+        'margin_moving_minus_stopped': dist(f_moving - f_stop)}
 
     # --- 6 BEHAVIOUR AT THE MOUTH: actor action vs the expert hold -------
     Sm = s_t[mouth_sel]

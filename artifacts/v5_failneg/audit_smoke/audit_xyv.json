@@ -14,8 +14,8 @@
   "env": "offline_ant_umaze_rockfall_clock_v5_gxyv",
   "dataset": "artifacts/rockfall_clock_v5/dataset/antmaze_rockfall_clock_v5_far05_gxyv.npz",
   "runs_glob": "artifacts/v5_failneg/smoke_xyv_*",
-  "code_commit": "dc6690a29d4d976701a48c43240513acfe589c07",
-  "head_at_runtime": "dc6690a29d4d976701a48c43240513acfe589c07",
+  "code_commit": "b121f32faab17c5c25c4840c437723c03f2b59b3",
+  "head_at_runtime": "b121f32faab17c5c25c4840c437723c03f2b59b3",
   "audited_files_dirty": true,
   "artifact_provenance": {
     "dataset_content_sha256": "f8a0dc3580fb46afb75c1d1534bf0daf7d3db26cce69b803888d76946f65e156",
@@ -308,6 +308,14 @@
       "5_synthetic_stopped_in_band": {
         "SYNTHETIC": true,
         "construction": "a REAL training band-crossing state with its six torso velocity columns set to zero: the same ant, at the same point, stopped. Under goal rep xy this is identical to the unmodified state and the section is vacuous by design.",
+        "f_moving_in_band": {
+          "n": 300,
+          "mean": -6.908431685765584,
+          "median": -6.907954216003418,
+          "std": 0.6224269785457187,
+          "p10": -7.678333759307861,
+          "p90": -6.117643356323242
+        },
         "f_stopped_in_band": {
           "n": 300,
           "mean": -7.338784019152324,
@@ -318,11 +326,11 @@
         },
         "margin_moving_minus_stopped": {
           "n": 300,
-          "mean": 0.29548008282979327,
-          "median": 0.38820433616638184,
-          "std": 0.6215411425068461,
-          "p10": -0.4443015575408935,
-          "p90": 0.963432121276856
+          "mean": 0.4303523333867391,
+          "median": 0.452894926071167,
+          "std": 0.5320893805130559,
+          "p10": -0.3044590473175049,
+          "p90": 1.1000444889068604
         }
       },
       "6_mouth_behaviour": {
@@ -657,6 +665,14 @@
       "5_synthetic_stopped_in_band": {
         "SYNTHETIC": true,
         "construction": "a REAL training band-crossing state with its six torso velocity columns set to zero: the same ant, at the same point, stopped. Under goal rep xy this is identical to the unmodified state and the section is vacuous by design.",
+        "f_moving_in_band": {
+          "n": 300,
+          "mean": -6.891132275263469,
+          "median": -6.770345211029053,
+          "std": 0.6608874053083226,
+          "p10": -7.821392917633057,
+          "p90": -6.136376142501831
+        },
         "f_stopped_in_band": {
           "n": 300,
           "mean": -7.323178942998251,
@@ -667,11 +683,11 @@
         },
         "margin_moving_minus_stopped": {
           "n": 300,
-          "mean": 0.19504254341125488,
-          "median": 0.23929286003112793,
-          "std": 0.5838717492686126,
-          "p10": -0.5356730937957763,
-          "p90": 0.8906156063079834
+          "mean": 0.4320466677347819,
+          "median": 0.4731612205505371,
+          "std": 0.5667233368809592,
+          "p10": -0.33529930114746087,
+          "p90": 1.151952600479126
         }
       },
       "6_mouth_behaviour": {
