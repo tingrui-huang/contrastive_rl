@@ -188,15 +188,34 @@ def gate(arm, seed):
   with np.load(DATASET, allow_pickle=False) as d:
     n_eps, L, W = d['obs'].shape
     n_dead = int(np.asarray(d['entered_active_swamp']).sum())
-    z = d['obs'][:, :, 2]
+    ob = d['obs']
   print('  dataset      : %s' % DATASET)
   print('  content sha  : %s' % ds)
   print('  episodes     : %d x %d rows, obs width %d, %d transitions'
         % (n_eps, L, W, n_eps * (L - 1)))
   print('  failed eps   : %d (%.4f)' % (n_dead, n_dead / n_eps))
-  print('  z==0 %.5f   z<0 %.5f' % ((z == 0).mean(), (z < 0).mean()))
-  if W != 6:
-    raise SystemExit('obs width %d, expected 6 ([x,y,z,gx,gy,gz])' % W)
+  # The expected observation layout is a property of the VERSION, not of this
+  # launcher: the z envs store [x, y, z, gx, gy, gz] and f4 stores a stack of
+  # NF positions plus the tiled goal. Hard-coding width 6 here would have
+  # silently rejected f4, so the check is derived from the spec instead.
+  if NORM[0] == 'z_physical':
+    z = ob[:, :, 2]
+    print('  z==0 %.5f   z<0 %.5f' % ((z == 0).mean(), (z < 0).mean()))
+    if W != 6:
+      raise SystemExit('obs width %d, expected 6 ([x,y,z,gx,gy,gz])' % W)
+  else:
+    nf = W // 4                       # W = 2*NF state + 2*NF goal
+    fr = ob[:, :, :2 * nf].reshape(n_eps, L, nf, 2)
+    frozen = np.abs(fr - fr[:, :, :1, :]).max(axis=(2, 3)) == 0.0
+    print('  layout       : frame stack, NF = %d (%d state + %d goal)'
+          % (nf, 2 * nf, 2 * nf))
+    print('  frozen rows  : %.5f overall' % frozen.mean())
+    if W % 4 != 0 or W < 8:
+      raise SystemExit('obs width %d is not a 2*NF + 2*NF frame stack' % W)
+    # the goal half must be the tiled task goal, i.e. every goal frame equal
+    gf = ob[:, :, 2 * nf:].reshape(n_eps, L, nf, 2)
+    if float(np.abs(gf - gf[:, :, :1, :]).max()) != 0.0:
+      raise SystemExit('the goal half is not a tiled constant goal')
   if arm == 'zfail':
     if not os.path.exists(BANK):
       raise SystemExit('failure bank missing: %s\n  build it with '
@@ -206,19 +225,26 @@ def gate(arm, seed):
       g = np.asarray(b['goals'])
     print('  bank         : %s' % BANK)
     print('  bank content : %s' % bs)
-    print('  bank shape   : %s   z values %s'
-          % (g.shape, sorted(set(float(v) for v in g[:, 2]))))
-    if g.shape[1] != 3:
-      raise SystemExit('bank goal dim %d, expected 3' % g.shape[1])
+    if NORM[0] == 'z_physical':
+      print('  bank shape   : %s   z values %s'
+            % (g.shape, sorted(set(float(v) for v in g[:, 2]))))
+    else:
+      print('  bank shape   : %s' % (g.shape,))
+    if g.shape[1] != (W // 2):
+      raise SystemExit('bank goal dim %d, expected %d' % (g.shape[1], W // 2))
     if g.shape[0] > BATCH_SIZE:
       raise SystemExit('bank (%d) > batch_size (%d)' % (g.shape[0],
                                                         BATCH_SIZE))
-    if not (g[:, 2] < 0).all():
+    if NORM[0] == 'z_physical' and not (g[:, 2] < 0).all():
       raise SystemExit('a bank entry is not below ground')
   else:
     print('  bank         : (none -- alpha 0)')
-  print('  obs_norm     : z_physical, |z_min| = %.2f, applied ONCE inside '
-        'crl/networks.py' % Z_MIN_ABS)
+  if NORM[0]:
+    print('  obs_norm     : %s, |z_min| = %.2f, applied ONCE inside '
+          'crl/networks.py' % (NORM[0], NORM[1]))
+  else:
+    print('  obs_norm     : (none -- every coordinate is already in maze '
+          'units)')
   print('=' * 78)
   print('PROVENANCE GATE PASSED')
   return {'code_commit': commit, 'head': head, 'dirty': dirty, 'arm': arm,
@@ -227,7 +253,7 @@ def gate(arm, seed):
           'n_transitions': int(n_eps * (L - 1)), 'n_failed_episodes': n_dead,
           'bank': BANK if arm == 'zfail' else None,
           'bank_content_sha256': content_sha(BANK) if arm == 'zfail' else None,
-          'obs_norm_mode': 'z_physical', 'obs_norm_z_scale': Z_MIN_ABS,
+          'obs_norm_mode': NORM[0], 'obs_norm_z_scale': NORM[1],
           'batch_size': BATCH_SIZE, 'steps': STEPS}
 
 

@@ -1,0 +1,40 @@
+{
+  "analysis_script": "scripts/check_f4_matches_z_dynamics.py",
+  "env_a": "point_two_route_swamp_windy_z_v1",
+  "env_b": "point_two_route_swamp_windy_f4_v0",
+  "code_commit": "fd2270caa3530f33bb749c17973a81ad3f56d71f",
+  "dirty": true,
+  "config": {
+    "pairs": 20000,
+    "oracle": 8000,
+    "seed": 0
+  },
+  "paired": {
+    "n": 20000,
+    "max_endpoint_diff": 0.0,
+    "death_label_disagreements": 0
+  },
+  "oracle_p_sink_do_enter": {
+    "holding_mid": {
+      "z_v1": 0.100125,
+      "f4": 0.100125,
+      "equal": true
+    },
+    "holding_edge": {
+      "z_v1": 0.100125,
+      "f4": 0.100125,
+      "equal": true
+    },
+    "mouth": {
+      "z_v1": 0.095625,
+      "f4": 0.095625,
+      "equal": true
+    },
+    "corridor_1": {
+      "z_v1": 0.09375,
+      "f4": 0.09375,
+      "equal": true
+    }
+  },
+  "carry_over_valid": true
+}
