@@ -50,20 +50,38 @@ from crl.config import Config                      # noqa: E402
 # the DEFAULT so nothing about the existing result can change by accident; v1
 # points at its own env, dataset, bank and run tag so no v0 artifact is ever
 # overwritten.
+#
+# ``norm`` is part of the spec rather than a module constant because it is NOT
+# common to every version: the z envs carry a depth in different units from x
+# and y and must be rescaled by 1/|z_min| exactly once inside crl/networks.py,
+# whereas the frame-stacked env holds nothing but raw maze-unit positions and
+# must NOT be rescaled at all. Keeping it here means v0 and v1 reproduce
+# byte-identically while f4 cannot silently inherit a scaling that would be
+# wrong for it.
 VERSIONS = {
     'v0': {'env': 'point_two_route_swamp_windy_z_v0',
            'dataset': 'datasets/swamp_windy_z_merged_s0.npz',
            'bank': 'artifacts/swamp_windy_z_failure_bank/failure_bank_z.npz',
-           'tag': 'swamp_windy_z'},
+           'tag': 'swamp_windy_z',
+           'norm': ('z_physical', 0.5)},
     'v1': {'env': 'point_two_route_swamp_windy_z_v1',
            'dataset': 'datasets/swamp_windy_z_v1_merged_s0.npz',
            'bank': 'artifacts/swamp_windy_z_v1_failure_bank/'
                    'failure_bank_z_v1_entry.npz',
-           'tag': 'swamp_windy_z_v1'},
+           'tag': 'swamp_windy_z_v1',
+           'norm': ('z_physical', 0.5)},
+    'f4': {'env': 'point_two_route_swamp_windy_f4_v0',
+           'dataset': 'datasets/swamp_windy_f4_merged_s0.npz',
+           'bank': 'artifacts/swamp_windy_f4_failure_bank/'
+                   'failure_bank_f4_entry.npz',
+           'tag': 'swamp_windy_f4',
+           # every coordinate is already an (x, y) in maze units
+           'norm': ('', 0.0)},
 }
 ENV = VERSIONS['v0']['env']
 DATASET = VERSIONS['v0']['dataset']
 BANK = VERSIONS['v0']['bank']
+NORM = VERSIONS['v0']['norm']
 ARMS = ('zbase', 'zfail')
 ALPHA = {'zbase': 0.0, 'zfail': 0.1}
 BATCH_SIZE = 256
@@ -87,9 +105,10 @@ def content_sha(path):
 def select_version(v):
   """Point the module-level ENV/DATASET/BANK at one version. Called once, from
   main(), BEFORE any config is built, so build_cfg and gate() agree."""
-  global ENV, DATASET, BANK
+  global ENV, DATASET, BANK, NORM
   spec = VERSIONS[v]
   ENV, DATASET, BANK = spec['env'], spec['dataset'], spec['bank']
+  NORM = spec['norm']
   return spec
 
 
@@ -101,8 +120,10 @@ def build_cfg(arm, ckpt_dir, steps=STEPS, seed=0):
       # the ONLY intended difference between the two arms
       fail_bank_path=BANK if use_bank else '',
       fail_neg_alpha=ALPHA[arm],
-      # NEW for the Z variant, identical in both arms
-      obs_norm_mode='z_physical', obs_norm_z_scale=Z_MIN_ABS,
+      # per-version and identical in both arms: 'z_physical' rescales the
+      # depth column for the z envs, '' leaves the frame-stacked positions
+      # alone because they are already in maze units.
+      obs_norm_mode=NORM[0], obs_norm_z_scale=NORM[1],
       # positives and ordinary negatives are untouched
       anchor_cut_mode='', balanced_sampling=False,
       # THE ESTABLISHED WINDY RECIPE
