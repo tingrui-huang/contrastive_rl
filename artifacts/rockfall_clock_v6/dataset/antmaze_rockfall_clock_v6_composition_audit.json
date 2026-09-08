@@ -1,0 +1,851 @@
+{
+  "environment": "offline_antmaze_rockfall_clock_v6",
+  "environment_version": "rockfall_clock_v6_long_two_rockfall",
+  "dataset_paths": {
+    "raw": "artifacts/rockfall_clock_v6\\dataset\\antmaze_rockfall_clock_v6.npz",
+    "xy": "artifacts/rockfall_clock_v6\\dataset\\antmaze_rockfall_clock_v6_gxy.npz",
+    "sidecar": "artifacts/rockfall_clock_v6\\dataset\\antmaze_rockfall_clock_v6_sidecar.npz",
+    "composition_audit": "artifacts/rockfall_clock_v6\\dataset\\antmaze_rockfall_clock_v6_composition_audit.json",
+    "raw_sha256": "0353dea9b1bf41c1259866404b75b6b4f75986b307ea7c19cb552092f1058519",
+    "xy_sha256": "8f82beaf2847bda4179c233efc428953b0a64ede771aa80c8f3676c718c103de",
+    "sidecar_sha256": "cf42e4dd3f36a76d92ff87bfbab201bc45fbb4015723d3d7b6ea12f78fb89228",
+    "raw_obs_shape": [
+      1000,
+      801,
+      58
+    ],
+    "xy_obs_shape": [
+      1000,
+      801,
+      31
+    ],
+    "act_shape": [
+      1000,
+      801,
+      8
+    ],
+    "n_transitions": 259171
+  },
+  "config": {
+    "episodes_kept": 1000,
+    "collection_seed": 606,
+    "route_rng_seed": 370609,
+    "p_active_1": 0.35,
+    "p_active_2": 0.35,
+    "teacher_detour_prob": 0.05,
+    "t0_range_1": [
+      10,
+      45
+    ],
+    "t0_range_2": [
+      90,
+      125
+    ],
+    "horizon": 800
+  },
+  "n_draws": 1000,
+  "n_kept": 1000,
+  "n_discarded": 0,
+  "discard_fraction": 0.0,
+  "selection_rule": "none: every natural reset and independent teacher-route draw is kept, including failures, timeouts, and unrealized routes",
+  "selection_by_latent": {
+    "U00": {
+      "draws": 421,
+      "kept": 421,
+      "discarded": 0,
+      "discard_fraction": 0.0
+    },
+    "U10": {
+      "draws": 215,
+      "kept": 215,
+      "discarded": 0,
+      "discard_fraction": 0.0
+    },
+    "U01": {
+      "draws": 234,
+      "kept": 234,
+      "discarded": 0,
+      "discard_fraction": 0.0
+    },
+    "U11": {
+      "draws": 130,
+      "kept": 130,
+      "discarded": 0,
+      "discard_fraction": 0.0
+    }
+  },
+  "kept": {
+    "n": 1000,
+    "latent": {
+      "p_active_1_configured": 0.35,
+      "p_active_2_configured": 0.35,
+      "u1_observed": 0.345,
+      "u2_observed": 0.364,
+      "u1_wilson99": [
+        0.307415,
+        0.384628
+      ],
+      "u2_wilson99": [
+        0.325824,
+        0.403969
+      ],
+      "by_combination": {
+        "U00": {
+          "n": 421,
+          "observed_fraction": 0.421,
+          "expected_probability": 0.4225,
+          "expected_count": 422.5,
+          "standardized_count_residual": -0.096029,
+          "detour_n": 18,
+          "detour_fraction": 0.042755,
+          "detour_expected_count": 21.05,
+          "detour_wilson95": [
+            0.027213,
+            0.066566
+          ],
+          "detour_wilson99": [
+            0.023671,
+            0.076028
+          ],
+          "success": 1.0,
+          "failure": 0.0,
+          "timeout": 0.0,
+          "failure_zone_1": 0,
+          "failure_zone_2": 0
+        },
+        "U10": {
+          "n": 215,
+          "observed_fraction": 0.215,
+          "expected_probability": 0.2275,
+          "expected_count": 227.5,
+          "standardized_count_residual": -0.94291,
+          "detour_n": 10,
+          "detour_fraction": 0.046512,
+          "detour_expected_count": 10.75,
+          "detour_wilson95": [
+            0.025458,
+            0.083486
+          ],
+          "detour_wilson99": [
+            0.021204,
+            0.098971
+          ],
+          "success": 1.0,
+          "failure": 0.0,
+          "timeout": 0.0,
+          "failure_zone_1": 0,
+          "failure_zone_2": 0
+        },
+        "U01": {
+          "n": 234,
+          "observed_fraction": 0.234,
+          "expected_probability": 0.2275,
+          "expected_count": 227.5,
+          "standardized_count_residual": 0.490313,
+          "detour_n": 16,
+          "detour_fraction": 0.068376,
+          "detour_expected_count": 11.7,
+          "detour_wilson95": [
+            0.042523,
+            0.108172
+          ],
+          "detour_wilson99": [
+            0.036711,
+            0.123843
+          ],
+          "success": 1.0,
+          "failure": 0.0,
+          "timeout": 0.0,
+          "failure_zone_1": 0,
+          "failure_zone_2": 0
+        },
+        "U11": {
+          "n": 130,
+          "observed_fraction": 0.13,
+          "expected_probability": 0.1225,
+          "expected_count": 122.5,
+          "standardized_count_residual": 0.723385,
+          "detour_n": 10,
+          "detour_fraction": 0.076923,
+          "detour_expected_count": 6.5,
+          "detour_wilson95": [
+            0.042317,
+            0.135815
+          ],
+          "detour_wilson99": [
+            0.035258,
+            0.159677
+          ],
+          "success": 0.992308,
+          "failure": 0.0,
+          "timeout": 0.007692,
+          "failure_zone_1": 0,
+          "failure_zone_2": 0
+        }
+      },
+      "max_abs_standardized_combination_residual": 0.94291,
+      "u1_vs_u2_independence": {
+        "n": 1000,
+        "contingency_rows_left_0_1_cols_right_0_1": [
+          [
+            421,
+            234
+          ],
+          [
+            215,
+            130
+          ]
+        ],
+        "expected_under_empirical_marginals": [
+          [
+            416.58,
+            238.42
+          ],
+          [
+            219.42,
+            125.58
+          ]
+        ],
+        "phi": 0.019325,
+        "pearson_chi_square_df1": 0.373444,
+        "asymptotic_p_value": 0.541133
+      }
+    },
+    "teacher_route": {
+      "configured_detour_probability": 0.05,
+      "detour_n": 54,
+      "detour_fraction": 0.054,
+      "expected_detour_count": 50.0,
+      "detour_wilson95": [
+        0.041621,
+        0.069792
+      ],
+      "detour_wilson99": [
+        0.038356,
+        0.075523
+      ],
+      "detour_vs_u1": {
+        "n": 1000,
+        "contingency_rows_left_0_1_cols_right_0_1": [
+          [
+            621,
+            325
+          ],
+          [
+            34,
+            20
+          ]
+        ],
+        "expected_under_empirical_marginals": [
+          [
+            619.63,
+            326.37
+          ],
+          [
+            35.37,
+            18.63
+          ]
+        ],
+        "phi": 0.012751,
+        "pearson_chi_square_df1": 0.162591,
+        "asymptotic_p_value": 0.686782
+      },
+      "detour_vs_u2": {
+        "n": 1000,
+        "contingency_rows_left_0_1_cols_right_0_1": [
+          [
+            608,
+            338
+          ],
+          [
+            28,
+            26
+          ]
+        ],
+        "expected_under_empirical_marginals": [
+          [
+            601.656,
+            344.344
+          ],
+          [
+            34.344,
+            19.656
+          ]
+        ],
+        "phi": 0.058337,
+        "pearson_chi_square_df1": 3.403165,
+        "asymptotic_p_value": 0.065071
+      },
+      "detour_vs_joint_u1_u2": {
+        "n": 1000,
+        "contingency_rows_shortcut_detour_cols_U00_U10_U01_U11": [
+          [
+            403,
+            205,
+            218,
+            120
+          ],
+          [
+            18,
+            10,
+            16,
+            10
+          ]
+        ],
+        "expected_under_empirical_marginals": [
+          [
+            398.266,
+            203.39,
+            221.364,
+            122.98
+          ],
+          [
+            22.734,
+            11.61,
+            12.636,
+            7.02
+          ]
+        ],
+        "pearson_chi_square_df3": 3.561983,
+        "permutations": 2000,
+        "permutation_seed": 970609,
+        "permutation_p_value": 0.29935
+      }
+    },
+    "shortcut_waits": {
+      "n_shortcut": 946,
+      "wait_zone_1_n": 325,
+      "wait_zone_1_fraction": 0.343552,
+      "go_direct_zone_1_n": 621,
+      "go_direct_zone_1_fraction": 0.656448,
+      "undecided_zone_1_n": 0,
+      "wait_zone_2_n": 301,
+      "wait_zone_2_fraction": 0.318182,
+      "go_direct_zone_2_n": 645,
+      "go_direct_zone_2_fraction": 0.681818,
+      "undecided_zone_2_n": 0,
+      "wait_both_n": 83,
+      "wait_both_fraction": 0.087738,
+      "wait_zone_1_only_n": 242,
+      "wait_zone_1_only_fraction": 0.255814,
+      "wait_zone_2_only_n": 218,
+      "wait_zone_2_only_fraction": 0.230444,
+      "wait_neither_n": 403,
+      "wait_neither_fraction": 0.426004
+    },
+    "outcomes": {
+      "success_n": 999,
+      "success": 0.999,
+      "failure_n": 0,
+      "failure": 0.0,
+      "timeout_n": 1,
+      "timeout": 0.001,
+      "failure_zone_1_n": 0,
+      "failure_zone_2_n": 0
+    },
+    "schedules": {
+      "t0_1": {
+        "configured_range_inclusive": [
+          10,
+          45
+        ],
+        "min": 10,
+        "max": 45,
+        "mean": 27.25,
+        "expected_uniform_mean": 27.5,
+        "expected_count_per_integer": 27.777778,
+        "counts": {
+          "10": 38,
+          "11": 29,
+          "12": 24,
+          "13": 33,
+          "14": 22,
+          "15": 25,
+          "16": 37,
+          "17": 33,
+          "18": 29,
+          "19": 24,
+          "20": 27,
+          "21": 28,
+          "22": 27,
+          "23": 24,
+          "24": 26,
+          "25": 33,
+          "26": 28,
+          "27": 21,
+          "28": 26,
+          "29": 25,
+          "30": 30,
+          "31": 31,
+          "32": 30,
+          "33": 23,
+          "34": 22,
+          "35": 29,
+          "36": 24,
+          "37": 25,
+          "38": 28,
+          "39": 33,
+          "40": 22,
+          "41": 29,
+          "42": 29,
+          "43": 26,
+          "44": 39,
+          "45": 21
+        },
+        "max_abs_standardized_count_residual": 2.159471
+      },
+      "t0_2": {
+        "configured_range_inclusive": [
+          90,
+          125
+        ],
+        "min": 90,
+        "max": 125,
+        "mean": 107.017,
+        "expected_uniform_mean": 107.5,
+        "expected_count_per_integer": 27.777778,
+        "counts": {
+          "90": 29,
+          "91": 31,
+          "92": 25,
+          "93": 30,
+          "94": 29,
+          "95": 32,
+          "96": 38,
+          "97": 27,
+          "98": 28,
+          "99": 28,
+          "100": 22,
+          "101": 28,
+          "102": 28,
+          "103": 19,
+          "104": 30,
+          "105": 29,
+          "106": 32,
+          "107": 27,
+          "108": 25,
+          "109": 26,
+          "110": 28,
+          "111": 41,
+          "112": 29,
+          "113": 29,
+          "114": 33,
+          "115": 26,
+          "116": 25,
+          "117": 29,
+          "118": 28,
+          "119": 26,
+          "120": 25,
+          "121": 24,
+          "122": 17,
+          "123": 24,
+          "124": 28,
+          "125": 25
+        },
+        "max_abs_standardized_count_residual": 2.544327
+      },
+      "corr_t0_1_t0_2": -0.025223,
+      "corr_t0_1_u1": 0.011897,
+      "corr_t0_2_u2": -0.038496,
+      "corr_t0_1_teacher_detour": -0.00691,
+      "corr_t0_2_teacher_detour": -0.018924
+    }
+  },
+  "all_draws_before_selection": {
+    "n": 1000,
+    "latent": {
+      "p_active_1_configured": 0.35,
+      "p_active_2_configured": 0.35,
+      "u1_observed": 0.345,
+      "u2_observed": 0.364,
+      "u1_wilson99": [
+        0.307415,
+        0.384628
+      ],
+      "u2_wilson99": [
+        0.325824,
+        0.403969
+      ],
+      "by_combination": {
+        "U00": {
+          "n": 421,
+          "observed_fraction": 0.421,
+          "expected_probability": 0.4225,
+          "expected_count": 422.5,
+          "standardized_count_residual": -0.096029,
+          "detour_n": 18,
+          "detour_fraction": 0.042755,
+          "detour_expected_count": 21.05,
+          "detour_wilson95": [
+            0.027213,
+            0.066566
+          ],
+          "detour_wilson99": [
+            0.023671,
+            0.076028
+          ],
+          "success": 1.0,
+          "failure": 0.0,
+          "timeout": 0.0,
+          "failure_zone_1": 0,
+          "failure_zone_2": 0
+        },
+        "U10": {
+          "n": 215,
+          "observed_fraction": 0.215,
+          "expected_probability": 0.2275,
+          "expected_count": 227.5,
+          "standardized_count_residual": -0.94291,
+          "detour_n": 10,
+          "detour_fraction": 0.046512,
+          "detour_expected_count": 10.75,
+          "detour_wilson95": [
+            0.025458,
+            0.083486
+          ],
+          "detour_wilson99": [
+            0.021204,
+            0.098971
+          ],
+          "success": 1.0,
+          "failure": 0.0,
+          "timeout": 0.0,
+          "failure_zone_1": 0,
+          "failure_zone_2": 0
+        },
+        "U01": {
+          "n": 234,
+          "observed_fraction": 0.234,
+          "expected_probability": 0.2275,
+          "expected_count": 227.5,
+          "standardized_count_residual": 0.490313,
+          "detour_n": 16,
+          "detour_fraction": 0.068376,
+          "detour_expected_count": 11.7,
+          "detour_wilson95": [
+            0.042523,
+            0.108172
+          ],
+          "detour_wilson99": [
+            0.036711,
+            0.123843
+          ],
+          "success": 1.0,
+          "failure": 0.0,
+          "timeout": 0.0,
+          "failure_zone_1": 0,
+          "failure_zone_2": 0
+        },
+        "U11": {
+          "n": 130,
+          "observed_fraction": 0.13,
+          "expected_probability": 0.1225,
+          "expected_count": 122.5,
+          "standardized_count_residual": 0.723385,
+          "detour_n": 10,
+          "detour_fraction": 0.076923,
+          "detour_expected_count": 6.5,
+          "detour_wilson95": [
+            0.042317,
+            0.135815
+          ],
+          "detour_wilson99": [
+            0.035258,
+            0.159677
+          ],
+          "success": 0.992308,
+          "failure": 0.0,
+          "timeout": 0.007692,
+          "failure_zone_1": 0,
+          "failure_zone_2": 0
+        }
+      },
+      "max_abs_standardized_combination_residual": 0.94291,
+      "u1_vs_u2_independence": {
+        "n": 1000,
+        "contingency_rows_left_0_1_cols_right_0_1": [
+          [
+            421,
+            234
+          ],
+          [
+            215,
+            130
+          ]
+        ],
+        "expected_under_empirical_marginals": [
+          [
+            416.58,
+            238.42
+          ],
+          [
+            219.42,
+            125.58
+          ]
+        ],
+        "phi": 0.019325,
+        "pearson_chi_square_df1": 0.373444,
+        "asymptotic_p_value": 0.541133
+      }
+    },
+    "teacher_route": {
+      "configured_detour_probability": 0.05,
+      "detour_n": 54,
+      "detour_fraction": 0.054,
+      "expected_detour_count": 50.0,
+      "detour_wilson95": [
+        0.041621,
+        0.069792
+      ],
+      "detour_wilson99": [
+        0.038356,
+        0.075523
+      ],
+      "detour_vs_u1": {
+        "n": 1000,
+        "contingency_rows_left_0_1_cols_right_0_1": [
+          [
+            621,
+            325
+          ],
+          [
+            34,
+            20
+          ]
+        ],
+        "expected_under_empirical_marginals": [
+          [
+            619.63,
+            326.37
+          ],
+          [
+            35.37,
+            18.63
+          ]
+        ],
+        "phi": 0.012751,
+        "pearson_chi_square_df1": 0.162591,
+        "asymptotic_p_value": 0.686782
+      },
+      "detour_vs_u2": {
+        "n": 1000,
+        "contingency_rows_left_0_1_cols_right_0_1": [
+          [
+            608,
+            338
+          ],
+          [
+            28,
+            26
+          ]
+        ],
+        "expected_under_empirical_marginals": [
+          [
+            601.656,
+            344.344
+          ],
+          [
+            34.344,
+            19.656
+          ]
+        ],
+        "phi": 0.058337,
+        "pearson_chi_square_df1": 3.403165,
+        "asymptotic_p_value": 0.065071
+      },
+      "detour_vs_joint_u1_u2": {
+        "n": 1000,
+        "contingency_rows_shortcut_detour_cols_U00_U10_U01_U11": [
+          [
+            403,
+            205,
+            218,
+            120
+          ],
+          [
+            18,
+            10,
+            16,
+            10
+          ]
+        ],
+        "expected_under_empirical_marginals": [
+          [
+            398.266,
+            203.39,
+            221.364,
+            122.98
+          ],
+          [
+            22.734,
+            11.61,
+            12.636,
+            7.02
+          ]
+        ],
+        "pearson_chi_square_df3": 3.561983,
+        "permutations": 2000,
+        "permutation_seed": 970610,
+        "permutation_p_value": 0.310845
+      }
+    },
+    "shortcut_waits": {
+      "n_shortcut": 946,
+      "wait_zone_1_n": 325,
+      "wait_zone_1_fraction": 0.343552,
+      "go_direct_zone_1_n": 621,
+      "go_direct_zone_1_fraction": 0.656448,
+      "undecided_zone_1_n": 0,
+      "wait_zone_2_n": 301,
+      "wait_zone_2_fraction": 0.318182,
+      "go_direct_zone_2_n": 645,
+      "go_direct_zone_2_fraction": 0.681818,
+      "undecided_zone_2_n": 0,
+      "wait_both_n": 83,
+      "wait_both_fraction": 0.087738,
+      "wait_zone_1_only_n": 242,
+      "wait_zone_1_only_fraction": 0.255814,
+      "wait_zone_2_only_n": 218,
+      "wait_zone_2_only_fraction": 0.230444,
+      "wait_neither_n": 403,
+      "wait_neither_fraction": 0.426004
+    },
+    "outcomes": {
+      "success_n": 999,
+      "success": 0.999,
+      "failure_n": 0,
+      "failure": 0.0,
+      "timeout_n": 1,
+      "timeout": 0.001,
+      "failure_zone_1_n": 0,
+      "failure_zone_2_n": 0
+    },
+    "schedules": {
+      "t0_1": {
+        "configured_range_inclusive": [
+          10,
+          45
+        ],
+        "min": 10,
+        "max": 45,
+        "mean": 27.25,
+        "expected_uniform_mean": 27.5,
+        "expected_count_per_integer": 27.777778,
+        "counts": {
+          "10": 38,
+          "11": 29,
+          "12": 24,
+          "13": 33,
+          "14": 22,
+          "15": 25,
+          "16": 37,
+          "17": 33,
+          "18": 29,
+          "19": 24,
+          "20": 27,
+          "21": 28,
+          "22": 27,
+          "23": 24,
+          "24": 26,
+          "25": 33,
+          "26": 28,
+          "27": 21,
+          "28": 26,
+          "29": 25,
+          "30": 30,
+          "31": 31,
+          "32": 30,
+          "33": 23,
+          "34": 22,
+          "35": 29,
+          "36": 24,
+          "37": 25,
+          "38": 28,
+          "39": 33,
+          "40": 22,
+          "41": 29,
+          "42": 29,
+          "43": 26,
+          "44": 39,
+          "45": 21
+        },
+        "max_abs_standardized_count_residual": 2.159471
+      },
+      "t0_2": {
+        "configured_range_inclusive": [
+          90,
+          125
+        ],
+        "min": 90,
+        "max": 125,
+        "mean": 107.017,
+        "expected_uniform_mean": 107.5,
+        "expected_count_per_integer": 27.777778,
+        "counts": {
+          "90": 29,
+          "91": 31,
+          "92": 25,
+          "93": 30,
+          "94": 29,
+          "95": 32,
+          "96": 38,
+          "97": 27,
+          "98": 28,
+          "99": 28,
+          "100": 22,
+          "101": 28,
+          "102": 28,
+          "103": 19,
+          "104": 30,
+          "105": 29,
+          "106": 32,
+          "107": 27,
+          "108": 25,
+          "109": 26,
+          "110": 28,
+          "111": 41,
+          "112": 29,
+          "113": 29,
+          "114": 33,
+          "115": 26,
+          "116": 25,
+          "117": 29,
+          "118": 28,
+          "119": 26,
+          "120": 25,
+          "121": 24,
+          "122": 17,
+          "123": 24,
+          "124": 28,
+          "125": 25
+        },
+        "max_abs_standardized_count_residual": 2.544327
+      },
+      "corr_t0_1_t0_2": -0.025223,
+      "corr_t0_1_u1": 0.011897,
+      "corr_t0_2_u2": -0.038496,
+      "corr_t0_1_teacher_detour": -0.00691,
+      "corr_t0_2_teacher_detour": -0.018924
+    }
+  },
+  "gates": {
+    "all_four_latent_combinations_present": true,
+    "u1_configured_probability_in_wilson99": true,
+    "u2_configured_probability_in_wilson99": true,
+    "combination_counts_within_4p5_sigma": true,
+    "u1_u2_independence_not_rejected_at_0p001": true,
+    "overall_detour_probability_in_wilson99": true,
+    "per_latent_detour_probability_in_wilson99": true,
+    "teacher_route_joint_independence_not_rejected_at_0p001": true,
+    "t0_1_inside_configured_range": true,
+    "t0_2_inside_configured_range": true,
+    "t0_1_uniform_counts_within_4p5_sigma": true,
+    "t0_2_uniform_counts_within_4p5_sigma": true,
+    "teacher_success_above_0p90": true,
+    "kept_teacher_failures_zero": true,
+    "learner_raw_width_58": true,
+    "learner_xy_width_31": true,
+    "no_failure_bank": true
+  },
+  "all_pass": true
+}

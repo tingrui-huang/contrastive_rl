@@ -1066,6 +1066,34 @@ def make_env(env_name, config, seed=0, render_mode=None):
     # -> legacy reset (byte-identical), so nothing legacy changes.
     if getattr(config, 'rockfall_reset_fix', False):
       env._env.full_reset = True
+  elif env_name in ('offline_antmaze_rockfall_clock_v6',
+                    'offline_antmaze_rockfall_clock_v6_gxy'):
+    # Elongated rectangular successor to V5.  It owns two independent
+    # reset-time hazard coins, two independent absolute schedules, and two
+    # disjoint four-rock body sets; V5 registration above/below is untouched.
+    from crl.rockfall_clock_v6 import RockfallClockV6Env
+    eval_goals = None
+    if getattr(config, 'offline_dataset', ''):
+      with np.load(config.offline_dataset) as _d:
+        if 'eval_goals' in _d:
+          eval_goals = _d['eval_goals'].copy()
+    _kw = {}
+    for attr, arg in (
+        ('rockfall_p_active_1', 'p_active_1'),
+        ('rockfall_p_active_2', 'p_active_2'),
+        ('rockfall_t0_min_1', 't0_min_1'),
+        ('rockfall_t0_max_1', 't0_max_1'),
+        ('rockfall_t0_min_2', 't0_min_2'),
+        ('rockfall_t0_max_2', 't0_max_2'),
+        ('rockfall_max_steps', 'max_episode_steps')):
+      value = getattr(config, attr, None)
+      if value is not None:
+        _kw[arg] = value
+    env = RockfallClockV6Env(
+        seed=seed, render_mode=render_mode, eval_goals=eval_goals,
+        eval_goal_mode=getattr(config, 'eval_goal_mode', 'd4rl'), **_kw)
+    if env_name.endswith('_gxy'):
+      env.set_goal_indices((0, 1))
   elif env_name in ('offline_ant_umaze_tworoute_rockfall',
                     'offline_ant_umaze_tworoute_rockfall_v3tr',
                     'offline_ant_umaze_tworoute_rockfall_v3br',

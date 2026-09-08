@@ -98,6 +98,18 @@ class Config:
   # Canonical episode-independent full reset. False => legacy reset.
   rockfall_reset_fix: bool = False
 
+  # --- rockfall_clock_v6_long_two_rockfall overrides ---
+  # V6 has two independently sampled hazards and two independently sampled
+  # reset-time absolute clocks.  None preserves the explicit defaults in
+  # crl/rockfall_clock_v6.py; V6 scripts always materialise all six values in
+  # their run metadata/config banner.
+  rockfall_p_active_1: Optional[float] = None
+  rockfall_p_active_2: Optional[float] = None
+  rockfall_t0_min_1: Optional[int] = None
+  rockfall_t0_max_1: Optional[int] = None
+  rockfall_t0_min_2: Optional[int] = None
+  rockfall_t0_max_2: Optional[int] = None
+
   # --- Offline mode ---
   # Path to an .npz episode dataset (obs [N,L,obs+goal], act [N,L,A], see
   # scripts/collect_push_dataset.py). Non-empty => the buffer is preloaded once

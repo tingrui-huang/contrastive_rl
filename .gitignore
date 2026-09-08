@@ -152,3 +152,8 @@ artifacts/rockfall_dataset/full/antmaze_rockfall_full.npz
 artifacts/rockfall_dataset/oracle/*.npz
 # v2 severity-ablation learner npz (metadata kept; not needed for training)
 artifacts/rockfall_v2_dataset/pilot_sev055_ablation/*.npz
+
+# V6 failure-negative training runs: checkpoints are large and regenerable from
+# the committed dataset + bank + scripts/run_v6_failneg.py.
+artifacts/v6_failneg/runs/
+artifacts/v6_failneg/*.log
