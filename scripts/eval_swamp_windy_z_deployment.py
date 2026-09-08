@@ -53,7 +53,11 @@ def rollout(env, policy, bits, uses_3d):
   traj = [env.state.copy()]
   for _ in range(env.max_episode_steps):
     if uses_3d:
-      a = policy(np.concatenate([env.state_z, env.goal_z]).astype(np.float32))
+      # env._get_obs() is what the learner was actually trained on. For the z
+      # envs it returns exactly concatenate([state_z, goal_z]), so this is
+      # byte-identical to the previous construction; for the frame-stacked env
+      # it returns the stack, which the hard-coded version could not express.
+      a = policy(np.asarray(env._get_obs(), np.float32))
     else:
       a = policy(env.state.copy(), g2, memo)
     env.step(np.asarray(a, np.float32))
@@ -67,7 +71,8 @@ def rollout(env, policy, bits, uses_3d):
       entry=float(any(c in env.SWAMP_CELLS for c in cells)),
       died=float(env.dead),
       safe=float(np.any(traj[:, 1] < 2.0)),
-      final_z=float(env.z))
+      # depth exists only in the z envs; the frame-stacked env has none
+      final_z=float(env.z) if hasattr(env, 'z') else 0.0)
 
 
 def run_policy(env, policy, episodes, uses_3d, conditions=CONDITIONS):
