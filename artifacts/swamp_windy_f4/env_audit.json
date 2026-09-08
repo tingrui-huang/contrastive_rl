@@ -1,0 +1,97 @@
+{
+  "analysis_script": "scripts/audit_swamp_windy_f4.py",
+  "env": "point_two_route_swamp_windy_f4_v0",
+  "code_commit": "957294853ff89fe77c3ca3674ef143f63bf2fcd6",
+  "dirty": true,
+  "config": {
+    "episodes": 2000,
+    "seed": 0,
+    "n_frames": 4,
+    "tau": 0.05
+  },
+  "6_separation": {
+    "xy_only (the 2-D benchmark)": {
+      "n": 3710,
+      "median_nn": 0.014727449975907803,
+      "frac_within_tau": 0.9962264150943396
+    },
+    "stacked (4 frames)": {
+      "n": 3710,
+      "median_nn": 0.5214786529541016,
+      "frac_within_tau": 0.0
+    }
+  },
+  "8_lags": {
+    "reset_spread_by_step": [
+      0.8138254880905151,
+      1.6117889881134033,
+      2.417924404144287,
+      2.40096378326416,
+      2.4143383502960205,
+      2.392322063446045,
+      2.384439706802368,
+      2.373110294342041
+    ],
+    "reset_first_informative_step": 1,
+    "death_lag_n": 114,
+    "death_lag_median": 3.0,
+    "death_lag_max": 3,
+    "note": "the reset lag is 1 step; the death lag is the real cost and is the n_frames-1 steps during which the frozen signature has not yet formed"
+  },
+  "gates": {
+    "1_class": {
+      "pass": true,
+      "detail": "TwoRouteSwampWindyF4Env"
+    },
+    "1_dims": {
+      "pass": true,
+      "detail": "obs_dim 8 goal_dim 8"
+    },
+    "1_obs_width": {
+      "pass": true,
+      "detail": "obs shape (16,)"
+    },
+    "1_config_filled": {
+      "pass": true,
+      "detail": "config obs_dim 8 goal_dim 8"
+    },
+    "2_current_first": {
+      "pass": true,
+      "detail": "obs[0:2] [4.7121 3.9967] == float32(state) exactly"
+    },
+    "2_goal_tiled": {
+      "pass": true,
+      "detail": "goal block is tile(GOAL, 4)"
+    },
+    "3_hidden_bits_invariant": {
+      "pass": true,
+      "detail": "max |obs difference| across bit patterns = 0.000e+00"
+    },
+    "4_frozen_signature": {
+      "pass": true,
+      "detail": "114 deaths; max frame spread 4 steps after death = 0.000e+00"
+    },
+    "5_moving_signature": {
+      "pass": true,
+      "detail": "min mean frame spread while alive = 0.6378"
+    },
+    "6_stacking_separates": {
+      "pass": true,
+      "detail": "collision 0.9962 (2-D) -> 0.0000 (stacked)"
+    },
+    "7_windy_v0": {
+      "pass": true,
+      "detail": "obs_dim 2 goal_dim 2 (expected 2/2)"
+    },
+    "7_windy_z_v0": {
+      "pass": true,
+      "detail": "obs_dim 3 goal_dim 3 (expected 3/3)"
+    },
+    "7_windy_z_v1": {
+      "pass": true,
+      "detail": "obs_dim 3 goal_dim 3 (expected 3/3)"
+    }
+  },
+  "gates_passed": 13,
+  "gates_total": 13
+}

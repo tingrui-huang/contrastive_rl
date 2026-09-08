@@ -699,6 +699,118 @@ class TwoRouteSwampWindyZV1Env(TwoRouteSwampWindyEnv):
     return obs, reward, done, info
 
 
+class TwoRouteSwampWindyF4Env(TwoRouteSwampWindyEnv):
+  """point_two_route_swamp_windy_f4_v0 -- FRAME-STACKED windy-lethal swamp.
+
+  The physics stay exactly two-dimensional. What changes is only what the
+  learner is shown: instead of the single position (x, y) it sees the last
+  ``n_frames`` positions, newest first,
+
+      state = [x_t, y_t, x_{t-1}, y_{t-1}, x_{t-2}, y_{t-2}, x_{t-3}, y_{t-3}]
+
+  WHY THIS SEPARATES DEATH FROM PASSAGE WITHOUT INVENTING A DIMENSION. The 2-D
+  design failed because a frozen dead agent and an agent walking through occupy
+  the SAME (x, y): 99.15% of dead states have a live state within 0.05 of them,
+  so the critic cannot tell a failure goal from a success goal. The z envs fixed
+  that by adding a sinking depth, i.e. by adding physics. A frame stack fixes it
+  by adding MEMORY instead: after contact the parent freezes XY and ignores the
+  action, so the stack fills with repeats,
+
+      dead      [s*, s*, s*, s*]          zero velocity
+      passing   [s*, s_a, s_b, s_c]       non-zero velocity
+
+  and the two are far apart in the stacked metric even though their leading
+  frame is identical. The separating quantity is the VELOCITY, which the 2-D
+  observation simply did not carry. Nothing here is a label: the stack is a
+  record of positions the agent actually visited.
+
+  ORDERING IS NEWEST-FIRST ON PURPOSE, so state[0:2] remains the current
+  position and the existing (start_index=0) goal conventions keep slicing
+  something meaningful; obs_to_goal with end_index=-1 takes the whole stack.
+
+  THE GOAL is the stacked task goal, tile(GOAL, n_frames) -- "at the goal and
+  stationary". Success and reward are unchanged: the parent computes them from
+  the current position alone, so this variant stays directly comparable to the
+  2-D and z benchmarks.
+
+  U STAYS HIDDEN. Every entry is a position the agent occupied. Before contact
+  the positions do not depend on the swamp bits at all, so flipping the hidden
+  bits leaves the observation bit-identical -- the same invariance the z envs
+  were required to prove, and it is asserted by the audit script rather than
+  taken on trust.
+
+  ON THE FIRST STEPS OF AN EPISODE there is no history, so the stack is filled
+  with copies of the reset position. That makes a fresh agent look momentarily
+  "frozen"; it is unavoidable for any frame stack and is reported rather than
+  papered over, because it means the zero-velocity signature is only diagnostic
+  after n_frames steps.
+
+  SEPARATE CLASS ON PURPOSE. The 2-D env and both z envs have completed,
+  published experiments attached to them and are left byte-for-byte alone.
+  """
+
+  N_FRAMES = 4
+
+  def __init__(self, action_noise=0.01, max_episode_steps=50, seed=0,
+               active_prob=0.10, slow_factor=0.02, n_frames=N_FRAMES):
+    # Assigned BEFORE super().__init__(): TwoRouteSwampEnv.__init__ ends with
+    # reset(), which sets self.state/self.goal and then calls _get_obs().
+    self.n_frames = int(n_frames)
+    self._frames = None
+    super().__init__(action_noise=action_noise,
+                     max_episode_steps=max_episode_steps, seed=seed,
+                     active_prob=active_prob, slow_factor=slow_factor)
+    self.obs_dim = 2 * self.n_frames        # positions only; U is NOT exposed
+    self.goal_dim = 2 * self.n_frames
+
+  @property
+  def frames(self):
+    """The stack as an [n_frames, 2] array, newest first (audits/plots)."""
+    self._ensure_frames()
+    return np.asarray(self._frames, dtype=np.float32)
+
+  @property
+  def state_f4(self):
+    """Flat learner state, newest frame first. self.state stays 2-D."""
+    return self.frames.reshape(-1)
+
+  @property
+  def goal_f4(self):
+    """Stacked task goal: at the goal and stationary."""
+    return np.tile(np.asarray(self.goal, np.float32), self.n_frames)
+
+  def _ensure_frames(self):
+    """Lazily seed the stack from the current position.
+
+    reset() in the base class sets self.state and then calls _get_obs() before
+    this subclass gets control back, so the seeding has to happen on first use
+    rather than in reset().
+    """
+    if self._frames is None or len(self._frames) != self.n_frames:
+      self._frames = [np.asarray(self.state, float).copy()
+                      for _ in range(self.n_frames)]
+
+  def _get_obs(self):
+    # [x_t, y_t, ..., x_{t-3}, y_{t-3}, g_x, g_y, ..., g_x, g_y].
+    # No swamp bits, no dead flag, no depth, no timestamp, no swamp identity.
+    return np.concatenate([self.state_f4, self.goal_f4]).astype(np.float32)
+
+  def reset(self):
+    self._frames = None                     # force a refill at the new start
+    return super().reset()
+
+  def step(self, action):
+    obs, reward, done, info = super().step(action)
+    # Push AFTER the physics. On the absorbing branch the parent returns
+    # without moving XY, so the pushed frame repeats the death position and the
+    # stack converges to the frozen signature on its own -- no dead flag is
+    # consulted here.
+    self._ensure_frames()
+    self._frames = ([np.asarray(self.state, float).copy()]
+                    + self._frames)[:self.n_frames]
+    return self._get_obs(), reward, done, info
+
+
 # ---------------------------------------------------------------------------
 # Fetch (gymnasium-robotics wrapper). Colab-oriented; needs `mujoco` +
 # `gymnasium-robotics`. Flattens Dict obs to concat([state, desired_goal]).
@@ -1231,6 +1343,12 @@ def make_env(env_name, config, seed=0, render_mode=None):
     # As z_v0 but the sinking is spread over ENV STEPS, so z is a continuous
     # trajectory rather than {0, -0.5}. z_v0 is untouched and reproducible.
     env = TwoRouteSwampWindyZV1Env(max_episode_steps=50, seed=seed)
+  elif env_name == 'point_two_route_swamp_windy_f4_v0':
+    # Frame-stacked variant: the physics stay 2-D and nothing is added to the
+    # state; the learner is shown the last 4 positions, so a frozen dead agent
+    # and a passing agent differ by their velocity. The 2-D and z envs are
+    # untouched.
+    env = TwoRouteSwampWindyF4Env(max_episode_steps=50, seed=seed)
   elif env_name == 'point_two_route_swamp_v0':
     env = TwoRouteSwampEnv(max_episode_steps=50, seed=seed)
   elif env_name == 'point_two_route_gate_v0':   # superseded v0 (kept as ablation)
