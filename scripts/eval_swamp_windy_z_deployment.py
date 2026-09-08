@@ -95,12 +95,16 @@ def main():
 
   env_name = args.env
   cfg = Config(env_name=env_name)
-  # The checkpoint was trained with z_physical; load_nets rebuilds the networks
-  # from cfg, so the same obs_norm settings must be present or the scaling
-  # would silently not be applied at evaluation time.
-  cfg.obs_norm_mode = 'z_physical'
   env = envs_mod.make_env(env_name, cfg, seed=args.seed)
-  cfg.obs_norm_z_scale = abs(env.z_min)
+  # load_nets rebuilds the networks from cfg, so evaluation must reproduce the
+  # per-environment normalization used for training. The z variants scale only
+  # their physical depth; f4 contains raw maze coordinates and uses identity.
+  if hasattr(env, 'z_min'):
+    cfg.obs_norm_mode = 'z_physical'
+    cfg.obs_norm_z_scale = abs(env.z_min)
+  else:
+    cfg.obs_norm_mode = ''
+    cfg.obs_norm_z_scale = 0.0
   nets, state, greedy_np, step = load_nets(env_name, args.ckpt, cfg)
 
   safe_oracle = make_oracle(swamp_blocked_walls(env._walls))
