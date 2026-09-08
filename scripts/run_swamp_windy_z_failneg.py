@@ -25,10 +25,20 @@ future-aware masking), and the B x B ordinary in-batch negatives.
 `--diff` builds both configs and asserts that the ONLY fields differing are the
 failure-negative term and the checkpoint directory. Run it before training.
 
+--alpha sweeps the mixture weight on the zfail arm and --bank points at a
+different failure bank, so one launcher covers a whole alpha sweep without a
+new arm per value. The run tag then carries the alpha (zfail_a3_s0), because
+without it every alpha in a sweep writes into ONE directory and the later runs
+silently overwrite the earlier ones.
+
 Usage:
   python scripts/run_swamp_windy_z_failneg.py --diff
   python scripts/run_swamp_windy_z_failneg.py --arm zbase --run
   python scripts/run_swamp_windy_z_failneg.py --arm zfail --run
+
+  # frame-stacked alpha sweep against a composed bank (see
+  # scripts/run_f4_failneg_sweep.sh, which drives exactly this):
+  python scripts/run_swamp_windy_z_failneg.py --version f4 --arm zfail       --alpha 0.3       --bank artifacts/swamp_windy_f4_failure_bank/failure_bank_f4_r60d40.npz       --run
 """
 import argparse
 import dataclasses
@@ -84,6 +94,10 @@ BANK = VERSIONS['v0']['bank']
 NORM = VERSIONS['v0']['norm']
 ARMS = ('zbase', 'zfail')
 ALPHA = {'zbase': 0.0, 'zfail': 0.1}
+# Set by --alpha (zfail only). A module-level override rather than a build_cfg
+# argument so gate(), config_diff() and build_cfg() cannot disagree about which
+# alpha this invocation is running -- the same reason select_version() exists.
+ALPHA_OVERRIDE = None
 BATCH_SIZE = 256
 STEPS = 150_000
 SGD_STEPS_PER_STEP = 10
@@ -100,6 +114,36 @@ def content_sha(path):
       h.update(str(a.shape).encode())
       h.update(np.ascontiguousarray(a).tobytes())
   return h.hexdigest()
+
+
+def effective_alpha(arm):
+  if arm == 'zfail' and ALPHA_OVERRIDE is not None:
+    return ALPHA_OVERRIDE
+  return ALPHA[arm]
+
+
+def select_alpha(a):
+  """Override the zfail alpha. Called once from main(), before any config."""
+  global ALPHA_OVERRIDE
+  if a is None:
+    return
+  if not 0.0 < a < 1.0:
+    raise SystemExit('--alpha must be in (0, 1); crl/losses.py rejects the '
+                     'endpoints (alpha=0 is the zbase arm)')
+  ALPHA_OVERRIDE = float(a)
+
+
+def alpha_tag(a):
+  """0.05 -> a005, 0.5 -> a05. Directory-safe and collision-free."""
+  return 'a' + ('%g' % a).replace('0.', '').replace('.', '')
+
+
+def select_bank(path):
+  """Point at a different failure bank (e.g. a composed one)."""
+  global BANK
+  if path:
+    BANK = path
+  return BANK
 
 
 def select_version(v):
@@ -119,7 +163,7 @@ def build_cfg(arm, ckpt_dir, steps=STEPS, seed=0):
       max_number_of_steps=steps,
       # the ONLY intended difference between the two arms
       fail_bank_path=BANK if use_bank else '',
-      fail_neg_alpha=ALPHA[arm],
+      fail_neg_alpha=effective_alpha(arm),
       # per-version and identical in both arms: 'z_physical' rescales the
       # depth column for the z envs, '' leaves the frame-stacked positions
       # alone because they are already in maze units.
@@ -145,7 +189,8 @@ def config_diff(seed=0):
   diff = {k: (a[k], b[k]) for k in a if a[k] != b[k]}
   allowed = {'fail_neg_alpha', 'fail_bank_path'}
   print('=' * 78)
-  print('CONFIG DIFF  zbase (alpha=0)  vs  zfail (alpha=0.1)   [%s]' % ENV)
+  print('CONFIG DIFF  zbase (alpha=0)  vs  zfail (alpha=%g)   [%s]'
+        % (effective_alpha('zfail'), ENV))
   print('=' * 78)
   for k, (x, y) in sorted(diff.items()):
     ok = 'OK' if k in allowed else 'UNEXPECTED'
@@ -179,7 +224,8 @@ def gate(arm, seed):
   print('  code commit  : %s%s' % (commit,
                                    '   (WORKING TREE DIRTY)' if dirty else ''))
   print('  head         : %s' % head)
-  print('  arm          : %s   alpha %.2f   seed %d' % (arm, ALPHA[arm], seed))
+  print('  arm          : %s   alpha %g   seed %d'
+        % (arm, effective_alpha(arm), seed))
   if not os.path.exists(DATASET):
     raise SystemExit('dataset missing: %s\n  regenerate with '
                      'scripts/collect_swamp_windy_z.py + '
@@ -218,8 +264,10 @@ def gate(arm, seed):
       raise SystemExit('the goal half is not a tiled constant goal')
   if arm == 'zfail':
     if not os.path.exists(BANK):
-      raise SystemExit('failure bank missing: %s\n  build it with '
-                       'scripts/make_swamp_z_failure_bank.py' % BANK)
+      maker = ('scripts/make_swamp_f4_failure_bank.py'
+               if NORM[0] == '' else 'scripts/make_swamp_z_failure_bank.py')
+      raise SystemExit('failure bank missing: %s\n  build it with %s'
+                       % (BANK, maker))
     bs = content_sha(BANK)
     with np.load(BANK, allow_pickle=False) as b:
       g = np.asarray(b['goals'])
@@ -248,7 +296,7 @@ def gate(arm, seed):
   print('=' * 78)
   print('PROVENANCE GATE PASSED')
   return {'code_commit': commit, 'head': head, 'dirty': dirty, 'arm': arm,
-          'alpha': ALPHA[arm], 'seed': seed, 'dataset': DATASET,
+          'alpha': effective_alpha(arm), 'seed': seed, 'dataset': DATASET,
           'dataset_content_sha256': ds, 'n_episodes': int(n_eps),
           'n_transitions': int(n_eps * (L - 1)), 'n_failed_episodes': n_dead,
           'bank': BANK if arm == 'zfail' else None,
@@ -264,6 +312,12 @@ def main():
                   help='v0 = the accepted published config (default); v1 = the '
                        'z_v1 env with its own dataset, bank and run tag')
   ap.add_argument('--seed', type=int, default=0)
+  ap.add_argument('--alpha', type=float, default=None,
+                  help='override the zfail mixture weight (0, 1); ignored for '
+                       'zbase, which is alpha 0 by definition')
+  ap.add_argument('--bank', default='',
+                  help='override the version registry failure bank, e.g. a '
+                       'composed one. Recorded in arm_provenance.json.')
   ap.add_argument('--ckpt-dir', default='')
   ap.add_argument('--diff', action='store_true')
   ap.add_argument('--check-only', action='store_true')
@@ -271,6 +325,8 @@ def main():
   ap.add_argument('--run', action='store_true')
   args = ap.parse_args()
   spec = select_version(args.version)
+  select_alpha(args.alpha)
+  select_bank(args.bank)
 
   if args.diff:
     config_diff(args.seed)
@@ -284,7 +340,11 @@ def main():
   if not (args.smoke or args.run):
     raise SystemExit('pass one of --diff / --check-only / --smoke / --run')
 
-  tag = '%s_%s_s%d' % (spec['tag'], args.arm, args.seed)
+  # The alpha suffix is mandatory on zfail: without it every alpha in a sweep
+  # writes into ONE directory and the later runs silently overwrite the earlier.
+  tag = ('%s_zbase_s%d' % (spec['tag'], args.seed) if args.arm == 'zbase' else
+         '%s_zfail_%s_s%d' % (spec['tag'], alpha_tag(effective_alpha('zfail')),
+                              args.seed))
   ckpt = args.ckpt_dir or (tag + ('_smoke' if args.smoke else ''))
   steps = 2_000 if args.smoke else STEPS
   cfg = build_cfg(args.arm, ckpt, steps=steps, seed=args.seed)

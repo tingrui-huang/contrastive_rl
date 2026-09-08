@@ -1,0 +1,61 @@
+{
+  "definition": "first learner-visible fully frozen four-frame state in a swamp cell; one entry per failed episode",
+  "env_name": "point_two_route_swamp_windy_f4_v0",
+  "source_npz": "datasets/swamp_windy_f4_merged_s0.npz",
+  "source_content_sha256": "22185598cbcc4fd12b461af67cfddcf00b471be9acd6c6ea520c6e88ceab118e",
+  "goal_dim": 8,
+  "n_frames": 4,
+  "detected_from": "frame stack and public swamp geometry only; entered_active_swamp used only to cross-check",
+  "n_episodes": 6600,
+  "n_failed_episodes": 684,
+  "n_visible_failed_episodes": 653,
+  "n_right_censored_failures": 31,
+  "right_censor_note": "failure occurred too near the episode boundary for all four frames to become frozen; excluded rather than selected using a hidden label",
+  "n_bank_full": 653,
+  "n_bank": 256,
+  "subsampled": true,
+  "subsample_seed": 0,
+  "failure_row_range": [
+    6,
+    50
+  ],
+  "failed_by_teacher_mode": {
+    "0": 154,
+    "2": 3,
+    "3": 3,
+    "4": 96
+  },
+  "normalisation": "none; raw maze-unit frame coordinates",
+  "class_definitions": {
+    "random": "teacher_mode == 0 (uniform-action episode)",
+    "deliberate": "teacher_mode != 0 and the failure step moved into a DIFFERENT cell whose bit was active in the bits the teacher reads before acting, while at least one of {forward, wait, back} would have landed clear",
+    "unaware": "did not change cell -- the wind turned on the cell it was standing in",
+    "doomed": "moved in, but all three candidate landings were active"
+  },
+  "class_pool_sizes": {
+    "random": 377,
+    "deliberate": 166,
+    "unaware": 103,
+    "doomed": 7
+  },
+  "compose": "random=0.6,deliberate=0.4",
+  "composed": true,
+  "class_counts_kept": {
+    "random": 154,
+    "deliberate": 102,
+    "unaware": 0,
+    "doomed": 0
+  },
+  "selection_uses_privileged_fields": [
+    "teacher_mode",
+    "swamp_bits"
+  ],
+  "privileged_selection_note": "CLASS SELECTION ONLY. The stored goal vectors are learner-visible frozen frame stacks and carry no provenance; teacher_mode and swamp_bits decided WHICH of them are kept, nothing else. A bank built this way is a curated training artifact, not something the learner could have derived.",
+  "bank_path": "artifacts/swamp_windy_f4_failure_bank\\failure_bank_f4_r60d40.npz",
+  "bank_sha256": "6d21b72d0eba11c29d9b4f0eeef108c1b4346dfda55c2e741456abbf2d907fc1",
+  "bank_content_sha256": "688a2956697d62c0a2c8236aefc9fa7528ea6ac7ed930c8c07395769e2863d83",
+  "bank_shape": [
+    256,
+    8
+  ]
+}
