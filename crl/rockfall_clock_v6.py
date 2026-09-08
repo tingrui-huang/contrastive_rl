@@ -130,12 +130,40 @@ class RockfallClockV6Env(OfflineD4rlAntUMazeEnv):
                eval_goals=None, eval_goal_mode='d4rl',
                p_active_1=P_ACTIVE_1, p_active_2=P_ACTIVE_2,
                t0_min_1=T0_MIN_1, t0_max_1=T0_MAX_1,
-               t0_min_2=T0_MIN_2, t0_max_2=T0_MAX_2):
+               t0_min_2=T0_MIN_2, t0_max_2=T0_MAX_2,
+               death_settle_substeps=0):
     super().__init__(max_episode_steps=max_episode_steps, seed=seed,
                      render_mode=render_mode, eval_goals=eval_goals,
                      eval_goal_mode=eval_goal_mode)
     self.seed = int(seed)
     self._reset_index = -1
+    #: DEATH-SETTLE (the AntMaze rock-death observability convention, ported
+    #: from crl/rockfall_ant.py; 0 = legacy freeze-at-contact and is
+    #: byte-identical to every existing V6 run and to the frozen dataset).
+    #: >0: once the fatal contact is flagged the actor loses control -- ctrl
+    #: is zeroed, no further action is applied -- and MuJoCo physics advances
+    #: this many EXTRA substeps inside the same env.step, so the fatal
+    #: transition ends in a settled post-impact ant state instead of the
+    #: mid-stride snapshot. The learner observation stays the ordinary 29-dim
+    #: ant slice; nothing rock-, latent- or death-related is exposed and no
+    #: observation entry is written by hand -- the signature must come out of
+    #: the physics. Terminal semantics are unchanged: the episode stays
+    #: absorbing and later steps return the frozen (now settled) _last_obs.
+    #:
+    #: Difference from crl/rockfall_ant.py, which is inherent to V6 (and to
+    #: V2-V5): that env detects contact per substep and can cut the frame_skip
+    #: short, while V6 flags contact only after the whole env step, so the
+    #: settle begins at the end of the fatal step rather than inside it. The
+    #: definition of the stored state -- the observation returned by the fatal
+    #: transition, after N ctrl-free substeps -- is the same one
+    #: scripts/rebuild_failure_bank_settled.py uses.
+    #:
+    #: This is a DATASET/BANK-construction knob. Training and evaluation runs
+    #: leave it at 0.
+    self.death_settle_substeps = int(death_settle_substeps)
+    if self.death_settle_substeps < 0:
+      raise ValueError('death_settle_substeps must be >= 0, got '
+                       f'{death_settle_substeps!r}')
     for name, value in (('p_active_1', p_active_1),
                         ('p_active_2', p_active_2)):
       if not 0.0 <= float(value) <= 1.0:
@@ -440,8 +468,25 @@ class RockfallClockV6Env(OfflineD4rlAntUMazeEnv):
     if contact_zone is not None and not self._succeeded:
       self._failure_zone = int(contact_zone)
       self._failed = True
+      if self.death_settle_substeps > 0:
+        obs = self._settle_after_death()
       return obs, 0.0, True, self._info(False)
     return obs, float(reward), False, self._info(self._succeeded)
+
+  def _settle_after_death(self):
+    """Ctrl-free physics after the fatal contact; returns the settled obs.
+
+    The actor gets no further decision. Only the environment's own physics
+    (gravity, the dropped rocks, contacts) runs, exactly as in
+    crl/rockfall_ant.py's death settle. Nothing about the observation
+    contract changes.
+    """
+    sim = self._env
+    sim.data.ctrl[:] = 0.0
+    for _ in range(self.death_settle_substeps):
+      mujoco.mj_step(sim.model, sim.data)
+    self._last_obs = sim._obs_dict()
+    return self._flatten(self._last_obs)
 
 
 def geometry_metadata():

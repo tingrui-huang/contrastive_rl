@@ -1,0 +1,79 @@
+{
+  "bank": "artifacts\\v6_failneg\\bank\\v6_failure_bank_r60_z20_z20.npz",
+  "n_bank": 250,
+  "settle": 80,
+  "goal_dim": 2,
+  "goal_indices": [
+    0,
+    1
+  ],
+  "random_by_zone": {
+    "1": 101,
+    "2": 49,
+    "ambiguous": 0
+  },
+  "goal_expressiveness": {
+    "zone1": {
+      "n_failures": 151,
+      "n_crossings": 23736,
+      "xy_match_gap": 0.0390857569873333,
+      "auc_in_goal_columns": 0.5067321608701373,
+      "auc_in_full_29dim_state": 1.0
+    },
+    "zone2": {
+      "n_failures": 99,
+      "n_crossings": 23736,
+      "xy_match_gap": 0.05387534201145172,
+      "auc_in_goal_columns": 0.5059007584260109,
+      "auc_in_full_29dim_state": 1.0
+    }
+  },
+  "checks": [
+    {
+      "name": "A_NORMAL_V6_UNCHANGED",
+      "pass": true,
+      "detail": "override off over 8 episodes: executed == normal everywhere, no override fired. Bitwise dataset replay: run scripts/regress_v6_teacher_patch.py"
+    },
+    {
+      "name": "B_DELIBERATE_ZONE1",
+      "pass": true,
+      "detail": "50 entries, all with normal wait -> executed go -> real zone-1 death"
+    },
+    {
+      "name": "C_DELIBERATE_ZONE2",
+      "pass": true,
+      "detail": "50 entries, all with normal wait -> executed go -> real zone-2 death; zone 1 handled normally: 8/50 had u1 active and 8 of those actually held before crossing"
+    },
+    {
+      "name": "D_RANDOM_SOURCE",
+      "pass": true,
+      "detail": "arms ['noisy'], blind by construction True, zones {'1': 101, '2': 49, 'ambiguous': 0}; uniform torque: 0 kept in 60 episodes, mean furthest x 1.44 vs zone 1 at x 6.6"
+    },
+    {
+      "name": "E_SETTLED_STATE",
+      "pass": true,
+      "detail": "SKIPPED by --skip-settle; bank records settle 80"
+    },
+    {
+      "name": "F_LEARNER_VISIBILITY",
+      "pass": true,
+      "detail": "critic sees [250, 2] = state[:, [0, 1]]; 9 provenance fields searched, leaked: none"
+    },
+    {
+      "name": "G_BANK_COMPOSITION",
+      "pass": true,
+      "detail": "N=250: random 150 (0.60), delib 100 (0.40) = Z1 50 + Z2 50; unique (file, episode) 250; unique vectors 250"
+    },
+    {
+      "name": "H_ALPHA0_EQUIVALENCE",
+      "pass": true,
+      "detail": "bank loaded at alpha 0 vs no bank, 3 updates: max |dq| 0, max |dpi| 0"
+    },
+    {
+      "name": "H_ALPHA_LIVE",
+      "pass": true,
+      "detail": "alpha 0.3 moves params (max |dq| 0.00178); pos 0.00355 + ord 0.37594 + fail 0.01836 = 0.39785 vs reported 0.39785"
+    }
+  ],
+  "verdict": "ALL PASS"
+}

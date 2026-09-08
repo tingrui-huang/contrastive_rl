@@ -81,7 +81,20 @@ class LongTwoRockfallTeacher(TwoRouteV3Teacher):
                                else crossing_steps)
     self.safety_margin = int(safety_margin)
     self._route = 'shortcut'
+    #: EXECUTED decision per zone -- what the controller actually did. This
+    #: keeps the meaning ``decisions`` has always had, so every existing
+    #: reader (collector sidecar, audits) is unaffected.
     self._decision = {1: None, 2: None}
+    #: NORMAL decision per zone -- what the privileged sighted rule says,
+    #: preserved even when a deliberate override makes the controller do
+    #: something else. ``None`` means the rule was never consulted (the
+    #: blind ``intent='go'`` audit path, which must stay able to run against
+    #: a redacted schedule).
+    self._normal_decision = {1: None, 2: None}
+    #: zone whose WAIT is deliberately overridden to GO for failure-bank
+    #: collection; None in every ordinary episode.
+    self._override_zone = None
+    self._deliberate_override = {1: False, 2: False}
     self._release_step = {1: None, 2: None}
     self._hold_steps = {1: 0, 2: 0}
     self._holding_zone = None
@@ -93,7 +106,32 @@ class LongTwoRockfallTeacher(TwoRouteV3Teacher):
 
   @property
   def decisions(self):
+    """The EXECUTED decision per zone (unchanged meaning)."""
     return dict(self._decision)
+
+  @property
+  def executed_decisions(self):
+    """Alias of :attr:`decisions`, for code that wants to be explicit."""
+    return dict(self._decision)
+
+  @property
+  def normal_decisions(self):
+    """What the normal privileged sighted rule decided, per zone.
+
+    Equal to :attr:`decisions` in every ordinary episode. Under a deliberate
+    override it stays ``'wait'`` while the executed decision is ``'go'`` --
+    that difference is the evidence a deliberate failure needs. ``None`` for
+    a zone whose rule was never evaluated.
+    """
+    return dict(self._normal_decision)
+
+  @property
+  def deliberate_overrides(self):
+    return dict(self._deliberate_override)
+
+  @property
+  def deliberate_override_zone(self):
+    return self._override_zone
 
   @property
   def release_steps(self):
@@ -107,12 +145,25 @@ class LongTwoRockfallTeacher(TwoRouteV3Teacher):
   def holding_zone(self):
     return self._holding_zone
 
-  def fresh(self, route='shortcut'):
+  def fresh(self, route='shortcut', deliberate_override_zone=None):
+    """Reset for one episode.
+
+    ``deliberate_override_zone`` (None / 1 / 2) is the FAILURE-COLLECTION
+    interface: at that zone only, a normal decision of ``'wait'`` is executed
+    as ``'go'`` and the hold is skipped. Every other zone -- and every
+    episode that does not pass it -- behaves exactly as before.
+    """
     if route not in ('shortcut', 'detour'):
       raise ValueError(f'route must be shortcut or detour, got {route!r}')
+    if deliberate_override_zone not in (None, 1, 2):
+      raise ValueError('deliberate_override_zone must be None, 1 or 2, got '
+                       f'{deliberate_override_zone!r}')
     super().fresh()
     self._route = route
     self._decision = {1: None, 2: None}
+    self._normal_decision = {1: None, 2: None}
+    self._override_zone = deliberate_override_zone
+    self._deliberate_override = {1: False, 2: False}
     self._release_step = {1: None, 2: None}
     self._hold_steps = {1: 0, 2: 0}
     self._holding_zone = None
@@ -159,20 +210,39 @@ class LongTwoRockfallTeacher(TwoRouteV3Teacher):
         continue
       if not V6.RockfallClockV6Env._at_mouth(zone, x, y):
         continue
-      zschedule = schedule['zones'][zone]
-      if force_go or not zschedule['active']:
+      if force_go:
+        #: the blind audit intent. The sighted rule is NOT consulted at all,
+        #: and the timetable is not even INDEXED -- so this path runs against
+        #: a redacted schedule and a blind collector's blindness is a
+        #: structural fact rather than a promise. The normal decision stays
+        #: None rather than being overwritten with a 'go' it never made.
+        self._normal_decision[zone] = None
         self._decision[zone] = 'go'
+        break
+      zschedule = schedule['zones'][zone]
+      if not zschedule['active']:
+        normal = 'go'
       else:
         cross_end = t + self.crossing_steps[zone] + self.safety_margin
-        unsafe = intervals_overlap(
+        normal = ('wait' if intervals_overlap(
             int(zschedule['start']), int(zschedule['end']), t, cross_end)
-        self._decision[zone] = 'wait' if unsafe else 'go'
-        if unsafe:
-          self._release_step[zone] = (int(zschedule['end'])
-                                      + RELEASE_MARGIN)
+            else 'go')
+      self._normal_decision[zone] = normal
+      #: DELIBERATE OVERRIDE, this zone only: keep the normal decision as the
+      #: record and execute the opposite. Nothing happens unless the caller
+      #: asked for this zone AND the normal rule actually said 'wait'.
+      override = bool(self._override_zone == zone and normal == 'wait')
+      self._deliberate_override[zone] = override
+      executed = 'go' if override else normal
+      self._decision[zone] = executed
+      if executed == 'wait':
+        self._release_step[zone] = int(zschedule['end']) + RELEASE_MARGIN
       break
 
     for zone in (1, 2):
+      #: keyed on the EXECUTED decision. A deliberately overridden zone has
+      #: executed == 'go' (its release step was never set), so it walks in
+      #: while ``normal_decisions[zone]`` still records the 'wait' it knew.
       release = self._release_step[zone]
       if (self._decision[zone] == 'wait' and release is not None
           and t < release):

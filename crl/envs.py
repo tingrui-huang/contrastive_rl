@@ -1085,6 +1085,8 @@ def make_env(env_name, config, seed=0, render_mode=None):
         ('rockfall_t0_max_1', 't0_max_1'),
         ('rockfall_t0_min_2', 't0_min_2'),
         ('rockfall_t0_max_2', 't0_max_2'),
+        # bank-construction knob only; None -> 0 -> byte-identical V6.
+        ('rockfall_death_settle_substeps', 'death_settle_substeps'),
         ('rockfall_max_steps', 'max_episode_steps')):
       value = getattr(config, attr, None)
       if value is not None:
