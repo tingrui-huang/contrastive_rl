@@ -1,0 +1,292 @@
+{
+  "probe_script": "scripts/probe_v5_failure_representation.py",
+  "env": "offline_ant_umaze_rockfall_clock_v5",
+  "code_commit": "dc6690a29d4d976701a48c43240513acfe589c07",
+  "head": "dc6690a29d4d976701a48c43240513acfe589c07",
+  "dirty": true,
+  "n_deaths": 200,
+  "n_normal": 20863,
+  "n_band": 4884,
+  "n_hold": 4401,
+  "death_in_band_frac": 0.97,
+  "state_layout": {
+    "xy": [
+      0,
+      1
+    ],
+    "z": [
+      2
+    ],
+    "quat": [
+      3,
+      7
+    ],
+    "joint_angles": [
+      7,
+      15
+    ],
+    "linear_velocity": [
+      15,
+      18
+    ],
+    "angular_velocity": [
+      18,
+      21
+    ],
+    "joint_velocity": [
+      21,
+      29
+    ]
+  },
+  "task_goal_xy": [
+    8.625187873840332,
+    0.5420365929603577
+  ],
+  "settle_note": "settle > 0 is a privileged READOUT: after the env has already declared the death, the raw mujoco sim is stepped with zero ctrl. crl/rockfall_clock_v5.py is not modified and nothing about the benchmark dynamics changes.",
+  "auc_protocol": "5-fold source-episode-grouped Fisher LDA. All states from one normal expert episode remain in one fold; death episodes are likewise disjoint. No episode is used both to fit and score a fold.",
+  "representations": {
+    "xy   (frozen V5 default)": {
+      "columns": [
+        0,
+        1
+      ],
+      "dim": 2,
+      "auc_vs_xy_matched_band": 0.44009746387554377,
+      "gap_to_band_sigma": 0.0036639703903347254,
+      "gap_to_hold_sigma": 0.4354090690612793,
+      "task_goal_offdist_sigma": 0.016677821055054665
+    },
+    "xy+z": {
+      "columns": [
+        0,
+        1,
+        2
+      ],
+      "dim": 3,
+      "auc_vs_xy_matched_band": 0.6566656514640298,
+      "gap_to_band_sigma": 0.034317560493946075,
+      "gap_to_hold_sigma": 0.49984151124954224,
+      "task_goal_offdist_sigma": 4.869950294494629
+    },
+    "xy+linvel": {
+      "columns": [
+        0,
+        1,
+        15,
+        16,
+        17
+      ],
+      "dim": 5,
+      "auc_vs_xy_matched_band": 0.8382822891691987,
+      "gap_to_band_sigma": 0.6017432808876038,
+      "gap_to_hold_sigma": 0.7044397592544556,
+      "task_goal_offdist_sigma": 0.7869129180908203
+    },
+    "xy+angvel": {
+      "columns": [
+        0,
+        1,
+        18,
+        19,
+        20
+      ],
+      "dim": 5,
+      "auc_vs_xy_matched_band": 0.6012182175809263,
+      "gap_to_band_sigma": 0.30008170008659363,
+      "gap_to_hold_sigma": 0.8411280512809753,
+      "task_goal_offdist_sigma": 0.260885089635849
+    },
+    "xy+linvel+angvel   (XYV)": {
+      "columns": [
+        0,
+        1,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "dim": 8,
+      "auc_vs_xy_matched_band": 0.8794820012832382,
+      "gap_to_band_sigma": 1.316291093826294,
+      "gap_to_hold_sigma": 1.5150001049041748,
+      "task_goal_offdist_sigma": 0.8149644136428833
+    },
+    "xy+z+linvel+angvel": {
+      "columns": [
+        0,
+        1,
+        2,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "dim": 9,
+      "auc_vs_xy_matched_band": 0.8887221652160429,
+      "gap_to_band_sigma": 1.4614484310150146,
+      "gap_to_hold_sigma": 1.6173303127288818,
+      "task_goal_offdist_sigma": 5.280524730682373
+    },
+    "xy+all velocity (incl joints)": {
+      "columns": [
+        0,
+        1,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28
+      ],
+      "dim": 16,
+      "auc_vs_xy_matched_band": 0.8910409682125785,
+      "gap_to_band_sigma": 2.061588764190674,
+      "gap_to_hold_sigma": 2.5900588035583496,
+      "task_goal_offdist_sigma": 1.0386236906051636
+    },
+    "xy+full 27 (the padded goal)": {
+      "columns": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28
+      ],
+      "dim": 29,
+      "auc_vs_xy_matched_band": 0.9086740222898154,
+      "gap_to_band_sigma": 2.507077217102051,
+      "gap_to_hold_sigma": 3.162689447402954,
+      "task_goal_offdist_sigma": 16.53301429748535
+    }
+  },
+  "xy_match_gap_maze_units": 0.016205724328756332,
+  "settle_sweep": {
+    "0": {
+      "auc_vs_xy_matched_band": 0.8794820012832382,
+      "gap_to_band_sigma": 1.316291093826294,
+      "gap_to_hold_sigma": 1.5150001049041748,
+      "mean_linear_speed": 1.1171170473098755,
+      "mean_angular_speed": 1.7424615621566772
+    },
+    "10": {
+      "auc_vs_xy_matched_band": 0.9981625808563749,
+      "gap_to_band_sigma": 1.6765713691711426,
+      "gap_to_hold_sigma": 0.9310863018035889,
+      "mean_linear_speed": 0.6392161846160889,
+      "mean_angular_speed": 0.7952844500541687
+    },
+    "20": {
+      "auc_vs_xy_matched_band": 0.9998837209302327,
+      "gap_to_band_sigma": 1.8290432691574097,
+      "gap_to_hold_sigma": 0.6865307092666626,
+      "mean_linear_speed": 0.38658958673477173,
+      "mean_angular_speed": 0.5111342072486877
+    },
+    "40": {
+      "auc_vs_xy_matched_band": 0.9999621212121212,
+      "gap_to_band_sigma": 1.8890950679779053,
+      "gap_to_hold_sigma": 0.5282851457595825,
+      "mean_linear_speed": 0.15267084538936615,
+      "mean_angular_speed": 0.198492169380188
+    },
+    "80": {
+      "auc_vs_xy_matched_band": 1.0,
+      "gap_to_band_sigma": 1.8626257181167603,
+      "gap_to_hold_sigma": 0.4678877592086792,
+      "mean_linear_speed": 0.057985372841358185,
+      "mean_angular_speed": 0.06979145854711533
+    },
+    "160": {
+      "auc_vs_xy_matched_band": 1.0,
+      "gap_to_band_sigma": 1.8408637046813965,
+      "gap_to_hold_sigma": 0.45288899540901184,
+      "mean_linear_speed": 0.02017887681722641,
+      "mean_angular_speed": 0.0270962193608284
+    },
+    "reference_hold": {
+      "mean_linear_speed": 0.0757196769118309,
+      "mean_angular_speed": 0.08359333872795105
+    },
+    "reference_band": {
+      "mean_linear_speed": 1.3848533630371094,
+      "mean_angular_speed": 1.2795649766921997
+    }
+  },
+  "per_column_dprime_death_vs_matched_band": {
+    "x": 0.010481227189302444,
+    "y": 0.01000111922621727,
+    "z": 0.5470654964447021,
+    "qw": 0.15285877883434296,
+    "qx": 0.19936373829841614,
+    "qy": 0.578456461429596,
+    "qz": 0.0773683711886406,
+    "j0": 0.05225035920739174,
+    "j1": 0.22170501947402954,
+    "j2": 0.11151185631752014,
+    "j3": 0.06974747031927109,
+    "j4": 0.04943056404590607,
+    "j5": 0.06631693989038467,
+    "j6": 0.02543979324400425,
+    "j7": 0.07767941802740097,
+    "vx": 1.3967432975769043,
+    "vy": 0.2730138599872589,
+    "vz": 0.19693221151828766,
+    "wx": 0.10681065917015076,
+    "wy": 0.41395294666290283,
+    "wz": 0.2501622140407562,
+    "jv0": 0.04592403769493103,
+    "jv1": 0.0951281413435936,
+    "jv2": 0.05992903560400009,
+    "jv3": 0.2514963746070862,
+    "jv4": 0.10338753461837769,
+    "jv5": 0.12526142597198486,
+    "jv6": 0.07226280122995377,
+    "jv7": 0.009881941601634026
+  },
+  "speed_check": {
+    "note": "a \"slow\" failure signature would also fire on the expert hold, which is the safe blind behaviour. These are the three planar speed distributions that decide whether it does.",
+    "band_p1": 0.8995389938354492,
+    "band_median": 1.2576042413711548,
+    "band_frac_below_0.3": 0.0,
+    "hold_median": 0.0011323337676003575,
+    "hold_p95": 0.3332436978816986,
+    "death_median": 0.8994436264038086,
+    "death_p5": 0.2397034466266632
+  }
+}

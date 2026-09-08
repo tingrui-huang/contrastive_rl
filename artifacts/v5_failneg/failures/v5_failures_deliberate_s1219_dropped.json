@@ -1,0 +1,39 @@
+{
+  "source_arm": "deliberate",
+  "collection_seed": 1219,
+  "collection_base_seed": 808,
+  "definition": "non-fatal or otherwise ineligible attempts; audit only, never learner or bank input",
+  "attempts": [
+    {
+      "source_arm": "deliberate",
+      "outcome": "timeout",
+      "failure": false,
+      "teacher_decision": "wait",
+      "schedule_read": true,
+      "schedule_fields_read": "active,end,start,t",
+      "intervention": "override_wait_to_go",
+      "intervention_step": 16,
+      "executed_intent": "go",
+      "noise_sigma": 0.0,
+      "cut_steps": 0,
+      "rockfall_active": true,
+      "rockfall_start": 10,
+      "rockfall_end": 82,
+      "mouth_step": 15,
+      "band_entry_step": 25,
+      "entered_hazard": true,
+      "rock_waves": 6,
+      "hold_steps": 1,
+      "release_step": 82,
+      "ep_length": 400,
+      "furthest_x": 3.2438,
+      "final_xy": [
+        2.4455,
+        -0.5743
+      ],
+      "death_in_band": false,
+      "death_in_corridor_row": false,
+      "drop_reason": "not_a_rock_death:timeout"
+    }
+  ]
+}

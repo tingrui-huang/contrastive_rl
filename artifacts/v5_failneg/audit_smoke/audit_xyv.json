@@ -1,0 +1,747 @@
+{
+  "analysis_script": "scripts/audit_v5_failneg.py",
+  "goal_rep": "xyv",
+  "goal_indices": [
+    0,
+    1,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+  ],
+  "env": "offline_ant_umaze_rockfall_clock_v5_gxyv",
+  "dataset": "artifacts/rockfall_clock_v5/dataset/antmaze_rockfall_clock_v5_far05_gxyv.npz",
+  "runs_glob": "artifacts/v5_failneg/smoke_xyv_*",
+  "code_commit": "dc6690a29d4d976701a48c43240513acfe589c07",
+  "head_at_runtime": "dc6690a29d4d976701a48c43240513acfe589c07",
+  "audited_files_dirty": true,
+  "artifact_provenance": {
+    "dataset_content_sha256": "f8a0dc3580fb46afb75c1d1534bf0daf7d3db26cce69b803888d76946f65e156",
+    "bank_content_sha256": "3a0a671d2f001edd7a89a9e37e6973677c83f9d5eaafc0c4b079eeb29a0ff39a",
+    "mismatches": [
+      "smoke_xyv_base_smoke dataset '053845199fed001371980368376fa40e7629e7ac5e95b6803db372d6b5e171b3' != f8a0dc3580fb46afb75c1d1534bf0daf7d3db26cce69b803888d76946f65e156",
+      "smoke_xyv_a03_smoke dataset '053845199fed001371980368376fa40e7629e7ac5e95b6803db372d6b5e171b3' != f8a0dc3580fb46afb75c1d1534bf0daf7d3db26cce69b803888d76946f65e156",
+      "smoke_xyv_a03_smoke bank 'bfccd27e773a7ca086201b0b75024836789c89f1f10dfc54dee9ca1db2573b04' != 3a0a671d2f001edd7a89a9e37e6973677c83f9d5eaafc0c4b079eeb29a0ff39a"
+    ],
+    "mismatch_override_used": true
+  },
+  "isolation": {
+    "bank_path": "artifacts/v5_failneg/bank/v5_failure_bank_n60d40.npz",
+    "bank_content_sha256": "3a0a671d2f001edd7a89a9e37e6973677c83f9d5eaafc0c4b079eeb29a0ff39a",
+    "dataset_content_sha256": "f8a0dc3580fb46afb75c1d1534bf0daf7d3db26cce69b803888d76946f65e156",
+    "bank_n": 256,
+    "bank_compose": "noisy=0.6,deliberate=0.4",
+    "heldout_files": [
+      "v5_failures_heldout_blind_s1183.npz",
+      "v5_failures_heldout_deliberate_s1320.npz",
+      "v5_failures_heldout_mistimed_s1457.npz",
+      "v5_failures_heldout_noisy_s1046.npz"
+    ],
+    "heldout_n": 800,
+    "shared_seed_arm_episode_tuples": 0,
+    "note": "the bank is built from base-seed-808 arm streams and the audit failures from disjoint base-seed-909 arm streams; the eval side is never used to select bank entries."
+  },
+  "n_anchors": 300,
+  "runs": {
+    "smoke_xyv_base_smoke": {
+      "run_dir": "artifacts/v5_failneg\\smoke_xyv_base_smoke",
+      "checkpoint": "artifacts/v5_failneg\\smoke_xyv_base_smoke\\final.pkl",
+      "step": 400,
+      "alpha": 0.0,
+      "seed": 0,
+      "bank": null,
+      "1_bank_response": {
+        "f_bank": {
+          "n": 300,
+          "mean": -7.596036965052287,
+          "median": -7.066465377807617,
+          "std": 2.036635241735004,
+          "p10": -9.993763446807861,
+          "p90": -5.75341215133667
+        },
+        "f_bank_deliberate": {
+          "n": 117,
+          "mean": -7.777776811876867,
+          "median": -7.027383804321289,
+          "std": 2.339811184076337,
+          "p10": -10.680103492736816,
+          "p90": -5.702689456939697
+        },
+        "f_bank_noisy": {
+          "n": 183,
+          "mean": -7.479842636754604,
+          "median": -7.096712112426758,
+          "std": 1.806920476613023,
+          "p10": -9.90812816619873,
+          "p90": -5.7748839378356935
+        }
+      },
+      "2_real_pairing": {
+        "source": "held-out failure episodes (base seed 909) vs the frozen training dataset's own band crossings; different episodes, nothing synthesised",
+        "margin_alive_minus_dead": {
+          "n": 300,
+          "mean": 0.5251816829045614,
+          "median": -0.14601349830627441,
+          "std": 1.961865300379695,
+          "p10": -1.0189196586608886,
+          "p90": 3.564821958541872
+        },
+        "frac_positive": 0.44666666666666666,
+        "f_alive": {
+          "n": 300,
+          "mean": -7.0433039363225305,
+          "median": -7.041393756866455,
+          "std": 0.9130374007699811,
+          "p10": -8.206484508514404,
+          "p90": -5.908026027679443
+        },
+        "f_dead": {
+          "n": 300,
+          "mean": -7.568485620816548,
+          "median": -7.009572982788086,
+          "std": 2.0509641245808656,
+          "p10": -10.583948040008545,
+          "p90": -5.707749843597411
+        },
+        "pair_xy_gap": {
+          "n": 300,
+          "mean": 0.013587942402809859,
+          "median": 0.005245334468781948,
+          "std": 0.043575223909455334,
+          "p10": 0.0020333727006800473,
+          "p90": 0.015003851242363456
+        },
+        "by_source_arm": {
+          "blind": {
+            "n": 71,
+            "mean": 0.4432012934080312,
+            "median": -0.10759258270263672,
+            "std": 1.7764459762601352,
+            "p10": -1.0664868354797363,
+            "p90": 2.91542911529541
+          },
+          "deliberate": {
+            "n": 79,
+            "mean": 0.4081778043433081,
+            "median": -0.10767889022827148,
+            "std": 1.8438961526542994,
+            "p10": -1.0513419151306151,
+            "p90": 2.7756484031677253
+          },
+          "mistimed": {
+            "n": 84,
+            "mean": 0.2005911043712071,
+            "median": -0.34087061882019043,
+            "std": 1.5558935683326192,
+            "p10": -0.9905144214630127,
+            "p90": 2.4112623214721696
+          },
+          "noisy": {
+            "n": 66,
+            "mean": 1.1665380868044766,
+            "median": 0.052454471588134766,
+            "std": 2.525970006358828,
+            "p10": -0.8162519931793213,
+            "p90": 4.103311777114868
+          }
+        }
+      },
+      "3_hold_preserved": {
+        "question": "the benchmark rewards standing still at the mouth. If the bank has taught the critic that \"slow\" is death, f(hold) drops with alpha too and the failure negatives have damaged the very behaviour they should encourage.",
+        "f_hold": {
+          "n": 300,
+          "mean": -7.110530737241109,
+          "median": -7.4346604347229,
+          "std": 1.5580736827617658,
+          "p10": -9.014405250549316,
+          "p90": -5.01774001121521
+        },
+        "margin_hold_minus_dead": {
+          "n": 300,
+          "mean": 0.45795488357543945,
+          "median": 0.2679612636566162,
+          "std": 1.9725910140925906,
+          "p10": -1.6040361404418946,
+          "p90": 2.9054268360137976
+        },
+        "frac_hold_above_dead": 0.5566666666666666,
+        "margin_hold_minus_alive": {
+          "n": 300,
+          "mean": -0.0672268009185791,
+          "median": -0.17943572998046875,
+          "std": 1.0112546219193355,
+          "p10": -1.378238582611084,
+          "p90": 1.2022822380065918
+        }
+      },
+      "4_goal_families": {
+        "factual_future_state": {
+          "raw": {
+            "n": 300,
+            "mean": -6.477330985069275,
+            "median": -6.714467763900757,
+            "std": 1.0946339291655818,
+            "p10": -7.653734302520752,
+            "p90": -5.072613906860351
+          },
+          "centred": {
+            "n": 300,
+            "mean": 1.0675665712356568,
+            "median": 0.8304297924041748,
+            "std": 1.0946339291655818,
+            "p10": -0.10883674621582029,
+            "p90": 2.472283649444581
+          }
+        },
+        "ordinary_random_state": {
+          "raw": {
+            "n": 300,
+            "mean": -8.17139372507731,
+            "median": -7.533316135406494,
+            "std": 2.4761591760934363,
+            "p10": -11.470737648010253,
+            "p90": -6.103470659255981
+          },
+          "centred": {
+            "n": 300,
+            "mean": -0.6264961798985799,
+            "median": 0.0115814208984375,
+            "std": 2.476159219048562,
+            "p10": -3.925840091705322,
+            "p90": 1.4414268970489508
+          }
+        },
+        "real_band_crossing": {
+          "raw": {
+            "n": 300,
+            "mean": -7.0433039363225305,
+            "median": -7.041393756866455,
+            "std": 0.9130374007699811,
+            "p10": -8.206484508514404,
+            "p90": -5.908026027679443
+          },
+          "centred": {
+            "n": 300,
+            "mean": 0.5015936199824015,
+            "median": 0.5035037994384766,
+            "std": 0.9130374007699811,
+            "p10": -0.6615869522094726,
+            "p90": 1.6368715286254882
+          }
+        },
+        "real_mouth_hold": {
+          "raw": {
+            "n": 300,
+            "mean": -7.110530737241109,
+            "median": -7.4346604347229,
+            "std": 1.5580736827617658,
+            "p10": -9.014405250549316,
+            "p90": -5.01774001121521
+          },
+          "centred": {
+            "n": 300,
+            "mean": 0.4343668190638224,
+            "median": 0.11023712158203125,
+            "std": 1.5580736827617658,
+            "p10": -1.4695076942443848,
+            "p90": 2.5271575450897217
+          }
+        },
+        "heldout_failure_state": {
+          "raw": {
+            "n": 300,
+            "mean": -7.568485620816548,
+            "median": -7.009572982788086,
+            "std": 2.0509641245808656,
+            "p10": -10.583948040008545,
+            "p90": -5.707749843597411
+          },
+          "centred": {
+            "n": 300,
+            "mean": -0.02358806927998861,
+            "median": 0.5353245735168457,
+            "std": 2.050964145319629,
+            "p10": -3.039050483703613,
+            "p90": 1.8371477127075202
+          }
+        },
+        "failure_bank": {
+          "raw": {
+            "n": 300,
+            "mean": -7.596036965052287,
+            "median": -7.066465377807617,
+            "std": 2.036635241735004,
+            "p10": -9.993763446807861,
+            "p90": -5.75341215133667
+          },
+          "centred": {
+            "n": 300,
+            "mean": -0.05113941351572673,
+            "median": 0.47843217849731445,
+            "std": 2.0366352609866114,
+            "p10": -2.4488658905029292,
+            "p90": 1.7914854049682618
+          }
+        },
+        "task_goal": {
+          "raw": {
+            "n": 300,
+            "mean": -8.847199212710063,
+            "median": -8.644246578216553,
+            "std": 1.1733194206446815,
+            "p10": -10.49054536819458,
+            "p90": -7.477012252807617
+          },
+          "centred": {
+            "n": 300,
+            "mean": -1.302301656405131,
+            "median": -1.099349021911621,
+            "std": 1.1733194206446815,
+            "p10": -2.9456478118896485,
+            "p90": 0.06788530349731461
+          }
+        }
+      },
+      "4_overall_mean_logit": -7.544897556304932,
+      "5_synthetic_stopped_in_band": {
+        "SYNTHETIC": true,
+        "construction": "a REAL training band-crossing state with its six torso velocity columns set to zero: the same ant, at the same point, stopped. Under goal rep xy this is identical to the unmodified state and the section is vacuous by design.",
+        "f_stopped_in_band": {
+          "n": 300,
+          "mean": -7.338784019152324,
+          "median": -7.477599859237671,
+          "std": 0.8565357561428312,
+          "p10": -8.311987972259521,
+          "p90": -6.027974700927734
+        },
+        "margin_moving_minus_stopped": {
+          "n": 300,
+          "mean": 0.29548008282979327,
+          "median": 0.38820433616638184,
+          "std": 0.6215411425068461,
+          "p10": -0.4443015575408935,
+          "p90": 0.963432121276856
+        }
+      },
+      "6_mouth_behaviour": {
+        "question": "at a real mouth state, does the critic rank the actor own action above the zero action (the expert hold), and how big is the commanded action?",
+        "n_mouth_states": 2048,
+        "q_actor_mode": {
+          "n": 2048,
+          "mean": -8.730427421163768,
+          "median": -8.587014198303223,
+          "std": 0.7978534635657432,
+          "p10": -9.859148406982422,
+          "p90": -7.858943367004395
+        },
+        "q_zero_action": {
+          "n": 2048,
+          "mean": -9.602605263702571,
+          "median": -9.547662734985352,
+          "std": 0.9834592398685787,
+          "p10": -10.920093441009522,
+          "p90": -8.391347885131836
+        },
+        "margin_mode_minus_zero": {
+          "n": 2048,
+          "mean": 0.8721778425388038,
+          "median": 1.207313060760498,
+          "std": 0.6012900484890955,
+          "p10": 0.001390743255615238,
+          "p90": 1.4551061630249023
+        },
+        "frac_prefers_moving": 0.90283203125,
+        "actor_action_norm": {
+          "n": 2048,
+          "mean": 1.6304408572032116,
+          "median": 1.6607051491737366,
+          "std": 0.17252265748135212,
+          "p10": 1.415873908996582,
+          "p90": 1.8220962405204773
+        },
+        "actor_sigma_mean": 0.7270122766494751,
+        "note": "this is the critic ranking, not the rollout. The deployment eval (scripts/eval_rockfall_clock_v5_baseline.py) measures what the policy actually does."
+      },
+      "7_positive_goals": {
+        "n_sampled": 20480,
+        "critic_positive": {
+          "n": 20480,
+          "mean": -6.863602312293369,
+          "median": -6.629428148269653,
+          "std": 1.739264990237231,
+          "p10": -8.05025577545166,
+          "p90": -5.556924867630005
+        },
+        "nn_distance_to_bank_sigma": {
+          "n": 20480,
+          "mean": 1.7922699011120131,
+          "median": 1.7815165519714355,
+          "std": 0.7409426770399969,
+          "p10": 0.8821824610233308,
+          "p90": 2.5747693777084386
+        },
+        "frac_within_0.5_sigma_of_a_bank_entry": 0.00205078125,
+        "positive_goal_linear_speed": {
+          "n": 20480,
+          "mean": 1.326462391612506,
+          "median": 1.3747633695602417,
+          "std": 0.4741358893756959,
+          "p10": 0.9582964301109315,
+          "p90": 1.7716752886772158
+        },
+        "note": "the frozen training set contains no deaths, so a positive goal landing on a bank entry would mean the bank is naming ordinary expert states rather than failures. There is no death mask on the relabeler, by design."
+      }
+    },
+    "smoke_xyv_a03_smoke": {
+      "run_dir": "artifacts/v5_failneg\\smoke_xyv_a03_smoke",
+      "checkpoint": "artifacts/v5_failneg\\smoke_xyv_a03_smoke\\final.pkl",
+      "step": 400,
+      "alpha": 0.3,
+      "seed": 0,
+      "bank": "artifacts/v5_failneg/bank/v5_failure_bank_n60d40.npz",
+      "1_bank_response": {
+        "f_bank": {
+          "n": 300,
+          "mean": -8.782839244206746,
+          "median": -8.419140815734863,
+          "std": 2.0351569535060086,
+          "p10": -11.633253383636475,
+          "p90": -6.42983283996582
+        },
+        "f_bank_deliberate": {
+          "n": 117,
+          "mean": -8.821067944551126,
+          "median": -8.308123588562012,
+          "std": 2.1187863184545703,
+          "p10": -11.873891830444336,
+          "p90": -6.434058856964111
+        },
+        "f_bank_noisy": {
+          "n": 183,
+          "mean": -8.75839794398657,
+          "median": -8.437705993652344,
+          "std": 1.9794517520429935,
+          "p10": -11.450630950927735,
+          "p90": -6.440389633178711
+        }
+      },
+      "2_real_pairing": {
+        "source": "held-out failure episodes (base seed 909) vs the frozen training dataset's own band crossings; different episodes, nothing synthesised",
+        "margin_alive_minus_dead": {
+          "n": 300,
+          "mean": 1.5705942678451539,
+          "median": 0.8328111171722412,
+          "std": 2.0899362482186197,
+          "p10": -0.291196346282959,
+          "p90": 4.688427495956423
+        },
+        "frac_positive": 0.8066666666666666,
+        "f_alive": {
+          "n": 300,
+          "mean": -7.128136399586995,
+          "median": -7.096235752105713,
+          "std": 0.8405190447385711,
+          "p10": -8.165375518798829,
+          "p90": -6.038694572448731
+        },
+        "f_dead": {
+          "n": 300,
+          "mean": -8.69873066743215,
+          "median": -8.108418464660645,
+          "std": 2.256445522920814,
+          "p10": -11.944392681121826,
+          "p90": -6.282291603088379
+        },
+        "pair_xy_gap": {
+          "n": 300,
+          "mean": 0.013587942402809859,
+          "median": 0.005245334468781948,
+          "std": 0.043575223909455334,
+          "p10": 0.0020333727006800473,
+          "p90": 0.015003851242363456
+        },
+        "by_source_arm": {
+          "blind": {
+            "n": 71,
+            "mean": 1.599163317344558,
+            "median": 1.160757064819336,
+            "std": 2.022153982347552,
+            "p10": -0.34045934677124023,
+            "p90": 4.42140007019043
+          },
+          "deliberate": {
+            "n": 79,
+            "mean": 1.4677085212514371,
+            "median": 0.9010801315307617,
+            "std": 2.0132125583425586,
+            "p10": -0.3197898864746094,
+            "p90": 4.354125118255615
+          },
+          "mistimed": {
+            "n": 84,
+            "mean": 1.257212173371088,
+            "median": 0.4283871650695801,
+            "std": 1.9084963587686201,
+            "p10": -0.2883112907409668,
+            "p90": 4.164488935470582
+          },
+          "noisy": {
+            "n": 66,
+            "mean": 2.061861955758297,
+            "median": 1.3219656944274902,
+            "std": 2.3638823197027707,
+            "p10": -0.19625425338745117,
+            "p90": 5.780359506607056
+          }
+        }
+      },
+      "3_hold_preserved": {
+        "question": "the benchmark rewards standing still at the mouth. If the bank has taught the critic that \"slow\" is death, f(hold) drops with alpha too and the failure negatives have damaged the very behaviour they should encourage.",
+        "f_hold": {
+          "n": 300,
+          "mean": -7.619019395510356,
+          "median": -8.024690628051758,
+          "std": 1.7304364088910698,
+          "p10": -9.834834575653076,
+          "p90": -5.267428684234619
+        },
+        "margin_hold_minus_dead": {
+          "n": 300,
+          "mean": 1.0797112719217936,
+          "median": 0.7741577625274658,
+          "std": 2.135836646294631,
+          "p10": -1.347718334197998,
+          "p90": 4.293043327331547
+        },
+        "frac_hold_above_dead": 0.6466666666666666,
+        "margin_hold_minus_alive": {
+          "n": 300,
+          "mean": -0.4908829959233602,
+          "median": -0.6338047981262207,
+          "std": 1.1806842098604746,
+          "p10": -1.900038242340088,
+          "p90": 1.0450210094451913
+        }
+      },
+      "4_goal_families": {
+        "factual_future_state": {
+          "raw": {
+            "n": 300,
+            "mean": -6.498213136990865,
+            "median": -6.580205678939819,
+            "std": 0.8851607681986811,
+            "p10": -7.550212478637695,
+            "p90": -5.329334211349487
+          },
+          "centred": {
+            "n": 300,
+            "mean": 1.276813661257426,
+            "median": 1.1948211193084717,
+            "std": 0.8851607681986811,
+            "p10": 0.22481431961059573,
+            "p90": 2.4456925868988044
+          }
+        },
+        "ordinary_random_state": {
+          "raw": {
+            "n": 300,
+            "mean": -7.707369839350383,
+            "median": -7.322165489196777,
+            "std": 1.7241452429979975,
+            "p10": -9.756340312957764,
+            "p90": -6.027365398406983
+          },
+          "centred": {
+            "n": 300,
+            "mean": 0.06765695889790853,
+            "median": 0.45286130905151367,
+            "std": 1.7241452429979973,
+            "p10": -1.9813135147094725,
+            "p90": 1.7476613998413086
+          }
+        },
+        "real_band_crossing": {
+          "raw": {
+            "n": 300,
+            "mean": -7.128136399586995,
+            "median": -7.096235752105713,
+            "std": 0.8405190447385711,
+            "p10": -8.165375518798829,
+            "p90": -6.038694572448731
+          },
+          "centred": {
+            "n": 300,
+            "mean": 0.6468903986612956,
+            "median": 0.6787910461425781,
+            "std": 0.8405190447385711,
+            "p10": -0.3903487205505371,
+            "p90": 1.7363322257995606
+          }
+        },
+        "real_mouth_hold": {
+          "raw": {
+            "n": 300,
+            "mean": -7.619019395510356,
+            "median": -8.024690628051758,
+            "std": 1.7304364088910698,
+            "p10": -9.834834575653076,
+            "p90": -5.267428684234619
+          },
+          "centred": {
+            "n": 300,
+            "mean": 0.1560074027379354,
+            "median": -0.2496638298034668,
+            "std": 1.7304364088910698,
+            "p10": -2.059807777404785,
+            "p90": 2.507598114013672
+          }
+        },
+        "heldout_failure_state": {
+          "raw": {
+            "n": 300,
+            "mean": -8.69873066743215,
+            "median": -8.108418464660645,
+            "std": 2.256445522920814,
+            "p10": -11.944392681121826,
+            "p90": -6.282291603088379
+          },
+          "centred": {
+            "n": 300,
+            "mean": -0.9237038707733154,
+            "median": -0.3333916664123535,
+            "std": 2.2564455288862786,
+            "p10": -4.169365882873535,
+            "p90": 1.4927351951599122
+          }
+        },
+        "failure_bank": {
+          "raw": {
+            "n": 300,
+            "mean": -8.782839244206746,
+            "median": -8.419140815734863,
+            "std": 2.0351569535060086,
+            "p10": -11.633253383636475,
+            "p90": -6.42983283996582
+          },
+          "centred": {
+            "n": 300,
+            "mean": -1.0078124475479127,
+            "median": -0.6441140174865723,
+            "std": 2.0351569607383406,
+            "p10": -3.8582265853881834,
+            "p90": 1.3451939582824715
+          }
+        },
+        "task_goal": {
+          "raw": {
+            "n": 300,
+            "mean": -7.990879836082459,
+            "median": -7.371371507644653,
+            "std": 1.5848993320923552,
+            "p10": -10.258330154418944,
+            "p90": -6.300199365615844
+          },
+          "centred": {
+            "n": 300,
+            "mean": -0.21585303783416748,
+            "median": 0.4036552906036377,
+            "std": 1.5848993320923552,
+            "p10": -2.483303356170654,
+            "p90": 1.4748274326324469
+          }
+        }
+      },
+      "4_overall_mean_logit": -7.775026798248291,
+      "5_synthetic_stopped_in_band": {
+        "SYNTHETIC": true,
+        "construction": "a REAL training band-crossing state with its six torso velocity columns set to zero: the same ant, at the same point, stopped. Under goal rep xy this is identical to the unmodified state and the section is vacuous by design.",
+        "f_stopped_in_band": {
+          "n": 300,
+          "mean": -7.323178942998251,
+          "median": -7.3624842166900635,
+          "std": 0.8054024990005887,
+          "p10": -8.289147663116456,
+          "p90": -6.13052020072937
+        },
+        "margin_moving_minus_stopped": {
+          "n": 300,
+          "mean": 0.19504254341125488,
+          "median": 0.23929286003112793,
+          "std": 0.5838717492686126,
+          "p10": -0.5356730937957763,
+          "p90": 0.8906156063079834
+        }
+      },
+      "6_mouth_behaviour": {
+        "question": "at a real mouth state, does the critic rank the actor own action above the zero action (the expert hold), and how big is the commanded action?",
+        "n_mouth_states": 2048,
+        "q_actor_mode": {
+          "n": 2048,
+          "mean": -7.867474842583761,
+          "median": -7.744811296463013,
+          "std": 0.7570232705083726,
+          "p10": -9.002027130126953,
+          "p90": -7.119254064559937
+        },
+        "q_zero_action": {
+          "n": 2048,
+          "mean": -9.106908490648493,
+          "median": -9.267073631286621,
+          "std": 1.3218645164033718,
+          "p10": -10.756137084960937,
+          "p90": -7.330302810668945
+        },
+        "margin_mode_minus_zero": {
+          "n": 2048,
+          "mean": 1.2394336480647326,
+          "median": 1.7031748294830322,
+          "std": 0.8432792797386754,
+          "p10": 0.016235637664794935,
+          "p90": 2.070858287811279
+        },
+        "frac_prefers_moving": 0.9111328125,
+        "actor_action_norm": {
+          "n": 2048,
+          "mean": 1.8277732098067645,
+          "median": 1.8479371070861816,
+          "std": 0.21614691036629188,
+          "p10": 1.554245388507843,
+          "p90": 2.0571564435958862
+        },
+        "actor_sigma_mean": 0.7037298679351807,
+        "note": "this is the critic ranking, not the rollout. The deployment eval (scripts/eval_rockfall_clock_v5_baseline.py) measures what the policy actually does."
+      },
+      "7_positive_goals": {
+        "n_sampled": 20480,
+        "critic_positive": {
+          "n": 20480,
+          "mean": -6.365392251341836,
+          "median": -6.373128890991211,
+          "std": 0.9721312701923963,
+          "p10": -7.373805904388428,
+          "p90": -5.366820335388184
+        },
+        "nn_distance_to_bank_sigma": {
+          "n": 20480,
+          "mean": 1.7922699011120131,
+          "median": 1.7815165519714355,
+          "std": 0.7409426770399969,
+          "p10": 0.8821824610233308,
+          "p90": 2.5747693777084386
+        },
+        "frac_within_0.5_sigma_of_a_bank_entry": 0.00205078125,
+        "positive_goal_linear_speed": {
+          "n": 20480,
+          "mean": 1.326462391612506,
+          "median": 1.3747633695602417,
+          "std": 0.4741358893756959,
+          "p10": 0.9582964301109315,
+          "p90": 1.7716752886772158
+        },
+        "note": "the frozen training set contains no deaths, so a positive goal landing on a bank entry would mean the bank is naming ordinary expert states rather than failures. There is no death mask on the relabeler, by design."
+      }
+    }
+  }
+}

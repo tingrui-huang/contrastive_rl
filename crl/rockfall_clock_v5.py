@@ -114,6 +114,39 @@ BLIND_WAIT_UNTIL = T0_MAX + ROCKFALL_STEPS
 #: step. Diagnostics only; the failure rule is V4's.
 ROCK_REACH_DIST = 0.6
 
+#: Goal-representation contracts over the 29-dim ant state.
+#:
+#:   GOAL_INDICES_XY   (0, 1)            the upstream ant contract (dc6690a
+#:                                       default): the commanded goal is the
+#:                                       torso XY pair and nothing else.
+#:   GOAL_INDICES_XYV  XY + qvel[0:6]    the same XY task goal plus the torso
+#:                                       LINEAR and ANGULAR velocity columns.
+#:
+#: XYV exists for one measured reason: a V5 rock death is not a place, it is
+#: a motion. Projected onto XY alone a death state is indistinguishable from
+#: a safe crossing at the same point (5-fold episode-grouped LDA AUC 0.440,
+#: i.e.
+#: chance --
+#: see scripts/probe_v5_failure_representation.py), so an XY failure bank can
+#: only say "the corridor is bad", never "this way of being in the corridor
+#: is bad". Adding the six velocity columns raises that to 0.879 and moves a
+#: death state ~1.2 sigma away from the nearest same-XY safe crossing and
+#: ~1.4 sigma from the nearest WAITING ant (the hold at the mouth, which is
+#: the behaviour the benchmark wants preserved).
+#:
+#: What it does NOT do is bring back the 29-dim zero-padded goal (see
+#: crl/d4rl_ant.py OfflineD4rlAntUMazeEnv.reset): the offline task goal is
+#: zeros(29) with [:2] = goal xy, so XYV commands [gx, gy, 0, 0, 0, 0, 0, 0]
+#: -- "be at the goal, at rest". Zero velocity is a state the ant really
+#: occupies (the expert's zero-torque hold), whereas the dropped columns are
+#: not: z = 0 is an ant underground and quat = (0,0,0,0) is not a rotation.
+#: Measured in units of the data's own per-column sigma, the distance from
+#: the commanded goal to the nearest state in the expert dataset is 0.02 for
+#: XY, 0.82 for XYV, 5.28 as soon as z is included and 16.53 for the full
+#: 29-dim padded goal.
+GOAL_INDICES_XY = (0, 1)
+GOAL_INDICES_XYV = (0, 1, 15, 16, 17, 18, 19, 20)
+
 
 class RockfallClockV5Env(RockfallWaitV4Env):
   """V4 machinery (BR goal, mouth line, timed waves) with the burst clocked

@@ -99,10 +99,25 @@ def infer_variant(ckpt_path):
   return 'far05' if 'far05' in ckpt_path.replace('\\', '/') else 'near'
 
 
+#: goal representation -> env-id suffix. 'full' is this port's historical
+#: 29-dim padded goal, 'xy' the upstream ant contract, 'xyv' that same XY task
+#: goal plus the six torso velocity columns (the failure-negative line needs a
+#: goal that can express HOW the ant is at a point; see
+#: crl.rockfall_clock_v5.GOAL_INDICES_XYV).
+GOAL_REP_SUFFIX = {'full': '', 'xy': '_gxy', 'xyv': '_gxyv'}
+
+
 def infer_goal_rep(ckpt_path):
-  """'xy' if the checkpoint was trained on the upstream XY-goal env."""
+  """The goal contract a checkpoint was trained under, from its run directory.
+
+  Order matters: 'v5fn_xyv_...' and the '_gxyv' datasets both contain '_gxy'
+  as a substring, so the more specific tag has to be tested first."""
   path = ckpt_path.replace(os.sep, '/')
-  return 'xy' if '_gxy' in path else 'full'
+  if '_gxyv' in path or 'v5fn_xyv' in path:
+    return 'xyv'
+  if '_gxy' in path or 'v5fn_xy' in path:
+    return 'xy'
+  return 'full'
 
 
 def make_env(seed, horizon=HORIZON):
@@ -133,8 +148,8 @@ def build_policy(ckpt_path, k=K, horizon=HORIZON):
   env_width = int(cfg.obs_dim) + int(cfg.goal_dim)
   assert trained_width == env_width, (
       f'checkpoint expects {trained_width}-dim observations but '
-      f'{ENV_NAME} produces {env_width}; pass --goal-rep '
-      f'{"xy" if trained_width < env_width else "full"}')
+      f'{ENV_NAME} produces {env_width}; pass the --goal-rep the checkpoint '
+      f'was trained with (31 = xy, 37 = xyv, 58 = full)')
 
   @jax.jit
   def act_mean(o):
@@ -343,13 +358,12 @@ def main():
   ap.add_argument('--out-dir', default=None)
   ap.add_argument('--results-root', default=OUT_ROOT)
   #: must match how the checkpoint was trained; inferred from its path.
-  ap.add_argument('--goal-rep', choices=['full', 'xy'], default=None)
+  ap.add_argument('--goal-rep', choices=sorted(GOAL_REP_SUFFIX), default=None)
   args = ap.parse_args()
   variant = args.variant or infer_variant(args.ckpt)
   goal_rep = args.goal_rep or infer_goal_rep(args.ckpt)
   global ENV_NAME
-  if goal_rep == 'xy':
-    ENV_NAME = ENV_NAME + '_gxy'
+  ENV_NAME = ENV_NAME + GOAL_REP_SUFFIX[goal_rep]
   act_mean, candidates, step = build_policy(args.ckpt, args.k, args.horizon)
   print(f'ckpt {args.ckpt} @ step {step} | mode {args.mode} | '
         f'variant {variant} | goal {goal_rep} ({ENV_NAME})', flush=True)
