@@ -221,6 +221,46 @@ frozen `antmaze_rockfall_clock_v6_gxy.npz`
 
 ---
 
+## 6b. The p_active 0.40 round
+
+The benchmark constant moved from 0.35 to 0.40 (`crl/rockfall_clock_v6.py`).
+This was decided while `artifacts/rockfall_clock_v6/runs` was still EMPTY --
+no V6 training run of any kind existed -- so nothing was tuned against a
+result. The 0.35 artifacts are kept byte-for-byte; every default now describes
+the 0.40 benchmark and reproducing 0.35 needs the values passed explicitly
+(`--npz <0.35 file> --p-active-1 0.35 --p-active-2 0.35`), which
+`_dataset_contract` enforces rather than silently mistrains.
+
+The two rounds are SEPARATE EXPERIMENTS, not points on one curve: different
+datasets, different banks, different alpha grids and different seed counts.
+
+Dataset `antmaze_rockfall_clock_v6_p040{,_gxy,_sidecar}.npz`, seed 606, 1000
+episodes, 262,493 transitions:
+
+| | p 0.35 | p 0.40 |
+|---|---|---|
+| u1 / u2 measured | 0.345 / 0.364 | 0.389 / 0.414 |
+| U00 / U10 / U01 / U11 | 421 / 215 / 234 / 130 | 363 / 223 / 248 / 166 |
+| U1 independent of U2 | p 0.54 | p 0.51 |
+| detour | 0.054, indep. p 0.30 | 0.054, indep. p 0.44 |
+| expert failure | 0.000 | 0.000 |
+| shortcut waits z1 / z2 / both | 0.344 / 0.318 / 0.088 | 0.389 / 0.359 / 0.115 |
+
+Candidates at 0.40 (seed 707+137i, settle 80): uniform torque again **0 of 60**
+(mean furthest x 1.45 vs band at 6.6); noisy 300/435 = 0.690 (zones 190/110);
+deliberate_z1 300/300; deliberate_z2 300/418 = 0.718.
+
+Bank `v6_failure_bank_r60_z20_z20_p040.npz`, N=250 = 150 / 50 / 50, random by
+zone {Z1 97, Z2 53, ambiguous 0},
+sha256 `09149346639f351f28efe3a8082292d6ba143ca840f6c2bc4c1e19ad2f90a301`.
+
+Audit **9/9 PASS**, same shape as the 0.35 round; 10 of the 50 banked zone-2
+entries had U1 armed and held at zone 1 before going in. Goal expressiveness
+(reported, not gated): AUC **0.505 / 0.500** in the goal columns against
+**1.000** in the full 29-dim state.
+
+---
+
 ## 7. Not run, and one deviation
 
 * **No alpha training.** This machine's JAX is CPU-only; the sweep driver
@@ -229,10 +269,11 @@ frozen `antmaze_rockfall_clock_v6_gxy.npz`
   alpha = 0.3 smoke was started on CPU purely to exercise the training path:
   offline gates G1–G8 PASS and the bank loads as
   `250 states -> goal dim 2, alpha=0.3`.
-* **p_active is 0.35, not the 0.37 in the task text.** `crl/rockfall_clock_v6.py`
-  defines `P_ACTIVE_1 = P_ACTIVE_2 = 0.35` and the frozen 1000-episode dataset
-  was collected at 0.35 (its composition audit measures u1 0.345, u2 0.364).
-  Moving to 0.37 means regenerating the main dataset, which the task forbids.
-  Nothing was tuned: 0.35 is the benchmark's own default, it is recorded in the
-  bank manifest and in every run's arm file, and the deliberate collectors
-  force the targeted latent anyway, so the bank does not depend on it.
+* **p_active.** The task text said 0.37; the code and the frozen dataset were
+  at 0.35, and `_dataset_contract` refuses a CLI/dataset mismatch, so 0.37
+  would have meant regenerating the main dataset. The 0.35 round was run as
+  frozen, and the benchmark was subsequently moved to **0.40** on request (see
+  section 6b) with a freshly collected dataset, candidate pools and bank. The
+  deliberate collectors force the targeted latent, so the deliberate half of a
+  bank does not depend on p_active at all; only the noisy arm's yield and zone
+  split move with it.

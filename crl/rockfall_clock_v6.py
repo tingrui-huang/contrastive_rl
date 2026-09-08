@@ -55,8 +55,18 @@ GOAL_CELL = (1, 7)
 START_XY = (0.0, 0.0)
 GOAL_CELL_XY = (24.0, 0.0)
 
-P_ACTIVE_1 = 0.35
-P_ACTIVE_2 = 0.35
+#: Hazard-coin densities. Raised from 0.35 to 0.40 for the failure-negative
+#: round; nothing was tuned against a result, because no V6 training run
+#: existed when this changed (artifacts/rockfall_clock_v6/runs was empty).
+#: The 0.35 artifacts are kept: their dataset is
+#: artifacts/rockfall_clock_v6/dataset/antmaze_rockfall_clock_v6{,_gxy}.npz and
+#: reproducing them needs the values passed explicitly
+#: (--p-active-1 0.35 --p-active-2 0.35 --npz <that file>), because every
+#: default here now describes the 0.40 benchmark.
+#: At 0.40 the four latent cells sit at P(neither) 0.360, P(exactly one) 0.480,
+#: P(both) 0.160, against 0.423 / 0.455 / 0.122 at 0.35.
+P_ACTIVE_1 = 0.40
+P_ACTIVE_2 = 0.40
 
 # Interior bands of two different shortcut cells, with the same 0.6-unit
 # junction margin used by V5.  Their closest edges are 5.2 world units apart.

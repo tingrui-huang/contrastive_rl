@@ -30,10 +30,17 @@ OUT_ROOT = 'artifacts/rockfall_clock_v6'
 ENV_BASE = 'offline_antmaze_rockfall_clock_v6'
 ENV_XY = ENV_BASE + '_gxy'
 ENV_NAMES = (ENV_BASE, ENV_XY)
+#: The p_active 0.40 benchmark is the default, matching V6.P_ACTIVE_*. The
+#: 0.35 files are still in the tree; running them needs the values passed
+#: explicitly, e.g.
+#:   --npz artifacts/rockfall_clock_v6/dataset/antmaze_rockfall_clock_v6_gxy.npz
+#:   --p-active-1 0.35 --p-active-2 0.35
+#: _dataset_contract compares the CLI values against the dataset's own meta,
+#: so a mismatched pair is refused rather than silently trained.
 DATASET_BASE = os.path.join(
-    OUT_ROOT, 'dataset', 'antmaze_rockfall_clock_v6.npz')
+    OUT_ROOT, 'dataset', 'antmaze_rockfall_clock_v6_p040.npz')
 DATASET_XY = os.path.join(
-    OUT_ROOT, 'dataset', 'antmaze_rockfall_clock_v6_gxy.npz')
+    OUT_ROOT, 'dataset', 'antmaze_rockfall_clock_v6_p040_gxy.npz')
 HORIZON = int(CT.HORIZON)
 assert HORIZON == 800, 'V6 train/eval/teacher horizons must stay synchronized'
 ALGORITHM_CONTRACT = {

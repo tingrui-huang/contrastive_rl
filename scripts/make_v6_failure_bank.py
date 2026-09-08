@@ -62,9 +62,9 @@ from crl import rockfall_clock_v6 as V6                # noqa: E402
 
 CAND_DIR = os.path.join('artifacts', 'v6_failneg', 'candidates')
 OUT_DIR = os.path.join('artifacts', 'v6_failneg', 'bank')
-OUT_NAME = 'v6_failure_bank_r60_z20_z20.npz'
+OUT_NAME = 'v6_failure_bank_r60_z20_z20_p040.npz'
 DATASET = os.path.join('artifacts', 'rockfall_clock_v6', 'dataset',
-                       'antmaze_rockfall_clock_v6_gxy.npz')
+                       'antmaze_rockfall_clock_v6_p040_gxy.npz')
 STATE_DIM = 29
 #: crl/losses.py pads the second critic apply and needs n_bank <= batch_size;
 #: the V6 recipe (train_rockfall_clock_v6_baseline) uses batch_size 1024.

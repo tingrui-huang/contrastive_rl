@@ -60,7 +60,7 @@ from verify_offline_d4rl import build_offline_cfg         # noqa: E402
 import train_rockfall_clock_v6_baseline as B              # noqa: E402
 
 BANK_DEFAULT = os.path.join('artifacts', 'v6_failneg', 'bank',
-                            'v6_failure_bank_r60_z20_z20.npz')
+                            'v6_failure_bank_r60_z20_z20_p040.npz')
 RUN_ROOT = os.path.join('artifacts', 'v6_failneg', 'runs')
 STEPS = 100_000
 SMOKE_STEPS = 800
