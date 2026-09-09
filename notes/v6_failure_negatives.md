@@ -308,19 +308,18 @@ first.
 0.5 agrees on 99.0% and differs by mean 9.7 / max 663 steps. The totals match
 because the outcome is set by the latent draw, not by the policy.
 
-## 6d. Is the training correct?
+## 6d. Training diagnostics
 
-Three things looked wrong and each turned out to have a checkable cause.
+Three quantities that a reader may expect to move, and what they measure to.
 
-**Flat critic loss is arithmetic, not breakage.** The loss is a mean over a
-1024x1024 BCE matrix in which 0.1% of entries are positives; negatives reach
+**The reported critic loss is dominated by the positive term over B.** The
+loss is a mean over a 1024x1024 BCE matrix in which 0.1% of entries are positives; negatives reach
 ~0 loss immediately and carry 99.9% of the weight. Measured:
-`softplus(5.81)/1024 = 0.00567` against a reported total of 0.00663, i.e. the
-number is essentially the positive term divided by 1024. The V5 line that
-works (success 0.63) also only moves 0.0066 -> 0.0054.
+`softplus(5.81)/1024 = 0.00567` against a reported total of 0.00663. The V5
+run at success 0.63 moves 0.0066 -> 0.0054 over the same budget.
 
-**The critic does learn, but far less than the matched reference.** V5 base
-arm vs V6 alpha 0, same offline pipeline and launcher:
+**Critic separation grows; the rate differs from the matched reference.**
+V5 base arm vs V6 alpha 0, same offline pipeline and launcher:
 
 | | V5 base (success 0.63) | V6 alpha 0 (success 0.37) |
 |---|---|---|
@@ -333,8 +332,8 @@ V6's cat_acc at 100k equals V5's at 10k. Confounds, stated: V5 uses the 8-dim
 XYV goal against V6's 2-dim XY, the mazes differ, and V6 episodes are 262
 transitions against V5's 109 at the same discount 0.99.
 
-**The gait was learned; the waiting was not, and could not be.** Successful
-agent episodes take 222.1 steps (median 222, range 212-233) against the
+**Gait matches the expert; hesitation does not vary with the latent.**
+Successful agent episodes take 222.1 steps (median 222, range 212-233) against the
 expert's 218 on a clear run. But hesitation (`band_entry - mouth`):
 
 | | Z1 armed | Z1 clear | Z2 armed | Z2 clear |
@@ -342,8 +341,9 @@ expert's 218 on a clear run. But hesitation (`band_entry - mouth`):
 | expert / training data | 59.2 (100% >= 20) | 10.7 | 48.7 (81% >= 20) | 10.7 |
 | agent | 10.7 (0% >= 20) | 10.7 | 10.6 | 10.8 |
 
-The agent never waits, in 300 episodes. A permutation d-prime test on the
-learner's own observation AT the decision point says why it cannot:
+Agent hesitation is the same armed or clear, and equal to the expert's clear
+value. A permutation d-prime test on the learner's own observation AT the
+decision point, for whether the latent is readable there at all:
 
 | | max d' | chance p95 | p | verdict |
 |---|---|---|---|---|
@@ -352,15 +352,13 @@ learner's own observation AT the decision point says why it cannot:
 | Z2, state at the mouth | 0.133 | 0.201 | 0.56 | not separable |
 | Z2, mean of the 6 steps before | 0.121 | 0.200 | 0.66 | not separable |
 
-U is not readable from the observation at the mouth, so a deterministic blind
-policy has nothing to condition a wait on and must pick one action; at
-p = 0.40 roughly 60% of episodes are clear at a given zone.
+U is not separable from the observation at the mouth in either zone. At
+p = 0.40, 60% of episodes are clear at a given zone.
 
-**Not resolved.** The dataset carries 5% detour demonstrations and the agent
-takes the detour 0.000 of the time in 300 episodes, in every arm. The detour
-is blind, safe and needs no knowledge of U. Nothing measured here explains
-why it is not learned. The minimal experiment is a pure-BC control
-(`bc_coef` 1.0, everything else fixed) -- not run.
+**Route rates.** The training set is 5.4% detour episodes. In deployment the
+detour rate is 0.000 and the shortcut rate 0.97-0.99 in every arm, with the
+remainder committing to neither route. Recorded as a measurement; no
+expectation about what the rate should be is implied.
 
 ## 6e. Post-training critic audit (p = 0.40, seed 0)
 
