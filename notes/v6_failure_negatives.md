@@ -10,8 +10,8 @@ LEVEL 2   q_fail     = 0.60 q_random + 0.40 q_deliberate           in the bank
 LEVEL 3   q_deliberate = 0.50 q_zone1 + 0.50 q_zone2               exact
 ```
 
-Everything below was run on this machine (CPU) unless a line says otherwise.
-**No alpha training has been run.** That step needs the GPU.
+Sections 1-5 were run on this machine (CPU). Sections 6c-6e are the GPU
+sweeps and the audits over their checkpoints.
 
 ---
 
@@ -260,6 +260,133 @@ entries had U1 armed and held at zone 1 before going in. Goal expressiveness
 **1.000** in the full 29-dim state.
 
 ---
+
+## 6c. Results
+
+Three sweeps completed, all at 100k steps, n=300 deployment eval at seed 909
+with an identical protocol. Raw eval JSONs, per-episode rows, metrics and logs
+are in `artifacts/v6_failneg/results/results_*.tgz`.
+
+### p = 0.35, seed 0 (alpha 0.0 / 0.1 / 0.3)
+
+| alpha | success | failure | timeout | Z1 deaths | Z2 deaths | shortcut | detour |
+|---|---|---|---|---|---|---|---|
+| 0.0 | 0.437 | 0.563 | 0.000 | 106 | 63 | 0.977 | 0.000 |
+| 0.1 | 0.437 | 0.563 | 0.000 | 106 | 63 | 0.980 | 0.000 |
+| 0.3 | 0.437 | 0.563 | 0.000 | 106 | 63 | 0.980 | 0.000 |
+
+### p = 0.40, seed 0 (alpha 0.0 / 0.1 / 0.2 / 0.3 / 0.5)
+
+| alpha | success | failure | timeout | Z1 deaths | Z2 deaths | shortcut | detour | mean steps |
+|---|---|---|---|---|---|---|---|---|
+| 0.0 | 0.370 | 0.630 | 0.000 | 123 | 66 | 0.987 | 0.000 | 139.4 |
+| 0.1 | 0.370 | 0.630 | 0.000 | 123 | 66 | 0.987 | 0.000 | 139.2 |
+| 0.2 | 0.367 | 0.630 | 0.003 | 123 | 66 | 0.973 | 0.000 | 140.7 |
+| 0.3 | 0.370 | 0.630 | 0.000 | 123 | 66 | 0.980 | 0.000 | 139.3 |
+| 0.5 | 0.363 | 0.627 | 0.010 | 123 | 65 | 0.973 | 0.000 | 146.9 |
+
+p = 0.40 seed 1 is running; a first attempt was lost when its node vanished
+mid-run.
+
+**The eval is arithmetically self-consistent.** In the 300 seed-909 episodes
+the latent cells fall 111 / 81 / 66 / 42 (U00 / U10 / U01 / U11; expected
+108 / 72 / 72 / 48 at p = 0.40) and the outcome is decided entirely by them:
+
+| cell | n | success | died Z1 | died Z2 |
+|---|---|---|---|---|
+| U00 | 111 | 1.000 | 0 | 0 |
+| U10 | 81 | 0.000 | 81 | 0 |
+| U01 | 66 | 0.000 | 0 | 66 |
+| U11 | 42 | 0.000 | 42 | 0 |
+
+success = 111/300 = 0.370 is exactly the U00 count; Z1 deaths 81+42 = 123 and
+Z2 deaths 66 match the reported totals. U11 dies at Z1 because it reaches Z1
+first.
+
+**The arms are not identical policies.** Per-episode against alpha 0: alpha
+0.1 agrees on 100% of outcomes but differs by mean 2.9 / max 16 steps; alpha
+0.5 agrees on 99.0% and differs by mean 9.7 / max 663 steps. The totals match
+because the outcome is set by the latent draw, not by the policy.
+
+## 6d. Is the training correct?
+
+Three things looked wrong and each turned out to have a checkable cause.
+
+**Flat critic loss is arithmetic, not breakage.** The loss is a mean over a
+1024x1024 BCE matrix in which 0.1% of entries are positives; negatives reach
+~0 loss immediately and carry 99.9% of the weight. Measured:
+`softplus(5.81)/1024 = 0.00567` against a reported total of 0.00663, i.e. the
+number is essentially the positive term divided by 1024. The V5 line that
+works (success 0.63) also only moves 0.0066 -> 0.0054.
+
+**The critic does learn, but far less than the matched reference.** V5 base
+arm vs V6 alpha 0, same offline pipeline and launcher:
+
+| | V5 base (success 0.63) | V6 alpha 0 (success 0.37) |
+|---|---|---|
+| logits_pos 10k -> 100k | -5.69 -> -4.45 (+1.24) | -6.10 -> -5.81 (+0.29) |
+| logits_neg | -15.5 -> -40.2 | -11.9 -> -43.7 |
+| categorical accuracy | 0.031 -> 0.189 | 0.0073 -> 0.030 |
+| critic loss | -18% | -4% |
+
+V6's cat_acc at 100k equals V5's at 10k. Confounds, stated: V5 uses the 8-dim
+XYV goal against V6's 2-dim XY, the mazes differ, and V6 episodes are 262
+transitions against V5's 109 at the same discount 0.99.
+
+**The gait was learned; the waiting was not, and could not be.** Successful
+agent episodes take 222.1 steps (median 222, range 212-233) against the
+expert's 218 on a clear run. But hesitation (`band_entry - mouth`):
+
+| | Z1 armed | Z1 clear | Z2 armed | Z2 clear |
+|---|---|---|---|---|
+| expert / training data | 59.2 (100% >= 20) | 10.7 | 48.7 (81% >= 20) | 10.7 |
+| agent | 10.7 (0% >= 20) | 10.7 | 10.6 | 10.8 |
+
+The agent never waits, in 300 episodes. A permutation d-prime test on the
+learner's own observation AT the decision point says why it cannot:
+
+| | max d' | chance p95 | p | verdict |
+|---|---|---|---|---|
+| Z1, state at the mouth | 0.155 | 0.202 | 0.31 | not separable |
+| Z1, mean of the 6 steps before | 0.164 | 0.197 | 0.20 | not separable |
+| Z2, state at the mouth | 0.133 | 0.201 | 0.56 | not separable |
+| Z2, mean of the 6 steps before | 0.121 | 0.200 | 0.66 | not separable |
+
+U is not readable from the observation at the mouth, so a deterministic blind
+policy has nothing to condition a wait on and must pick one action; at
+p = 0.40 roughly 60% of episodes are clear at a given zone.
+
+**Not resolved.** The dataset carries 5% detour demonstrations and the agent
+takes the detour 0.000 of the time in 300 episodes, in every arm. The detour
+is blind, safe and needs no knowledge of U. Nothing measured here explains
+why it is not learned. The minimal experiment is a pure-BC control
+(`bc_coef` 1.0, everything else fixed) -- not run.
+
+## 6e. Post-training critic audit (p = 0.40, seed 0)
+
+`scripts/audit_v6_failneg_critic.py`. Held-out failure pool at seed 3030,
+asserted disjoint from the bank by (file, episode); all pairings computed once
+and shared across arms.
+
+| alpha | f(bank) | f(bank) Z1 | f(bank) Z2 | Z1 alive-dead | Z1 pos. control | Z2 alive-dead | Z2 pos. control |
+|---|---|---|---|---|---|---|---|
+| 0.0 | -50.65 | -81.51 | -7.93 | +0.432 | +0.007 | +0.212 | +0.001 |
+| 0.1 | -46.29 | -71.71 | -9.42 | +1.867 | +0.007 | +0.386 | +0.005 |
+| 0.2 | -37.01 | -56.49 | -10.28 | +0.347 | -0.000 | +0.392 | +0.005 |
+| 0.3 | -43.27 | -66.33 | -11.15 | +1.061 | -0.008 | +0.519 | +0.004 |
+| 0.5 | -41.84 | -61.42 | -11.69 | +0.595 | -0.004 | +0.484 | +0.013 |
+
+The bank does reach the critic -- f(bank) differs across arms -- but is not
+monotone in alpha overall; only the deliberate-Z2 component is
+(-7.93 -> -11.69). The position control (the same nearest-XY construction
+between two SAFE crossings) stays within |0.013|, so the 0.2-1.9 margins are
+not a pure position effect; against that, `frac>0` per anchor is only
+0.52-0.60.
+
+At the mouth the critic prefers the actor's own action over the zero action in
+89-99% of real approach states, in every arm, with no trend in alpha.
+
+Single seed. Nothing here supports a claim about an alpha effect.
 
 ## 7. Not run, and one deviation
 
