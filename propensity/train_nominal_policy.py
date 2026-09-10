@@ -31,6 +31,8 @@ import numpy as np
 import optax
 
 from propensity.dataset import BehaviorDataset
+from propensity.expert_population import (
+    resolve_expert_positive_episodes, save_expert_population_manifest)
 from propensity.nominal_policy import (
     NominalPolicySpec, censored_mixture_log_prob, make_policy_network)
 
@@ -40,6 +42,10 @@ def build_parser():
       description='Fit b_phi(a|s,g_cmd) by conditional censored NLL.')
   parser.add_argument('--dataset', required=True)
   parser.add_argument('--out-dir', required=True)
+  parser.add_argument('--population', choices=('expert_positive', 'mixed'),
+                      default='expert_positive',
+                      help='expert_positive is the nominal-policy default; '
+                           'mixed exists only to reproduce historical runs')
   parser.add_argument('--conditioning', choices=('state_goal', 'state_only'),
                       default='state_goal')
   parser.add_argument('--val-frac', type=float, default=0.1)
@@ -94,6 +100,36 @@ def _episode_hash(episode_ids):
   return hashlib.sha256(ids.tobytes()).hexdigest()
 
 
+def _trajectory_duplicate_audit(dataset):
+  """Detect byte-identical selected trajectories spanning train and val."""
+  train_episodes = set(np.unique(
+      dataset._episode_of_row[dataset._train_idx]).tolist())
+  validation_episodes = set(np.unique(
+      dataset._episode_of_row[dataset._val_idx]).tolist())
+  episodes = dataset._episode_of_row
+  starts = np.r_[0, np.flatnonzero(np.diff(episodes)) + 1]
+  stops = np.r_[starts[1:], episodes.size]
+  signatures = {}
+  for start, stop in zip(starts, stops):
+    episode = int(episodes[start])
+    digest = hashlib.sha256()
+    digest.update(dataset._state[start:stop].tobytes())
+    digest.update(dataset._action[start:stop].tobytes())
+    signatures.setdefault(digest.hexdigest(), []).append(episode)
+  duplicate_groups = [ids for ids in signatures.values() if len(ids) > 1]
+  cross_split = [ids for ids in duplicate_groups
+                 if any(x in train_episodes for x in ids)
+                 and any(x in validation_episodes for x in ids)]
+  return {
+      'definition': 'byte-identical complete selected state-action trajectories',
+      'duplicate_groups': len(duplicate_groups),
+      'duplicate_episodes': int(sum(len(x) for x in duplicate_groups)),
+      'cross_split_duplicate_groups': len(cross_split),
+      'cross_split_episode_ids': sorted({x for ids in cross_split for x in ids}),
+      'passed': not cross_split,
+  }
+
+
 def _evaluate(network, params, context, action, mean, std, batch_size, spec):
   total, count = 0.0, 0
   for start in range(0, len(context), batch_size):
@@ -123,15 +159,28 @@ def main(argv=None):
                      'pass --overwrite to replace its run files')
   os.makedirs(args.out_dir, exist_ok=True)
 
+  selected_episode_ids = None
+  source_selection = {
+      'population': 'mixed_historical_baseline',
+      'definition': 'all source populations in the merged dataset',
+  }
+  if args.population == 'expert_positive':
+    selected_episode_ids, source_selection = resolve_expert_positive_episodes(
+        args.dataset)
   state_mode = 'obs' if args.conditioning == 'state_goal' else 'state'
   dataset = BehaviorDataset(
       args.dataset, val_frac=args.val_frac, seed=args.split_seed,
-      state_mode=state_mode, split_level='episode', strict_bounds=True)
+      state_mode=state_mode, split_level='episode', strict_bounds=True,
+      include_episode_ids=selected_episode_ids, split_reference='source')
   passed, gates, details = dataset.check()
   if not passed:
     raise RuntimeError(f'dataset contract checks failed: {gates}')
   if dataset.n_val == 0:
     raise RuntimeError('validation split is empty; use a positive --val-frac')
+  duplicate_audit = _trajectory_duplicate_audit(dataset)
+  if not duplicate_audit['passed']:
+    raise RuntimeError('byte-identical trajectories cross train/validation: '
+                       f'{duplicate_audit["cross_split_episode_ids"]}')
 
   train = dataset.arrays('train')
   val = dataset.arrays('val')
@@ -167,15 +216,11 @@ def main(argv=None):
       | (action >= spec.action_high - spec.boundary_tol), axis=0)
   config = {
       'format_version': 1,
-      'task': 'nominal_observational_action_density',
+      'task': 'nominal_expert_action_density',
+      'population': args.population,
       'dataset': dataset.report(),
       'dataset_metadata': raw_meta,
-      'dataset_interpretation': {
-          'label': 'mixed observational behavior',
-          'note': ('The merged F4 dataset combines random, hidden-bit-aware '
-                   'teacher, forced-safe, and blind bad-demonstrator behavior; '
-                   'it is not a pure expert-demonstration dataset.'),
-      },
+      'source_selection': source_selection,
       'model': spec.asdict(),
       'conditioning': {
           'input': ('learner-visible pre-action state concatenated with the '
@@ -207,6 +252,7 @@ def main(argv=None):
           'train_episode_ids_sha256': _episode_hash(train_eps),
           'validation_episode_ids': val_eps.tolist(),
           'validation_episode_ids_sha256': _episode_hash(val_eps),
+          'duplicate_trajectory_audit': duplicate_audit,
       },
       'optimization': {
           'seed': args.seed, 'batch_size': args.batch_size,
@@ -221,6 +267,10 @@ def main(argv=None):
       'dataset_checks': {'passed': passed, 'gates': gates, 'details': details},
       'status': 'running',
   }
+  if args.population == 'expert_positive':
+    save_expert_population_manifest(
+        os.path.join(args.out_dir, 'expert_population_manifest.json'),
+        source_selection)
   _write_json(os.path.join(args.out_dir, 'config.json'), config)
 
   network = make_policy_network(spec)

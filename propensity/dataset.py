@@ -168,7 +168,8 @@ class BehaviorDataset:
   """
 
   def __init__(self, path, val_frac=0.1, seed=0, state_mode='state',
-               split_level='episode', verify_sha256=True, strict_bounds=False):
+               split_level='episode', verify_sha256=True, strict_bounds=False,
+               include_episode_ids=None, split_reference='selected'):
     """Args:
 
       path: .npz episode dataset following the crl/offline_audit.py contract.
@@ -183,6 +184,14 @@ class BehaviorDataset:
         same trajectory appear on both sides.
       verify_sha256: check the .manifest.json sidecar hash when one exists.
       strict_bounds: raise (instead of warn) if actions leave [-1, 1].
+      include_episode_ids: optional original episode ids to expose. Selection is
+        applied before rows are materialized, but original ids are preserved.
+        The selector itself belongs outside this audit-blind loader.
+      split_reference: 'selected' assigns val_frac of the selected episodes;
+        'source' first reproduces the split of the complete source dataset and
+        then restricts it to include_episode_ids. The latter keeps historical
+        train/validation membership unchanged when constructing a population
+        view of an existing run.
     """
     if not 0.0 <= val_frac < 1.0:
       raise ValueError(f'val_frac must be in [0, 1), got {val_frac}')
@@ -191,6 +200,8 @@ class BehaviorDataset:
     if split_level not in ('episode', 'transition'):
       raise ValueError(
           f"split_level must be 'episode' or 'transition', got {split_level}")
+    if split_reference not in ('selected', 'source'):
+      raise ValueError("split_reference must be 'selected' or 'source'")
 
     obs, act, lengths, meta, fp = _load_learner_arrays(
         path, verify_sha256=verify_sha256)
@@ -201,6 +212,7 @@ class BehaviorDataset:
     self._val_frac = float(val_frac)
     self._state_mode = state_mode
     self._split_level = split_level
+    self._split_reference = split_reference
 
     # ---- structural checks on the raw tensors ------------------------------ #
     if obs.ndim != 3 or act.ndim != 3:
@@ -220,6 +232,7 @@ class BehaviorDataset:
       raise DatasetContractError(f'obs must be float32, got {obs.dtype}')
 
     n_eps, ep_len_obs = int(obs.shape[0]), int(obs.shape[1])
+    self._source_n_episodes = n_eps
     full_obs_dim, action_dim = int(obs.shape[2]), int(act.shape[2])
 
     # obs_dim: from meta when present, else assume state|goal halves.
@@ -242,6 +255,21 @@ class BehaviorDataset:
           f'episode lengths out of [2, {ep_len_obs}]: '
           f'min={int(lengths.min())} max={int(lengths.max())}')
 
+    if include_episode_ids is None:
+      selected_episode_ids = np.arange(n_eps, dtype=np.int64)
+    else:
+      selected_episode_ids = np.asarray(include_episode_ids, dtype=np.int64)
+      if selected_episode_ids.ndim != 1 or selected_episode_ids.size == 0:
+        raise DatasetContractError('include_episode_ids must be a nonempty vector')
+      if (np.unique(selected_episode_ids).size != selected_episode_ids.size
+          or (selected_episode_ids < 0).any()
+          or (selected_episode_ids >= n_eps).any()):
+        raise DatasetContractError(
+            'include_episode_ids must contain unique ids inside the source set')
+      selected_episode_ids = np.sort(selected_episode_ids)
+    selected_episode_ids.flags.writeable = False
+    self._selected_episode_ids = selected_episode_ids
+
     # ---- flatten to valid transition rows ---------------------------------- #
     # Row t of episode e is a real (s, a) pair iff 0 <= t <= lengths[e]-2; the
     # row at lengths[e]-1 holds the terminal observation and a zero dummy
@@ -250,6 +278,8 @@ class BehaviorDataset:
     t_idx = np.concatenate(
         [np.arange(int(n) - 1, dtype=np.int64) for n in lengths])
     assert ep_idx.shape == t_idx.shape
+    selected_rows = np.isin(ep_idx, selected_episode_ids)
+    ep_idx, t_idx = ep_idx[selected_rows], t_idx[selected_rows]
 
     state = obs[ep_idx, t_idx, :state_width]
     action = act[ep_idx, t_idx, :]
@@ -268,14 +298,14 @@ class BehaviorDataset:
     self._episode_of_row = ep_idx
     self._episode_of_row.flags.writeable = False
 
-    self._n_episodes = n_eps
+    self._n_episodes = int(selected_episode_ids.size)
     self._ep_len_obs = ep_len_obs
     self._obs_dim = obs_dim
     self._goal_dim = goal_dim
     self._full_obs_dim = full_obs_dim
     self._state_dim = int(state.shape[1])
     self._action_dim = action_dim
-    self._lengths = lengths
+    self._lengths = lengths[selected_episode_ids]
     self._content_sha256 = _sha256_arrays(state, action)
 
     # ---- finiteness -------------------------------------------------------- #
@@ -305,9 +335,13 @@ class BehaviorDataset:
   def _make_split(self):
     rng = np.random.default_rng(self._split_seed)
     if self._split_level == 'episode':
-      perm = rng.permutation(self._n_episodes)
-      n_val_eps = int(round(self._val_frac * self._n_episodes))
-      val_eps = np.zeros(self._n_episodes, dtype=bool)
+      if self._split_reference == 'source':
+        split_ids = np.arange(self._source_n_episodes, dtype=np.int64)
+      else:
+        split_ids = self._selected_episode_ids
+      perm = rng.permutation(split_ids)
+      n_val_eps = int(round(self._val_frac * split_ids.size))
+      val_eps = np.zeros(self._source_n_episodes, dtype=bool)
       val_eps[perm[:n_val_eps]] = True
       is_val = val_eps[self._episode_of_row]
     else:
@@ -516,6 +550,7 @@ class BehaviorDataset:
         'content_sha256': self._content_sha256,
         'env_name': self._meta.get('env_name'),
         'behavior_policy': self._meta.get('behavior_policy'),
+        'source_n_episodes': self._source_n_episodes,
         'n_episodes': self.n_episodes,
         'ep_len_obs': self._ep_len_obs,
         'n_transitions': self.n_transitions,
@@ -524,6 +559,7 @@ class BehaviorDataset:
         'val_frac': self._val_frac,
         'split_seed': self.split_seed,
         'split_level': self._split_level,
+        'split_reference': self._split_reference,
         'state_mode': self._state_mode,
         'obs_dim': self._obs_dim,
         'goal_dim': self._goal_dim,

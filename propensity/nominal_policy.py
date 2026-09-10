@@ -144,6 +144,18 @@ def sample_censored_mixture(mixture: MixtureParams, key, num_samples,
   return jnp.clip(loc + scale * noise, spec.action_low, spec.action_high)
 
 
+def censored_boundary_probabilities(mixture: MixtureParams,
+                                    spec: NominalPolicySpec):
+  """Analytic lower/upper clipping mass per action coordinate, shape [B, A]."""
+  weights = jax.nn.softmax(mixture.logits, axis=-1)[..., None]
+  lower = jax.scipy.special.ndtr(
+      (spec.action_low - mixture.loc) / mixture.scale)
+  upper = jax.scipy.special.ndtr(
+      (mixture.loc - spec.action_high) / mixture.scale)
+  return (jnp.sum(weights * lower, axis=1),
+          jnp.sum(weights * upper, axis=1))
+
+
 def _assemble_context(spec, state_or_observation, goal=None):
   x = jnp.asarray(state_or_observation, dtype=jnp.float32)
   if goal is None:
@@ -187,6 +199,9 @@ class NominalPolicy:
         lambda params, context, key, n: sample_censored_mixture(
             distribution(params, context), key, n, spec),
         static_argnums=(3,))
+    self._boundary_probabilities = jax.jit(
+        lambda params, context: censored_boundary_probabilities(
+            distribution(params, context), spec))
 
   def _flat_context(self, state_or_observation, goal=None):
     context = _assemble_context(self.spec, state_or_observation, goal)
@@ -221,6 +236,13 @@ class NominalPolicy:
       return jnp.reshape(samples[:, 0], leading + (self.spec.action_dim,))
     return jnp.reshape(samples,
                        leading + (int(num_samples), self.spec.action_dim))
+
+  def boundary_probabilities(self, state_or_observation, goal=None):
+    """Return analytic ``(P(a=low), P(a=high))`` with shape ``[..., A]``."""
+    context, leading = self._flat_context(state_or_observation, goal)
+    lower, upper = self._boundary_probabilities(self.params, context)
+    shape = leading + (self.spec.action_dim,)
+    return jnp.reshape(lower, shape), jnp.reshape(upper, shape)
 
 
 def sample_observational_actions(model, state_or_observation, key,
