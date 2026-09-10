@@ -77,6 +77,28 @@ def content_sha(path):
   return h.hexdigest()
 
 
+def dataset_environment(meta, source):
+  """Read the environment contract shared by the teacher and bad collectors."""
+  if not isinstance(meta, dict) or not isinstance(meta.get('env_name'), str):
+    raise SystemExit(f'{source}: missing env_name in dataset metadata')
+  env_name = meta['env_name']
+  if not env_name:
+    raise SystemExit(f'{source}: empty env_name in dataset metadata')
+  # The original 2-D bad-demonstrator collector names the same quantity
+  # gate_active_prob; the teacher, Z and F4 collectors use per_cell_swamp_prob.
+  probs = [meta[k] for k in ('per_cell_swamp_prob', 'gate_active_prob')
+           if k in meta]
+  try:
+    probs = [float(p) for p in probs]
+  except (TypeError, ValueError):
+    raise SystemExit(f'{source}: invalid swamp probability in dataset metadata')
+  if not probs or any(not np.isfinite(p) or not 0 <= p <= 1 for p in probs):
+    raise SystemExit(f'{source}: missing or invalid swamp probability metadata')
+  if any(not np.isclose(p, probs[0], rtol=0, atol=1e-8) for p in probs[1:]):
+    raise SystemExit(f'{source}: conflicting swamp probabilities {probs}')
+  return env_name, probs[0]
+
+
 def merge(main_path, bad_path, out_path, force=False):
   if os.path.exists(out_path) and not force:
     raise SystemExit(f'REFUSING to overwrite {out_path} (use --force).')
@@ -91,6 +113,14 @@ def merge(main_path, bad_path, out_path, force=False):
   missing = [k for k in EP_KEYS if k not in mk]
   if missing:
     raise SystemExit(f'missing episode-axis arrays: {missing}')
+
+  m_meta = json.loads(str(M['meta'])) if 'meta' in mk else {}
+  b_meta = json.loads(str(B['meta'])) if 'meta' in bk else {}
+  m_env, m_prob = dataset_environment(m_meta, main_path)
+  b_env, b_prob = dataset_environment(b_meta, bad_path)
+  if m_env != b_env or not np.isclose(m_prob, b_prob, rtol=0, atol=1e-8):
+    raise SystemExit('cannot merge different swamp environments/probabilities: '
+                     f'main {m_env} p={m_prob:g}; bad {b_env} p={b_prob:g}')
 
   n_main, n_bad = M['obs'].shape[0], B['obs'].shape[0]
   # Trailing dims must agree exactly or the concatenation would silently
@@ -114,8 +144,6 @@ def merge(main_path, bad_path, out_path, force=False):
 
   out = {k: np.concatenate([M[k], B[k]], axis=0) for k in EP_KEYS}
 
-  m_meta = json.loads(str(M['meta'])) if 'meta' in mk else {}
-  b_meta = json.loads(str(B['meta'])) if 'meta' in bk else {}
   died = np.asarray(out['entered_active_swamp']).astype(bool)
   mode = np.asarray(out['teacher_mode'])
   meta = dict(m_meta)

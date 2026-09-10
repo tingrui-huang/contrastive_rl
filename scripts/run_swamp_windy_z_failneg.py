@@ -55,6 +55,7 @@ sys.path.insert(0, _HERE)
 sys.path.insert(0, os.path.dirname(_HERE))
 
 from crl.config import Config                      # noqa: E402
+from scripts.merge_swamp_windy_baddemo import dataset_environment  # noqa: E402
 
 # Version registry. v0 is the accepted, already-published configuration and is
 # the DEFAULT so nothing about the existing result can change by accident; v1
@@ -232,11 +233,31 @@ def gate(arm, seed):
                      'scripts/merge_swamp_windy_baddemo.py' % DATASET)
   ds = content_sha(DATASET)
   with np.load(DATASET, allow_pickle=False) as d:
+    meta = json.loads(str(d['meta'])) if 'meta' in d else {}
     n_eps, L, W = d['obs'].shape
     n_dead = int(np.asarray(d['entered_active_swamp']).sum())
     ob = d['obs']
+  from crl import envs as envs_mod
+  env = envs_mod.make_env(ENV, Config(env_name=ENV), seed=seed)
+  dataset_env, active_prob = dataset_environment(meta, DATASET)
+  env_prob = float(env.active_prob)
+  if dataset_env != ENV or not np.isclose(active_prob, env_prob,
+                                         rtol=0, atol=1e-8):
+    raise SystemExit('dataset environment/probability mismatch: '
+                     f'{dataset_env} p={active_prob:g}; '
+                     f'current environment {ENV} p={env_prob:g}. '
+                     'Regenerate the dataset with the current environment.')
+  if 'merge' in meta:
+    bad_env, bad_prob = dataset_environment(
+        meta['merge'].get('bad_demo_meta', {}), DATASET + ' bad-demo component')
+    if bad_env != dataset_env or not np.isclose(bad_prob, active_prob,
+                                               rtol=0, atol=1e-8):
+      raise SystemExit('merged dataset contains a bad-demo component from a '
+                       'different environment or swamp probability')
   print('  dataset      : %s' % DATASET)
   print('  content sha  : %s' % ds)
+  print('  environment  : %s, per-cell swamp probability %g'
+        % (dataset_env, active_prob))
   print('  episodes     : %d x %d rows, obs width %d, %d transitions'
         % (n_eps, L, W, n_eps * (L - 1)))
   print('  failed eps   : %d (%.4f)' % (n_dead, n_dead / n_eps))
@@ -271,6 +292,10 @@ def gate(arm, seed):
     bs = content_sha(BANK)
     with np.load(BANK, allow_pickle=False) as b:
       g = np.asarray(b['goals'])
+      bank_meta = json.loads(str(b['meta'])) if 'meta' in b else {}
+    if bank_meta.get('source_content_sha256') != ds:
+      raise SystemExit('failure bank was not built from the selected dataset; '
+                       'rebuild it from the current dataset before training')
     print('  bank         : %s' % BANK)
     print('  bank content : %s' % bs)
     if NORM[0] == 'z_physical':
@@ -297,6 +322,7 @@ def gate(arm, seed):
   print('PROVENANCE GATE PASSED')
   return {'code_commit': commit, 'head': head, 'dirty': dirty, 'arm': arm,
           'alpha': effective_alpha(arm), 'seed': seed, 'dataset': DATASET,
+          'env_name': dataset_env, 'per_cell_swamp_prob': active_prob,
           'dataset_content_sha256': ds, 'n_episodes': int(n_eps),
           'n_transitions': int(n_eps * (L - 1)), 'n_failed_episodes': n_dead,
           'bank': BANK if arm == 'zfail' else None,

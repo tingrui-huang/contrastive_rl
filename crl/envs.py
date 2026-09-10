@@ -405,19 +405,23 @@ class TwoRouteSwampEnv:
     return obs, reward, False, {}
 
 
+# Shared activation default for the matched, windy, Z and F4 variants.
+SWAMP_ACTIVE_PROB = 0.30
+
+
 class TwoRouteSwampMatchedEnv(TwoRouteSwampEnv):
   """MiniGrid-matched variant of the swamp env (point_two_route_swamp_matched_v0).
 
   IDENTICAL geometry, dynamics, and freeze/resample timing to the strong
   TwoRouteSwampEnv -- the ONLY change is the per-cell swamp activation
-  probability p=0.10 (vs 0.20 in the strong stress-test setting), to line up
-  with the MiniGrid WindyCorridor confounder strength. The MiniGrid-matched
+  probability p=0.30 (raised from the original MiniGrid-matched 0.10;
+  the strong reference keeps its 0.20 default). The MiniGrid-matched
   TEACHER (5% episode-level force-safe, wait-until-clear) is a behavior policy
   that lives in the collector/qualifier, NOT in the env. The strong
   point_two_route_swamp_v0 env is left completely unchanged."""
 
   def __init__(self, action_noise=0.01, max_episode_steps=50, seed=0,
-               active_prob=0.10, slow_factor=0.02):
+               active_prob=SWAMP_ACTIVE_PROB, slow_factor=0.02):
     super().__init__(action_noise=action_noise,
                      max_episode_steps=max_episode_steps, seed=seed,
                      active_prob=active_prob, slow_factor=slow_factor)
@@ -426,6 +430,10 @@ class TwoRouteSwampMatchedEnv(TwoRouteSwampEnv):
 class TwoRouteSwampWindyEnv(TwoRouteSwampEnv):
   """Windy-LETHAL swamp (point_two_route_swamp_windy_v0) -- the wind+lava
   design: per-step confounder + terminal trap.
+
+  Each cell is independently active with probability 0.30 by default. A blind
+  shortcut with exactly three hazardous landings survives with probability
+  (1 - active_prob)**3 = 0.343; additional landings incur additional risk.
 
   Differences from TwoRouteSwampEnv (same geometry, obs, action, horizon):
     * bits resample at the END of EVERY step, inside or outside the corridor
@@ -442,7 +450,7 @@ class TwoRouteSwampWindyEnv(TwoRouteSwampEnv):
   """
 
   def __init__(self, action_noise=0.01, max_episode_steps=50, seed=0,
-               active_prob=0.10, slow_factor=0.02):
+               active_prob=SWAMP_ACTIVE_PROB, slow_factor=0.02):
     self._dead = False
     super().__init__(action_noise=action_noise,
                      max_episode_steps=max_episode_steps, seed=seed,
@@ -533,7 +541,7 @@ class TwoRouteSwampWindyZEnv(TwoRouteSwampWindyEnv):
   Z_GROUND = 0.0
 
   def __init__(self, action_noise=0.01, max_episode_steps=50, seed=0,
-               active_prob=0.10, slow_factor=0.02,
+               active_prob=SWAMP_ACTIVE_PROB, slow_factor=0.02,
                sink_settle_substeps=5, sink_speed=1.2, sink_dt=0.1,
                z_min=-0.5):
     # Assigned BEFORE super().__init__(): TwoRouteSwampEnv.__init__ ends with
@@ -633,7 +641,7 @@ class TwoRouteSwampWindyZV1Env(TwoRouteSwampWindyEnv):
   Z_GROUND = 0.0
 
   def __init__(self, action_noise=0.01, max_episode_steps=50, seed=0,
-               active_prob=0.10, slow_factor=0.02,
+               active_prob=SWAMP_ACTIVE_PROB, slow_factor=0.02,
                sink_speed=1.2, sink_dt=0.1, z_min=-0.5):
     # Assigned BEFORE super().__init__(): TwoRouteSwampEnv.__init__ ends with
     # reset(), which calls _get_obs(), which reads self._z.
@@ -752,7 +760,7 @@ class TwoRouteSwampWindyF4Env(TwoRouteSwampWindyEnv):
   N_FRAMES = 4
 
   def __init__(self, action_noise=0.01, max_episode_steps=50, seed=0,
-               active_prob=0.10, slow_factor=0.02, n_frames=N_FRAMES):
+               active_prob=SWAMP_ACTIVE_PROB, slow_factor=0.02, n_frames=N_FRAMES):
     # Assigned BEFORE super().__init__(): TwoRouteSwampEnv.__init__ ends with
     # reset(), which sets self.state/self.goal and then calls _get_obs().
     self.n_frames = int(n_frames)

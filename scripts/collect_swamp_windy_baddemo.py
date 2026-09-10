@@ -22,7 +22,7 @@ waits. Concretely, in make_windy_teacher the loop
 collapses to ``return a``.
 
 WIND IS LEFT NATURAL BY DEFAULT (--gate_active_prob unset). That is deliberate
-and is the point of the dataset: with p=0.10 per cell per step the SAME
+and is the point of the dataset: with p=0.30 per cell per step the SAME
 demonstrator sometimes dies in the corridor and sometimes walks straight
 through it, which yields matched pairs -- same state, same action, different U,
 different outcome. Those pairs are what a worst-case bound is identified from.
@@ -255,7 +255,7 @@ def main():
   p.add_argument('--teacher_noise', type=float, default=0.15)
   p.add_argument('--gate_active_prob', type=float, default=None,
                  help='override the env per-cell activation probability. '
-                      'Leave unset (0.10, natural wind) to get matched '
+                      'Leave unset (0.30, natural wind) to get matched '
                       'survive/die pairs; 1.0 = always lethal, every episode '
                       'dies in swamp cell 0 and the matched pairs are lost.')
   p.add_argument('--seed', type=int, default=0)
