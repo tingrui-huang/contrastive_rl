@@ -1,4 +1,8 @@
-# PointMaze nominal observational policy baseline
+# Historical PointMaze mixed-population policy baseline
+
+These runs are retained as historical mixed-population baselines. They are not
+the nominal expert policy for ETT. The corrected expert-positive models and
+their evaluation are documented in [EXPERT_ONLY_REPORT.md](EXPERT_ONLY_REPORT.md).
 
 ## Dataset interpretation
 

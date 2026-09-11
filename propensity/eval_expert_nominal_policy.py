@@ -301,6 +301,8 @@ def main(argv=None):
          args.representative_samples, args.bootstrap_replicates) <= 1:
     raise SystemExit('sample counts and bootstrap replicates must exceed one')
   models = _parse_models(args.model)
+  model_directories = {
+      item.partition('=')[0]: item.partition('=')[2] for item in args.model}
   selected_ids, selection = resolve_expert_positive_episodes(args.dataset)
   dataset = BehaviorDataset(
       args.dataset, val_frac=0.1, seed=0, state_mode='obs',
@@ -346,6 +348,7 @@ def main(argv=None):
   report = {
       'evaluation_scope': 'checkpoint-selection validation; no untouched test split',
       'dataset': dataset.report(), 'expert_population': selection,
+      'model_directories': model_directories,
       'fixed_protocol': {
           'seed': args.seed, 'validation_episode_count': int(len(validation_episodes)),
           'validation_transition_count': int(len(validation.state)),
@@ -353,6 +356,10 @@ def main(argv=None):
           'energy_contexts': args.energy_contexts,
           'energy_samples_per_context': args.energy_samples,
           'representative_samples': args.representative_samples,
+          'local_neighbors': args.local_neighbors,
+          'bootstrap_replicates': args.bootstrap_replicates,
+          'comparisons': args.compare,
+          'plot_labels': args.plot_labels,
           'same_rows_contexts_actions_gaussian_noise_and_uniforms_across_models': True,
       },
       'split_checks': split_checks, 'region_counts': region_counts,
