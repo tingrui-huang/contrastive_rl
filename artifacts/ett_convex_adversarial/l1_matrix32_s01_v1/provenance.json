@@ -1,0 +1,38 @@
+{
+  "base_commit": "f1f24b3f22a931f2fedb25af7e97e759e36e11df",
+  "input_sha256": {
+    "artifacts/f4_p30_server_30076/results/datasets/swamp_windy_f4_merged_s0.npz": "83b4e81d9fca2d66b648c9c34ccdb68196e1acf89e2ca6829e4cb198d27c322c",
+    "artifacts/nominal_policy/f4_p30_expert_only_mdn_k5_s0/best.pkl": "6376e60185aa616c2d09c5e0250d762cde2fb845c5042488e64910fb3b745f23",
+    "artifacts/f4_p30_server_30076/results/runs/f4_p30_sweep/p30_a0_a01_a03_s0_s1/alpha0_seed0/final.pkl": "ea8a71d3cb8d963259a54d47250b454462dae2ae62f03a55c370ca81a2c8ec54",
+    "artifacts/ett_distribution_matching/f4_p30_s01_guarded/s0_L0p25_lambda0/final.pkl": "9e9e1c56387d446b5788612e27e5b7f7743e120186bebc90a78fc6774476184e",
+    "artifacts/ett_rollout_return/residual6_s01/config.json": "fd83efeca7f5bc3c5561e7ed32b91758dcfc48c0a55f6fca15cd712ed6db1969",
+    "artifacts/ett_rollout_return/residual6_s01/REPORT.md": "02c3d35f7790f790a4fdcef5d5a2ede82b92ebae287b41e1b9e1a10f8a3cb20e",
+    "artifacts/ett_action_response/f4_return_s01_horizon50/REPORT.md": "ba2778c5ea6a8db84ff5b0a9d56c46b1df4c207fe4fddbed96a49e023804574a",
+    "artifacts/synthetic_shared_response/l025_1_4_s012/REPORT.md": "896036a05e77a406fc01824001ed82d4c9fc52c8ff37bceccf4856de902cc485",
+    "artifacts/synthetic_lipschitz_response/l1_s012/REPORT.md": "7243d4e1a842e237681a16ae90a7afb7e65dec3828ae2c9f0be1a5a3999a21dd",
+    "artifacts/synthetic_failure_bank/bank_m3_lambda01_s012/REPORT.md": "0ad0df0827756be6a1fd2bddc9a23e3d0d1c90a61aca98b1a5ef69e457c26a0d",
+    "artifacts/synthetic_diagonal_budget/lambda0004_s012/REPORT.md": "94b4e527c711a62093f7b98f2baf80a027c24d33e8eeab7730ae9b4ea05a18a2",
+    "artifacts/return_readout/f4_h20_g095_v1/REPORT.md": "0db0cadb453b5c1fec20afbd4f68a1d010561f98c255a9b496fd3e4656e3b524",
+    "artifacts/fixed_actor_continuation/f4_h20_g095_v1/SUMMARY.md": "25844fb9e728c6ada9f9b31c9995dd312ae471612b362a2ec52882e4596b3daa",
+    "ett/convex_action_transition.py": "75f414be0aeb7251075fbae29a01bb9441bb40e0314ab76b4e253f1378b0e2d2",
+    "ett/run_convex_adversarial.py": "4823674e776a5b635ba25837ee0608e27449d64a9532e6de45da813340c8ced0",
+    "ett/eval_convex_adversarial.py": "3fdf46fc7cbb454213082639857017321c573264d0e650957fba90b60f071d52",
+    "scripts/test_convex_action_transition.py": "9f1602bc30b75fe0c48ea4ff5f7a507253b6d5b2ba78da071d3a2693fb0c12db",
+    "ett/diagonal_transition.py": "53f11305c53186700ad4981a3be1b1fa58a2c77d1ebf29130b2f24cfa6058d94",
+    "ett/anchored_transition.py": "35c9711cc41841e0f21a7eabd31cb43766a1f2c25d874247a80d993d7083245f",
+    "ett/run_distribution_matching.py": "a51ed0c8ed3267c63498402056750c29d8c0fb0cbbff94a1fee51bc28795ae6f",
+    "ett/rollout_return.py": "1bcf669b449373b907e257088e507638e2e691b086ff10b89ccec00583cf05dc",
+    "propensity/nominal_policy.py": "4a7d6776f86eb4f8e86e62e8611f435e66bb9a16d4e2577e64635a01dfc193d8",
+    "notes/ett_adversarial_fixed_actor_spec.md": "1bf51abf0862391921705f89036d2e6b92252e4d39347946cc88bc9a612cb9d9"
+  },
+  "paths": {
+    "dataset": "artifacts/f4_p30_server_30076/results/datasets/swamp_windy_f4_merged_s0.npz",
+    "nominal": "artifacts/nominal_policy/f4_p30_expert_only_mdn_k5_s0/best.pkl",
+    "actor": "artifacts/f4_p30_server_30076/results/runs/f4_p30_sweep/p30_a0_a01_a03_s0_s1/alpha0_seed0/final.pkl",
+    "control": "artifacts/ett_distribution_matching/f4_p30_s01_guarded/s0_L0p25_lambda0/final.pkl"
+  },
+  "rambo_url": "https://arxiv.org/html/2204.12581v3#S5",
+  "forbidden_data": "simulator continuation arrays, readout weights, hidden labels, U and bank distances are not loaded",
+  "nominal": "existing noisy teacher-source behavior model, including failures; state_goal conditioning",
+  "diagonal": "entire old guarded-control diagonal sampling law frozen; pre-projection NLL is diagnostic only"
+}

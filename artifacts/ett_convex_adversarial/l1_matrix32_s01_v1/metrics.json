@@ -1,0 +1,474 @@
+{
+  "s0_control": {
+    "mean_return": 10.516716957092285,
+    "return_std": 3.663128137588501,
+    "return_quantiles": [
+      0.0,
+      11.72950553894043,
+      13.162935256958008,
+      13.162935256958008,
+      13.162935256958008
+    ],
+    "zero_return_fraction": 0.05078125,
+    "nonzero_return_fraction": 0.94921875,
+    "stationary_step_fraction": 0.0878515625,
+    "mean_motion": 0.36164963245391846,
+    "mean_displacement": [
+      0.1563803255558014,
+      0.00010709727212088183
+    ],
+    "projection_fraction": 0.0,
+    "base_projection_fraction": 0.0403515625,
+    "boundary_fraction": 0.0380078125,
+    "near_integer_boundary_fraction": 0.0004296875,
+    "last10_frozen_fraction": 0.04296875,
+    "stationary_nonreset_history_steps": 1650,
+    "renewed_motion_on_stationary_history_fraction": 0.07393939393939394,
+    "mean_motion_on_stationary_history": 0.0514565147459507,
+    "xy_trajectory_spread": 1.018256664276123,
+    "sampled_21point_segment_wall_fraction": 0.0002734375,
+    "endpoints_open": true,
+    "coordinate_cap": true,
+    "f4_exact": true,
+    "actions_bounded": true,
+    "interpretation": "model generated; sampled straight-segment audit is supplementary, not simulator reachability",
+    "evaluation_groups": [
+      {
+        "seed": 18010000,
+        "mean_return": 10.233255386352539
+      },
+      {
+        "seed": 18010001,
+        "mean_return": 10.551871299743652
+      },
+      {
+        "seed": 18010002,
+        "mean_return": 10.456499099731445
+      },
+      {
+        "seed": 18010003,
+        "mean_return": 10.82524299621582
+      }
+    ],
+    "diagonal": {
+      "train": {
+        "maximum_coupled_drift": 0.0,
+        "energy_mean": 0.012570145539939404,
+        "maximum_energy_score_increase": 0.0,
+        "energy_score_change_quantiles": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "predictive_mean_error_quantiles": [
+          0.0,
+          0.012627755757421255,
+          0.05287020634859796,
+          0.22305170908570277,
+          0.9914154410362244
+        ],
+        "passed": true
+      },
+      "validation": {
+        "maximum_coupled_drift": 0.0,
+        "energy_mean": 0.013614029623568058,
+        "maximum_energy_score_increase": 0.0,
+        "energy_score_change_quantiles": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "predictive_mean_error_quantiles": [
+          2.384185791015625e-07,
+          0.012497222051024437,
+          0.0499434625729917,
+          0.29884670346975284,
+          0.9982609748840332
+        ],
+        "passed": true
+      }
+    },
+    "action_audit": {
+      "maximum_positive_action_bound_excess": 0.0,
+      "maximum_sampled_ratio": 0.0,
+      "near_pair_ratios": {
+        "0.001": 0.0,
+        "1e-05": 0.0
+      },
+      "max_matrix_frobenius": 0.0,
+      "max_matrix_operator_norm": 0.0,
+      "all_pair_guarantee": "fixed-anchor independent convex-box projection, norm-bounded signed matrix; proof in SPEC.md",
+      "diagonal_sample_identity": true,
+      "box_valid": true,
+      "endpoints_open": true,
+      "f4_exact": true,
+      "coordinate_cap": true,
+      "projection_fraction": 0.0,
+      "action_invariant_fraction": 0.970703125,
+      "mean_grid_action_spread": 3.580865381991316e-07,
+      "common_response_energy_fraction": null,
+      "right_minus_left_mean_norm": 0.0,
+      "up_minus_down_mean_norm": 0.0,
+      "single_step_samples": 47104,
+      "numerical_audit_not_global_proof": true
+    }
+  },
+  "s0_adversarial": {
+    "mean_return": 10.149984359741211,
+    "return_std": 4.227303981781006,
+    "return_quantiles": [
+      0.0,
+      11.72950553894043,
+      13.162935256958008,
+      13.162935256958008,
+      13.162935256958008
+    ],
+    "zero_return_fraction": 0.125,
+    "nonzero_return_fraction": 0.875,
+    "stationary_step_fraction": 0.0,
+    "mean_motion": 0.3369046747684479,
+    "mean_displacement": [
+      0.15009286999702454,
+      0.0012251560110598803
+    ],
+    "projection_fraction": 0.1016796875,
+    "base_projection_fraction": 0.0414453125,
+    "boundary_fraction": 0.1016796875,
+    "near_integer_boundary_fraction": 0.0775,
+    "last10_frozen_fraction": 0.0,
+    "stationary_nonreset_history_steps": 0,
+    "renewed_motion_on_stationary_history_fraction": null,
+    "mean_motion_on_stationary_history": null,
+    "xy_trajectory_spread": 1.2541327476501465,
+    "sampled_21point_segment_wall_fraction": 0.0005078125,
+    "endpoints_open": true,
+    "coordinate_cap": true,
+    "f4_exact": true,
+    "actions_bounded": true,
+    "interpretation": "model generated; sampled straight-segment audit is supplementary, not simulator reachability",
+    "evaluation_groups": [
+      {
+        "seed": 18010000,
+        "mean_return": 9.55766487121582
+      },
+      {
+        "seed": 18010001,
+        "mean_return": 10.316091537475586
+      },
+      {
+        "seed": 18010002,
+        "mean_return": 10.472249984741211
+      },
+      {
+        "seed": 18010003,
+        "mean_return": 10.253929138183594
+      }
+    ],
+    "diagonal": {
+      "train": {
+        "maximum_coupled_drift": 0.0,
+        "energy_mean": 0.012570145539939404,
+        "maximum_energy_score_increase": 0.0,
+        "energy_score_change_quantiles": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "predictive_mean_error_quantiles": [
+          0.0,
+          0.012627755757421255,
+          0.05287020634859796,
+          0.22305170908570277,
+          0.9914154410362244
+        ],
+        "passed": true
+      },
+      "validation": {
+        "maximum_coupled_drift": 0.0,
+        "energy_mean": 0.013614029623568058,
+        "maximum_energy_score_increase": 0.0,
+        "energy_score_change_quantiles": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "predictive_mean_error_quantiles": [
+          2.384185791015625e-07,
+          0.012497222051024437,
+          0.0499434625729917,
+          0.29884670346975284,
+          0.9982609748840332
+        ],
+        "passed": true
+      }
+    },
+    "action_audit": {
+      "maximum_positive_action_bound_excess": 0.0,
+      "maximum_sampled_ratio": 0.20359419286251068,
+      "near_pair_ratios": {
+        "0.001": 0.13762424886226654,
+        "1e-05": 0.1589401513338089
+      },
+      "max_matrix_frobenius": 0.33111676573753357,
+      "max_matrix_operator_norm": 0.3307532072067261,
+      "all_pair_guarantee": "fixed-anchor independent convex-box projection, norm-bounded signed matrix; proof in SPEC.md",
+      "diagonal_sample_identity": true,
+      "box_valid": true,
+      "endpoints_open": true,
+      "f4_exact": true,
+      "coordinate_cap": true,
+      "projection_fraction": 0.01728515625,
+      "action_invariant_fraction": 0.0,
+      "mean_grid_action_spread": 0.13892602920532227,
+      "common_response_energy_fraction": 0.11421308321215629,
+      "right_minus_left_mean_norm": 0.244526669383049,
+      "up_minus_down_mean_norm": 0.23587387800216675,
+      "single_step_samples": 47104,
+      "numerical_audit_not_global_proof": true
+    }
+  },
+  "s1_control": {
+    "mean_return": 10.516716957092285,
+    "return_std": 3.663128137588501,
+    "return_quantiles": [
+      0.0,
+      11.72950553894043,
+      13.162935256958008,
+      13.162935256958008,
+      13.162935256958008
+    ],
+    "zero_return_fraction": 0.05078125,
+    "nonzero_return_fraction": 0.94921875,
+    "stationary_step_fraction": 0.0878515625,
+    "mean_motion": 0.36164963245391846,
+    "mean_displacement": [
+      0.1563803255558014,
+      0.00010709727212088183
+    ],
+    "projection_fraction": 0.0,
+    "base_projection_fraction": 0.0403515625,
+    "boundary_fraction": 0.0380078125,
+    "near_integer_boundary_fraction": 0.0004296875,
+    "last10_frozen_fraction": 0.04296875,
+    "stationary_nonreset_history_steps": 1650,
+    "renewed_motion_on_stationary_history_fraction": 0.07393939393939394,
+    "mean_motion_on_stationary_history": 0.0514565147459507,
+    "xy_trajectory_spread": 1.018256664276123,
+    "sampled_21point_segment_wall_fraction": 0.0002734375,
+    "endpoints_open": true,
+    "coordinate_cap": true,
+    "f4_exact": true,
+    "actions_bounded": true,
+    "interpretation": "model generated; sampled straight-segment audit is supplementary, not simulator reachability",
+    "evaluation_groups": [
+      {
+        "seed": 18010000,
+        "mean_return": 10.233255386352539
+      },
+      {
+        "seed": 18010001,
+        "mean_return": 10.551871299743652
+      },
+      {
+        "seed": 18010002,
+        "mean_return": 10.456499099731445
+      },
+      {
+        "seed": 18010003,
+        "mean_return": 10.82524299621582
+      }
+    ],
+    "diagonal": {
+      "train": {
+        "maximum_coupled_drift": 0.0,
+        "energy_mean": 0.012570145539939404,
+        "maximum_energy_score_increase": 0.0,
+        "energy_score_change_quantiles": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "predictive_mean_error_quantiles": [
+          0.0,
+          0.012627755757421255,
+          0.05287020634859796,
+          0.22305170908570277,
+          0.9914154410362244
+        ],
+        "passed": true
+      },
+      "validation": {
+        "maximum_coupled_drift": 0.0,
+        "energy_mean": 0.013614029623568058,
+        "maximum_energy_score_increase": 0.0,
+        "energy_score_change_quantiles": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "predictive_mean_error_quantiles": [
+          2.384185791015625e-07,
+          0.012497222051024437,
+          0.0499434625729917,
+          0.29884670346975284,
+          0.9982609748840332
+        ],
+        "passed": true
+      }
+    },
+    "action_audit": {
+      "maximum_positive_action_bound_excess": 0.0,
+      "maximum_sampled_ratio": 0.0,
+      "near_pair_ratios": {
+        "0.001": 0.0,
+        "1e-05": 0.0
+      },
+      "max_matrix_frobenius": 0.0,
+      "max_matrix_operator_norm": 0.0,
+      "all_pair_guarantee": "fixed-anchor independent convex-box projection, norm-bounded signed matrix; proof in SPEC.md",
+      "diagonal_sample_identity": true,
+      "box_valid": true,
+      "endpoints_open": true,
+      "f4_exact": true,
+      "coordinate_cap": true,
+      "projection_fraction": 0.0,
+      "action_invariant_fraction": 0.970703125,
+      "mean_grid_action_spread": 3.580865381991316e-07,
+      "common_response_energy_fraction": null,
+      "right_minus_left_mean_norm": 0.0,
+      "up_minus_down_mean_norm": 0.0,
+      "single_step_samples": 47104,
+      "numerical_audit_not_global_proof": true
+    }
+  },
+  "s1_adversarial": {
+    "mean_return": 10.069601058959961,
+    "return_std": 4.214535236358643,
+    "return_quantiles": [
+      0.0,
+      11.72950553894043,
+      13.162935256958008,
+      13.162935256958008,
+      13.162935256958008
+    ],
+    "zero_return_fraction": 0.09375,
+    "nonzero_return_fraction": 0.90625,
+    "stationary_step_fraction": 0.0,
+    "mean_motion": 0.3401312530040741,
+    "mean_displacement": [
+      0.15078482031822205,
+      0.0006689425790682435
+    ],
+    "projection_fraction": 0.0933203125,
+    "base_projection_fraction": 0.0419140625,
+    "boundary_fraction": 0.0933203125,
+    "near_integer_boundary_fraction": 0.0478125,
+    "last10_frozen_fraction": 0.0,
+    "stationary_nonreset_history_steps": 0,
+    "renewed_motion_on_stationary_history_fraction": null,
+    "mean_motion_on_stationary_history": null,
+    "xy_trajectory_spread": 1.389729619026184,
+    "sampled_21point_segment_wall_fraction": 0.0003515625,
+    "endpoints_open": true,
+    "coordinate_cap": true,
+    "f4_exact": true,
+    "actions_bounded": true,
+    "interpretation": "model generated; sampled straight-segment audit is supplementary, not simulator reachability",
+    "evaluation_groups": [
+      {
+        "seed": 18010000,
+        "mean_return": 10.002073287963867
+      },
+      {
+        "seed": 18010001,
+        "mean_return": 10.226221084594727
+      },
+      {
+        "seed": 18010002,
+        "mean_return": 10.004354476928711
+      },
+      {
+        "seed": 18010003,
+        "mean_return": 10.045757293701172
+      }
+    ],
+    "diagonal": {
+      "train": {
+        "maximum_coupled_drift": 0.0,
+        "energy_mean": 0.012570145539939404,
+        "maximum_energy_score_increase": 0.0,
+        "energy_score_change_quantiles": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "predictive_mean_error_quantiles": [
+          0.0,
+          0.012627755757421255,
+          0.05287020634859796,
+          0.22305170908570277,
+          0.9914154410362244
+        ],
+        "passed": true
+      },
+      "validation": {
+        "maximum_coupled_drift": 0.0,
+        "energy_mean": 0.013614029623568058,
+        "maximum_energy_score_increase": 0.0,
+        "energy_score_change_quantiles": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "predictive_mean_error_quantiles": [
+          2.384185791015625e-07,
+          0.012497222051024437,
+          0.0499434625729917,
+          0.29884670346975284,
+          0.9982609748840332
+        ],
+        "passed": true
+      }
+    },
+    "action_audit": {
+      "maximum_positive_action_bound_excess": 0.0,
+      "maximum_sampled_ratio": 0.28526797890663147,
+      "near_pair_ratios": {
+        "0.001": 0.23183687031269073,
+        "1e-05": 0.27425941824913025
+      },
+      "max_matrix_frobenius": 0.42159363627433777,
+      "max_matrix_operator_norm": 0.38365626335144043,
+      "all_pair_guarantee": "fixed-anchor independent convex-box projection, norm-bounded signed matrix; proof in SPEC.md",
+      "diagonal_sample_identity": true,
+      "box_valid": true,
+      "endpoints_open": true,
+      "f4_exact": true,
+      "coordinate_cap": true,
+      "projection_fraction": 0.06328125,
+      "action_invariant_fraction": 0.0,
+      "mean_grid_action_spread": 0.17957401275634766,
+      "common_response_energy_fraction": 0.0846237668087777,
+      "right_minus_left_mean_norm": 0.3232308626174927,
+      "up_minus_down_mean_norm": 0.2878849506378174,
+      "single_step_samples": 47104,
+      "numerical_audit_not_global_proof": true
+    }
+  }
+}

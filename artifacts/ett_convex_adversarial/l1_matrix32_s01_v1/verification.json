@@ -1,0 +1,48 @@
+{
+  "status": "passed",
+  "initial_emitted_diagonal_max_difference": 0.0,
+  "single_and_multiple_shape_checks": true,
+  "added_single_step_samples": 8196,
+  "saved_rewards_and_history_verified": true,
+  "paired_intervals_reproduced_exactly": true,
+  "frozen_inputs_unchanged": true,
+  "executed_and_auxiliary_actions_separate": true,
+  "action_variance_numerical_check": {
+    "s0_control": {
+      "exact_grid_action_invariant_fraction": 1.0,
+      "float64_mean_grid_action_spread": 0.0,
+      "float64_threshold_action_invariant_fraction": 1.0
+    },
+    "s0_adversarial": {
+      "exact_grid_action_invariant_fraction": 0.0,
+      "float64_mean_grid_action_spread": 0.13892601270932803,
+      "float64_threshold_action_invariant_fraction": 0.0
+    },
+    "s1_control": {
+      "exact_grid_action_invariant_fraction": 1.0,
+      "float64_mean_grid_action_spread": 0.0,
+      "float64_threshold_action_invariant_fraction": 1.0
+    },
+    "s1_adversarial": {
+      "exact_grid_action_invariant_fraction": 0.0,
+      "float64_mean_grid_action_spread": 0.17957400679207802,
+      "float64_threshold_action_invariant_fraction": 0.0
+    }
+  },
+  "return_reconstruction": {
+    "s0_control": {
+      "max_return_reconstruction_difference": 3.581306541988738e-06
+    },
+    "s0_adversarial": {
+      "max_return_reconstruction_difference": 3.581306541988738e-06
+    },
+    "s1_control": {
+      "max_return_reconstruction_difference": 3.581306541988738e-06
+    },
+    "s1_adversarial": {
+      "max_return_reconstruction_difference": 3.581306541988738e-06
+    }
+  },
+  "note": "Float64 spread/direct equality supersedes float32 variance near zero; no new trajectories or selection.",
+  "source_sha256": "1c679d8b3144f23a1e57401a0bedbf7f029c38fb7d1052f6eac3fb9b61f7c435"
+}

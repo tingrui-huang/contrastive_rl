@@ -1,0 +1,58 @@
+{
+  "seeds": [
+    0,
+    1
+  ],
+  "iterations": 16,
+  "directions": 8,
+  "paths": 32,
+  "sigma": 0.1,
+  "learning_rate": 1.0,
+  "max_step": 0.2,
+  "dimension": 32,
+  "bound": 1.0,
+  "horizon": 50,
+  "discount": 0.95,
+  "weights": [
+    0.0,
+    0.05416795170470908
+  ],
+  "signal_paths": 256,
+  "monitor_paths": 32,
+  "evaluation_seeds": [
+    18010000,
+    18010001,
+    18010002,
+    18010003
+  ],
+  "evaluation_paths": 128,
+  "fit_rows_per_partition": 2048,
+  "fit_samples": 32,
+  "action_contexts": 128,
+  "action_samples": 8,
+  "arbitrary_pairs": 16,
+  "seed_bases": {
+    "fit": 18000000,
+    "fit_noise": 18000001,
+    "signal": 18000002,
+    "search": 18100000,
+    "monitor": 18200000,
+    "directions": 18300000,
+    "action": 18400000,
+    "bootstrap": 18500000
+  },
+  "diagonal_max_sample_drift": 2e-06,
+  "diagonal_max_energy_increase": 1e-06,
+  "numerical_constraint_tolerance": 2e-06,
+  "primary_transition_budget": 1862400,
+  "additional_transition_budget": 1000000,
+  "total_transition_cap": 2862400,
+  "selection": "final fixed iterate; no evaluation/monitor selection",
+  "input_arrays": [
+    "obs",
+    "act",
+    "meta"
+  ],
+  "simulator_or_readout_targets_used": false,
+  "diagonal_term": "emitted XY energy fitting score; frozen constant; no shared-network diagonal learning"
+}
