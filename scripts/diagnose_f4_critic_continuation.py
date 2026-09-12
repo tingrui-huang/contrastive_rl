@@ -805,6 +805,8 @@ def _plot_checkpoint(path, run_metrics):
         for name in names]
   matched = [run_metrics[name]['matched']['dead_score_below_alive_fraction']
              for name in names]
+  tight = [run_metrics[name]['matched']['radius_sensitivity']['l2_le_0p5'][
+      'dead_score_below_alive_fraction'] for name in names]
   x = np.arange(len(names))
   figure, axes = plt.subplots(1, 2, figsize=(12, 4.8))
   axes[0].bar(x - 0.18, roc, 0.36, label='ROC-AUC')
@@ -813,11 +815,13 @@ def _plot_checkpoint(path, run_metrics):
   axes[0].set_xticks(x, names, rotation=25, ha='right')
   axes[0].set_title('Death ranking with -C (small budget)')
   axes[0].legend()
-  axes[1].bar(x, matched)
+  axes[1].bar(x - 0.18, matched, 0.36, label='all constrained pairs')
+  axes[1].bar(x + 0.18, tight, 0.36, label='full-F4 L2 <= 0.5')
   axes[1].axhline(0.5, ls='--', color='grey')
   axes[1].set_ylim(0, 1.02)
   axes[1].set_xticks(x, names, rotation=25, ha='right')
   axes[1].set_title('Matched dead score below alive')
+  axes[1].legend()
   figure.tight_layout()
   figure.savefig(path, dpi=160)
   plt.close(figure)
@@ -979,8 +983,10 @@ def _write_report(path, config, metrics):
            tight_interpretation), '',
       ('Across all six frozen checkpoints, small-budget death ROC-AUC ranges '
        'from `%.5f` to `%.5f`, AP from `%.5f` to `%.5f`, and matched '
-       'dead-below-alive frequency from `%.2f%%` to `%.2f%%`. The '
-       'alpha-specific seed means are stored in `metrics.json`. Failure '
+       'dead-below-alive frequency from `%.2f%%` to `%.2f%%`. On the tight '
+       'F4-distance-at-most-0.5 subset, every checkpoint is inverted: the '
+       'range is only `%.2f%%` to `%.2f%%`. The alpha-specific seed means '
+       'are stored in `metrics.json`. Failure '
        'negative training does not consistently improve this STATE-slot '
        'continuation ranking over alpha 0, so the observed signal cannot be '
        'attributed uniquely to the failure bank.') % (
@@ -991,7 +997,11 @@ def _write_report(path, config, metrics):
            100 * comparison_summary['ranges'][
                'matched_dead_below_alive_fraction']['minimum'],
            100 * comparison_summary['ranges'][
-               'matched_dead_below_alive_fraction']['maximum']), '',
+               'matched_dead_below_alive_fraction']['maximum'],
+           100 * comparison_summary['ranges'][
+               'tight_l2_le_0p5_dead_below_alive_fraction']['minimum'],
+           100 * comparison_summary['ranges'][
+               'tight_l2_le_0p5_dead_below_alive_fraction']['maximum']), '',
       ('Alive safe-route states have mean score `%.4f`. The report records '
        'their frequency below the established-death median and below the '
        'alive-moving lower decile, so a sparse but legitimate detour is not '
@@ -1173,6 +1183,9 @@ def main(argv=None):
         'mean_matched_dead_below_alive_fraction': float(np.mean([
             value['matched']['dead_score_below_alive_fraction']
             for value in selected])),
+        'mean_tight_l2_le_0p5_dead_below_alive_fraction': float(np.mean([
+            value['matched']['radius_sensitivity']['l2_le_0p5'][
+                'dead_score_below_alive_fraction'] for value in selected])),
     }
   comparison_values = list(comparison.values())
   comparison_summary = {
@@ -1198,6 +1211,16 @@ def main(argv=None):
                   for value in comparison_values)),
               'maximum': float(max(
                   value['matched']['dead_score_below_alive_fraction']
+                  for value in comparison_values)),
+          },
+          'tight_l2_le_0p5_dead_below_alive_fraction': {
+              'minimum': float(min(
+                  value['matched']['radius_sensitivity']['l2_le_0p5'][
+                      'dead_score_below_alive_fraction']
+                  for value in comparison_values)),
+              'maximum': float(max(
+                  value['matched']['radius_sensitivity']['l2_le_0p5'][
+                      'dead_score_below_alive_fraction']
                   for value in comparison_values)),
           },
       },
