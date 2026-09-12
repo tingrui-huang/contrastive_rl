@@ -881,6 +881,14 @@ def _write_report(path, config, metrics):
       if (tight_05['pairs'] >= 100
           and tight_05['dead_score_below_alive_fraction'] < 0.5) else
       'The adequately sized 0.5 subset is not systematically inverted.')
+  next_step_paragraph = (
+      'The score passed this diagnostic. Write down the complete two-loss ETT '
+      'objective and transition constraint before any off-diagonal training.'
+      if decision['provisional_objective_supported'] else
+      'Do not start off-diagonal training with this score. First resolve why '
+      'the goal-slot failure-negative construction does not produce reliable '
+      'state-slot ordering on the closest authentic histories, then test that '
+      'resolution on critic-heldout episodes.')
 
   def example_line(item):
     frames = ', '.join(
@@ -1065,10 +1073,9 @@ def _write_report(path, config, metrics):
            config['evaluation']['bootstrap_replicates'],
            config['evaluation']['seed']),
       '```', '',
-      'If this score is used next, the complete two-loss ETT objective and '
-      'transition constraint should be written down before any off-diagonal '
-      'training. This task introduced no Lipschitz penalty, bank-distance '
-      'objective, death classifier, or new bank.', '',
+      next_step_paragraph, '',
+      'This task introduced no Lipschitz penalty, bank-distance objective, '
+      'death classifier, or new bank.', '',
   ]
   with open(path, 'w', encoding='utf-8', newline='\n') as handle:
     handle.write('\n'.join(lines))
