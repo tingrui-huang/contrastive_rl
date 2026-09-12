@@ -1,0 +1,58 @@
+{
+  "L_values": [
+    1.0
+  ],
+  "seeds": [
+    0
+  ],
+  "steps": 5,
+  "hidden_width": 32,
+  "lambda_off": 1.0,
+  "learning_rate": 0.001,
+  "final_learning_rate": 0.0001,
+  "diagonal_batch": 128,
+  "off_batch": 256,
+  "train_diagonal": 8192,
+  "train_off": 32768,
+  "eval_diagonal": 4096,
+  "eval_off": 16384,
+  "eval_pairs": 32768,
+  "grid_size": 201,
+  "monitor_every": 1,
+  "min_separation": 0.001,
+  "ratio_tolerance": 0.01,
+  "evaluation_seed": 870001,
+  "monitor_seed": 860001,
+  "near_distance_min": 0.0001,
+  "near_distance_max": 0.1,
+  "slice_anchors": [
+    -0.83,
+    -0.27,
+    0.19,
+    0.74
+  ],
+  "side_offsets": [
+    0.0001,
+    0.001,
+    0.01,
+    0.04
+  ],
+  "threads": 1,
+  "intervals": 16,
+  "bound": 1.0,
+  "dtype": "float64",
+  "smoke": true,
+  "fp_absolute_excess_tolerance": 1e-12,
+  "source_sha256": "e445cae5fce511ad9e7974f8eaebf7b59f399681483a90e5b5356c4acce7a420",
+  "baseline_commit": "752b6457debb65aeacc19979a97db833bbdb6149",
+  "git_head": "752b6457debb65aeacc19979a97db833bbdb6149",
+  "python_version": "3.14.4",
+  "torch_version": "2.11.0+cpu",
+  "numpy_version": "2.4.4",
+  "architecture": "xp conditioner 1-32-32-17 ReLU; free intercept at signed coordinate -2; 16 clamped slopes; continuous integral basis",
+  "objective": "mean(diagonal squared error) + 1 * mean(off squared error); exactly two terms",
+  "guarantee": "real-arithmetic full action bound at every iterate; numerical float64 tolerance reported separately",
+  "initialization": "ordinary seeded random linear layers; no target-shaped parameters; not function-matched to different baseline architecture",
+  "selection": "fixed final step; original monitors/evaluation already inspected, never used to change settings",
+  "gradient_scope": "all parameters trainable; both terms update shared trunk, intercept and left interval coefficients; right coefficients have zero diagonal derivative; clamp saturation can zero local gradients"
+}

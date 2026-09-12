@@ -1,0 +1,59 @@
+{
+  "status": "passed",
+  "checks": {
+    "conditional_spline_L1_s0": {
+      "all_saved_arrays_exact": true,
+      "all_reported_metrics_exact": true,
+      "batch_schedule_matches_reference_algorithm": true,
+      "training_data_matches": true,
+      "all_parameter_tensors_changed": true,
+      "no_output_difference_violation_above_fp_tolerance": true,
+      "exact_float32_diagonal_coincidences": 1,
+      "strictly_nonoverlapping_diagonal_rmse": 0.0025916168732241156,
+      "slope_optimization_audit": {
+        "feasible_intervals": 1800,
+        "wrong_sign_saturated_count": 25,
+        "wrong_sign_saturated_fraction": 0.013888888888888888,
+        "endpoint_xp1_first_interval_raw": -1.5264217282381356,
+        "explanation": "Wrong-sign saturation has zero direct clamp derivative; shared conditioner updates can still alter it. This does not isolate the cause of optimization error."
+      }
+    },
+    "conditional_spline_L1_s1": {
+      "all_saved_arrays_exact": true,
+      "all_reported_metrics_exact": true,
+      "batch_schedule_matches_reference_algorithm": true,
+      "training_data_matches": true,
+      "all_parameter_tensors_changed": true,
+      "no_output_difference_violation_above_fp_tolerance": true,
+      "exact_float32_diagonal_coincidences": 0,
+      "strictly_nonoverlapping_diagonal_rmse": 0.0008304840926853086,
+      "slope_optimization_audit": {
+        "feasible_intervals": 1800,
+        "wrong_sign_saturated_count": 0,
+        "wrong_sign_saturated_fraction": 0.0,
+        "endpoint_xp1_first_interval_raw": 0.3896127026012518,
+        "explanation": "Wrong-sign saturation has zero direct clamp derivative; shared conditioner updates can still alter it. This does not isolate the cause of optimization error."
+      }
+    },
+    "conditional_spline_L1_s2": {
+      "all_saved_arrays_exact": true,
+      "all_reported_metrics_exact": true,
+      "batch_schedule_matches_reference_algorithm": true,
+      "training_data_matches": true,
+      "all_parameter_tensors_changed": true,
+      "no_output_difference_violation_above_fp_tolerance": true,
+      "exact_float32_diagonal_coincidences": 0,
+      "strictly_nonoverlapping_diagonal_rmse": 0.002145272585963939,
+      "slope_optimization_audit": {
+        "feasible_intervals": 1800,
+        "wrong_sign_saturated_count": 0,
+        "wrong_sign_saturated_fraction": 0.0,
+        "endpoint_xp1_first_interval_raw": -0.22902194178400997,
+        "explanation": "Wrong-sign saturation has zero direct clamp derivative; shared conditioner updates can still alter it. This does not isolate the cause of optimization error."
+      }
+    }
+  },
+  "original_artifacts_unchanged": true,
+  "source_sha256": "6d526ada85097c5d5f6ab1532cd21f5c233d38e16700fa44a1ba68ad4b4dd57d",
+  "note": "Continuum guarantee follows from the construction; numerical tests audit its implementation."
+}

@@ -1,0 +1,18 @@
+{
+  "status": "passed",
+  "checks": {
+    "conditional_spline_L1_s0": {
+      "all_saved_arrays_exact": true,
+      "all_reported_metrics_exact": true,
+      "batch_schedule_matches_reference_algorithm": true,
+      "training_data_matches": true,
+      "all_parameter_tensors_changed": true,
+      "no_output_difference_violation_above_fp_tolerance": true,
+      "exact_float32_diagonal_coincidences": 1,
+      "strictly_nonoverlapping_diagonal_rmse": 0.10013316245723002
+    }
+  },
+  "original_artifacts_unchanged": true,
+  "source_sha256": "a64f52d3672f1060692db87efc709fe19b094ac08172c45d87e03b79875ef799",
+  "note": "Continuum guarantee follows from the construction; numerical tests audit its implementation."
+}
