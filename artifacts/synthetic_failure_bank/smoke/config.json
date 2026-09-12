@@ -1,0 +1,66 @@
+{
+  "bank": [
+    -3.0
+  ],
+  "lambda_off": 0.1,
+  "seeds": [
+    0
+  ],
+  "arms": [
+    "diagonal_only",
+    "bank_joint"
+  ],
+  "steps": 5,
+  "learning_rate": 0.001,
+  "final_learning_rate": 0.0001,
+  "diagonal_batch": 128,
+  "off_batch": 256,
+  "train_diagonal": 8192,
+  "train_off": 32768,
+  "eval_diagonal": 4096,
+  "eval_off": 16384,
+  "train_seed_base": 920000,
+  "evaluation_seed": 921000,
+  "monitor_seed": 922000,
+  "batch_seed_base": 840000,
+  "monitor_every": 1,
+  "grid_size": 201,
+  "eval_pairs": 32768,
+  "slice_anchors": [
+    -0.83,
+    -0.27,
+    0.19,
+    0.74
+  ],
+  "side_offsets": [
+    0.0001,
+    0.001,
+    0.01,
+    0.04
+  ],
+  "min_separation": 0.001,
+  "ratio_tolerance": 0.01,
+  "fp_absolute_excess_tolerance": 1e-12,
+  "quadrature_nodes": [
+    128,
+    256
+  ],
+  "threads": 1,
+  "smoke": true,
+  "dtype": "float64",
+  "device": "cpu",
+  "source_sha256": "f150f9e9ba79945af745c69db3bb90d377022b1d35680143752ac27880a6baa7",
+  "architecture_source_sha256": "e445cae5fce511ad9e7974f8eaebf7b59f399681483a90e5b5356c4acce7a420",
+  "python_version": "3.14.4",
+  "numpy_version": "2.4.4",
+  "torch_version": "2.11.0+cpu",
+  "git_head": "be49fd0d719c619ad0fdcf264fd0e5eb56964be8",
+  "initialization": "existing ConditionalSpline random initialization, exactly matched within each seed; no supervised checkpoint",
+  "sampling": "uniform xp contexts shared equally by both empirical marginals; four independent uniform x draws per context; no boundary rejection or clipping",
+  "objective": "mean(G(diagonal)^2)+0.1*mean(min_f(G(off)-f)^2); no correct off next-state labels",
+  "evaluation_policy": "fixed final step; no selection/tuning; independent reference used only for evaluation",
+  "historical_comparison": "context only; sampling differs from the former balanced near/far distribution",
+  "output_policy": "final network output only; no pointwise candidate selector or recentering wrapper",
+  "reference_derivation_sha256": "c5fa26b854d51d811bee7097720bba894ea75ce5e17c3a5e469b544ed915392b",
+  "reference_source_sha256": "112df46beee5b6707927c3c0a348ea07a4bf65858c2d813ba4eda8fc6200d60b"
+}
