@@ -1,0 +1,52 @@
+{
+  "objective": "L_diag + lambda * mean(sum_t gamma**t r_g(s_next)); exactly two terms",
+  "scope": "restricted residual-head search; diagonal loss is constant, NOT joint two-loss training",
+  "preflight_config_sha256": "856e1330147f58f14dec702472855485a599fd1d95f1d7f135ab1a1889a18a5c",
+  "parameter_dimension": 6,
+  "parameter_definition": {
+    "final_layer_bias_coordinates": 2,
+    "final_layer_weight_rows": [
+      0,
+      32
+    ]
+  },
+  "all_other_residual_and_diagonal_parameters_frozen": true,
+  "noise": "independent N(0,I_6) directions; paired plus/minus; identical full-rollout keys within each pair and between lambda arms",
+  "perturbation_sigma": 0.2,
+  "descent_learning_rate": 0.1,
+  "maximum_parameter_update_l2": 0.2,
+  "update_clipping_is_not_a_loss": true,
+  "lambda_values": [
+    0.0,
+    1.0
+  ],
+  "optimizer_seeds": [
+    0,
+    1
+  ],
+  "iterations": 12,
+  "directions_per_iteration": 4,
+  "paths_per_function_evaluation": 16,
+  "primary_initial_state": [
+    0.5,
+    3.5,
+    0.5,
+    3.5,
+    0.5,
+    3.5,
+    0.5,
+    3.5
+  ],
+  "horizon": 50,
+  "discount": 0.95,
+  "selection": "final fixed-budget checkpoint; no test-based selection",
+  "parameter_query_rollouts_per_arm": 1536,
+  "center_monitor_rollouts_per_arm": 208,
+  "primary_evaluation_rollouts_per_arm": 512,
+  "diagonal_train_nll_constant": -5.696145534515381,
+  "diagonal_validation_nll_constant": -5.799256324768066,
+  "diagonal_measure": "unprojected mixed zero atom / raw maze-unit XY area, nats per 2D transition",
+  "estimator": "antithetic ES estimates the Gaussian-smoothed full-trajectory expectation, including hard reward, mixture decisions and geometry branches; no pathwise approximation",
+  "no_hidden_reward_or_hindsight_goal": true,
+  "source_sha256": "a317f66c5cf64f8840a44e0bfea401accbeabbf48f218509558f113a071844c4"
+}

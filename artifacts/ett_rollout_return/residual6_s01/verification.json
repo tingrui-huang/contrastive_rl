@@ -1,0 +1,34 @@
+{
+  "status": "passed",
+  "command": "python -m scripts.check_rollout_return_artifacts --run-dir artifacts/ett_rollout_return/residual6_s01",
+  "source_sha256": "a9b4e13c7d9bad5782757c1ac584510ff8ceca230711cab8bdfa4a1c0827b9bf",
+  "all_previous_inputs_unchanged": true,
+  "experiment_source_hashes_match": true,
+  "source_ast_and_english_checks_passed": true,
+  "finite_json_files_checked": 10,
+  "saved_trajectory_files_checked": 8,
+  "maximum_return_recompute_roundoff": 3.8767262893202314e-06,
+  "saved_checkpoint_checks": {
+    "s0_lambda0": {
+      "loaded_checkpoint_replay_exact": true,
+      "replayed_paths": 128,
+      "checkpoint_git_ignored": true
+    },
+    "s0_lambda1": {
+      "loaded_checkpoint_replay_exact": true,
+      "replayed_paths": 128,
+      "checkpoint_git_ignored": true
+    },
+    "s1_lambda0": {
+      "loaded_checkpoint_replay_exact": true,
+      "replayed_paths": 128,
+      "checkpoint_git_ignored": true
+    },
+    "s1_lambda1": {
+      "loaded_checkpoint_replay_exact": true,
+      "replayed_paths": 128,
+      "checkpoint_git_ignored": true
+    }
+  },
+  "scope": "artifact verification and exact replay, no additional optimization or independent evaluation"
+}

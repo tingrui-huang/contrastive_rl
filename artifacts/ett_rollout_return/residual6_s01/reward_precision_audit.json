@@ -1,0 +1,93 @@
+{
+  "scope": "post-run numerical audit only; no reward change or retraining",
+  "model_reward_convention": "strict radius-2 hard indicator on the emitted float32 visible position, evaluated with float32 arithmetic",
+  "universal_bit_exact_environment_reconstruction_from_float32_observations": false,
+  "reason": "float64 internal positions on opposite sides of the strict boundary can map to the same float32 observation; the hidden death gate is separately disjoint from this fixed reward region",
+  "boundary_probes": [
+    {
+      "initialized_x_float64": 6.5,
+      "visible_xy_float32": [
+        6.5,
+        3.5
+      ],
+      "environment_reward": 0.0,
+      "visible_reward": 0.0
+    },
+    {
+      "initialized_x_float64": 6.5000001,
+      "visible_xy_float32": [
+        6.5,
+        3.5
+      ],
+      "environment_reward": 1.0,
+      "visible_reward": 0.0
+    },
+    {
+      "initialized_x_float64": 6.500001,
+      "visible_xy_float32": [
+        6.500000953674316,
+        3.5
+      ],
+      "environment_reward": 1.0,
+      "visible_reward": 1.0
+    }
+  ],
+  "saved_trajectory_checks": {
+    "s0_lambda0_continuation_trajectories.npz": {
+      "active_transitions": 5680,
+      "recorded_vs_float32_reward_mismatches": 0,
+      "float32_vs_float64_predicate_mismatches": 0,
+      "distance_within_1e_minus_6_of_boundary": 0,
+      "maximum_path_return_difference_float64_predicate": 0.0
+    },
+    "s0_lambda0_trajectories.npz": {
+      "active_transitions": 25600,
+      "recorded_vs_float32_reward_mismatches": 0,
+      "float32_vs_float64_predicate_mismatches": 0,
+      "distance_within_1e_minus_6_of_boundary": 0,
+      "maximum_path_return_difference_float64_predicate": 0.0
+    },
+    "s0_lambda1_continuation_trajectories.npz": {
+      "active_transitions": 5680,
+      "recorded_vs_float32_reward_mismatches": 0,
+      "float32_vs_float64_predicate_mismatches": 0,
+      "distance_within_1e_minus_6_of_boundary": 0,
+      "maximum_path_return_difference_float64_predicate": 0.0
+    },
+    "s0_lambda1_trajectories.npz": {
+      "active_transitions": 25600,
+      "recorded_vs_float32_reward_mismatches": 0,
+      "float32_vs_float64_predicate_mismatches": 0,
+      "distance_within_1e_minus_6_of_boundary": 0,
+      "maximum_path_return_difference_float64_predicate": 0.0
+    },
+    "s1_lambda0_continuation_trajectories.npz": {
+      "active_transitions": 5680,
+      "recorded_vs_float32_reward_mismatches": 0,
+      "float32_vs_float64_predicate_mismatches": 0,
+      "distance_within_1e_minus_6_of_boundary": 0,
+      "maximum_path_return_difference_float64_predicate": 0.0
+    },
+    "s1_lambda0_trajectories.npz": {
+      "active_transitions": 25600,
+      "recorded_vs_float32_reward_mismatches": 0,
+      "float32_vs_float64_predicate_mismatches": 0,
+      "distance_within_1e_minus_6_of_boundary": 0,
+      "maximum_path_return_difference_float64_predicate": 0.0
+    },
+    "s1_lambda1_continuation_trajectories.npz": {
+      "active_transitions": 5680,
+      "recorded_vs_float32_reward_mismatches": 0,
+      "float32_vs_float64_predicate_mismatches": 0,
+      "distance_within_1e_minus_6_of_boundary": 0,
+      "maximum_path_return_difference_float64_predicate": 0.0
+    },
+    "s1_lambda1_trajectories.npz": {
+      "active_transitions": 25600,
+      "recorded_vs_float32_reward_mismatches": 0,
+      "float32_vs_float64_predicate_mismatches": 0,
+      "distance_within_1e_minus_6_of_boundary": 0,
+      "maximum_path_return_difference_float64_predicate": 0.0
+    }
+  }
+}
