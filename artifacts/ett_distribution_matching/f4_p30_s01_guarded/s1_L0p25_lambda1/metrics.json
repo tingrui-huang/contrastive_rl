@@ -1,0 +1,751 @@
+{
+  "seed": 1,
+  "L": 0.25,
+  "lambda_pess": 1.0,
+  "steps": 500,
+  "parameter_change_norm": {
+    "diagonal": 0.04920840263366699,
+    "residual": 8.655725479125977
+  },
+  "best_diagonal_step": 300,
+  "best_diagonal_nll": -5.809090614318848,
+  "gradient_final": {
+    "diagonal_loss": -5.609007835388184,
+    "mmd2": 0.7333494424819946,
+    "diagonal_gradient_norm": 157.3779296875,
+    "mmd_gradient_norm": 0.8012075424194336,
+    "mmd_base_gradient_norm": 0.800703763961792,
+    "mmd_residual_gradient_norm": 0.028409119695425034,
+    "finite": true,
+    "training_row_seed": 300
+  },
+  "diagonal": {
+    "nll": -5.804531097412109,
+    "mean_position_error": 0.02365085855126381,
+    "energy_score": 0.013715890236198902,
+    "samples_per_context": 64,
+    "atom_calibration": {
+      "mean_predicted": 0.07789751032679487,
+      "observed_frequency": 0.07791231732776618,
+      "brier": 0.006739270570715159,
+      "ece_10_equal_width": 0.004442824762216178,
+      "bins": [
+        {
+          "low": 0.0,
+          "high": 0.1,
+          "count": 21666,
+          "predicted": 0.0024453307373819254,
+          "observed": 0.0013385027231607126
+        },
+        {
+          "low": 0.1,
+          "high": 0.2,
+          "count": 235,
+          "predicted": 0.13793118291712822,
+          "observed": 0.09361702127659574
+        },
+        {
+          "low": 0.2,
+          "high": 0.30000000000000004,
+          "count": 85,
+          "predicted": 0.247132690689143,
+          "observed": 0.1411764705882353
+        },
+        {
+          "low": 0.30000000000000004,
+          "high": 0.4,
+          "count": 52,
+          "predicted": 0.34144071546884686,
+          "observed": 0.38461538461538464
+        },
+        {
+          "low": 0.4,
+          "high": 0.5,
+          "count": 63,
+          "predicted": 0.4544956050221882,
+          "observed": 0.49206349206349204
+        },
+        {
+          "low": 0.5,
+          "high": 0.6000000000000001,
+          "count": 50,
+          "predicted": 0.5462630760669708,
+          "observed": 0.46
+        },
+        {
+          "low": 0.6000000000000001,
+          "high": 0.7000000000000001,
+          "count": 32,
+          "predicted": 0.6522945538163185,
+          "observed": 0.625
+        },
+        {
+          "low": 0.7000000000000001,
+          "high": 0.8,
+          "count": 47,
+          "predicted": 0.7540061854301615,
+          "observed": 0.6595744680851063
+        },
+        {
+          "low": 0.8,
+          "high": 0.9,
+          "count": 216,
+          "predicted": 0.8654437826739417,
+          "observed": 0.9120370370370371
+        },
+        {
+          "low": 0.9,
+          "high": 1.0,
+          "count": 1504,
+          "predicted": 0.9589733126711972,
+          "observed": 0.9847074468085106
+        }
+      ]
+    },
+    "sample_stationary_fraction": 0.07957659185803757,
+    "mean_xy_std": [
+      0.033019497990608215,
+      0.014569233171641827
+    ],
+    "geometry_violation_count": 0,
+    "shift_max_error": 0.0,
+    "raw_displacement_capped_fraction": 0.026185412317327766,
+    "blocked_endpoint_fraction": 0.0017732254697286013,
+    "measure": "unprojected mixed atom/maze-unit XY area; nats per 2D transition"
+  },
+  "marginal": {
+    "8": {
+      "K": 8,
+      "contexts": 1024,
+      "mmd2": 0.7331355810165405,
+      "mean_motion": 0.38792097568511963,
+      "near_zero_motion_fraction": 0.031005859375,
+      "exact_zero_motion_fraction": 0.009521484375,
+      "fully_equal_f4_fraction": 0.0069580078125,
+      "moving_history_mean_motion": 0.37817540764808655,
+      "moving_history_near_zero_fraction": 0.021147161066048668,
+      "fully_frozen_input_contexts": 112,
+      "fully_frozen_input_mean_motion": 0.4392949938774109,
+      "fully_frozen_input_exact_zero_fraction": 0.06361607142857142,
+      "mean_xy_std": [
+        0.1774149388074875,
+        0.18576085567474365
+      ],
+      "low_diversity_fraction": 0.0,
+      "shift_max_error": 0.0,
+      "geometry_violation_count": 0,
+      "straight_segment_blocked_fraction": 0.0001220703125,
+      "final_bound_violation_count": 0,
+      "max_bound_excess": 0.0,
+      "mean_anchor_change": 0.09454295039176941,
+      "bound_utilization_mean": 0.9482287168502808,
+      "bound_fallback_fraction": 0.009765625,
+      "base_geometry_correction_fraction": 0.0274658203125,
+      "candidate_geometry_correction_fraction": 0.022216796875,
+      "candidate_blocked_fraction": 0.019287109375,
+      "history_share_mean_cross_squared_distance": 0.7032492160797119,
+      "history_share_median_pair": 0.698617160320282,
+      "mean_nearest_reference_history_distance2": 5.310318470001221,
+      "cross_kernel_saturation_fraction_by_bandwidth": {
+        "0.608408510684967": 0.8427713418723176,
+        "1.216817021369934": 0.07749893122988197,
+        "2.433634042739868": 0.007075886869635193,
+        "4.867268085479736": 0.0
+      },
+      "mean_editable_xy_mmd_gradient_norm": 0.38790351152420044,
+      "editable_xy_gradient_below_1e8_fraction": 0.0,
+      "all_finite": true,
+      "paired_episode_mmd_change_from_initial": {
+        "definition": "left minus right; complete episodes are resampled",
+        "left_minus_right": -0.057336799800395966,
+        "ci95": [
+          -0.060810639429837464,
+          -0.054312811605632304
+        ],
+        "episode_count": 427,
+        "replicates": 500
+      }
+    },
+    "16": {
+      "K": 16,
+      "contexts": 1024,
+      "mmd2": 0.7188587188720703,
+      "mean_motion": 0.38881635665893555,
+      "near_zero_motion_fraction": 0.031494140625,
+      "exact_zero_motion_fraction": 0.00958251953125,
+      "fully_equal_f4_fraction": 0.00665283203125,
+      "moving_history_mean_motion": 0.3773401379585266,
+      "moving_history_near_zero_fraction": 0.02208864426419467,
+      "fully_frozen_input_contexts": 112,
+      "fully_frozen_input_mean_motion": 0.44580575823783875,
+      "fully_frozen_input_exact_zero_fraction": 0.060825892857142856,
+      "mean_xy_std": [
+        0.18981637060642242,
+        0.19436295330524445
+      ],
+      "low_diversity_fraction": 0.0,
+      "shift_max_error": 0.0,
+      "geometry_violation_count": 0,
+      "straight_segment_blocked_fraction": 0.000244140625,
+      "final_bound_violation_count": 0,
+      "max_bound_excess": 0.0,
+      "mean_anchor_change": 0.09402944147586823,
+      "bound_utilization_mean": 0.9465329051017761,
+      "bound_fallback_fraction": 0.01092529296875,
+      "base_geometry_correction_fraction": 0.02545166015625,
+      "candidate_geometry_correction_fraction": 0.023681640625,
+      "candidate_blocked_fraction": 0.0205078125,
+      "history_share_mean_cross_squared_distance": 0.7036552429199219,
+      "history_share_median_pair": 0.6982190608978271,
+      "mean_nearest_reference_history_distance2": 5.310318470001221,
+      "cross_kernel_saturation_fraction_by_bandwidth": {
+        "0.608408510684967": 0.8428237325643777,
+        "1.216817021369934": 0.07724378855954936,
+        "2.433634042739868": 0.007004373574973176,
+        "4.867268085479736": 0.0
+      },
+      "mean_editable_xy_mmd_gradient_norm": 0.27102577686309814,
+      "editable_xy_gradient_below_1e8_fraction": 0.0,
+      "all_finite": true,
+      "paired_episode_mmd_change_from_initial": {
+        "definition": "left minus right; complete episodes are resampled",
+        "left_minus_right": -0.06103656813502312,
+        "ci95": [
+          -0.06460305359214544,
+          -0.057845293264836076
+        ],
+        "episode_count": 427,
+        "replicates": 500
+      }
+    }
+  },
+  "examples": [
+    {
+      "episode_id": 2811,
+      "timestep": 1,
+      "state": [
+        1.411389708518982,
+        3.331390619277954,
+        0.5,
+        3.5,
+        0.5,
+        3.5,
+        0.5,
+        3.5
+      ],
+      "pair": "identical",
+      "x": [
+        1.0,
+        -0.19861546158790588
+      ],
+      "x_prime": [
+        1.0,
+        -0.19861546158790588
+      ],
+      "action_distance": 0.0,
+      "mean_xy": [
+        2.405026435852051,
+        3.137619972229004
+      ],
+      "mean_anchor_xy": [
+        2.405026435852051,
+        3.137619972229004
+      ],
+      "maximum_change": 0.0,
+      "radius": 0.0,
+      "bound_fallback_fraction": 0.0
+    },
+    {
+      "episode_id": 2811,
+      "timestep": 1,
+      "state": [
+        1.411389708518982,
+        3.331390619277954,
+        0.5,
+        3.5,
+        0.5,
+        3.5,
+        0.5,
+        3.5
+      ],
+      "pair": "nearby",
+      "x": [
+        1.0,
+        -0.2086154615879059
+      ],
+      "x_prime": [
+        1.0,
+        -0.19861546158790588
+      ],
+      "action_distance": 0.010000000000000009,
+      "mean_xy": [
+        2.4032604694366455,
+        3.135854482650757
+      ],
+      "mean_anchor_xy": [
+        2.405026435852051,
+        3.137619972229004
+      ],
+      "maximum_change": 0.00249610492028296,
+      "radius": 0.0025000013411045074,
+      "bound_fallback_fraction": 0.0
+    },
+    {
+      "episode_id": 2811,
+      "timestep": 1,
+      "state": [
+        1.411389708518982,
+        3.331390619277954,
+        0.5,
+        3.5,
+        0.5,
+        3.5,
+        0.5,
+        3.5
+      ],
+      "pair": "far",
+      "x": [
+        -1.0,
+        1.0
+      ],
+      "x_prime": [
+        1.0,
+        -0.19861546158790588
+      ],
+      "action_distance": 2.3316687210574294,
+      "mean_xy": [
+        1.9928441047668457,
+        2.725438356399536
+      ],
+      "mean_anchor_xy": [
+        2.405026435852051,
+        3.137619972229004
+      ],
+      "maximum_change": 0.5829127430915833,
+      "radius": 0.5829171538352966,
+      "bound_fallback_fraction": 0.0
+    },
+    {
+      "episode_id": 2987,
+      "timestep": 5,
+      "state": [
+        2.9670684337615967,
+        3.6944901943206787,
+        2.9539906978607178,
+        3.692681312561035,
+        2.953728199005127,
+        3.6921603679656982,
+        2.452439785003662,
+        3.4770901203155518
+      ],
+      "pair": "identical",
+      "x": [
+        0.5181835293769836,
+        -0.38822174072265625
+      ],
+      "x_prime": [
+        0.5181835293769836,
+        -0.38822174072265625
+      ],
+      "action_distance": 0.0,
+      "mean_xy": [
+        3.3955981731414795,
+        3.3710620403289795
+      ],
+      "mean_anchor_xy": [
+        3.3955981731414795,
+        3.3710620403289795
+      ],
+      "maximum_change": 0.0,
+      "radius": 0.0,
+      "bound_fallback_fraction": 0.0
+    },
+    {
+      "episode_id": 2987,
+      "timestep": 5,
+      "state": [
+        2.9670684337615967,
+        3.6944901943206787,
+        2.9539906978607178,
+        3.692681312561035,
+        2.953728199005127,
+        3.6921603679656982,
+        2.452439785003662,
+        3.4770901203155518
+      ],
+      "pair": "nearby",
+      "x": [
+        0.5281835293769837,
+        -0.39822174072265626
+      ],
+      "x_prime": [
+        0.5181835293769836,
+        -0.38822174072265625
+      ],
+      "action_distance": 0.014142135623730963,
+      "mean_xy": [
+        3.3931007385253906,
+        3.3685648441314697
+      ],
+      "mean_anchor_xy": [
+        3.3955981731414795,
+        3.3710620403289795
+      ],
+      "maximum_change": 0.0035312315449118614,
+      "radius": 0.0035355305299162865,
+      "bound_fallback_fraction": 0.0
+    },
+    {
+      "episode_id": 2987,
+      "timestep": 5,
+      "state": [
+        2.9670684337615967,
+        3.6944901943206787,
+        2.9539906978607178,
+        3.692681312561035,
+        2.953728199005127,
+        3.6921603679656982,
+        2.452439785003662,
+        3.4770901203155518
+      ],
+      "pair": "far",
+      "x": [
+        -1.0,
+        1.0
+      ],
+      "x_prime": [
+        0.5181835293769836,
+        -0.38822174072265625
+      ],
+      "action_distance": 2.0571924631124325,
+      "mean_xy": [
+        3.3330938816070557,
+        3.308558464050293
+      ],
+      "mean_anchor_xy": [
+        3.3955981731414795,
+        3.3710620403289795
+      ],
+      "maximum_change": 0.5142930746078491,
+      "radius": 0.5142980813980103,
+      "bound_fallback_fraction": 0.828125
+    },
+    {
+      "episode_id": 5505,
+      "timestep": 30,
+      "state": [
+        3.6167173385620117,
+        3.9614601135253906,
+        3.6167173385620117,
+        3.9614601135253906,
+        3.6167173385620117,
+        3.9614601135253906,
+        3.6167173385620117,
+        3.9614601135253906
+      ],
+      "pair": "identical",
+      "x": [
+        0.9606298208236694,
+        -0.3807850480079651
+      ],
+      "x_prime": [
+        0.9606298208236694,
+        -0.3807850480079651
+      ],
+      "action_distance": 0.0,
+      "mean_xy": [
+        3.691664457321167,
+        3.932605504989624
+      ],
+      "mean_anchor_xy": [
+        3.691664457321167,
+        3.932605504989624
+      ],
+      "maximum_change": 0.0,
+      "radius": 0.0,
+      "bound_fallback_fraction": 0.0
+    },
+    {
+      "episode_id": 5505,
+      "timestep": 30,
+      "state": [
+        3.6167173385620117,
+        3.9614601135253906,
+        3.6167173385620117,
+        3.9614601135253906,
+        3.6167173385620117,
+        3.9614601135253906,
+        3.6167173385620117,
+        3.9614601135253906
+      ],
+      "pair": "nearby",
+      "x": [
+        0.9706298208236694,
+        -0.3907850480079651
+      ],
+      "x_prime": [
+        0.9606298208236694,
+        -0.3807850480079651
+      ],
+      "action_distance": 0.014142135623730963,
+      "mean_xy": [
+        3.6891720294952393,
+        3.9314839839935303
+      ],
+      "mean_anchor_xy": [
+        3.691664457321167,
+        3.932605504989624
+      ],
+      "maximum_change": 0.003528871573507786,
+      "radius": 0.0035355305299162865,
+      "bound_fallback_fraction": 0.0
+    },
+    {
+      "episode_id": 5505,
+      "timestep": 30,
+      "state": [
+        3.6167173385620117,
+        3.9614601135253906,
+        3.6167173385620117,
+        3.9614601135253906,
+        3.6167173385620117,
+        3.9614601135253906,
+        3.6167173385620117,
+        3.9614601135253906
+      ],
+      "pair": "far",
+      "x": [
+        -1.0,
+        1.0
+      ],
+      "x_prime": [
+        0.9606298208236694,
+        -0.3807850480079651
+      ],
+      "action_distance": 2.398048507246134,
+      "mean_xy": [
+        3.658545970916748,
+        3.9248180389404297
+      ],
+      "mean_anchor_xy": [
+        3.691664457321167,
+        3.932605504989624
+      ],
+      "maximum_change": 0.4453277587890625,
+      "radius": 0.5995121002197266,
+      "bound_fallback_fraction": 0.0
+    },
+    {
+      "episode_id": 3862,
+      "timestep": 8,
+      "state": [
+        5.016368865966797,
+        3.7574877738952637,
+        4.02512788772583,
+        3.440760850906372,
+        4.025226593017578,
+        3.434818983078003,
+        3.131392002105713,
+        3.591648817062378
+      ],
+      "pair": "identical",
+      "x": [
+        0.39917612075805664,
+        -0.10828500241041183
+      ],
+      "x_prime": [
+        0.39917612075805664,
+        -0.10828500241041183
+      ],
+      "action_distance": 0.0,
+      "mean_xy": [
+        5.321165561676025,
+        3.675967216491699
+      ],
+      "mean_anchor_xy": [
+        5.321165561676025,
+        3.675967216491699
+      ],
+      "maximum_change": 0.0,
+      "radius": 0.0,
+      "bound_fallback_fraction": 0.0
+    },
+    {
+      "episode_id": 3862,
+      "timestep": 8,
+      "state": [
+        5.016368865966797,
+        3.7574877738952637,
+        4.02512788772583,
+        3.440760850906372,
+        4.025226593017578,
+        3.434818983078003,
+        3.131392002105713,
+        3.591648817062378
+      ],
+      "pair": "nearby",
+      "x": [
+        0.40917612075805665,
+        -0.11828500241041183
+      ],
+      "x_prime": [
+        0.39917612075805664,
+        -0.10828500241041183
+      ],
+      "action_distance": 0.014142135623730954,
+      "mean_xy": [
+        5.318676948547363,
+        3.6784536838531494
+      ],
+      "mean_anchor_xy": [
+        5.321165561676025,
+        3.675967216491699
+      ],
+      "maximum_change": 0.0035228037741035223,
+      "radius": 0.0035355319269001484,
+      "bound_fallback_fraction": 0.0
+    },
+    {
+      "episode_id": 3862,
+      "timestep": 8,
+      "state": [
+        5.016368865966797,
+        3.7574877738952637,
+        4.02512788772583,
+        3.440760850906372,
+        4.025226593017578,
+        3.434818983078003,
+        3.131392002105713,
+        3.591648817062378
+      ],
+      "pair": "far",
+      "x": [
+        -1.0,
+        1.0
+      ],
+      "x_prime": [
+        0.39917612075805664,
+        -0.10828500241041183
+      ],
+      "action_distance": 1.7849340221608783,
+      "mean_xy": [
+        5.079589366912842,
+        3.9048354625701904
+      ],
+      "mean_anchor_xy": [
+        5.321165561676025,
+        3.675967216491699
+      ],
+      "maximum_change": 0.4383969008922577,
+      "radius": 0.44623351097106934,
+      "bound_fallback_fraction": 0.0
+    },
+    {
+      "episode_id": 4900,
+      "timestep": 9,
+      "state": [
+        7.045215129852295,
+        3.259847640991211,
+        6.208001613616943,
+        3.615969181060791,
+        5.220025539398193,
+        3.377176284790039,
+        4.328349590301514,
+        3.3405203819274902
+      ],
+      "pair": "identical",
+      "x": [
+        0.3040332794189453,
+        -0.019897477701306343
+      ],
+      "x_prime": [
+        0.3040332794189453,
+        -0.019897477701306343
+      ],
+      "action_distance": 0.0,
+      "mean_xy": [
+        7.299805164337158,
+        3.2523038387298584
+      ],
+      "mean_anchor_xy": [
+        7.299805164337158,
+        3.2523038387298584
+      ],
+      "maximum_change": 0.0,
+      "radius": 0.0,
+      "bound_fallback_fraction": 0.0
+    },
+    {
+      "episode_id": 4900,
+      "timestep": 9,
+      "state": [
+        7.045215129852295,
+        3.259847640991211,
+        6.208001613616943,
+        3.615969181060791,
+        5.220025539398193,
+        3.377176284790039,
+        4.328349590301514,
+        3.3405203819274902
+      ],
+      "pair": "nearby",
+      "x": [
+        0.3140332794189453,
+        -0.029897477701306345
+      ],
+      "x_prime": [
+        0.3040332794189453,
+        -0.019897477701306343
+      ],
+      "action_distance": 0.014142135623730958,
+      "mean_xy": [
+        7.297313213348389,
+        3.249809980392456
+      ],
+      "mean_anchor_xy": [
+        7.299805164337158,
+        3.2523038387298584
+      ],
+      "maximum_change": 0.0035271854139864445,
+      "radius": 0.003535532159730792,
+      "bound_fallback_fraction": 0.0
+    },
+    {
+      "episode_id": 4900,
+      "timestep": 9,
+      "state": [
+        7.045215129852295,
+        3.259847640991211,
+        6.208001613616943,
+        3.615969181060791,
+        5.220025539398193,
+        3.377176284790039,
+        4.328349590301514,
+        3.3405203819274902
+      ],
+      "pair": "far",
+      "x": [
+        -1.0,
+        1.0
+      ],
+      "x_prime": [
+        0.3040332794189453,
+        -0.019897477701306343
+      ],
+      "action_distance": 1.655504049784722,
+      "mean_xy": [
+        7.058919906616211,
+        3.0297253131866455
+      ],
+      "mean_anchor_xy": [
+        7.299805164337158,
+        3.2523038387298584
+      ],
+      "maximum_change": 0.41386789083480835,
+      "radius": 0.4138759970664978,
+      "bound_fallback_fraction": 0.0
+    }
+  ],
+  "checkpoint_replay_exact": true,
+  "checkpoint_sha256": "b2ac20ed32cea1ae9a8e37d073880b8d4d6ddf7f734a4987eae61bc6051b47b1"
+}

@@ -1,0 +1,15 @@
+{
+  "completed_command": "python -m ett.report_distribution_matching --run-dir artifacts/ett_distribution_matching/f4_p30_s01_guarded",
+  "source_sha256": {
+    "ett/anchored_transition.py": "35c9711cc41841e0f21a7eabd31cb43766a1f2c25d874247a80d993d7083245f",
+    "ett/run_distribution_matching.py": "a51ed0c8ed3267c63498402056750c29d8c0fb0cbbff94a1fee51bc28795ae6f",
+    "ett/report_distribution_matching.py": "bfeb1069a142dc0fba39af998b360c7357af6b97948d42e655b98482b1f7bf75",
+    "scripts/test_ett_distribution_matching.py": "111fa6af03116c9a5b7ed46530bb33035ef8bcdeaf5cabe547d67a6186dd6b78"
+  },
+  "post_training_api_change": "Added diagonal log_prob wrapper and its identity/rejection checks; training and sampling computations unchanged.",
+  "tests": "8 behavioral tests passed; expanded diagonal likelihood test also passed after the API addition",
+  "publication_preparation": {
+    "change": "Updated publication wording after explicit user authorization; no training, evaluation, or sampling changes.",
+    "current_report_generator_sha256": "7636abf29b726b9e8d40b51c55f6e0f8b6f16389f04ae468751fe7a240492ab3"
+  }
+}
