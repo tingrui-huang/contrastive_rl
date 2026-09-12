@@ -1,0 +1,32 @@
+{
+  "status": "passed",
+  "checks": {
+    "joint_L1_s0": {
+      "checkpoint_hash": true,
+      "exact_prediction_replay": true,
+      "final_step": true,
+      "objective_two_terms": true,
+      "action_bounds": true,
+      "cross_L_normalized_prediction_equal": true
+    },
+    "diagonal_only_L1_s0": {
+      "checkpoint_hash": true,
+      "exact_prediction_replay": true,
+      "final_step": true,
+      "objective_two_terms": true,
+      "action_bounds": true,
+      "cross_L_normalized_prediction_equal": true
+    },
+    "signed_difference_L1_s0": {
+      "checkpoint_hash": true,
+      "exact_prediction_replay": true,
+      "final_step": true,
+      "objective_two_terms": true,
+      "action_bounds": true,
+      "cross_L_normalized_prediction_equal": true
+    }
+  },
+  "count": 3,
+  "verification_source_sha256": "8d7af89261f30d2b818d63511bbc7fe58272d29105b15e3a6013b4e107a42284",
+  "note": "Empirical ratios are diagnostics; checkpoint replay does not certify Lipschitz compliance."
+}

@@ -1,0 +1,66 @@
+{
+  "L_values": [
+    0.25,
+    1.0,
+    4.0
+  ],
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "steps": 2500,
+  "hidden_width": 32,
+  "lambda_off": 1.0,
+  "learning_rate": 0.001,
+  "final_learning_rate": 0.0001,
+  "diagonal_batch": 128,
+  "off_batch": 256,
+  "train_diagonal": 8192,
+  "train_off": 32768,
+  "eval_diagonal": 4096,
+  "eval_off": 16384,
+  "eval_pairs": 32768,
+  "grid_size": 201,
+  "monitor_every": 100,
+  "min_separation": 0.001,
+  "ratio_tolerance": 0.01,
+  "evaluation_seed": 870001,
+  "monitor_seed": 860001,
+  "near_distance_min": 0.0001,
+  "near_distance_max": 0.1,
+  "slice_anchors": [
+    -0.83,
+    -0.27,
+    0.19,
+    0.74
+  ],
+  "side_offsets": [
+    0.0001,
+    0.001,
+    0.01,
+    0.04
+  ],
+  "threads": 1,
+  "arms": [
+    "joint",
+    "diagonal_only",
+    "signed_difference"
+  ],
+  "smoke": false,
+  "device": "cpu",
+  "torch_version": "2.11.0+cpu",
+  "numpy_version": "2.4.4",
+  "python_version": "3.14.4",
+  "source_sha256": "8a9a930b5e36b91e5bdb83c030be5bec89407c21bbf66f9f976cd727e8368488",
+  "git_head": "eefe8d3cf42fdca03125c79281e14c696baa8d31",
+  "target": "-L*abs(x-x_prime), c=0",
+  "objective": "L_diag + lambda_off * L_off; separate physical MSE means",
+  "scaling": "G=L*f; backward on total/L**2; same common scaling of both losses, no third term",
+  "selection": "fixed final step; no early stopping, validation tuning, or final-grid selection",
+  "initialization": "same function across all arms; signed feature has zero initial weight",
+  "checkpoint_policy": "local ignored .pt files; all configurations, metrics, plots and evaluation arrays are publishable",
+  "train_seed_rule": "830000+seed",
+  "batch_seed_rule": "840000+seed",
+  "sampling": "explicit uniform diagonal; 50% log-uniform distance [1e-4,.1], 50% uniform square conditioned on distance>=.1; rejection, no clipping"
+}
