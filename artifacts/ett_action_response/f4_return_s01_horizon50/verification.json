@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "source_sha256": "08c09ced715d82fe8ee450173e585f5418361d965532067493fff44c4e1cf734",
+  "command": "python -m scripts.check_action_response_artifacts --run-dir artifacts/ett_action_response/f4_return_s01_horizon50",
+  "all_old_artifacts_and_run_sources_unchanged": true,
+  "all_npz_values_finite": true,
+  "fixed_randomness_control_action_invariance_exact": true,
+  "common_diagonal_anchor_across_models_exact": true,
+  "original_horizon_respected": true,
+  "f4_shift_endpoints_action_and_displacement_checks_passed": true,
+  "native_replay_from_saved_json_exact_context_count": 15,
+  "model_step_input_scope": "visible F4, fixed goal, execution action and observational action only",
+  "continuation_contexts": 14,
+  "no_training_or_model_resampling": true
+}

@@ -1,0 +1,38 @@
+{
+  "eligible": {
+    "open_corridor": {
+      "eligible_rows": 167,
+      "eligible_episodes": 59,
+      "selected": 4
+    },
+    "boundary": {
+      "eligible_rows": 22,
+      "eligible_episodes": 15,
+      "selected": 4
+    },
+    "before_swamp": {
+      "eligible_rows": 108,
+      "eligible_episodes": 60,
+      "selected": 4
+    },
+    "stationary_nonreset": {
+      "eligible_rows": 121,
+      "eligible_episodes": 3,
+      "selected": 3
+    }
+  },
+  "episodes": 64,
+  "natural_steps": 3200,
+  "mode_counts": {
+    "wait_shortcut": 46,
+    "immediate_shortcut": 14,
+    "forced_safe": 4
+  },
+  "teacher_noise_clipped_steps": 259,
+  "environment_seed": 930000,
+  "behavior_seed": 930001,
+  "selection_seed": 940001,
+  "native_teacher_action_observation_reward_rng_replay_exact": true,
+  "population": "fresh episodes from the exact nominal-source teacher protocol: force-safe .05, nonzero-action Gaussian noise .15, no uniform coverage and no blind demonstrator",
+  "scope": "one underlying context per selected row; no posterior matching or conditional ETT ground truth"
+}

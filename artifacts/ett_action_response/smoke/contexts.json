@@ -1,0 +1,398 @@
+{
+  "rules": {
+    "open_corridor": "6.2 <= x <= 8.2, 3.2 < y < 3.8, history not fully stationary",
+    "boundary": "distance to the edge of any static blocked grid cell or map boundary <= 0.06; nonstationary history",
+    "before_swamp": "2 <= x < 3, 3 <= y < 4; nonstationary history",
+    "stationary_nonreset": "t > 0 and all four observed XY frames exactly equal; no hidden-state interpretation",
+    "sampling": "seeded row permutation, first eligible row from each distinct episode within each group; same episode may occur in different groups"
+  },
+  "eligible": {
+    "open_corridor": {
+      "eligible_rows": 1284,
+      "eligible_episodes": 434,
+      "selected": 2
+    },
+    "boundary": {
+      "eligible_rows": 139,
+      "eligible_episodes": 104,
+      "selected": 2
+    },
+    "before_swamp": {
+      "eligible_rows": 744,
+      "eligible_episodes": 454,
+      "selected": 2
+    },
+    "stationary_nonreset": {
+      "eligible_rows": 1737,
+      "eligible_episodes": 43,
+      "selected": 2
+    }
+  },
+  "selection_seed": 940000,
+  "groups": [
+    "open_corridor",
+    "open_corridor",
+    "boundary",
+    "boundary",
+    "before_swamp",
+    "before_swamp",
+    "stationary_nonreset",
+    "stationary_nonreset"
+  ],
+  "validation_row_indices": [
+    11657,
+    7,
+    11764,
+    18237,
+    502,
+    8952,
+    3187,
+    8638
+  ],
+  "episode_id": [
+    3573,
+    1210,
+    3618,
+    4730,
+    1293,
+    3002,
+    1785,
+    2920
+  ],
+  "timestep": [
+    7,
+    7,
+    14,
+    37,
+    2,
+    2,
+    37,
+    38
+  ],
+  "state": [
+    [
+      7.225376605987549,
+      3.491544008255005,
+      6.282529830932617,
+      3.5829694271087646,
+      5.406247615814209,
+      3.412080764770508,
+      4.483431339263916,
+      3.4524314403533936
+    ],
+    [
+      6.409898281097412,
+      3.6173222064971924,
+      5.448081016540527,
+      3.4515814781188965,
+      4.733249187469482,
+      3.539423704147339,
+      3.967102289199829,
+      3.5171186923980713
+    ],
+    [
+      8.414502143859863,
+      3.0441153049468994,
+      8.634723663330078,
+      3.423532247543335,
+      8.489052772521973,
+      3.577136993408203,
+      8.564756393432617,
+      3.4392037391662598
+    ],
+    [
+      8.944147109985352,
+      3.6584925651550293,
+      8.4298677444458,
+      3.499171018600464,
+      8.49023151397705,
+      3.576010227203369,
+      8.529757499694824,
+      3.479440450668335
+    ],
+    [
+      2.4157252311706543,
+      3.2439377307891846,
+      1.420814037322998,
+      3.655306816101074,
+      0.5,
+      3.5,
+      0.5,
+      3.5
+    ],
+    [
+      2.4279332160949707,
+      3.360508441925049,
+      1.4457967281341553,
+      3.0070462226867676,
+      0.5,
+      3.5,
+      0.5,
+      3.5
+    ],
+    [
+      3.3051774501800537,
+      3.0142805576324463,
+      3.3051774501800537,
+      3.0142805576324463,
+      3.3051774501800537,
+      3.0142805576324463,
+      3.3051774501800537,
+      3.0142805576324463
+    ],
+    [
+      5.380892276763916,
+      3.3264076709747314,
+      5.380892276763916,
+      3.3264076709747314,
+      5.380892276763916,
+      3.3264076709747314,
+      5.380892276763916,
+      3.3264076709747314
+    ]
+  ],
+  "commanded_goal": [
+    [
+      8.5,
+      3.5,
+      8.5,
+      3.5,
+      8.5,
+      3.5,
+      8.5,
+      3.5
+    ],
+    [
+      8.5,
+      3.5,
+      8.5,
+      3.5,
+      8.5,
+      3.5,
+      8.5,
+      3.5
+    ],
+    [
+      8.5,
+      3.5,
+      8.5,
+      3.5,
+      8.5,
+      3.5,
+      8.5,
+      3.5
+    ],
+    [
+      8.5,
+      3.5,
+      8.5,
+      3.5,
+      8.5,
+      3.5,
+      8.5,
+      3.5
+    ],
+    [
+      8.5,
+      3.5,
+      8.5,
+      3.5,
+      8.5,
+      3.5,
+      8.5,
+      3.5
+    ],
+    [
+      8.5,
+      3.5,
+      8.5,
+      3.5,
+      8.5,
+      3.5,
+      8.5,
+      3.5
+    ],
+    [
+      8.5,
+      3.5,
+      8.5,
+      3.5,
+      8.5,
+      3.5,
+      8.5,
+      3.5
+    ],
+    [
+      8.5,
+      3.5,
+      8.5,
+      3.5,
+      8.5,
+      3.5,
+      8.5,
+      3.5
+    ]
+  ],
+  "nominal_observational_actions": [
+    [
+      [
+        0.8353285193443298,
+        0.11333116143941879
+      ],
+      [
+        0.904531717300415,
+        0.14489872753620148
+      ]
+    ],
+    [
+      [
+        1.0,
+        -0.13956737518310547
+      ],
+      [
+        1.0,
+        -0.04181429371237755
+      ]
+    ],
+    [
+      [
+        -0.19870871305465698,
+        0.5325366854667664
+      ],
+      [
+        0.45333918929100037,
+        0.45691192150115967
+      ]
+    ],
+    [
+      [
+        -0.5832125544548035,
+        -0.31428804993629456
+      ],
+      [
+        -0.36505529284477234,
+        -0.18059268593788147
+      ]
+    ],
+    [
+      [
+        0.014860499650239944,
+        -0.005708805285394192
+      ],
+      [
+        0.7352811694145203,
+        0.2604250907897949
+      ]
+    ],
+    [
+      [
+        -0.5047566294670105,
+        -0.2518838942050934
+      ],
+      [
+        1.0,
+        0.22977270185947418
+      ]
+    ],
+    [
+      [
+        0.02458680421113968,
+        0.021051524206995964
+      ],
+      [
+        0.33379197120666504,
+        0.5737935304641724
+      ]
+    ],
+    [
+      [
+        0.8977509140968323,
+        0.026395900174975395
+      ],
+      [
+        0.3307192623615265,
+        0.1903291493654251
+      ]
+    ]
+  ],
+  "teacher_population": {
+    "format_version": 1,
+    "population": "nominal_expert_positive",
+    "definition": "Original main-source episodes whose actions were generated by make_windy_teacher; uniform coverage and the separately collected blind demonstrator are excluded from the nominal expert policy.",
+    "selection_predicate": "original_episode_id in [1200, 6000); source bounds are verified against teacher_mode codes but labels are not inputs",
+    "selection_uses_outcome_or_hidden_state": false,
+    "audit_labels_are_policy_inputs": false,
+    "expert_generator": "scripts.collect_swamp_windy.make_windy_teacher",
+    "dataset_path": "D:\\Users\\trhua\\Research\\contrastive_rl\\.worktrees\\pointmaze-p30\\artifacts\\f4_p30_server_30076\\results\\datasets\\swamp_windy_f4_merged_s0.npz",
+    "dataset_sha256": "83b4e81d9fca2d66b648c9c34ccdb68196e1acf89e2ca6829e4cb198d27c322c",
+    "environment": "point_two_route_swamp_windy_f4_v0",
+    "per_cell_swamp_probability": 0.3,
+    "source_provenance": {
+      "main_name": "swamp_windy_f4_teacher_s0.npz",
+      "main_content_sha256": "35e0cb428cad902b091282f6794a1af38b1746ddb8694c5c94441303065a5ef2",
+      "main_episode_range": [
+        0,
+        6000
+      ],
+      "appended_name": "swamp_windy_f4_baddemo_s0.npz",
+      "appended_content_sha256": "5e51979051873deef5ac01f66e3f1a44e8ad3139bded41dce812b1bc9fb3306c",
+      "appended_episode_range": [
+        6000,
+        6600
+      ]
+    },
+    "selected": {
+      "episode_count": 4800,
+      "transition_count": 240000,
+      "original_episode_id_ranges": [
+        [
+          1200,
+          6000
+        ]
+      ],
+      "original_episode_ids_sha256": "627960c3ac207d28359a7089ae51f38941b8068fa511d249844c5fc9c60a49fb",
+      "episode_payload_sha256": "bf023c1033a158907cbdb0c7c391448da7d4625ea31fa4c85ee6294ce77b2a6e",
+      "mode_codes_used_for_source_verification": [
+        1,
+        2,
+        3
+      ],
+      "mode_counts": {
+        "forced_safe": 257,
+        "immediate_shortcut": 1470,
+        "wait_shortcut": 3073
+      }
+    },
+    "excluded": {
+      "uniform_coverage": {
+        "episode_count": 1200,
+        "transition_count": 60000,
+        "original_episode_id_ranges": [
+          [
+            0,
+            1200
+          ]
+        ],
+        "purpose": "coverage, not output of the nominal teacher"
+      },
+      "appended_blind_demonstrator": {
+        "episode_count": 600,
+        "transition_count": 30000,
+        "original_episode_id_ranges": [
+          [
+            6000,
+            6600
+          ]
+        ],
+        "purpose": "separate causal-support source; retained in the full dataset but excluded from nominal imitation"
+      }
+    },
+    "full_dataset_is_unchanged": true
+  },
+  "source_metadata": {
+    "random_frac": 0.2,
+    "force_safe_prob": 0.05,
+    "teacher_noise": 0.15
+  },
+  "conditioning": "visible F4 + unchanged commanded goal; stationary history is not a death label"
+}
