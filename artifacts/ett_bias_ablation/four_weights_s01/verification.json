@@ -1,0 +1,73 @@
+{
+  "status": "passed",
+  "checkpoint_checks": {
+    "four_s0": {
+      "exact_zero_bias": true,
+      "changed_weight_indices": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          32,
+          0
+        ],
+        [
+          32,
+          1
+        ]
+      ],
+      "exact_diagonal_sample_identity": true,
+      "loaded_checkpoint_128_path_replay_exact": true,
+      "git_ignored": true,
+      "objective_records_valid": true
+    },
+    "four_s1": {
+      "exact_zero_bias": true,
+      "changed_weight_indices": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          32,
+          0
+        ],
+        [
+          32,
+          1
+        ]
+      ],
+      "exact_diagonal_sample_identity": true,
+      "loaded_checkpoint_128_path_replay_exact": true,
+      "git_ignored": true,
+      "objective_records_valid": true
+    }
+  },
+  "reward_precision": {
+    "four_s0_continuation_trajectories.npz": {
+      "float32_vs_float64_indicator_mismatches": 0
+    },
+    "four_s0_trajectories.npz": {
+      "float32_vs_float64_indicator_mismatches": 0
+    },
+    "four_s1_continuation_trajectories.npz": {
+      "float32_vs_float64_indicator_mismatches": 0
+    },
+    "four_s1_trajectories.npz": {
+      "float32_vs_float64_indicator_mismatches": 0
+    }
+  },
+  "all_previous_inputs_unchanged": true,
+  "remaining_horizon_and_fixed_goal_verified": true,
+  "source_sha256": "a94e54dd8d492c707fd932bdd8eec3057f56a1b9de701a8c95550ef9e1199ca9",
+  "command": "python -m scripts.check_bias_ablation --run-dir artifacts/ett_bias_ablation/four_weights_s01"
+}
