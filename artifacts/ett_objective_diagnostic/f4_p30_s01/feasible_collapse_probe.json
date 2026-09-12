@@ -1,0 +1,36 @@
+{
+  "definition": "one history-nearest newest position repeated across samples; old frames unchanged",
+  "feasibility_scope": "all 16 SAVED sampled anchors/radii plus endpoint, cap and 41-point segment checks; not an all-randomness bound or physics proof",
+  "groups": {
+    "all": {
+      "contexts": 1024,
+      "all_sampled_anchors_and_geometry_pass_contexts": 34,
+      "feasible_fraction": 0.033203125,
+      "mean_collapse_motion_all_contexts": 2.3892712593078613,
+      "primary_set_cost_feasible_subset": 1.0953378677368164,
+      "collapsed_set_cost_feasible_subset": 0.04812892898917198,
+      "set_improved_feasible_fraction": 1.0,
+      "collapsed_xy_std": 0.0
+    },
+    "frozen_nonreset": {
+      "contexts": 91,
+      "all_sampled_anchors_and_geometry_pass_contexts": 34,
+      "feasible_fraction": 0.37362637362637363,
+      "mean_collapse_motion_all_contexts": 0.1750304400920868,
+      "primary_set_cost_feasible_subset": 1.0953378677368164,
+      "collapsed_set_cost_feasible_subset": 0.04812892898917198,
+      "set_improved_feasible_fraction": 1.0,
+      "collapsed_xy_std": 0.0
+    },
+    "moving": {
+      "contexts": 863,
+      "all_sampled_anchors_and_geometry_pass_contexts": 0,
+      "feasible_fraction": 0.0,
+      "mean_collapse_motion_all_contexts": 2.6650054454803467,
+      "primary_set_cost_feasible_subset": null,
+      "collapsed_set_cost_feasible_subset": null,
+      "set_improved_feasible_fraction": null,
+      "collapsed_xy_std": 0.0
+    }
+  }
+}

@@ -1,0 +1,423 @@
+{
+  "epsilon_units": "raw maze XY, cardinal perturbations with old frames fixed; unprojected diagnostic",
+  "scales": {
+    "0.0001": {
+      "all": {
+        "contexts": 1024,
+        "reference_switch_fraction": 0.000244140625,
+        "any_direction_switch_fraction": 0.0009765625,
+        "selected_reference_gradient_jump": 0.00023769636754877865
+      },
+      "frozen_nonreset": {
+        "contexts": 91,
+        "reference_switch_fraction": 0.0,
+        "any_direction_switch_fraction": 0.0,
+        "selected_reference_gradient_jump": 0.0
+      },
+      "moving": {
+        "contexts": 863,
+        "reference_switch_fraction": 0.00028968713789107763,
+        "any_direction_switch_fraction": 0.0011587485515643105,
+        "selected_reference_gradient_jump": 0.0002820406516548246
+      },
+      "moving_upper_corridor": {
+        "contexts": 855,
+        "reference_switch_fraction": 0.00029239766081871346,
+        "any_direction_switch_fraction": 0.0011695906432748538,
+        "selected_reference_gradient_jump": 0.0002846796123776585
+      },
+      "moving_lower_corridor": {
+        "contexts": 7,
+        "reference_switch_fraction": 0.0,
+        "any_direction_switch_fraction": 0.0,
+        "selected_reference_gradient_jump": 0.0
+      },
+      "reset": {
+        "contexts": 21,
+        "reference_switch_fraction": 0.0,
+        "any_direction_switch_fraction": 0.0,
+        "selected_reference_gradient_jump": 0.0
+      },
+      "near_commanded_goal": {
+        "contexts": 736,
+        "reference_switch_fraction": 0.0,
+        "any_direction_switch_fraction": 0.0,
+        "selected_reference_gradient_jump": 0.0
+      }
+    },
+    "0.001": {
+      "all": {
+        "contexts": 1024,
+        "reference_switch_fraction": 0.00146484375,
+        "any_direction_switch_fraction": 0.0048828125,
+        "selected_reference_gradient_jump": 0.004061204381287098
+      },
+      "frozen_nonreset": {
+        "contexts": 91,
+        "reference_switch_fraction": 0.0,
+        "any_direction_switch_fraction": 0.0,
+        "selected_reference_gradient_jump": 0.0
+      },
+      "moving": {
+        "contexts": 863,
+        "reference_switch_fraction": 0.0014484356894553883,
+        "any_direction_switch_fraction": 0.004634994206257242,
+        "selected_reference_gradient_jump": 0.0032576564699411392
+      },
+      "moving_upper_corridor": {
+        "contexts": 855,
+        "reference_switch_fraction": 0.0014619883040935672,
+        "any_direction_switch_fraction": 0.004678362573099415,
+        "selected_reference_gradient_jump": 0.0032881374936550856
+      },
+      "moving_lower_corridor": {
+        "contexts": 7,
+        "reference_switch_fraction": 0.0,
+        "any_direction_switch_fraction": 0.0,
+        "selected_reference_gradient_jump": 0.0
+      },
+      "reset": {
+        "contexts": 21,
+        "reference_switch_fraction": 0.0,
+        "any_direction_switch_fraction": 0.0,
+        "selected_reference_gradient_jump": 0.0
+      },
+      "near_commanded_goal": {
+        "contexts": 736,
+        "reference_switch_fraction": 0.001358695652173913,
+        "any_direction_switch_fraction": 0.005434782608695652,
+        "selected_reference_gradient_jump": 0.004988955333828926
+      }
+    },
+    "0.01": {
+      "all": {
+        "contexts": 1024,
+        "reference_switch_fraction": 0.01806640625,
+        "any_direction_switch_fraction": 0.0712890625,
+        "selected_reference_gradient_jump": 0.04312311112880707
+      },
+      "frozen_nonreset": {
+        "contexts": 91,
+        "reference_switch_fraction": 0.04395604395604396,
+        "any_direction_switch_fraction": 0.17582417582417584,
+        "selected_reference_gradient_jump": 0.038652267307043076
+      },
+      "moving": {
+        "contexts": 863,
+        "reference_switch_fraction": 0.015063731170336037,
+        "any_direction_switch_fraction": 0.05909617612977984,
+        "selected_reference_gradient_jump": 0.04393310472369194
+      },
+      "moving_upper_corridor": {
+        "contexts": 855,
+        "reference_switch_fraction": 0.0152046783625731,
+        "any_direction_switch_fraction": 0.05964912280701754,
+        "selected_reference_gradient_jump": 0.04434417188167572
+      },
+      "moving_lower_corridor": {
+        "contexts": 7,
+        "reference_switch_fraction": 0.0,
+        "any_direction_switch_fraction": 0.0,
+        "selected_reference_gradient_jump": 0.0
+      },
+      "reset": {
+        "contexts": 21,
+        "reference_switch_fraction": 0.0,
+        "any_direction_switch_fraction": 0.0,
+        "selected_reference_gradient_jump": 0.0
+      },
+      "near_commanded_goal": {
+        "contexts": 736,
+        "reference_switch_fraction": 0.012567934782608696,
+        "any_direction_switch_fraction": 0.050271739130434784,
+        "selected_reference_gradient_jump": 0.04780527949333191
+      }
+    },
+    "0.05": {
+      "all": {
+        "contexts": 1024,
+        "reference_switch_fraction": 0.08203125,
+        "any_direction_switch_fraction": 0.2939453125,
+        "selected_reference_gradient_jump": 0.22018945217132568
+      },
+      "frozen_nonreset": {
+        "contexts": 91,
+        "reference_switch_fraction": 0.15934065934065933,
+        "any_direction_switch_fraction": 0.5714285714285714,
+        "selected_reference_gradient_jump": 0.2227081060409546
+      },
+      "moving": {
+        "contexts": 863,
+        "reference_switch_fraction": 0.0738702201622248,
+        "any_direction_switch_fraction": 0.26767091541135574,
+        "selected_reference_gradient_jump": 0.22614188492298126
+      },
+      "moving_upper_corridor": {
+        "contexts": 855,
+        "reference_switch_fraction": 0.07456140350877193,
+        "any_direction_switch_fraction": 0.27017543859649124,
+        "selected_reference_gradient_jump": 0.22825784981250763
+      },
+      "moving_lower_corridor": {
+        "contexts": 7,
+        "reference_switch_fraction": 0.0,
+        "any_direction_switch_fraction": 0.0,
+        "selected_reference_gradient_jump": 0.0
+      },
+      "reset": {
+        "contexts": 21,
+        "reference_switch_fraction": 0.0,
+        "any_direction_switch_fraction": 0.0,
+        "selected_reference_gradient_jump": 0.0
+      },
+      "near_commanded_goal": {
+        "contexts": 736,
+        "reference_switch_fraction": 0.06453804347826086,
+        "any_direction_switch_fraction": 0.2418478260869565,
+        "selected_reference_gradient_jump": 0.2331249862909317
+      }
+    }
+  },
+  "first_changed_examples_in_saved_context_order": [
+    {
+      "context_index": 0,
+      "episode_id": 5302,
+      "timestep": 43,
+      "reference_before": 186,
+      "references_after": [
+        186,
+        186,
+        186,
+        188
+      ],
+      "directions": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          -1.0
+        ]
+      ]
+    },
+    {
+      "context_index": 21,
+      "episode_id": 2284,
+      "timestep": 47,
+      "reference_before": 189,
+      "references_after": [
+        189,
+        189,
+        189,
+        144
+      ],
+      "directions": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          -1.0
+        ]
+      ]
+    },
+    {
+      "context_index": 35,
+      "episode_id": 2238,
+      "timestep": 44,
+      "reference_before": 186,
+      "references_after": [
+        186,
+        186,
+        186,
+        189
+      ],
+      "directions": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          -1.0
+        ]
+      ]
+    },
+    {
+      "context_index": 51,
+      "episode_id": 1452,
+      "timestep": 22,
+      "reference_before": 189,
+      "references_after": [
+        189,
+        189,
+        189,
+        144
+      ],
+      "directions": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          -1.0
+        ]
+      ]
+    },
+    {
+      "context_index": 52,
+      "episode_id": 5284,
+      "timestep": 14,
+      "reference_before": 194,
+      "references_after": [
+        194,
+        194,
+        194,
+        221
+      ],
+      "directions": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          -1.0
+        ]
+      ]
+    },
+    {
+      "context_index": 58,
+      "episode_id": 2309,
+      "timestep": 41,
+      "reference_before": 189,
+      "references_after": [
+        189,
+        189,
+        189,
+        144
+      ],
+      "directions": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          -1.0
+        ]
+      ]
+    },
+    {
+      "context_index": 82,
+      "episode_id": 1655,
+      "timestep": 22,
+      "reference_before": 143,
+      "references_after": [
+        143,
+        143,
+        144,
+        143
+      ],
+      "directions": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          -1.0
+        ]
+      ]
+    },
+    {
+      "context_index": 116,
+      "episode_id": 4716,
+      "timestep": 7,
+      "reference_before": 144,
+      "references_after": [
+        144,
+        144,
+        144,
+        221
+      ],
+      "directions": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          -1.0
+        ]
+      ]
+    }
+  ]
+}

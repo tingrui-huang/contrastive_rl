@@ -1,0 +1,328 @@
+{
+  "persistence": {
+    "mmd": {
+      "all": {
+        "contexts": 128,
+        "translation_gradient_norm": 0.07536197453737259,
+        "mean_per_sample_gradient_norm_scaled_by_K": 0.07536198198795319,
+        "zero_translation_gradient_fraction": 0.0
+      },
+      "frozen_nonreset": {
+        "contexts": 16,
+        "translation_gradient_norm": 0.09751418232917786,
+        "mean_per_sample_gradient_norm_scaled_by_K": 0.09751419723033905,
+        "zero_translation_gradient_fraction": 0.0
+      },
+      "moving": {
+        "contexts": 105,
+        "translation_gradient_norm": 0.07215295732021332,
+        "mean_per_sample_gradient_norm_scaled_by_K": 0.07215295732021332,
+        "zero_translation_gradient_fraction": 0.0
+      },
+      "moving_upper_corridor": {
+        "contexts": 104,
+        "translation_gradient_norm": 0.07278774678707123,
+        "mean_per_sample_gradient_norm_scaled_by_K": 0.07278773933649063,
+        "zero_translation_gradient_fraction": 0.0
+      },
+      "moving_lower_corridor": {
+        "contexts": 1,
+        "translation_gradient_norm": 0.006135520059615374,
+        "mean_per_sample_gradient_norm_scaled_by_K": 0.006135519128292799,
+        "zero_translation_gradient_fraction": 0.0
+      },
+      "reset": {
+        "contexts": 2,
+        "translation_gradient_norm": 0.0418015718460083,
+        "mean_per_sample_gradient_norm_scaled_by_K": 0.0418015718460083,
+        "zero_translation_gradient_fraction": 0.0
+      },
+      "near_commanded_goal": {
+        "contexts": 92,
+        "translation_gradient_norm": 0.054405055940151215,
+        "mean_per_sample_gradient_norm_scaled_by_K": 0.054405055940151215,
+        "zero_translation_gradient_fraction": 0.0
+      }
+    },
+    "set": {
+      "all": {
+        "contexts": 128,
+        "translation_gradient_norm": 3.642664909362793,
+        "mean_per_sample_gradient_norm_scaled_by_K": 3.642664909362793,
+        "zero_translation_gradient_fraction": 0.0
+      },
+      "frozen_nonreset": {
+        "contexts": 16,
+        "translation_gradient_norm": 0.8018571138381958,
+        "mean_per_sample_gradient_norm_scaled_by_K": 0.801857054233551,
+        "zero_translation_gradient_fraction": 0.0
+      },
+      "moving": {
+        "contexts": 105,
+        "translation_gradient_norm": 4.149389743804932,
+        "mean_per_sample_gradient_norm_scaled_by_K": 4.149389743804932,
+        "zero_translation_gradient_fraction": 0.0
+      },
+      "moving_upper_corridor": {
+        "contexts": 104,
+        "translation_gradient_norm": 3.7087385654449463,
+        "mean_per_sample_gradient_norm_scaled_by_K": 3.7087385654449463,
+        "zero_translation_gradient_fraction": 0.0
+      },
+      "moving_lower_corridor": {
+        "contexts": 1,
+        "translation_gradient_norm": 49.97712707519531,
+        "mean_per_sample_gradient_norm_scaled_by_K": 49.977134704589844,
+        "zero_translation_gradient_fraction": 0.0
+      },
+      "reset": {
+        "contexts": 2,
+        "translation_gradient_norm": 1.5162240266799927,
+        "mean_per_sample_gradient_norm_scaled_by_K": 1.5162240266799927,
+        "zero_translation_gradient_fraction": 0.0
+      },
+      "near_commanded_goal": {
+        "contexts": 92,
+        "translation_gradient_norm": 3.7900257110595703,
+        "mean_per_sample_gradient_norm_scaled_by_K": 3.7900257110595703,
+        "zero_translation_gradient_fraction": 0.0
+      }
+    }
+  },
+  "own_diagonal_anchor": {
+    "mmd": {
+      "all": {
+        "contexts": 128,
+        "translation_gradient_norm": 0.046341270208358765,
+        "mean_per_sample_gradient_norm_scaled_by_K": 1.0053836107254028,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": -0.05046635493636131,
+        "actual_displacement_is_descent_fraction": 1.0
+      },
+      "frozen_nonreset": {
+        "contexts": 16,
+        "translation_gradient_norm": 0.09455825388431549,
+        "mean_per_sample_gradient_norm_scaled_by_K": 0.14226552844047546,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": -0.013728640973567963,
+        "actual_displacement_is_descent_fraction": 1.0
+      },
+      "moving": {
+        "contexts": 105,
+        "translation_gradient_norm": 0.03857177495956421,
+        "mean_per_sample_gradient_norm_scaled_by_K": 1.1313916444778442,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": -0.05386814475059509,
+        "actual_displacement_is_descent_fraction": 1.0
+      },
+      "moving_upper_corridor": {
+        "contexts": 104,
+        "translation_gradient_norm": 0.038885895162820816,
+        "mean_per_sample_gradient_norm_scaled_by_K": 1.1349165439605713,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": -0.05405331403017044,
+        "actual_displacement_is_descent_fraction": 1.0
+      },
+      "moving_lower_corridor": {
+        "contexts": 1,
+        "translation_gradient_norm": 0.005902500357478857,
+        "mean_per_sample_gradient_norm_scaled_by_K": 0.7648019194602966,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": -0.03461012989282608,
+        "actual_displacement_is_descent_fraction": 1.0
+      },
+      "reset": {
+        "contexts": 2,
+        "translation_gradient_norm": 0.054071180522441864,
+        "mean_per_sample_gradient_norm_scaled_by_K": 1.1153597831726074,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": -0.1069122701883316,
+        "actual_displacement_is_descent_fraction": 1.0
+      },
+      "near_commanded_goal": {
+        "contexts": 92,
+        "translation_gradient_norm": 0.03191399946808815,
+        "mean_per_sample_gradient_norm_scaled_by_K": 1.162418246269226,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": -0.05416096746921539,
+        "actual_displacement_is_descent_fraction": 1.0
+      }
+    },
+    "set": {
+      "all": {
+        "contexts": 128,
+        "translation_gradient_norm": 2.5950827598571777,
+        "mean_per_sample_gradient_norm_scaled_by_K": 4.012179374694824,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": 0.11395911127328873,
+        "actual_displacement_is_descent_fraction": 0.109375
+      },
+      "frozen_nonreset": {
+        "contexts": 16,
+        "translation_gradient_norm": 0.8274770379066467,
+        "mean_per_sample_gradient_norm_scaled_by_K": 0.908334493637085,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": 0.014260225929319859,
+        "actual_displacement_is_descent_fraction": 0.5
+      },
+      "moving": {
+        "contexts": 105,
+        "translation_gradient_norm": 2.912433624267578,
+        "mean_per_sample_gradient_norm_scaled_by_K": 4.499196529388428,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": 0.12117604911327362,
+        "actual_displacement_is_descent_fraction": 0.05714285714285714
+      },
+      "moving_upper_corridor": {
+        "contexts": 104,
+        "translation_gradient_norm": 2.689697742462158,
+        "mean_per_sample_gradient_norm_scaled_by_K": 4.291652202606201,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": 0.09904880076646805,
+        "actual_displacement_is_descent_fraction": 0.057692307692307696
+      },
+      "moving_lower_corridor": {
+        "contexts": 1,
+        "translation_gradient_norm": 26.076982498168945,
+        "mean_per_sample_gradient_norm_scaled_by_K": 26.08380889892578,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": 2.4224095344543457,
+        "actual_displacement_is_descent_fraction": 0.0
+      },
+      "reset": {
+        "contexts": 2,
+        "translation_gradient_norm": 2.0896544456481934,
+        "mean_per_sample_gradient_norm_scaled_by_K": 4.0258355140686035,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": 0.4168294668197632,
+        "actual_displacement_is_descent_fraction": 0.0
+      },
+      "near_commanded_goal": {
+        "contexts": 92,
+        "translation_gradient_norm": 2.6919875144958496,
+        "mean_per_sample_gradient_norm_scaled_by_K": 4.301718235015869,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": 0.08798758685588837,
+        "actual_displacement_is_descent_fraction": 0.06521739130434782
+      }
+    }
+  },
+  "mmd_trained": {
+    "mmd": {
+      "all": {
+        "contexts": 128,
+        "translation_gradient_norm": 0.04817783087491989,
+        "mean_per_sample_gradient_norm_scaled_by_K": 0.9388061761856079,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": -0.05156075954437256,
+        "actual_displacement_is_descent_fraction": 1.0
+      },
+      "frozen_nonreset": {
+        "contexts": 16,
+        "translation_gradient_norm": 0.09384116530418396,
+        "mean_per_sample_gradient_norm_scaled_by_K": 0.6028237342834473,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": -0.0758630633354187,
+        "actual_displacement_is_descent_fraction": 1.0
+      },
+      "moving": {
+        "contexts": 105,
+        "translation_gradient_norm": 0.04101943224668503,
+        "mean_per_sample_gradient_norm_scaled_by_K": 0.9954008460044861,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": -0.047868672758340836,
+        "actual_displacement_is_descent_fraction": 1.0
+      },
+      "moving_upper_corridor": {
+        "contexts": 104,
+        "translation_gradient_norm": 0.04135660082101822,
+        "mean_per_sample_gradient_norm_scaled_by_K": 0.9986535310745239,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": -0.04802519455552101,
+        "actual_displacement_is_descent_fraction": 1.0
+      },
+      "moving_lower_corridor": {
+        "contexts": 1,
+        "translation_gradient_norm": 0.005954646039754152,
+        "mean_per_sample_gradient_norm_scaled_by_K": 0.6571248769760132,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": -0.03159014880657196,
+        "actual_displacement_is_descent_fraction": 1.0
+      },
+      "reset": {
+        "contexts": 2,
+        "translation_gradient_norm": 0.04766276851296425,
+        "mean_per_sample_gradient_norm_scaled_by_K": 0.7099907398223877,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": -0.06385190784931183,
+        "actual_displacement_is_descent_fraction": 1.0
+      },
+      "near_commanded_goal": {
+        "contexts": 92,
+        "translation_gradient_norm": 0.03270729258656502,
+        "mean_per_sample_gradient_norm_scaled_by_K": 1.0326683521270752,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": -0.0480630025267601,
+        "actual_displacement_is_descent_fraction": 1.0
+      }
+    },
+    "set": {
+      "all": {
+        "contexts": 128,
+        "translation_gradient_norm": 2.6167356967926025,
+        "mean_per_sample_gradient_norm_scaled_by_K": 5.434125900268555,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": 0.4121112823486328,
+        "actual_displacement_is_descent_fraction": 0.0
+      },
+      "frozen_nonreset": {
+        "contexts": 16,
+        "translation_gradient_norm": 1.3007075786590576,
+        "mean_per_sample_gradient_norm_scaled_by_K": 5.825046539306641,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": 1.6397840976715088,
+        "actual_displacement_is_descent_fraction": 0.0
+      },
+      "moving": {
+        "contexts": 105,
+        "translation_gradient_norm": 2.870955467224121,
+        "mean_per_sample_gradient_norm_scaled_by_K": 5.358814239501953,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": 0.21279333531856537,
+        "actual_displacement_is_descent_fraction": 0.0
+      },
+      "moving_upper_corridor": {
+        "contexts": 104,
+        "translation_gradient_norm": 2.6226131916046143,
+        "mean_per_sample_gradient_norm_scaled_by_K": 5.134325981140137,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": 0.18875473737716675,
+        "actual_displacement_is_descent_fraction": 0.0
+      },
+      "moving_lower_corridor": {
+        "contexts": 1,
+        "translation_gradient_norm": 28.698570251464844,
+        "mean_per_sample_gradient_norm_scaled_by_K": 28.705581665039062,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": 2.7128067016601562,
+        "actual_displacement_is_descent_fraction": 0.0
+      },
+      "reset": {
+        "contexts": 2,
+        "translation_gradient_norm": 1.8403466939926147,
+        "mean_per_sample_gradient_norm_scaled_by_K": 6.403628349304199,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": 0.6933873891830444,
+        "actual_displacement_is_descent_fraction": 0.0
+      },
+      "near_commanded_goal": {
+        "contexts": 92,
+        "translation_gradient_norm": 2.570685625076294,
+        "mean_per_sample_gradient_norm_scaled_by_K": 5.058553218841553,
+        "zero_translation_gradient_fraction": 0.0,
+        "actual_displacement_directional_derivative": 0.15695695579051971,
+        "actual_displacement_is_descent_fraction": 0.0
+      }
+    }
+  }
+}
