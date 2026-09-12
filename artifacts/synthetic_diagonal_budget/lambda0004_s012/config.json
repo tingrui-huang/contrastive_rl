@@ -1,0 +1,75 @@
+{
+  "bank": [
+    -3.0
+  ],
+  "lambda_off": 0.004,
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "arms": [
+    "bank_joint"
+  ],
+  "steps": 2500,
+  "learning_rate": 0.001,
+  "final_learning_rate": 0.0001,
+  "diagonal_batch": 128,
+  "off_batch": 256,
+  "train_diagonal": 8192,
+  "train_off": 32768,
+  "eval_diagonal": 4096,
+  "eval_off": 16384,
+  "train_seed_base": 920000,
+  "evaluation_seed": 921000,
+  "monitor_seed": 922000,
+  "batch_seed_base": 840000,
+  "monitor_every": 100,
+  "grid_size": 201,
+  "eval_pairs": 32768,
+  "slice_anchors": [
+    -0.83,
+    -0.27,
+    0.19,
+    0.74
+  ],
+  "side_offsets": [
+    0.0001,
+    0.001,
+    0.01,
+    0.04
+  ],
+  "min_separation": 0.001,
+  "ratio_tolerance": 0.01,
+  "fp_absolute_excess_tolerance": 1e-12,
+  "quadrature_nodes": [
+    128,
+    256
+  ],
+  "threads": 1,
+  "epsilon": 0.01,
+  "smoke": false,
+  "dtype": "float64",
+  "device": "cpu",
+  "python_version": "3.14.4",
+  "numpy_version": "2.4.4",
+  "torch_version": "2.11.0+cpu",
+  "git_head": "cbb8e47638b74a0b8ab5aa24134743798a329bd0",
+  "source_sha256": {
+    "scripts/synthetic_diagonal_budget.py": "d7222b672aae9a0179d6c725c16225c6bcec3568f709f4b788af0f5fc350e20e",
+    "scripts/eval_synthetic_diagonal_budget.py": "a01eb58483c8398938d64ecefb3218a327b9cb12665f5d9e23ec1c38607c5769",
+    "scripts/synthetic_budget_reference.py": "3f01f058613029d321eb1617b82492ee609d37b1eb9052b125c82c27d449ef1e",
+    "scripts/synthetic_failure_bank.py": "f150f9e9ba79945af745c69db3bb90d377022b1d35680143752ac27880a6baa7",
+    "scripts/synthetic_lipschitz_response.py": "e445cae5fce511ad9e7974f8eaebf7b59f399681483a90e5b5356c4acce7a420",
+    "scripts/eval_synthetic_failure_bank.py": "184a3202e004550e085ff14c354c4011ddc89c89ff1d0351c659221b3f7473f5",
+    "scripts/synthetic_failure_reference.py": "112df46beee5b6707927c3c0a348ea07a4bf65858c2d813ba4eda8fc6200d60b",
+    "scripts/synthetic_shared_response.py": "8a9a930b5e36b91e5bdb83c030be5bec89407c21bbf66f9f976cd727e8368488"
+  },
+  "prior_directory": "artifacts/synthetic_failure_bank/bank_m3_lambda01_s012",
+  "objective": "mean(G(diagonal)^2) + 0.004*mean((G(off)+3)^2); exactly two terms",
+  "initialization": "original seed initialization through unchanged historical train(); no trained starting checkpoint",
+  "evaluation_policy": "already-inspected evaluation inputs, fixed final step, no selection or tuning",
+  "nominal_marginal": "same uniform xp marginal, exactly shared empirical contexts; independent minibatches",
+  "checkpoint_policy": "local .pt files only; no automatic commit or push",
+  "reference_derivation_sha256": "acc4cf34cd60899ba59027d4f2019b51468edec88d921a1d09a5d44d24d75d87"
+}
