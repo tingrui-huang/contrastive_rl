@@ -1,0 +1,1999 @@
+{
+  "alpha0_seed0_ridge": {
+    "rows": 768,
+    "mae": 2.242020960849248,
+    "rmse": 3.1550243226537504,
+    "spearman": 0.5609773615575261,
+    "by_stratum": {
+      "all": {
+        "rows": 768,
+        "mae": 2.242020960849248,
+        "rmse": 3.1550243226537504,
+        "spearman": 0.5609773615575261
+      },
+      "outside_goal": {
+        "rows": 695,
+        "mae": 2.4060815930667907,
+        "rmse": 3.2986131223438147,
+        "spearman": 0.4063655916174085
+      },
+      "inside_goal": {
+        "rows": 73,
+        "mae": 0.6800738459014134,
+        "rmse": 1.0638476369276944,
+        "spearman": 0.33094835634847264
+      },
+      "within_observable_support": {
+        "rows": 608,
+        "mae": 2.047615659412642,
+        "rmse": 3.0523194709482566,
+        "spearman": 0.62153441693297
+      },
+      "outside_observable_support": {
+        "rows": 160,
+        "mae": 2.980761106308352,
+        "rmse": 3.5180635166243115,
+        "spearman": 0.47040756268812006
+      },
+      "source_fixed_actor": {
+        "rows": 192,
+        "mae": 2.202205077815885,
+        "rmse": 3.3799385823776626,
+        "spearman": 0.6649147750018963
+      },
+      "source_blind_shortcut": {
+        "rows": 192,
+        "mae": 2.302807223351802,
+        "rmse": 3.2981661183486466,
+        "spearman": 0.6149949960434277
+      },
+      "source_visible_detour": {
+        "rows": 192,
+        "mae": 2.2363848187193778,
+        "rmse": 3.0343453334863226,
+        "spearman": 0.8976212444450711
+      },
+      "source_uniform": {
+        "rows": 192,
+        "mae": 2.226686723509927,
+        "rmse": 2.8822868938446597,
+        "spearman": 0.09264632736053201
+      },
+      "region_before": {
+        "rows": 222,
+        "mae": 2.385604652324165,
+        "rmse": 2.952280519065071,
+        "spearman": 0.08888831820853096
+      },
+      "region_swamp": {
+        "rows": 339,
+        "mae": 2.380780910567747,
+        "rmse": 3.5031257635478212,
+        "spearman": 0.4604917037795721
+      },
+      "region_after": {
+        "rows": 138,
+        "mae": 0.819806468189784,
+        "rmse": 1.2189947555185718,
+        "spearman": 0.47838081788726583
+      },
+      "region_detour": {
+        "rows": 69,
+        "mae": 3.9427513597623403,
+        "rmse": 4.414459589006736,
+        "spearman": 0.904201680672269
+      },
+      "progress_far": {
+        "rows": 169,
+        "mae": 2.211360933033053,
+        "rmse": 2.746146058342832,
+        "spearman": 0.2695357611294738
+      },
+      "progress_approaching": {
+        "rows": 526,
+        "mae": 2.4686439344084286,
+        "rmse": 3.457429031631078,
+        "spearman": 0.5983426871368398
+      },
+      "progress_inside": {
+        "rows": 73,
+        "mae": 0.6800738459014134,
+        "rmse": 1.0638476369276944,
+        "spearman": 0.33094835634847264
+      },
+      "motion_stationary": {
+        "rows": 193,
+        "mae": 0.901592998210125,
+        "rmse": 1.2056658225050718,
+        "spearman": null
+      },
+      "motion_slow": {
+        "rows": 104,
+        "mae": 1.433449286557145,
+        "rmse": 2.116905580482742,
+        "spearman": 0.6632207325771751
+      },
+      "motion_moving": {
+        "rows": 471,
+        "mae": 2.9698214935790346,
+        "rmse": 3.826992184748987,
+        "spearman": 0.49284187872839014
+      }
+    },
+    "spearman_interval95": [
+      0.4918609960275515,
+      0.628372370135895
+    ],
+    "mae_interval95": [
+      2.132207992706507,
+      2.41126265578064
+    ],
+    "rmse_interval95": [
+      3.0279562596524094,
+      3.3382082172493948
+    ],
+    "mean_prediction": 4.201806778082959,
+    "bias": 0.187197820374964,
+    "pairwise": {
+      "overall_unequal": {
+        "count": 155,
+        "accuracy": 0.7096774193548387,
+        "interval95": [
+          0.632258064516129,
+          0.7870967741935484
+        ]
+      },
+      "overall_reliable": {
+        "count": 136,
+        "accuracy": 0.7279411764705882,
+        "interval95": [
+          0.6470588235294118,
+          0.7979779411764705
+        ]
+      },
+      "matched_unequal": {
+        "count": 67,
+        "accuracy": 0.5970149253731343,
+        "interval95": [
+          0.4552238805970149,
+          0.7164179104477612
+        ]
+      },
+      "matched_reliable": {
+        "count": 31,
+        "accuracy": 0.5806451612903226,
+        "interval95": [
+          0.3870967741935484,
+          0.7419354838709677
+        ]
+      }
+    }
+  },
+  "alpha0_seed0_raw": {
+    "rows": 768,
+    "mae": null,
+    "rmse": null,
+    "spearman": 0.35997995763567775,
+    "by_stratum": {
+      "all": {
+        "rows": 768,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.35997995763567775
+      },
+      "outside_goal": {
+        "rows": 695,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.17962152581760601
+      },
+      "inside_goal": {
+        "rows": 73,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.3405911123607943
+      },
+      "within_observable_support": {
+        "rows": 608,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.47306418961098157
+      },
+      "outside_observable_support": {
+        "rows": 160,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.334352976427694
+      },
+      "source_fixed_actor": {
+        "rows": 192,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.5636576641421368
+      },
+      "source_blind_shortcut": {
+        "rows": 192,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.5216341552919758
+      },
+      "source_visible_detour": {
+        "rows": 192,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.8197421871767852
+      },
+      "source_uniform": {
+        "rows": 192,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.18076742078999808
+      },
+      "region_before": {
+        "rows": 222,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.1503387468582931
+      },
+      "region_swamp": {
+        "rows": 339,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.37884473500725935
+      },
+      "region_after": {
+        "rows": 138,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.46621477119685023
+      },
+      "region_detour": {
+        "rows": 69,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.7381804895871393
+      },
+      "progress_far": {
+        "rows": 169,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.4105216704971552
+      },
+      "progress_approaching": {
+        "rows": 526,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.32687780134019506
+      },
+      "progress_inside": {
+        "rows": 73,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.3405911123607943
+      },
+      "motion_stationary": {
+        "rows": 193,
+        "mae": null,
+        "rmse": null,
+        "spearman": null
+      },
+      "motion_slow": {
+        "rows": 104,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.6148583760408872
+      },
+      "motion_moving": {
+        "rows": 471,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.2290830264755403
+      }
+    },
+    "spearman_interval95": [
+      0.27706569122947805,
+      0.4339882571281586
+    ],
+    "pairwise": {
+      "overall_unequal": {
+        "count": 155,
+        "accuracy": 0.6516129032258065,
+        "interval95": [
+          0.5806451612903226,
+          0.7354838709677419
+        ]
+      },
+      "overall_reliable": {
+        "count": 136,
+        "accuracy": 0.6691176470588235,
+        "interval95": [
+          0.5808823529411765,
+          0.75
+        ]
+      },
+      "matched_unequal": {
+        "count": 67,
+        "accuracy": 0.5970149253731343,
+        "interval95": [
+          0.44776119402985076,
+          0.6865671641791045
+        ]
+      },
+      "matched_reliable": {
+        "count": 31,
+        "accuracy": 0.5483870967741935,
+        "interval95": [
+          0.3870967741935484,
+          0.7096774193548387
+        ]
+      }
+    }
+  },
+  "alpha0p3_seed0_ridge": {
+    "rows": 768,
+    "mae": 2.339799623655082,
+    "rmse": 3.2451740543233494,
+    "spearman": 0.5628800865345802,
+    "by_stratum": {
+      "all": {
+        "rows": 768,
+        "mae": 2.339799623655082,
+        "rmse": 3.2451740543233494,
+        "spearman": 0.5628800865345802
+      },
+      "outside_goal": {
+        "rows": 695,
+        "mae": 2.5355939126994564,
+        "rmse": 3.4040937645281333,
+        "spearman": 0.40676325184245077
+      },
+      "inside_goal": {
+        "rows": 73,
+        "mae": 0.475730707410692,
+        "rmse": 0.6861445503524571,
+        "spearman": 0.21976513702500558
+      },
+      "within_observable_support": {
+        "rows": 608,
+        "mae": 2.1355193700697557,
+        "rmse": 3.1077657283735713,
+        "spearman": 0.6354155521955419
+      },
+      "outside_observable_support": {
+        "rows": 160,
+        "mae": 3.1160645872793196,
+        "rmse": 3.7213374692943337,
+        "spearman": 0.532403576081906
+      },
+      "source_fixed_actor": {
+        "rows": 192,
+        "mae": 1.9989660129840143,
+        "rmse": 3.210022258530746,
+        "spearman": 0.6746280959695945
+      },
+      "source_blind_shortcut": {
+        "rows": 192,
+        "mae": 2.2328220988977647,
+        "rmse": 3.2581898440094283,
+        "spearman": 0.612207195527552
+      },
+      "source_visible_detour": {
+        "rows": 192,
+        "mae": 2.830323268825072,
+        "rmse": 3.5338888258319128,
+        "spearman": 0.9345350517371113
+      },
+      "source_uniform": {
+        "rows": 192,
+        "mae": 2.297087113913476,
+        "rmse": 2.9523218622306615,
+        "spearman": 0.17801752336351445
+      },
+      "region_before": {
+        "rows": 222,
+        "mae": 2.571133383104696,
+        "rmse": 3.1709638459494065,
+        "spearman": 0.07867254373096133
+      },
+      "region_swamp": {
+        "rows": 339,
+        "mae": 2.233397117027786,
+        "rmse": 3.3797311619158195,
+        "spearman": 0.4635804781722547
+      },
+      "region_after": {
+        "rows": 138,
+        "mae": 1.1261381734069775,
+        "rmse": 1.5911206632610515,
+        "spearman": 0.7314779502139108
+      },
+      "region_detour": {
+        "rows": 69,
+        "mae": 4.545591439351856,
+        "rmse": 4.8664614648103495,
+        "spearman": 0.8524662038728537
+      },
+      "progress_far": {
+        "rows": 169,
+        "mae": 2.4230316930062377,
+        "rmse": 3.006856911574952,
+        "spearman": 0.23914548720992507
+      },
+      "progress_approaching": {
+        "rows": 526,
+        "mae": 2.57175934069975,
+        "rmse": 3.5222265265155093,
+        "spearman": 0.5911979810174823
+      },
+      "progress_inside": {
+        "rows": 73,
+        "mae": 0.475730707410692,
+        "rmse": 0.6861445503524571,
+        "spearman": 0.21976513702500558
+      },
+      "motion_stationary": {
+        "rows": 193,
+        "mae": 0.7450080566929596,
+        "rmse": 0.9280109343240653,
+        "spearman": null
+      },
+      "motion_slow": {
+        "rows": 104,
+        "mae": 1.6044372641543714,
+        "rmse": 2.394326815042519,
+        "spearman": 0.6090610303332742
+      },
+      "motion_moving": {
+        "rows": 471,
+        "mae": 3.1556647145505456,
+        "rmse": 3.943739978534157,
+        "spearman": 0.47411674247385693
+      }
+    },
+    "spearman_interval95": [
+      0.49351643069435736,
+      0.6290291608448398
+    ],
+    "mae_interval95": [
+      2.211649022728888,
+      2.496297962533391
+    ],
+    "rmse_interval95": [
+      3.104746634408785,
+      3.4167886673434817
+    ],
+    "mean_prediction": 3.9217402711840585,
+    "bias": -0.09286868652393636,
+    "pairwise": {
+      "overall_unequal": {
+        "count": 155,
+        "accuracy": 0.7290322580645161,
+        "interval95": [
+          0.6709677419354839,
+          0.8064516129032258
+        ]
+      },
+      "overall_reliable": {
+        "count": 136,
+        "accuracy": 0.7647058823529411,
+        "interval95": [
+          0.6838235294117647,
+          0.8308823529411765
+        ]
+      },
+      "matched_unequal": {
+        "count": 67,
+        "accuracy": 0.6417910447761194,
+        "interval95": [
+          0.4626865671641791,
+          0.7313432835820896
+        ]
+      },
+      "matched_reliable": {
+        "count": 31,
+        "accuracy": 0.6451612903225806,
+        "interval95": [
+          0.4838709677419355,
+          0.8064516129032258
+        ]
+      }
+    }
+  },
+  "alpha0p3_seed0_raw": {
+    "rows": 768,
+    "mae": null,
+    "rmse": null,
+    "spearman": 0.33231580675055983,
+    "by_stratum": {
+      "all": {
+        "rows": 768,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.33231580675055983
+      },
+      "outside_goal": {
+        "rows": 695,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.1393762842480844
+      },
+      "inside_goal": {
+        "rows": 73,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.34386516440218723
+      },
+      "within_observable_support": {
+        "rows": 608,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.43647209574699763
+      },
+      "outside_observable_support": {
+        "rows": 160,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.49696806649883435
+      },
+      "source_fixed_actor": {
+        "rows": 192,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.5837339263740438
+      },
+      "source_blind_shortcut": {
+        "rows": 192,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.5295783708778752
+      },
+      "source_visible_detour": {
+        "rows": 192,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.8272059093114658
+      },
+      "source_uniform": {
+        "rows": 192,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.18448506402704096
+      },
+      "region_before": {
+        "rows": 222,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.12808169868379432
+      },
+      "region_swamp": {
+        "rows": 339,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.38757406172400527
+      },
+      "region_after": {
+        "rows": 138,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.503699751597758
+      },
+      "region_detour": {
+        "rows": 69,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.7819145049324078
+      },
+      "progress_far": {
+        "rows": 169,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.336221074425186
+      },
+      "progress_approaching": {
+        "rows": 526,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.29205848842596055
+      },
+      "progress_inside": {
+        "rows": 73,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.34386516440218723
+      },
+      "motion_stationary": {
+        "rows": 193,
+        "mae": null,
+        "rmse": null,
+        "spearman": null
+      },
+      "motion_slow": {
+        "rows": 104,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.5686056396344962
+      },
+      "motion_moving": {
+        "rows": 471,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.24052895302947033
+      }
+    },
+    "spearman_interval95": [
+      0.25006383986365377,
+      0.40831790499703874
+    ],
+    "pairwise": {
+      "overall_unequal": {
+        "count": 155,
+        "accuracy": 0.6193548387096774,
+        "interval95": [
+          0.5531451612903225,
+          0.7032258064516129
+        ]
+      },
+      "overall_reliable": {
+        "count": 136,
+        "accuracy": 0.625,
+        "interval95": [
+          0.5441176470588235,
+          0.7058823529411765
+        ]
+      },
+      "matched_unequal": {
+        "count": 67,
+        "accuracy": 0.6417910447761194,
+        "interval95": [
+          0.48115671641791047,
+          0.7427238805970148
+        ]
+      },
+      "matched_reliable": {
+        "count": 31,
+        "accuracy": 0.6774193548387096,
+        "interval95": [
+          0.5161290322580645,
+          0.8387096774193549
+        ]
+      }
+    }
+  },
+  "alpha0_seed1_ridge": {
+    "rows": 768,
+    "mae": 2.4033774271487887,
+    "rmse": 3.3063294458987467,
+    "spearman": 0.5180532960090699,
+    "by_stratum": {
+      "all": {
+        "rows": 768,
+        "mae": 2.4033774271487887,
+        "rmse": 3.3063294458987467,
+        "spearman": 0.5180532960090699
+      },
+      "outside_goal": {
+        "rows": 695,
+        "mae": 2.58975465088221,
+        "rmse": 3.4643752927097298,
+        "spearman": 0.34544306733399077
+      },
+      "inside_goal": {
+        "rows": 73,
+        "mae": 0.6289641327004684,
+        "rmse": 0.8625831357740564,
+        "spearman": 0.33085865629254413
+      },
+      "within_observable_support": {
+        "rows": 608,
+        "mae": 2.227089910629317,
+        "rmse": 3.2130499475685017,
+        "spearman": 0.5857225033745214
+      },
+      "outside_observable_support": {
+        "rows": 160,
+        "mae": 3.073269989922781,
+        "rmse": 3.6390503258345204,
+        "spearman": 0.46039917190634044
+      },
+      "source_fixed_actor": {
+        "rows": 192,
+        "mae": 2.3323885181822988,
+        "rmse": 3.528142691535046,
+        "spearman": 0.6320908763314672
+      },
+      "source_blind_shortcut": {
+        "rows": 192,
+        "mae": 2.334871159877395,
+        "rmse": 3.3085290462863504,
+        "spearman": 0.5896770194366494
+      },
+      "source_visible_detour": {
+        "rows": 192,
+        "mae": 2.6630780067661584,
+        "rmse": 3.4115185928545935,
+        "spearman": 0.9185244388409884
+      },
+      "source_uniform": {
+        "rows": 192,
+        "mae": 2.283172023769303,
+        "rmse": 2.948668039627934,
+        "spearman": 0.04158580940868134
+      },
+      "region_before": {
+        "rows": 222,
+        "mae": 2.499481052355362,
+        "rmse": 3.144814540069831,
+        "spearman": -0.027841605732281012
+      },
+      "region_swamp": {
+        "rows": 339,
+        "mae": 2.5501406633650094,
+        "rmse": 3.6218598003929556,
+        "spearman": 0.4213463333349839
+      },
+      "region_after": {
+        "rows": 138,
+        "mae": 1.019104857928409,
+        "rmse": 1.4735663091942646,
+        "spearman": 0.7049553703437565
+      },
+      "region_detour": {
+        "rows": 69,
+        "mae": 4.141665436993054,
+        "rmse": 4.589645888629836,
+        "spearman": 0.6927658019729631
+      },
+      "progress_far": {
+        "rows": 169,
+        "mae": 2.4700786124538903,
+        "rmse": 3.1058868448338988,
+        "spearman": 0.037901135580362545
+      },
+      "progress_approaching": {
+        "rows": 526,
+        "mae": 2.628205697449483,
+        "rmse": 3.571926274304853,
+        "spearman": 0.5809388803891455
+      },
+      "progress_inside": {
+        "rows": 73,
+        "mae": 0.6289641327004684,
+        "rmse": 0.8625831357740564,
+        "spearman": 0.33085865629254413
+      },
+      "motion_stationary": {
+        "rows": 193,
+        "mae": 1.2133227689854267,
+        "rmse": 1.6615781918614507,
+        "spearman": null
+      },
+      "motion_slow": {
+        "rows": 104,
+        "mae": 1.7955965887914451,
+        "rmse": 2.672226426422599,
+        "spearman": 0.5694001718912106
+      },
+      "motion_moving": {
+        "rows": 471,
+        "mae": 3.025224043315865,
+        "rmse": 3.8880699331746458,
+        "spearman": 0.465153242948071
+      }
+    },
+    "spearman_interval95": [
+      0.44103564106732857,
+      0.5887694851327729
+    ],
+    "mae_interval95": [
+      2.281906694478429,
+      2.591234451635291
+    ],
+    "rmse_interval95": [
+      3.1677098887361437,
+      3.5044794075423873
+    ],
+    "mean_prediction": 4.127341912420154,
+    "bias": 0.1127329547121586,
+    "pairwise": {
+      "overall_unequal": {
+        "count": 155,
+        "accuracy": 0.7096774193548387,
+        "interval95": [
+          0.6387096774193548,
+          0.7806451612903226
+        ]
+      },
+      "overall_reliable": {
+        "count": 136,
+        "accuracy": 0.7279411764705882,
+        "interval95": [
+          0.6470588235294118,
+          0.8014705882352942
+        ]
+      },
+      "matched_unequal": {
+        "count": 67,
+        "accuracy": 0.5970149253731343,
+        "interval95": [
+          0.43283582089552236,
+          0.6865671641791045
+        ]
+      },
+      "matched_reliable": {
+        "count": 31,
+        "accuracy": 0.5161290322580645,
+        "interval95": [
+          0.3548387096774194,
+          0.6774193548387096
+        ]
+      }
+    }
+  },
+  "alpha0_seed1_raw": {
+    "rows": 768,
+    "mae": null,
+    "rmse": null,
+    "spearman": 0.43328901729672964,
+    "by_stratum": {
+      "all": {
+        "rows": 768,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.43328901729672964
+      },
+      "outside_goal": {
+        "rows": 695,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.2626854020376375
+      },
+      "inside_goal": {
+        "rows": 73,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.34386516440218723
+      },
+      "within_observable_support": {
+        "rows": 608,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.535282393239075
+      },
+      "outside_observable_support": {
+        "rows": 160,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.4490667880281726
+      },
+      "source_fixed_actor": {
+        "rows": 192,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.612431858296365
+      },
+      "source_blind_shortcut": {
+        "rows": 192,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.575699520187317
+      },
+      "source_visible_detour": {
+        "rows": 192,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.8567173541392635
+      },
+      "source_uniform": {
+        "rows": 192,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.18142848659016883
+      },
+      "region_before": {
+        "rows": 222,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.09003803165918528
+      },
+      "region_swamp": {
+        "rows": 339,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.4116822253268958
+      },
+      "region_after": {
+        "rows": 138,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.5757764759785221
+      },
+      "region_detour": {
+        "rows": 69,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.8389112166605773
+      },
+      "progress_far": {
+        "rows": 169,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.2969947851655074
+      },
+      "progress_approaching": {
+        "rows": 526,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.41202690867356306
+      },
+      "progress_inside": {
+        "rows": 73,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.34386516440218723
+      },
+      "motion_stationary": {
+        "rows": 193,
+        "mae": null,
+        "rmse": null,
+        "spearman": null
+      },
+      "motion_slow": {
+        "rows": 104,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.6143487794900289
+      },
+      "motion_moving": {
+        "rows": 471,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.2565851341655012
+      }
+    },
+    "spearman_interval95": [
+      0.35070225355495843,
+      0.5014100458897635
+    ],
+    "pairwise": {
+      "overall_unequal": {
+        "count": 155,
+        "accuracy": 0.6516129032258065,
+        "interval95": [
+          0.5741935483870968,
+          0.7225806451612903
+        ]
+      },
+      "overall_reliable": {
+        "count": 136,
+        "accuracy": 0.6617647058823529,
+        "interval95": [
+          0.5843750000000001,
+          0.7352941176470589
+        ]
+      },
+      "matched_unequal": {
+        "count": 67,
+        "accuracy": 0.6417910447761194,
+        "interval95": [
+          0.4626865671641791,
+          0.7164179104477612
+        ]
+      },
+      "matched_reliable": {
+        "count": 31,
+        "accuracy": 0.6129032258064516,
+        "interval95": [
+          0.45161290322580644,
+          0.7741935483870968
+        ]
+      }
+    }
+  },
+  "alpha0p3_seed1_ridge": {
+    "rows": 768,
+    "mae": 2.335690070833764,
+    "rmse": 3.2227164834028112,
+    "spearman": 0.5676387368287754,
+    "by_stratum": {
+      "all": {
+        "rows": 768,
+        "mae": 2.335690070833764,
+        "rmse": 3.2227164834028112,
+        "spearman": 0.5676387368287754
+      },
+      "outside_goal": {
+        "rows": 695,
+        "mae": 2.5187622341147424,
+        "rmse": 3.377660042738127,
+        "spearman": 0.41231041435988686
+      },
+      "inside_goal": {
+        "rows": 73,
+        "mae": 0.5927427628847204,
+        "rmse": 0.8058362344676008,
+        "spearman": 0.3340430082780084
+      },
+      "within_observable_support": {
+        "rows": 608,
+        "mae": 2.1056656053731673,
+        "rmse": 3.0804851298772964,
+        "spearman": 0.6392855162225416
+      },
+      "outside_observable_support": {
+        "rows": 160,
+        "mae": 3.2097830395840306,
+        "rmse": 3.713845788532437,
+        "spearman": 0.4763413390569834
+      },
+      "source_fixed_actor": {
+        "rows": 192,
+        "mae": 2.1527887073680114,
+        "rmse": 3.3714788373775844,
+        "spearman": 0.6526153662401399
+      },
+      "source_blind_shortcut": {
+        "rows": 192,
+        "mae": 2.282997752121501,
+        "rmse": 3.3400325183579413,
+        "spearman": 0.6084954749327672
+      },
+      "source_visible_detour": {
+        "rows": 192,
+        "mae": 2.6610855159805955,
+        "rmse": 3.3105806086655116,
+        "spearman": 0.9317056891557982
+      },
+      "source_uniform": {
+        "rows": 192,
+        "mae": 2.2458883078649463,
+        "rmse": 2.83918569109863,
+        "spearman": 0.21625029799194811
+      },
+      "region_before": {
+        "rows": 222,
+        "mae": 2.387353062129113,
+        "rmse": 2.9239084512293063,
+        "spearman": 0.18741042331297877
+      },
+      "region_swamp": {
+        "rows": 339,
+        "mae": 2.3212949096633766,
+        "rmse": 3.4954541447780847,
+        "spearman": 0.4451588354620993
+      },
+      "region_after": {
+        "rows": 138,
+        "mae": 1.204317831840148,
+        "rmse": 1.6739929543108556,
+        "spearman": 0.7695784598103392
+      },
+      "region_detour": {
+        "rows": 69,
+        "mae": 4.502938542577425,
+        "rmse": 4.739229487159871,
+        "spearman": 0.8957983193277311
+      },
+      "progress_far": {
+        "rows": 169,
+        "mae": 2.1561710819447586,
+        "rmse": 2.606643326145439,
+        "spearman": 0.417629764998402
+      },
+      "progress_approaching": {
+        "rows": 526,
+        "mae": 2.6352601518271515,
+        "rmse": 3.590408273110805,
+        "spearman": 0.5709288760486821
+      },
+      "progress_inside": {
+        "rows": 73,
+        "mae": 0.5927427628847204,
+        "rmse": 0.8058362344676008,
+        "spearman": 0.3340430082780084
+      },
+      "motion_stationary": {
+        "rows": 193,
+        "mae": 0.8628282918726967,
+        "rmse": 1.2096679447098175,
+        "spearman": null
+      },
+      "motion_slow": {
+        "rows": 104,
+        "mae": 1.5311173736208243,
+        "rmse": 2.2162482134557377,
+        "spearman": 0.7061254744397556
+      },
+      "motion_moving": {
+        "rows": 471,
+        "mae": 3.1168745376058054,
+        "rmse": 3.9052290891381776,
+        "spearman": 0.47218640167976
+      }
+    },
+    "spearman_interval95": [
+      0.4980120603710071,
+      0.6296473745847216
+    ],
+    "mae_interval95": [
+      2.225774023771977,
+      2.4934678432998143
+    ],
+    "rmse_interval95": [
+      3.0942958522574333,
+      3.405161108904108
+    ],
+    "mean_prediction": 4.0702753221381585,
+    "bias": 0.05566636443016282,
+    "pairwise": {
+      "overall_unequal": {
+        "count": 155,
+        "accuracy": 0.7419354838709677,
+        "interval95": [
+          0.6709677419354839,
+          0.8129032258064516
+        ]
+      },
+      "overall_reliable": {
+        "count": 136,
+        "accuracy": 0.7720588235294118,
+        "interval95": [
+          0.6985294117647058,
+          0.8455882352941176
+        ]
+      },
+      "matched_unequal": {
+        "count": 67,
+        "accuracy": 0.6119402985074627,
+        "interval95": [
+          0.4626865671641791,
+          0.7164179104477612
+        ]
+      },
+      "matched_reliable": {
+        "count": 31,
+        "accuracy": 0.6129032258064516,
+        "interval95": [
+          0.45161290322580644,
+          0.7741935483870968
+        ]
+      }
+    }
+  },
+  "alpha0p3_seed1_raw": {
+    "rows": 768,
+    "mae": null,
+    "rmse": null,
+    "spearman": 0.41377593009475977,
+    "by_stratum": {
+      "all": {
+        "rows": 768,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.41377593009475977
+      },
+      "outside_goal": {
+        "rows": 695,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.2409087608543127
+      },
+      "inside_goal": {
+        "rows": 73,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.3405911123607943
+      },
+      "within_observable_support": {
+        "rows": 608,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.5159001623890818
+      },
+      "outside_observable_support": {
+        "rows": 160,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.4235472976155044
+      },
+      "source_fixed_actor": {
+        "rows": 192,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.5882069080977123
+      },
+      "source_blind_shortcut": {
+        "rows": 192,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.5235611274935897
+      },
+      "source_visible_detour": {
+        "rows": 192,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.8282515803618485
+      },
+      "source_uniform": {
+        "rows": 192,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.19737755090820658
+      },
+      "region_before": {
+        "rows": 222,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.15156086592702298
+      },
+      "region_swamp": {
+        "rows": 339,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.38562718836673693
+      },
+      "region_after": {
+        "rows": 138,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.5080009799033003
+      },
+      "region_detour": {
+        "rows": 69,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.8423456339057362
+      },
+      "progress_far": {
+        "rows": 169,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.39408653279149175
+      },
+      "progress_approaching": {
+        "rows": 526,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.37581425945974073
+      },
+      "progress_inside": {
+        "rows": 73,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.3405911123607943
+      },
+      "motion_stationary": {
+        "rows": 193,
+        "mae": null,
+        "rmse": null,
+        "spearman": null
+      },
+      "motion_slow": {
+        "rows": 104,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.6268804710148975
+      },
+      "motion_moving": {
+        "rows": 471,
+        "mae": null,
+        "rmse": null,
+        "spearman": 0.2702360027003542
+      }
+    },
+    "spearman_interval95": [
+      0.3325151069541783,
+      0.48749806621449115
+    ],
+    "pairwise": {
+      "overall_unequal": {
+        "count": 155,
+        "accuracy": 0.6516129032258065,
+        "interval95": [
+          0.5741935483870968,
+          0.7324193548387096
+        ]
+      },
+      "overall_reliable": {
+        "count": 136,
+        "accuracy": 0.6617647058823529,
+        "interval95": [
+          0.5770220588235294,
+          0.7426470588235294
+        ]
+      },
+      "matched_unequal": {
+        "count": 67,
+        "accuracy": 0.5970149253731343,
+        "interval95": [
+          0.4438432835820896,
+          0.7014925373134329
+        ]
+      },
+      "matched_reliable": {
+        "count": 31,
+        "accuracy": 0.6129032258064516,
+        "interval95": [
+          0.45161290322580644,
+          0.7741935483870968
+        ]
+      }
+    }
+  },
+  "raw_input_ridge": {
+    "rows": 768,
+    "mae": 3.369136722654067,
+    "rmse": 3.9549554540611394,
+    "spearman": 0.366161845664097,
+    "by_stratum": {
+      "all": {
+        "rows": 768,
+        "mae": 3.369136722654067,
+        "rmse": 3.9549554540611394,
+        "spearman": 0.366161845664097
+      },
+      "outside_goal": {
+        "rows": 695,
+        "mae": 3.602614892903691,
+        "rmse": 4.1295879242658255,
+        "spearman": 0.13849123783455597
+      },
+      "inside_goal": {
+        "rows": 73,
+        "mae": 1.1462966086336728,
+        "rmse": 1.4833531777358326,
+        "spearman": 0.27573797192443555
+      },
+      "within_observable_support": {
+        "rows": 608,
+        "mae": 3.481562324274895,
+        "rmse": 4.05035004040285,
+        "spearman": 0.41452621700436193
+      },
+      "outside_observable_support": {
+        "rows": 160,
+        "mae": 2.9419194364949206,
+        "rmse": 3.569279196155849,
+        "spearman": 0.45003009197537874
+      },
+      "source_fixed_actor": {
+        "rows": 192,
+        "mae": 4.2443818148149495,
+        "rmse": 4.860178224108314,
+        "spearman": 0.48695805949927556
+      },
+      "source_blind_shortcut": {
+        "rows": 192,
+        "mae": 4.026418287592062,
+        "rmse": 4.453214340124348,
+        "spearman": 0.4279546476614556
+      },
+      "source_visible_detour": {
+        "rows": 192,
+        "mae": 2.2299490585175925,
+        "rmse": 2.6728925695225403,
+        "spearman": 0.8989046842184014
+      },
+      "source_uniform": {
+        "rows": 192,
+        "mae": 2.9757977296916636,
+        "rmse": 3.459752239256046,
+        "spearman": -0.18082875679207577
+      },
+      "region_before": {
+        "rows": 222,
+        "mae": 2.680165441018865,
+        "rmse": 3.113059939324955,
+        "spearman": 0.018053682634248773
+      },
+      "region_swamp": {
+        "rows": 339,
+        "mae": 4.816307230665758,
+        "rmse": 5.134846475208152,
+        "spearman": 0.35426957253627167
+      },
+      "region_after": {
+        "rows": 138,
+        "mae": 1.268251885397467,
+        "rmse": 1.540945289947332,
+        "spearman": 0.6409403340095909
+      },
+      "region_detour": {
+        "rows": 69,
+        "mae": 2.6775849813274366,
+        "rmse": 2.9375000064452617,
+        "spearman": 0.6645597369382537
+      },
+      "progress_far": {
+        "rows": 169,
+        "mae": 2.6883001760167913,
+        "rmse": 3.118949393876806,
+        "spearman": 0.176114912954728
+      },
+      "progress_approaching": {
+        "rows": 526,
+        "mae": 3.896377606124007,
+        "rmse": 4.405357556496149,
+        "spearman": 0.4691710157814112
+      },
+      "progress_inside": {
+        "rows": 73,
+        "mae": 1.1462966086336728,
+        "rmse": 1.4833531777358326,
+        "spearman": 0.27573797192443555
+      },
+      "motion_stationary": {
+        "rows": 193,
+        "mae": 4.779280098862548,
+        "rmse": 4.913747765135587,
+        "spearman": null
+      },
+      "motion_slow": {
+        "rows": 104,
+        "mae": 2.490754547339082,
+        "rmse": 3.05151409251139,
+        "spearman": 0.5553287316481574
+      },
+      "motion_moving": {
+        "rows": 471,
+        "mae": 2.9852600233430726,
+        "rmse": 3.6817143874841856,
+        "spearman": 0.5254404598630739
+      }
+    },
+    "spearman_interval95": [
+      0.27648351375987384,
+      0.4573871247533428
+    ],
+    "mae_interval95": [
+      3.216071775374868,
+      3.5587123839752017
+    ],
+    "rmse_interval95": [
+      3.8128246899194216,
+      4.146387124826484
+    ],
+    "mean_prediction": 5.348879192021438,
+    "bias": 1.3342702343134416,
+    "pairwise": {
+      "overall_unequal": {
+        "count": 155,
+        "accuracy": 0.6645161290322581,
+        "interval95": [
+          0.6,
+          0.7483870967741936
+        ]
+      },
+      "overall_reliable": {
+        "count": 136,
+        "accuracy": 0.6911764705882353,
+        "interval95": [
+          0.6137867647058824,
+          0.7647058823529411
+        ]
+      },
+      "matched_unequal": {
+        "count": 67,
+        "accuracy": 0.5970149253731343,
+        "interval95": [
+          0.44776119402985076,
+          0.7014925373134329
+        ]
+      },
+      "matched_reliable": {
+        "count": 31,
+        "accuracy": 0.7419354838709677,
+        "interval95": [
+          0.5806451612903226,
+          0.9032258064516129
+        ]
+      }
+    }
+  },
+  "raw_mlp_s110": {
+    "rows": 768,
+    "mae": 2.205826442293515,
+    "rmse": 3.0452816483838223,
+    "spearman": 0.5426389358086289,
+    "by_stratum": {
+      "all": {
+        "rows": 768,
+        "mae": 2.205826442293515,
+        "rmse": 3.0452816483838223,
+        "spearman": 0.5426389358086289
+      },
+      "outside_goal": {
+        "rows": 695,
+        "mae": 2.4087849342874024,
+        "rmse": 3.193166882131165,
+        "spearman": 0.38096374053193827
+      },
+      "inside_goal": {
+        "rows": 73,
+        "mae": 0.2735503883791154,
+        "rmse": 0.7002330521967177,
+        "spearman": 0.1210502254756102
+      },
+      "within_observable_support": {
+        "rows": 608,
+        "mae": 2.1110578839095577,
+        "rmse": 3.036911593303143,
+        "spearman": 0.5898648420640753
+      },
+      "outside_observable_support": {
+        "rows": 160,
+        "mae": 2.5659469641525545,
+        "rmse": 3.0768802104195534,
+        "spearman": 0.6302060517203212
+      },
+      "source_fixed_actor": {
+        "rows": 192,
+        "mae": 2.1455336247355365,
+        "rmse": 3.2800203940453083,
+        "spearman": 0.6088274467942633
+      },
+      "source_blind_shortcut": {
+        "rows": 192,
+        "mae": 2.7760350188461698,
+        "rmse": 3.702573553723487,
+        "spearman": 0.5904875882095815
+      },
+      "source_visible_detour": {
+        "rows": 192,
+        "mae": 1.848781046409495,
+        "rmse": 2.4630816426324182,
+        "spearman": 0.9159856824766115
+      },
+      "source_uniform": {
+        "rows": 192,
+        "mae": 2.052956079182859,
+        "rmse": 2.5613678743153305,
+        "spearman": 0.17495924214880687
+      },
+      "region_before": {
+        "rows": 222,
+        "mae": 2.4513490961300723,
+        "rmse": 2.919060375235703,
+        "spearman": 0.2295439107040375
+      },
+      "region_swamp": {
+        "rows": 339,
+        "mae": 2.5331699263913916,
+        "rmse": 3.5872544315911505,
+        "spearman": 0.4219674313821511
+      },
+      "region_after": {
+        "rows": 138,
+        "mae": 0.7966336933592336,
+        "rmse": 1.351970816475655,
+        "spearman": 0.3276359734894923
+      },
+      "region_detour": {
+        "rows": 69,
+        "mae": 2.6260167189896775,
+        "rmse": 2.9878115292862137,
+        "spearman": 0.9202046035805627
+      },
+      "progress_far": {
+        "rows": 169,
+        "mae": 2.2501979946844233,
+        "rmse": 2.6394637768314633,
+        "spearman": 0.440993989578838
+      },
+      "progress_approaching": {
+        "rows": 526,
+        "mae": 2.4597377722967235,
+        "rmse": 3.351707690384054,
+        "spearman": 0.6316474780389505
+      },
+      "progress_inside": {
+        "rows": 73,
+        "mae": 0.2735503883791154,
+        "rmse": 0.7002330521967177,
+        "spearman": 0.1210502254756102
+      },
+      "motion_stationary": {
+        "rows": 193,
+        "mae": 1.2278025582664371,
+        "rmse": 1.605624754417084,
+        "spearman": null
+      },
+      "motion_slow": {
+        "rows": 104,
+        "mae": 1.540219247540817,
+        "rmse": 2.203349369232544,
+        "spearman": 0.6494780643024175
+      },
+      "motion_moving": {
+        "rows": 471,
+        "mae": 2.753558412296714,
+        "rmse": 3.604602734578153,
+        "spearman": 0.5519573831648441
+      }
+    },
+    "spearman_interval95": [
+      0.4650974723242357,
+      0.6146415075892745
+    ],
+    "mae_interval95": [
+      2.090005188697218,
+      2.3646248013273796
+    ],
+    "rmse_interval95": [
+      2.91219900676445,
+      3.2371937357531726
+    ],
+    "mean_prediction": 4.431390285491943,
+    "bias": 0.41678115548927175,
+    "pairwise": {
+      "overall_unequal": {
+        "count": 155,
+        "accuracy": 0.7483870967741936,
+        "interval95": [
+          0.6774193548387096,
+          0.8129032258064516
+        ]
+      },
+      "overall_reliable": {
+        "count": 136,
+        "accuracy": 0.7720588235294118,
+        "interval95": [
+          0.6985294117647058,
+          0.8382352941176471
+        ]
+      },
+      "matched_unequal": {
+        "count": 67,
+        "accuracy": 0.5074626865671642,
+        "interval95": [
+          0.373134328358209,
+          0.6417910447761194
+        ]
+      },
+      "matched_reliable": {
+        "count": 31,
+        "accuracy": 0.5483870967741935,
+        "interval95": [
+          0.3870967741935484,
+          0.7096774193548387
+        ]
+      }
+    }
+  },
+  "raw_mlp_s111": {
+    "rows": 768,
+    "mae": 2.3227732375474575,
+    "rmse": 3.0842676140560097,
+    "spearman": 0.5154814421957473,
+    "by_stratum": {
+      "all": {
+        "rows": 768,
+        "mae": 2.3227732375474575,
+        "rmse": 3.0842676140560097,
+        "spearman": 0.5154814421957473
+      },
+      "outside_goal": {
+        "rows": 695,
+        "mae": 2.523864041599387,
+        "rmse": 3.227737720435241,
+        "spearman": 0.3457357163375159
+      },
+      "inside_goal": {
+        "rows": 73,
+        "mae": 0.4082785962311395,
+        "rmse": 0.9439544975639037,
+        "spearman": 0.23873669885389892
+      },
+      "within_observable_support": {
+        "rows": 608,
+        "mae": 2.2313962339975246,
+        "rmse": 3.047964825932882,
+        "spearman": 0.5791117091021006
+      },
+      "outside_observable_support": {
+        "rows": 160,
+        "mae": 2.6700058510372013,
+        "rmse": 3.218485952754706,
+        "spearman": 0.5884174279770604
+      },
+      "source_fixed_actor": {
+        "rows": 192,
+        "mae": 2.2894152460500368,
+        "rmse": 3.2774036889826683,
+        "spearman": 0.589447280078808
+      },
+      "source_blind_shortcut": {
+        "rows": 192,
+        "mae": 2.9891626439875107,
+        "rmse": 3.7338728606630047,
+        "spearman": 0.5884504727578197
+      },
+      "source_visible_detour": {
+        "rows": 192,
+        "mae": 1.9317226539576515,
+        "rmse": 2.583772709047892,
+        "spearman": 0.8653094124358894
+      },
+      "source_uniform": {
+        "rows": 192,
+        "mae": 2.0807924061946297,
+        "rmse": 2.5868444035707667,
+        "spearman": 0.1609218165621908
+      },
+      "region_before": {
+        "rows": 222,
+        "mae": 2.3967513278768138,
+        "rmse": 2.8950812297417325,
+        "spearman": 0.2259762884315873
+      },
+      "region_swamp": {
+        "rows": 339,
+        "mae": 2.7545562181626195,
+        "rmse": 3.6073313546095367,
+        "spearman": 0.3888371526222814
+      },
+      "region_after": {
+        "rows": 138,
+        "mae": 0.8386943529305798,
+        "rmse": 1.3733753642133162,
+        "spearman": 0.12334756514451072
+      },
+      "region_detour": {
+        "rows": 69,
+        "mae": 2.9315459853079204,
+        "rmse": 3.3479912613414182,
+        "spearman": 0.8911216660577276
+      },
+      "progress_far": {
+        "rows": 169,
+        "mae": 2.1827538665911446,
+        "rmse": 2.582787065008323,
+        "spearman": 0.43552431210323717
+      },
+      "progress_approaching": {
+        "rows": 526,
+        "mae": 2.6334602765354953,
+        "rmse": 3.4091547393763073,
+        "spearman": 0.5900113651579789
+      },
+      "progress_inside": {
+        "rows": 73,
+        "mae": 0.4082785962311395,
+        "rmse": 0.9439544975639037,
+        "spearman": 0.23873669885389892
+      },
+      "motion_stationary": {
+        "rows": 193,
+        "mae": 1.6564633191558364,
+        "rmse": 1.9391490265548423,
+        "spearman": null
+      },
+      "motion_slow": {
+        "rows": 104,
+        "mae": 1.5369612954502236,
+        "rmse": 2.188277400636432,
+        "spearman": 0.6548041701888069
+      },
+      "motion_moving": {
+        "rows": 471,
+        "mae": 2.7693173059714384,
+        "rmse": 3.593462757082122,
+        "spearman": 0.5469285074077834
+      }
+    },
+    "spearman_interval95": [
+      0.435766345919856,
+      0.5878023496023791
+    ],
+    "mae_interval95": [
+      2.207378884411399,
+      2.477628040056506
+    ],
+    "rmse_interval95": [
+      2.952068863807287,
+      3.264942862806317
+    ],
+    "mean_prediction": 4.5854339599609375,
+    "bias": 0.5708247048506,
+    "pairwise": {
+      "overall_unequal": {
+        "count": 155,
+        "accuracy": 0.7419354838709677,
+        "interval95": [
+          0.6757258064516128,
+          0.8129032258064516
+        ]
+      },
+      "overall_reliable": {
+        "count": 136,
+        "accuracy": 0.7720588235294118,
+        "interval95": [
+          0.6985294117647058,
+          0.842095588235294
+        ]
+      },
+      "matched_unequal": {
+        "count": 67,
+        "accuracy": 0.6119402985074627,
+        "interval95": [
+          0.44776119402985076,
+          0.7054104477611939
+        ]
+      },
+      "matched_reliable": {
+        "count": 31,
+        "accuracy": 0.5483870967741935,
+        "interval95": [
+          0.3870967741935484,
+          0.7096774193548387
+        ]
+      }
+    }
+  },
+  "constant_training_mean": {
+    "rows": 768,
+    "mae": 5.770129635067769,
+    "rmse": 6.231314823391627,
+    "spearman": null,
+    "by_stratum": {
+      "all": {
+        "rows": 768,
+        "mae": 5.770129635067769,
+        "rmse": 6.231314823391627,
+        "spearman": null
+      },
+      "outside_goal": {
+        "rows": 695,
+        "mae": 5.870110361946667,
+        "rmse": 6.360706065294527,
+        "spearman": null
+      },
+      "inside_goal": {
+        "rows": 73,
+        "mae": 4.818258331220724,
+        "rmse": 4.8288178801945305,
+        "spearman": null
+      },
+      "within_observable_support": {
+        "rows": 608,
+        "mae": 6.11694703178244,
+        "rmse": 6.513020010602605,
+        "spearman": null
+      },
+      "outside_observable_support": {
+        "rows": 160,
+        "mae": 4.45222352755202,
+        "rmse": 5.018638515884486,
+        "spearman": null
+      },
+      "source_fixed_actor": {
+        "rows": 192,
+        "mae": 6.8210673307178356,
+        "rmse": 7.094022223385796,
+        "spearman": null
+      },
+      "source_blind_shortcut": {
+        "rows": 192,
+        "mae": 6.965124958903663,
+        "rmse": 7.204102592521665,
+        "spearman": null
+      },
+      "source_visible_detour": {
+        "rows": 192,
+        "mae": 3.4706007629756193,
+        "rmse": 3.8769350587260396,
+        "spearman": null
+      },
+      "source_uniform": {
+        "rows": 192,
+        "mae": 5.823725487673958,
+        "rmse": 6.169462439616022,
+        "spearman": null
+      },
+      "region_before": {
+        "rows": 222,
+        "mae": 5.360722473898182,
+        "rmse": 5.713384996903892,
+        "spearman": null
+      },
+      "region_swamp": {
+        "rows": 339,
+        "mae": 7.304506166300866,
+        "rmse": 7.527606009166727,
+        "spearman": null
+      },
+      "region_after": {
+        "rows": 138,
+        "mae": 4.481623924400849,
+        "rmse": 4.542038159670759,
+        "spearman": null
+      },
+      "region_detour": {
+        "rows": 69,
+        "mae": 2.1259054867150624,
+        "rmse": 2.739553922825907,
+        "spearman": null
+      },
+      "progress_far": {
+        "rows": 169,
+        "mae": 5.2902225308608255,
+        "rmse": 5.6220696272954935,
+        "spearman": null
+      },
+      "progress_approaching": {
+        "rows": 526,
+        "mae": 6.056424132770825,
+        "rmse": 6.580449575664218,
+        "spearman": null
+      },
+      "progress_inside": {
+        "rows": 73,
+        "mae": 4.818258331220724,
+        "rmse": 4.8288178801945305,
+        "spearman": null
+      },
+      "motion_stationary": {
+        "rows": 193,
+        "mae": 7.95393056933146,
+        "rmse": 7.953930569331459,
+        "spearman": null
+      },
+      "motion_slow": {
+        "rows": 104,
+        "mae": 5.692645718398625,
+        "rmse": 5.936933363295983,
+        "spearman": null
+      },
+      "motion_moving": {
+        "rows": 471,
+        "mae": 4.892390244453541,
+        "rmse": 5.44125873995194,
+        "spearman": null
+      }
+    },
+    "spearman_interval95": null,
+    "mae_interval95": [
+      5.565364394717632,
+      5.962083732546947
+    ],
+    "rmse_interval95": [
+      6.07394016673718,
+      6.394662652525153
+    ],
+    "mean_prediction": 7.953930569331461,
+    "bias": 3.939321611623464,
+    "pairwise": {
+      "overall_unequal": {
+        "count": 155,
+        "accuracy": 0.5,
+        "interval95": [
+          0.5,
+          0.5
+        ]
+      },
+      "overall_reliable": {
+        "count": 136,
+        "accuracy": 0.5,
+        "interval95": [
+          0.5,
+          0.5
+        ]
+      },
+      "matched_unequal": {
+        "count": 67,
+        "accuracy": 0.5,
+        "interval95": [
+          0.5,
+          0.5
+        ]
+      },
+      "matched_reliable": {
+        "count": 31,
+        "accuracy": 0.5,
+        "interval95": [
+          0.5,
+          0.5
+        ]
+      }
+    }
+  }
+}
