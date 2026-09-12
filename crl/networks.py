@@ -116,6 +116,8 @@ class ContrastiveNetworks:
   log_prob: Callable
   sample: Callable
   sample_eval: Callable
+  # Evaluation access to the same encoders; applies existing critic parameters.
+  representation_network: Optional[FeedForward] = None
 
 
 def make_networks(
@@ -209,6 +211,16 @@ def make_networks(
       outer = jnp.stack([outer, outer2], axis=-1)  # [B, B, 2]
     return outer
 
+  def _representations_fn(obs, action):
+    """Return phi and psi as [batch, representation, head], with critic scaling."""
+    sa_repr, g_repr, hidden = _repr_fn(obs, action)
+    state_action, goals = [sa_repr], [g_repr]
+    if twin_q:
+      sa_repr2, g_repr2, _ = _repr_fn(obs, action, hidden=hidden)
+      state_action.append(sa_repr2)
+      goals.append(g_repr2)
+    return jnp.stack(state_action, axis=-1), jnp.stack(goals, axis=-1)
+
   # ---- Actor (returns TanhNormalParams instead of a tfp distribution) ----
   def _actor_fn(obs):
     if not use_image_obs:
@@ -238,6 +250,7 @@ def make_networks(
 
   policy = hk.without_apply_rng(hk.transform(_actor_fn))
   critic = hk.without_apply_rng(hk.transform(_critic_fn))
+  representations = hk.without_apply_rng(hk.transform(_representations_fn))
 
   dummy_obs = jnp.zeros((1, full_obs_dim), dtype=jnp.float32)
   dummy_action = jnp.zeros((1, action_dim), dtype=jnp.float32)
@@ -252,4 +265,7 @@ def make_networks(
       log_prob=tanh_normal_log_prob,
       sample=tanh_normal_sample,
       sample_eval=lambda params, key: tanh_normal_mode(params),
+      representation_network=FeedForward(
+          init=lambda key: representations.init(key, dummy_obs, dummy_action),
+          apply=representations.apply),
   )

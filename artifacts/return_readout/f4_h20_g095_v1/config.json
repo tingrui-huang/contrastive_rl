@@ -1,0 +1,57 @@
+{
+  "horizon": 20,
+  "discount": 0.95,
+  "checkpoints": [
+    "alpha0_seed0",
+    "alpha0p3_seed0",
+    "alpha0_seed1",
+    "alpha0p3_seed1"
+  ],
+  "ridge_grid": [
+    0.0001,
+    0.01,
+    1.0,
+    100.0
+  ],
+  "ridge_objective": "mean MSE + lambda*||w||^2 on train-standardized features; unpenalized intercept",
+  "features": "all phi heads concatenated; psi verified constant, not concatenated",
+  "raw_input": "8 observed state coordinates + 2 recorded actions + 8 constant commanded goal coordinates",
+  "mlp": {
+    "hidden": [
+      32,
+      32
+    ],
+    "steps": 1000,
+    "batch_size": 512,
+    "learning_rate": 0.003,
+    "seeds": [
+      110,
+      111
+    ],
+    "batch_seed": 95124,
+    "eval_every": 200,
+    "selection": "minimum selection MSE; no test selection"
+  },
+  "matching": {
+    "seed": 95121,
+    "newest_xy": 0.25,
+    "goal_distance": 0.25,
+    "time": 3,
+    "exact": [
+      "source membership",
+      "commanded goal",
+      "XY cell"
+    ],
+    "anchors": "one random eligible window per episode; score/return blind",
+    "reuse": "each episode at most once in either role per pair set",
+    "ties": "equal returns within 1e-10 excluded and counted; equal predictions half credit"
+  },
+  "split": "historical source 10% test, complement 10% selection using 9201; exclude original bank episodes from selection/test",
+  "comparison": "alpha 0 versus historically primary alpha 0.3, seeds 0/1; no alpha selection",
+  "targets": "visible fixed-task reward only; no hindsight, masks, death labels or failure scores",
+  "bootstrap": {
+    "pair_replicates": 1000,
+    "error_episode_replicates": 500
+  },
+  "publication": "readout weights local; configs, normalization, metrics and heldout predictions publishable"
+}

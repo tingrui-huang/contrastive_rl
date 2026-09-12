@@ -1,0 +1,116 @@
+{
+  "partitions": {
+    "train": {
+      "episodes": 5346,
+      "windows": 165726,
+      "return_mean": 7.953930569331459,
+      "return_std": 5.778550457191301,
+      "quantiles": [
+        0.0,
+        0.0,
+        0.0,
+        12.830281551829152,
+        12.830281551829152,
+        12.830281551829152,
+        12.830281551829152
+      ],
+      "zero_fraction": 0.3237753882915173,
+      "maximal_fraction": 0.5034635482664156,
+      "by_source": {
+        "0": {
+          "rows": 30690,
+          "mean": 0.045361599576539936
+        },
+        "1": {
+          "rows": 120094,
+          "mean": 10.47100007921857
+        },
+        "2": {
+          "rows": 14942,
+          "mean": 3.967117288739542
+        }
+      }
+    },
+    "selection": {
+      "episodes": 570,
+      "windows": 17670,
+      "return_mean": 8.730980586717525,
+      "return_std": 5.461988823414579,
+      "quantiles": [
+        0.0,
+        0.0,
+        0.0,
+        12.830281551829152,
+        12.830281551829152,
+        12.830281551829152,
+        12.830281551829152
+      ],
+      "zero_fraction": 0.2578947368421053,
+      "maximal_fraction": 0.5521222410865875,
+      "by_source": {
+        "0": {
+          "rows": 2480,
+          "mean": 0.06612778307560704
+        },
+        "1": {
+          "rows": 13857,
+          "mean": 10.7401921944186
+        },
+        "2": {
+          "rows": 1333,
+          "mean": 3.965181415763392
+        }
+      }
+    },
+    "test": {
+      "episodes": 637,
+      "windows": 19747,
+      "return_mean": 8.469650932978766,
+      "return_std": 5.592583470718444,
+      "quantiles": [
+        0.0,
+        0.0,
+        0.0,
+        12.830281551829152,
+        12.830281551829152,
+        12.830281551829152,
+        12.830281551829152
+      ],
+      "zero_fraction": 0.28201752164885807,
+      "maximal_fraction": 0.5371448827670026,
+      "by_source": {
+        "0": {
+          "rows": 3317,
+          "mean": 0.05558952408325024
+        },
+        "1": {
+          "rows": 14787,
+          "mean": 10.787164187253651
+        },
+        "2": {
+          "rows": 1643,
+          "mean": 4.5989103379353775
+        }
+      }
+    }
+  },
+  "eligible_windows": 204600,
+  "available_transitions": 330000,
+  "complete_future_fraction": 0.62,
+  "times": [
+    0,
+    30
+  ],
+  "discarded_incomplete_windows": 125400,
+  "excluded_bank_selection_episodes": 24,
+  "excluded_bank_test_episodes": 23,
+  "duplicate_trajectories_crossing_readout_splits": 0,
+  "reward_reconstructed": true,
+  "reward_radius": 2.0,
+  "goal": [
+    8.5,
+    3.5
+  ],
+  "hidden_fields_loaded": false,
+  "target_variation_sufficient": true
+}
