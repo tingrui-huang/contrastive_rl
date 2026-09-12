@@ -1,0 +1,19 @@
+{
+  "utc": "2026-09-12T21:55:42Z",
+  "reason": "Initial native replay failed because batch 128 versus batch 4 GEMM differs by float32 rounding (max F4 difference 9.536743e-7). Fix network inference shape at 128. All 6 final checkpoints remain frozen. No return summary was produced or used to change any model or protocol. Exactly one repeat of the same initial evaluation seeds; no new seeds or top-up.",
+  "failed_attempt_native_steps": 6600,
+  "original_native_step_cap": 47000,
+  "revised_native_step_cap": 53600,
+  "source_changes": {
+    "ett/run_policy_improvement.py": {
+      "original_sha256": "34e2f9d07c6947b596fa1578752046266f6027ee4bfdb3de068d9f3391cca936",
+      "corrected_sha256": "78aa4442e7f2abfbca92a69b6ad55bb5b36cee9596b17d0d54eb2c96529cdb71"
+    },
+    "ett/eval_policy_improvement.py": {
+      "original_sha256": "f7e60bf80fe2309fa8613fd40d4d2aa8aa7d1b481b61b9258596156a41a84bd7",
+      "corrected_sha256": "d1924d572b7b23ba9d611a330954286082133dfed28b1d34b6e69691a7c55b62"
+    }
+  },
+  "unchanged": "All learning, checkpoints, goals, reset seeds, evaluation sample sizes, actions conventions, metrics, pairing and stopping rules",
+  "original_main_and_replay_arrays_saved": false
+}

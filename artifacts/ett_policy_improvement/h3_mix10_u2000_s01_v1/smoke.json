@@ -1,0 +1,65 @@
+{
+  "status": "complete",
+  "runs": {
+    "s0_C": {
+      "updates": 5,
+      "start_state_sha256": "fbe33c185f735f3e1dcd8f4da9f8c5bcb24b8907d66ee0521f52d447c9725ca5",
+      "final_state_sha256": "46e5267e4c5d0e51771a2498a55bb8281ca1dc49a46dba8ecdd061ab0b91d0ba",
+      "final_policy_sha256": "d7c65eb94966776e5c6d60ed6208972e2513c03d37b6f50b92a7f0f244966b07",
+      "final_critic_sha256": "69af04160b7809ff863e710c273bf4bae0921d2ba15e3a2f8c9ba1e704a7f57d",
+      "synthetic_anchors": 128,
+      "total_anchors": 1280,
+      "refreshes": 1,
+      "curves": [
+        {
+          "update": 5,
+          "action_saturation_fraction": 0.11796875,
+          "actor_grad_norm": 6.05148549079895,
+          "actor_loss": 3.9042885303497314,
+          "actor_q_term": 8.186268711090088,
+          "bc_loss_weighted": -0.18884581252932547,
+          "bc_nll": -0.37769162505865095,
+          "bc_nll_raw": -0.37769162505865095,
+          "binary_accuracy": 0.996429443359375,
+          "categorical_accuracy": 0.2765625,
+          "critic_actor_term_raw": 8.186268711090088,
+          "critic_actor_term_weighted": 4.093134355545044,
+          "critic_grad_norm": 0.07158908769488334,
+          "critic_loss": 0.01856205202639103,
+          "logits_gap": 13.35651454925537,
+          "logits_neg": -16.950666618347167,
+          "logits_pos": -3.5941519737243652,
+          "logsumexp": 0.4450393170118332,
+          "policy_entropy": -1.5947654485702514,
+          "policy_scale_floor_fraction": 0.0,
+          "policy_scale_median": 0.22091637551784515,
+          "pre_tanh_loc_abs_max": 19.75143928527832,
+          "pre_tanh_loc_abs_mean": 0.8460523843765259
+        }
+      ],
+      "diagnostics": [
+        {
+          "update": 0,
+          "mean_motion": 0.3969874680042267,
+          "stationary_fraction": 0.0,
+          "stationary_history_count": 43,
+          "renewed_stationary_fraction": 1.0,
+          "projection_fraction": 0.048177083333333336,
+          "boundary_fraction": 0.048177083333333336,
+          "atom_moved_fraction": 1.0,
+          "sampled_segment_wall_fraction": 0.0013020833333333333,
+          "mean_xy": [
+            6.653130054473877,
+            3.472069025039673
+          ],
+          "detour_fraction": 0.0234375,
+          "corridor_fraction": 0.21744791666666666,
+          "action_saturation": 0.087890625,
+          "policy_sha256": "1624664a334557bf8284eced5568dfffa47769a34c33216e1e8855a6a735a1aa"
+        }
+      ],
+      "seconds": 2.1027070999844,
+      "frozen_verified": true
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "seeds": [
+    0,
+    1
+  ],
+  "arms": [
+    "A",
+    "B",
+    "C"
+  ],
+  "updates": 2000,
+  "refresh": 100,
+  "contexts": 256,
+  "rollout_horizon": 3,
+  "synthetic_fraction": 0.1,
+  "replay_refreshes": 1,
+  "batch_size": 256,
+  "discount": 0.95,
+  "evaluation_episodes": 128,
+  "evaluation_horizon": 50,
+  "reset_seed_base": 21000000,
+  "evaluation_model_seed": 22000000,
+  "train_seed_base": 23000000,
+  "rollout_seed_base": 24000000,
+  "bootstrap_seed": 25000000,
+  "native_step_cap": 47000,
+  "model_step_cap": 220000,
+  "failure_negative_alpha": 0.0,
+  "evaluation_action": "deterministic tanh(loc)",
+  "success": "minimum native XY distance < 0.5",
+  "reward": "native reward; XY radius < 2",
+  "original_partition": "all behavior sources; exclude permutation(6600, seed=0)[:660]",
+  "checkpoint_selection": "final update only",
+  "unused_transition_fields": "NaN; MC losses must not read them"
+}
