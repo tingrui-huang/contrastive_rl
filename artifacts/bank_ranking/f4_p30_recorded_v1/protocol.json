@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "score": "existing normalized full-F4 hard nearest-reference squared distance",
+  "dtype": "float32, original JAX implementation",
+  "score_direction": "smaller is more failure-like",
+  "tie_rule": "first saved bank index; ranking ties receive 0.5; exact floating equality",
+  "population": "original seed-0 source validation episodes minus ALL original 256 bank-source episodes",
+  "observation_rows": "1..length-1: actual next states, including horizon endpoint; reset row 0 supplementary only",
+  "thresholds": null,
+  "seed": 93171,
+  "bootstrap_replicates": 1000,
+  "matching": {
+    "seed": 93172,
+    "xy_tolerance": 0.25,
+    "previous_xy_tolerance": 0.5,
+    "time_tolerance": 5,
+    "exact_variables": [
+      "source membership",
+      "commanded goal",
+      "newest XY cell"
+    ],
+    "distance": "sum of XY, previous XY and time gaps divided by their respective tolerances",
+    "phases": {
+      "onset": 0,
+      "established_first": 3
+    },
+    "reuse": "no episode reused in either role within a phase; independent matching across phases",
+    "scope": "approximate observational context matching, not conditional ETT or causal ground truth"
+  },
+  "publication": "aggregates, reference usage, anonymized score sequences and episode-set provenance only; no raw audit fields",
+  "training": false,
+  "reward_analysis": false,
+  "candidate_selection": false
+}
