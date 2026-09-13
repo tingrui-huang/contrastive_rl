@@ -1,0 +1,1852 @@
+{
+  "native": {
+    "I": {
+      "returns": 3.3235572407983716,
+      "success": 0.29296875,
+      "failure": 0.70703125
+    },
+    "O_s0": {
+      "returns": 3.593591877575702,
+      "success": 0.3125,
+      "failure": 0.6875
+    },
+    "B_s0": {
+      "returns": 3.2849856570643015,
+      "success": 0.28125,
+      "failure": 0.71875
+    },
+    "C_s0": {
+      "returns": 3.6953070536549024,
+      "success": 0.32421875,
+      "failure": 0.67578125
+    },
+    "O_s1": {
+      "returns": 3.1142836041630995,
+      "success": 0.265625,
+      "failure": 0.734375
+    },
+    "B_s1": {
+      "returns": 3.1509032947087823,
+      "success": 0.265625,
+      "failure": 0.734375
+    },
+    "C_s1": {
+      "returns": 3.0810937328341153,
+      "success": 0.26953125,
+      "failure": 0.73046875
+    }
+  },
+  "native_contrasts": {
+    "C_s0_minus_O_s0": {
+      "returns": {
+        "difference": 0.1017151760792004,
+        "ci95": [
+          -0.21088134522363083,
+          0.42510110810193036
+        ],
+        "all_ties": false
+      },
+      "success": {
+        "difference": 0.01171875,
+        "ci95": [
+          -0.01953125,
+          0.04296875
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 10,
+        "a_zero_b_one": 7
+      },
+      "failure": {
+        "difference": -0.01171875,
+        "ci95": [
+          -0.04296875,
+          0.01953125
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 7,
+        "a_zero_b_one": 10
+      }
+    },
+    "C_s0_minus_B_s0": {
+      "returns": {
+        "difference": 0.41032139659060085,
+        "ci95": [
+          0.005022882050085759,
+          0.8479246560412229
+        ],
+        "all_ties": false
+      },
+      "success": {
+        "difference": 0.04296875,
+        "ci95": [
+          0.0077148437500000056,
+          0.08203125
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 18,
+        "a_zero_b_one": 7
+      },
+      "failure": {
+        "difference": -0.04296875,
+        "ci95": [
+          -0.08203125,
+          -0.007714843750000533
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 7,
+        "a_zero_b_one": 18
+      }
+    },
+    "B_s0_minus_O_s0": {
+      "returns": {
+        "difference": -0.3086062205114004,
+        "ci95": [
+          -0.7414570409593066,
+          0.0971990987055461
+        ],
+        "all_ties": false
+      },
+      "success": {
+        "difference": -0.03125,
+        "ci95": [
+          -0.0703125,
+          0.00390625
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 8,
+        "a_zero_b_one": 16
+      },
+      "failure": {
+        "difference": 0.03125,
+        "ci95": [
+          -0.00390625,
+          0.0703125
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 16,
+        "a_zero_b_one": 8
+      }
+    },
+    "O_s0_minus_I": {
+      "returns": {
+        "difference": 0.2700346367773306,
+        "ci95": [
+          -0.20349856063582744,
+          0.715170170138157
+        ],
+        "all_ties": false
+      },
+      "success": {
+        "difference": 0.01953125,
+        "ci95": [
+          -0.02734375,
+          0.0625
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 19,
+        "a_zero_b_one": 14
+      },
+      "failure": {
+        "difference": -0.01953125,
+        "ci95": [
+          -0.0625,
+          0.02734375
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 14,
+        "a_zero_b_one": 19
+      }
+    },
+    "B_s0_minus_I": {
+      "returns": {
+        "difference": -0.0385715837340699,
+        "ci95": [
+          -0.5417407567519091,
+          0.43804736423988694
+        ],
+        "all_ties": false
+      },
+      "success": {
+        "difference": -0.01171875,
+        "ci95": [
+          -0.05859375,
+          0.03125
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 15,
+        "a_zero_b_one": 18
+      },
+      "failure": {
+        "difference": 0.01171875,
+        "ci95": [
+          -0.03125,
+          0.05859375
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 18,
+        "a_zero_b_one": 15
+      }
+    },
+    "C_s0_minus_I": {
+      "returns": {
+        "difference": 0.3717498128565309,
+        "ci95": [
+          -0.07450058116433204,
+          0.8362506957774556
+        ],
+        "all_ties": false
+      },
+      "success": {
+        "difference": 0.03125,
+        "ci95": [
+          -0.01171875,
+          0.07421875
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 20,
+        "a_zero_b_one": 12
+      },
+      "failure": {
+        "difference": -0.03125,
+        "ci95": [
+          -0.07421875,
+          0.01171875
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 12,
+        "a_zero_b_one": 20
+      }
+    },
+    "C_s1_minus_O_s1": {
+      "returns": {
+        "difference": -0.03318987132898443,
+        "ci95": [
+          -0.41538460384588655,
+          0.3318079579841278
+        ],
+        "all_ties": false
+      },
+      "success": {
+        "difference": 0.00390625,
+        "ci95": [
+          -0.03125,
+          0.0390625
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 11,
+        "a_zero_b_one": 10
+      },
+      "failure": {
+        "difference": -0.00390625,
+        "ci95": [
+          -0.0390625,
+          0.03125
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 10,
+        "a_zero_b_one": 11
+      }
+    },
+    "C_s1_minus_B_s1": {
+      "returns": {
+        "difference": -0.06980956187466753,
+        "ci95": [
+          -0.3978385730792181,
+          0.23848620143656543
+        ],
+        "all_ties": false
+      },
+      "success": {
+        "difference": 0.00390625,
+        "ci95": [
+          -0.03125,
+          0.0390625
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 10,
+        "a_zero_b_one": 9
+      },
+      "failure": {
+        "difference": -0.00390625,
+        "ci95": [
+          -0.0390625,
+          0.03125
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 9,
+        "a_zero_b_one": 10
+      }
+    },
+    "B_s1_minus_O_s1": {
+      "returns": {
+        "difference": 0.03661969054568308,
+        "ci95": [
+          -0.30306219775854265,
+          0.3808480277115545
+        ],
+        "all_ties": false
+      },
+      "success": {
+        "difference": 0.0,
+        "ci95": [
+          -0.03125,
+          0.03125
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 9,
+        "a_zero_b_one": 9
+      },
+      "failure": {
+        "difference": 0.0,
+        "ci95": [
+          -0.03125,
+          0.03125
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 9,
+        "a_zero_b_one": 9
+      }
+    },
+    "O_s1_minus_I": {
+      "returns": {
+        "difference": -0.2092736366352722,
+        "ci95": [
+          -0.7173632401966689,
+          0.27789977620806133
+        ],
+        "all_ties": false
+      },
+      "success": {
+        "difference": -0.02734375,
+        "ci95": [
+          -0.07421875,
+          0.01953125
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 14,
+        "a_zero_b_one": 21
+      },
+      "failure": {
+        "difference": 0.02734375,
+        "ci95": [
+          -0.01953125,
+          0.07421875
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 21,
+        "a_zero_b_one": 14
+      }
+    },
+    "B_s1_minus_I": {
+      "returns": {
+        "difference": -0.17265394608958912,
+        "ci95": [
+          -0.6588295541123506,
+          0.25838288763365136
+        ],
+        "all_ties": false
+      },
+      "success": {
+        "difference": -0.02734375,
+        "ci95": [
+          -0.07421875,
+          0.015625
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 13,
+        "a_zero_b_one": 20
+      },
+      "failure": {
+        "difference": 0.02734375,
+        "ci95": [
+          -0.015625,
+          0.07421875
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 20,
+        "a_zero_b_one": 13
+      }
+    },
+    "C_s1_minus_I": {
+      "returns": {
+        "difference": -0.24246350796425664,
+        "ci95": [
+          -0.6776775905080337,
+          0.1672303290749016
+        ],
+        "all_ties": false
+      },
+      "success": {
+        "difference": -0.0234375,
+        "ci95": [
+          -0.0625,
+          0.015625
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 11,
+        "a_zero_b_one": 17
+      },
+      "failure": {
+        "difference": 0.0234375,
+        "ci95": [
+          -0.015625,
+          0.0625
+        ],
+        "all_ties": false,
+        "a_one_b_zero": 17,
+        "a_zero_b_one": 11
+      }
+    }
+  },
+  "conditional_two_seed_mean": {
+    "C_minus_O": {
+      "returns": {
+        "difference": 0.03426265237510799,
+        "ci95": [
+          -0.2144865363221408,
+          0.2679560744975919
+        ],
+        "all_ties": false
+      },
+      "success": {
+        "difference": 0.0078125,
+        "ci95": [
+          -0.015625,
+          0.03125
+        ],
+        "all_ties": false
+      },
+      "failure": {
+        "difference": -0.0078125,
+        "ci95": [
+          -0.03125,
+          0.015625
+        ],
+        "all_ties": false
+      }
+    },
+    "C_minus_B": {
+      "returns": {
+        "difference": 0.1702559173579667,
+        "ci95": [
+          -0.11425779513954794,
+          0.48768749118761245
+        ],
+        "all_ties": false
+      },
+      "success": {
+        "difference": 0.0234375,
+        "ci95": [
+          -0.00390625,
+          0.052734375
+        ],
+        "all_ties": false
+      },
+      "failure": {
+        "difference": -0.0234375,
+        "ci95": [
+          -0.052734375,
+          0.00390625
+        ],
+        "all_ties": false
+      }
+    },
+    "B_minus_O": {
+      "returns": {
+        "difference": -0.13599326498285869,
+        "ci95": [
+          -0.4343113466080311,
+          0.14587285288591742
+        ],
+        "all_ties": false
+      },
+      "success": {
+        "difference": -0.015625,
+        "ci95": [
+          -0.04296875,
+          0.009765625
+        ],
+        "all_ties": false
+      },
+      "failure": {
+        "difference": 0.015625,
+        "ci95": [
+          -0.009765625,
+          0.04296875
+        ],
+        "all_ties": false
+      }
+    }
+  },
+  "model": {
+    "obs_s0": {
+      "I": {
+        "returns": 8.327612232529667,
+        "success": 0.953125,
+        "zero_return": 0.015625
+      },
+      "O_s0": {
+        "returns": 10.042318621607112,
+        "success": 0.984375,
+        "zero_return": 0.0
+      },
+      "B_s0": {
+        "returns": 9.649797469016882,
+        "success": 0.9765625,
+        "zero_return": 0.0
+      },
+      "C_s0": {
+        "returns": 9.401024869530733,
+        "success": 0.96875,
+        "zero_return": 0.0078125
+      },
+      "O_s1": {
+        "returns": 9.647202000064368,
+        "success": 0.984375,
+        "zero_return": 0.015625
+      },
+      "B_s1": {
+        "returns": 9.253813083110106,
+        "success": 0.96875,
+        "zero_return": 0.0234375
+      },
+      "C_s1": {
+        "returns": 9.631337541268772,
+        "success": 0.9609375,
+        "zero_return": 0.015625
+      }
+    },
+    "pess_s0": {
+      "I": {
+        "returns": 9.926340842153067,
+        "success": 0.859375,
+        "zero_return": 0.1171875
+      },
+      "O_s0": {
+        "returns": 9.954609958110684,
+        "success": 0.859375,
+        "zero_return": 0.1171875
+      },
+      "B_s0": {
+        "returns": 9.82866100805246,
+        "success": 0.84375,
+        "zero_return": 0.140625
+      },
+      "C_s0": {
+        "returns": 9.825112846512246,
+        "success": 0.84375,
+        "zero_return": 0.1328125
+      },
+      "O_s1": {
+        "returns": 9.838854282468228,
+        "success": 0.84375,
+        "zero_return": 0.140625
+      },
+      "B_s1": {
+        "returns": 9.911347152720758,
+        "success": 0.8515625,
+        "zero_return": 0.125
+      },
+      "C_s1": {
+        "returns": 9.815207786817144,
+        "success": 0.84375,
+        "zero_return": 0.140625
+      }
+    },
+    "obs_s1": {
+      "I": {
+        "returns": 8.236030174875083,
+        "success": 0.9375,
+        "zero_return": 0.0234375
+      },
+      "O_s0": {
+        "returns": 9.777765928816578,
+        "success": 0.9765625,
+        "zero_return": 0.0078125
+      },
+      "B_s0": {
+        "returns": 9.698630842118673,
+        "success": 0.9921875,
+        "zero_return": 0.0
+      },
+      "C_s0": {
+        "returns": 9.392657783331408,
+        "success": 0.9765625,
+        "zero_return": 0.015625
+      },
+      "O_s1": {
+        "returns": 9.634881124878332,
+        "success": 0.9921875,
+        "zero_return": 0.0
+      },
+      "B_s1": {
+        "returns": 9.361848696441996,
+        "success": 0.984375,
+        "zero_return": 0.0078125
+      },
+      "C_s1": {
+        "returns": 9.56751853686924,
+        "success": 0.96875,
+        "zero_return": 0.0078125
+      }
+    },
+    "pess_s1": {
+      "I": {
+        "returns": 9.995863350592128,
+        "success": 0.8828125,
+        "zero_return": 0.109375
+      },
+      "O_s0": {
+        "returns": 10.011197608539492,
+        "success": 0.8828125,
+        "zero_return": 0.109375
+      },
+      "B_s0": {
+        "returns": 9.962892208716163,
+        "success": 0.8671875,
+        "zero_return": 0.1171875
+      },
+      "C_s0": {
+        "returns": 9.966775423048976,
+        "success": 0.875,
+        "zero_return": 0.1171875
+      },
+      "O_s1": {
+        "returns": 10.031908605635738,
+        "success": 0.8828125,
+        "zero_return": 0.109375
+      },
+      "B_s1": {
+        "returns": 9.920417326868069,
+        "success": 0.875,
+        "zero_return": 0.1171875
+      },
+      "C_s1": {
+        "returns": 9.966775423048976,
+        "success": 0.875,
+        "zero_return": 0.1171875
+      }
+    }
+  },
+  "model_vs_I": {
+    "obs_s0": {
+      "O_s0": {
+        "returns": {
+          "difference": 1.7147063890774468,
+          "ci95": [
+            1.1321194388555884,
+            2.2908586547325998
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": 0.03125,
+          "ci95": [
+            -0.0078125,
+            0.078125
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 6,
+          "a_zero_b_one": 2
+        },
+        "zero_return": {
+          "difference": -0.015625,
+          "ci95": [
+            -0.0390625,
+            0.0
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 2
+        }
+      },
+      "B_s0": {
+        "returns": {
+          "difference": 1.3221852364872164,
+          "ci95": [
+            0.7372840977391342,
+            1.9352847077687463
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": 0.0234375,
+          "ci95": [
+            -0.0234375,
+            0.0703125
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 6,
+          "a_zero_b_one": 3
+        },
+        "zero_return": {
+          "difference": -0.015625,
+          "ci95": [
+            -0.0390625,
+            0.0
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 2
+        }
+      },
+      "C_s0": {
+        "returns": {
+          "difference": 1.073412637001067,
+          "ci95": [
+            0.5435914524878864,
+            1.6271846701786479
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": 0.015625,
+          "ci95": [
+            -0.0390625,
+            0.0625
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 6,
+          "a_zero_b_one": 4
+        },
+        "zero_return": {
+          "difference": -0.0078125,
+          "ci95": [
+            -0.0390625,
+            0.015625
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 2
+        }
+      },
+      "O_s1": {
+        "returns": {
+          "difference": 1.319589767534703,
+          "ci95": [
+            0.7328556316706104,
+            1.9052263706464816
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": 0.03125,
+          "ci95": [
+            -0.015625,
+            0.078125
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 6,
+          "a_zero_b_one": 2
+        },
+        "zero_return": {
+          "difference": 0.0,
+          "ci95": [
+            -0.03125,
+            0.03125
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 2,
+          "a_zero_b_one": 2
+        }
+      },
+      "B_s1": {
+        "returns": {
+          "difference": 0.9262008505804402,
+          "ci95": [
+            0.3207203227608019,
+            1.5383933301073043
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": 0.015625,
+          "ci95": [
+            -0.0234375,
+            0.0625
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 5,
+          "a_zero_b_one": 3
+        },
+        "zero_return": {
+          "difference": 0.0078125,
+          "ci95": [
+            -0.015625,
+            0.0390625
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 2,
+          "a_zero_b_one": 1
+        }
+      },
+      "C_s1": {
+        "returns": {
+          "difference": 1.3037253087391063,
+          "ci95": [
+            0.7741950297537374,
+            1.840223328106428
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": 0.0078125,
+          "ci95": [
+            -0.0390625,
+            0.0546875
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 5,
+          "a_zero_b_one": 4
+        },
+        "zero_return": {
+          "difference": 0.0,
+          "ci95": [
+            -0.03125,
+            0.03125
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 2,
+          "a_zero_b_one": 2
+        }
+      }
+    },
+    "pess_s0": {
+      "O_s0": {
+        "returns": {
+          "difference": 0.028269115957618354,
+          "ci95": [
+            -0.015015397478381034,
+            0.08958909328272843
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": 0.0,
+          "ci95": [
+            -0.0234375,
+            0.0234375
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 1
+        },
+        "zero_return": {
+          "difference": 0.0,
+          "ci95": [
+            -0.0234375,
+            0.0234375
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 1
+        }
+      },
+      "B_s0": {
+        "returns": {
+          "difference": -0.09767983410060545,
+          "ci95": [
+            -0.35570240863045377,
+            0.10523629309700011
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": -0.015625,
+          "ci95": [
+            -0.046875,
+            0.015625
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 3
+        },
+        "zero_return": {
+          "difference": 0.0234375,
+          "ci95": [
+            -0.0078125,
+            0.0625
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 4,
+          "a_zero_b_one": 1
+        }
+      },
+      "C_s0": {
+        "returns": {
+          "difference": -0.10122799564082044,
+          "ci95": [
+            -0.3556859515964939,
+            0.09456508361793357
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": -0.015625,
+          "ci95": [
+            -0.046875,
+            0.015625
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 3
+        },
+        "zero_return": {
+          "difference": 0.015625,
+          "ci95": [
+            -0.015625,
+            0.046875
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 3,
+          "a_zero_b_one": 1
+        }
+      },
+      "O_s1": {
+        "returns": {
+          "difference": -0.08748655968483833,
+          "ci95": [
+            -0.2569029739620636,
+            0.011129146495383966
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": -0.015625,
+          "ci95": [
+            -0.0390625,
+            0.0
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 2
+        },
+        "zero_return": {
+          "difference": 0.0234375,
+          "ci95": [
+            0.0,
+            0.0546875
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 3,
+          "a_zero_b_one": 0
+        }
+      },
+      "B_s1": {
+        "returns": {
+          "difference": -0.014993689432308603,
+          "ci95": [
+            -0.19573208689186003,
+            0.15520819818498238
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": -0.0078125,
+          "ci95": [
+            -0.0390625,
+            0.015625
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 2
+        },
+        "zero_return": {
+          "difference": 0.0078125,
+          "ci95": [
+            -0.015625,
+            0.0390625
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 2,
+          "a_zero_b_one": 1
+        }
+      },
+      "C_s1": {
+        "returns": {
+          "difference": -0.11113305533592291,
+          "ci95": [
+            -0.35424900269364046,
+            0.09012849035929407
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": -0.015625,
+          "ci95": [
+            -0.046875,
+            0.015625
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 3
+        },
+        "zero_return": {
+          "difference": 0.0234375,
+          "ci95": [
+            -0.0078125,
+            0.0625
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 4,
+          "a_zero_b_one": 1
+        }
+      }
+    },
+    "obs_s1": {
+      "O_s0": {
+        "returns": {
+          "difference": 1.5417357539414953,
+          "ci95": [
+            0.9706371014125662,
+            2.1419194325569273
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": 0.0390625,
+          "ci95": [
+            0.0,
+            0.0859375
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 7,
+          "a_zero_b_one": 2
+        },
+        "zero_return": {
+          "difference": -0.015625,
+          "ci95": [
+            -0.046875,
+            0.015625
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 3
+        }
+      },
+      "B_s0": {
+        "returns": {
+          "difference": 1.462600667243591,
+          "ci95": [
+            0.8715977784429928,
+            2.066472178327686
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": 0.0546875,
+          "ci95": [
+            0.015625,
+            0.1015625
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 8,
+          "a_zero_b_one": 1
+        },
+        "zero_return": {
+          "difference": -0.0234375,
+          "ci95": [
+            -0.0546875,
+            0.0
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 3
+        }
+      },
+      "C_s0": {
+        "returns": {
+          "difference": 1.1566276084563267,
+          "ci95": [
+            0.6420358715124517,
+            1.6692677887861147
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": 0.0390625,
+          "ci95": [
+            -0.0078125,
+            0.0859375
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 8,
+          "a_zero_b_one": 3
+        },
+        "zero_return": {
+          "difference": -0.0078125,
+          "ci95": [
+            -0.0390625,
+            0.0234375
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 2,
+          "a_zero_b_one": 3
+        }
+      },
+      "O_s1": {
+        "returns": {
+          "difference": 1.3988509500032484,
+          "ci95": [
+            0.8249761361491162,
+            1.9603041730585595
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": 0.0546875,
+          "ci95": [
+            0.015625,
+            0.1015625
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 8,
+          "a_zero_b_one": 1
+        },
+        "zero_return": {
+          "difference": -0.0234375,
+          "ci95": [
+            -0.0546875,
+            0.0
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 3
+        }
+      },
+      "B_s1": {
+        "returns": {
+          "difference": 1.1258185215669136,
+          "ci95": [
+            0.5054638065898531,
+            1.7508597725727826
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": 0.046875,
+          "ci95": [
+            0.0078125,
+            0.09375
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 7,
+          "a_zero_b_one": 1
+        },
+        "zero_return": {
+          "difference": -0.015625,
+          "ci95": [
+            -0.0390625,
+            0.0
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 2
+        }
+      },
+      "C_s1": {
+        "returns": {
+          "difference": 1.3314883619941567,
+          "ci95": [
+            0.7592942506307201,
+            1.8636852560416397
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": 0.03125,
+          "ci95": [
+            -0.015625,
+            0.078125
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 7,
+          "a_zero_b_one": 3
+        },
+        "zero_return": {
+          "difference": -0.015625,
+          "ci95": [
+            -0.046875,
+            0.0078125
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 3
+        }
+      }
+    },
+    "pess_s1": {
+      "O_s0": {
+        "returns": {
+          "difference": 0.015334257947363997,
+          "ci95": [
+            0.0,
+            0.043721609589445334
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "all_ties": true,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 0
+        },
+        "zero_return": {
+          "difference": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "all_ties": true,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 0
+        }
+      },
+      "B_s0": {
+        "returns": {
+          "difference": -0.032971141875964755,
+          "ci95": [
+            -0.21061146474913406,
+            0.11277205937842047
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": -0.015625,
+          "ci95": [
+            -0.0390625,
+            0.0
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 2
+        },
+        "zero_return": {
+          "difference": 0.0078125,
+          "ci95": [
+            0.0,
+            0.0234375
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 0
+        }
+      },
+      "C_s0": {
+        "returns": {
+          "difference": -0.029087927543153452,
+          "ci95": [
+            -0.20459030158452654,
+            0.11665527371123177
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": -0.0078125,
+          "ci95": [
+            -0.0234375,
+            0.0
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 1
+        },
+        "zero_return": {
+          "difference": 0.0078125,
+          "ci95": [
+            0.0,
+            0.0234375
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 0
+        }
+      },
+      "O_s1": {
+        "returns": {
+          "difference": 0.036045255043610266,
+          "ci95": [
+            0.0,
+            0.10585460087818414
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "all_ties": true,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 0
+        },
+        "zero_return": {
+          "difference": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "all_ties": true,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 0
+        }
+      },
+      "B_s1": {
+        "returns": {
+          "difference": -0.07544602372405916,
+          "ci95": [
+            -0.23358891141759255,
+            0.02393908134942036
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": -0.0078125,
+          "ci95": [
+            -0.0234375,
+            0.0
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 1
+        },
+        "zero_return": {
+          "difference": 0.0078125,
+          "ci95": [
+            0.0,
+            0.0234375
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 0
+        }
+      },
+      "C_s1": {
+        "returns": {
+          "difference": -0.029087927543153452,
+          "ci95": [
+            -0.20459030158452654,
+            0.11665527371123177
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": -0.0078125,
+          "ci95": [
+            -0.0234375,
+            0.0
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 1
+        },
+        "zero_return": {
+          "difference": 0.0078125,
+          "ci95": [
+            0.0,
+            0.0234375
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 0
+        }
+      }
+    }
+  },
+  "model_primary": {
+    "obs_s0": {
+      "C_s0_minus_O_s0": {
+        "returns": {
+          "difference": -0.6412937520763797,
+          "ci95": [
+            -1.142525205727407,
+            -0.18607682891862767
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": -0.015625,
+          "ci95": [
+            -0.0546875,
+            0.0234375
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 2,
+          "a_zero_b_one": 4
+        },
+        "zero_return": {
+          "difference": 0.0078125,
+          "ci95": [
+            0.0,
+            0.0234375
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 0
+        }
+      },
+      "C_s0_minus_B_s0": {
+        "returns": {
+          "difference": -0.2487725994861495,
+          "ci95": [
+            -0.7261813384107084,
+            0.23229415413354665
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": -0.0078125,
+          "ci95": [
+            -0.0546875,
+            0.03125
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 3,
+          "a_zero_b_one": 4
+        },
+        "zero_return": {
+          "difference": 0.0078125,
+          "ci95": [
+            0.0,
+            0.0234375
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 0
+        }
+      },
+      "C_s1_minus_O_s1": {
+        "returns": {
+          "difference": -0.015864458795596868,
+          "ci95": [
+            -0.49578357781224175,
+            0.43043561892565557
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": -0.0234375,
+          "ci95": [
+            -0.0625,
+            0.015625
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 2,
+          "a_zero_b_one": 5
+        },
+        "zero_return": {
+          "difference": 0.0,
+          "ci95": [
+            -0.03125,
+            0.03125
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 2,
+          "a_zero_b_one": 2
+        }
+      },
+      "C_s1_minus_B_s1": {
+        "returns": {
+          "difference": 0.3775244581586661,
+          "ci95": [
+            -0.10553522537588035,
+            0.8793882325134924
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": -0.0078125,
+          "ci95": [
+            -0.0546875,
+            0.0390625
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 4,
+          "a_zero_b_one": 5
+        },
+        "zero_return": {
+          "difference": -0.0078125,
+          "ci95": [
+            -0.046875,
+            0.03125
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 2,
+          "a_zero_b_one": 3
+        }
+      }
+    },
+    "pess_s0": {
+      "C_s0_minus_O_s0": {
+        "returns": {
+          "difference": -0.1294971115984388,
+          "ci95": [
+            -0.3804865927267615,
+            0.07629594170644921
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": -0.015625,
+          "ci95": [
+            -0.046875,
+            0.015625
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 3
+        },
+        "zero_return": {
+          "difference": 0.015625,
+          "ci95": [
+            -0.015625,
+            0.046875
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 3,
+          "a_zero_b_one": 1
+        }
+      },
+      "C_s0_minus_B_s0": {
+        "returns": {
+          "difference": -0.0035481615402149884,
+          "ci95": [
+            -0.021285506147715058,
+            0.013117361803678073
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "all_ties": true,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 0
+        },
+        "zero_return": {
+          "difference": -0.0078125,
+          "ci95": [
+            -0.0234375,
+            0.0
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 1
+        }
+      },
+      "C_s1_minus_O_s1": {
+        "returns": {
+          "difference": -0.023646495651084586,
+          "ci95": [
+            -0.201466075679977,
+            0.13799638725077426
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": 0.0,
+          "ci95": [
+            -0.0234375,
+            0.0234375
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 1
+        },
+        "zero_return": {
+          "difference": 0.0,
+          "ci95": [
+            -0.0234375,
+            0.0234375
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 1
+        }
+      },
+      "C_s1_minus_B_s1": {
+        "returns": {
+          "difference": -0.09613936590361431,
+          "ci95": [
+            -0.2626082536609024,
+            -0.001333620497732094
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": -0.0078125,
+          "ci95": [
+            -0.0234375,
+            0.0
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 1
+        },
+        "zero_return": {
+          "difference": 0.015625,
+          "ci95": [
+            0.0,
+            0.0390625
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 2,
+          "a_zero_b_one": 0
+        }
+      }
+    },
+    "obs_s1": {
+      "C_s0_minus_O_s0": {
+        "returns": {
+          "difference": -0.3851081454851687,
+          "ci95": [
+            -0.8387358642512431,
+            0.04520930146637821
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": 0.0,
+          "ci95": [
+            -0.0390625,
+            0.0390625
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 3,
+          "a_zero_b_one": 3
+        },
+        "zero_return": {
+          "difference": 0.0078125,
+          "ci95": [
+            -0.015625,
+            0.0390625
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 2,
+          "a_zero_b_one": 1
+        }
+      },
+      "C_s0_minus_B_s0": {
+        "returns": {
+          "difference": -0.30597305878726433,
+          "ci95": [
+            -0.7570227481894896,
+            0.14748598578915004
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": -0.015625,
+          "ci95": [
+            -0.046875,
+            0.015625
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 3
+        },
+        "zero_return": {
+          "difference": 0.015625,
+          "ci95": [
+            0.0,
+            0.0390625
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 2,
+          "a_zero_b_one": 0
+        }
+      },
+      "C_s1_minus_O_s1": {
+        "returns": {
+          "difference": -0.067362588009092,
+          "ci95": [
+            -0.438058093881348,
+            0.3075791037231671
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": -0.0234375,
+          "ci95": [
+            -0.0625,
+            0.0078125
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 4
+        },
+        "zero_return": {
+          "difference": 0.0078125,
+          "ci95": [
+            0.0,
+            0.0234375
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 0
+        }
+      },
+      "C_s1_minus_B_s1": {
+        "returns": {
+          "difference": 0.20566984042724315,
+          "ci95": [
+            -0.2523045312809193,
+            0.683534135847264
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": -0.015625,
+          "ci95": [
+            -0.046875,
+            0.015625
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 3
+        },
+        "zero_return": {
+          "difference": 0.0,
+          "ci95": [
+            -0.0234375,
+            0.0234375
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 1
+        }
+      }
+    },
+    "pess_s1": {
+      "C_s0_minus_O_s0": {
+        "returns": {
+          "difference": -0.04442218549051745,
+          "ci95": [
+            -0.21095441532966333,
+            0.08750436841771946
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": -0.0078125,
+          "ci95": [
+            -0.0234375,
+            0.0
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 1
+        },
+        "zero_return": {
+          "difference": 0.0078125,
+          "ci95": [
+            0.0,
+            0.0234375
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 0
+        }
+      },
+      "C_s0_minus_B_s0": {
+        "returns": {
+          "difference": 0.0038832143328113022,
+          "ci95": [
+            0.0,
+            0.011649642998433907
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": 0.0078125,
+          "ci95": [
+            0.0,
+            0.0234375
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 0
+        },
+        "zero_return": {
+          "difference": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "all_ties": true,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 0
+        }
+      },
+      "C_s1_minus_O_s1": {
+        "returns": {
+          "difference": -0.06513318258676372,
+          "ci95": [
+            -0.23038183775017787,
+            0.054348063707991306
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": -0.0078125,
+          "ci95": [
+            -0.0234375,
+            0.0
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 1
+        },
+        "zero_return": {
+          "difference": 0.0078125,
+          "ci95": [
+            0.0,
+            0.0234375
+          ],
+          "all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 0
+        }
+      },
+      "C_s1_minus_B_s1": {
+        "returns": {
+          "difference": 0.04635809618090571,
+          "ci95": [
+            0.0,
+            0.11836329144647086
+          ],
+          "all_ties": false
+        },
+        "success": {
+          "difference": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "all_ties": true,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 0
+        },
+        "zero_return": {
+          "difference": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "all_ties": true,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 0
+        }
+      }
+    }
+  },
+  "consistent_added_benefit": false
+}
