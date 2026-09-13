@@ -1,0 +1,59 @@
+{
+  "status": "passed",
+  "checked_parameter_iterates": 294,
+  "maximum_constraint_excess": 2.7755575615628914e-17,
+  "checks": [
+    "pre-run source/config/protocol hashes",
+    "all checkpoint hashes",
+    "training has no exact evaluator import",
+    "paired initialization",
+    "all-iterate feasibility",
+    "finite NCE losses and density ratios",
+    "two live losses and diagonal-only control",
+    "saved exact values and errors",
+    "saved action support, absorption, reward timing and original horizon",
+    "alpha correction",
+    "rational certificate and unmodified gaps",
+    "fixed budgets"
+  ],
+  "last_training_critic_errors_at_final_kernel": [
+    {
+      "arm": "diagonal",
+      "seed": 0,
+      "goal_rmse": 0.0033185750958979916,
+      "goal_max_abs": 0.014807824721429275
+    },
+    {
+      "arm": "joint",
+      "seed": 0,
+      "goal_rmse": 0.0026431920182598072,
+      "goal_max_abs": 0.010236398437500072
+    },
+    {
+      "arm": "diagonal",
+      "seed": 1,
+      "goal_rmse": 0.0026186372862291554,
+      "goal_max_abs": 0.008797673484633783
+    },
+    {
+      "arm": "joint",
+      "seed": 1,
+      "goal_rmse": 0.0039397743620833234,
+      "goal_max_abs": 0.014418046874999979
+    },
+    {
+      "arm": "diagonal",
+      "seed": 2,
+      "goal_rmse": 0.001414709560256265,
+      "goal_max_abs": 0.003902860873421121
+    },
+    {
+      "arm": "joint",
+      "seed": 2,
+      "goal_rmse": 0.002265323740923798,
+      "goal_max_abs": 0.008221359375000098
+    }
+  ],
+  "additional_environment_steps": 0,
+  "checker_sha256": "d4ec88053b6cf42dd418cdf892c3751e7861a4436be71759035a8a0297227c07"
+}
