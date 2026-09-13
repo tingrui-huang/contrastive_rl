@@ -1,0 +1,30 @@
+{
+  "frozen_signature_before": "f800fbc8345aca8013aa6b509ce83fdeba22750203f526e6c91c11f7d36da7b5",
+  "frozen_signature_after": "f800fbc8345aca8013aa6b509ce83fdeba22750203f526e6c91c11f7d36da7b5",
+  "file_hashes_unchanged": true,
+  "all_actions_independently_reconstructed": true,
+  "waypoint_progression_checked": true,
+  "goal_and_F4_checked": true,
+  "direct_reward_and_return_checked": true,
+  "model_geometry_checked": true,
+  "matched_initial_observations": true,
+  "native_true_and_visible_success_identical": true,
+  "first_four_all_fields_replay_exact": true,
+  "replay_transitions": 1200,
+  "controller_inputs": [
+    "current visible XY",
+    "waypoint progress index",
+    "fixed geometry waypoints"
+  ],
+  "model_inputs": [
+    "current visible F4",
+    "commanded goal F4",
+    "nominal x_prime",
+    "controller action",
+    "model PRNG key"
+  ],
+  "privileged_data": "native failure/true precision XY saved only in *_native_audit.npz; never passed to controller or ETT",
+  "actor_critic_loaded": false,
+  "training_updates": 0,
+  "total_transitions": 40200
+}
