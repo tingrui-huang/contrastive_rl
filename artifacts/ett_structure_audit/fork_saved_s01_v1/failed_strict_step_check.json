@@ -1,0 +1,9 @@
+{
+  "status": "preserved failed deterministic verification",
+  "source_sha256": "97e09b9ad5b3f2fc84b8b70da91d2e5505793ac3e24be70bb02803fa7ce8b241",
+  "failure": "First all-recorded convex-segment test rejected saved anchors outside exact real-arithmetic q +/- 1.",
+  "cause": "12 saved anchors exceed the exact coordinate step limit by 1.1920928955078125e-7 due to float32 addition; all are inside the production rounded box.",
+  "consequence": "Exact diagonal preservation and exact real-arithmetic step <=1 cannot both hold for those literal stored anchors. Separate strict feasibility from the existing implemented rounded envelope; do not modify the anchors.",
+  "new_rollouts": 0,
+  "new_sampler_calls": 0
+}

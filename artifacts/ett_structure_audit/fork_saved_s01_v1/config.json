@@ -1,0 +1,16 @@
+{
+  "source": "artifacts/ett_route_diagnostic/fixed_visible_s01_n128_v1",
+  "model_seeds": [
+    0,
+    1
+  ],
+  "L": 1,
+  "fork_subset": "1<=current X<2, 3<=current Y<4, active waypoint index=1 (lower-left)",
+  "index_convention": "t is zero-based pre-action transition index",
+  "selection": "first reset/time within each explicitly named category; no trajectory selection by return",
+  "saved_context_evaluations": 225,
+  "new_transition_samples": 0,
+  "new_trajectory_rollouts": 0,
+  "parameter_optimization_steps": 0,
+  "tests": "deterministic arithmetic, explicit candidate and full-domain witness checks"
+}

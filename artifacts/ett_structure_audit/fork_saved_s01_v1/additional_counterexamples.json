@@ -1,0 +1,68 @@
+{
+  "frobenius_vs_operator": {
+    "q": [
+      1.5,
+      3.5
+    ],
+    "anchor": [
+      1.5,
+      3.5
+    ],
+    "xp": [
+      0.0,
+      0.0
+    ],
+    "domain": "[-1,1]^2",
+    "C_low": [
+      0.5,
+      3.0
+    ],
+    "C_high": [
+      2.5,
+      3.999999761581421
+    ],
+    "map": "projection_C(anchor + action)",
+    "operator_norm": 1.0,
+    "frobenius_norm": 1.4142135623730951,
+    "derivative_at_xp": [
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ],
+    "excluded_by_current_matrix_family": true,
+    "note": "This does not obstruct a single prescribed action response: rank-one matrices suffice there."
+  },
+  "anchor_ball_vs_global_geometry": {
+    "current": [
+      1.5,
+      3.5
+    ],
+    "anchor": [
+      2.4,
+      3.1
+    ],
+    "target": [
+      1.9,
+      2.7
+    ],
+    "xp": [
+      0.0,
+      0.0
+    ],
+    "execution_action": [
+      0.68,
+      0.0
+    ],
+    "action_radius": 0.68,
+    "euclidean_distance": 0.6403124237432848,
+    "shortest_free_path_length": 0.7285384065313358,
+    "pointwise_ball_feasible": true,
+    "globally_1_lipschitz_extension_possible": false,
+    "justification": "Image of straight action segment must be a free curve of length <= .68."
+  }
+}
