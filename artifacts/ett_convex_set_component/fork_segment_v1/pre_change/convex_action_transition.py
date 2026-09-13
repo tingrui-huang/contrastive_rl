@@ -1,8 +1,7 @@
 """Samplewise action-Lipschitz ETT with an immutable diagonal sampling law.
 
 The proof and limitations are in notes/ett_adversarial_fixed_actor_spec.md.
-Only action-independent geometry choices precede convex projection. The optional
-fork segment is specified in artifacts/ett_convex_set_component/fork_segment_v1/SPEC.md.
+Only action-independent geometry choices precede nonexpansive box clipping.
 No emitted likelihood is claimed for the mixed projected output measure.
 """
 import jax
@@ -63,99 +62,13 @@ def emit(theta,state,action,xp,anchor,bound=1.):
                        emitted_change=jnp.linalg.norm(xy-anchor,axis=-1))
 
 
-GEOMETRY_MODES = ('rectangle', 'fork_segment')
-
-
-def fork_segment(state, anchor):
-    """Select [anchor, end] from visible XY and anchor alone, or fall back.
-
-    Arrays have [batch, draw, ...] axes. Bounds retain the existing float32
-    rounded coordinate-step contract. No action, waypoint or label is accepted.
-    """
-    q = state[:, None, :2]
-    step_low, step_high = q - 1., q + 1.
-    valid = convex_box(state, anchor)[2]
-    ax, ay = anchor[..., 0], anchor[..., 1]
-    left = jnp.maximum(1., step_low[..., 0])
-    bottom = jnp.maximum(1., step_low[..., 1])
-    right = float(RECTANGLE_HIGH[2, 0])
-    vertical = ax <= right
-    height, dx = ay - 3., ax - 1.875
-    # Safe denominators also keep masked, unsupported branches finite.
-    extension = jnp.minimum((3. - bottom) / (2. * jnp.where(height > 0, height, 1.)),
-                            (1.875 - left) / (2. * jnp.where(dx > 0, dx, 1.)))
-    ray_end = jnp.stack([1.875 - extension * dx, 3. - extension * height], axis=-1)
-    vertical_end = jnp.stack([ax, jnp.broadcast_to((3. + bottom) / 2., ax.shape)], axis=-1)
-    end = jnp.where(vertical[..., None], vertical_end, ray_end)
-    ex, ey = end[..., 0], end[..., 1]
-    # A conservative certificate on the rounded endpoints, with wall clearance.
-    crossing_ok = ((ax - 1.9375) * (3. - ey) <= (1.9375 - ex) * height)
-    supported = ((q[..., 0] >= 1.) & (q[..., 0] < 2.) &
-                 (q[..., 1] >= 3.) & (q[..., 1] < 4.))
-    available = (valid & supported & (ax >= 1.) & (ay >= 3.) &
-                 (ay <= float(RECTANGLE_HIGH[0, 1])) &
-                 jnp.all((anchor >= step_low) & (anchor <= step_high), axis=-1) &
-                 jnp.all(jnp.isfinite(end) & (end >= step_low) & (end <= step_high), axis=-1) &
-                 (ex >= left) & (ex <= right) & (ey >= bottom) & (ey < 3.) &
-                 (vertical | ((height > 0.) & crossing_ok)) &
-                 (jnp.sum((end - anchor)**2, axis=-1) > 1e-12))
-    return jnp.where(available[..., None], end, anchor), available
-
-
-def project_segment(proposal, start, end):
-    """Euclidean projection onto one fixed closed segment (including a point)."""
-    direction = end - start
-    squared_length = jnp.sum(direction**2, axis=-1)
-    fraction = jnp.clip(jnp.sum((proposal - start) * direction, axis=-1) /
-                        jnp.where(squared_length > 0., squared_length, 1.), 0., 1.)
-    xy = start + fraction[..., None] * direction
-    # Exact stored endpoints, notably the exact samplewise diagonal anchor.
-    xy = jnp.where((fraction <= 0.)[..., None], start, xy)
-    xy = jnp.where((fraction >= 1.)[..., None], end, xy)
-    return xy, fraction
-
-
-def emit_with_geometry(theta, state, action, xp, anchor, bound=1., *, geometry_mode='rectangle'):
-    """Optional fixed convex-set projection; historical ``emit`` is unchanged.
-
-    In segment mode box_* and rectangle describe the reference/fallback box,
-    not a membership constraint on segment outputs. geometry_kind is 0 for the
-    original box, 1 for a segment. Boundary means relative endpoints for a segment.
-    """
-    if geometry_mode not in GEOMETRY_MODES:
-        raise ValueError(f'geometry_mode must be one of {GEOMETRY_MODES}')
-    output, diagnostic = emit(theta, state, action, xp, anchor, bound)
-    if geometry_mode == 'rectangle':
-        return output, diagnostic
-    end, available = fork_segment(state, anchor)
-    proposal = anchor + diagnostic['response'][:, None, :]
-    projected, fraction = project_segment(proposal, anchor, end)
-    xy = jnp.where(available[..., None], projected, output[..., :2])
-    output = jnp.concatenate([xy, output[..., 2:]], axis=-1)
-    diagnostic.update(
-        geometry_kind=available.astype(jnp.int32), segment_available=available,
-        segment_start=anchor, segment_end=end, segment_fraction=fraction,
-        projection_corrected=jnp.any(xy != proposal, axis=-1),
-        projected_to_boundary=jnp.where(available, (fraction <= 0.) | (fraction >= 1.),
-                                         diagnostic['projected_to_boundary']),
-        emitted_change=jnp.linalg.norm(xy - anchor, axis=-1))
-    return output, diagnostic
-
-
 class ConvexActionTransition:
-    def __init__(self,diagonal,theta=None,bound=1.,*,geometry_mode='rectangle'):
+    def __init__(self,diagonal,theta=None,bound=1.):
         if not np.isfinite(bound) or bound<=0:raise ValueError('positive finite bound required')
-        if geometry_mode not in GEOMETRY_MODES:raise ValueError(f'geometry_mode must be one of {GEOMETRY_MODES}')
-        self._geometry_mode=geometry_mode
         self.diagonal=diagonal;self.bound=float(bound)
         self.theta=jnp.zeros(DIMENSION) if theta is None else jnp.asarray(theta,dtype=jnp.float32)
         if self.theta.shape!=(DIMENSION,) or not np.isfinite(self.theta).all():raise ValueError('expected 32 finite parameters')
         self._sample=jax.jit(self.sample_flat,static_argnums=(6,))
-
-    @property
-    def geometry_mode(self):
-        """Construction-time configuration; construct a new instance to change it."""
-        return self._geometry_mode
 
     def sample_flat(self,theta,state,action,xp,goal,key,count):
         base=self.diagonal
@@ -163,8 +76,7 @@ class ConvexActionTransition:
         distribution=base._distribution(base.params,context)
         delta,atom=sample_displacement(distribution,key,count,base.delta_mean,base.delta_std,base.spec)
         anchor,details=_project_samples(state,delta,base.spec)
-        output,diagnostic=emit_with_geometry(theta,state,action,xp,anchor[...,:2],self.bound,
-                                             geometry_mode=self.geometry_mode)
+        output,diagnostic=emit(theta,state,action,xp,anchor[...,:2],self.bound)
         diagnostic.update(stationary_atom=atom,
             base_corrected=jnp.any(details['raw_position']!=anchor[...,:2],axis=-1))
         return output,diagnostic

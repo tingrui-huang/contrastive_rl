@@ -8,3 +8,8 @@ scripts/test_route_diagnostic.py text eol=lf
 artifacts/ett_structure_audit/fork_saved_s01_v1/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 scripts/audit_ett_fork_structure.py text eol=lf
 scripts/verify_fork_convex_witness.py text eol=lf
+# Preserve the optional-emitter component audit and historical source snapshot.
+artifacts/ett_convex_set_component/fork_segment_v1/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+ett/convex_action_transition.py text eol=lf
+scripts/test_convex_set_transition.py text eol=lf
+scripts/verify_convex_set_components.py text eol=lf
