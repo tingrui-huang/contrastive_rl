@@ -1,0 +1,82 @@
+{
+  "utc": "2026-09-13T17:02:30Z",
+  "status": "complete",
+  "charged_model_outputs": 207360,
+  "cap": 600000,
+  "a5_status": "skipped_pre_outcome_cap_exceeded",
+  "acceptance": {
+    "identity": {
+      "a0_diagonal": {
+        "max_drift": 0.0,
+        "exact": true
+      },
+      "a1_s0_learned": {
+        "max_drift": 0.0,
+        "exact": true
+      },
+      "a1_s1_learned": {
+        "max_drift": 0.0,
+        "exact": true
+      },
+      "a2_lipschitz_oracle": {
+        "max_drift": 0.0,
+        "exact": true
+      },
+      "a3_box_oracle": {
+        "max_drift": 0.0,
+        "exact": true
+      },
+      "a4_postprocess_oracle": {
+        "max_drift": 0.0,
+        "exact": true
+      }
+    },
+    "lipschitz": {
+      "a0_diagonal": {
+        "max_excess": 0.0,
+        "violation_fraction": 0.0,
+        "expected_to_pass": true,
+        "passed": true
+      },
+      "a1_s0_learned": {
+        "max_excess": 0.0,
+        "violation_fraction": 0.0,
+        "expected_to_pass": true,
+        "passed": true
+      },
+      "a1_s1_learned": {
+        "max_excess": 0.0,
+        "violation_fraction": 0.0,
+        "expected_to_pass": true,
+        "passed": true
+      },
+      "a2_lipschitz_oracle": {
+        "max_excess": 2.414453774690628e-07,
+        "violation_fraction": 0.0,
+        "expected_to_pass": true,
+        "passed": true
+      },
+      "a3_box_oracle": {
+        "max_excess": 2.1514439582824707,
+        "violation_fraction": 0.453125,
+        "expected_to_pass": false,
+        "passed": false
+      },
+      "a4_postprocess_oracle": {
+        "max_excess": 2.1514439582824707,
+        "violation_fraction": 0.453125,
+        "expected_to_pass": false,
+        "passed": false
+      }
+    },
+    "diagonal_identity_all_exact": true
+  },
+  "updates": 0,
+  "native_steps": 0,
+  "checkpoint_writes": 0,
+  "raw_sha256": {
+    "setting1_raw.npz": "77925892c868994c9bf751604db78e1ff2074bbde5ec18c68c6e669573e2b9c0",
+    "setting2_raw.npz": "4a316c110cb2219ac26eca54ee1004e12185e9dcff538a2171d1e1fc5f74c608",
+    "probe_arrays.npz": "2daa938df5301855e5ff18132bafb80e838e72dc86ed42671c30a3d8f053e1c0"
+  }
+}

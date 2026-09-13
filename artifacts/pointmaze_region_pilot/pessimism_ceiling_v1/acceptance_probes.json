@@ -1,0 +1,67 @@
+{
+  "identity": {
+    "a0_diagonal": {
+      "max_drift": 0.0,
+      "exact": true
+    },
+    "a1_s0_learned": {
+      "max_drift": 0.0,
+      "exact": true
+    },
+    "a1_s1_learned": {
+      "max_drift": 0.0,
+      "exact": true
+    },
+    "a2_lipschitz_oracle": {
+      "max_drift": 0.0,
+      "exact": true
+    },
+    "a3_box_oracle": {
+      "max_drift": 0.0,
+      "exact": true
+    },
+    "a4_postprocess_oracle": {
+      "max_drift": 0.0,
+      "exact": true
+    }
+  },
+  "lipschitz": {
+    "a0_diagonal": {
+      "max_excess": 0.0,
+      "violation_fraction": 0.0,
+      "expected_to_pass": true,
+      "passed": true
+    },
+    "a1_s0_learned": {
+      "max_excess": 0.0,
+      "violation_fraction": 0.0,
+      "expected_to_pass": true,
+      "passed": true
+    },
+    "a1_s1_learned": {
+      "max_excess": 0.0,
+      "violation_fraction": 0.0,
+      "expected_to_pass": true,
+      "passed": true
+    },
+    "a2_lipschitz_oracle": {
+      "max_excess": 2.414453774690628e-07,
+      "violation_fraction": 0.0,
+      "expected_to_pass": true,
+      "passed": true
+    },
+    "a3_box_oracle": {
+      "max_excess": 2.1514439582824707,
+      "violation_fraction": 0.453125,
+      "expected_to_pass": false,
+      "passed": false
+    },
+    "a4_postprocess_oracle": {
+      "max_excess": 2.1514439582824707,
+      "violation_fraction": 0.453125,
+      "expected_to_pass": false,
+      "passed": false
+    }
+  },
+  "diagonal_identity_all_exact": true
+}

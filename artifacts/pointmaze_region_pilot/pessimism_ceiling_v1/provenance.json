@@ -1,0 +1,35 @@
+{
+  "prepared_utc": "2026-09-13T17:02:13Z",
+  "git_head": "e0144cdc1cd6838c512cf8918f33e5345cbdce9c",
+  "reference_commit": "817e429",
+  "reference_is_ancestor": true,
+  "input_sha256": {
+    "artifacts/f4_p30_server_30076/results/datasets/swamp_windy_f4_merged_s0.npz": "83b4e81d9fca2d66b648c9c34ccdb68196e1acf89e2ca6829e4cb198d27c322c",
+    "artifacts/nominal_policy/f4_p30_expert_only_mdn_k5_s0/best.pkl": "6376e60185aa616c2d09c5e0250d762cde2fb845c5042488e64910fb3b745f23",
+    "artifacts/f4_p30_server_30076/results/runs/f4_p30_sweep/p30_a0_a01_a03_s0_s1/alpha0_seed0/final.pkl": "ea8a71d3cb8d963259a54d47250b454462dae2ae62f03a55c370ca81a2c8ec54",
+    "artifacts/ett_distribution_matching/f4_p30_s01_guarded/s0_L0p25_lambda0/final.pkl": "9e9e1c56387d446b5788612e27e5b7f7743e120186bebc90a78fc6774476184e",
+    "artifacts/pointmaze_region_pilot/phase_sampling_s01_v1/final_contexts.npz": "4db09488097d3406468dc297f126a6f621ea5d3dc27bcc578b7e4497b304d86a",
+    "artifacts/pointmaze_region_pilot/update_reference_s01_v1/final_kernels.npz": "a46d29f1a11afe9d97dcea98cc97e5514dda52791dad71bb8bf8af0c2eac18db",
+    "artifacts/pointmaze_region_pilot/early_contexts_s01_v1/contexts.npz": "f04cf2980285d808695f7727195b5af3e959c953a7f8004f39562aff8933a702",
+    "ett/convex_action_transition.py": "a92a11f90bb186daa9578b2ccd4d622676bb60b0824b48022eb43ac64fa91482",
+    "ett/diagonal_transition.py": "53f11305c53186700ad4981a3be1b1fa58a2c77d1ebf29130b2f24cfa6058d94",
+    "ett/rollout_return.py": "1bcf669b449373b907e257088e507638e2e691b086ff10b89ccec00583cf05dc",
+    "ett/run_convex_adversarial.py": "2d9237a7a6900355aca065c3495bbae9ce307cc43e22cad94865f4e5571c3c19",
+    "ett/pointmaze_pessimism_ceiling.py": "9cb7348d3a7050c3068afad4ef9f4aab511963f291a6b628822872681e5f85d9",
+    "ett/report_pointmaze_pessimism_ceiling.py": "a881b04ac49b603c760349c6ea77d57e1f4022fcd35077393de1cdffe7535f0b",
+    "scripts/test_pointmaze_pessimism_ceiling.py": "db22aae7b1de3583f5bb2951d5fa9ef2e8661ba21651c2ef26072fe17187b8fb"
+  },
+  "setup_paths": {
+    "dataset": "artifacts/f4_p30_server_30076/results/datasets/swamp_windy_f4_merged_s0.npz",
+    "nominal": "artifacts/nominal_policy/f4_p30_expert_only_mdn_k5_s0/best.pkl",
+    "actor": "artifacts/f4_p30_server_30076/results/runs/f4_p30_sweep/p30_a0_a01_a03_s0_s1/alpha0_seed0/final.pkl",
+    "control": "artifacts/ett_distribution_matching/f4_p30_s01_guarded/s0_L0p25_lambda0/final.pkl"
+  },
+  "root_resolution": {
+    "requested": "36 existing roots at t=40, H=10",
+    "resolved": "36 held-out group-balanced roots from phase_sampling; fixed fresh H=10",
+    "caveat": "source-time metadata are 1,3,6,10; no literal 36-root t=40 artifact exists"
+  },
+  "learned_arm": "critic_s0 and critic_s1 final response coordinates [16:48]; diagonal offsets discarded",
+  "forbidden": "critics, MC values, native simulator, outcome-based tuning, gradient updates"
+}
