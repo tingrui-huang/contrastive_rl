@@ -1,0 +1,1022 @@
+{
+  "audit": {
+    "checkpoint_loads_for_inference": 0,
+    "computed_new_transitions": 0,
+    "new_rollouts": 0,
+    "parameter_updates": 0,
+    "pre_existing_input_artifacts_modified": 0,
+    "read_only": true
+  },
+  "continuation_precision": {
+    "comparisons": {
+      "s0_k2": {
+        "bootstrap": {
+          "interval": "percentile 95%",
+          "paired_by": "root",
+          "replicates": 2000,
+          "seed": 190000000
+        },
+        "label": "s0_k2_u24 minus s0_k2_u0",
+        "root_clusters": 36,
+        "strata": {
+          "entered": {
+            "critic_mean": {
+              "estimate": 0.00272507718734767,
+              "uncertainty": "point estimate"
+            },
+            "degenerate": false,
+            "exact_zero_counts": {
+              "both": 16,
+              "critic": 16,
+              "mc": 768
+            },
+            "mc_mean": {
+              "estimate": 0.003001225749515099,
+              "uncertainty": "point estimate"
+            },
+            "n_queries": 783,
+            "sequence_changed_only": {
+              "degenerate": false,
+              "n_queries": 15,
+              "n_unchanged_queries_excluded": 768,
+              "sign_agreement": {
+                "bootstrap_degenerate": 0,
+                "bootstrap_valid": 2000,
+                "ci95": [
+                  0.4444444444444444,
+                  0.8888888888888888
+                ],
+                "estimate": 0.6666666666666666
+              }
+            },
+            "sign_agreement": {
+              "bootstrap_degenerate": 0,
+              "bootstrap_valid": 2000,
+              "ci95": [
+                0.020908287207872082,
+                0.04712075232600794
+              ],
+              "estimate": 0.033205619412515965
+            },
+            "target_mass": 0.7941976175947492,
+            "weighted_kendall_tau_b": {
+              "bootstrap_degenerate": 0,
+              "bootstrap_valid": 2000,
+              "ci95": [
+                -0.06859650895795193,
+                0.05868628231277199
+              ],
+              "estimate": -0.0048087817776666835
+            },
+            "weighted_spearman": {
+              "bootstrap_degenerate": 0,
+              "bootstrap_valid": 2000,
+              "ci95": [
+                -0.08373626400836803,
+                0.07169354947188701
+              ],
+              "estimate": -0.005833593069858018
+            }
+          },
+          "pre_entry": {
+            "critic_mean": {
+              "estimate": -0.11947787766826726,
+              "uncertainty": "point estimate"
+            },
+            "degenerate": false,
+            "exact_zero_counts": {
+              "both": 1,
+              "critic": 1,
+              "mc": 281
+            },
+            "mc_mean": {
+              "estimate": 0.07152336847483767,
+              "uncertainty": "point estimate"
+            },
+            "n_queries": 1521,
+            "sequence_changed_only": {
+              "degenerate": false,
+              "n_queries": 1243,
+              "n_unchanged_queries_excluded": 278,
+              "sign_agreement": {
+                "bootstrap_degenerate": 0,
+                "bootstrap_valid": 2000,
+                "ci95": [
+                  0.6582253144287582,
+                  0.7119348260655556
+                ],
+                "estimate": 0.6846339501206757
+              }
+            },
+            "sign_agreement": {
+              "bootstrap_degenerate": 0,
+              "bootstrap_valid": 2000,
+              "ci95": [
+                0.5353859712114926,
+                0.5833950574843532
+              ],
+              "estimate": 0.5601577909270217
+            },
+            "target_mass": 0.20580238240525095,
+            "weighted_kendall_tau_b": {
+              "bootstrap_degenerate": 0,
+              "bootstrap_valid": 2000,
+              "ci95": [
+                0.14481052607724143,
+                0.2980309806534583
+              ],
+              "estimate": 0.21895576171883097
+            },
+            "weighted_spearman": {
+              "bootstrap_degenerate": 0,
+              "bootstrap_valid": 2000,
+              "ci95": [
+                0.18927970768304586,
+                0.39287738330214667
+              ],
+              "estimate": 0.2891282622354745
+            }
+          }
+        },
+        "unstratified_reproduction": {
+          "absolute_error": {
+            "critic": 0.0,
+            "mc": 0.0
+          },
+          "n_queries": 2304,
+          "passed": true,
+          "published": {
+            "critic": -0.02242458205889921,
+            "mc": 0.01710324596989912
+          },
+          "reconstructed": {
+            "critic": -0.02242458205889921,
+            "mc": 0.01710324596989912
+          },
+          "tolerance": {
+            "absolute": 1e-12,
+            "relative": 1e-12
+          }
+        }
+      },
+      "s1_k0": {
+        "bootstrap": {
+          "interval": "percentile 95%",
+          "paired_by": "root",
+          "replicates": 2000,
+          "seed": 190000000
+        },
+        "label": "s1_k0_u24 minus s1_k0_u0",
+        "root_clusters": 36,
+        "strata": {
+          "entered": {
+            "critic_mean": {
+              "estimate": -0.01996405102516291,
+              "uncertainty": "point estimate"
+            },
+            "degenerate": false,
+            "exact_zero_counts": {
+              "both": 13,
+              "critic": 13,
+              "mc": 787
+            },
+            "mc_mean": {
+              "estimate": -0.01225989197724486,
+              "uncertainty": "point estimate"
+            },
+            "n_queries": 799,
+            "sequence_changed_only": {
+              "degenerate": false,
+              "n_queries": 12,
+              "n_unchanged_queries_excluded": 787,
+              "sign_agreement": {
+                "bootstrap_degenerate": 0,
+                "bootstrap_valid": 2000,
+                "ci95": [
+                  0.4,
+                  0.9166666666666666
+                ],
+                "estimate": 0.6666666666666666
+              }
+            },
+            "sign_agreement": {
+              "bootstrap_degenerate": 0,
+              "bootstrap_valid": 2000,
+              "ci95": [
+                0.017240849132629257,
+                0.03602512450338537
+              ],
+              "estimate": 0.026282853566958697
+            },
+            "target_mass": 0.788747501337737,
+            "weighted_kendall_tau_b": {
+              "bootstrap_degenerate": 0,
+              "bootstrap_valid": 2000,
+              "ci95": [
+                -0.02423641739150805,
+                0.14553633178964223
+              ],
+              "estimate": 0.07293732850528731
+            },
+            "weighted_spearman": {
+              "bootstrap_degenerate": 0,
+              "bootstrap_valid": 2000,
+              "ci95": [
+                -0.029562672112161854,
+                0.17765910861543596
+              ],
+              "estimate": 0.08921646073067425
+            }
+          },
+          "pre_entry": {
+            "critic_mean": {
+              "estimate": -0.14617139220418332,
+              "uncertainty": "point estimate"
+            },
+            "degenerate": false,
+            "exact_zero_counts": {
+              "both": 1,
+              "critic": 1,
+              "mc": 312
+            },
+            "mc_mean": {
+              "estimate": -0.056587612332635456,
+              "uncertainty": "point estimate"
+            },
+            "n_queries": 1505,
+            "sequence_changed_only": {
+              "degenerate": false,
+              "n_queries": 1198,
+              "n_unchanged_queries_excluded": 307,
+              "sign_agreement": {
+                "bootstrap_degenerate": 0,
+                "bootstrap_valid": 2000,
+                "ci95": [
+                  0.6890728197633569,
+                  0.7555000907998166
+                ],
+                "estimate": 0.7220367278797997
+              }
+            },
+            "sign_agreement": {
+              "bootstrap_degenerate": 0,
+              "bootstrap_valid": 2000,
+              "ci95": [
+                0.5284984727288708,
+                0.6202373743651668
+              ],
+              "estimate": 0.5754152823920266
+            },
+            "target_mass": 0.2112524986622631,
+            "weighted_kendall_tau_b": {
+              "bootstrap_degenerate": 0,
+              "bootstrap_valid": 2000,
+              "ci95": [
+                0.34985838293811855,
+                0.48153231713938993
+              ],
+              "estimate": 0.4176580758485035
+            },
+            "weighted_spearman": {
+              "bootstrap_degenerate": 0,
+              "bootstrap_valid": 2000,
+              "ci95": [
+                0.457201781020402,
+                0.6206752508405208
+              ],
+              "estimate": 0.5424378729893699
+            }
+          }
+        },
+        "unstratified_reproduction": {
+          "absolute_error": {
+            "critic": 0.0,
+            "mc": 6.938893903907228e-18
+          },
+          "n_queries": 2304,
+          "passed": true,
+          "published": {
+            "critic": -0.046625667198751705,
+            "mc": -0.021624233662323182
+          },
+          "reconstructed": {
+            "critic": -0.046625667198751705,
+            "mc": -0.02162423366232319
+          },
+          "tolerance": {
+            "absolute": 1e-12,
+            "relative": 1e-12
+          }
+        }
+      }
+    },
+    "published_mean_acceptance_gate": {
+      "comparisons": {
+        "s0_k2": {
+          "absolute_error": {
+            "critic": 0.0,
+            "mc": 0.0
+          },
+          "n_queries": 2304,
+          "passed": true,
+          "published": {
+            "critic": -0.02242458205889921,
+            "mc": 0.01710324596989912
+          },
+          "reconstructed": {
+            "critic": -0.02242458205889921,
+            "mc": 0.01710324596989912
+          },
+          "tolerance": {
+            "absolute": 1e-12,
+            "relative": 1e-12
+          }
+        },
+        "s1_k0": {
+          "absolute_error": {
+            "critic": 0.0,
+            "mc": 6.938893903907228e-18
+          },
+          "n_queries": 2304,
+          "passed": true,
+          "published": {
+            "critic": -0.046625667198751705,
+            "mc": -0.021624233662323182
+          },
+          "reconstructed": {
+            "critic": -0.046625667198751705,
+            "mc": -0.02162423366232319
+          },
+          "tolerance": {
+            "absolute": 1e-12,
+            "relative": 1e-12
+          }
+        }
+      },
+      "passed": true
+    }
+  },
+  "interpretation": {
+    "limits": "Two candidate pairs and 18 comparisons cannot establish a general property of the critic. This audit only distinguishes systematic reversal in the leverage region from unordered noise and is underpowered for the latter; it cannot conclude that the critic is fine.",
+    "observed_pattern": "The critic is not systematically sign-reversed in either tested pre-entry pair: both have above-half sign agreement and positive rank association with root-bootstrap intervals excluding the reversal boundaries. The s0_k2 opposite weighted means therefore reflect contrast magnitudes, not pervasive per-query order reversal."
+  },
+  "methods": {
+    "bootstrap_replicates": 2000,
+    "continuation_bootstrap_seed": 190000000,
+    "interval_level": 0.95,
+    "multiplicity_correction": "none; descriptive intervals",
+    "response_bootstrap_seed": 190000001
+  },
+  "response_search": {
+    "all_comparisons": {
+      "degenerate": false,
+      "n_comparisons": 18,
+      "sign_agreement": {
+        "count": 9,
+        "denominator": 18,
+        "rate": 0.5,
+        "uncertainty": "point estimate"
+      },
+      "spearman": {
+        "bootstrap_degenerate": 0,
+        "bootstrap_valid": 2000,
+        "ci95": [
+          -0.4211366599931509,
+          0.6089426161618638
+        ],
+        "estimate": 0.12280701754385966
+      }
+    },
+    "bootstrap": {
+      "interval": "percentile 95%",
+      "paired_by": "comparison",
+      "replicates": 2000,
+      "seed": 190000001
+    },
+    "comparisons": [
+      {
+        "baseline": 0,
+        "critic_delta": {
+          "estimate": 0.007668043169142736,
+          "uncertainty": "point estimate"
+        },
+        "mc_delta": {
+          "estimate": 0.0009991666261487727,
+          "uncertainty": "point estimate"
+        },
+        "n_queries": 32,
+        "name": "s0_k0_u1",
+        "pre_entry": {
+          "critic_delta": {
+            "estimate": 0.0333519339036231,
+            "uncertainty": "point estimate"
+          },
+          "delta_estimable": true,
+          "flag_reconstructed": true,
+          "mc_delta": {
+            "estimate": 0.005328888672793454,
+            "uncertainty": "point estimate"
+          },
+          "n_queries": 6
+        },
+        "saved_json_point_estimates_reproduced": true,
+        "sign_agreement": {
+          "estimate": true,
+          "uncertainty": "point estimate"
+        },
+        "start": 0,
+        "update": 1
+      },
+      {
+        "baseline": 0,
+        "critic_delta": {
+          "estimate": 0.0015517375150565582,
+          "uncertainty": "point estimate"
+        },
+        "mc_delta": {
+          "estimate": -0.02559502662572328,
+          "uncertainty": "point estimate"
+        },
+        "n_queries": 32,
+        "name": "s0_k0_u12",
+        "pre_entry": {
+          "critic_delta": {
+            "estimate": 0.005755025884060695,
+            "uncertainty": "point estimate"
+          },
+          "delta_estimable": true,
+          "flag_reconstructed": true,
+          "mc_delta": {
+            "estimate": -0.09100453911368277,
+            "uncertainty": "point estimate"
+          },
+          "n_queries": 9
+        },
+        "saved_json_point_estimates_reproduced": true,
+        "sign_agreement": {
+          "estimate": false,
+          "uncertainty": "point estimate"
+        },
+        "start": 0,
+        "update": 12
+      },
+      {
+        "baseline": 0,
+        "critic_delta": {
+          "estimate": -0.0007526376084184114,
+          "uncertainty": "point estimate"
+        },
+        "mc_delta": {
+          "estimate": 0.016192824442793588,
+          "uncertainty": "point estimate"
+        },
+        "n_queries": 32,
+        "name": "s0_k0_u24",
+        "pre_entry": {
+          "critic_delta": {
+            "estimate": -0.002747871590268664,
+            "uncertainty": "point estimate"
+          },
+          "delta_estimable": true,
+          "flag_reconstructed": true,
+          "mc_delta": {
+            "estimate": 0.07402434030991355,
+            "uncertainty": "point estimate"
+          },
+          "n_queries": 7
+        },
+        "saved_json_point_estimates_reproduced": true,
+        "sign_agreement": {
+          "estimate": false,
+          "uncertainty": "point estimate"
+        },
+        "start": 0,
+        "update": 24
+      },
+      {
+        "baseline": 0,
+        "critic_delta": {
+          "estimate": -0.006926623069210282,
+          "uncertainty": "point estimate"
+        },
+        "mc_delta": {
+          "estimate": -0.02439559579022414,
+          "uncertainty": "point estimate"
+        },
+        "n_queries": 32,
+        "name": "s0_k1_u1",
+        "pre_entry": {
+          "critic_delta": null,
+          "delta_estimable": false,
+          "flag_reconstructed": true,
+          "mc_delta": null,
+          "n_queries": 0,
+          "reason": "no pre-entry query was sampled in this saved check"
+        },
+        "saved_json_point_estimates_reproduced": true,
+        "sign_agreement": {
+          "estimate": true,
+          "uncertainty": "point estimate"
+        },
+        "start": 1,
+        "update": 1
+      },
+      {
+        "baseline": 0,
+        "critic_delta": {
+          "estimate": -0.001121825972505275,
+          "uncertainty": "point estimate"
+        },
+        "mc_delta": {
+          "estimate": 0.003689270460459304,
+          "uncertainty": "point estimate"
+        },
+        "n_queries": 32,
+        "name": "s0_k1_u12",
+        "pre_entry": {
+          "critic_delta": {
+            "estimate": -0.00545307359652746,
+            "uncertainty": "point estimate"
+          },
+          "delta_estimable": true,
+          "flag_reconstructed": true,
+          "mc_delta": {
+            "estimate": 0.023611330946939547,
+            "uncertainty": "point estimate"
+          },
+          "n_queries": 5
+        },
+        "saved_json_point_estimates_reproduced": true,
+        "sign_agreement": {
+          "estimate": false,
+          "uncertainty": "point estimate"
+        },
+        "start": 1,
+        "update": 12
+      },
+      {
+        "baseline": 0,
+        "critic_delta": {
+          "estimate": -0.0008730009914150625,
+          "uncertainty": "point estimate"
+        },
+        "mc_delta": {
+          "estimate": 0.0014086934065348292,
+          "uncertainty": "point estimate"
+        },
+        "n_queries": 32,
+        "name": "s0_k1_u24",
+        "pre_entry": {
+          "critic_delta": {
+            "estimate": -0.006096997189740308,
+            "uncertainty": "point estimate"
+          },
+          "delta_estimable": true,
+          "flag_reconstructed": true,
+          "mc_delta": {
+            "estimate": 0.009015637801822907,
+            "uncertainty": "point estimate"
+          },
+          "n_queries": 5
+        },
+        "saved_json_point_estimates_reproduced": true,
+        "sign_agreement": {
+          "estimate": false,
+          "uncertainty": "point estimate"
+        },
+        "start": 1,
+        "update": 24
+      },
+      {
+        "baseline": 0,
+        "critic_delta": {
+          "estimate": 0.00789939046826428,
+          "uncertainty": "point estimate"
+        },
+        "mc_delta": {
+          "estimate": 0.019134150004844357,
+          "uncertainty": "point estimate"
+        },
+        "n_queries": 32,
+        "name": "s0_k2_u1",
+        "pre_entry": {
+          "critic_delta": {
+            "estimate": 0.04386560275913137,
+            "uncertainty": "point estimate"
+          },
+          "delta_estimable": true,
+          "flag_reconstructed": true,
+          "mc_delta": {
+            "estimate": 0.07714318485152195,
+            "uncertainty": "point estimate"
+          },
+          "n_queries": 6
+        },
+        "saved_json_point_estimates_reproduced": true,
+        "sign_agreement": {
+          "estimate": true,
+          "uncertainty": "point estimate"
+        },
+        "start": 2,
+        "update": 1
+      },
+      {
+        "baseline": 0,
+        "critic_delta": {
+          "estimate": 0.0021802007083987986,
+          "uncertainty": "point estimate"
+        },
+        "mc_delta": {
+          "estimate": -0.0030284445990406503,
+          "uncertainty": "point estimate"
+        },
+        "n_queries": 32,
+        "name": "s0_k2_u12",
+        "pre_entry": {
+          "critic_delta": {
+            "estimate": 0.005346612361803085,
+            "uncertainty": "point estimate"
+          },
+          "delta_estimable": true,
+          "flag_reconstructed": true,
+          "mc_delta": {
+            "estimate": -0.012113778396162601,
+            "uncertainty": "point estimate"
+          },
+          "n_queries": 8
+        },
+        "saved_json_point_estimates_reproduced": true,
+        "sign_agreement": {
+          "estimate": false,
+          "uncertainty": "point estimate"
+        },
+        "start": 2,
+        "update": 12
+      },
+      {
+        "baseline": 0,
+        "critic_delta": {
+          "estimate": -0.0020490744941976027,
+          "uncertainty": "point estimate"
+        },
+        "mc_delta": {
+          "estimate": 0.0017793596532819662,
+          "uncertainty": "point estimate"
+        },
+        "n_queries": 32,
+        "name": "s0_k2_u24",
+        "pre_entry": {
+          "critic_delta": {
+            "estimate": -0.01261306970269288,
+            "uncertainty": "point estimate"
+          },
+          "delta_estimable": true,
+          "flag_reconstructed": true,
+          "mc_delta": {
+            "estimate": 0.011387901781004583,
+            "uncertainty": "point estimate"
+          },
+          "n_queries": 5
+        },
+        "saved_json_point_estimates_reproduced": true,
+        "sign_agreement": {
+          "estimate": false,
+          "uncertainty": "point estimate"
+        },
+        "start": 2,
+        "update": 24
+      },
+      {
+        "baseline": 1,
+        "critic_delta": {
+          "estimate": 0.006199899164464802,
+          "uncertainty": "point estimate"
+        },
+        "mc_delta": {
+          "estimate": -0.06464438926310268,
+          "uncertainty": "point estimate"
+        },
+        "n_queries": 32,
+        "name": "s1_k0_u1",
+        "pre_entry": {
+          "critic_delta": {
+            "estimate": 0.021448763205896164,
+            "uncertainty": "point estimate"
+          },
+          "delta_estimable": true,
+          "flag_reconstructed": true,
+          "mc_delta": {
+            "estimate": -0.26992355296785,
+            "uncertainty": "point estimate"
+          },
+          "n_queries": 7
+        },
+        "saved_json_point_estimates_reproduced": true,
+        "sign_agreement": {
+          "estimate": false,
+          "uncertainty": "point estimate"
+        },
+        "start": 0,
+        "update": 1
+      },
+      {
+        "baseline": 1,
+        "critic_delta": {
+          "estimate": -0.007539350818640943,
+          "uncertainty": "point estimate"
+        },
+        "mc_delta": {
+          "estimate": -0.0011553427754957093,
+          "uncertainty": "point estimate"
+        },
+        "n_queries": 32,
+        "name": "s1_k0_u12",
+        "pre_entry": {
+          "critic_delta": {
+            "estimate": -0.009408546392744578,
+            "uncertainty": "point estimate"
+          },
+          "delta_estimable": true,
+          "flag_reconstructed": true,
+          "mc_delta": {
+            "estimate": -0.003378285325237372,
+            "uncertainty": "point estimate"
+          },
+          "n_queries": 6
+        },
+        "saved_json_point_estimates_reproduced": true,
+        "sign_agreement": {
+          "estimate": true,
+          "uncertainty": "point estimate"
+        },
+        "start": 0,
+        "update": 12
+      },
+      {
+        "baseline": 1,
+        "critic_delta": {
+          "estimate": -0.0185459233866865,
+          "uncertainty": "point estimate"
+        },
+        "mc_delta": {
+          "estimate": -0.004989549753248239,
+          "uncertainty": "point estimate"
+        },
+        "n_queries": 32,
+        "name": "s1_k0_u24",
+        "pre_entry": {
+          "critic_delta": {
+            "estimate": -0.08418101411541422,
+            "uncertainty": "point estimate"
+          },
+          "delta_estimable": true,
+          "flag_reconstructed": true,
+          "mc_delta": {
+            "estimate": -0.022654247381737044,
+            "uncertainty": "point estimate"
+          },
+          "n_queries": 7
+        },
+        "saved_json_point_estimates_reproduced": true,
+        "sign_agreement": {
+          "estimate": true,
+          "uncertainty": "point estimate"
+        },
+        "start": 0,
+        "update": 24
+      },
+      {
+        "baseline": 1,
+        "critic_delta": {
+          "estimate": -0.019702972146900796,
+          "uncertainty": "point estimate"
+        },
+        "mc_delta": {
+          "estimate": 0.011919888828097306,
+          "uncertainty": "point estimate"
+        },
+        "n_queries": 32,
+        "name": "s1_k1_u1",
+        "pre_entry": {
+          "critic_delta": {
+            "estimate": -0.08952168630058494,
+            "uncertainty": "point estimate"
+          },
+          "delta_estimable": true,
+          "flag_reconstructed": true,
+          "mc_delta": {
+            "estimate": 0.047679555312389224,
+            "uncertainty": "point estimate"
+          },
+          "n_queries": 8
+        },
+        "saved_json_point_estimates_reproduced": true,
+        "sign_agreement": {
+          "estimate": false,
+          "uncertainty": "point estimate"
+        },
+        "start": 1,
+        "update": 1
+      },
+      {
+        "baseline": 1,
+        "critic_delta": {
+          "estimate": 0.006022540221618565,
+          "uncertainty": "point estimate"
+        },
+        "mc_delta": {
+          "estimate": 0.006073898505627214,
+          "uncertainty": "point estimate"
+        },
+        "n_queries": 32,
+        "name": "s1_k1_u12",
+        "pre_entry": {
+          "critic_delta": {
+            "estimate": 0.03613031151684422,
+            "uncertainty": "point estimate"
+          },
+          "delta_estimable": true,
+          "flag_reconstructed": true,
+          "mc_delta": {
+            "estimate": 0.03887295043601417,
+            "uncertainty": "point estimate"
+          },
+          "n_queries": 5
+        },
+        "saved_json_point_estimates_reproduced": true,
+        "sign_agreement": {
+          "estimate": true,
+          "uncertainty": "point estimate"
+        },
+        "start": 1,
+        "update": 12
+      },
+      {
+        "baseline": 1,
+        "critic_delta": {
+          "estimate": 0.0027015465240243473,
+          "uncertainty": "point estimate"
+        },
+        "mc_delta": {
+          "estimate": 8.793824017909457e-05,
+          "uncertainty": "point estimate"
+        },
+        "n_queries": 32,
+        "name": "s1_k1_u24",
+        "pre_entry": {
+          "critic_delta": {
+            "estimate": 0.02047418587954966,
+            "uncertainty": "point estimate"
+          },
+          "delta_estimable": true,
+          "flag_reconstructed": true,
+          "mc_delta": {
+            "estimate": 0.0007035059214327566,
+            "uncertainty": "point estimate"
+          },
+          "n_queries": 4
+        },
+        "saved_json_point_estimates_reproduced": true,
+        "sign_agreement": {
+          "estimate": true,
+          "uncertainty": "point estimate"
+        },
+        "start": 1,
+        "update": 24
+      },
+      {
+        "baseline": 1,
+        "critic_delta": {
+          "estimate": 0.005165324845033325,
+          "uncertainty": "point estimate"
+        },
+        "mc_delta": {
+          "estimate": -0.0022080611859709234,
+          "uncertainty": "point estimate"
+        },
+        "n_queries": 32,
+        "name": "s1_k2_u1",
+        "pre_entry": {
+          "critic_delta": {
+            "estimate": 0.014194585733409287,
+            "uncertainty": "point estimate"
+          },
+          "delta_estimable": true,
+          "flag_reconstructed": true,
+          "mc_delta": {
+            "estimate": -0.017664489487767387,
+            "uncertainty": "point estimate"
+          },
+          "n_queries": 4
+        },
+        "saved_json_point_estimates_reproduced": true,
+        "sign_agreement": {
+          "estimate": false,
+          "uncertainty": "point estimate"
+        },
+        "start": 2,
+        "update": 1
+      },
+      {
+        "baseline": 1,
+        "critic_delta": {
+          "estimate": 0.0005102637655731517,
+          "uncertainty": "point estimate"
+        },
+        "mc_delta": {
+          "estimate": 0.004342925781113383,
+          "uncertainty": "point estimate"
+        },
+        "n_queries": 32,
+        "name": "s1_k2_u12",
+        "pre_entry": {
+          "critic_delta": {
+            "estimate": 0.0030817935724157808,
+            "uncertainty": "point estimate"
+          },
+          "delta_estimable": true,
+          "flag_reconstructed": true,
+          "mc_delta": {
+            "estimate": 0.04632454166520942,
+            "uncertainty": "point estimate"
+          },
+          "n_queries": 3
+        },
+        "saved_json_point_estimates_reproduced": true,
+        "sign_agreement": {
+          "estimate": true,
+          "uncertainty": "point estimate"
+        },
+        "start": 2,
+        "update": 12
+      },
+      {
+        "baseline": 1,
+        "critic_delta": {
+          "estimate": -0.022070215052792195,
+          "uncertainty": "point estimate"
+        },
+        "mc_delta": {
+          "estimate": -0.004686510466359272,
+          "uncertainty": "point estimate"
+        },
+        "n_queries": 32,
+        "name": "s1_k2_u24",
+        "pre_entry": {
+          "critic_delta": {
+            "estimate": -0.09666177476749119,
+            "uncertainty": "point estimate"
+          },
+          "delta_estimable": true,
+          "flag_reconstructed": true,
+          "mc_delta": {
+            "estimate": -0.018746041865437088,
+            "uncertainty": "point estimate"
+          },
+          "n_queries": 8
+        },
+        "saved_json_point_estimates_reproduced": true,
+        "sign_agreement": {
+          "estimate": true,
+          "uncertainty": "point estimate"
+        },
+        "start": 2,
+        "update": 24
+      }
+    ],
+    "pre_entry_comparisons": {
+      "available": false,
+      "n_estimable_comparisons": 17,
+      "n_requested_comparisons": 18,
+      "reason": "at least one saved check contains zero pre-entry queries"
+    },
+    "pre_entry_estimable_subset": {
+      "degenerate": false,
+      "n_comparisons": 17,
+      "sign_agreement": {
+        "count": 8,
+        "denominator": 17,
+        "rate": 0.47058823529411764,
+        "uncertainty": "point estimate"
+      },
+      "spearman": {
+        "bootstrap_degenerate": 0,
+        "bootstrap_valid": 2000,
+        "ci95": [
+          -0.47720200888769526,
+          0.6334278717900143
+        ],
+        "estimate": 0.08578431372549021
+      }
+    },
+    "pre_entry_reconstruction": {
+      "available": true,
+      "method": "saved visitation states mapped by query_path/query_t; task_reward recomputed and matched saved rewards",
+      "n_comparisons": 18,
+      "n_estimable_comparisons": 17,
+      "n_zero_query_comparisons": 1,
+      "total_pre_entry_queries": 103
+    },
+    "saved_json_point_estimates_reproduced": true
+  }
+}
