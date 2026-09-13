@@ -1,0 +1,1362 @@
+{
+  "classification": "meaningful critic error",
+  "overall": {
+    "critic": {
+      "mean": -0.02242458205889921,
+      "ci": [
+        -0.03965075734832525,
+        -0.005198406769473168
+      ],
+      "half_width": 0.017226175289426042,
+      "level": 0.975,
+      "se": 0.007617399690918797,
+      "df": 170.03652883627186,
+      "target_mass": 1.0,
+      "queries": 2304,
+      "zero_variance": false,
+      "effective_design_queries": 896.2576565362443,
+      "effective_visitation_queries": 1162.6606758443481,
+      "conditional_successor_mc_se": 0.0016001158748124957
+    },
+    "mc": {
+      "mean": 0.01710324596989912,
+      "ci": [
+        -0.0024006297570601035,
+        0.03660712169685834
+      ],
+      "half_width": 0.019503875726959222,
+      "level": 0.975,
+      "se": 0.008668189672299216,
+      "df": 391.7203936686921,
+      "target_mass": 1.0,
+      "queries": 2304,
+      "zero_variance": false,
+      "effective_design_queries": 896.2576565362443,
+      "effective_visitation_queries": 1162.6606758443481,
+      "conditional_successor_mc_se": 0.007028837689047084
+    },
+    "mc_minus_critic": {
+      "mean": 0.039527828028798326,
+      "ci": [
+        0.01468149649013651,
+        0.06437415956746015
+      ],
+      "half_width": 0.024846331538661816,
+      "level": 0.975,
+      "se": 0.010998693473167313,
+      "df": 192.98589215821676,
+      "target_mass": 1.0,
+      "queries": 2304,
+      "zero_variance": false,
+      "effective_design_queries": 896.2576565362443,
+      "effective_visitation_queries": 1162.6606758443481,
+      "conditional_successor_mc_se": 0.007112549069615495
+    },
+    "sequence_changed": {
+      "mean": 0.044521253380664,
+      "ci": [
+        0.03758164189146612,
+        0.05146086486986187
+      ],
+      "half_width": 0.006939611489197872,
+      "level": 0.975,
+      "se": 0.003070348634068275,
+      "df": 180.99066078208398,
+      "target_mass": 1.0,
+      "queries": 2304,
+      "zero_variance": false,
+      "effective_design_queries": 896.2576565362443,
+      "effective_visitation_queries": 1162.6606758443481,
+      "conditional_successor_mc_se": 0.0010238538131739814
+    }
+  },
+  "conditional": {
+    "time_0": {
+      "critic": {
+        "mean": 0.044482302856434536,
+        "ci": [
+          0.0014730975535661647,
+          0.0874915081593029
+        ],
+        "half_width": 0.04300920530286837,
+        "level": 0.95,
+        "se": 0.021811738057625377,
+        "df": 200.98154152579207,
+        "target_mass": 0.021130842730386803,
+        "queries": 576,
+        "zero_variance": false,
+        "effective_design_queries": 575.1322265504829,
+        "effective_visitation_queries": 576.0,
+        "conditional_successor_mc_se": 0.00556198963319521
+      },
+      "mc": {
+        "mean": -0.03892825729843385,
+        "ci": [
+          -0.12251832902468343,
+          0.04466181442781573
+        ],
+        "half_width": 0.08359007172624958,
+        "level": 0.95,
+        "se": 0.04245822256317547,
+        "df": 270.87142277883805,
+        "target_mass": 0.021130842730386803,
+        "queries": 576,
+        "zero_variance": false,
+        "effective_design_queries": 575.1322265504829,
+        "effective_visitation_queries": 576.0,
+        "conditional_successor_mc_se": 0.042358802021636006
+      },
+      "mc_minus_critic": {
+        "mean": -0.08341056015486839,
+        "ci": [
+          -0.16303987494224156,
+          -0.0037812453674952173
+        ],
+        "half_width": 0.07962931478737317,
+        "level": 0.95,
+        "se": 0.040458100382579625,
+        "df": 289.500375670465,
+        "target_mass": 0.021130842730386803,
+        "queries": 576,
+        "zero_variance": false,
+        "effective_design_queries": 575.1322265504829,
+        "effective_visitation_queries": 576.0,
+        "conditional_successor_mc_se": 0.04236344179802214
+      },
+      "sequence_changed": {
+        "mean": 0.16714042086066813,
+        "ci": [
+          0.15625649626917915,
+          0.17802434545215712
+        ],
+        "half_width": 0.010883924591489,
+        "level": 0.95,
+        "se": 0.005536171003776306,
+        "df": 396.4272359710782,
+        "target_mass": 0.021130842730386803,
+        "queries": 576,
+        "zero_variance": false,
+        "effective_design_queries": 575.1322265504829,
+        "effective_visitation_queries": 576.0,
+        "conditional_successor_mc_se": 0.003931810450966711
+      }
+    },
+    "time_1-3": {
+      "critic": {
+        "mean": 0.016020541401508444,
+        "ci": [
+          -0.03649019046648228,
+          0.06853127326949918
+        ],
+        "half_width": 0.052510731867990726,
+        "level": 0.95,
+        "se": 0.026665515051540495,
+        "df": 257.0002357292604,
+        "target_mass": 0.0633925281911604,
+        "queries": 576,
+        "zero_variance": false,
+        "effective_design_queries": 575.1322265504826,
+        "effective_visitation_queries": 575.009630356,
+        "conditional_successor_mc_se": 0.006778651312196573
+      },
+      "mc": {
+        "mean": -0.024262797097392205,
+        "ci": [
+          -0.13208265736539893,
+          0.08355706317061452
+        ],
+        "half_width": 0.10781986026800673,
+        "level": 0.95,
+        "se": 0.05475780005317188,
+        "df": 262.79729254307614,
+        "target_mass": 0.0633925281911604,
+        "queries": 576,
+        "zero_variance": false,
+        "effective_design_queries": 575.1322265504826,
+        "effective_visitation_queries": 575.009630356,
+        "conditional_successor_mc_se": 0.046755774844285954
+      },
+      "mc_minus_critic": {
+        "mean": -0.04028333849890067,
+        "ci": [
+          -0.1361633186779969,
+          0.05559664168019554
+        ],
+        "half_width": 0.09587998017909621,
+        "level": 0.95,
+        "se": 0.04869410702209171,
+        "df": 262.9600291276806,
+        "target_mass": 0.0633925281911604,
+        "queries": 576,
+        "zero_variance": false,
+        "effective_design_queries": 575.1322265504826,
+        "effective_visitation_queries": 575.009630356,
+        "conditional_successor_mc_se": 0.046221288975436294
+      },
+      "sequence_changed": {
+        "mean": 0.17173476189379683,
+        "ci": [
+          0.15960560460948084,
+          0.18386391917811282
+        ],
+        "half_width": 0.012129157284315985,
+        "level": 0.95,
+        "se": 0.006169953011721301,
+        "df": 404.7224043875971,
+        "target_mass": 0.0633925281911604,
+        "queries": 576,
+        "zero_variance": false,
+        "effective_design_queries": 575.1322265504826,
+        "effective_visitation_queries": 575.009630356,
+        "conditional_successor_mc_se": 0.00401040607285496
+      }
+    },
+    "time_4-9": {
+      "critic": {
+        "mean": -0.1239839992239645,
+        "ci": [
+          -0.1894751381904587,
+          -0.05849286025747029
+        ],
+        "half_width": 0.06549113896649421,
+        "level": 0.95,
+        "se": 0.03323469253584599,
+        "df": 224.95517379958963,
+        "target_mass": 0.1267850563823208,
+        "queries": 576,
+        "zero_variance": false,
+        "effective_design_queries": 575.1322265504826,
+        "effective_visitation_queries": 571.6776361352903,
+        "conditional_successor_mc_se": 0.007187396903855489
+      },
+      "mc": {
+        "mean": 0.04358283067306166,
+        "ci": [
+          -0.03722071819335369,
+          0.12438637953947701
+        ],
+        "half_width": 0.08080354886641535,
+        "level": 0.95,
+        "se": 0.041022914534572054,
+        "df": 244.41287969401102,
+        "target_mass": 0.1267850563823208,
+        "queries": 576,
+        "zero_variance": false,
+        "effective_design_queries": 575.1322265504826,
+        "effective_visitation_queries": 571.6776361352903,
+        "conditional_successor_mc_se": 0.030783400119751482
+      },
+      "mc_minus_critic": {
+        "mean": 0.16756682989702615,
+        "ci": [
+          0.07639533236365827,
+          0.25873832743039404
+        ],
+        "half_width": 0.09117149753336788,
+        "level": 0.95,
+        "se": 0.04628649719084932,
+        "df": 244.31686524275736,
+        "target_mass": 0.1267850563823208,
+        "queries": 576,
+        "zero_variance": false,
+        "effective_design_queries": 575.1322265504826,
+        "effective_visitation_queries": 571.6776361352903,
+        "conditional_successor_mc_se": 0.030807508092725675
+      },
+      "sequence_changed": {
+        "mean": 0.12060207542262175,
+        "ci": [
+          0.10572905093993473,
+          0.13547509990530876
+        ],
+        "half_width": 0.014873024482687009,
+        "level": 0.95,
+        "se": 0.007563250618420554,
+        "df": 364.93625149466664,
+        "target_mass": 0.1267850563823208,
+        "queries": 576,
+        "zero_variance": false,
+        "effective_design_queries": 575.1322265504826,
+        "effective_visitation_queries": 571.6776361352903,
+        "conditional_successor_mc_se": 0.0032309905732790414
+      }
+    },
+    "time_10+": {
+      "critic": {
+        "mean": -0.01098121901512649,
+        "ci": [
+          -0.02638557039103915,
+          0.00442313236078617
+        ],
+        "half_width": 0.01540435137591266,
+        "level": 0.95,
+        "se": 0.007733285885755511,
+        "df": 75.34138953275894,
+        "target_mass": 0.788691572696132,
+        "queries": 576,
+        "zero_variance": false,
+        "effective_design_queries": 575.9376217281821,
+        "effective_visitation_queries": 441.79047511903957,
+        "conditional_successor_mc_se": 0.001569111215325649
+      },
+      "mc": {
+        "mean": 0.017672638760168526,
+        "ci": [
+          0.002764204321250477,
+          0.032581073199086576
+        ],
+        "half_width": 0.01490843443891805,
+        "level": 0.95,
+        "se": 0.007525924855895706,
+        "df": 114.2606075850603,
+        "target_mass": 0.788691572696132,
+        "queries": 576,
+        "zero_variance": false,
+        "effective_design_queries": 575.9376217281821,
+        "effective_visitation_queries": 441.79047511903957,
+        "conditional_successor_mc_se": 0.0062868851546801175
+      },
+      "mc_minus_critic": {
+        "mean": 0.028653857775295017,
+        "ci": [
+          0.0066269233980919134,
+          0.05068079215249812
+        ],
+        "half_width": 0.022026934377203104,
+        "level": 0.95,
+        "se": 0.01107334674206452,
+        "df": 82.36960397634222,
+        "target_mass": 0.788691572696132,
+        "queries": 576,
+        "zero_variance": false,
+        "effective_design_queries": 575.9376217281821,
+        "effective_visitation_queries": 441.79047511903957,
+        "conditional_successor_mc_se": 0.006458360870621516
+      },
+      "sequence_changed": {
+        "mean": 0.01878071768396679,
+        "ci": [
+          0.011542130501973077,
+          0.026019304865960498
+        ],
+        "half_width": 0.007238587181993711,
+        "level": 0.95,
+        "se": 0.0036618326667199525,
+        "df": 142.3750907071113,
+        "target_mass": 0.788691572696132,
+        "queries": 576,
+        "zero_variance": false,
+        "effective_design_queries": 575.9376217281821,
+        "effective_visitation_queries": 441.79047511903957,
+        "conditional_successor_mc_se": 0.0011403801535955023
+      }
+    },
+    "pre_entry": {
+      "critic": {
+        "mean": -0.11947787766826726,
+        "ci": [
+          -0.19041476194875898,
+          -0.04854099338777554
+        ],
+        "half_width": 0.07093688428049172,
+        "level": 0.95,
+        "se": 0.03595671764288866,
+        "df": 185.41419371940455,
+        "target_mass": 0.20580238240525095,
+        "queries": 1521,
+        "zero_variance": false,
+        "effective_design_queries": 472.39153862551416,
+        "effective_visitation_queries": 847.8782702289709,
+        "conditional_successor_mc_se": 0.006698395038471507
+      },
+      "mc": {
+        "mean": 0.07152336847483766,
+        "ci": [
+          -0.009442913397813862,
+          0.15248965034748918
+        ],
+        "half_width": 0.08096628187265152,
+        "level": 0.95,
+        "se": 0.041183917280455784,
+        "df": 396.2736687249702,
+        "target_mass": 0.20580238240525095,
+        "queries": 1521,
+        "zero_variance": false,
+        "effective_design_queries": 472.39153862551416,
+        "effective_visitation_queries": 847.8782702289709,
+        "conditional_successor_mc_se": 0.033863423861207255
+      },
+      "mc_minus_critic": {
+        "mean": 0.19100124614310493,
+        "ci": [
+          0.0907923151911436,
+          0.29121017709506625
+        ],
+        "half_width": 0.10020893095196133,
+        "level": 0.95,
+        "se": 0.05082245902672398,
+        "df": 202.5515163998329,
+        "target_mass": 0.20580238240525095,
+        "queries": 1521,
+        "zero_variance": false,
+        "effective_design_queries": 472.39153862551416,
+        "effective_visitation_queries": 847.8782702289709,
+        "conditional_successor_mc_se": 0.03402753221233876
+      },
+      "sequence_changed": {
+        "mean": 0.21355541797408975,
+        "ci": [
+          0.194036163335783,
+          0.2330746726123965
+        ],
+        "half_width": 0.019519254638306754,
+        "level": 0.95,
+        "se": 0.009903142830823356,
+        "df": 215.83097285474935,
+        "target_mass": 0.20580238240525095,
+        "queries": 1521,
+        "zero_variance": false,
+        "effective_design_queries": 472.39153862551416,
+        "effective_visitation_queries": 847.8782702289709,
+        "conditional_successor_mc_se": 0.0049205278107001165
+      }
+    },
+    "entered": {
+      "critic": {
+        "mean": 0.0027250771873476697,
+        "ci": [
+          0.0007174536076869323,
+          0.004732700767008408
+        ],
+        "half_width": 0.0020076235796607374,
+        "level": 0.95,
+        "se": 0.0010195981113528473,
+        "df": 262.7328914979531,
+        "target_mass": 0.7941976175947492,
+        "queries": 783,
+        "zero_variance": false,
+        "effective_design_queries": 614.711665794711,
+        "effective_visitation_queries": 546.7215996337484,
+        "conditional_successor_mc_se": 0.0010229106270556686
+      },
+      "mc": {
+        "mean": 0.003001225749515099,
+        "ci": [
+          0.00017219910459151692,
+          0.005830252394438681
+        ],
+        "half_width": 0.002829026644923582,
+        "level": 0.95,
+        "se": 0.0014112839338337468,
+        "df": 54.358481053798464,
+        "target_mass": 0.7941976175947492,
+        "queries": 783,
+        "zero_variance": false,
+        "effective_design_queries": 614.711665794711,
+        "effective_visitation_queries": 546.7215996337484,
+        "conditional_successor_mc_se": 0.001150700120455412
+      },
+      "mc_minus_critic": {
+        "mean": 0.00027614856216742913,
+        "ci": [
+          -0.003370745959843354,
+          0.003923043084178212
+        ],
+        "half_width": 0.0036468945220107835,
+        "level": 0.95,
+        "se": 0.0018261907450714328,
+        "df": 65.24559734957862,
+        "target_mass": 0.7941976175947492,
+        "queries": 783,
+        "zero_variance": false,
+        "effective_design_queries": 614.711665794711,
+        "effective_visitation_queries": 546.7215996337484,
+        "conditional_successor_mc_se": 0.0015661324337036577
+      },
+      "sequence_changed": {
+        "mean": 0.0007190144787598268,
+        "ci": [
+          0.0002823175996653296,
+          0.001155711357854324
+        ],
+        "half_width": 0.00043669687909449726,
+        "level": 0.95,
+        "se": 0.0002198697591379059,
+        "df": 91.73891897256658,
+        "target_mass": 0.7941976175947492,
+        "queries": 783,
+        "zero_variance": false,
+        "effective_design_queries": 614.711665794711,
+        "effective_visitation_queries": 546.7215996337484,
+        "conditional_successor_mc_se": 0.00019014048918797777
+      }
+    },
+    "approach/time_0": {
+      "critic": {
+        "mean": 0.12809385869475398,
+        "ci": [
+          0.08938403787437713,
+          0.16680367951513084
+        ],
+        "half_width": 0.03870982082037686,
+        "level": 0.95,
+        "se": 0.01957470832264072,
+        "df": 136.1389185477801,
+        "target_mass": 0.006802721088435376,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 192.00000000000006,
+        "effective_visitation_queries": 192.0,
+        "conditional_successor_mc_se": 0.006350428452782881
+      },
+      "mc": {
+        "mean": -0.056199124251587386,
+        "ci": [
+          -0.1959624601695256,
+          0.08356421166635083
+        ],
+        "half_width": 0.13976333591793821,
+        "level": 0.95,
+        "se": 0.0707008904109748,
+        "df": 141.87733320174556,
+        "target_mass": 0.006802721088435376,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 192.00000000000006,
+        "effective_visitation_queries": 192.0,
+        "conditional_successor_mc_se": 0.06686517046960969
+      },
+      "mc_minus_critic": {
+        "mean": -0.18429298294634133,
+        "ci": [
+          -0.3224060721442874,
+          -0.046179893748395234
+        ],
+        "half_width": 0.1381130891979461,
+        "level": 0.95,
+        "se": 0.06985365811952808,
+        "df": 139.00087211063783,
+        "target_mass": 0.006802721088435376,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 192.00000000000006,
+        "effective_visitation_queries": 192.0,
+        "conditional_successor_mc_se": 0.06717552654290784
+      },
+      "sequence_changed": {
+        "mean": 0.1448567708333333,
+        "ci": [
+          0.12806506502237167,
+          0.1616484766442949
+        ],
+        "half_width": 0.01679170581096161,
+        "level": 0.95,
+        "se": 0.00849145703483849,
+        "df": 136.6040904406763,
+        "target_mass": 0.006802721088435376,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 192.00000000000006,
+        "effective_visitation_queries": 192.0,
+        "conditional_successor_mc_se": 0.0065832514375510015
+      }
+    },
+    "approach/time_1-3": {
+      "critic": {
+        "mean": 0.056048359794201134,
+        "ci": [
+          -0.029794158490507643,
+          0.1418908780789099
+        ],
+        "half_width": 0.08584251828470878,
+        "level": 0.95,
+        "se": 0.043336497914917296,
+        "df": 114.84190929494422,
+        "target_mass": 0.020408163265306117,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.99999999999994,
+        "effective_visitation_queries": 191.67637515571187,
+        "conditional_successor_mc_se": 0.0117043103189154
+      },
+      "mc": {
+        "mean": -0.045987803807694745,
+        "ci": [
+          -0.26896651362008855,
+          0.17699090600469905
+        ],
+        "half_width": 0.2229787098123938,
+        "level": 0.95,
+        "se": 0.11270302124608801,
+        "df": 129.42779839264466,
+        "target_mass": 0.020408163265306117,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.99999999999994,
+        "effective_visitation_queries": 191.67637515571187,
+        "conditional_successor_mc_se": 0.09732235854295275
+      },
+      "mc_minus_critic": {
+        "mean": -0.1020361636018959,
+        "ci": [
+          -0.30255722462521156,
+          0.09848489742141976
+        ],
+        "half_width": 0.20052106102331566,
+        "level": 0.95,
+        "se": 0.10132104972612822,
+        "df": 125.37560006444498,
+        "target_mass": 0.020408163265306117,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.99999999999994,
+        "effective_visitation_queries": 191.67637515571187,
+        "conditional_successor_mc_se": 0.09660331914718102
+      },
+      "sequence_changed": {
+        "mean": 0.22949218750000006,
+        "ci": [
+          0.20588061071883226,
+          0.2531037642811679
+        ],
+        "half_width": 0.023611576781167792,
+        "level": 0.95,
+        "se": 0.011945328396363237,
+        "df": 143.4704262972359,
+        "target_mass": 0.020408163265306117,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.99999999999994,
+        "effective_visitation_queries": 191.67637515571187,
+        "conditional_successor_mc_se": 0.007867528483649378
+      }
+    },
+    "approach/time_4-9": {
+      "critic": {
+        "mean": -0.055824284022849335,
+        "ci": [
+          -0.18369560305958596,
+          0.07204703501388729
+        ],
+        "half_width": 0.12787131903673662,
+        "level": 0.95,
+        "se": 0.06463689902866596,
+        "df": 130.54940412592617,
+        "target_mass": 0.040816326530612235,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.99999999999994,
+        "effective_visitation_queries": 190.51059467336788,
+        "conditional_successor_mc_se": 0.015057097102566544
+      },
+      "mc": {
+        "mean": 0.13292732070312102,
+        "ci": [
+          -0.05748158833954359,
+          0.32333622974578563
+        ],
+        "half_width": 0.1904089090426646,
+        "level": 0.95,
+        "se": 0.09634552180091015,
+        "df": 146.28907758453792,
+        "target_mass": 0.040816326530612235,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.99999999999994,
+        "effective_visitation_queries": 190.51059467336788,
+        "conditional_successor_mc_se": 0.07012530619209709
+      },
+      "mc_minus_critic": {
+        "mean": 0.18875160472597036,
+        "ci": [
+          -0.01286823080036259,
+          0.3903714402523033
+        ],
+        "half_width": 0.20161983552633295,
+        "level": 0.95,
+        "se": 0.10202307085094181,
+        "df": 147.13676436466326,
+        "target_mass": 0.040816326530612235,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.99999999999994,
+        "effective_visitation_queries": 190.51059467336788,
+        "conditional_successor_mc_se": 0.07044799802196394
+      },
+      "sequence_changed": {
+        "mean": 0.16015625000000003,
+        "ci": [
+          0.13110043781406072,
+          0.18921206218593933
+        ],
+        "half_width": 0.029055812185939296,
+        "level": 0.95,
+        "se": 0.014699707729579847,
+        "df": 143.57058170981168,
+        "target_mass": 0.040816326530612235,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.99999999999994,
+        "effective_visitation_queries": 190.51059467336788,
+        "conditional_successor_mc_se": 0.006292868238109106
+      }
+    },
+    "approach/time_10+": {
+      "critic": {
+        "mean": -0.014215888428813472,
+        "ci": [
+          -0.04454568738931515,
+          0.016113910531688203
+        ],
+        "half_width": 0.030329798960501676,
+        "level": 0.95,
+        "se": 0.014887816469792,
+        "df": 31.88449209207023,
+        "target_mass": 0.2653061224489796,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 192.00000000000003,
+        "effective_visitation_queries": 140.29660181487984,
+        "conditional_successor_mc_se": 0.003680942834891114
+      },
+      "mc": {
+        "mean": 0.017420178329575296,
+        "ci": [
+          -0.011907130070055234,
+          0.046747486729205825
+        ],
+        "half_width": 0.02932730839963053,
+        "level": 0.95,
+        "se": 0.014535272288623058,
+        "df": 42.29492467857534,
+        "target_mass": 0.2653061224489796,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 192.00000000000003,
+        "effective_visitation_queries": 140.29660181487984,
+        "conditional_successor_mc_se": 0.013757352521473764
+      },
+      "mc_minus_critic": {
+        "mean": 0.03163606675838878,
+        "ci": [
+          -0.008072427053906074,
+          0.07134456057068364
+        ],
+        "half_width": 0.039708493812294854,
+        "level": 0.95,
+        "se": 0.019778308238671778,
+        "df": 50.900577552127,
+        "target_mass": 0.2653061224489796,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 192.00000000000003,
+        "effective_visitation_queries": 140.29660181487984,
+        "conditional_successor_mc_se": 0.014392882657399695
+      },
+      "sequence_changed": {
+        "mean": 0.024088541666666668,
+        "ci": [
+          0.009610823127855075,
+          0.038566260205478264
+        ],
+        "half_width": 0.014477718538811593,
+        "level": 0.95,
+        "se": 0.007278867114257128,
+        "df": 82.86662848172426,
+        "target_mass": 0.2653061224489796,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 192.00000000000003,
+        "effective_visitation_queries": 140.29660181487984,
+        "conditional_successor_mc_se": 0.0024047030271294447
+      }
+    },
+    "transit/time_0": {
+      "critic": {
+        "mean": -0.09220374922316651,
+        "ci": [
+          -0.20996247934462378,
+          0.025554980898290752
+        ],
+        "half_width": 0.11775873012145727,
+        "level": 0.95,
+        "se": 0.0596164843010142,
+        "df": 156.16397601928693,
+        "target_mass": 0.007235923060391145,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.5346963458707,
+        "effective_visitation_queries": 192.0,
+        "conditional_successor_mc_se": 0.014470618821492164
+      },
+      "mc": {
+        "mean": -0.11501226738865791,
+        "ci": [
+          -0.3156169996331017,
+          0.08559246485578587
+        ],
+        "half_width": 0.20060473224444378,
+        "level": 0.95,
+        "se": 0.10149834292004413,
+        "df": 145.22697164089706,
+        "target_mass": 0.007235923060391145,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.5346963458707,
+        "effective_visitation_queries": 192.0,
+        "conditional_successor_mc_se": 0.10444735123573741
+      },
+      "mc_minus_critic": {
+        "mean": -0.02280851816549143,
+        "ci": [
+          -0.2118874056091472,
+          0.16627036927816435
+        ],
+        "half_width": 0.18907888744365578,
+        "level": 0.95,
+        "se": 0.09572381859884481,
+        "df": 156.33589489567817,
+        "target_mass": 0.007235923060391145,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.5346963458707,
+        "effective_visitation_queries": 192.0,
+        "conditional_successor_mc_se": 0.10434482050278386
+      },
+      "sequence_changed": {
+        "mean": 0.24215559448672733,
+        "ci": [
+          0.21973441141800099,
+          0.26457677755545367
+        ],
+        "half_width": 0.022421183068726352,
+        "level": 0.95,
+        "se": 0.011349798765263954,
+        "df": 154.1813558912743,
+        "target_mass": 0.007235923060391145,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.5346963458707,
+        "effective_visitation_queries": 192.0,
+        "conditional_successor_mc_se": 0.008098115749346945
+      }
+    },
+    "transit/time_1-3": {
+      "critic": {
+        "mean": 0.014417724796953817,
+        "ci": [
+          -0.11251503265656902,
+          0.14135048225047667
+        ],
+        "half_width": 0.12693275745352284,
+        "level": 0.95,
+        "se": 0.06422574577226108,
+        "df": 145.93342862541084,
+        "target_mass": 0.021707769181173432,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.53469634587063,
+        "effective_visitation_queries": 191.67158635412056,
+        "conditional_successor_mc_se": 0.016097823351995482
+      },
+      "mc": {
+        "mean": 0.03535339075473235,
+        "ci": [
+          -0.19464522202570442,
+          0.26535200353516913
+        ],
+        "half_width": 0.22999861278043676,
+        "level": 0.95,
+        "se": 0.11617298404262372,
+        "df": 120.81543047994407,
+        "target_mass": 0.021707769181173432,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.53469634587063,
+        "effective_visitation_queries": 191.67158635412056,
+        "conditional_successor_mc_se": 0.09852245336871523
+      },
+      "mc_minus_critic": {
+        "mean": 0.020935665957778488,
+        "ci": [
+          -0.1813823143398279,
+          0.22325364625538488
+        ],
+        "half_width": 0.2023179802976064,
+        "level": 0.95,
+        "se": 0.10220222612020913,
+        "df": 122.09242739545124,
+        "target_mass": 0.021707769181173432,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.53469634587063,
+        "effective_visitation_queries": 191.67158635412056,
+        "conditional_successor_mc_se": 0.09701138727852848
+      },
+      "sequence_changed": {
+        "mean": 0.18078969045851123,
+        "ci": [
+          0.15772410251241437,
+          0.2038552784046081
+        ],
+        "half_width": 0.023065587946096852,
+        "level": 0.95,
+        "se": 0.01168015854945005,
+        "df": 161.4470701743045,
+        "target_mass": 0.021707769181173432,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.53469634587063,
+        "effective_visitation_queries": 191.67158635412056,
+        "conditional_successor_mc_se": 0.007280235092388071
+      }
+    },
+    "transit/time_4-9": {
+      "critic": {
+        "mean": -0.2506613461450623,
+        "ci": [
+          -0.3946571587106371,
+          -0.10666553357948752
+        ],
+        "half_width": 0.14399581256557478,
+        "level": 0.95,
+        "se": 0.0725428207297407,
+        "df": 96.02866195016883,
+        "target_mass": 0.043415538362346864,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.53469634587063,
+        "effective_visitation_queries": 190.6776287039214,
+        "conditional_successor_mc_se": 0.01238887958569669
+      },
+      "mc": {
+        "mean": 0.032185780046880115,
+        "ci": [
+          -0.1134071841301964,
+          0.17777874422395662
+        ],
+        "half_width": 0.1455929641770765,
+        "level": 0.95,
+        "se": 0.07311230137496788,
+        "df": 76.7432704464766,
+        "target_mass": 0.043415538362346864,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.53469634587063,
+        "effective_visitation_queries": 190.6776287039214,
+        "conditional_successor_mc_se": 0.05837901076763392
+      },
+      "mc_minus_critic": {
+        "mean": 0.2828471261919424,
+        "ci": [
+          0.10023692186064817,
+          0.4654573305232367
+        ],
+        "half_width": 0.18261020433129424,
+        "level": 0.95,
+        "se": 0.09192687924609856,
+        "df": 90.67743310983046,
+        "target_mass": 0.043415538362346864,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.53469634587063,
+        "effective_visitation_queries": 190.6776287039214,
+        "conditional_successor_mc_se": 0.05830421774253898
+      },
+      "sequence_changed": {
+        "mean": 0.11196804807870804,
+        "ci": [
+          0.08330912151580618,
+          0.1406269746416099
+        ],
+        "half_width": 0.028658926562901865,
+        "level": 0.95,
+        "se": 0.014488853822166215,
+        "df": 132.73013869537573,
+        "target_mass": 0.043415538362346864,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.53469634587063,
+        "effective_visitation_queries": 190.6776287039214,
+        "conditional_successor_mc_se": 0.004972198824625554
+      }
+    },
+    "transit/time_10+": {
+      "critic": {
+        "mean": -0.022059972363785305,
+        "ci": [
+          -0.05782964075237726,
+          0.01370969602480665
+        ],
+        "half_width": 0.035769668388591955,
+        "level": 0.95,
+        "se": 0.01773370144595699,
+        "df": 42.74170887200315,
+        "target_mass": 0.2609741027294219,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.96414892455584,
+        "effective_visitation_queries": 150.35148797192932,
+        "conditional_successor_mc_se": 0.0024438923663898573
+      },
+      "mc": {
+        "mean": 0.03605561348659733,
+        "ci": [
+          0.0016076935562437458,
+          0.07050353341695093
+        ],
+        "half_width": 0.034447919930353586,
+        "level": 0.95,
+        "se": 0.017286493164809767,
+        "df": 73.50807553108237,
+        "target_mass": 0.2609741027294219,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.96414892455584,
+        "effective_visitation_queries": 150.35148797192932,
+        "conditional_successor_mc_se": 0.012855308750816995
+      },
+      "mc_minus_critic": {
+        "mean": 0.05811558585038264,
+        "ci": [
+          0.00422008512891215,
+          0.11201108657185313
+        ],
+        "half_width": 0.053895500721470486,
+        "level": 0.95,
+        "se": 0.02671345627685202,
+        "df": 42.38319917719627,
+        "target_mass": 0.2609741027294219,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.96414892455584,
+        "effective_visitation_queries": 150.35148797192932,
+        "conditional_successor_mc_se": 0.012836798246093446
+      },
+      "sequence_changed": {
+        "mean": 0.03194162077307118,
+        "ci": [
+          0.015525954979413958,
+          0.0483572865667284
+        ],
+        "half_width": 0.016415665793657223,
+        "level": 0.95,
+        "se": 0.00822214771835608,
+        "df": 66.08234072734162,
+        "target_mass": 0.2609741027294219,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.96414892455584,
+        "effective_visitation_queries": 150.35148797192932,
+        "conditional_successor_mc_se": 0.002407079504216997
+      }
+    },
+    "bypass/time_0": {
+      "critic": {
+        "mean": 0.10373947921794649,
+        "ci": [
+          0.0779002650054683,
+          0.12957869343042466
+        ],
+        "half_width": 0.025839214212478187,
+        "level": 0.95,
+        "se": 0.013082110652803623,
+        "df": 157.33631027884206,
+        "target_mass": 0.0070921985815602835,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 192.0,
+        "effective_visitation_queries": 192.00000000000006,
+        "conditional_successor_mc_se": 0.004420992997118782
+      },
+      "mc": {
+        "mean": 0.05526354039227582,
+        "ci": [
+          0.0035361991091929224,
+          0.10699088167535872
+        ],
+        "half_width": 0.0517273412830829,
+        "level": 0.95,
+        "se": 0.026080728668053374,
+        "df": 102.60490995365717,
+        "target_mass": 0.0070921985815602835,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 192.0,
+        "effective_visitation_queries": 192.00000000000006,
+        "conditional_successor_mc_se": 0.021415332019229866
+      },
+      "mc_minus_critic": {
+        "mean": -0.04847593882567067,
+        "ci": [
+          -0.09294387969080385,
+          -0.004007997960537482
+        ],
+        "half_width": 0.044467940865133185,
+        "level": 0.95,
+        "se": 0.022428755478394773,
+        "df": 105.84502479935531,
+        "target_mass": 0.0070921985815602835,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 192.0,
+        "effective_visitation_queries": 192.00000000000006,
+        "conditional_successor_mc_se": 0.02112146611938036
+      },
+      "sequence_changed": {
+        "mean": 0.11197916666666667,
+        "ci": [
+          0.0952397416183845,
+          0.12871859171494884
+        ],
+        "half_width": 0.016739425048282165,
+        "level": 0.95,
+        "se": 0.008464376294316905,
+        "df": 135.45327391858345,
+        "target_mass": 0.0070921985815602835,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 192.0,
+        "effective_visitation_queries": 192.00000000000006,
+        "conditional_successor_mc_se": 0.005393944335472107
+      }
+    },
+    "bypass/time_1-3": {
+      "critic": {
+        "mean": -0.02073819055946313,
+        "ci": [
+          -0.0554783318322163,
+          0.014001950713290048
+        ],
+        "half_width": 0.034740141272753176,
+        "level": 0.95,
+        "se": 0.017040360310312027,
+        "df": 31.30913271088466,
+        "target_mass": 0.021276595744680844,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.9999999999999,
+        "effective_visitation_queries": 191.6644003578345,
+        "conditional_successor_mc_se": 0.003481224476660579
+      },
+      "mc": {
+        "mean": -0.06424884428656072,
+        "ci": [
+          -0.12312091011538515,
+          -0.005376778457736292
+        ],
+        "half_width": 0.05887206582882443,
+        "level": 0.95,
+        "se": 0.029704302851046343,
+        "df": 109.14812543910324,
+        "target_mass": 0.021276595744680844,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.9999999999999,
+        "effective_visitation_queries": 191.6644003578345,
+        "conditional_successor_mc_se": 0.024248370883962752
+      },
+      "mc_minus_critic": {
+        "mean": -0.043510653727097594,
+        "ci": [
+          -0.09710224680664019,
+          0.010080939352445
+        ],
+        "half_width": 0.053591593079542595,
+        "level": 0.95,
+        "se": 0.027031726688707527,
+        "df": 106.24629057417555,
+        "target_mass": 0.021276595744680844,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.9999999999999,
+        "effective_visitation_queries": 191.6644003578345,
+        "conditional_successor_mc_se": 0.02413890412608209
+      },
+      "sequence_changed": {
+        "mean": 0.10709635416666669,
+        "ci": [
+          0.09116655554003376,
+          0.1230261527932996
+        ],
+        "half_width": 0.015929798626632925,
+        "level": 0.95,
+        "se": 0.008040210827083614,
+        "df": 112.54898064894653,
+        "target_mass": 0.021276595744680844,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.9999999999999,
+        "effective_visitation_queries": 191.6644003578345,
+        "conditional_successor_mc_se": 0.005536588960096104
+      }
+    },
+    "bypass/time_4-9": {
+      "critic": {
+        "mean": -0.060117202683206215,
+        "ci": [
+          -0.10359796570875507,
+          -0.016636439657657355
+        ],
+        "half_width": 0.04348076302554886,
+        "level": 0.95,
+        "se": 0.021986965960921027,
+        "df": 135.9298079128628,
+        "target_mass": 0.04255319148936169,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.99999999999986,
+        "effective_visitation_queries": 190.54004511941184,
+        "conditional_successor_mc_se": 0.009498707163857504
+      },
+      "mc": {
+        "mean": -0.030486931894272793,
+        "ci": [
+          -0.08822676534762562,
+          0.02725290155908004
+        ],
+        "half_width": 0.05773983345335283,
+        "level": 0.95,
+        "se": 0.028890976805011872,
+        "df": 62.67700631148551,
+        "target_mass": 0.04255319148936169,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.99999999999986,
+        "effective_visitation_queries": 190.54004511941184,
+        "conditional_successor_mc_se": 0.018443260006639168
+      },
+      "mc_minus_critic": {
+        "mean": 0.029630270788933412,
+        "ci": [
+          -0.020744800157506633,
+          0.08000534173537346
+        ],
+        "half_width": 0.050375070946440045,
+        "level": 0.95,
+        "se": 0.025412656680222207,
+        "df": 107.47705896419775,
+        "target_mass": 0.04255319148936169,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.99999999999986,
+        "effective_visitation_queries": 190.54004511941184,
+        "conditional_successor_mc_se": 0.017907675219289806
+      },
+      "sequence_changed": {
+        "mean": 0.0914713541666667,
+        "ci": [
+          0.07262955628078317,
+          0.11031315205255023
+        ],
+        "half_width": 0.018841797885883523,
+        "level": 0.95,
+        "se": 0.009511671960442758,
+        "df": 114.42519528483994,
+        "target_mass": 0.04255319148936169,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.99999999999986,
+        "effective_visitation_queries": 190.54004511941184,
+        "conditional_successor_mc_se": 0.005522901450998199
+      }
+    },
+    "bypass/time_10+": {
+      "critic": {
+        "mean": 0.003307207722299868,
+        "ci": [
+          7.318662472919875e-05,
+          0.006541228819870537
+        ],
+        "half_width": 0.003234021097570669,
+        "level": 0.95,
+        "se": 0.0016172040970078216,
+        "df": 60.79398449496012,
+        "target_mass": 0.2624113475177305,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.99999999999997,
+        "effective_visitation_queries": 151.17498231437153,
+        "conditional_successor_mc_se": 0.001576016531383183
+      },
+      "mc": {
+        "mean": -0.00035440573147748136,
+        "ci": [
+          -0.0011098036667787786,
+          0.00040099220382381587
+        ],
+        "half_width": 0.0007553979353012972,
+        "level": 0.95,
+        "se": 0.0003544057314774814,
+        "df": 14.999999999999998,
+        "target_mass": 0.2624113475177305,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.99999999999997,
+        "effective_visitation_queries": 151.17498231437153,
+        "conditional_successor_mc_se": 0.00035440573147748136
+      },
+      "mc_minus_critic": {
+        "mean": -0.003661613453777349,
+        "ci": [
+          -0.006460593757649081,
+          -0.0008626331499056159
+        ],
+        "half_width": 0.002798980303871733,
+        "level": 0.95,
+        "se": 0.0014101164350382375,
+        "df": 96.21196692762781,
+        "target_mass": 0.2624113475177305,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.99999999999997,
+        "effective_visitation_queries": 151.17498231437153,
+        "conditional_successor_mc_se": 0.0014321919230626317
+      },
+      "sequence_changed": {
+        "mean": 0.00032552083333333337,
+        "ci": [
+          -0.0003683103989450921,
+          0.001019352065611759
+        ],
+        "half_width": 0.0006938312322784254,
+        "level": 0.95,
+        "se": 0.0003255208333333333,
+        "df": 15.0,
+        "target_mass": 0.2624113475177305,
+        "queries": 192,
+        "zero_variance": false,
+        "effective_design_queries": 191.99999999999997,
+        "effective_visitation_queries": 151.17498231437153,
+        "conditional_successor_mc_se": 0.00032552083333333337
+      }
+    }
+  },
+  "precision_target_met": false,
+  "counts": {
+    "independent_reference_paths": 2304,
+    "queries": 2304,
+    "fixed_roots": 36,
+    "unique_states": 1764,
+    "unique_state_actions": 2304,
+    "pre_entry": 1521,
+    "in_region": 782,
+    "successor_pairs": 18432,
+    "changed_successors": 18427,
+    "paired_continuations": 36864,
+    "changed_sequences": 4409,
+    "changed_first_rewards": 70,
+    "changed_continuation_sequences": 4302
+  },
+  "published_full_rollout_difference": {
+    "mean": 0.006910321189317636,
+    "root_ci95": [
+      0.0019918626431782104,
+      0.011973173548304144
+    ],
+    "conditional_mc_ci95": [
+      0.0018138844526642264,
+      0.012006757925971046
+    ]
+  }
+}
