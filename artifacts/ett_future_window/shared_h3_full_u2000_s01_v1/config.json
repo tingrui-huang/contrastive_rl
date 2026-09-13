@@ -1,0 +1,52 @@
+{
+  "seeds": [
+    0,
+    1
+  ],
+  "arms": [
+    "A",
+    "B",
+    "C"
+  ],
+  "updates": 2000,
+  "refreshes": 20,
+  "block_updates": 100,
+  "contexts": 256,
+  "batch_size": 256,
+  "synthetic_fraction": 0.1,
+  "anchor_indices": [
+    0,
+    1,
+    2
+  ],
+  "discount": 0.95,
+  "original_horizon": 50,
+  "context_times": [
+    0,
+    47
+  ],
+  "behavior": "unchanged initial stochastic actor",
+  "windows": {
+    "B": "i+1..3",
+    "C": "i+1..H; H=50-original_time"
+  },
+  "evaluation_episodes": 128,
+  "evaluation_reset_base": 31000000,
+  "model_evaluation_seed": 32000000,
+  "learner_seed_base": 33000000,
+  "context_seed_base": 34000000,
+  "model_generation_base": 35000000,
+  "rng_bases": {
+    "anchor": 36000000,
+    "future": 37000000,
+    "permutation": 38000000,
+    "offline": 39000000
+  },
+  "bootstrap_seed": 40000000,
+  "primary_model_cap": 512000,
+  "total_model_cap": 650000,
+  "native_step_cap": 50000,
+  "checkpoint_selection": "final iterate only",
+  "native_action": "deterministic tanh(loc)",
+  "failure_negative_alpha": 0.0
+}
