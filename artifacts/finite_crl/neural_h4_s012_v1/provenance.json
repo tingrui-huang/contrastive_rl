@@ -1,0 +1,48 @@
+{
+  "head": "3827930236f0ee5bb888b2da43dbbfdef4c2f376",
+  "sources": {
+    "ett/finite_crl.py": "ca3b2f4e9e3d0452760251a412f1c5f12498c8858f1211144d390f2900599537",
+    "ett/finite_crl_eval.py": "7e21e663ea8f0a29a706c0b1652b332f665633b64354c7fb46dcb90af48b7f68",
+    "ett/finite_neural.py": "85214014f1a9e5d358b99a6efedb89615ae4dc3e8f439614bde6a6d724fec166",
+    "ett/finite_neural_eval.py": "bc2393eaee662385a252d245ab29ec7db9b77e39f9e448b0338aca1a0b0bddd7",
+    "scripts/test_finite_neural.py": "5162fa426fb0c64181159f42d6c94e828e352e5d9675cf457021400ac2c20650",
+    "scripts/check_finite_neural.py": "f60c4e0f5722db46eb55e300f26dba7336addc00cd9010f48041e2f6a131b47f",
+    "notes/finite_neural_spec.md": "11709d4914dbbb864d32b04d00506cec6fda8e4b76ef300c94679d51e1cd79e7",
+    "artifacts/finite_crl/tabular_h4_s012_v1/REPORT.md": "faf5ceb0108ecc506f7df49f1dbf07d74a5bad96105d407f6785ce45636d549f",
+    "artifacts/finite_crl/tabular_h4_s012_v1/results.json": "e9c27825ff802b7fd95ec343ac162283547f4adedf1837ac4efb85060aa13cb5"
+  },
+  "config_sha256": "6d0ddc8cb11b81c273e28e72af1ac6afa65fc6eb1940a46f120c182c732ed723",
+  "protocol_sha256": "11709d4914dbbb864d32b04d00506cec6fda8e4b76ef300c94679d51e1cd79e7",
+  "torch": "2.11.0+cpu",
+  "numpy": "2.4.4",
+  "reference_config": {
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "arms": [
+      "diagonal",
+      "joint"
+    ],
+    "horizon": 4,
+    "gamma": 0.9,
+    "batch_size": 32,
+    "rounds": 48,
+    "query_repeats": 512,
+    "visitation_repeats": 2048,
+    "final_query_repeats": 2048,
+    "evaluation_repeats": 16384,
+    "learning_rate": 0.12,
+    "off_weight": 4.0,
+    "diagonal_tv_tolerance": 0.02,
+    "lipschitz": 0.15,
+    "training_alpha": 0.0,
+    "calibration_alpha": 0.5,
+    "seed_base": 82000000,
+    "max_training_steps": 15000000,
+    "max_evaluation_steps": 1500000,
+    "selection": "final iterate only",
+    "float_tolerance": 1e-12
+  }
+}

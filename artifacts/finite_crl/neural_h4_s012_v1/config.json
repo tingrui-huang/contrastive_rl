@@ -1,0 +1,41 @@
+{
+  "reference_commit": "3827930",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "arms": [
+    "tabular_joint",
+    "neural_joint",
+    "neural_diagonal"
+  ],
+  "rounds": 48,
+  "query_repeats": 512,
+  "visitation_repeats": 2048,
+  "ett_lr": 0.12,
+  "off_weight": 4.0,
+  "alpha": 0.0,
+  "batch_size": 32,
+  "architecture": "onehot(h:4,s:4,a:2) -> Linear(10,32) -> Tanh -> Linear(32,16); psi=Embedding(4,16)",
+  "hidden": 32,
+  "embedding": 16,
+  "critic_lr": 0.01,
+  "first_fit_steps": 512,
+  "refresh_fit_steps": 128,
+  "refit_steps": 1024,
+  "optimizer": "Adam defaults, no weight decay",
+  "precision": "float64 CPU, one thread",
+  "ett_seed_base": 82000000,
+  "critic_seed_base": 83000000,
+  "refit_seed_base": 84000000,
+  "evaluation_seed_base": 85000000,
+  "final_query_repeats": 2048,
+  "evaluation_repeats": 16384,
+  "max_training_transitions": 21300000,
+  "max_evaluation_transitions": 2100000,
+  "max_training_neural_steps": 39168,
+  "max_refit_neural_steps": 27648,
+  "close_gap_threshold": 0.001,
+  "final_iterate_only": true
+}
