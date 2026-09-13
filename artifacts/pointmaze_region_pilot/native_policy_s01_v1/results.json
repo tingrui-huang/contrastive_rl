@@ -1,0 +1,812 @@
+{
+  "native": {
+    "A": {
+      "returns": 3.325161069719202,
+      "success": 0.296875,
+      "failure": 0.703125
+    },
+    "B_s0": {
+      "returns": 3.3586535158786375,
+      "success": 0.29296875,
+      "failure": 0.70703125
+    },
+    "C_s0": {
+      "returns": 3.4357268799378122,
+      "success": 0.3046875,
+      "failure": 0.6953125
+    },
+    "B_s1": {
+      "returns": 3.404919153860865,
+      "success": 0.30078125,
+      "failure": 0.69921875
+    },
+    "C_s1": {
+      "returns": 3.3462314906868023,
+      "success": 0.296875,
+      "failure": 0.703125
+    }
+  },
+  "native_comparisons": {
+    "C_s0_minus_A": {
+      "returns": {
+        "difference": 0.11056581021860996,
+        "ci95": [
+          -0.059627707383004123,
+          0.28620179616652575
+        ],
+        "observed_all_ties": false
+      },
+      "success": {
+        "difference": 0.0078125,
+        "ci95": [
+          -0.01171875,
+          0.02734375
+        ],
+        "observed_all_ties": false,
+        "a_one_b_zero": 5,
+        "a_zero_b_one": 3
+      },
+      "failure": {
+        "difference": -0.0078125,
+        "ci95": [
+          -0.02734375,
+          0.01171875
+        ],
+        "observed_all_ties": false,
+        "a_one_b_zero": 3,
+        "a_zero_b_one": 5
+      }
+    },
+    "C_s0_minus_B": {
+      "returns": {
+        "difference": 0.07707336405917509,
+        "ci95": [
+          -0.03477004537448156,
+          0.22403790172830734
+        ],
+        "observed_all_ties": false
+      },
+      "success": {
+        "difference": 0.01171875,
+        "ci95": [
+          -0.00390625,
+          0.03125
+        ],
+        "observed_all_ties": false,
+        "a_one_b_zero": 4,
+        "a_zero_b_one": 1
+      },
+      "failure": {
+        "difference": -0.01171875,
+        "ci95": [
+          -0.03125,
+          0.00390625
+        ],
+        "observed_all_ties": false,
+        "a_one_b_zero": 1,
+        "a_zero_b_one": 4
+      }
+    },
+    "B_s0_minus_A": {
+      "returns": {
+        "difference": 0.03349244615943486,
+        "ci95": [
+          -0.14737849003722775,
+          0.21668471721959218
+        ],
+        "observed_all_ties": false
+      },
+      "success": {
+        "difference": -0.00390625,
+        "ci95": [
+          -0.0234375,
+          0.015625
+        ],
+        "observed_all_ties": false,
+        "a_one_b_zero": 3,
+        "a_zero_b_one": 4
+      },
+      "failure": {
+        "difference": 0.00390625,
+        "ci95": [
+          -0.015625,
+          0.0234375
+        ],
+        "observed_all_ties": false,
+        "a_one_b_zero": 4,
+        "a_zero_b_one": 3
+      }
+    },
+    "C_s1_minus_A": {
+      "returns": {
+        "difference": 0.021070420967600176,
+        "ci95": [
+          -0.08297734301360014,
+          0.141030540576958
+        ],
+        "observed_all_ties": false
+      },
+      "success": {
+        "difference": 0.0,
+        "ci95": [
+          -0.01171875,
+          0.01171875
+        ],
+        "observed_all_ties": false,
+        "a_one_b_zero": 1,
+        "a_zero_b_one": 1
+      },
+      "failure": {
+        "difference": 0.0,
+        "ci95": [
+          -0.01171875,
+          0.01171875
+        ],
+        "observed_all_ties": false,
+        "a_one_b_zero": 1,
+        "a_zero_b_one": 1
+      }
+    },
+    "C_s1_minus_B": {
+      "returns": {
+        "difference": -0.0586876631740621,
+        "ci95": [
+          -0.2075951315102815,
+          0.09166873765334102
+        ],
+        "observed_all_ties": false
+      },
+      "success": {
+        "difference": -0.00390625,
+        "ci95": [
+          -0.01953125,
+          0.01171875
+        ],
+        "observed_all_ties": false,
+        "a_one_b_zero": 2,
+        "a_zero_b_one": 3
+      },
+      "failure": {
+        "difference": 0.00390625,
+        "ci95": [
+          -0.01171875,
+          0.01953125
+        ],
+        "observed_all_ties": false,
+        "a_one_b_zero": 3,
+        "a_zero_b_one": 2
+      }
+    },
+    "B_s1_minus_A": {
+      "returns": {
+        "difference": 0.07975808414166227,
+        "ci95": [
+          -0.08972159178170541,
+          0.2619314454651411
+        ],
+        "observed_all_ties": false
+      },
+      "success": {
+        "difference": 0.00390625,
+        "ci95": [
+          -0.015625,
+          0.0234375
+        ],
+        "observed_all_ties": false,
+        "a_one_b_zero": 4,
+        "a_zero_b_one": 3
+      },
+      "failure": {
+        "difference": -0.00390625,
+        "ci95": [
+          -0.0234375,
+          0.015625
+        ],
+        "observed_all_ties": false,
+        "a_one_b_zero": 3,
+        "a_zero_b_one": 4
+      }
+    }
+  },
+  "model": {
+    "obs_s0": {
+      "A": {
+        "returns": 8.074743144647785,
+        "success": 0.9453125,
+        "zero_return": 0.046875
+      },
+      "B_s0": {
+        "returns": 8.256091895835278,
+        "success": 0.953125,
+        "zero_return": 0.015625
+      },
+      "C_s0": {
+        "returns": 8.099521828669971,
+        "success": 0.9140625,
+        "zero_return": 0.0546875
+      },
+      "B_s1": {
+        "returns": 8.306942637501937,
+        "success": 0.9296875,
+        "zero_return": 0.0625
+      },
+      "C_s1": {
+        "returns": 7.8890275924603515,
+        "success": 0.921875,
+        "zero_return": 0.0625
+      }
+    },
+    "pess_s0": {
+      "A": {
+        "returns": 10.314772994767988,
+        "success": 0.8984375,
+        "zero_return": 0.078125
+      },
+      "B_s0": {
+        "returns": 10.28963519633383,
+        "success": 0.890625,
+        "zero_return": 0.0859375
+      },
+      "C_s0": {
+        "returns": 10.28963519633383,
+        "success": 0.890625,
+        "zero_return": 0.0859375
+      },
+      "B_s1": {
+        "returns": 10.353811759433645,
+        "success": 0.8984375,
+        "zero_return": 0.0859375
+      },
+      "C_s1": {
+        "returns": 10.28963519633383,
+        "success": 0.890625,
+        "zero_return": 0.0859375
+      }
+    },
+    "obs_s1": {
+      "A": {
+        "returns": 7.80288130662402,
+        "success": 0.9296875,
+        "zero_return": 0.0546875
+      },
+      "B_s0": {
+        "returns": 7.787773690024684,
+        "success": 0.890625,
+        "zero_return": 0.078125
+      },
+      "C_s0": {
+        "returns": 8.107226561254368,
+        "success": 0.9375,
+        "zero_return": 0.0390625
+      },
+      "B_s1": {
+        "returns": 8.05471831197168,
+        "success": 0.921875,
+        "zero_return": 0.0234375
+      },
+      "C_s1": {
+        "returns": 7.873602908560851,
+        "success": 0.921875,
+        "zero_return": 0.0625
+      }
+    },
+    "pess_s1": {
+      "A": {
+        "returns": 10.175562851577405,
+        "success": 0.8984375,
+        "zero_return": 0.0859375
+      },
+      "B_s0": {
+        "returns": 10.172047963810158,
+        "success": 0.890625,
+        "zero_return": 0.09375
+      },
+      "C_s0": {
+        "returns": 10.172047963810158,
+        "success": 0.890625,
+        "zero_return": 0.09375
+      },
+      "B_s1": {
+        "returns": 10.172047963810158,
+        "success": 0.890625,
+        "zero_return": 0.09375
+      },
+      "C_s1": {
+        "returns": 10.172047963810158,
+        "success": 0.890625,
+        "zero_return": 0.09375
+      }
+    }
+  },
+  "model_vs_A": {
+    "obs_s0": {
+      "B_s0": {
+        "returns": {
+          "difference": 0.18134875118749208,
+          "ci95": [
+            -0.17453365941710292,
+            0.5484063282901456
+          ],
+          "observed_all_ties": false
+        },
+        "success": {
+          "difference": 0.0078125,
+          "ci95": [
+            -0.03125,
+            0.046875
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 4,
+          "a_zero_b_one": 3
+        },
+        "zero_return": {
+          "difference": -0.03125,
+          "ci95": [
+            -0.0703125,
+            0.0
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 5
+        }
+      },
+      "C_s0": {
+        "returns": {
+          "difference": 0.024778684022184617,
+          "ci95": [
+            -0.33867733204095263,
+            0.3760161867606808
+          ],
+          "observed_all_ties": false
+        },
+        "success": {
+          "difference": -0.03125,
+          "ci95": [
+            -0.0859375,
+            0.015625
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 3,
+          "a_zero_b_one": 7
+        },
+        "zero_return": {
+          "difference": 0.0078125,
+          "ci95": [
+            -0.0390625,
+            0.0546875
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 5,
+          "a_zero_b_one": 4
+        }
+      },
+      "B_s1": {
+        "returns": {
+          "difference": 0.23219949285415376,
+          "ci95": [
+            -0.1438812198875793,
+            0.6068205052885941
+          ],
+          "observed_all_ties": false
+        },
+        "success": {
+          "difference": -0.015625,
+          "ci95": [
+            -0.0625,
+            0.03125
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 4,
+          "a_zero_b_one": 6
+        },
+        "zero_return": {
+          "difference": 0.015625,
+          "ci95": [
+            -0.03125,
+            0.0625
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 6,
+          "a_zero_b_one": 4
+        }
+      },
+      "C_s1": {
+        "returns": {
+          "difference": -0.18571555218743432,
+          "ci95": [
+            -0.49052974681966055,
+            0.08944983210324588
+          ],
+          "observed_all_ties": false
+        },
+        "success": {
+          "difference": -0.0234375,
+          "ci95": [
+            -0.0703125,
+            0.0234375
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 3,
+          "a_zero_b_one": 6
+        },
+        "zero_return": {
+          "difference": 0.015625,
+          "ci95": [
+            -0.0390625,
+            0.06269531249999893
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 6,
+          "a_zero_b_one": 4
+        }
+      }
+    },
+    "pess_s0": {
+      "B_s0": {
+        "returns": {
+          "difference": -0.0251377984341592,
+          "ci95": [
+            -0.0754133953024776,
+            0.0
+          ],
+          "observed_all_ties": false
+        },
+        "success": {
+          "difference": -0.0078125,
+          "ci95": [
+            -0.0234375,
+            0.0
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 1
+        },
+        "zero_return": {
+          "difference": 0.0078125,
+          "ci95": [
+            0.0,
+            0.0234375
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 0
+        }
+      },
+      "C_s0": {
+        "returns": {
+          "difference": -0.0251377984341592,
+          "ci95": [
+            -0.0754133953024776,
+            0.0
+          ],
+          "observed_all_ties": false
+        },
+        "success": {
+          "difference": -0.0078125,
+          "ci95": [
+            -0.0234375,
+            0.0
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 1
+        },
+        "zero_return": {
+          "difference": 0.0078125,
+          "ci95": [
+            0.0,
+            0.0234375
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 0
+        }
+      },
+      "B_s1": {
+        "returns": {
+          "difference": 0.03903876466565581,
+          "ci95": [
+            -0.0754133953024776,
+            0.19252968929944503
+          ],
+          "observed_all_ties": false
+        },
+        "success": {
+          "difference": 0.0,
+          "ci95": [
+            -0.0234375,
+            0.0234375
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 1
+        },
+        "zero_return": {
+          "difference": 0.0078125,
+          "ci95": [
+            0.0,
+            0.0234375
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 0
+        }
+      },
+      "C_s1": {
+        "returns": {
+          "difference": -0.0251377984341592,
+          "ci95": [
+            -0.0754133953024776,
+            0.0
+          ],
+          "observed_all_ties": false
+        },
+        "success": {
+          "difference": -0.0078125,
+          "ci95": [
+            -0.0234375,
+            0.0
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 1
+        },
+        "zero_return": {
+          "difference": 0.0078125,
+          "ci95": [
+            0.0,
+            0.0234375
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 0
+        }
+      }
+    },
+    "obs_s1": {
+      "B_s0": {
+        "returns": {
+          "difference": -0.015107616599335794,
+          "ci95": [
+            -0.40168653714832153,
+            0.37747460596294746
+          ],
+          "observed_all_ties": false
+        },
+        "success": {
+          "difference": -0.0390625,
+          "ci95": [
+            -0.09375,
+            0.0078125
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 3,
+          "a_zero_b_one": 8
+        },
+        "zero_return": {
+          "difference": 0.0234375,
+          "ci95": [
+            -0.0234375,
+            0.0703125
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 6,
+          "a_zero_b_one": 3
+        }
+      },
+      "C_s0": {
+        "returns": {
+          "difference": 0.30434525463034695,
+          "ci95": [
+            -0.005307107075332326,
+            0.6243789706734795
+          ],
+          "observed_all_ties": false
+        },
+        "success": {
+          "difference": 0.0078125,
+          "ci95": [
+            -0.046875,
+            0.0625
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 6,
+          "a_zero_b_one": 5
+        },
+        "zero_return": {
+          "difference": -0.015625,
+          "ci95": [
+            -0.0625,
+            0.03125
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 3,
+          "a_zero_b_one": 5
+        }
+      },
+      "B_s1": {
+        "returns": {
+          "difference": 0.2518370053476589,
+          "ci95": [
+            -0.13258335820577527,
+            0.6324599661667717
+          ],
+          "observed_all_ties": false
+        },
+        "success": {
+          "difference": -0.0078125,
+          "ci95": [
+            -0.0546875,
+            0.0390625
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 4,
+          "a_zero_b_one": 5
+        },
+        "zero_return": {
+          "difference": -0.03125,
+          "ci95": [
+            -0.0703125,
+            0.0
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 5
+        }
+      },
+      "C_s1": {
+        "returns": {
+          "difference": 0.07072160193683075,
+          "ci95": [
+            -0.13545203933761182,
+            0.30641633958869524
+          ],
+          "observed_all_ties": false
+        },
+        "success": {
+          "difference": -0.0078125,
+          "ci95": [
+            -0.0546875,
+            0.0390625
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 4,
+          "a_zero_b_one": 5
+        },
+        "zero_return": {
+          "difference": 0.0078125,
+          "ci95": [
+            -0.0234375,
+            0.046875
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 3,
+          "a_zero_b_one": 2
+        }
+      }
+    },
+    "pess_s1": {
+      "B_s0": {
+        "returns": {
+          "difference": -0.0035148877672467314,
+          "ci95": [
+            -0.010544663301740195,
+            0.0
+          ],
+          "observed_all_ties": false
+        },
+        "success": {
+          "difference": -0.0078125,
+          "ci95": [
+            -0.0234375,
+            0.0
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 1
+        },
+        "zero_return": {
+          "difference": 0.0078125,
+          "ci95": [
+            0.0,
+            0.0234375
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 0
+        }
+      },
+      "C_s0": {
+        "returns": {
+          "difference": -0.0035148877672467314,
+          "ci95": [
+            -0.010544663301740195,
+            0.0
+          ],
+          "observed_all_ties": false
+        },
+        "success": {
+          "difference": -0.0078125,
+          "ci95": [
+            -0.0234375,
+            0.0
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 1
+        },
+        "zero_return": {
+          "difference": 0.0078125,
+          "ci95": [
+            0.0,
+            0.0234375
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 0
+        }
+      },
+      "B_s1": {
+        "returns": {
+          "difference": -0.0035148877672467314,
+          "ci95": [
+            -0.010544663301740195,
+            0.0
+          ],
+          "observed_all_ties": false
+        },
+        "success": {
+          "difference": -0.0078125,
+          "ci95": [
+            -0.0234375,
+            0.0
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 1
+        },
+        "zero_return": {
+          "difference": 0.0078125,
+          "ci95": [
+            0.0,
+            0.0234375
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 0
+        }
+      },
+      "C_s1": {
+        "returns": {
+          "difference": -0.0035148877672467314,
+          "ci95": [
+            -0.010544663301740195,
+            0.0
+          ],
+          "observed_all_ties": false
+        },
+        "success": {
+          "difference": -0.0078125,
+          "ci95": [
+            -0.0234375,
+            0.0
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 0,
+          "a_zero_b_one": 1
+        },
+        "zero_return": {
+          "difference": 0.0078125,
+          "ci95": [
+            0.0,
+            0.0234375
+          ],
+          "observed_all_ties": false,
+          "a_one_b_zero": 1,
+          "a_zero_b_one": 0
+        }
+      }
+    }
+  },
+  "consistent_native_C_benefit": false
+}
