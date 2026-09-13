@@ -1,0 +1,54 @@
+{
+  "base": "a439486",
+  "seeds": [
+    0,
+    1
+  ],
+  "starts": 3,
+  "updates": 24,
+  "directions": 8,
+  "sigma": 0.1,
+  "response_lr": 0.05,
+  "response_step_cap": 0.25,
+  "betas": [
+    0.9,
+    0.999
+  ],
+  "adam_eps": 1e-08,
+  "query_count": 32,
+  "successors": 4,
+  "actor_draws": 4,
+  "paths_per_root": 4,
+  "first_refresh": 1000,
+  "refresh": 300,
+  "critic_steps": 47400,
+  "audit_updates": [
+    0,
+    11,
+    23
+  ],
+  "audit_successors": 8,
+  "audit_actors": 4,
+  "pool_updates": [
+    0,
+    12,
+    24
+  ],
+  "selection_repeats": 16,
+  "final_repeats": 64,
+  "reset_repeats": 128,
+  "init_seed": 160000000,
+  "search_seed": 161000000,
+  "mc_seed": 162000000,
+  "selection_seed": 163000000,
+  "final_seed": 164000000,
+  "reset_seed": 165000000,
+  "bootstrap_seed": 166000000,
+  "diagonal_seed": 167000000,
+  "gamma": 0.95,
+  "geometry": "rectangle",
+  "bound": 1.0,
+  "model_cap": 6000000,
+  "native_steps": 0,
+  "actor_updates": 0
+}
