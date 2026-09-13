@@ -1,0 +1,127 @@
+{
+  "passed": true,
+  "probes": {
+    "initial": {
+      "groups": {
+        "approach": {
+          "count": 12,
+          "model_value": 0.5494787148067828,
+          "zero_return_fraction": 0.046875,
+          "goal_reaching_fraction": 0.953125,
+          "recovered_after_setback_fraction": 0.2552083333333333,
+          "any_motion_fraction": 1.0,
+          "maximum_possible_occupancy_mean": 0.9190052891824075
+        },
+        "transit": {
+          "count": 12,
+          "model_value": 0.6482871938908749,
+          "zero_return_fraction": 0.0625,
+          "goal_reaching_fraction": 0.9375,
+          "recovered_after_setback_fraction": 0.15104166666666666,
+          "any_motion_fraction": 1.0,
+          "maximum_possible_occupancy_mean": 0.9020481834188269
+        },
+        "bypass": {
+          "count": 12,
+          "model_value": 0.6180526934855015,
+          "zero_return_fraction": 0.0,
+          "goal_reaching_fraction": 1.0,
+          "recovered_after_setback_fraction": 0.010416666666666666,
+          "any_motion_fraction": 1.0,
+          "maximum_possible_occupancy_mean": 0.9102551680691492
+        }
+      },
+      "constraints": {
+        "samplewise_lipschitz_excess": 0.0,
+        "matrix_frobenius_max": 0.0,
+        "geometry_f4_step_action_checks_passed": true,
+        "passed": true
+      },
+      "recovered_paths": 80
+    },
+    "positive_response": {
+      "groups": {
+        "approach": {
+          "count": 12,
+          "model_value": 0.5596699755707845,
+          "zero_return_fraction": 0.015625,
+          "goal_reaching_fraction": 0.984375,
+          "recovered_after_setback_fraction": 0.3072916666666667,
+          "any_motion_fraction": 1.0,
+          "maximum_possible_occupancy_mean": 0.9190052891824075
+        },
+        "transit": {
+          "count": 12,
+          "model_value": 0.64038355004174,
+          "zero_return_fraction": 0.005208333333333333,
+          "goal_reaching_fraction": 0.9947916666666666,
+          "recovered_after_setback_fraction": 0.2708333333333333,
+          "any_motion_fraction": 1.0,
+          "maximum_possible_occupancy_mean": 0.9020481834188269
+        },
+        "bypass": {
+          "count": 12,
+          "model_value": 0.6236351552223279,
+          "zero_return_fraction": 0.0,
+          "goal_reaching_fraction": 1.0,
+          "recovered_after_setback_fraction": 0.010416666666666666,
+          "any_motion_fraction": 1.0,
+          "maximum_possible_occupancy_mean": 0.9102551680691492
+        }
+      },
+      "constraints": {
+        "samplewise_lipschitz_excess": 0.0,
+        "matrix_frobenius_max": 0.4949747323989868,
+        "geometry_f4_step_action_checks_passed": true,
+        "passed": true
+      },
+      "recovered_paths": 113
+    },
+    "negative_response": {
+      "groups": {
+        "approach": {
+          "count": 12,
+          "model_value": 0.5823657870713611,
+          "zero_return_fraction": 0.0,
+          "goal_reaching_fraction": 1.0,
+          "recovered_after_setback_fraction": 0.5989583333333334,
+          "any_motion_fraction": 1.0,
+          "maximum_possible_occupancy_mean": 0.9190052891824075
+        },
+        "transit": {
+          "count": 12,
+          "model_value": 0.6914182711703104,
+          "zero_return_fraction": 0.0,
+          "goal_reaching_fraction": 1.0,
+          "recovered_after_setback_fraction": 0.375,
+          "any_motion_fraction": 1.0,
+          "maximum_possible_occupancy_mean": 0.9020481834188269
+        },
+        "bypass": {
+          "count": 12,
+          "model_value": 0.6046706016975665,
+          "zero_return_fraction": 0.0,
+          "goal_reaching_fraction": 1.0,
+          "recovered_after_setback_fraction": 0.06770833333333333,
+          "any_motion_fraction": 1.0,
+          "maximum_possible_occupancy_mean": 0.9102551680691492
+        }
+      },
+      "constraints": {
+        "samplewise_lipschitz_excess": 0.0,
+        "matrix_frobenius_max": 0.4949747323989868,
+        "geometry_f4_step_action_checks_passed": true,
+        "passed": true
+      },
+      "recovered_paths": 200
+    }
+  },
+  "mixed_roots": {
+    "approach": 3,
+    "transit": 2,
+    "bypass": 0
+  },
+  "recovered_path_count": 393,
+  "initial_between_context_std": 0.058985203532761266,
+  "interpretation": "Finite probe evidence only; no full-family capacity certificate. Zero return is not death."
+}
