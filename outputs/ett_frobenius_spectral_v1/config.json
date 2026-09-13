@@ -1,0 +1,73 @@
+{
+  "base_commit": "03440b6",
+  "source_commit": "1d6deef",
+  "modes": [
+    "frobenius",
+    "spectral"
+  ],
+  "seeds": [
+    0,
+    1
+  ],
+  "source_parameters": {
+    "0": "s0_k0_u24",
+    "1": "s1_k0_u24"
+  },
+  "source_critics": {
+    "0": "checks/s0_k0_u24/critic.pt",
+    "1": "checks/s1_k0_u24/critic.pt"
+  },
+  "updates": 6,
+  "directions": 8,
+  "sigma": 0.1,
+  "response_lr": 0.05,
+  "response_step_cap": 0.25,
+  "adam_betas": [
+    0.9,
+    0.999
+  ],
+  "adam_eps": 1e-08,
+  "critic_lr": 0.003,
+  "first_refresh_steps": 1000,
+  "later_refresh_steps": 300,
+  "total_critic_steps": 10000,
+  "paths_per_root": 4,
+  "query_count": 32,
+  "successors": 4,
+  "actor_draws": 4,
+  "audit_updates": [
+    1,
+    3,
+    6
+  ],
+  "audit_successors": 8,
+  "audit_actor_draws": 4,
+  "final_repeats": 64,
+  "reset_repeats": 128,
+  "bootstrap_repeats": 2000,
+  "training_seed": 202000000,
+  "matched_mc_seed": 203000000,
+  "final_seed": 204000000,
+  "reset_seed": 205000000,
+  "constraint_seed": 206000000,
+  "bootstrap_seed": 201000000,
+  "gamma": 0.95,
+  "return_scale": 0.05,
+  "geometry": "rectangle",
+  "bound": 1.0,
+  "meaningful_return_effect": 0.01,
+  "numerical_tolerance": 2e-06,
+  "training_visitation_outputs": 163776,
+  "optimizer_probe_outputs": 55296,
+  "matched_audit_outputs": 1185792,
+  "heldout_evaluation_outputs": 650112,
+  "reset_evaluation_outputs": 38400,
+  "constraint_outputs": 8448,
+  "exact_model_output_budget": 2101824,
+  "hard_cap": 2101824,
+  "response_updates": 24,
+  "native_steps": 0,
+  "actor_updates": 0,
+  "diagonal_updates": 0,
+  "selection": "fixed update 6; no sweep, early stopping, retry, or outcome selection"
+}
