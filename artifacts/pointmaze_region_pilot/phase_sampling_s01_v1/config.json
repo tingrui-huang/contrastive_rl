@@ -1,0 +1,47 @@
+{
+  "base": "23da83f",
+  "arms": [
+    "uniform",
+    "balanced"
+  ],
+  "seeds": [
+    0,
+    1
+  ],
+  "critic_seed": 98000000,
+  "steps": 1500,
+  "batch": 256,
+  "lr": 0.003,
+  "training_paths_per_root": 8,
+  "eval_repeats": 64,
+  "phase_boundaries": "[0,5), [5,H//2), [H//2,H)",
+  "query_times": "0,5,H//2",
+  "nce_weights": [
+    1,
+    31
+  ],
+  "q": [
+    0.5,
+    0.5
+  ],
+  "alpha": 0.0,
+  "discount": 0.95,
+  "horizon_scale": 50,
+  "model_output_cap": 650000,
+  "native_episodes": 600,
+  "native_step_cap": 30000,
+  "native_seed": 103000000,
+  "final_selection_seed": 103000001,
+  "training_collection_seed": 99000000,
+  "positive_seed": 99000100,
+  "train_evaluation_seed": 104001000,
+  "final_query_seed": 105000000,
+  "final_evaluation_seed": 105001000,
+  "bootstrap_seed": 106000000,
+  "bootstrap_repeats": 2000,
+  "ranking_min_difference": 0.01,
+  "ranking_z": 2.58,
+  "ranking_min_pairs": 10,
+  "ranking_min_episodes": 8,
+  "final_iterates_only": true
+}

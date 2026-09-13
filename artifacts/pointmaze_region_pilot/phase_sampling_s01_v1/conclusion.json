@@ -1,0 +1,74 @@
+{
+  "primary": [
+    {
+      "seed": 0,
+      "supports_sampling_bottleneck": false,
+      "final_early": {
+        "rmse_change": -0.0010745582507318413,
+        "rmse_change_ci95": [
+          -0.018536405518113436,
+          0.015248239022571665
+        ],
+        "bias_change": -0.10418686879720501,
+        "bias_change_ci95": [
+          -0.11531236127542686,
+          -0.09336946683076609
+        ],
+        "absolute_bias_change": 0.010361935622329281
+      },
+      "seen_early": {
+        "rmse_change": -0.017045403145252554,
+        "rmse_change_ci95": [
+          -0.03295888672865162,
+          -0.0011705282499309274
+        ],
+        "bias_change": -0.11194562138536884,
+        "bias_change_ci95": [
+          -0.11995012038513962,
+          -0.10374473990406909
+        ],
+        "absolute_bias_change": -0.014629171350743445
+      },
+      "later_harm_flag": {
+        "middle": true,
+        "late": false
+      }
+    },
+    {
+      "seed": 1,
+      "supports_sampling_bottleneck": false,
+      "final_early": {
+        "rmse_change": -0.022332271641169757,
+        "rmse_change_ci95": [
+          -0.029928112991027097,
+          -0.01398209868303356
+        ],
+        "bias_change": 0.004429584256301155,
+        "bias_change_ci95": [
+          -0.006025973765668303,
+          0.014748699564239687
+        ],
+        "absolute_bias_change": 0.004429584256301154
+      },
+      "seen_early": {
+        "rmse_change": -0.01618646057158451,
+        "rmse_change_ci95": [
+          -0.025117415013886837,
+          -0.0061776060516155
+        ],
+        "bias_change": -0.004046389230300528,
+        "bias_change_ci95": [
+          -0.010866645737052618,
+          0.0029776163270508814
+        ],
+        "absolute_bias_change": -0.004046389230300519
+      },
+      "later_harm_flag": {
+        "middle": false,
+        "late": true
+      }
+    }
+  ],
+  "both_seeds_support": false,
+  "warning": "Calibration improvement alone does not establish useful within-group ordering. No ETT optimization or causal identification."
+}
