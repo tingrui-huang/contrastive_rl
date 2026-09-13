@@ -1,0 +1,67 @@
+{
+  "rows": [
+    {
+      "h": 10,
+      "rmse": 0.03287917941903367,
+      "bias": 0.008899788642437546,
+      "outside_count": 32,
+      "outside_rmse": 0.0415425645621301,
+      "return_mean": 0.2223644432733692,
+      "between_context_std": 0.1801831094011401,
+      "max_mc_standard_error": 0.03366975852532735,
+      "value_range_excess": 0.055030660415878896
+    },
+    {
+      "h": 5,
+      "rmse": 0.019233243915928202,
+      "bias": 0.004250891337420078,
+      "outside_count": 28,
+      "outside_rmse": 0.015684614269490294,
+      "return_mean": 0.13187322523166572,
+      "between_context_std": 0.10615855589539455,
+      "max_mc_standard_error": 0.020815865096632767,
+      "value_range_excess": 0.10476913367160362
+    },
+    {
+      "h": 1,
+      "rmse": 0.0036332006782001693,
+      "bias": 0.001736031101130534,
+      "outside_count": 28,
+      "outside_rmse": 0.004223524479459396,
+      "return_mean": 0.02890625043073669,
+      "between_context_std": 0.024035344206459475,
+      "max_mc_standard_error": 0.005590170027049497,
+      "value_range_excess": 0.007844923023799674
+    }
+  ],
+  "passed": true,
+  "nce_loss": 0.12061422143405326,
+  "actor": {
+    "step": 150000,
+    "provenance": {
+      "code_commit": "4f3da3f1e94cbad647bc56b0f24e4171776090ee",
+      "head": "4f3da3f1e94cbad647bc56b0f24e4171776090ee",
+      "dirty": false,
+      "arm": "zbase",
+      "alpha": 0.0,
+      "seed": 0,
+      "dataset": "datasets/swamp_windy_f4_merged_s0.npz",
+      "env_name": "point_two_route_swamp_windy_f4_v0",
+      "per_cell_swamp_prob": 0.3,
+      "dataset_content_sha256": "ad8b4470df0ebcc1c03421dfb59b61f9faee48cfbf51e2b9c0a402e0403f544d",
+      "n_episodes": 6600,
+      "n_transitions": 330000,
+      "n_failed_episodes": 1455,
+      "bank": null,
+      "bank_content_sha256": null,
+      "obs_norm_mode": "",
+      "obs_norm_z_scale": 0.0,
+      "batch_size": 256,
+      "steps": 150000,
+      "run_dir": "runs/f4_p30_sweep/p30_a0_a01_a03_s0_s1/alpha0_seed0",
+      "smoke": false
+    },
+    "sampling": "frozen tanh Gaussian actor; one x fixed across K expert draws",
+    "evaluation_overlap": "actor originally trained on all source episodes; ETT validation is not held out for actor"
+  }
+}

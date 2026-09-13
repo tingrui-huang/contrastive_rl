@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "checked_update_arms": [
+    "diagonal_s0",
+    "joint_s0",
+    "diagonal_s1",
+    "joint_s1"
+  ],
+  "checked_frozen_models": [
+    "initial",
+    "diagonal_s0",
+    "joint_s0",
+    "diagonal_s1",
+    "joint_s1"
+  ],
+  "checks": [
+    "frozen source/input hashes",
+    "paired initializations",
+    "signed Gaussian estimator reconstruction",
+    "descent sign and block caps",
+    "acceptance guard and final iterate replay",
+    "zero control response",
+    "episode separation",
+    "first-action alignment across repeats/models",
+    "separate bounded auxiliary x_prime",
+    "complete horizon and exact F4 shift",
+    "successor reward reconstruction",
+    "finite saved arrays",
+    "budget ledger"
+  ],
+  "model_outputs_collected_by_this_audit": 0,
+  "prior_tests": "16 finite-state regression tests and 7 PointMaze adapter/integration tests passed; see WORK_LOG.md"
+}
