@@ -5,7 +5,7 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 
-from ett.convex_action_transition import energy_score,matrices
+from ett.convex_action_transition import energy_score,matrices,validate_selected_set
 from ett.run_convex_adversarial import CONFIG,verify,setup,reset_run
 from ett.run_return_readout import read,write
 from ett.eval_diagonal_transition import _open_endpoint
@@ -73,7 +73,7 @@ def action_audit(root,model,nominal,theta):
         nonlocal calls
         y,d=model._sample(jnp.asarray(theta),s,a,xp,g,key,8);y=np.asarray(y);d=jax.tree.map(np.asarray,d);calls+=1
         checks(y,np.broadcast_to(s[:,None],y.shape))
-        assert d['box_valid'].all() and np.all(y[...,:2]>=d['box_low']) and np.all(y[...,:2]<=d['box_high'])
+        validate_selected_set(s,y,d,CONFIG['numerical_constraint_tolerance'])
         return y,d
     grid=np.array([(x,y) for x in [-1.,0.,1.] for y in [-1.,0.,1.]],np.float32)
     actions=np.concatenate([np.broadcast_to(grid[:,None],(9,128,2)),xp[None]],axis=0)
@@ -107,7 +107,8 @@ def action_audit(root,model,nominal,theta):
     report=dict(maximum_positive_action_bound_excess=max_excess,maximum_sampled_ratio=max_ratio,
         near_pair_ratios=near,max_matrix_frobenius=float(np.linalg.norm(bound_matrices,axis=(1,2)).max()),
         max_matrix_operator_norm=float(np.linalg.svd(bound_matrices,compute_uv=False).max()),
-        all_pair_guarantee='fixed-anchor independent convex-box projection, norm-bounded signed matrix; proof in SPEC.md',
+        all_pair_guarantee='fixed-anchor independent convex-set projection, norm-bounded signed matrix; proof in SPEC.md',
+        geometry_mode=model.geometry_mode,
         diagonal_sample_identity=True,box_valid=True,endpoints_open=True,f4_exact=True,coordinate_cap=True,
         projection_fraction=float(np.mean([d['projection_corrected'].mean() for d in details])),
         action_invariant_fraction=float(np.mean(spread<1e-6)),mean_grid_action_spread=float(spread.mean()),

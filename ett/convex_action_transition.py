@@ -188,6 +188,63 @@ class ConvexActionTransition:
         raise NotImplementedError('emitted projected mixed law has no implemented density; use diagonal energy fitting score')
 
 
+def save_convex_checkpoint(path, model, theta):
+    """Write a new coefficient checkpoint with mandatory geometry metadata."""
+    theta = np.asarray(theta)
+    if theta.shape != (DIMENSION,) or not np.isfinite(theta).all():
+        raise ValueError('expected 32 finite parameters')
+    with open(path, 'xb') as stream:
+        np.savez(stream, theta=theta, bound=model.bound, geometry_mode=model.geometry_mode,
+                 format_version=1)
+
+
+def load_convex_checkpoint(diagonal, path, *, require_geometry=False):
+    """Legacy theta/bound files mean rectangle; new files must retain their mode.
+
+    New experiment evaluators use require_geometry=True so metadata loss cannot
+    silently turn a newly produced checkpoint into a historical rectangle file.
+    """
+    with np.load(path, allow_pickle=False) as data:
+        version = int(data['format_version']) if 'format_version' in data else None
+        if version not in (None, 1):
+            raise ValueError('unsupported convex checkpoint version')
+        if (require_geometry or version is not None) and 'geometry_mode' not in data:
+            raise ValueError('geometry mode missing from new coefficient checkpoint')
+        mode = str(data['geometry_mode'].item()) if 'geometry_mode' in data else 'rectangle'
+        return ConvexActionTransition(diagonal, data['theta'], float(data['bound']), geometry_mode=mode)
+
+
+def validate_selected_set(state, output, diagnostic, tolerance=2e-6):
+    """Validate actual per-draw convex sets, free endpoints, rounded steps and F4.
+
+    state is [batch,8], output [batch,draw,8]; rectangle-only diagnostics remain
+    accepted. This is a numerical component check, not a full-domain proof.
+    """
+    state, output = np.asarray(state), np.asarray(output)
+    xy = output[..., :2]
+    if not np.isfinite(output).all() or not np.asarray(diagnostic['box_valid']).all():
+        raise ValueError('nonfinite output or invalid anchor box')
+    np.testing.assert_array_equal(output[..., 2:], np.broadcast_to(state[:, None, :6], output[..., 2:].shape))
+    low, high = state[:, None, :2]-1., state[:, None, :2]+1.
+    assert np.all(xy >= low-tolerance) and np.all(xy <= high+tolerance)
+    free = np.any(np.all((xy[..., None, :] >= RECTANGLE_LOW-tolerance) &
+                         (xy[..., None, :] <= RECTANGLE_HIGH+tolerance), axis=-1), axis=-1)
+    assert free.all()
+    kind = np.asarray(diagnostic.get('geometry_kind', np.zeros(xy.shape[:-1], np.int32)))
+    assert np.all((kind == 0) | (kind == 1))
+    box = kind == 0
+    assert np.all(xy[box] >= np.asarray(diagnostic['box_low'])[box]-tolerance)
+    assert np.all(xy[box] <= np.asarray(diagnostic['box_high'])[box]+tolerance)
+    segment = ~box
+    if segment.any():
+        a, b = [np.asarray(diagnostic[k]) for k in ['segment_start', 'segment_end']]
+        fraction = np.asarray(diagnostic['segment_fraction'])
+        assert np.all((fraction[segment] >= 0) & (fraction[segment] <= 1))
+        projected = a + fraction[..., None]*(b-a)
+        np.testing.assert_allclose(xy[segment], projected[segment], atol=tolerance, rtol=0)
+    return True
+
+
 def energy_score(samples,target):
     """Unbiased K-draw energy score in native XY units, including any atoms."""
     k=samples.shape[1]
@@ -211,10 +268,18 @@ class ConvexRollout:
                 action=actor(s,goal,ak)
                 y,d=model.sample_flat(theta,s,action,xp,goal,tk,1)
                 ns=y[:,0];reward=task_reward(ns,goal)
+                endpoint, eligible = fork_segment(s, d['anchor_xy'])
+                kind = d.get('geometry_kind', jnp.zeros_like(d['rectangle']))
                 return ns,dict(state=ns,action=action,reward=reward,aux_x_prime=xp,
                     anchor=d['anchor_xy'][:,0],projection_corrected=d['projection_corrected'][:,0],
                     boundary=d['projected_to_boundary'][:,0],valid=d['box_valid'][:,0],
-                    base_corrected=d['base_corrected'][:,0],stationary_atom=d['stationary_atom'][:,0])
+                    base_corrected=d['base_corrected'][:,0],stationary_atom=d['stationary_atom'][:,0],
+                    geometry_kind=kind[:,0],segment_eligible=eligible[:,0],
+                    segment_start=d['anchor_xy'][:,0],
+                    segment_end=d.get('segment_end', d['anchor_xy'])[:,0],
+                    segment_fraction=d.get('segment_fraction', jnp.zeros_like(d['box_valid'], dtype=s.dtype))[:,0],
+                    reference_rectangle=d['rectangle'][:,0],box_low=d['box_low'][:,0],box_high=d['box_high'][:,0],
+                    response=d['response'],proposal=d['anchor_xy'][:,0]+d['response'],goal=goal)
             _,records=jax.lax.scan(step,state,jax.random.split(key,horizon))
             records=jax.tree.map(lambda value:jnp.swapaxes(value,0,1),records)
             records['states']=jnp.concatenate([state[:,None],records.pop('state')],axis=1)

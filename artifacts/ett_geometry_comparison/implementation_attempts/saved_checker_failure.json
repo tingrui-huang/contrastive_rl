@@ -1,0 +1,7 @@
+{
+  "phase": "post_training_saved_result_check",
+  "new_model_transitions": 0,
+  "error": "The new checker applied an inappropriate 1e-12 tolerance to the original float32-cast descent helper update cap.",
+  "observed_max_float64_update_norm": 0.20000000596810386,
+  "repair": "Use the predeclared 2e-6 numerical tolerance. Recomputed optimizer updates remain exactly equal; no trained coefficients or optimizer logic changed."
+}

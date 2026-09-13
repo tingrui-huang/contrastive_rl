@@ -1,0 +1,69 @@
+{
+  "modes": [
+    "rectangle",
+    "fork_segment"
+  ],
+  "optimizer_seeds": [
+    0,
+    1
+  ],
+  "updates": 16,
+  "directions": 8,
+  "paths": 32,
+  "sigma": 0.1,
+  "learning_rate": 1.0,
+  "max_step": 0.2,
+  "horizon": 50,
+  "discount": 0.95,
+  "bound": 1.0,
+  "dimension": 32,
+  "initialization": "exactly zero; no warm start",
+  "weight": 0.05416795170470908,
+  "fit_rows_per_partition": 1024,
+  "fit_draws": 16,
+  "evaluation_seeds": [
+    64000000,
+    64000001,
+    64000002,
+    64000003
+  ],
+  "evaluation_paths": 128,
+  "component_contexts": 64,
+  "component_draws": 8,
+  "bootstrap_replicates": 2000,
+  "seed_bases": {
+    "directions": 61000000,
+    "search": 62000000,
+    "monitor": 63000000,
+    "diagonal": 65000000,
+    "component_nominal": 65000100,
+    "component_anchor": 65000101,
+    "smoke": 66000000,
+    "bootstrap": 66000100,
+    "probe": 66000200
+  },
+  "representative_paths": {
+    "evaluation_seed": 64000000,
+    "path_indices": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  "transition_budget": {
+    "optimization": 1638400,
+    "monitoring": 108800,
+    "evaluation": 128000,
+    "initialization_rollouts": 800,
+    "diagonal": 196608,
+    "replay": 25600,
+    "component_anchors": 512
+  },
+  "planned_transitions": 2098720,
+  "hard_cap": 2500000,
+  "tolerance": 2e-06,
+  "checkpoint_selection": "final iterate only",
+  "diagonal_term": "constant emitted energy fitting score",
+  "no_native_or_downstream_training": true
+}

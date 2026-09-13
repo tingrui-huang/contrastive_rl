@@ -49,12 +49,12 @@ def inputs():
     return paths
 
 
-def setup():
+def setup(geometry_mode='rectangle'):
     paths=inputs();old=load_anchored(paths['control'])
     nominal=load_nominal_policy(str(paths['nominal'].parent))
     assert nominal.spec.conditioning=='state_goal'
     actor,info=frozen_actor(str(paths['actor']),read(paths['actor'].with_name('arm_provenance.json'))['dataset_content_sha256'])
-    model=ConvexActionTransition(old.diagonal,bound=CONFIG['bound'])
+    model=ConvexActionTransition(old.diagonal,bound=CONFIG['bound'],geometry_mode=geometry_mode)
     return model,nominal,actor,ConvexRollout(model,nominal,actor),info
 
 

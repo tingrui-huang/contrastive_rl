@@ -1,0 +1,17 @@
+{
+  "python": "3.14.4 (tags/v3.14.4:23116f9, Apr  7 2026, 14:10:54) [MSC v.1944 64 bit (AMD64)]",
+  "numpy": "2.4.4",
+  "jax": "0.10.2",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "devices": [
+    "cpu:0"
+  ],
+  "unit_tests": {
+    "command": "python -m unittest scripts.test_geometry_comparison scripts.test_convex_set_transition scripts.test_convex_action_transition.ConvexChecks.test_analytic_descent_sign_and_zero_weight -v",
+    "passed": 9,
+    "seconds": 14.864,
+    "new_stochastic_model_transitions": 0
+  },
+  "reproduction_preparer_added_after_run": true,
+  "reproduction_or_downstream_training_run": false
+}
