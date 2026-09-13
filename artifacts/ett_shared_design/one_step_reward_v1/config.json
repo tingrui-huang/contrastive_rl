@@ -1,0 +1,39 @@
+{
+  "seeds": [
+    0,
+    1
+  ],
+  "hidden": 32,
+  "response_width": 8,
+  "bound": 1.0,
+  "warmup_updates": 128,
+  "joint_updates": 256,
+  "directions": 4,
+  "batch": 16,
+  "draws": 4,
+  "sigma": 0.02,
+  "learning_rate": 0.05,
+  "update_cap": 0.1,
+  "weights": [
+    0.0,
+    0.01
+  ],
+  "evaluation_draws": 64,
+  "bootstrap": 2000,
+  "model_output_cap": 1500000,
+  "seed_base": 73000000,
+  "diagonal_noninferiority": 0.02,
+  "minimum_reward_decrease": 0.02,
+  "constraint_tolerance": 2e-06,
+  "region": [
+    5.5,
+    5.75,
+    3.125,
+    3.875
+  ],
+  "final_iterate_only": true,
+  "execution_distribution": "uniform [-1,1]^2",
+  "natural_action": "recorded action",
+  "context_distribution": "uniform eligible episode, then uniform eligible row",
+  "objective": "emitted XY energy score + weight * expected one-step task reward"
+}
