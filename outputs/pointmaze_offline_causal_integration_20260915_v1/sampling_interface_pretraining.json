@@ -1,0 +1,143 @@
+{
+  "diagonal_validation_energy_change": 0.006715776398777962,
+  "diagonal_validation_energy_final": 0.021192509680986404,
+  "diagonal_validation_energy_initial": 0.014476735144853592,
+  "explicit_failure_supported": false,
+  "failure_assumption": "failure would be irreversible, but no entry event is inferred or sampled",
+  "final_training": {
+    "atom_events_with_later_step_available": 14619,
+    "atom_then_any_later_motion_count": 14619,
+    "failure_frequency": null,
+    "failure_note": "unsupported: raw stationary atoms are not classified as death",
+    "first_recorded_action_exact": true,
+    "history_shift_max_abs_error": 0.0,
+    "mean_discounted_model_reward": 9.404155589407388,
+    "paths": 4096,
+    "post_failure_consistency": null,
+    "raw_stationary_atom_fraction": 0.11408748984750382,
+    "task_region_reached_path_fraction": 0.87353515625,
+    "valid_transitions": 131741
+  },
+  "final_validation": {
+    "atom_events_with_later_step_available": 4321,
+    "atom_then_any_later_motion_count": 4321,
+    "failure_frequency": null,
+    "failure_note": "unsupported: raw stationary atoms are not classified as death",
+    "first_recorded_action_exact": true,
+    "history_shift_max_abs_error": 0.0,
+    "mean_discounted_model_reward": 9.363942528037505,
+    "paths": 1024,
+    "post_failure_consistency": null,
+    "raw_stationary_atom_fraction": 0.13197864135271434,
+    "task_region_reached_path_fraction": 0.84765625,
+    "valid_transitions": 33710
+  },
+  "initial_validation": {
+    "atom_events_with_later_step_available": 3239,
+    "atom_then_any_later_motion_count": 2093,
+    "failure_frequency": null,
+    "failure_note": "unsupported: raw stationary atoms are not classified as death",
+    "first_recorded_action_exact": true,
+    "history_shift_max_abs_error": 0.0,
+    "mean_discounted_model_reward": 9.862622593718342,
+    "paths": 1024,
+    "post_failure_consistency": null,
+    "raw_stationary_atom_fraction": 0.09887273805992287,
+    "task_region_reached_path_fraction": 0.8828125,
+    "valid_transitions": 33710
+  },
+  "learned_failure_entry_probability": null,
+  "paired_initial_to_final_validation": {
+    "all": {
+      "changed_xy_fraction": 1.0,
+      "episodes": 510,
+      "final_task_region_fraction": 0.7400474636606348,
+      "future_state_rows": 33710,
+      "initial_task_region_fraction": 0.7803619104123406,
+      "mean_xy_l2": 0.25673550367355347,
+      "paired_final_minus_initial_task_region_fraction": {
+        "ci95": [
+          -0.05451151921027792,
+          -0.02759329102540359
+        ],
+        "episodes": 510,
+        "mean": -0.04031444675170572,
+        "resampling_unit": "source episode"
+      },
+      "paths": 1024
+    },
+    "down": {
+      "changed_xy_fraction": 1.0,
+      "episodes": 87,
+      "final_task_region_fraction": 0.692979509573396,
+      "future_state_rows": 8931,
+      "initial_task_region_fraction": 0.7482924644496697,
+      "mean_xy_l2": 0.30498841404914856,
+      "paired_final_minus_initial_task_region_fraction": {
+        "ci95": [
+          -0.08684675334027571,
+          -0.027451100636995386
+        ],
+        "episodes": 87,
+        "mean": -0.055312954876273655,
+        "resampling_unit": "source episode"
+      },
+      "paths": 256
+    },
+    "fork": {
+      "changed_xy_fraction": 1.0,
+      "episodes": 316,
+      "final_task_region_fraction": 0.6964397251717677,
+      "future_state_rows": 20813,
+      "initial_task_region_fraction": 0.7496756834670638,
+      "mean_xy_l2": 0.3317214250564575,
+      "paired_final_minus_initial_task_region_fraction": {
+        "ci95": [
+          -0.07384231111349912,
+          -0.0337656367227643
+        ],
+        "episodes": 316,
+        "mean": -0.05323595829529621,
+        "resampling_unit": "source episode"
+      },
+      "paths": 512
+    },
+    "ordinary_nonfork": {
+      "changed_xy_fraction": 1.0,
+      "episodes": 356,
+      "final_task_region_fraction": 0.8104210281460805,
+      "future_state_rows": 12897,
+      "initial_task_region_fraction": 0.8298829185081802,
+      "mean_xy_l2": 0.1357242465019226,
+      "paired_final_minus_initial_task_region_fraction": {
+        "ci95": [
+          -0.033833574215531265,
+          -0.0066042853073983755
+        ],
+        "episodes": 356,
+        "mean": -0.019461890362099714,
+        "resampling_unit": "source episode"
+      },
+      "paths": 512
+    },
+    "right": {
+      "changed_xy_fraction": 1.0,
+      "episodes": 247,
+      "final_task_region_fraction": 0.6990405655613533,
+      "future_state_rows": 11882,
+      "initial_task_region_fraction": 0.7507153677832015,
+      "mean_xy_l2": 0.35181501507759094,
+      "paired_final_minus_initial_task_region_fraction": {
+        "ci95": [
+          -0.0780371393761117,
+          -0.025880546928880362
+        ],
+        "episodes": 247,
+        "mean": -0.05167480222184817,
+        "resampling_unit": "source episode"
+      },
+      "paths": 256
+    }
+  },
+  "stationary_atom_is_failure": false
+}

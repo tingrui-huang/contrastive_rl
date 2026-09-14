@@ -1,0 +1,73 @@
+{
+  "actor_learning_rate": 0.0003,
+  "actor_updates": 1000,
+  "adam_eps": 1e-07,
+  "auxiliary_prefit_steps": 1000,
+  "auxiliary_refresh_steps": 400,
+  "away_actor_samples": 64,
+  "away_rows": 1024,
+  "base_commit": "b79f1a62cf093dad303ef268b7e75a5b0f5d336e",
+  "batch_size": 256,
+  "bc_coef": 0.5,
+  "bootstrap_replicates": 2000,
+  "critic_learning_rate": 0.0003,
+  "critic_updates": 400,
+  "diagonal_tolerance": 0.02,
+  "discount": 0.95,
+  "down": "ay<=-0.5 and abs(ay)>=abs(ax)",
+  "entropy_coefficient": 0.0,
+  "environment_calls": 0,
+  "ett_actor_draws": 4,
+  "ett_directions": 4,
+  "ett_lambda": 1.0,
+  "ett_queries": 32,
+  "ett_rate": {
+    "diagonal": 0.01,
+    "response": 0.5
+  },
+  "ett_root_repeats": 4,
+  "ett_roots": {
+    "down": 24,
+    "ordinary_nonfork": 48,
+    "right": 24
+  },
+  "ett_sigma": {
+    "diagonal": 0.01,
+    "response": 0.1
+  },
+  "ett_step_cap": {
+    "diagonal": 0.03,
+    "response": 0.1
+  },
+  "ett_successors": 4,
+  "ett_updates": 3,
+  "eval_nce_batches": 32,
+  "experiment": "strictly_offline_sampling_based_causal_contrastive",
+  "failure_support": "none: no explicit learned failure latent or defensible off-diagonal entry probability",
+  "final_checkpoint_rule": "fixed final iterate only",
+  "fork_actor_samples": 128,
+  "fork_region": "1<=x<2 and 3<=y<4",
+  "gradient_batches": 4,
+  "local_gradient_samples": 8,
+  "model_output_cap": 480000,
+  "native_steps": 0,
+  "production_batch": {
+    "down": 64,
+    "ordinary_nonfork": 128,
+    "right": 64
+  },
+  "random_goals": 0.5,
+  "right": "ax>=0.5 and abs(ax)>abs(ay)",
+  "seed": 541000000,
+  "tau": 0.005,
+  "train_cache": {
+    "down": 1024,
+    "ordinary_nonfork": 2048,
+    "right": 1024
+  },
+  "validation_cache": {
+    "down": 256,
+    "ordinary_nonfork": 512,
+    "right": 256
+  }
+}

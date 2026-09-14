@@ -1,0 +1,136 @@
+{
+  "eligible": {
+    "dataset": {
+      "content_sha256": "ad8b4470df0ebcc1c03421dfb59b61f9faee48cfbf51e2b9c0a402e0403f544d",
+      "loaded_arrays": [
+        "obs",
+        "act"
+      ],
+      "path": "artifacts/f4_p30_server_30076/results/datasets/swamp_windy_f4_merged_s0.npz",
+      "sha256": "83b4e81d9fca2d66b648c9c34ccdb68196e1acf89e2ca6829e4cb198d27c322c"
+    },
+    "diagonal": {
+      "path": "artifacts/ett_distribution_matching/f4_p30_s01_guarded/s0_L0p25_lambda0/final.pkl",
+      "sha256": "9e9e1c56387d446b5788612e27e5b7f7743e120186bebc90a78fc6774476184e",
+      "training": "lambda=0; total loss equals diagonal NLL; original offline expert-source rows"
+    },
+    "nominal": {
+      "path": "artifacts/nominal_policy/f4_p30_expert_only_mdn_k5_s0/best.pkl",
+      "population": "nominal_expert_positive",
+      "selection_uses_outcome_or_hidden_state": false,
+      "sha256": "6376e60185aa616c2d09c5e0250d762cde2fb845c5042488e64910fb3b745f23"
+    },
+    "operational_metadata": {
+      "actor_provenance": {
+        "path": "artifacts/f4_p30_server_30076/results/runs/f4_p30_sweep/p30_a0_a01_a03_s0_s1/alpha0_seed0/arm_provenance.json",
+        "sha256": "5a7f45b8a8142c56870bea7bdce35b7564695c3179212359ac19f1dc52f89f57"
+      },
+      "dataset_manifest": {
+        "path": "artifacts/f4_p30_server_30076/results/datasets/swamp_windy_f4_merged_s0.npz.manifest.json",
+        "sha256": "591dd4bc2983b0ca96a050538357e3c78805dd5ab40e99e9313e65b551bd933e"
+      },
+      "diagonal_history": {
+        "path": "artifacts/ett_distribution_matching/f4_p30_s01_guarded/s0_L0p25_lambda0/training_history.json",
+        "sha256": "a06b1faef70d5d37ef07290f7c78cb1c27fcabd7a0affb99366093f63fc02553"
+      },
+      "eligible_path_router": {
+        "path": "artifacts/ett_rollout_return/residual6_s01/config.json",
+        "sha256": "fd83efeca7f5bc3c5561e7ed32b91758dcfc48c0a55f6fca15cd712ed6db1969"
+      },
+      "nominal_config": {
+        "path": "artifacts/nominal_policy/f4_p30_expert_only_mdn_k5_s0/config.json",
+        "sha256": "9d2b96d13307638494ff6c6432b2ac639d58d584000b40f6879ef179e15b4379"
+      },
+      "nominal_population": {
+        "path": "artifacts/nominal_policy/f4_p30_expert_only_mdn_k5_s0/expert_population_manifest.json",
+        "sha256": "2dabe55a4bcb474c7b1aa49e1b32d4a28759e38d9299ebb72dff1b018a419cee"
+      }
+    },
+    "production_initial": {
+      "actor_optimizer_sha256": "a88f938d34f1858d79779c7b617779e7873985c655f0eb6615d7207273e0b2e9",
+      "actor_sha256": "1624664a334557bf8284eced5568dfffa47769a34c33216e1e8855a6a735a1aa",
+      "ancestry_commit": "4f3da3f1e94cbad647bc56b0f24e4171776090ee",
+      "critic_optimizer_sha256": "ef079f59b8add225a33fad180ec3a4dd404041e76049d06118e9c17dd9c76878",
+      "critic_sha256": "376b0a4e806b82d5cead493eca8a975457493d664b3fa8abcd070fcb32a1dd1a",
+      "full_state_sha256": "359c22cb3c2db8f9e53282233f452be15793ca4b91067c2d60467af5dbaacc0b",
+      "path": "artifacts/f4_p30_server_30076/results/runs/f4_p30_sweep/p30_a0_a01_a03_s0_s1/alpha0_seed0/final.pkl",
+      "sha256": "ea8a71d3cb8d963259a54d47250b454462dae2ae62f03a55c370ca81a2c8ec54",
+      "step": 150000
+    }
+  },
+  "excluded": [
+    {
+      "path": "artifacts/pointmaze_region_pilot/update_reference_s01_v1/final_kernels.npz",
+      "reason": "ETT optimization ancestry includes native-collected early contexts"
+    },
+    {
+      "commits": [
+        "b3d1423",
+        "5acf766"
+      ],
+      "reason": "new native diagnostic trajectories/checkpoints"
+    },
+    {
+      "names": [
+        "C1",
+        "supervised heads",
+        "oracle-motion/replay checkpoints"
+      ],
+      "reason": "oracle or newly collected native supervision"
+    }
+  ],
+  "failure_mechanism": {
+    "explicit_failure_latent": false,
+    "learned_entry_probability": false,
+    "reason": "offline diagonal observations do not identify off-diagonal failure entry",
+    "stationary_atom_is_not_death": true
+  },
+  "git": {
+    "branch": "feature/pointmaze-causal-transition",
+    "head": "b79f1a62cf093dad303ef268b7e75a5b0f5d336e",
+    "reviewed_commits": [
+      "5acf766",
+      "b79f1a62cf093dad303ef268b7e75a5b0f5d336e"
+    ]
+  },
+  "historical_sha256_before": {
+    "artifacts\\pointmaze_region_pilot\\full_f4_integration_s01_v1\\REPORT.md": "515be0fca9ae95ee2811198c1224e70eb06101e5e8c5d8a8d2c5feef20d2956a",
+    "artifacts\\pointmaze_region_pilot\\update_reference_s01_v1\\REPORT.md": "a8b94c9b78433839c85220eed48359d7baa7f0977f781ca1bc7a945fd21bb14b",
+    "outputs\\pointmaze_critic_control_20260914_v1\\REPORT.md": "96231b5d8c3bb7508da4bf7e3a74edc79e4bc2b9622632673fe23f862a3e7c20",
+    "outputs\\pointmaze_offline_replay_control_20260915_v1\\REPORT.md": "6e3c96e7a46ecd9625d7dc4a404292ae70816691a18588bea848784c15af1d43",
+    "outputs\\pointmaze_oracle_alive_motion_20260914_v1\\REPORT.md": "fcba43804b13be95b411a412c75120529203566a270a302e6320a13b34983819",
+    "outputs\\pointmaze_oracle_training_pilot_20260914_v1\\REPORT.md": "ba84448cfd3abf6356173ea287149d690ace9194dcda89b85f54730a30066ab3",
+    "outputs\\supervised_stochastic_ett_20260914_v1\\REPORT.md": "1c4abd1d0924d34a2104c039c8250fbef62bf0b45a9b0b503a3c3b20e5381e27"
+  },
+  "paper": {
+    "path": "D:/Tue/Research/Contrastive_Causal_RL/526_Causal_Contrastive (1).pdf",
+    "reviewed_pages": [
+      2,
+      5,
+      6
+    ],
+    "sha256": "3d7f5152f0d9e73b65190bdbf130d7ef8fb6711edcd5b593c3200497b97bee0e"
+  },
+  "runtime": {
+    "devices": [
+      "cpu:0"
+    ],
+    "jax": "0.10.2",
+    "python": "3.14.4",
+    "torch": "2.11.0+cpu"
+  },
+  "source_sha256": {
+    "D:\\Users\\trhua\\Research\\contrastive_rl\\.worktrees\\pointmaze-p30\\ett\\pointmaze_offline_causal_integration.py": "c5837986217d9d57b77ec3561b05c7ff360e7fda347e6792012d47737862bf1c",
+    "crl\\checkpoint.py": "71f29bb11d21383ee4521e913a50de1e6a3f160673434f1e826de2d4ff346ac4",
+    "crl\\losses.py": "5f133527baf0ce1261d9dcffeaecd844feb2c8fee800f05ec69202082de94370",
+    "crl\\networks.py": "fb4084b30c001b08da51ab7cebf74b0ed5ddcc55d5c19f734cc1252e87bd35d7",
+    "ett\\convex_action_transition.py": "a92a11f90bb186daa9578b2ccd4d622676bb60b0824b48022eb43ac64fa91482",
+    "ett\\diagonal_transition.py": "53f11305c53186700ad4981a3be1b1fa58a2c77d1ebf29130b2f24cfa6058d94",
+    "ett\\pointmaze_early_pilot.py": "3e0736d46fae207b6073c8af1b596e0e8d133a230bbca3b3a71bfa39194af94a",
+    "ett\\pointmaze_region_pilot.py": "bee37ba6f8d30a8ded29609c54899ba7402e399c83745f3380befc9141473faf",
+    "ett\\pointmaze_update_reference.py": "e542c995d3b39dca051d674fbed0c66e4be0025882653eef81c0670e0d32fb5d",
+    "notes\\pointmaze_offline_causal_integration.md": "494adcc2ad765623c8bd95019fe2bf09f4c6ee92b1eb94d217ea93b49b6c6de0",
+    "scripts\\test_pointmaze_offline_causal_integration.py": "fe43b3f2e9827668a084866bb3b71aa5be6266e28ecfd4e524f7545659633b07"
+  },
+  "split_limitation": "initial production checkpoint saw all 6600 episodes"
+}
