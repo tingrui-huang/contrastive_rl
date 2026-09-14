@@ -1,0 +1,15 @@
+{
+  "reason": "resume after a non-model implementation or verification failure; completed artifacts are reused",
+  "previous_failure": {
+    "status": "failed",
+    "error": "AssertionError('\\nArrays are not equal\\n\\nMismatched elements: 320 / 3072 (10.4%)\\nFirst 5 mismatches are at indices:\\n [0, 28]: 4.608235836029053 (ACTUAL), 4.608236312866211 (DESIRED)\\n [0, 34]: 4.300879001617432 (ACTUAL), 4.30087947845459 (DESIRED)\\n [0, 39]: 6.566000461578369 (ACTUAL), 6.566000938415527 (DESIRED)\\n [0, 43]: 4.608235836029053 (ACTUAL), 4.608236312866211 (DESIRED)\\n [0, 52]: 0.5843724012374878 (ACTUAL), 0.5843724608421326 (DESIRED)\\nMax absolute difference among violations: 9.536743e-07\\nMax relative difference among violations: 1.2978597e-07\\n ACTUAL: array([[13.162935,  6.823504, 11.729506, ..., 13.162935, 12.427843,\\n        11.066086],\\n       [13.162935, 12.427843, 13.162935, ..., 13.162935,  9.837099,...\\n DESIRED: array([[13.162935,  6.823504, 11.729506, ..., 13.162935, 12.427843,\\n        11.066086],\\n       [13.162935, 12.427843, 13.162935, ..., 13.162935,  9.837099,...')",
+    "model_successors_charged": 19735552,
+    "native_steps_charged": 14400
+  },
+  "original_driver_sha256": "4fe243176cec5fc5e7c6f56794b8e451c8cc8b56cb42fb61bdebd5da6b870bf7",
+  "resumed_driver_sha256": "1b13fa14504906493e792eb8af1b5a6c0cdb00c717c6c182fc1d71cc5afaf1e9",
+  "repeated_training": false,
+  "repeated_model_evaluation": false,
+  "repeated_native_collection": false,
+  "resume_scope": "saved-array summaries, remaining invariants, native actor collection, return rollouts"
+}

@@ -1,0 +1,191 @@
+{
+  "status": "pass",
+  "verification_scope": "saved arrays and hashed inputs only; zero model, actor, nominal, or environment calls",
+  "hash_contract": {
+    "sealed_protocol_config_collector": true,
+    "sealed_original_driver_recorded": true,
+    "current_driver_matches_final_resume_record": true,
+    "other_dependency_hashes_unchanged": true,
+    "checked_dependency_count": 19
+  },
+  "budget": {
+    "model_successors": 20657152,
+    "model_cap": 22000000,
+    "failed_verification_overhead": 307200,
+    "native_steps": 14400,
+    "native_cap": 16000,
+    "extra_calls_from_this_verification": 0
+  },
+  "optimizer": {
+    "control_s0": {
+      "updates_reconstructed": 120,
+      "final_parameters_exact": true,
+      "optimizer_moments_reconstructed": true,
+      "nonzero_gate_gradient_updates": 0,
+      "nonzero_gate_parameter_updates": 0
+    },
+    "candidate_s0": {
+      "updates_reconstructed": 120,
+      "final_parameters_exact": true,
+      "optimizer_moments_reconstructed": true,
+      "nonzero_gate_gradient_updates": 120,
+      "nonzero_gate_parameter_updates": 120
+    },
+    "control_s1": {
+      "updates_reconstructed": 120,
+      "final_parameters_exact": true,
+      "optimizer_moments_reconstructed": true,
+      "nonzero_gate_gradient_updates": 0,
+      "nonzero_gate_parameter_updates": 0
+    },
+    "candidate_s1": {
+      "updates_reconstructed": 120,
+      "final_parameters_exact": true,
+      "optimizer_moments_reconstructed": true,
+      "nonzero_gate_gradient_updates": 120,
+      "nonzero_gate_parameter_updates": 120
+    }
+  },
+  "paired_evaluation": {
+    "episodes": 48,
+    "rows": 9600,
+    "complete_steps_per_episode": 50,
+    "queries_per_context": 4,
+    "teacher_prefix_episodes": 24,
+    "blind_prefix_episodes": 24,
+    "row_alignment_verified": true,
+    "groups_reconstructed": {
+      "diagonal": 2527,
+      "all_off_diagonal": 7073,
+      "already_dead": 2080,
+      "alive_outside_goal": 931,
+      "alive_moving": 4993,
+      "fatal_onset": 90,
+      "alive_stationary": 0,
+      "alive_stationary_diagonal_moving_off_diagonal": 0
+    }
+  },
+  "one_step": {
+    "parent_s0": {
+      "full_energy_score_reconstructed": true,
+      "mean_and_errors_reconstructed": true,
+      "atom_shape_and_type_verified": true,
+      "all_samples_native_legal": true,
+      "mean_legality_separately_reconstructed": true,
+      "gate_bounds_verified": true
+    },
+    "control_s0": {
+      "full_energy_score_reconstructed": true,
+      "mean_and_errors_reconstructed": true,
+      "atom_shape_and_type_verified": true,
+      "all_samples_native_legal": true,
+      "mean_legality_separately_reconstructed": true,
+      "gate_bounds_verified": true
+    },
+    "candidate_s0": {
+      "full_energy_score_reconstructed": true,
+      "mean_and_errors_reconstructed": true,
+      "atom_shape_and_type_verified": true,
+      "all_samples_native_legal": true,
+      "mean_legality_separately_reconstructed": true,
+      "gate_bounds_verified": true
+    },
+    "parent_s1": {
+      "full_energy_score_reconstructed": true,
+      "mean_and_errors_reconstructed": true,
+      "atom_shape_and_type_verified": true,
+      "all_samples_native_legal": true,
+      "mean_legality_separately_reconstructed": true,
+      "gate_bounds_verified": true
+    },
+    "control_s1": {
+      "full_energy_score_reconstructed": true,
+      "mean_and_errors_reconstructed": true,
+      "atom_shape_and_type_verified": true,
+      "all_samples_native_legal": true,
+      "mean_legality_separately_reconstructed": true,
+      "gate_bounds_verified": true
+    },
+    "candidate_s1": {
+      "full_energy_score_reconstructed": true,
+      "mean_and_errors_reconstructed": true,
+      "atom_shape_and_type_verified": true,
+      "all_samples_native_legal": true,
+      "mean_legality_separately_reconstructed": true,
+      "gate_bounds_verified": true
+    }
+  },
+  "one_step_candidate_control_bootstraps_reconstructed": {
+    "candidate_minus_control_s0": {
+      "diagonal": true,
+      "all_off_diagonal": true,
+      "already_dead": true,
+      "alive_outside_goal": true,
+      "alive_moving": true,
+      "fatal_onset": true
+    },
+    "candidate_minus_control_s1": {
+      "diagonal": true,
+      "all_off_diagonal": true,
+      "already_dead": true,
+      "alive_outside_goal": true,
+      "alive_moving": true,
+      "fatal_onset": true
+    }
+  },
+  "returns": {
+    "native_rewards_and_returns_reconstructed": true,
+    "candidate_control_bootstraps_reconstructed": true,
+    "models": {
+      "parent_s0": {
+        "common_native_roots_verified": true,
+        "f4_shift_verified": true,
+        "reward_reconstructed": true,
+        "discounted_return_reconstructed": true,
+        "all_successors_native_legal": true,
+        "gate_bounds_verified": true
+      },
+      "control_s0": {
+        "common_native_roots_verified": true,
+        "f4_shift_verified": true,
+        "reward_reconstructed": true,
+        "discounted_return_reconstructed": true,
+        "all_successors_native_legal": true,
+        "gate_bounds_verified": true
+      },
+      "candidate_s0": {
+        "common_native_roots_verified": true,
+        "f4_shift_verified": true,
+        "reward_reconstructed": true,
+        "discounted_return_reconstructed": true,
+        "all_successors_native_legal": true,
+        "gate_bounds_verified": true
+      },
+      "parent_s1": {
+        "common_native_roots_verified": true,
+        "f4_shift_verified": true,
+        "reward_reconstructed": true,
+        "discounted_return_reconstructed": true,
+        "all_successors_native_legal": true,
+        "gate_bounds_verified": true
+      },
+      "control_s1": {
+        "common_native_roots_verified": true,
+        "f4_shift_verified": true,
+        "reward_reconstructed": true,
+        "discounted_return_reconstructed": true,
+        "all_successors_native_legal": true,
+        "gate_bounds_verified": true
+      },
+      "candidate_s1": {
+        "common_native_roots_verified": true,
+        "f4_shift_verified": true,
+        "reward_reconstructed": true,
+        "discounted_return_reconstructed": true,
+        "all_successors_native_legal": true,
+        "gate_bounds_verified": true
+      }
+    }
+  },
+  "saved_invariants_confirmed": true
+}

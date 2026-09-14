@@ -1,0 +1,39 @@
+# Controlled query-independent response gate for supervised PointMaze ETT
+
+Sealed before training and before collecting or inspecting any new evaluation episode on 2026-09-14. The experiment starts from commit `4de08e7ff35ebb9e5e02d97cc41f334b926c1371` and the two final supervised B checkpoints introduced at `54b36620ddd6818ad91679ec5f587ff9f59e2474`. Reproducibility is enforced by dependency hashes; execution does not require the working HEAD to remain equal to either historical commit. Historical artifacts and production modules are read-only. Nothing will be committed or pushed.
+
+## Question and one candidate
+
+Test whether inappropriate application of the existing action response is a practically consequential source of error, rather than merely a local already-dead defect. The original emitter is `project(anchor + M(s) @ (xq - xb))`. The sole candidate is `project(anchor + h(context,anchor,atom) * M(s) @ (xq - xb))`, with `h = clip(1 + w @ features, 0, 1)` and `w` initialized to zero. There is no architecture or hyperparameter sweep.
+
+The fixed 21-feature order is: eight F4 state coordinates standardized by means and standard deviations estimated only from original training episodes 0--71 (standard deviations floored at 0.1); two raw natural-action `xb` coordinates; two raw `anchor_xy - current_xy` coordinates in maze units; one raw stationary-atom indicator; and the original eight response-gate weights. The gate never receives `xq`, queried outcomes, rewards, death labels, simulator internals, or future observations. Raw atoms are mixture components, not death labels. The gate only scales response and cannot repair an incorrect anchor.
+
+For fixed `s`, `xb`, anchor, atom, and coupled randomness, `h` is independent of `xq` and lies in `[0,1]`. The normalized response matrix has operator norm no greater than its Frobenius norm, which is at most one, and projection onto the action-independent selected rectangle is non-expansive. Therefore the existing coupled-action Lipschitz bound is preserved samplewise. The original anchor sampler, rectangle geometry, F4 shift, and normalized response matrices remain unchanged.
+
+## Matched continuation training
+
+For each B seed 0 and 1, initialize control and candidate common parameters from that exact B final checkpoint, including its Adam first and second moments and bias-correction age 120. Candidate appends zero gate weights and zero gate moments. Both arms train the original 16 diagonal-head offsets and 32 response coordinates; candidate also trains 21 gate weights. Each arm receives exactly 120 additional updates, final iterate only.
+
+Each update uses the original episode-0--71 paired tuples, exact action equality for diagonal membership, separately averaged diagonal and off-diagonal emitted-XY energy-score U-statistics with lambda one, 128 rows per term, eight Gaussian directions, 16 antithetic signed candidates, and eight samples per signed loss. Control and candidate share row draws, common-parameter perturbations, and model random keys. Candidate has independent gate-direction coordinates. Row/direction draws use base seed 8,914,000 and model keys use base seed 9,914,000, with fixed seed/update/term offsets in the saved driver. Adam uses beta1 0.9, beta2 0.999, epsilon `1e-8`; diagonal/response/gate perturbation scales are `0.01/0.1/0.1`, learning rates `0.01/0.05/0.05`, and group update caps `0.03/0.1/0.1`. Diagonal response and gate gradients are set to their structural zero. Gate loss diagnostics from the charged calls must show whether boundary-clipped perturbations yield effective updates.
+
+## New one-step evaluation
+
+After the model settings and final iterates are frozen, collect exactly 48 new complete 50-step paired prefix episodes with base seed 1,914,000, active probability 0.3, teacher noise 0.15, force-safe probability 0.05, and teacher/query seed offsets 10,000/20,000. Even episode indices use teacher prefixes and odd indices use blind prefixes. At each context, query the same native snapshot with diagonal teacher advice, blind forward, reverse teacher, and uniform random action; then advance the real prefix with its declared population action. Preserve every outcome and record the dependency hashes. This creates 9,600 rows and charges 12,000 native steps including four branches plus the prefix step.
+
+Evaluate parent B, equally trained control, and candidate for both seeds on every row with 64 samples and common evaluation keys from base seed 6,914,000. Use the original full energy-score U-statistic, `1e-7` Euclidean stationarity threshold, inclusive native bounds and clipped floor-cell legality. Keep sample legality separate from legality of the emitted sample mean. Report diagonal, all off-diagonal, already dead, alive outside the radius-two task-goal region, alive moving, fatal onset, alive stationary, and alive stationary-diagonal/moving-off-diagonal paired strata. Leave empty strata empty. Report candidate gate outputs using hidden labels only after evaluation. Primary inference is candidate minus equally trained control; control minus parent is contextual. Structural checks use base seed 10,914,000.
+
+Use 2,000 paired whole-episode bootstrap resamples of the 48 new episodes. No evaluation row or result may affect training, selection, or settings.
+
+## Fixed-policy task-return calibration
+
+Collect 48 additional fresh native 50-step episodes from the same frozen stochastic actor with environment seeds starting at 2,914,000 and per-step actor keys starting at 3,914,000. Use the fixed task goal, strict radius-two visible reward, discount 0.95, and no early termination. Charge 2,400 native steps. From each corresponding initial F4 state, generate 64 independent 50-step model paths for every parent, control, and candidate, using the same frozen actor and historical state-goal nominal checkpoint on each model's own generated state and common model seed 4,914,000. Never inject a native death flag or absorbing wrapper into generated trajectories.
+
+Compare predicted versus native discounted returns, per-episode errors, and reward-over-time curves with paired episode bootstrap uncertainty. Lower predicted return is useful only if it moves closer to native outcomes. These are end-to-end rollout-law calibration comparisons, not matched latent conditional trajectories. The nominal was trained on its historical population, whereas the paired evaluation deliberately mixes teacher and blind prefixes.
+
+## Checks, budgets, and decision
+
+Verify dependency hashes, candidate-at-zero exact initialization equivalence, exact diagonal identity, F4 shift, native sample legality, mean legality separately, gate bounds, and fixed-key coupled-action ratios. No critic or actor training, nominal retraining, failure-bank work, spectral comparison, MC campaign, or broad sweep is allowed.
+
+Planned model-successor accounting is 15,728,640 training + 3,686,400 one-step evaluation + 921,600 return rollouts + 13,312 checks = **20,349,952**, under the hard cap of 22,000,000. Planned native accounting is 12,000 paired branch/prefix steps + 2,400 frozen-actor steps = **14,400**, under 16,000. Charge before calls and do not extend either budget.
+
+The report must decide whether the candidate improves already-dead consequences versus equal-budget continuation, what alive consequences it preserves or harms, whether any improvement reaches native task-return calibration, and whether the evidence identifies a consequential response-conditioning bottleneck or only a local correction. A failed single gate does not reject all gates. No actor benefit, reliable death identification, or worst-case optimization claim is permitted. New evaluation episodes remain untouched within this experiment, but any follow-up modification requires another complete confirmation set.
