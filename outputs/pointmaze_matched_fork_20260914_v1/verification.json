@@ -1,0 +1,31 @@
+{
+  "status": "passed",
+  "saved_arrays_only": true,
+  "checks": {
+    "coherent_native_root_initialization": true,
+    "native_hidden_timing": true,
+    "fixed_candidate_actions": true,
+    "remaining_horizon_preserved": true,
+    "paired_stream_shapes_and_trace_alignment": true,
+    "native_trace_contracts": {
+      "paths": 2048,
+      "transitions": 100352,
+      "f4_shift": true,
+      "movement_reconstruction": true,
+      "reward_success_failure_absorption": true,
+      "hidden_bits_resampled": true
+    },
+    "model_trace_contracts": {
+      "paths": 2048,
+      "transitions": 100352,
+      "f4_shift": true,
+      "movement_reconstruction": true,
+      "reward_success_failure_absorption": true,
+      "hidden_bits_not_present": true
+    },
+    "conditional_followup_trace_contracts": null,
+    "budget_caps": true,
+    "training_updates_zero": true,
+    "new_training_episodes_zero": true
+  }
+}

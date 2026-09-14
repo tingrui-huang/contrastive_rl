@@ -1,0 +1,213 @@
+{
+  "selected_branch": "C",
+  "saved_arrays_only": true,
+  "new_paths": 0,
+  "training_updates": 0,
+  "critic_objective": {
+    "type": "Monte Carlo sigmoid NCE over the complete 256x256 logit matrix",
+    "positive": "one exact full-F4 achieved future state from the same path per row",
+    "off_diagonal": "the other 255 saved achieved goals in the batch",
+    "native_reward_consumed": false,
+    "model_return_consumed": false,
+    "task_region_label_consumed": false,
+    "failure_negative_alpha": 0.0
+  },
+  "runs": {
+    "B_s1": {
+      "label": "offline continuation",
+      "rows": 256000,
+      "source": {
+        "offline": {
+          "rows": 256000,
+          "matched_fork_rows": 9267,
+          "matched_fork_down_action_rows": 2590,
+          "matched_fork_actual_down_exit_rows": 899,
+          "down_action_future_reward_region_positive_rows": 388,
+          "actual_down_exit_future_reward_region_positive_rows": 116,
+          "down_action_future_strict_region_positive_rows": 345,
+          "down_action_stationary_future_goal_rows": 278,
+          "down_action_source_path_strict_success_rows": 605,
+          "down_action_source_path_lower_route_rows": 1225,
+          "failed_before_rows": 0
+        },
+        "oracle_generated": {
+          "rows": 0,
+          "matched_fork_rows": 0,
+          "matched_fork_down_action_rows": 0,
+          "matched_fork_actual_down_exit_rows": 0,
+          "down_action_future_reward_region_positive_rows": 0,
+          "actual_down_exit_future_reward_region_positive_rows": 0,
+          "down_action_future_strict_region_positive_rows": 0,
+          "down_action_stationary_future_goal_rows": 0,
+          "down_action_source_path_strict_success_rows": 0,
+          "down_action_source_path_lower_route_rows": 0,
+          "failed_before_rows": 0
+        }
+      },
+      "matched_fork_definition": "1<=x<2, 3<=y<4",
+      "down_action_definition": "recorded action_y < -0.25; separate actual-exit count uses observed next cell (1,2)",
+      "matched_fork_rows": 9267,
+      "matched_fork_down_action_rows": 2590,
+      "matched_fork_actual_down_exit_rows": 899,
+      "down_action_future_reward_region_positive_rows": 388,
+      "down_action_future_reward_region_fraction_of_all_positive_rows": 0.001515625,
+      "actual_down_exit_future_reward_region_positive_rows": 116,
+      "training_updates_with_any_down_action_future_reward_positive": 316,
+      "positive_cells_in_nce_matrices": 256000,
+      "all_cells_in_nce_matrices": 65536000,
+      "each_saved_goal_is_off_diagonal_for_other_255_anchors_in_its_batch": true,
+      "fixed_task_goal_exact_positive_rows": 0,
+      "fixed_task_goal_exact_positive_fraction": 0.0,
+      "future_goal_f4_distance_to_fixed_task_quantiles": [
+        0.06918470561504364,
+        0.3080481618642807,
+        0.5006656050682068,
+        12.445744800567628,
+        17.027856826782227
+      ],
+      "relevant_future_goal_f4_distance_to_fixed_task_quantiles": [
+        0.18898479640483856,
+        0.2984908401966095,
+        0.46415863931179047,
+        4.070597410202027,
+        6.787720203399658
+      ],
+      "relevant_future_goal_stationary_fraction": 0.0,
+      "relevant_future_goal_strict_region_fraction": 0.8891752577319587,
+      "rows_within_f4_distance_0p1_of_one_of_16_roots": 3342,
+      "close_root_down_action_future_reward_positive_rows": 298,
+      "relevant_teacher_fraction": {
+        "random": 0.002577319587628866,
+        "forced_safe": 0.2963917525773196,
+        "immediate_shortcut": 0.22938144329896906,
+        "wait_shortcut": 0.4329896907216495,
+        "bad_demo": 0.03865979381443299
+      }
+    },
+    "C_s1": {
+      "label": "90% offline + 10% oracle generated",
+      "rows": 256000,
+      "source": {
+        "offline": {
+          "rows": 230400,
+          "matched_fork_rows": 8318,
+          "matched_fork_down_action_rows": 2298,
+          "matched_fork_actual_down_exit_rows": 794,
+          "down_action_future_reward_region_positive_rows": 348,
+          "actual_down_exit_future_reward_region_positive_rows": 104,
+          "down_action_future_strict_region_positive_rows": 311,
+          "down_action_stationary_future_goal_rows": 248,
+          "down_action_source_path_strict_success_rows": 544,
+          "down_action_source_path_lower_route_rows": 1078,
+          "failed_before_rows": 0
+        },
+        "oracle_generated": {
+          "rows": 25600,
+          "matched_fork_rows": 317,
+          "matched_fork_down_action_rows": 130,
+          "matched_fork_actual_down_exit_rows": 37,
+          "down_action_future_reward_region_positive_rows": 23,
+          "actual_down_exit_future_reward_region_positive_rows": 6,
+          "down_action_future_strict_region_positive_rows": 17,
+          "down_action_stationary_future_goal_rows": 46,
+          "down_action_source_path_strict_success_rows": 39,
+          "down_action_source_path_lower_route_rows": 37,
+          "failed_before_rows": 6891
+        }
+      },
+      "matched_fork_definition": "1<=x<2, 3<=y<4",
+      "down_action_definition": "recorded action_y < -0.25; separate actual-exit count uses observed next cell (1,2)",
+      "matched_fork_rows": 8635,
+      "matched_fork_down_action_rows": 2428,
+      "matched_fork_actual_down_exit_rows": 831,
+      "down_action_future_reward_region_positive_rows": 371,
+      "down_action_future_reward_region_fraction_of_all_positive_rows": 0.00144921875,
+      "actual_down_exit_future_reward_region_positive_rows": 110,
+      "training_updates_with_any_down_action_future_reward_positive": 305,
+      "positive_cells_in_nce_matrices": 256000,
+      "all_cells_in_nce_matrices": 65536000,
+      "each_saved_goal_is_off_diagonal_for_other_255_anchors_in_its_batch": true,
+      "fixed_task_goal_exact_positive_rows": 0,
+      "fixed_task_goal_exact_positive_fraction": 0.0,
+      "future_goal_f4_distance_to_fixed_task_quantiles": [
+        0.07700376212596893,
+        0.2998684853315354,
+        0.494978666305542,
+        11.833751678466797,
+        17.027856826782227
+      ],
+      "relevant_future_goal_f4_distance_to_fixed_task_quantiles": [
+        0.18898479640483856,
+        0.29874205589294434,
+        0.4610479474067688,
+        4.1920294761657715,
+        6.787720203399658
+      ],
+      "relevant_future_goal_stationary_fraction": 0.0,
+      "relevant_future_goal_strict_region_fraction": 0.8840970350404312,
+      "rows_within_f4_distance_0p1_of_one_of_16_roots": 3120,
+      "close_root_down_action_future_reward_positive_rows": 277,
+      "relevant_teacher_fraction": {
+        "random": 0.026954177897574125,
+        "forced_safe": 0.2857142857142857,
+        "immediate_shortcut": 0.22641509433962265,
+        "wait_shortcut": 0.42048517520215634,
+        "bad_demo": 0.04043126684636118
+      }
+    }
+  },
+  "matched_coverage_comparison": {
+    "B_s1_down_action_future_reward_positive_rows": 388,
+    "C_s1_down_action_future_reward_positive_rows": 371,
+    "difference_C_minus_B": -17,
+    "B_s1_actual_down_exit_future_reward_positive_rows": 116,
+    "C_s1_actual_down_exit_future_reward_positive_rows": 110,
+    "fraction_of_C_positive_rows": 0.00144921875
+  },
+  "frozen_actor_at_matched_roots": {
+    "method": "4096 sealed Gaussian draws per root, converted to actual zero-noise next cells by the verified movement helper",
+    "down_exit_probability": {
+      "point": 0.0717010498046875,
+      "ci95": [
+        0.033247756958007815,
+        0.12053375244140618
+      ],
+      "root_count": 16,
+      "draws_per_root": 4096
+    },
+    "right_exit_probability": {
+      "point": 0.8865203857421875,
+      "ci95": [
+        0.8347599029541015,
+        0.9280868530273437
+      ],
+      "root_count": 16,
+      "draws_per_root": 4096
+    },
+    "mean_sampled_action": [
+      0.9130454063415527,
+      -0.19453132152557373
+    ],
+    "continuation_outcomes_generated": 0
+  },
+  "localization": {
+    "insufficient_relevant_coverage": "supported: model augmentation did not increase the count of matched-fork downward rows paired with a future task-region achieved goal over the offline continuation",
+    "different_continuation_distribution": "supported: NCE positives are single logged future states under offline teachers or changing training-time actors; the matched label averages 64 continuations of the final frozen C1 actor after a forced action",
+    "full_f4_identity_vs_task_region": "real semantic mismatch: native preference uses radius-2 rewards and radius-0.5 strict success, while the critic receives exact full-F4 achieved identities and never receives the canonical stationary task F4 exactly",
+    "representation_or_optimization": "unresolved: parameters changed and losses were finite, but this audit contains no capacity-controlled fit or optimization intervention"
+  },
+  "recommended_single_repair": "A critic-only matched task-preference intervention: on a separately preregistered coherent-alive fork training split, add one pairwise task-goal ranking term whose labels come from frozen-model multi-continuation down-versus-right returns, while keeping the actor, F4 representation, base NCE batches, BC, nominal, head and motion fixed. First require the critic preference to flip on held-out coherent roots; only then test actor response and new complete native episodes.",
+  "why_not_goal_sampling_claim": "Zero exact canonical-goal positives and sparse route rows identify plausible mechanisms, not which one caused the critic ranking. The proposed one-change ranking intervention directly tests the missing task preference without simultaneously changing goal proportions or representation.",
+  "unresolved": [
+    "whether canonicalizing task-region goals alone would fix the ranking",
+    "whether the representation can fit both exact F4 reachability and task-region preference without interference",
+    "whether a corrected critic gradient will move the continuous actor toward a feasible lower exit",
+    "whether any repair improves new complete native episodes over A and matched B"
+  ],
+  "source_sha256": {
+    "C_s1_batch_audit.npz": "4868391a76fb0545fd54025490252531b4c952d7f0a05e6b440754d5bf220489",
+    "B_s1_batch_audit.npz": "735dd7a8c3b92b9a068eff4033da683521cd7de044df51b675deef4b90636f61",
+    "dataset": "83b4e81d9fca2d66b648c9c34ccdb68196e1acf89e2ca6829e4cb198d27c322c",
+    "script": "01aa9837bd4f9e530fb6c5c707f9c55007de3dd8b80ce7782e75ab4e066c406c"
+  }
+}

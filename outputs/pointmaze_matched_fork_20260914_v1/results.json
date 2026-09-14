@@ -1,0 +1,1114 @@
+{
+  "primary": {
+    "design": {
+      "roots": 16,
+      "root_episode_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "root_times": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "paths_per_root_action_backend": 64,
+      "uncertainty_unit": "saved native episode/root after averaging predictive continuations",
+      "predictive_paths_are_not_independent_episodes": true
+    },
+    "native": {
+      "down": {
+        "whole_episode_return": {
+          "point": 10.213179618628462,
+          "ci95": [
+            10.036194647609227,
+            10.350775450677117
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.3381322178284082,
+          "conditional_predictive_mc_se": 0.06691200122128216,
+          "mean_within_root_path_sd": 2.0751601172607037
+        },
+        "continuation_return": {
+          "point": 10.75071538802996,
+          "ci95": [
+            10.564415418536031,
+            10.895553105975916
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.3559286503456921,
+          "conditional_predictive_mc_se": 0.07043368549608649,
+          "mean_within_root_path_sd": 2.1843790708007416
+        },
+        "strict_success": {
+          "point": 0.9658203125,
+          "ci95": [
+            0.951171875,
+            0.9765625
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.027492156788724912,
+          "conditional_predictive_mc_se": 0.005660961452682963,
+          "mean_within_root_path_sd": 0.17299543953771288
+        },
+        "reward_occurrence": {
+          "point": 0.9765625,
+          "ci95": [
+            0.96484375,
+            0.9873046875
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.024206145913796356,
+          "conditional_predictive_mc_se": 0.004707608160284139,
+          "mean_within_root_path_sd": 0.12087721332039943
+        },
+        "failure": {
+          "point": 0.0341796875,
+          "ci95": [
+            0.0234375,
+            0.048828125
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.027492156788724912,
+          "conditional_predictive_mc_se": 0.005660961452682963,
+          "mean_within_root_path_sd": 0.17299543953771288
+        },
+        "hazard_exposure": {
+          "point": 0.12109375,
+          "ci95": [
+            0.07421875,
+            0.185546875
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.1213664603930317,
+          "conditional_predictive_mc_se": 0.018852125306732106,
+          "mean_within_root_path_sd": 0.526760364100831
+        },
+        "lower_route_entry": {
+          "point": 0.9736328125,
+          "ci95": [
+            0.9580078125,
+            0.986328125
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.030575400949605987,
+          "conditional_predictive_mc_se": 0.0049597119158532234,
+          "mean_within_root_path_sd": 0.13036810996054427
+        }
+      },
+      "right": {
+        "whole_episode_return": {
+          "point": 3.354082685974406,
+          "ci95": [
+            2.915391531623683,
+            3.7757600558695503
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.9075698092786023,
+          "conditional_predictive_mc_se": 0.17418545026140178,
+          "mean_within_root_path_sd": 5.5479856467756266
+        },
+        "continuation_return": {
+          "point": 3.53061335365727,
+          "ci95": [
+            3.068833191182825,
+            3.9744842693363696
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.9553366413458972,
+          "conditional_predictive_mc_se": 0.18335310553831766,
+          "mean_within_root_path_sd": 5.839984891342765
+        },
+        "strict_success": {
+          "point": 0.265625,
+          "ci95": [
+            0.232421875,
+            0.2978515625
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.06964381104352825,
+          "conditional_predictive_mc_se": 0.013748060477724904,
+          "mean_within_root_path_sd": 0.4382460083666738
+        },
+        "reward_occurrence": {
+          "point": 0.267578125,
+          "ci95": [
+            0.234375,
+            0.2998046875
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.0703125,
+          "conditional_predictive_mc_se": 0.013777757510840788,
+          "mean_within_root_path_sd": 0.43924005257619236
+        },
+        "failure": {
+          "point": 0.734375,
+          "ci95": [
+            0.7021484375,
+            0.767578125
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.06964381104352825,
+          "conditional_predictive_mc_se": 0.013748060477724904,
+          "mean_within_root_path_sd": 0.4382460083666738
+        },
+        "hazard_exposure": {
+          "point": 2.4326171875,
+          "ci95": [
+            2.353515625,
+            2.52734375
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.18120677914994193,
+          "conditional_predictive_mc_se": 0.04133785021547223,
+          "mean_within_root_path_sd": 1.3086103158300706
+        },
+        "lower_route_entry": {
+          "point": 0.001953125,
+          "ci95": [
+            0.0,
+            0.0048828125
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.0053369535239372904,
+          "conditional_predictive_mc_se": 0.0013810679320049757,
+          "mean_within_root_path_sd": 0.015625
+        }
+      }
+    },
+    "model": {
+      "down": {
+        "whole_episode_return": {
+          "point": 10.135383803008324,
+          "ci95": [
+            9.94734250962957,
+            10.291179500667338
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.37001358332734335,
+          "conditional_predictive_mc_se": 0.07315686178780574,
+          "mean_within_root_path_sd": 2.269019111807461
+        },
+        "continuation_return": {
+          "point": 10.668825055798237,
+          "ci95": [
+            10.470886852241652,
+            10.832820527018253
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.3894879824498349,
+          "conditional_predictive_mc_se": 0.07700722293453237,
+          "mean_within_root_path_sd": 2.3884411703236434
+        },
+        "strict_success": {
+          "point": 0.95703125,
+          "ci95": [
+            0.9404296875,
+            0.9697509765624996
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.03150934054636286,
+          "conditional_predictive_mc_se": 0.006314480900146777,
+          "mean_within_root_path_sd": 0.1928487426800166
+        },
+        "reward_occurrence": {
+          "point": 0.966796875,
+          "ci95": [
+            0.9521484375,
+            0.978515625
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.029577647634376425,
+          "conditional_predictive_mc_se": 0.005570660598358881,
+          "mean_within_root_path_sd": 0.1635961693633986
+        },
+        "failure": {
+          "point": 0.04296875,
+          "ci95": [
+            0.03024902343750001,
+            0.0595703125
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.03150934054636286,
+          "conditional_predictive_mc_se": 0.006314480900146777,
+          "mean_within_root_path_sd": 0.1928487426800166
+        },
+        "hazard_exposure": {
+          "point": 0.1162109375,
+          "ci95": [
+            0.078125,
+            0.158203125
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.08404037619340579,
+          "conditional_predictive_mc_se": 0.019347864887909367,
+          "mean_within_root_path_sd": 0.5486460472618258
+        },
+        "lower_route_entry": {
+          "point": 0.9736328125,
+          "ci95": [
+            0.9580078125,
+            0.986328125
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.030575400949605987,
+          "conditional_predictive_mc_se": 0.0049597119158532234,
+          "mean_within_root_path_sd": 0.13036810996054427
+        }
+      },
+      "right": {
+        "whole_episode_return": {
+          "point": 4.216588194307935,
+          "ci95": [
+            3.75820888547622,
+            4.72311587094865
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 1.0085879422318722,
+          "conditional_predictive_mc_se": 0.1860015025799267,
+          "mean_within_root_path_sd": 5.9429835202022625
+        },
+        "continuation_return": {
+          "point": 4.438513888745194,
+          "ci95": [
+            3.9560093531328637,
+            4.971700916788054
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 1.0616715181388132,
+          "conditional_predictive_mc_se": 0.19579105534729127,
+          "mean_within_root_path_sd": 6.255772126528698
+        },
+        "strict_success": {
+          "point": 0.3330078125,
+          "ci95": [
+            0.2978515625,
+            0.3720703125
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.07837849498786323,
+          "conditional_predictive_mc_se": 0.014650504153156446,
+          "mean_within_root_path_sd": 0.46825958846105487
+        },
+        "reward_occurrence": {
+          "point": 0.33984375,
+          "ci95": [
+            0.3037109375,
+            0.3798828125
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.07874751980221345,
+          "conditional_predictive_mc_se": 0.01472419645559719,
+          "mean_within_root_path_sd": 0.4706151282527472
+        },
+        "failure": {
+          "point": 0.6669921875,
+          "ci95": [
+            0.6279296875,
+            0.7021484375
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.07837849498786323,
+          "conditional_predictive_mc_se": 0.014650504153156446,
+          "mean_within_root_path_sd": 0.46825958846105487
+        },
+        "hazard_exposure": {
+          "point": 2.6767578125,
+          "ci95": [
+            2.6152099609375,
+            2.740234375
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.13328271540812223,
+          "conditional_predictive_mc_se": 0.04307237600291537,
+          "mean_within_root_path_sd": 1.3596745080390238
+        },
+        "lower_route_entry": {
+          "point": 0.001953125,
+          "ci95": [
+            0.0,
+            0.0048828125
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.0053369535239372904,
+          "conditional_predictive_mc_se": 0.0013810679320049757,
+          "mean_within_root_path_sd": 0.015625
+        }
+      }
+    },
+    "down_minus_right": {
+      "native": {
+        "whole_episode_return": {
+          "point": 6.859096932654056,
+          "ci95": [
+            6.443182148486352,
+            7.284369873586021
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.8893164344467412,
+          "conditional_predictive_mc_se": 0.18452809779843815,
+          "mean_within_root_path_sd": 5.877689474586434
+        },
+        "continuation_return": {
+          "point": 7.22010203437269,
+          "ci95": [
+            6.782296998406687,
+            7.667757761669496
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.9361225625755174,
+          "conditional_predictive_mc_se": 0.19424010294572439,
+          "mean_within_root_path_sd": 6.187041552196248
+        },
+        "strict_success": {
+          "point": 0.7001953125,
+          "ci95": [
+            0.669921875,
+            0.732421875
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.06731909351411752,
+          "conditional_predictive_mc_se": 0.015011820500377464,
+          "mean_within_root_path_sd": 0.4778224353440896
+        },
+        "reward_occurrence": {
+          "point": 0.708984375,
+          "ci95": [
+            0.67578125,
+            0.7421875
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.07054360169131807,
+          "conditional_predictive_mc_se": 0.014878627050462216,
+          "mean_within_root_path_sd": 0.47338904691996003
+        },
+        "failure": {
+          "point": -0.7001953125,
+          "ci95": [
+            -0.732421875,
+            -0.669921875
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.06731909351411752,
+          "conditional_predictive_mc_se": 0.015011820500377464,
+          "mean_within_root_path_sd": 0.4778224353440896
+        },
+        "hazard_exposure": {
+          "point": -2.3115234375,
+          "ci95": [
+            -2.4345947265625,
+            -2.193359375
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.25022572817170996,
+          "conditional_predictive_mc_se": 0.046077832461868154,
+          "mean_within_root_path_sd": 1.4621209056871511
+        },
+        "lower_route_entry": {
+          "point": 0.9716796875,
+          "ci95": [
+            0.9560546875,
+            0.984375
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.03030806990823566,
+          "conditional_predictive_mc_se": 0.005142522743831176,
+          "mean_within_root_path_sd": 0.14053523072357776
+        }
+      },
+      "model": {
+        "whole_episode_return": {
+          "point": 5.918795608700389,
+          "ci95": [
+            5.411668590542704,
+            6.4011990155778165
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 1.0466930336728935,
+          "conditional_predictive_mc_se": 0.19356420404286495,
+          "mean_within_root_path_sd": 6.17995752537967
+        },
+        "continuation_return": {
+          "point": 6.230311167053042,
+          "ci95": [
+            5.696493253202848,
+            6.738104226924018
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 1.1017821407083093,
+          "conditional_predictive_mc_se": 0.20375179372933155,
+          "mean_within_root_path_sd": 6.505218447768074
+        },
+        "strict_success": {
+          "point": 0.6240234375,
+          "ci95": [
+            0.5869140625,
+            0.6591796875
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.07770067056164423,
+          "conditional_predictive_mc_se": 0.01582379505564666,
+          "mean_within_root_path_sd": 0.5047074484255216
+        },
+        "reward_occurrence": {
+          "point": 0.626953125,
+          "ci95": [
+            0.591796875,
+            0.6611328125
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.07348181287173491,
+          "conditional_predictive_mc_se": 0.015510258886793834,
+          "mean_within_root_path_sd": 0.4952930922550028
+        },
+        "failure": {
+          "point": -0.6240234375,
+          "ci95": [
+            -0.6591796875,
+            -0.5869140625
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.07770067056164423,
+          "conditional_predictive_mc_se": 0.01582379505564666,
+          "mean_within_root_path_sd": 0.5047074484255216
+        },
+        "hazard_exposure": {
+          "point": -2.560546875,
+          "ci95": [
+            -2.630859375,
+            -2.4863037109375004
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.15318610600480928,
+          "conditional_predictive_mc_se": 0.04633157586805714,
+          "mean_within_root_path_sd": 1.4609551845735562
+        },
+        "lower_route_entry": {
+          "point": 0.9716796875,
+          "ci95": [
+            0.9560546875,
+            0.984375
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.03030806990823566,
+          "conditional_predictive_mc_se": 0.005142522743831176,
+          "mean_within_root_path_sd": 0.14053523072357776
+        }
+      }
+    },
+    "model_minus_native": {
+      "down": {
+        "whole_episode_return": {
+          "point": -0.0777958156201379,
+          "ci95": [
+            -0.12983327301821385,
+            -0.0219365751625307
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.11100503958036058,
+          "conditional_predictive_mc_se": 0.037809911636117376,
+          "mean_within_root_path_sd": 0.8875591087556101
+        },
+        "continuation_return": {
+          "point": -0.08189033223172412,
+          "ci95": [
+            -0.13666660317706722,
+            -0.023091131750032322
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.11684741008459011,
+          "conditional_predictive_mc_se": 0.039799906985386706,
+          "mean_within_root_path_sd": 0.9342727460585368
+        },
+        "strict_success": {
+          "point": -0.0087890625,
+          "ci95": [
+            -0.013671875,
+            -0.0029296875
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.01136622543895583,
+          "conditional_predictive_mc_se": 0.0037862105225697313,
+          "mean_within_root_path_sd": 0.09104035309827199
+        },
+        "reward_occurrence": {
+          "point": -0.009765625,
+          "ci95": [
+            -0.015625,
+            -0.00390625
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.012597277731716485,
+          "conditional_predictive_mc_se": 0.00390625,
+          "mean_within_root_path_sd": 0.09264770370469605
+        },
+        "failure": {
+          "point": 0.0087890625,
+          "ci95": [
+            0.0029296875,
+            0.013671875
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.01136622543895583,
+          "conditional_predictive_mc_se": 0.0037862105225697313,
+          "mean_within_root_path_sd": 0.09104035309827199
+        },
+        "hazard_exposure": {
+          "point": -0.0048828125,
+          "ci95": [
+            -0.0380859375,
+            0.0234375
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.06447876699526106,
+          "conditional_predictive_mc_se": 0.015279677852258117,
+          "mean_within_root_path_sd": 0.3689002264981638
+        },
+        "lower_route_entry": {
+          "point": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.0,
+          "conditional_predictive_mc_se": 0.0,
+          "mean_within_root_path_sd": 0.0
+        }
+      },
+      "right": {
+        "whole_episode_return": {
+          "point": 0.8625055083335281,
+          "ci95": [
+            0.2877456899643076,
+            1.4918778003830175
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 1.2459776879861992,
+          "conditional_predictive_mc_se": 0.25246785283332596,
+          "mean_within_root_path_sd": 8.066250347249614
+        },
+        "continuation_return": {
+          "point": 0.9079005350879243,
+          "ci95": [
+            0.30289019996242916,
+            1.5703976846137027
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 1.3115554610381046,
+          "conditional_predictive_mc_se": 0.2657556345613958,
+          "mean_within_root_path_sd": 8.49078983921012
+        },
+        "strict_success": {
+          "point": 0.0673828125,
+          "ci95": [
+            0.02243652343750001,
+            0.1171875
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.09860992669721019,
+          "conditional_predictive_mc_se": 0.019954870866996717,
+          "mean_within_root_path_sd": 0.6376922932015855
+        },
+        "reward_occurrence": {
+          "point": 0.072265625,
+          "ci95": [
+            0.0263671875,
+            0.12111816406249964
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.09780717504142185,
+          "conditional_predictive_mc_se": 0.020110910876477525,
+          "mean_within_root_path_sd": 0.642595627102502
+        },
+        "failure": {
+          "point": -0.0673828125,
+          "ci95": [
+            -0.1171875,
+            -0.022436523437500355
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.09860992669721019,
+          "conditional_predictive_mc_se": 0.019954870866996717,
+          "mean_within_root_path_sd": 0.6376922932015855
+        },
+        "hazard_exposure": {
+          "point": 0.244140625,
+          "ci95": [
+            0.126953125,
+            0.3525390625
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.2282801270506261,
+          "conditional_predictive_mc_se": 0.05835506527456006,
+          "mean_within_root_path_sd": 1.8539140801508243
+        },
+        "lower_route_entry": {
+          "point": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.0,
+          "conditional_predictive_mc_se": 0.0,
+          "mean_within_root_path_sd": 0.0
+        }
+      }
+    },
+    "critic_down_minus_right_logit": {
+      "point": -0.6472837626934052,
+      "ci95": [
+        -0.8558794632554054,
+        -0.4466525100171566
+      ],
+      "root_count": 16,
+      "paths_per_root": 1,
+      "root_sd": 0.43225153401096067,
+      "conditional_predictive_mc_se": 0.0,
+      "mean_within_root_path_sd": 0.0
+    },
+    "reversal_after_one_step_down": {
+      "native": {
+        "first_resumed_actor_action_y_positive": {
+          "point": 0.0361328125,
+          "ci95": [
+            0.0234375,
+            0.050805664062499645
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.030038359807017315,
+          "conditional_predictive_mc_se": 0.0058061717336454,
+          "mean_within_root_path_sd": 0.17061829404824735
+        },
+        "first_resumed_movement_reverses_upward": {
+          "point": 0.0361328125,
+          "ci95": [
+            0.0234375,
+            0.050805664062499645
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.030038359807017315,
+          "conditional_predictive_mc_se": 0.0058061717336454,
+          "mean_within_root_path_sd": 0.17061829404824735
+        },
+        "returns_to_upper_route_before_lower_entry": {
+          "point": 0.033203125,
+          "ci95": [
+            0.01953125,
+            0.05078125
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.033206954436031416,
+          "conditional_predictive_mc_se": 0.005551606242903046,
+          "mean_within_root_path_sd": 0.1565421615665756
+        },
+        "eventual_lower_route_entry": {
+          "point": 0.9736328125,
+          "ci95": [
+            0.9580078125,
+            0.986328125
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.030575400949605987,
+          "conditional_predictive_mc_se": 0.0049597119158532234,
+          "mean_within_root_path_sd": 0.13036810996054427
+        },
+        "minimum_y_during_first_four_transitions": {
+          "point": 1.303265345547838,
+          "ci95": [
+            1.25020129535804,
+            1.357078835361239
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.11229532191742202,
+          "conditional_predictive_mc_se": 0.009532964589747887,
+          "mean_within_root_path_sd": 0.29272442334617527
+        }
+      },
+      "model": {
+        "first_resumed_actor_action_y_positive": {
+          "point": 0.0361328125,
+          "ci95": [
+            0.0234375,
+            0.050805664062499645
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.030038359807017315,
+          "conditional_predictive_mc_se": 0.0058061717336454,
+          "mean_within_root_path_sd": 0.17061829404824735
+        },
+        "first_resumed_movement_reverses_upward": {
+          "point": 0.0361328125,
+          "ci95": [
+            0.0234375,
+            0.050805664062499645
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.030038359807017315,
+          "conditional_predictive_mc_se": 0.0058061717336454,
+          "mean_within_root_path_sd": 0.17061829404824735
+        },
+        "returns_to_upper_route_before_lower_entry": {
+          "point": 0.033203125,
+          "ci95": [
+            0.01953125,
+            0.05078125
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.033206954436031416,
+          "conditional_predictive_mc_se": 0.005551606242903046,
+          "mean_within_root_path_sd": 0.1565421615665756
+        },
+        "eventual_lower_route_entry": {
+          "point": 0.9736328125,
+          "ci95": [
+            0.9580078125,
+            0.986328125
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.030575400949605987,
+          "conditional_predictive_mc_se": 0.0049597119158532234,
+          "mean_within_root_path_sd": 0.13036810996054427
+        },
+        "minimum_y_during_first_four_transitions": {
+          "point": 1.303265345547838,
+          "ci95": [
+            1.25020129535804,
+            1.357078835361239
+          ],
+          "root_count": 16,
+          "paths_per_root": 64,
+          "root_sd": 0.11229532191742202,
+          "conditional_predictive_mc_se": 0.009532964589747887,
+          "mean_within_root_path_sd": 0.29272442334617527
+        }
+      }
+    },
+    "model_minus_native_down_right_preference": {
+      "whole_episode_return": {
+        "point": -0.9403013239536661,
+        "ci95": [
+          -1.577662020786529,
+          -0.35117663247861497
+        ],
+        "root_count": 16,
+        "paths_per_root": 64
+      }
+    },
+    "critic_fraction_roots_preferring_down": 0.0
+  },
+  "decision": {
+    "selected_branch": "C",
+    "rule": "native and model are clearly positive but critic down-minus-right is not clearly positive",
+    "native_clear_down_advantage": true,
+    "model_clear_down_advantage": true,
+    "critic_clear_down_preference": false,
+    "no_advantage_established_is_not_equivalence": true,
+    "precision_extension_allowed": false
+  },
+  "conditional_branch_c_audit": {
+    "selected_branch": "C",
+    "saved_arrays_only": true,
+    "new_paths": 0,
+    "training_updates": 0,
+    "critic_objective": {
+      "type": "Monte Carlo sigmoid NCE over the complete 256x256 logit matrix",
+      "positive": "one exact full-F4 achieved future state from the same path per row",
+      "off_diagonal": "the other 255 saved achieved goals in the batch",
+      "native_reward_consumed": false,
+      "model_return_consumed": false,
+      "task_region_label_consumed": false,
+      "failure_negative_alpha": 0.0
+    },
+    "runs": {
+      "B_s1": {
+        "label": "offline continuation",
+        "rows": 256000,
+        "source": {
+          "offline": {
+            "rows": 256000,
+            "matched_fork_rows": 9267,
+            "matched_fork_down_action_rows": 2590,
+            "matched_fork_actual_down_exit_rows": 899,
+            "down_action_future_reward_region_positive_rows": 388,
+            "actual_down_exit_future_reward_region_positive_rows": 116,
+            "down_action_future_strict_region_positive_rows": 345,
+            "down_action_stationary_future_goal_rows": 278,
+            "down_action_source_path_strict_success_rows": 605,
+            "down_action_source_path_lower_route_rows": 1225,
+            "failed_before_rows": 0
+          },
+          "oracle_generated": {
+            "rows": 0,
+            "matched_fork_rows": 0,
+            "matched_fork_down_action_rows": 0,
+            "matched_fork_actual_down_exit_rows": 0,
+            "down_action_future_reward_region_positive_rows": 0,
+            "actual_down_exit_future_reward_region_positive_rows": 0,
+            "down_action_future_strict_region_positive_rows": 0,
+            "down_action_stationary_future_goal_rows": 0,
+            "down_action_source_path_strict_success_rows": 0,
+            "down_action_source_path_lower_route_rows": 0,
+            "failed_before_rows": 0
+          }
+        },
+        "matched_fork_definition": "1<=x<2, 3<=y<4",
+        "down_action_definition": "recorded action_y < -0.25; separate actual-exit count uses observed next cell (1,2)",
+        "matched_fork_rows": 9267,
+        "matched_fork_down_action_rows": 2590,
+        "matched_fork_actual_down_exit_rows": 899,
+        "down_action_future_reward_region_positive_rows": 388,
+        "down_action_future_reward_region_fraction_of_all_positive_rows": 0.001515625,
+        "actual_down_exit_future_reward_region_positive_rows": 116,
+        "training_updates_with_any_down_action_future_reward_positive": 316,
+        "positive_cells_in_nce_matrices": 256000,
+        "all_cells_in_nce_matrices": 65536000,
+        "each_saved_goal_is_off_diagonal_for_other_255_anchors_in_its_batch": true,
+        "fixed_task_goal_exact_positive_rows": 0,
+        "fixed_task_goal_exact_positive_fraction": 0.0,
+        "future_goal_f4_distance_to_fixed_task_quantiles": [
+          0.06918470561504364,
+          0.3080481618642807,
+          0.5006656050682068,
+          12.445744800567628,
+          17.027856826782227
+        ],
+        "relevant_future_goal_f4_distance_to_fixed_task_quantiles": [
+          0.18898479640483856,
+          0.2984908401966095,
+          0.46415863931179047,
+          4.070597410202027,
+          6.787720203399658
+        ],
+        "relevant_future_goal_stationary_fraction": 0.0,
+        "relevant_future_goal_strict_region_fraction": 0.8891752577319587,
+        "rows_within_f4_distance_0p1_of_one_of_16_roots": 3342,
+        "close_root_down_action_future_reward_positive_rows": 298,
+        "relevant_teacher_fraction": {
+          "random": 0.002577319587628866,
+          "forced_safe": 0.2963917525773196,
+          "immediate_shortcut": 0.22938144329896906,
+          "wait_shortcut": 0.4329896907216495,
+          "bad_demo": 0.03865979381443299
+        }
+      },
+      "C_s1": {
+        "label": "90% offline + 10% oracle generated",
+        "rows": 256000,
+        "source": {
+          "offline": {
+            "rows": 230400,
+            "matched_fork_rows": 8318,
+            "matched_fork_down_action_rows": 2298,
+            "matched_fork_actual_down_exit_rows": 794,
+            "down_action_future_reward_region_positive_rows": 348,
+            "actual_down_exit_future_reward_region_positive_rows": 104,
+            "down_action_future_strict_region_positive_rows": 311,
+            "down_action_stationary_future_goal_rows": 248,
+            "down_action_source_path_strict_success_rows": 544,
+            "down_action_source_path_lower_route_rows": 1078,
+            "failed_before_rows": 0
+          },
+          "oracle_generated": {
+            "rows": 25600,
+            "matched_fork_rows": 317,
+            "matched_fork_down_action_rows": 130,
+            "matched_fork_actual_down_exit_rows": 37,
+            "down_action_future_reward_region_positive_rows": 23,
+            "actual_down_exit_future_reward_region_positive_rows": 6,
+            "down_action_future_strict_region_positive_rows": 17,
+            "down_action_stationary_future_goal_rows": 46,
+            "down_action_source_path_strict_success_rows": 39,
+            "down_action_source_path_lower_route_rows": 37,
+            "failed_before_rows": 6891
+          }
+        },
+        "matched_fork_definition": "1<=x<2, 3<=y<4",
+        "down_action_definition": "recorded action_y < -0.25; separate actual-exit count uses observed next cell (1,2)",
+        "matched_fork_rows": 8635,
+        "matched_fork_down_action_rows": 2428,
+        "matched_fork_actual_down_exit_rows": 831,
+        "down_action_future_reward_region_positive_rows": 371,
+        "down_action_future_reward_region_fraction_of_all_positive_rows": 0.00144921875,
+        "actual_down_exit_future_reward_region_positive_rows": 110,
+        "training_updates_with_any_down_action_future_reward_positive": 305,
+        "positive_cells_in_nce_matrices": 256000,
+        "all_cells_in_nce_matrices": 65536000,
+        "each_saved_goal_is_off_diagonal_for_other_255_anchors_in_its_batch": true,
+        "fixed_task_goal_exact_positive_rows": 0,
+        "fixed_task_goal_exact_positive_fraction": 0.0,
+        "future_goal_f4_distance_to_fixed_task_quantiles": [
+          0.07700376212596893,
+          0.2998684853315354,
+          0.494978666305542,
+          11.833751678466797,
+          17.027856826782227
+        ],
+        "relevant_future_goal_f4_distance_to_fixed_task_quantiles": [
+          0.18898479640483856,
+          0.29874205589294434,
+          0.4610479474067688,
+          4.1920294761657715,
+          6.787720203399658
+        ],
+        "relevant_future_goal_stationary_fraction": 0.0,
+        "relevant_future_goal_strict_region_fraction": 0.8840970350404312,
+        "rows_within_f4_distance_0p1_of_one_of_16_roots": 3120,
+        "close_root_down_action_future_reward_positive_rows": 277,
+        "relevant_teacher_fraction": {
+          "random": 0.026954177897574125,
+          "forced_safe": 0.2857142857142857,
+          "immediate_shortcut": 0.22641509433962265,
+          "wait_shortcut": 0.42048517520215634,
+          "bad_demo": 0.04043126684636118
+        }
+      }
+    },
+    "matched_coverage_comparison": {
+      "B_s1_down_action_future_reward_positive_rows": 388,
+      "C_s1_down_action_future_reward_positive_rows": 371,
+      "difference_C_minus_B": -17,
+      "B_s1_actual_down_exit_future_reward_positive_rows": 116,
+      "C_s1_actual_down_exit_future_reward_positive_rows": 110,
+      "fraction_of_C_positive_rows": 0.00144921875
+    },
+    "frozen_actor_at_matched_roots": {
+      "method": "4096 sealed Gaussian draws per root, converted to actual zero-noise next cells by the verified movement helper",
+      "down_exit_probability": {
+        "point": 0.0717010498046875,
+        "ci95": [
+          0.033247756958007815,
+          0.12053375244140618
+        ],
+        "root_count": 16,
+        "draws_per_root": 4096
+      },
+      "right_exit_probability": {
+        "point": 0.8865203857421875,
+        "ci95": [
+          0.8347599029541015,
+          0.9280868530273437
+        ],
+        "root_count": 16,
+        "draws_per_root": 4096
+      },
+      "mean_sampled_action": [
+        0.9130454063415527,
+        -0.19453132152557373
+      ],
+      "continuation_outcomes_generated": 0
+    },
+    "localization": {
+      "insufficient_relevant_coverage": "supported: model augmentation did not increase the count of matched-fork downward rows paired with a future task-region achieved goal over the offline continuation",
+      "different_continuation_distribution": "supported: NCE positives are single logged future states under offline teachers or changing training-time actors; the matched label averages 64 continuations of the final frozen C1 actor after a forced action",
+      "full_f4_identity_vs_task_region": "real semantic mismatch: native preference uses radius-2 rewards and radius-0.5 strict success, while the critic receives exact full-F4 achieved identities and never receives the canonical stationary task F4 exactly",
+      "representation_or_optimization": "unresolved: parameters changed and losses were finite, but this audit contains no capacity-controlled fit or optimization intervention"
+    },
+    "recommended_single_repair": "A critic-only matched task-preference intervention: on a separately preregistered coherent-alive fork training split, add one pairwise task-goal ranking term whose labels come from frozen-model multi-continuation down-versus-right returns, while keeping the actor, F4 representation, base NCE batches, BC, nominal, head and motion fixed. First require the critic preference to flip on held-out coherent roots; only then test actor response and new complete native episodes.",
+    "why_not_goal_sampling_claim": "Zero exact canonical-goal positives and sparse route rows identify plausible mechanisms, not which one caused the critic ranking. The proposed one-change ranking intervention directly tests the missing task preference without simultaneously changing goal proportions or representation.",
+    "unresolved": [
+      "whether canonicalizing task-region goals alone would fix the ranking",
+      "whether the representation can fit both exact F4 reachability and task-region preference without interference",
+      "whether a corrected critic gradient will move the continuous actor toward a feasible lower exit",
+      "whether any repair improves new complete native episodes over A and matched B"
+    ],
+    "source_sha256": {
+      "C_s1_batch_audit.npz": "4868391a76fb0545fd54025490252531b4c952d7f0a05e6b440754d5bf220489",
+      "B_s1_batch_audit.npz": "735dd7a8c3b92b9a068eff4033da683521cd7de044df51b675deef4b90636f61",
+      "dataset": "83b4e81d9fca2d66b648c9c34ccdb68196e1acf89e2ca6829e4cb198d27c322c",
+      "script": "01aa9837bd4f9e530fb6c5c707f9c55007de3dd8b80ce7782e75ab4e066c406c"
+    }
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "reviewed_commit": "84d378f3b610d13b77840b0c8a96166f760d7b96",
+  "frozen_configuration": "C_s1 actor and critic, repaired failure head 1, historical nominal, verified oracle alive-motion helper",
+  "source_native_array": "outputs/pointmaze_oracle_training_pilot_20260914_v1/C_s1_native.npz",
+  "root_target": 16,
+  "paths_per_root_action_backend": 64,
+  "native_horizon": 50,
+  "discount": 0.95,
+  "task_goal_xy": [8.5, 3.5],
+  "strict_success_radius": 0.5,
+  "reward_radius": 2.0,
+  "active_probability": 0.3,
+  "motion_noise_standard_deviation": 0.01,
+  "fork_geometry": {
+    "x_min_inclusive": 1.0,
+    "x_max_exclusive": 2.0,
+    "y_min_inclusive": 3.0,
+    "y_max_exclusive": 4.0,
+    "alive_before": true,
+    "no_hazard_landing_before_context": true,
+    "minimum_remaining_steps": 3
+  },
+  "candidate_actions": {
+    "down": [0.0, -1.0],
+    "right": [1.0, 0.0]
+  },
+  "candidate_exit_cells": {
+    "down": [1, 2],
+    "right": [2, 3]
+  },
+  "conditional_prefix_actions": [[0.0, -1.0], [0.0, -1.0], [1.0, 0.0]],
+  "root_order": "ascending saved C1 native episode index; within each episode take the first qualifying time; stop after 16",
+  "bootstrap_replicates": 5000,
+  "root_bootstrap_seed": 410914001,
+  "primary_stream_seed": 410914002,
+  "nominal_key_seed": 410914004,
+  "initialization_check_seed": 410914005,
+  "primary_complete_path_cap": 4096,
+  "primary_native_path_cap": 2048,
+  "primary_model_path_cap": 2048,
+  "primary_native_transition_cap": 102400,
+  "primary_model_transition_cap": 102400,
+  "initialization_native_step_cap": 128,
+  "conditional_followup_complete_path_cap": 2048,
+  "conditional_followup_native_path_cap": 1024,
+  "conditional_followup_model_path_cap": 1024,
+  "conditional_followup_native_transition_cap": 51200,
+  "conditional_followup_model_transition_cap": 51200,
+  "conditional_actor_probe_update_cap_per_objective": 10,
+  "actor_probe_eval_draws_per_root": 4096,
+  "conditional_actor_probe_native_validation_path_cap": 512,
+  "runtime_cap_seconds": 7200,
+  "clear_preference_rule": "the paired 95% bootstrap interval over the 16 root-level predictive means has lower endpoint above zero",
+  "branch_rule": {
+    "A": "native down-minus-right return is not clearly positive",
+    "B": "native is clearly positive but model down-minus-right is not clearly positive",
+    "C": "native and model are clearly positive but critic down-minus-right is not clearly positive",
+    "D": "native, model, and critic down-minus-right are all clearly positive"
+  },
+  "training_update_cap": 0,
+  "new_training_episode_cap": 0,
+  "checkpoint_search_cap": 0
+}

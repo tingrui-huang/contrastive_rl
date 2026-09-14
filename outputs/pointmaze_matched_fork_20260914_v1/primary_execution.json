@@ -1,0 +1,26 @@
+{
+  "utc": "2026-09-14T21:24:20Z",
+  "runtime_seconds": 50.8313283000025,
+  "roots": 16,
+  "paths_per_root_action_backend": 64,
+  "native_paths": 2048,
+  "model_paths": 2048,
+  "total_paths": 4096,
+  "native_transitions": 100352,
+  "model_transitions": 100352,
+  "training_updates": 0,
+  "checkpoint_searches": 0,
+  "same_frozen_actor_for_all_continuations": true,
+  "native_model_shared_randomness": [
+    "actor Gaussian innovations",
+    "physical motion noise"
+  ],
+  "native_only_shared_between_actions": [
+    "current root bits",
+    "future post-step swamp bits"
+  ],
+  "model_only_shared_between_actions": [
+    "nominal sampling keys",
+    "failure onset uniforms"
+  ]
+}
