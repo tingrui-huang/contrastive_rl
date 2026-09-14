@@ -1,0 +1,1385 @@
+{
+  "status": "passed",
+  "native_step_calls": 34,
+  "one_step_native_calls": 16,
+  "multistep_native_calls": 18,
+  "bit_exact_physical_xy": true,
+  "bit_exact_emitted_f4": true,
+  "hidden_bits_do_not_change_incoming_motion": true,
+  "fatal_incoming_cases": 2,
+  "physical_emitted_hazard_disagreements": 0,
+  "native_death_and_reward_discarded": true,
+  "one_step_cases": [
+    {
+      "case": "free_movement",
+      "bits": [
+        false,
+        false,
+        false
+      ],
+      "start_physical_xy": [
+        1.5,
+        1.5
+      ],
+      "action": [
+        0.4,
+        0.3
+      ],
+      "motion_noise": [
+        -0.0012514693105789229,
+        -0.001983888396901235
+      ],
+      "clipped_noisy_action": [
+        0.3987485306894211,
+        0.29801611160309877
+      ],
+      "blocked_updates_by_axis": [
+        0,
+        0
+      ],
+      "next_physical_xy": [
+        1.8987485306894212,
+        1.7980161116030988
+      ],
+      "next_emitted_xy": [
+        1.898748517036438,
+        1.79801607131958
+      ],
+      "hazard_physical": false,
+      "hazard_emitted": false,
+      "native_dead_after": false,
+      "native_reward_discarded": 0.0
+    },
+    {
+      "case": "free_movement",
+      "bits": [
+        true,
+        true,
+        true
+      ],
+      "start_physical_xy": [
+        1.5,
+        1.5
+      ],
+      "action": [
+        0.4,
+        0.3
+      ],
+      "motion_noise": [
+        -0.0012514693105789229,
+        -0.001983888396901235
+      ],
+      "clipped_noisy_action": [
+        0.3987485306894211,
+        0.29801611160309877
+      ],
+      "blocked_updates_by_axis": [
+        0,
+        0
+      ],
+      "next_physical_xy": [
+        1.8987485306894212,
+        1.7980161116030988
+      ],
+      "next_emitted_xy": [
+        1.898748517036438,
+        1.79801607131958
+      ],
+      "hazard_physical": false,
+      "hazard_emitted": false,
+      "native_dead_after": false,
+      "native_reward_discarded": 0.0
+    },
+    {
+      "case": "static_wall",
+      "bits": [
+        false,
+        false,
+        false
+      ],
+      "start_physical_xy": [
+        3.5,
+        1.5
+      ],
+      "action": [
+        0.0,
+        1.0
+      ],
+      "motion_noise": [
+        -0.009126259368415516,
+        0.02264399264682651
+      ],
+      "clipped_noisy_action": [
+        -0.009126259368415516,
+        1.0
+      ],
+      "blocked_updates_by_axis": [
+        0,
+        6
+      ],
+      "next_physical_xy": [
+        3.490873740631585,
+        1.9000000000000004
+      ],
+      "next_emitted_xy": [
+        3.4908738136291504,
+        1.899999976158142
+      ],
+      "hazard_physical": false,
+      "hazard_emitted": false,
+      "native_dead_after": false,
+      "native_reward_discarded": 0.0
+    },
+    {
+      "case": "static_wall",
+      "bits": [
+        true,
+        true,
+        true
+      ],
+      "start_physical_xy": [
+        3.5,
+        1.5
+      ],
+      "action": [
+        0.0,
+        1.0
+      ],
+      "motion_noise": [
+        -0.009126259368415516,
+        0.02264399264682651
+      ],
+      "clipped_noisy_action": [
+        -0.009126259368415516,
+        1.0
+      ],
+      "blocked_updates_by_axis": [
+        0,
+        6
+      ],
+      "next_physical_xy": [
+        3.490873740631585,
+        1.9000000000000004
+      ],
+      "next_emitted_xy": [
+        3.4908738136291504,
+        1.899999976158142
+      ],
+      "hazard_physical": false,
+      "hazard_emitted": false,
+      "native_dead_after": false,
+      "native_reward_discarded": 0.0
+    },
+    {
+      "case": "corner_axis_order",
+      "bits": [
+        false,
+        false,
+        false
+      ],
+      "start_physical_xy": [
+        1.95,
+        1.95
+      ],
+      "action": [
+        0.8,
+        0.8
+      ],
+      "motion_noise": [
+        -0.002187776398506775,
+        -0.014086751791325743
+      ],
+      "clipped_noisy_action": [
+        0.7978122236014933,
+        0.7859132482086743
+      ],
+      "blocked_updates_by_axis": [
+        0,
+        10
+      ],
+      "next_physical_xy": [
+        2.747812223601495,
+        1.95
+      ],
+      "next_emitted_xy": [
+        2.747812271118164,
+        1.9500000476837158
+      ],
+      "hazard_physical": false,
+      "hazard_emitted": false,
+      "native_dead_after": false,
+      "native_reward_discarded": 0.0
+    },
+    {
+      "case": "corner_axis_order",
+      "bits": [
+        true,
+        true,
+        true
+      ],
+      "start_physical_xy": [
+        1.95,
+        1.95
+      ],
+      "action": [
+        0.8,
+        0.8
+      ],
+      "motion_noise": [
+        -0.002187776398506775,
+        -0.014086751791325743
+      ],
+      "clipped_noisy_action": [
+        0.7978122236014933,
+        0.7859132482086743
+      ],
+      "blocked_updates_by_axis": [
+        0,
+        10
+      ],
+      "next_physical_xy": [
+        2.747812223601495,
+        1.95
+      ],
+      "next_emitted_xy": [
+        2.747812271118164,
+        1.9500000476837158
+      ],
+      "hazard_physical": false,
+      "hazard_emitted": false,
+      "native_dead_after": false,
+      "native_reward_discarded": 0.0
+    },
+    {
+      "case": "action_clipping",
+      "bits": [
+        false,
+        false,
+        false
+      ],
+      "start_physical_xy": [
+        1.5,
+        1.5
+      ],
+      "action": [
+        3.0,
+        -2.0
+      ],
+      "motion_noise": [
+        -0.002234211890733165,
+        0.010037912495202082
+      ],
+      "clipped_noisy_action": [
+        1.0,
+        -1.0
+      ],
+      "blocked_updates_by_axis": [
+        0,
+        6
+      ],
+      "next_physical_xy": [
+        2.500000000000001,
+        1.0999999999999996
+      ],
+      "next_emitted_xy": [
+        2.5,
+        1.100000023841858
+      ],
+      "hazard_physical": false,
+      "hazard_emitted": false,
+      "native_dead_after": false,
+      "native_reward_discarded": 0.0
+    },
+    {
+      "case": "action_clipping",
+      "bits": [
+        true,
+        true,
+        true
+      ],
+      "start_physical_xy": [
+        1.5,
+        1.5
+      ],
+      "action": [
+        3.0,
+        -2.0
+      ],
+      "motion_noise": [
+        -0.002234211890733165,
+        0.010037912495202082
+      ],
+      "clipped_noisy_action": [
+        1.0,
+        -1.0
+      ],
+      "blocked_updates_by_axis": [
+        0,
+        6
+      ],
+      "next_physical_xy": [
+        2.500000000000001,
+        1.0999999999999996
+      ],
+      "next_emitted_xy": [
+        2.5,
+        1.100000023841858
+      ],
+      "hazard_physical": false,
+      "hazard_emitted": false,
+      "native_dead_after": false,
+      "native_reward_discarded": 0.0
+    },
+    {
+      "case": "hazard_entry",
+      "bits": [
+        false,
+        false,
+        false
+      ],
+      "start_physical_xy": [
+        2.4,
+        3.5
+      ],
+      "action": [
+        0.8,
+        0.0
+      ],
+      "motion_noise": [
+        0.00802757948187339,
+        -0.0033868101689000225
+      ],
+      "clipped_noisy_action": [
+        0.8080275794818734,
+        -0.0033868101689000225
+      ],
+      "blocked_updates_by_axis": [
+        0,
+        0
+      ],
+      "next_physical_xy": [
+        3.2080275794818713,
+        3.4966131898310984
+      ],
+      "next_emitted_xy": [
+        3.2080276012420654,
+        3.4966132640838623
+      ],
+      "hazard_physical": true,
+      "hazard_emitted": true,
+      "native_dead_after": false,
+      "native_reward_discarded": 0.0
+    },
+    {
+      "case": "hazard_entry",
+      "bits": [
+        true,
+        true,
+        true
+      ],
+      "start_physical_xy": [
+        2.4,
+        3.5
+      ],
+      "action": [
+        0.8,
+        0.0
+      ],
+      "motion_noise": [
+        0.00802757948187339,
+        -0.0033868101689000225
+      ],
+      "clipped_noisy_action": [
+        0.8080275794818734,
+        -0.0033868101689000225
+      ],
+      "blocked_updates_by_axis": [
+        0,
+        0
+      ],
+      "next_physical_xy": [
+        3.2080275794818713,
+        3.4966131898310984
+      ],
+      "next_emitted_xy": [
+        3.2080276012420654,
+        3.4966132640838623
+      ],
+      "hazard_physical": true,
+      "hazard_emitted": true,
+      "native_dead_after": true,
+      "native_reward_discarded": 0.0
+    },
+    {
+      "case": "hazard_exit",
+      "bits": [
+        false,
+        false,
+        false
+      ],
+      "start_physical_xy": [
+        5.6,
+        3.5
+      ],
+      "action": [
+        0.8,
+        0.0
+      ],
+      "motion_noise": [
+        0.0027277340475765784,
+        0.013008275763103913
+      ],
+      "clipped_noisy_action": [
+        0.8027277340475766,
+        0.013008275763103913
+      ],
+      "blocked_updates_by_axis": [
+        0,
+        0
+      ],
+      "next_physical_xy": [
+        6.402727734047579,
+        3.5130082757631023
+      ],
+      "next_emitted_xy": [
+        6.4027276039123535,
+        3.5130083560943604
+      ],
+      "hazard_physical": false,
+      "hazard_emitted": false,
+      "native_dead_after": false,
+      "native_reward_discarded": 0.0
+    },
+    {
+      "case": "hazard_exit",
+      "bits": [
+        true,
+        true,
+        true
+      ],
+      "start_physical_xy": [
+        5.6,
+        3.5
+      ],
+      "action": [
+        0.8,
+        0.0
+      ],
+      "motion_noise": [
+        0.0027277340475765784,
+        0.013008275763103913
+      ],
+      "clipped_noisy_action": [
+        0.8027277340475766,
+        0.013008275763103913
+      ],
+      "blocked_updates_by_axis": [
+        0,
+        0
+      ],
+      "next_physical_xy": [
+        6.402727734047579,
+        3.5130082757631023
+      ],
+      "next_emitted_xy": [
+        6.4027276039123535,
+        3.5130083560943604
+      ],
+      "hazard_physical": false,
+      "hazard_emitted": false,
+      "native_dead_after": false,
+      "native_reward_discarded": 0.0
+    },
+    {
+      "case": "fatal_incoming_cell_1",
+      "bits": [
+        false,
+        false,
+        false
+      ],
+      "start_physical_xy": [
+        3.6,
+        3.5
+      ],
+      "action": [
+        0.8,
+        0.0
+      ],
+      "motion_noise": [
+        -0.0003392790655436064,
+        -0.005083365785215511
+      ],
+      "clipped_noisy_action": [
+        0.7996607209344564,
+        -0.005083365785215511
+      ],
+      "blocked_updates_by_axis": [
+        0,
+        0
+      ],
+      "next_physical_xy": [
+        4.399660720934456,
+        3.4949166342147855
+      ],
+      "next_emitted_xy": [
+        4.399660587310791,
+        3.4949166774749756
+      ],
+      "hazard_physical": true,
+      "hazard_emitted": true,
+      "native_dead_after": false,
+      "native_reward_discarded": 0.0
+    },
+    {
+      "case": "fatal_incoming_cell_1",
+      "bits": [
+        true,
+        true,
+        true
+      ],
+      "start_physical_xy": [
+        3.6,
+        3.5
+      ],
+      "action": [
+        0.8,
+        0.0
+      ],
+      "motion_noise": [
+        -0.0003392790655436064,
+        -0.005083365785215511
+      ],
+      "clipped_noisy_action": [
+        0.7996607209344564,
+        -0.005083365785215511
+      ],
+      "blocked_updates_by_axis": [
+        0,
+        0
+      ],
+      "next_physical_xy": [
+        4.399660720934456,
+        3.4949166342147855
+      ],
+      "next_emitted_xy": [
+        4.399660587310791,
+        3.4949166774749756
+      ],
+      "hazard_physical": true,
+      "hazard_emitted": true,
+      "native_dead_after": true,
+      "native_reward_discarded": 0.0
+    },
+    {
+      "case": "outer_boundary",
+      "bits": [
+        false,
+        false,
+        false
+      ],
+      "start_physical_xy": [
+        0.05,
+        3.5
+      ],
+      "action": [
+        -1.0,
+        0.0
+      ],
+      "motion_noise": [
+        0.0011842256699405784,
+        0.008250673300947635
+      ],
+      "clipped_noisy_action": [
+        -0.9988157743300594,
+        0.008250673300947635
+      ],
+      "blocked_updates_by_axis": [
+        10,
+        0
+      ],
+      "next_physical_xy": [
+        0.05,
+        3.508250673300947
+      ],
+      "next_emitted_xy": [
+        0.05000000074505806,
+        3.5082507133483887
+      ],
+      "hazard_physical": false,
+      "hazard_emitted": false,
+      "native_dead_after": false,
+      "native_reward_discarded": 0.0
+    },
+    {
+      "case": "outer_boundary",
+      "bits": [
+        true,
+        true,
+        true
+      ],
+      "start_physical_xy": [
+        0.05,
+        3.5
+      ],
+      "action": [
+        -1.0,
+        0.0
+      ],
+      "motion_noise": [
+        0.0011842256699405784,
+        0.008250673300947635
+      ],
+      "clipped_noisy_action": [
+        -0.9988157743300594,
+        0.008250673300947635
+      ],
+      "blocked_updates_by_axis": [
+        10,
+        0
+      ],
+      "next_physical_xy": [
+        0.05,
+        3.508250673300947
+      ],
+      "next_emitted_xy": [
+        0.05000000074505806,
+        3.5082507133483887
+      ],
+      "hazard_physical": false,
+      "hazard_emitted": false,
+      "native_dead_after": false,
+      "native_reward_discarded": 0.0
+    }
+  ],
+  "multistep_sequences": [
+    {
+      "sequence": "direct_hazard_traversal",
+      "records": [
+        {
+          "step": 0,
+          "action": [
+            1.0,
+            0.0
+          ],
+          "motion_noise": [
+            0.009384888530669176,
+            -0.010102246468594216
+          ],
+          "clipped_noisy_action": [
+            1.0,
+            -0.010102246468594216
+          ],
+          "blocked_updates_by_axis": [
+            0,
+            0
+          ],
+          "physical_xy": [
+            1.5000000000000002,
+            3.489897753531407
+          ],
+          "f4": [
+            1.5,
+            3.4898977279663086,
+            0.5,
+            3.5,
+            0.5,
+            3.5,
+            0.5,
+            3.5
+          ],
+          "native_reward_discarded": 0.0
+        },
+        {
+          "step": 1,
+          "action": [
+            1.0,
+            0.0
+          ],
+          "motion_noise": [
+            -0.009909669466823517,
+            -0.007120541710696993
+          ],
+          "clipped_noisy_action": [
+            0.9900903305331765,
+            -0.007120541710696993
+          ],
+          "blocked_updates_by_axis": [
+            0,
+            0
+          ],
+          "physical_xy": [
+            2.490090330533176,
+            3.482777211820708
+          ],
+          "f4": [
+            2.4900903701782227,
+            3.4827771186828613,
+            1.5,
+            3.4898977279663086,
+            0.5,
+            3.5,
+            0.5,
+            3.5
+          ],
+          "native_reward_discarded": 0.0
+        },
+        {
+          "step": 2,
+          "action": [
+            1.0,
+            0.0
+          ],
+          "motion_noise": [
+            0.022287298463606872,
+            0.0072833685629627035
+          ],
+          "clipped_noisy_action": [
+            1.0,
+            0.0072833685629627035
+          ],
+          "blocked_updates_by_axis": [
+            0,
+            0
+          ],
+          "physical_xy": [
+            3.4900903305331767,
+            3.4900605803836706
+          ],
+          "f4": [
+            3.4900903701782227,
+            3.490060567855835,
+            2.4900903701782227,
+            3.4827771186828613,
+            1.5,
+            3.4898977279663086,
+            0.5,
+            3.5
+          ],
+          "native_reward_discarded": 0.0
+        },
+        {
+          "step": 3,
+          "action": [
+            1.0,
+            0.0
+          ],
+          "motion_noise": [
+            -0.010924629446074571,
+            0.008996477773897124
+          ],
+          "clipped_noisy_action": [
+            0.9890753705539255,
+            0.008996477773897124
+          ],
+          "blocked_updates_by_axis": [
+            0,
+            0
+          ],
+          "physical_xy": [
+            4.479165701087103,
+            3.49905705815757
+          ],
+          "f4": [
+            4.479165554046631,
+            3.4990570545196533,
+            3.4900903701782227,
+            3.490060567855835,
+            2.4900903701782227,
+            3.4827771186828613,
+            1.5,
+            3.4898977279663086
+          ],
+          "native_reward_discarded": 0.0
+        },
+        {
+          "step": 4,
+          "action": [
+            1.0,
+            0.0
+          ],
+          "motion_noise": [
+            0.002119414177020527,
+            -0.019235142520655932
+          ],
+          "clipped_noisy_action": [
+            1.0,
+            -0.019235142520655932
+          ],
+          "blocked_updates_by_axis": [
+            0,
+            0
+          ],
+          "physical_xy": [
+            5.4791657010870995,
+            3.479821915636915
+          ],
+          "f4": [
+            5.479165554046631,
+            3.4798219203948975,
+            4.479165554046631,
+            3.4990570545196533,
+            3.4900903701782227,
+            3.490060567855835,
+            2.4900903701782227,
+            3.4827771186828613
+          ],
+          "native_reward_discarded": 0.0
+        },
+        {
+          "step": 5,
+          "action": [
+            1.0,
+            0.0
+          ],
+          "motion_noise": [
+            0.015428789523513111,
+            0.0016214059572509253
+          ],
+          "clipped_noisy_action": [
+            1.0,
+            0.0016214059572509253
+          ],
+          "blocked_updates_by_axis": [
+            0,
+            0
+          ],
+          "physical_xy": [
+            6.479165701087096,
+            3.481443321594168
+          ],
+          "f4": [
+            6.479165554046631,
+            3.481443405151367,
+            5.479165554046631,
+            3.4798219203948975,
+            4.479165554046631,
+            3.4990570545196533,
+            3.4900903701782227,
+            3.490060567855835
+          ],
+          "native_reward_discarded": 0.0
+        },
+        {
+          "step": 6,
+          "action": [
+            1.0,
+            0.0
+          ],
+          "motion_noise": [
+            -0.005697801370191395,
+            0.0020119346232447847
+          ],
+          "clipped_noisy_action": [
+            0.9943021986298086,
+            0.0020119346232447847
+          ],
+          "blocked_updates_by_axis": [
+            0,
+            0
+          ],
+          "physical_xy": [
+            7.473467899716907,
+            3.483455256217413
+          ],
+          "f4": [
+            7.473467826843262,
+            3.483455181121826,
+            6.479165554046631,
+            3.481443405151367,
+            5.479165554046631,
+            3.4798219203948975,
+            4.479165554046631,
+            3.4990570545196533
+          ],
+          "native_reward_discarded": 1.0
+        },
+        {
+          "step": 7,
+          "action": [
+            1.0,
+            0.0
+          ],
+          "motion_noise": [
+            0.0007314000490234489,
+            -0.00949155610899256
+          ],
+          "clipped_noisy_action": [
+            1.0,
+            -0.00949155610899256
+          ],
+          "blocked_updates_by_axis": [
+            0,
+            0
+          ],
+          "physical_xy": [
+            8.473467899716903,
+            3.4739637001084214
+          ],
+          "f4": [
+            8.473467826843262,
+            3.473963737487793,
+            7.473467826843262,
+            3.483455181121826,
+            6.479165554046631,
+            3.481443405151367,
+            5.479165554046631,
+            3.4798219203948975
+          ],
+          "native_reward_discarded": 1.0
+        }
+      ]
+    },
+    {
+      "sequence": "lower_route_and_history",
+      "records": [
+        {
+          "step": 0,
+          "action": [
+            0.0,
+            -1.0
+          ],
+          "motion_noise": [
+            0.005041408277671121,
+            0.001884118540517593
+          ],
+          "clipped_noisy_action": [
+            0.005041408277671121,
+            -0.9981158814594824
+          ],
+          "blocked_updates_by_axis": [
+            0,
+            0
+          ],
+          "physical_xy": [
+            1.5050414082776706,
+            2.5018841185405174
+          ],
+          "f4": [
+            1.5050413608551025,
+            2.5018842220306396,
+            1.5,
+            3.5,
+            1.5,
+            3.5,
+            1.5,
+            3.5
+          ],
+          "native_reward_discarded": 0.0
+        },
+        {
+          "step": 1,
+          "action": [
+            0.0,
+            -1.0
+          ],
+          "motion_noise": [
+            -0.02569666012471091,
+            0.007976745761877414
+          ],
+          "clipped_noisy_action": [
+            -0.02569666012471091,
+            -0.9920232542381225
+          ],
+          "blocked_updates_by_axis": [
+            0,
+            0
+          ],
+          "physical_xy": [
+            1.4793447481529607,
+            1.5098608643023939
+          ],
+          "f4": [
+            1.4793447256088257,
+            1.509860873222351,
+            1.5050413608551025,
+            2.5018842220306396,
+            1.5,
+            3.5,
+            1.5,
+            3.5
+          ],
+          "native_reward_discarded": 0.0
+        },
+        {
+          "step": 2,
+          "action": [
+            1.0,
+            0.0
+          ],
+          "motion_noise": [
+            0.0034329281271369607,
+            -0.00957202970498106
+          ],
+          "clipped_noisy_action": [
+            1.0,
+            -0.00957202970498106
+          ],
+          "blocked_updates_by_axis": [
+            0,
+            0
+          ],
+          "physical_xy": [
+            2.4793447481529616,
+            1.5002888345974132
+          ],
+          "f4": [
+            2.4793448448181152,
+            1.5002888441085815,
+            1.4793447256088257,
+            1.509860873222351,
+            1.5050413608551025,
+            2.5018842220306396,
+            1.5,
+            3.5
+          ],
+          "native_reward_discarded": 0.0
+        },
+        {
+          "step": 3,
+          "action": [
+            1.0,
+            0.0
+          ],
+          "motion_noise": [
+            -0.00024318411675439266,
+            -0.00034693904883093327
+          ],
+          "clipped_noisy_action": [
+            0.9997568158832456,
+            -0.00034693904883093327
+          ],
+          "blocked_updates_by_axis": [
+            0,
+            0
+          ],
+          "physical_xy": [
+            3.4791015640362075,
+            1.4999418955485813
+          ],
+          "f4": [
+            3.4791016578674316,
+            1.4999419450759888,
+            2.4793448448181152,
+            1.5002888441085815,
+            1.4793447256088257,
+            1.509860873222351,
+            1.5050413608551025,
+            2.5018842220306396
+          ],
+          "native_reward_discarded": 0.0
+        },
+        {
+          "step": 4,
+          "action": [
+            1.0,
+            0.0
+          ],
+          "motion_noise": [
+            -0.00437879899316349,
+            -0.0012252108969666017
+          ],
+          "clipped_noisy_action": [
+            0.9956212010068365,
+            -0.0012252108969666017
+          ],
+          "blocked_updates_by_axis": [
+            0,
+            0
+          ],
+          "physical_xy": [
+            4.474722765043045,
+            1.4987166846516145
+          ],
+          "f4": [
+            4.474722862243652,
+            1.4987167119979858,
+            3.4791016578674316,
+            1.4999419450759888,
+            2.4793448448181152,
+            1.5002888441085815,
+            1.4793447256088257,
+            1.509860873222351
+          ],
+          "native_reward_discarded": 0.0
+        },
+        {
+          "step": 5,
+          "action": [
+            1.0,
+            0.0
+          ],
+          "motion_noise": [
+            0.0005903324992866819,
+            -0.00011200701361167296
+          ],
+          "clipped_noisy_action": [
+            1.0,
+            -0.00011200701361167296
+          ],
+          "blocked_updates_by_axis": [
+            0,
+            0
+          ],
+          "physical_xy": [
+            5.474722765043041,
+            1.4986046776380038
+          ],
+          "f4": [
+            5.474722862243652,
+            1.498604655265808,
+            4.474722862243652,
+            1.4987167119979858,
+            3.4791016578674316,
+            1.4999419450759888,
+            2.4793448448181152,
+            1.5002888441085815
+          ],
+          "native_reward_discarded": 0.0
+        },
+        {
+          "step": 6,
+          "action": [
+            1.0,
+            0.0
+          ],
+          "motion_noise": [
+            0.009664619287582114,
+            0.0078093616827617845
+          ],
+          "clipped_noisy_action": [
+            1.0,
+            0.0078093616827617845
+          ],
+          "blocked_updates_by_axis": [
+            0,
+            0
+          ],
+          "physical_xy": [
+            6.474722765043038,
+            1.5064140393207661
+          ],
+          "f4": [
+            6.474722862243652,
+            1.5064140558242798,
+            5.474722862243652,
+            1.498604655265808,
+            4.474722862243652,
+            1.4987167119979858,
+            3.4791016578674316,
+            1.4999419450759888
+          ],
+          "native_reward_discarded": 0.0
+        },
+        {
+          "step": 7,
+          "action": [
+            1.0,
+            0.0
+          ],
+          "motion_noise": [
+            -0.002871506014810721,
+            -0.0312071471838857
+          ],
+          "clipped_noisy_action": [
+            0.9971284939851893,
+            -0.0312071471838857
+          ],
+          "blocked_updates_by_axis": [
+            0,
+            0
+          ],
+          "physical_xy": [
+            7.471851259028226,
+            1.4752068921368813
+          ],
+          "f4": [
+            7.471851348876953,
+            1.4752068519592285,
+            6.474722862243652,
+            1.5064140558242798,
+            5.474722862243652,
+            1.498604655265808,
+            4.474722862243652,
+            1.4987167119979858
+          ],
+          "native_reward_discarded": 0.0
+        },
+        {
+          "step": 8,
+          "action": [
+            0.0,
+            1.0
+          ],
+          "motion_noise": [
+            -0.001091326885688531,
+            0.00995314675201041
+          ],
+          "clipped_noisy_action": [
+            -0.001091326885688531,
+            1.0
+          ],
+          "blocked_updates_by_axis": [
+            0,
+            0
+          ],
+          "physical_xy": [
+            7.470759932142539,
+            2.475206892136882
+          ],
+          "f4": [
+            7.470759868621826,
+            2.4752068519592285,
+            7.471851348876953,
+            1.4752068519592285,
+            6.474722862243652,
+            1.5064140558242798,
+            5.474722862243652,
+            1.498604655265808
+          ],
+          "native_reward_discarded": 1.0
+        },
+        {
+          "step": 9,
+          "action": [
+            0.0,
+            1.0
+          ],
+          "motion_noise": [
+            -0.006201615905819523,
+            -0.0037469444047297726
+          ],
+          "clipped_noisy_action": [
+            -0.006201615905819523,
+            0.9962530555952702
+          ],
+          "blocked_updates_by_axis": [
+            0,
+            0
+          ],
+          "physical_xy": [
+            7.464558316236716,
+            3.471459947732153
+          ],
+          "f4": [
+            7.464558124542236,
+            3.4714598655700684,
+            7.470759868621826,
+            2.4752068519592285,
+            7.471851348876953,
+            1.4752068519592285,
+            6.474722862243652,
+            1.5064140558242798
+          ],
+          "native_reward_discarded": 1.0
+        }
+      ]
+    }
+  ],
+  "all_explicit_noise_draws": [
+    [
+      -0.0012514693105789229,
+      -0.001983888396901235
+    ],
+    [
+      -0.009126259368415516,
+      0.02264399264682651
+    ],
+    [
+      -0.002187776398506775,
+      -0.014086751791325743
+    ],
+    [
+      -0.002234211890733165,
+      0.010037912495202082
+    ],
+    [
+      0.00802757948187339,
+      -0.0033868101689000225
+    ],
+    [
+      0.0027277340475765784,
+      0.013008275763103913
+    ],
+    [
+      -0.0003392790655436064,
+      -0.005083365785215511
+    ],
+    [
+      0.0011842256699405784,
+      0.008250673300947635
+    ],
+    [
+      0.009384888530669176,
+      -0.010102246468594216
+    ],
+    [
+      -0.009909669466823517,
+      -0.007120541710696993
+    ],
+    [
+      0.022287298463606872,
+      0.0072833685629627035
+    ],
+    [
+      -0.010924629446074571,
+      0.008996477773897124
+    ],
+    [
+      0.002119414177020527,
+      -0.019235142520655932
+    ],
+    [
+      0.015428789523513111,
+      0.0016214059572509253
+    ],
+    [
+      -0.005697801370191395,
+      0.0020119346232447847
+    ],
+    [
+      0.0007314000490234489,
+      -0.00949155610899256
+    ],
+    [
+      0.005041408277671121,
+      0.001884118540517593
+    ],
+    [
+      -0.02569666012471091,
+      0.007976745761877414
+    ],
+    [
+      0.0034329281271369607,
+      -0.00957202970498106
+    ],
+    [
+      -0.00024318411675439266,
+      -0.00034693904883093327
+    ],
+    [
+      -0.00437879899316349,
+      -0.0012252108969666017
+    ],
+    [
+      0.0005903324992866819,
+      -0.00011200701361167296
+    ],
+    [
+      0.009664619287582114,
+      0.0078093616827617845
+    ],
+    [
+      -0.002871506014810721,
+      -0.0312071471838857
+    ],
+    [
+      -0.001091326885688531,
+      0.00995314675201041
+    ],
+    [
+      -0.006201615905819523,
+      -0.0037469444047297726
+    ]
+  ],
+  "record_count": 34
+}

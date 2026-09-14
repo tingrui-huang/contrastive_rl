@@ -1,0 +1,1221 @@
+{
+  "metric_definitions": {
+    "hazard": "3 <= emitted_next_x < 6 and 3 <= emitted_next_y < 4",
+    "first_hazard": "first emitted hazardous landing while failed_before is false",
+    "at_risk_hazardous_opportunities": "emitted hazardous landings with failed_before false, including fatal onset",
+    "uncertainty": "2000 paired whole-native-episode/root bootstrap replicates; 64 paths per root are predictive integration"
+  },
+  "native": {
+    "reward_occurrence": {
+      "estimate": 0.296875,
+      "ci95": [
+        0.1875,
+        0.40625
+      ]
+    },
+    "failure_probability": {
+      "estimate": 0.703125,
+      "ci95": [
+        0.59375,
+        0.8125
+      ]
+    },
+    "survival_without_reward": {
+      "estimate": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ]
+    },
+    "mean_discounted_return": {
+      "estimate": 3.1361830053816986,
+      "ci95": [
+        1.9265126558964711,
+        4.419821744064569
+      ]
+    },
+    "return_conditional_on_reward": {
+      "estimate": 10.56398486023309,
+      "ci95": [
+        9.282213583373988,
+        11.60730568158784
+      ]
+    },
+    "onset_time_zero_based_conditional_on_failure": {
+      "estimate": 4.911111111111111,
+      "ci95": [
+        3.690436507936508,
+        6.595851063829787
+      ]
+    },
+    "first_hazard_probability": {
+      "estimate": 0.859375,
+      "ci95": [
+        0.765625,
+        0.9375
+      ]
+    },
+    "first_hazard_time_zero_based_conditional": {
+      "estimate": 3.2545454545454544,
+      "ci95": [
+        2.4,
+        4.660863095238095
+      ]
+    },
+    "first_hazard_mean_x": {
+      "estimate": 3.4568861918015914,
+      "ci95": [
+        3.407639428326836,
+        3.5082191141878627
+      ]
+    },
+    "first_hazard_mean_y": {
+      "estimate": 3.4102797594937413,
+      "ci95": [
+        3.323139377576964,
+        3.4943319305386207
+      ]
+    },
+    "at_risk_hazardous_opportunities": {
+      "estimate": 2.25,
+      "ci95": [
+        1.796875,
+        2.765625
+      ]
+    }
+  },
+  "seeds": {
+    "s0": {
+      "saved_repaired_position_repaired_head": {
+        "reward_occurrence": {
+          "estimate": 0.292236328125,
+          "ci95": [
+            0.27783203125,
+            0.30517578125
+          ]
+        },
+        "failure_probability": {
+          "estimate": 0.71533203125,
+          "ci95": [
+            0.703125,
+            0.72900390625
+          ]
+        },
+        "survival_without_reward": {
+          "estimate": 0.001220703125,
+          "ci95": [
+            0.000244140625,
+            0.002685546875
+          ]
+        },
+        "mean_discounted_return": {
+          "estimate": 3.358263416659611,
+          "ci95": [
+            3.1844221726521935,
+            3.5197085710864484
+          ]
+        },
+        "return_conditional_on_reward": {
+          "estimate": 11.491601457970283,
+          "ci95": [
+            11.32277692501757,
+            11.648478610678437
+          ]
+        },
+        "onset_time_zero_based_conditional_on_failure": {
+          "estimate": 4.8914675767918085,
+          "ci95": [
+            4.785046815198971,
+            4.996960111806443
+          ]
+        },
+        "first_hazard_probability": {
+          "estimate": 0.98095703125,
+          "ci95": [
+            0.976806640625,
+            0.98486328125
+          ]
+        },
+        "first_hazard_time_zero_based_conditional": {
+          "estimate": 2.9133897461423595,
+          "ci95": [
+            2.850594083708273,
+            2.973403593602986
+          ]
+        },
+        "first_hazard_mean_x": {
+          "estimate": 3.382813156986189,
+          "ci95": [
+            3.3757101238277705,
+            3.3900659739014327
+          ]
+        },
+        "first_hazard_mean_y": {
+          "estimate": 3.5281327866155037,
+          "ci95": [
+            3.522073071493359,
+            3.534378999825075
+          ]
+        },
+        "at_risk_hazardous_opportunities": {
+          "estimate": 2.87841796875,
+          "ci95": [
+            2.8105224609375,
+            2.946051025390625
+          ]
+        }
+      },
+      "oracle_motion_repaired_head": {
+        "reward_occurrence": {
+          "estimate": 0.34130859375,
+          "ci95": [
+            0.326171875,
+            0.35546875
+          ]
+        },
+        "failure_probability": {
+          "estimate": 0.6630859375,
+          "ci95": [
+            0.648919677734375,
+            0.67822265625
+          ]
+        },
+        "survival_without_reward": {
+          "estimate": 0.000244140625,
+          "ci95": [
+            0.0,
+            0.000732421875
+          ]
+        },
+        "mean_discounted_return": {
+          "estimate": 3.748286683126935,
+          "ci95": [
+            3.5771532414069953,
+            3.91115587287386
+          ]
+        },
+        "return_conditional_on_reward": {
+          "estimate": 10.982104572956484,
+          "ci95": [
+            10.846047353257726,
+            11.121969487371429
+          ]
+        },
+        "onset_time_zero_based_conditional_on_failure": {
+          "estimate": 4.640279823269514,
+          "ci95": [
+            4.508581217414855,
+            4.771209777133029
+          ]
+        },
+        "first_hazard_probability": {
+          "estimate": 0.894287109375,
+          "ci95": [
+            0.884033203125,
+            0.9040588378906249
+          ]
+        },
+        "first_hazard_time_zero_based_conditional": {
+          "estimate": 3.1354081354081353,
+          "ci95": [
+            3.043582024143581,
+            3.22582005505903
+          ]
+        },
+        "first_hazard_mean_x": {
+          "estimate": 3.4383646147256988,
+          "ci95": [
+            3.4317054178713744,
+            3.445428199718073
+          ]
+        },
+        "first_hazard_mean_y": {
+          "estimate": 3.468554614184497,
+          "ci95": [
+            3.457966994771787,
+            3.4799535011513925
+          ]
+        },
+        "at_risk_hazardous_opportunities": {
+          "estimate": 2.297607421875,
+          "ci95": [
+            2.23583984375,
+            2.35546875
+          ]
+        }
+      },
+      "oracle_minus_saved_learned": {
+        "reward_occurrence": {
+          "estimate": 0.049072265625,
+          "ci95": [
+            0.032952880859375,
+            0.06445922851562497
+          ]
+        },
+        "failure_probability": {
+          "estimate": -0.05224609375,
+          "ci95": [
+            -0.0673828125,
+            -0.037109375
+          ]
+        },
+        "survival_without_reward": {
+          "estimate": -0.0009765625,
+          "ci95": [
+            -0.002197265625,
+            0.0
+          ]
+        },
+        "mean_discounted_return": {
+          "estimate": 0.390023266467324,
+          "ci95": [
+            0.22159675872699153,
+            0.5514541492888383
+          ]
+        },
+        "return_conditional_on_reward": {
+          "estimate": -0.5094968850137995,
+          "ci95": [
+            -0.6495705873032982,
+            -0.3516068575085246
+          ]
+        },
+        "onset_time_zero_based_conditional_on_failure": {
+          "estimate": -0.25118775352229417,
+          "ci95": [
+            -0.3873122385886849,
+            -0.11241759290625292
+          ]
+        },
+        "first_hazard_probability": {
+          "estimate": -0.086669921875,
+          "ci95": [
+            -0.09716796875,
+            -0.076416015625
+          ]
+        },
+        "first_hazard_time_zero_based_conditional": {
+          "estimate": 0.22201838926577588,
+          "ci95": [
+            0.140154916034743,
+            0.3067762609391594
+          ]
+        },
+        "first_hazard_mean_x": {
+          "estimate": 0.05555145773950976,
+          "ci95": [
+            0.04695593857838305,
+            0.06452249209980407
+          ]
+        },
+        "first_hazard_mean_y": {
+          "estimate": -0.05957817243100649,
+          "ci95": [
+            -0.06723119058006002,
+            -0.05165351190067002
+          ]
+        },
+        "at_risk_hazardous_opportunities": {
+          "estimate": -0.580810546875,
+          "ci95": [
+            -0.648681640625,
+            -0.5112243652343751
+          ]
+        }
+      },
+      "oracle_minus_native": {
+        "reward_occurrence": {
+          "estimate": 0.04443359375,
+          "ci95": [
+            -0.06884765625,
+            0.15576171875
+          ]
+        },
+        "failure_probability": {
+          "estimate": -0.0400390625,
+          "ci95": [
+            -0.15137939453125,
+            0.07252197265624993
+          ]
+        },
+        "survival_without_reward": {
+          "estimate": 0.000244140625,
+          "ci95": [
+            0.0,
+            0.000732421875
+          ]
+        },
+        "mean_discounted_return": {
+          "estimate": 0.6121036777452362,
+          "ci95": [
+            -0.6839884427151325,
+            1.83420221500178
+          ]
+        },
+        "return_conditional_on_reward": {
+          "estimate": 0.418119712723394,
+          "ci95": [
+            -0.682018013010296,
+            1.7359744167664686
+          ]
+        },
+        "onset_time_zero_based_conditional_on_failure": {
+          "estimate": -0.27083128784159705,
+          "ci95": [
+            -1.9179030119248188,
+            0.9367537341610902
+          ]
+        },
+        "first_hazard_probability": {
+          "estimate": 0.034912109375,
+          "ci95": [
+            -0.042486572265625,
+            0.1264831542968749
+          ]
+        },
+        "first_hazard_time_zero_based_conditional": {
+          "estimate": -0.11913731913731906,
+          "ci95": [
+            -1.4937400201839681,
+            0.741292514906129
+          ]
+        },
+        "first_hazard_mean_x": {
+          "estimate": -0.018521577075892637,
+          "ci95": [
+            -0.0695794908637531,
+            0.033890626553391257
+          ]
+        },
+        "first_hazard_mean_y": {
+          "estimate": 0.058274854690755884,
+          "ci95": [
+            -0.03044023944324652,
+            0.14812706337182863
+          ]
+        },
+        "at_risk_hazardous_opportunities": {
+          "estimate": 0.047607421875,
+          "ci95": [
+            -0.465179443359375,
+            0.5015441894531245
+          ]
+        }
+      },
+      "saved_learned_absolute_native_error": {
+        "reward_occurrence": {
+          "estimate": 0.004638671875,
+          "ci95": [
+            0.001953125,
+            0.12574462890624993
+          ]
+        },
+        "failure_probability": {
+          "estimate": 0.01220703125,
+          "ci95": [
+            0.001708984375,
+            0.1291687011718749
+          ]
+        },
+        "survival_without_reward": {
+          "estimate": 0.001220703125,
+          "ci95": [
+            0.000244140625,
+            0.002685546875
+          ]
+        },
+        "mean_discounted_return": {
+          "estimate": 0.22208041127791223,
+          "ci95": [
+            0.024934505024013377,
+            1.492174589824189
+          ]
+        },
+        "return_conditional_on_reward": {
+          "estimate": 0.9276165977371935,
+          "ci95": [
+            0.06413231714797672,
+            2.211503393519141
+          ]
+        },
+        "onset_time_zero_based_conditional_on_failure": {
+          "estimate": 0.01964353431930288,
+          "ci95": [
+            0.02459400004746204,
+            1.6971239057035974
+          ]
+        },
+        "first_hazard_probability": {
+          "estimate": 0.12158203125,
+          "ci95": [
+            0.043206787109375,
+            0.214599609375
+          ]
+        },
+        "first_hazard_time_zero_based_conditional": {
+          "estimate": 0.34115570840309495,
+          "ci95": [
+            0.03942685430940207,
+            1.7541863197867613
+          ]
+        },
+        "first_hazard_mean_x": {
+          "estimate": 0.0740730348154024,
+          "ci95": [
+            0.0228619928374476,
+            0.12569008668263043
+          ]
+        },
+        "first_hazard_mean_y": {
+          "estimate": 0.11785302712176238,
+          "ci95": [
+            0.03192592184926889,
+            0.2062322770301913
+          ]
+        },
+        "at_risk_hazardous_opportunities": {
+          "estimate": 0.62841796875,
+          "ci95": [
+            0.134228515625,
+            1.0612731933593738
+          ]
+        }
+      },
+      "oracle_absolute_native_error": {
+        "reward_occurrence": {
+          "estimate": 0.04443359375,
+          "ci95": [
+            0.00244140625,
+            0.1557800292968749
+          ]
+        },
+        "failure_probability": {
+          "estimate": 0.0400390625,
+          "ci95": [
+            0.001953125,
+            0.15186767578124993
+          ]
+        },
+        "survival_without_reward": {
+          "estimate": 0.000244140625,
+          "ci95": [
+            0.0,
+            0.000732421875
+          ]
+        },
+        "mean_discounted_return": {
+          "estimate": 0.6121036777452362,
+          "ci95": [
+            0.02947920432538489,
+            1.83420221500178
+          ]
+        },
+        "return_conditional_on_reward": {
+          "estimate": 0.418119712723394,
+          "ci95": [
+            0.025414438879671587,
+            1.7359744167664686
+          ]
+        },
+        "onset_time_zero_based_conditional_on_failure": {
+          "estimate": 0.27083128784159705,
+          "ci95": [
+            0.03334390622890526,
+            1.9179030119248188
+          ]
+        },
+        "first_hazard_probability": {
+          "estimate": 0.034912109375,
+          "ci95": [
+            0.001708984375,
+            0.1264831542968749
+          ]
+        },
+        "first_hazard_time_zero_based_conditional": {
+          "estimate": 0.11913731913731906,
+          "ci95": [
+            0.01690882676563534,
+            1.4937400201839655
+          ]
+        },
+        "first_hazard_mean_x": {
+          "estimate": 0.018521577075892637,
+          "ci95": [
+            0.0009285516691189711,
+            0.06957949086375297
+          ]
+        },
+        "first_hazard_mean_y": {
+          "estimate": 0.058274854690755884,
+          "ci95": [
+            0.004078099241532573,
+            0.14812706337182863
+          ]
+        },
+        "at_risk_hazardous_opportunities": {
+          "estimate": 0.047607421875,
+          "ci95": [
+            0.006829833984375,
+            0.5578979492187498
+          ]
+        }
+      },
+      "oracle_minus_learned_absolute_error": {
+        "reward_occurrence": {
+          "estimate": 0.039794921875,
+          "ci95": [
+            -0.05712890625,
+            0.062744140625
+          ],
+          "negative_means_oracle_is_closer": true
+        },
+        "failure_probability": {
+          "estimate": 0.02783203125,
+          "ci95": [
+            -0.060546875,
+            0.06470336914062497
+          ],
+          "negative_means_oracle_is_closer": true
+        },
+        "survival_without_reward": {
+          "estimate": -0.0009765625,
+          "ci95": [
+            -0.002197265625,
+            0.0
+          ],
+          "negative_means_oracle_is_closer": true
+        },
+        "mean_discounted_return": {
+          "estimate": 0.390023266467324,
+          "ci95": [
+            -0.4637228996061822,
+            0.5401078538510773
+          ],
+          "negative_means_oracle_is_closer": true
+        },
+        "return_conditional_on_reward": {
+          "estimate": -0.5094968850137995,
+          "ci95": [
+            -0.6408876678350612,
+            0.5149962494472644
+          ],
+          "negative_means_oracle_is_closer": true
+        },
+        "onset_time_zero_based_conditional_on_failure": {
+          "estimate": 0.25118775352229417,
+          "ci95": [
+            -0.35634581271181637,
+            0.3618445728235391
+          ],
+          "negative_means_oracle_is_closer": true
+        },
+        "first_hazard_probability": {
+          "estimate": -0.086669921875,
+          "ci95": [
+            -0.096197509765625,
+            -0.0004821777343750333
+          ],
+          "negative_means_oracle_is_closer": true
+        },
+        "first_hazard_time_zero_based_conditional": {
+          "estimate": -0.22201838926577588,
+          "ci95": [
+            -0.29674617081532945,
+            0.2769366408041142
+          ],
+          "negative_means_oracle_is_closer": true
+        },
+        "first_hazard_mean_x": {
+          "estimate": -0.05555145773950976,
+          "ci95": [
+            -0.06399129231648351,
+            0.008181445341021113
+          ],
+          "negative_means_oracle_is_closer": true
+        },
+        "first_hazard_mean_y": {
+          "estimate": -0.05957817243100649,
+          "ci95": [
+            -0.06683623896167502,
+            -0.0022590948927801308
+          ],
+          "negative_means_oracle_is_closer": true
+        },
+        "at_risk_hazardous_opportunities": {
+          "estimate": -0.580810546875,
+          "ci95": [
+            -0.635748291015625,
+            0.33477783203124967
+          ],
+          "negative_means_oracle_is_closer": true
+        }
+      }
+    },
+    "s1": {
+      "saved_repaired_position_repaired_head": {
+        "reward_occurrence": {
+          "estimate": 0.2890625,
+          "ci95": [
+            0.274658203125,
+            0.302734375
+          ]
+        },
+        "failure_probability": {
+          "estimate": 0.711181640625,
+          "ci95": [
+            0.6982421875,
+            0.724853515625
+          ]
+        },
+        "survival_without_reward": {
+          "estimate": 0.009033203125,
+          "ci95": [
+            0.005859375,
+            0.0126953125
+          ]
+        },
+        "mean_discounted_return": {
+          "estimate": 3.3788913769658393,
+          "ci95": [
+            3.2073938375946454,
+            3.541680967914772
+          ]
+        },
+        "return_conditional_on_reward": {
+          "estimate": 11.689137742326066,
+          "ci95": [
+            11.563666584611182,
+            11.807515784632528
+          ]
+        },
+        "onset_time_zero_based_conditional_on_failure": {
+          "estimate": 5.396841743906625,
+          "ci95": [
+            5.2386314840519885,
+            5.550880335008478
+          ]
+        },
+        "first_hazard_probability": {
+          "estimate": 0.989501953125,
+          "ci95": [
+            0.986083984375,
+            0.99267578125
+          ]
+        },
+        "first_hazard_time_zero_based_conditional": {
+          "estimate": 3.1095484826054776,
+          "ci95": [
+            3.006664897677941,
+            3.2128637347091846
+          ]
+        },
+        "first_hazard_mean_x": {
+          "estimate": 3.397849251657482,
+          "ci95": [
+            3.3900629168092205,
+            3.406002482818296
+          ]
+        },
+        "first_hazard_mean_y": {
+          "estimate": 3.5226448185203285,
+          "ci95": [
+            3.51707852261811,
+            3.52818065080901
+          ]
+        },
+        "at_risk_hazardous_opportunities": {
+          "estimate": 2.995849609375,
+          "ci95": [
+            2.932611083984375,
+            3.065673828125
+          ]
+        }
+      },
+      "oracle_motion_repaired_head": {
+        "reward_occurrence": {
+          "estimate": 0.35498046875,
+          "ci95": [
+            0.33984375,
+            0.369873046875
+          ]
+        },
+        "failure_probability": {
+          "estimate": 0.651123046875,
+          "ci95": [
+            0.635986328125,
+            0.666259765625
+          ]
+        },
+        "survival_without_reward": {
+          "estimate": 0.000244140625,
+          "ci95": [
+            0.0,
+            0.000732421875
+          ]
+        },
+        "mean_discounted_return": {
+          "estimate": 3.901842236307857,
+          "ci95": [
+            3.7313641069977166,
+            4.073308304351303
+          ]
+        },
+        "return_conditional_on_reward": {
+          "estimate": 10.991709566181923,
+          "ci95": [
+            10.856477922540122,
+            11.131741440561148
+          ]
+        },
+        "onset_time_zero_based_conditional_on_failure": {
+          "estimate": 4.784776902887139,
+          "ci95": [
+            4.658553369500286,
+            4.912373317510447
+          ]
+        },
+        "first_hazard_probability": {
+          "estimate": 0.894287109375,
+          "ci95": [
+            0.884033203125,
+            0.9040588378906249
+          ]
+        },
+        "first_hazard_time_zero_based_conditional": {
+          "estimate": 3.1354081354081353,
+          "ci95": [
+            3.043582024143581,
+            3.22582005505903
+          ]
+        },
+        "first_hazard_mean_x": {
+          "estimate": 3.4383646147256988,
+          "ci95": [
+            3.4317054178713744,
+            3.445428199718073
+          ]
+        },
+        "first_hazard_mean_y": {
+          "estimate": 3.468554614184497,
+          "ci95": [
+            3.457966994771787,
+            3.4799535011513925
+          ]
+        },
+        "at_risk_hazardous_opportunities": {
+          "estimate": 2.36962890625,
+          "ci95": [
+            2.3134521484375,
+            2.4208984375
+          ]
+        }
+      },
+      "oracle_minus_saved_learned": {
+        "reward_occurrence": {
+          "estimate": 0.06591796875,
+          "ci95": [
+            0.049554443359375,
+            0.082763671875
+          ]
+        },
+        "failure_probability": {
+          "estimate": -0.06005859375,
+          "ci95": [
+            -0.076171875,
+            -0.04418334960937503
+          ]
+        },
+        "survival_without_reward": {
+          "estimate": -0.0087890625,
+          "ci95": [
+            -0.012451171875,
+            -0.005615234375
+          ]
+        },
+        "mean_discounted_return": {
+          "estimate": 0.5229508593420178,
+          "ci95": [
+            0.34250908723165596,
+            0.7054957520811513
+          ]
+        },
+        "return_conditional_on_reward": {
+          "estimate": -0.6974281761441432,
+          "ci95": [
+            -0.8530329482666246,
+            -0.5351997211234129
+          ]
+        },
+        "onset_time_zero_based_conditional_on_failure": {
+          "estimate": -0.6120648410194862,
+          "ci95": [
+            -0.7859286524148704,
+            -0.4411937195359242
+          ]
+        },
+        "first_hazard_probability": {
+          "estimate": -0.09521484375,
+          "ci95": [
+            -0.105718994140625,
+            -0.084228515625
+          ]
+        },
+        "first_hazard_time_zero_based_conditional": {
+          "estimate": 0.025859652802657784,
+          "ci95": [
+            -0.06834528383490272,
+            0.12574900654896512
+          ]
+        },
+        "first_hazard_mean_x": {
+          "estimate": 0.0405153630682169,
+          "ci95": [
+            0.03157125258715711,
+            0.05014501915019574
+          ]
+        },
+        "first_hazard_mean_y": {
+          "estimate": -0.05409020433583134,
+          "ci95": [
+            -0.06252102234467652,
+            -0.0454548139438266
+          ]
+        },
+        "at_risk_hazardous_opportunities": {
+          "estimate": -0.626220703125,
+          "ci95": [
+            -0.692633056640625,
+            -0.5568786621093751
+          ]
+        }
+      },
+      "oracle_minus_native": {
+        "reward_occurrence": {
+          "estimate": 0.05810546875,
+          "ci95": [
+            -0.054443359375,
+            0.16943969726562497
+          ]
+        },
+        "failure_probability": {
+          "estimate": -0.052001953125,
+          "ci95": [
+            -0.162115478515625,
+            0.05910644531249987
+          ]
+        },
+        "survival_without_reward": {
+          "estimate": 0.000244140625,
+          "ci95": [
+            0.0,
+            0.000732421875
+          ]
+        },
+        "mean_discounted_return": {
+          "estimate": 0.7656592309261585,
+          "ci95": [
+            -0.5191043343598766,
+            1.977364943988368
+          ]
+        },
+        "return_conditional_on_reward": {
+          "estimate": 0.42772470594883316,
+          "ci95": [
+            -0.6562865400097857,
+            1.735257617965382
+          ]
+        },
+        "onset_time_zero_based_conditional_on_failure": {
+          "estimate": -0.12633420822397223,
+          "ci95": [
+            -1.7934325302175012,
+            1.0873465061058338
+          ]
+        },
+        "first_hazard_probability": {
+          "estimate": 0.034912109375,
+          "ci95": [
+            -0.042486572265625,
+            0.1264831542968749
+          ]
+        },
+        "first_hazard_time_zero_based_conditional": {
+          "estimate": -0.11913731913731906,
+          "ci95": [
+            -1.4937400201839681,
+            0.741292514906129
+          ]
+        },
+        "first_hazard_mean_x": {
+          "estimate": -0.018521577075892637,
+          "ci95": [
+            -0.0695794908637531,
+            0.033890626553391257
+          ]
+        },
+        "first_hazard_mean_y": {
+          "estimate": 0.058274854690755884,
+          "ci95": [
+            -0.03044023944324652,
+            0.14812706337182863
+          ]
+        },
+        "at_risk_hazardous_opportunities": {
+          "estimate": 0.11962890625,
+          "ci95": [
+            -0.386492919921875,
+            0.5638061523437495
+          ]
+        }
+      },
+      "saved_learned_absolute_native_error": {
+        "reward_occurrence": {
+          "estimate": 0.0078125,
+          "ci95": [
+            0.001953125,
+            0.12868652343749987
+          ]
+        },
+        "failure_probability": {
+          "estimate": 0.008056640625,
+          "ci95": [
+            0.0019470214843750003,
+            0.1284362792968749
+          ]
+        },
+        "survival_without_reward": {
+          "estimate": 0.009033203125,
+          "ci95": [
+            0.005859375,
+            0.0126953125
+          ]
+        },
+        "mean_discounted_return": {
+          "estimate": 0.24270837158414071,
+          "ci95": [
+            0.020875423084096314,
+            1.5035287085526639
+          ]
+        },
+        "return_conditional_on_reward": {
+          "estimate": 1.1251528820929764,
+          "ci95": [
+            0.1386796871752318,
+            2.3880341594349614
+          ]
+        },
+        "onset_time_zero_based_conditional_on_failure": {
+          "estimate": 0.485730632795514,
+          "ci95": [
+            0.04123155719893937,
+            1.789630392677841
+          ]
+        },
+        "first_hazard_probability": {
+          "estimate": 0.130126953125,
+          "ci95": [
+            0.051513671875,
+            0.22363891601562497
+          ]
+        },
+        "first_hazard_time_zero_based_conditional": {
+          "estimate": 0.14499697193997685,
+          "ci95": [
+            0.017677531745798072,
+            1.5566068422770682
+          ]
+        },
+        "first_hazard_mean_x": {
+          "estimate": 0.05903694014410954,
+          "ci95": [
+            0.010075538975260968,
+            0.10948929508053559
+          ]
+        },
+        "first_hazard_mean_y": {
+          "estimate": 0.11236505902658722,
+          "ci95": [
+            0.025974598541060757,
+            0.20087255273183233
+          ]
+        },
+        "at_risk_hazardous_opportunities": {
+          "estimate": 0.745849609375,
+          "ci95": [
+            0.264569091796875,
+            1.1787353515624999
+          ]
+        }
+      },
+      "oracle_absolute_native_error": {
+        "reward_occurrence": {
+          "estimate": 0.05810546875,
+          "ci95": [
+            0.003173828125,
+            0.16943969726562497
+          ]
+        },
+        "failure_probability": {
+          "estimate": 0.052001953125,
+          "ci95": [
+            0.002685546875,
+            0.16211547851562497
+          ]
+        },
+        "survival_without_reward": {
+          "estimate": 0.000244140625,
+          "ci95": [
+            0.0,
+            0.000732421875
+          ]
+        },
+        "mean_discounted_return": {
+          "estimate": 0.7656592309261585,
+          "ci95": [
+            0.040918477602845026,
+            1.977364943988368
+          ]
+        },
+        "return_conditional_on_reward": {
+          "estimate": 0.42772470594883316,
+          "ci95": [
+            0.030017692592864575,
+            1.735257617965382
+          ]
+        },
+        "onset_time_zero_based_conditional_on_failure": {
+          "estimate": 0.12633420822397223,
+          "ci95": [
+            0.02347921442677068,
+            1.7934325302174987
+          ]
+        },
+        "first_hazard_probability": {
+          "estimate": 0.034912109375,
+          "ci95": [
+            0.001708984375,
+            0.1264831542968749
+          ]
+        },
+        "first_hazard_time_zero_based_conditional": {
+          "estimate": 0.11913731913731906,
+          "ci95": [
+            0.01690882676563534,
+            1.4937400201839655
+          ]
+        },
+        "first_hazard_mean_x": {
+          "estimate": 0.018521577075892637,
+          "ci95": [
+            0.0009285516691189711,
+            0.06957949086375297
+          ]
+        },
+        "first_hazard_mean_y": {
+          "estimate": 0.058274854690755884,
+          "ci95": [
+            0.004078099241532573,
+            0.14812706337182863
+          ]
+        },
+        "at_risk_hazardous_opportunities": {
+          "estimate": 0.11962890625,
+          "ci95": [
+            0.010736083984375,
+            0.5849182128906238
+          ]
+        }
+      },
+      "oracle_minus_learned_absolute_error": {
+        "reward_occurrence": {
+          "estimate": 0.05029296875,
+          "ci95": [
+            -0.0732421875,
+            0.07959594726562497
+          ],
+          "negative_means_oracle_is_closer": true
+        },
+        "failure_probability": {
+          "estimate": 0.0439453125,
+          "ci95": [
+            -0.0673828125,
+            0.07275390625
+          ],
+          "negative_means_oracle_is_closer": true
+        },
+        "survival_without_reward": {
+          "estimate": -0.0087890625,
+          "ci95": [
+            -0.012451171875,
+            -0.005615234375
+          ],
+          "negative_means_oracle_is_closer": true
+        },
+        "mean_discounted_return": {
+          "estimate": 0.5229508593420178,
+          "ci95": [
+            -0.5829478755223135,
+            0.6844572395329578
+          ],
+          "negative_means_oracle_is_closer": true
+        },
+        "return_conditional_on_reward": {
+          "estimate": -0.6974281761441432,
+          "ci95": [
+            -0.8355257250054134,
+            0.5691718366011822
+          ],
+          "negative_means_oracle_is_closer": true
+        },
+        "onset_time_zero_based_conditional_on_failure": {
+          "estimate": -0.35939642457154175,
+          "ci95": [
+            -0.7566481665570669,
+            0.7156815190843243
+          ],
+          "negative_means_oracle_is_closer": true
+        },
+        "first_hazard_probability": {
+          "estimate": -0.09521484375,
+          "ci95": [
+            -0.105224609375,
+            -0.009265136718750067
+          ],
+          "negative_means_oracle_is_closer": true
+        },
+        "first_hazard_time_zero_based_conditional": {
+          "estimate": -0.025859652802657784,
+          "ci95": [
+            -0.11395618067922626,
+            0.1037108772001737
+          ],
+          "negative_means_oracle_is_closer": true
+        },
+        "first_hazard_mean_x": {
+          "estimate": -0.0405153630682169,
+          "ci95": [
+            -0.04880102784133807,
+            0.023233603868293984
+          ],
+          "negative_means_oracle_is_closer": true
+        },
+        "first_hazard_mean_y": {
+          "estimate": -0.05409020433583134,
+          "ci95": [
+            -0.06218913459803321,
+            0.004628794164135026
+          ],
+          "negative_means_oracle_is_closer": true
+        },
+        "at_risk_hazardous_opportunities": {
+          "estimate": -0.626220703125,
+          "ci95": [
+            -0.68531494140625,
+            0.12138061523437477
+          ],
+          "negative_means_oracle_is_closer": true
+        }
+      }
+    }
+  }
+}

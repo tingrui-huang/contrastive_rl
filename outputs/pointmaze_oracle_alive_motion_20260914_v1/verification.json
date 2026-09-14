@@ -1,0 +1,49 @@
+{
+  "status": "passed",
+  "saved_arrays_only": true,
+  "new_native_steps": 0,
+  "new_model_paths": 0,
+  "new_training_updates": 0,
+  "derived_rollout_diagnostics": {
+    "s0": {
+      "paths": 4096,
+      "first_hazard_paths": 3663,
+      "failure_paths": 2716,
+      "reward_paths": 1398,
+      "survival_without_reward_paths": 1,
+      "fatal_onsets": 2716,
+      "fatal_incoming_displacement_mean": 0.9683686097071724,
+      "fatal_incoming_displacement_minimum": 0.021620812713556203,
+      "fatal_incoming_stationary_threshold": 1e-07,
+      "fatal_incoming_stationary_count": 0,
+      "physical_emitted_max_abs_xy_difference": 4.768371528740545e-07,
+      "physical_emitted_hazard_disagreements": 0,
+      "physical_emitted_reward_disagreements": 0
+    },
+    "s1": {
+      "paths": 4096,
+      "first_hazard_paths": 3663,
+      "failure_paths": 2667,
+      "reward_paths": 1454,
+      "survival_without_reward_paths": 1,
+      "fatal_onsets": 2667,
+      "fatal_incoming_displacement_mean": 0.9612234436530954,
+      "fatal_incoming_displacement_minimum": 0.021620812713556203,
+      "fatal_incoming_stationary_threshold": 1e-07,
+      "fatal_incoming_stationary_count": 0,
+      "physical_emitted_max_abs_xy_difference": 4.768371528740545e-07,
+      "physical_emitted_hazard_disagreements": 0,
+      "physical_emitted_reward_disagreements": 0
+    }
+  },
+  "checks": {
+    "sealed_dependency_and_output_hashes": true,
+    "native_movement_equivalence_result": true,
+    "all_oracle_slots_recomputed_from_saved_physical_state_action_and_noise": true,
+    "float64_physical_and_float32_f4_history": true,
+    "support_failure_absorption_reward_and_return": true,
+    "pathwise_first_hazard_identity_across_heads": true,
+    "all_metric_points_intervals_differences_and_absolute_errors": true,
+    "sealed_call_accounting": true
+  }
+}
