@@ -1,0 +1,51 @@
+{
+  "R_batch": {
+    "down": 64,
+    "ordinary": 128,
+    "right": 64
+  },
+  "actor_learning_rate": 0.0003,
+  "actor_updates": 1000,
+  "adam_eps": 1e-07,
+  "batch_size": 256,
+  "bc_coef": 0.5,
+  "bootstrap_replicates": 2000,
+  "critic_learning_rate": 0.0003,
+  "critic_updates": 400,
+  "discount": 0.95,
+  "down": "action_y <= -0.5 and abs(action_y) >= abs(action_x)",
+  "entropy_coefficient": 0.0,
+  "eval_away_actor_samples": 64,
+  "eval_away_rows": 1024,
+  "eval_fork_actor_samples": 128,
+  "eval_local_gradient_samples": 8,
+  "eval_nce_batches": 32,
+  "experiment": "strictly_offline_pointmaze_replay_control",
+  "final_checkpoint_rule": "fixed final iterate only",
+  "fork_region": {
+    "x_max_exclusive": 2.0,
+    "x_min": 1.0,
+    "y_max_exclusive": 4.0,
+    "y_min": 3.0
+  },
+  "gradient_batches": 4,
+  "numerical_failure": "abort on any nonfinite loss, gradient, update, or parameter",
+  "random_goals": 0.5,
+  "right": "action_x >= 0.5 and abs(action_x) > abs(action_y)",
+  "seeds": {
+    "actor_keys": 530915101,
+    "actor_replay": 530915100,
+    "bootstrap": 530915300,
+    "critic_focus": 530915001,
+    "critic_ordinary": 530915000,
+    "critic_shuffle": 530915002,
+    "eval_actor_away_eps": 530915205,
+    "eval_actor_fork_eps": 530915204,
+    "eval_away": 530915203,
+    "eval_context_goal": 530915202,
+    "eval_focus": 530915201,
+    "eval_ordinary": 530915200
+  },
+  "source_commit": "5acf76669f1378aaa88809c390fe3f3b625aff71",
+  "tau": 0.005
+}

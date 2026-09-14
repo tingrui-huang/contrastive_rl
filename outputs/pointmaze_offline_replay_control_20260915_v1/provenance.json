@@ -1,0 +1,155 @@
+{
+  "actual_training_inputs": [
+    "artifacts/f4_p30_server_30076/results/datasets/swamp_windy_f4_merged_s0.npz::{obs,act}",
+    "artifacts/f4_p30_server_30076/results/runs/f4_p30_sweep/p30_a0_a01_a03_s0_s1/alpha0_seed0/final.pkl"
+  ],
+  "dataset": {
+    "content_sha256": "ad8b4470df0ebcc1c03421dfb59b61f9faee48cfbf51e2b9c0a402e0403f544d",
+    "episodes": 6600,
+    "file_sha256": "83b4e81d9fca2d66b648c9c34ccdb68196e1acf89e2ca6829e4cb198d27c322c",
+    "heldout_members": "partition.npz:heldout (660 complete episodes)",
+    "loaded_members": [
+      "obs",
+      "act"
+    ],
+    "not_loaded": [
+      "swamp_bits",
+      "route_label",
+      "teacher_mode",
+      "force_safe",
+      "wait_count",
+      "entered_active_swamp",
+      "meta"
+    ],
+    "path": "artifacts/f4_p30_server_30076/results/datasets/swamp_windy_f4_merged_s0.npz",
+    "rows_per_episode": 51,
+    "source_membership": {
+      "bad_content_sha256": "5e51979051873deef5ac01f66e3f1a44e8ad3139bded41dce812b1bc9fb3306c",
+      "bad_demo_meta": {
+        "action_dim": 2,
+        "audit_fields": [
+          "swamp_bits",
+          "route_label",
+          "teacher_mode",
+          "force_safe",
+          "wait_count",
+          "entered_active_swamp"
+        ],
+        "behavior_policy": "BFS shortcut oracle with the dodge step REMOVED",
+        "death_lag_note": "a newly dead agent still carries its pre-contact frames, so the all-equal signature only forms n_frames-1 steps after contact",
+        "death_lag_steps": 3,
+        "died_rate_overall": 0.6816666666666666,
+        "env_name": "point_two_route_swamp_windy_f4_v0",
+        "episode_len_rows_L": 51,
+        "episodes": 600,
+        "force_safe_prob": 0.0,
+        "frac_rows_frozen_among_died": 0.8843664605206386,
+        "frac_rows_frozen_among_survived": 0.0196078431372549,
+        "frac_rows_frozen_stack": 0.6090849673202614,
+        "frame_order": "newest first; state[0:2] is the current position",
+        "goal_dim": 8,
+        "goal_layout": "tile(GOAL, 4) -- at the goal and stationary",
+        "max_episode_steps": 50,
+        "mode": "baddemo",
+        "n_frames": 4,
+        "n_transitions": 30000,
+        "normalisation": "none; the stack holds raw maze-unit positions",
+        "note": "entered_active_swamp == DIED; audit fields are AUDIT-ONLY; the learner obs is stacked positions + stacked goal only, and every entry is a position the agent actually occupied",
+        "obs_dim": 8,
+        "obs_layout": "[x_t, y_t, ..., x_{t-3}, y_{t-3}, g_x, g_y (x4)]",
+        "obs_width_D": 16,
+        "per_cell_swamp_prob": 0.3,
+        "random_frac": 0.0,
+        "reached_0p5_rate": 0.31833333333333336,
+        "route_label_code": {
+          "other": 3,
+          "random": 0,
+          "safe_detour": 2,
+          "shortcut": 1
+        },
+        "seed": 0,
+        "setting": "windy_lethal_f4_baddemo",
+        "teacher_mode_code": {
+          "bad_demo": 4,
+          "forced_safe": 1,
+          "immediate_shortcut": 2,
+          "random": 0,
+          "wait_shortcut": 3
+        },
+        "teacher_noise": 0.15
+      },
+      "bad_demo_teacher_mode_code": 4,
+      "bad_episodes": 600,
+      "bad_index_range": [
+        6000,
+        6600
+      ],
+      "bad_name": "swamp_windy_f4_baddemo_s0.npz",
+      "main_content_sha256": "35e0cb428cad902b091282f6794a1af38b1746ddb8694c5c94441303065a5ef2",
+      "main_episodes": 6000,
+      "main_index_range": [
+        0,
+        6000
+      ],
+      "main_name": "swamp_windy_f4_teacher_s0.npz"
+    },
+    "training_members": "partition.npz:train (5,940 complete episodes)"
+  },
+  "excluded": [
+    {
+      "commit": "b3d1423",
+      "reason": "new native matched-fork diagnostic data"
+    },
+    {
+      "commit": "5acf766",
+      "reason": "new native critic-control data and trained critics"
+    },
+    {
+      "name": "C1",
+      "reason": "checkpoint ancestry includes oracle-generated replay"
+    },
+    {
+      "name": "oracle pilot B/C",
+      "reason": "C is contaminated; comparison not equivalent and both joint-train actors"
+    }
+  ],
+  "git": {
+    "branch": "feature/pointmaze-causal-transition",
+    "head": "5acf76669f1378aaa88809c390fe3f3b625aff71"
+  },
+  "historical_sha256_before": {
+    "artifacts/pointmaze_region_pilot/phase_sampling_s01_v1/PROTOCOL.md": "cc509fd4b543007028527c5e28cc6d33765ae4075314a972d197b82ac8faca38",
+    "artifacts/pointmaze_region_pilot/phase_sampling_s01_v1/REPORT.md": "77c535eb7c6f5cb9617a331a062bce4a22c2a7a3775dd946365031191af4b905",
+    "crl/losses.py": "5f133527baf0ce1261d9dcffeaecd844feb2c8fee800f05ec69202082de94370",
+    "crl/networks.py": "fb4084b30c001b08da51ab7cebf74b0ed5ddcc55d5c19f734cc1252e87bd35d7",
+    "crl/replay.py": "9ec209872c3d70e4fbf0849e9fe6a11e2be657d8b15fcd25094641388172511e",
+    "ett/policy_improvement.py": "41b93ba04b65d02cf136b25c31eedcdfd598415d98636b13486fb97f88341c3b",
+    "ett/run_policy_improvement.py": "78aa4442e7f2abfbca92a69b6ad55bb5b36cee9596b17d0d54eb2c96529cdb71",
+    "outputs/pointmaze_critic_control_20260914_v1/PROTOCOL.md": "1ebb2275023dea6a3cf722f7da3d5fd43158b79c0e22940a8712b4718f7e9bc5",
+    "outputs/pointmaze_critic_control_20260914_v1/REPORT.md": "96231b5d8c3bb7508da4bf7e3a74edc79e4bc2b9622632673fe23f862a3e7c20",
+    "outputs/pointmaze_matched_fork_20260914_v1/PROTOCOL.md": "01b0038dbb5fb46ee92331b4ffd20eca853a094a444e3a6e8a5b64d0c9faf789",
+    "outputs/pointmaze_matched_fork_20260914_v1/REPORT.md": "7799b092bd48589d41939dd67014d2643186a2a00c7794091554d26eb7519c57",
+    "outputs/pointmaze_oracle_training_pilot_20260914_v1/PROTOCOL.md": "402a36da48f3b77860de307337fbc5bca76dd86e7da86bee6036ab8ebc4d8135",
+    "outputs/pointmaze_oracle_training_pilot_20260914_v1/REPORT.md": "ba84448cfd3abf6356173ea287149d690ace9194dcda89b85f54730a30066ab3"
+  },
+  "initial_checkpoint": {
+    "actor_optimizer_sha256": "a88f938d34f1858d79779c7b617779e7873985c655f0eb6615d7207273e0b2e9",
+    "ancestry": "original zbase alpha=0 seed=0; fixed dataset only; no failure bank",
+    "ancestry_commit": "4f3da3f1e94cbad647bc56b0f24e4171776090ee",
+    "critic_optimizer_sha256": "ef079f59b8add225a33fad180ec3a4dd404041e76049d06118e9c17dd9c76878",
+    "critic_sha256": "376b0a4e806b82d5cead493eca8a975457493d664b3fa8abcd070fcb32a1dd1a",
+    "dataset_content_sha256": "ad8b4470df0ebcc1c03421dfb59b61f9faee48cfbf51e2b9c0a402e0403f544d",
+    "eligible": true,
+    "file_sha256": "ea8a71d3cb8d963259a54d47250b454462dae2ae62f03a55c370ca81a2c8ec54",
+    "full_state_sha256": "359c22cb3c2db8f9e53282233f452be15793ca4b91067c2d60467af5dbaacc0b",
+    "path": "artifacts/f4_p30_server_30076/results/runs/f4_p30_sweep/p30_a0_a01_a03_s0_s1/alpha0_seed0/final.pkl",
+    "policy_sha256": "1624664a334557bf8284eced5568dfffa47769a34c33216e1e8855a6a735a1aa",
+    "step": 150000
+  },
+  "split": {
+    "heldout_sha256": "cb35e2fb52f23cd5e34b15faf9df3579870c470dd10e23d127a3893b335d9f78",
+    "limitation": "initial step-150000 checkpoint saw all 6,600 episodes",
+    "method": "numpy default_rng(0).permutation(6600)[:660]",
+    "train_sha256": "9caa459f7412f6d79a45c024534c44dbe9f0342cf7aa4a720190ff32efa0360e"
+  }
+}
