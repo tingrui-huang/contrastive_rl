@@ -1,0 +1,122 @@
+{
+  "status": "pass",
+  "scope": "saved arrays and hashed inputs only; zero position-model, actor, nominal, or environment calls",
+  "hashes": {
+    "all_recorded_dependencies_unchanged": true,
+    "dependency_count": 28,
+    "settings_frozen_before_new_collection": true
+  },
+  "budget": {
+    "position_model_successors": 2151424,
+    "position_model_cap": 3000000,
+    "native_steps": 14400,
+    "native_cap": 16000,
+    "extra_calls_from_verification": 0
+  },
+  "training": {
+    "h0": {
+      "updates_reconstructed": 2000,
+      "final_parameters_exact": true,
+      "optimizer_moments_reconstructed": true,
+      "alive_rows_only": true,
+      "unweighted_bce": true,
+      "prediction_not_constant": true
+    },
+    "h1": {
+      "updates_reconstructed": 2000,
+      "final_parameters_exact": true,
+      "optimizer_moments_reconstructed": true,
+      "alive_rows_only": true,
+      "unweighted_bce": true,
+      "prediction_not_constant": true
+    }
+  },
+  "paired_evaluation": {
+    "episodes": 48,
+    "rows": 9600,
+    "row_alignment_and_f4_shift": true,
+    "same_snapshot_four_query_blocks": true,
+    "actual_onsets_only_on_hazardous_landings": true
+  },
+  "onset_probability_arrays_reconstructed": {
+    "actual_h0": true,
+    "actual_h1": true,
+    "joint_p0_h0": true,
+    "joint_p0_h1": true,
+    "joint_p1_h0": true,
+    "joint_p1_h1": true
+  },
+  "onset_metrics_and_episode_bootstraps_reconstructed": true,
+  "native_records_reconstructed": true,
+  "trajectory_arrays": {
+    "baseline_p0": {
+      "common_native_roots": true,
+      "f4_shift": true,
+      "position_geometry_legal": true,
+      "mode_monotone": true,
+      "absorbing_xy": true,
+      "fatal_onset_landing_preserved": true,
+      "joint_reward_reconstructed": true,
+      "discounted_return_reconstructed": true
+    },
+    "baseline_p1": {
+      "common_native_roots": true,
+      "f4_shift": true,
+      "position_geometry_legal": true,
+      "mode_monotone": true,
+      "absorbing_xy": true,
+      "fatal_onset_landing_preserved": true,
+      "joint_reward_reconstructed": true,
+      "discounted_return_reconstructed": true
+    },
+    "joint_p0_h0": {
+      "common_native_roots": true,
+      "f4_shift": true,
+      "position_geometry_legal": true,
+      "mode_monotone": true,
+      "absorbing_xy": true,
+      "fatal_onset_landing_preserved": true,
+      "joint_reward_reconstructed": true,
+      "discounted_return_reconstructed": true
+    },
+    "joint_p0_h1": {
+      "common_native_roots": true,
+      "f4_shift": true,
+      "position_geometry_legal": true,
+      "mode_monotone": true,
+      "absorbing_xy": true,
+      "fatal_onset_landing_preserved": true,
+      "joint_reward_reconstructed": true,
+      "discounted_return_reconstructed": true
+    },
+    "joint_p1_h0": {
+      "common_native_roots": true,
+      "f4_shift": true,
+      "position_geometry_legal": true,
+      "mode_monotone": true,
+      "absorbing_xy": true,
+      "fatal_onset_landing_preserved": true,
+      "joint_reward_reconstructed": true,
+      "discounted_return_reconstructed": true
+    },
+    "joint_p1_h1": {
+      "common_native_roots": true,
+      "f4_shift": true,
+      "position_geometry_legal": true,
+      "mode_monotone": true,
+      "absorbing_xy": true,
+      "fatal_onset_landing_preserved": true,
+      "joint_reward_reconstructed": true,
+      "discounted_return_reconstructed": true
+    }
+  },
+  "trajectory_primary_metrics_and_episode_bootstraps_reconstructed": true,
+  "contract": {
+    "disabled_baselines_have_no_failure": true,
+    "pre_onset_actor_nominal_and_position_proposals_match_baseline": true,
+    "fatal_onset_movement_preserved": true,
+    "failed_mode_absorbing": true,
+    "no_hazard_support_mask": true,
+    "no_joint_action_lipschitz_claim": true
+  }
+}

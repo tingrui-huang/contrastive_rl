@@ -1,0 +1,777 @@
+{
+  "native": {
+    "episodes": 48,
+    "probability_any_reward": {
+      "estimate": 0.4166666666666667,
+      "ci95": [
+        0.2708333333333333,
+        0.5625
+      ]
+    },
+    "probability_failure": {
+      "estimate": 0.5833333333333334,
+      "ci95": [
+        0.4375,
+        0.7291666666666666
+      ]
+    },
+    "probability_survive_without_reward": {
+      "estimate": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ]
+    },
+    "mean_discounted_return": {
+      "estimate": 4.667128837094445,
+      "ci95": [
+        3.0451905516931133,
+        6.255579880198455
+      ]
+    },
+    "return_conditional_on_reward": {
+      "estimate": 11.201109209026669,
+      "ci95": [
+        10.125728125899006,
+        12.13859852689039
+      ],
+      "empty_replicates": 0
+    },
+    "failure_time_conditional_on_failure": {
+      "estimate": 5.892857142857143,
+      "ci95": [
+        4.6551392572944295,
+        7.4065104166666655
+      ],
+      "empty_replicates": 0
+    },
+    "failure_count": 28,
+    "rewarded_episode_count": 20,
+    "survive_without_reward_count": 0,
+    "failure_outside_hazard_count": 0
+  },
+  "models": {
+    "baseline_p0": {
+      "paths": 3072,
+      "probability_any_reward": {
+        "estimate": 0.9641927083333334,
+        "ci95": [
+          0.9567057291666666,
+          0.9710286458333334
+        ]
+      },
+      "probability_failure": {
+        "estimate": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "probability_survive_without_reward": {
+        "estimate": 0.035807291666666664,
+        "ci95": [
+          0.028971354166666668,
+          0.043294270833333336
+        ]
+      },
+      "mean_discounted_return": {
+        "estimate": 9.716119865576426,
+        "ci95": [
+          9.582728259265423,
+          9.848737672964731
+        ]
+      },
+      "return_conditional_on_reward": {
+        "estimate": 10.076948084757184,
+        "ci95": [
+          9.963801803217784,
+          10.191819341085337
+        ],
+        "empty_replicates": 0
+      },
+      "failure_time_conditional_on_failure": {
+        "available": false,
+        "reason": "zero denominator"
+      },
+      "expected_failure_probability_outside_hazard": {
+        "estimate": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "empty_replicates": 0
+      },
+      "fraction_sampled_onsets_outside_hazard": {
+        "available": false,
+        "reason": "zero denominator"
+      },
+      "probability_path_has_outside_hazard_onset": {
+        "estimate": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "sampled_onset_count": 0,
+      "sampled_outside_hazard_onset_count": 0,
+      "mode_monotone": true,
+      "absorbing_xy_exact": true,
+      "fatal_onset_proposal_preserved_exactly": true,
+      "fatal_onset_count": 0,
+      "fatal_onset_moving_fraction": null,
+      "persistence_violations": 0
+    },
+    "baseline_p1": {
+      "paths": 3072,
+      "probability_any_reward": {
+        "estimate": 0.8427734375,
+        "ci95": [
+          0.8268229166666666,
+          0.8580729166666666
+        ]
+      },
+      "probability_failure": {
+        "estimate": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "probability_survive_without_reward": {
+        "estimate": 0.1572265625,
+        "ci95": [
+          0.14192708333333334,
+          0.17317708333333334
+        ]
+      },
+      "mean_discounted_return": {
+        "estimate": 8.996624638636908,
+        "ci95": [
+          8.814526831607024,
+          9.175131969650588
+        ]
+      },
+      "return_conditional_on_reward": {
+        "estimate": 10.675021587444023,
+        "ci95": [
+          10.550645830133384,
+          10.794563075804904
+        ],
+        "empty_replicates": 0
+      },
+      "failure_time_conditional_on_failure": {
+        "available": false,
+        "reason": "zero denominator"
+      },
+      "expected_failure_probability_outside_hazard": {
+        "estimate": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "empty_replicates": 0
+      },
+      "fraction_sampled_onsets_outside_hazard": {
+        "available": false,
+        "reason": "zero denominator"
+      },
+      "probability_path_has_outside_hazard_onset": {
+        "estimate": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "sampled_onset_count": 0,
+      "sampled_outside_hazard_onset_count": 0,
+      "mode_monotone": true,
+      "absorbing_xy_exact": true,
+      "fatal_onset_proposal_preserved_exactly": true,
+      "fatal_onset_count": 0,
+      "fatal_onset_moving_fraction": null,
+      "persistence_violations": 0
+    },
+    "joint_p0_h0": {
+      "paths": 3072,
+      "probability_any_reward": {
+        "estimate": 0.2138671875,
+        "ci95": [
+          0.20149739583333334,
+          0.22591145833333334
+        ]
+      },
+      "probability_failure": {
+        "estimate": 0.7919921875,
+        "ci95": [
+          0.7796223958333334,
+          0.8040364583333334
+        ]
+      },
+      "probability_survive_without_reward": {
+        "estimate": 0.006510416666666667,
+        "ci95": [
+          0.0042236328125,
+          0.009114583333333334
+        ]
+      },
+      "mean_discounted_return": {
+        "estimate": 2.473322741687298,
+        "ci95": [
+          2.3252744254966577,
+          2.6205278642475602
+        ]
+      },
+      "return_conditional_on_reward": {
+        "estimate": 11.564760216839238,
+        "ci95": [
+          11.310025382073452,
+          11.817075461160641
+        ],
+        "empty_replicates": 0
+      },
+      "failure_time_conditional_on_failure": {
+        "estimate": 5.97698314837649,
+        "ci95": [
+          5.791974774064884,
+          6.17150933959089
+        ],
+        "empty_replicates": 0
+      },
+      "expected_failure_probability_outside_hazard": {
+        "estimate": 0.012744550560406713,
+        "ci95": [
+          0.011647080186365523,
+          0.0138841212557057
+        ],
+        "empty_replicates": 0
+      },
+      "fraction_sampled_onsets_outside_hazard": {
+        "estimate": 0.19646526921496096,
+        "ci95": [
+          0.181667586611355,
+          0.21070006466068178
+        ],
+        "empty_replicates": 0
+      },
+      "probability_path_has_outside_hazard_onset": {
+        "estimate": 0.15559895833333334,
+        "ci95": [
+          0.1435546875,
+          0.16731770833333334
+        ]
+      },
+      "sampled_onset_count": 2433,
+      "sampled_outside_hazard_onset_count": 478,
+      "mode_monotone": true,
+      "absorbing_xy_exact": true,
+      "fatal_onset_proposal_preserved_exactly": true,
+      "fatal_onset_count": 2433,
+      "fatal_onset_moving_fraction": 1.0,
+      "persistence_violations": 0
+    },
+    "joint_p0_h1": {
+      "paths": 3072,
+      "probability_any_reward": {
+        "estimate": 0.2591145833333333,
+        "ci95": [
+          0.24543457031250002,
+          0.27246907552083327
+        ]
+      },
+      "probability_failure": {
+        "estimate": 0.736328125,
+        "ci95": [
+          0.72265625,
+          0.75
+        ]
+      },
+      "probability_survive_without_reward": {
+        "estimate": 0.0185546875,
+        "ci95": [
+          0.013671875,
+          0.024088541666666668
+        ]
+      },
+      "mean_discounted_return": {
+        "estimate": 3.015418939292431,
+        "ci95": [
+          2.8535082461933294,
+          3.179915325095256
+        ]
+      },
+      "return_conditional_on_reward": {
+        "estimate": 11.637395705409984,
+        "ci95": [
+          11.405848575102441,
+          11.854849685782964
+        ],
+        "empty_replicates": 0
+      },
+      "failure_time_conditional_on_failure": {
+        "estimate": 5.967727674624227,
+        "ci95": [
+          5.821656971011635,
+          6.111227555543784
+        ],
+        "empty_replicates": 0
+      },
+      "expected_failure_probability_outside_hazard": {
+        "estimate": 0.008321236566866601,
+        "ci95": [
+          0.007534639669494344,
+          0.009194327927457379
+        ],
+        "empty_replicates": 0
+      },
+      "fraction_sampled_onsets_outside_hazard": {
+        "estimate": 0.16843501326259946,
+        "ci95": [
+          0.1534644529434893,
+          0.18354779745612967
+        ],
+        "empty_replicates": 0
+      },
+      "probability_path_has_outside_hazard_onset": {
+        "estimate": 0.1240234375,
+        "ci95": [
+          0.1123046875,
+          0.13606770833333334
+        ]
+      },
+      "sampled_onset_count": 2262,
+      "sampled_outside_hazard_onset_count": 381,
+      "mode_monotone": true,
+      "absorbing_xy_exact": true,
+      "fatal_onset_proposal_preserved_exactly": true,
+      "fatal_onset_count": 2262,
+      "fatal_onset_moving_fraction": 1.0,
+      "persistence_violations": 0
+    },
+    "joint_p1_h0": {
+      "paths": 3072,
+      "probability_any_reward": {
+        "estimate": 0.21516927083333334,
+        "ci95": [
+          0.20052083333333334,
+          0.22982584635416664
+        ]
+      },
+      "probability_failure": {
+        "estimate": 0.7815755208333334,
+        "ci95": [
+          0.7659505208333334,
+          0.7972005208333334
+        ]
+      },
+      "probability_survive_without_reward": {
+        "estimate": 0.008138020833333334,
+        "ci95": [
+          0.005208333333333333,
+          0.011393229166666666
+        ]
+      },
+      "mean_discounted_return": {
+        "estimate": 2.4395884598294892,
+        "ci95": [
+          2.2632233776152133,
+          2.6249355611080922
+        ]
+      },
+      "return_conditional_on_reward": {
+        "estimate": 11.337996593942801,
+        "ci95": [
+          11.096569686306232,
+          11.577968302880791
+        ],
+        "empty_replicates": 0
+      },
+      "failure_time_conditional_on_failure": {
+        "estimate": 5.695543523531862,
+        "ci95": [
+          5.533028521279489,
+          5.865305410516925
+        ],
+        "empty_replicates": 0
+      },
+      "expected_failure_probability_outside_hazard": {
+        "estimate": 0.01291571797932706,
+        "ci95": [
+          0.011704624108907043,
+          0.014152789721726372
+        ],
+        "empty_replicates": 0
+      },
+      "fraction_sampled_onsets_outside_hazard": {
+        "estimate": 0.19408579758433986,
+        "ci95": [
+          0.17798164178872516,
+          0.2096271163820435
+        ],
+        "empty_replicates": 0
+      },
+      "probability_path_has_outside_hazard_onset": {
+        "estimate": 0.15169270833333334,
+        "ci95": [
+          0.13802083333333334,
+          0.16536458333333334
+        ]
+      },
+      "sampled_onset_count": 2401,
+      "sampled_outside_hazard_onset_count": 466,
+      "mode_monotone": true,
+      "absorbing_xy_exact": true,
+      "fatal_onset_proposal_preserved_exactly": true,
+      "fatal_onset_count": 2401,
+      "fatal_onset_moving_fraction": 0.9612661391087047,
+      "persistence_violations": 0
+    },
+    "joint_p1_h1": {
+      "paths": 3072,
+      "probability_any_reward": {
+        "estimate": 0.2626953125,
+        "ci95": [
+          0.24674479166666666,
+          0.2789713541666667
+        ]
+      },
+      "probability_failure": {
+        "estimate": 0.7431640625,
+        "ci95": [
+          0.7272054036458333,
+          0.7594401041666666
+        ]
+      },
+      "probability_survive_without_reward": {
+        "estimate": 0.0026041666666666665,
+        "ci95": [
+          0.0009765625,
+          0.004557291666666667
+        ]
+      },
+      "mean_discounted_return": {
+        "estimate": 2.9772674813866615,
+        "ci95": [
+          2.7871032061676186,
+          3.174535404704511
+        ]
+      },
+      "return_conditional_on_reward": {
+        "estimate": 11.333538665204243,
+        "ci95": [
+          11.128853433426762,
+          11.523321944334135
+        ],
+        "empty_replicates": 0
+      },
+      "failure_time_conditional_on_failure": {
+        "estimate": 6.223828296101621,
+        "ci95": [
+          6.04412731792739,
+          6.400366653231877
+        ],
+        "empty_replicates": 0
+      },
+      "expected_failure_probability_outside_hazard": {
+        "estimate": 0.009484371687407586,
+        "ci95": [
+          0.008575766332827436,
+          0.010430012474238042
+        ],
+        "empty_replicates": 0
+      },
+      "fraction_sampled_onsets_outside_hazard": {
+        "estimate": 0.173017958826106,
+        "ci95": [
+          0.16007058714730343,
+          0.18609818855335944
+        ],
+        "empty_replicates": 0
+      },
+      "probability_path_has_outside_hazard_onset": {
+        "estimate": 0.12858072916666666,
+        "ci95": [
+          0.11783854166666667,
+          0.13933105468749996
+        ]
+      },
+      "sampled_onset_count": 2283,
+      "sampled_outside_hazard_onset_count": 395,
+      "mode_monotone": true,
+      "absorbing_xy_exact": true,
+      "fatal_onset_proposal_preserved_exactly": true,
+      "fatal_onset_count": 2283,
+      "fatal_onset_moving_fraction": 0.9456855015330705,
+      "persistence_violations": 0
+    }
+  },
+  "gaps_from_native": {
+    "baseline_p0": {
+      "probability_any_reward": {
+        "estimate": 0.5475260416666666,
+        "ci95": [
+          0.404296875,
+          0.6920735677083332
+        ]
+      },
+      "probability_failure": {
+        "estimate": -0.5833333333333334,
+        "ci95": [
+          -0.7291666666666666,
+          -0.4375
+        ]
+      },
+      "probability_survive_without_reward": {
+        "estimate": 0.035807291666666664,
+        "ci95": [
+          0.028971354166666668,
+          0.043294270833333336
+        ]
+      },
+      "mean_discounted_return": {
+        "estimate": 5.04899102848198,
+        "ci95": [
+          3.4741643143720373,
+          6.646755541347075
+        ]
+      },
+      "return_conditional_on_reward": {
+        "estimate": -1.1241611242694844,
+        "ci95": [
+          -2.0419420379904367,
+          -0.06872629210961172
+        ],
+        "empty_replicates": 0
+      },
+      "failure_time_conditional_on_failure": {
+        "available": false,
+        "reason": "zero point denominator"
+      }
+    },
+    "baseline_p1": {
+      "probability_any_reward": {
+        "estimate": 0.4261067708333333,
+        "ci95": [
+          0.28741861979166666,
+          0.5690429687499998
+        ]
+      },
+      "probability_failure": {
+        "estimate": -0.5833333333333334,
+        "ci95": [
+          -0.7291666666666666,
+          -0.4375
+        ]
+      },
+      "probability_survive_without_reward": {
+        "estimate": 0.1572265625,
+        "ci95": [
+          0.14192708333333334,
+          0.17317708333333334
+        ]
+      },
+      "mean_discounted_return": {
+        "estimate": 4.329495801542461,
+        "ci95": [
+          2.733584699699598,
+          5.943951148688774
+        ]
+      },
+      "return_conditional_on_reward": {
+        "estimate": -0.5260876215826453,
+        "ci95": [
+          -1.4510439117768705,
+          0.5143266090751105
+        ],
+        "empty_replicates": 0
+      },
+      "failure_time_conditional_on_failure": {
+        "available": false,
+        "reason": "zero point denominator"
+      }
+    },
+    "joint_p0_h0": {
+      "probability_any_reward": {
+        "estimate": -0.20279947916666666,
+        "ci95": [
+          -0.3441243489583333,
+          -0.05663248697916671
+        ]
+      },
+      "probability_failure": {
+        "estimate": 0.20865885416666666,
+        "ci95": [
+          0.062158203125,
+          0.35061035156249987
+        ]
+      },
+      "probability_survive_without_reward": {
+        "estimate": 0.006510416666666667,
+        "ci95": [
+          0.0042236328125,
+          0.009114583333333334
+        ]
+      },
+      "mean_discounted_return": {
+        "estimate": -2.193806095407148,
+        "ci95": [
+          -3.8392503761575885,
+          -0.55829742406316
+        ]
+      },
+      "return_conditional_on_reward": {
+        "estimate": 0.3636510078125692,
+        "ci95": [
+          -0.5941694498955624,
+          1.4233636885629264
+        ],
+        "empty_replicates": 0
+      },
+      "failure_time_conditional_on_failure": {
+        "estimate": 0.08412600551934712,
+        "ci95": [
+          -1.4415562364548917,
+          1.334222261391649
+        ],
+        "empty_replicates": 0
+      }
+    },
+    "joint_p0_h1": {
+      "probability_any_reward": {
+        "estimate": -0.15755208333333334,
+        "ci95": [
+          -0.30079752604166665,
+          -0.013338216145833377
+        ]
+      },
+      "probability_failure": {
+        "estimate": 0.15299479166666666,
+        "ci95": [
+          0.0061767578125,
+          0.29590657552083327
+        ]
+      },
+      "probability_survive_without_reward": {
+        "estimate": 0.0185546875,
+        "ci95": [
+          0.013671875,
+          0.024088541666666668
+        ]
+      },
+      "mean_discounted_return": {
+        "estimate": -1.651709897802015,
+        "ci95": [
+          -3.2973573428127576,
+          0.02690532172497862
+        ]
+      },
+      "return_conditional_on_reward": {
+        "estimate": 0.43628649638331574,
+        "ci95": [
+          -0.5355066334208237,
+          1.5076053799822564
+        ],
+        "empty_replicates": 0
+      },
+      "failure_time_conditional_on_failure": {
+        "estimate": 0.07487053176708347,
+        "ci95": [
+          -1.4233234533610268,
+          1.303619269479359
+        ],
+        "empty_replicates": 0
+      }
+    },
+    "joint_p1_h0": {
+      "probability_any_reward": {
+        "estimate": -0.20149739583333334,
+        "ci95": [
+          -0.3408610026041667,
+          -0.05858561197916671
+        ]
+      },
+      "probability_failure": {
+        "estimate": 0.1982421875,
+        "ci95": [
+          0.05596516927083334,
+          0.3376220703124997
+        ]
+      },
+      "probability_survive_without_reward": {
+        "estimate": 0.008138020833333334,
+        "ci95": [
+          0.005208333333333333,
+          0.011393229166666666
+        ]
+      },
+      "mean_discounted_return": {
+        "estimate": -2.2275403772649565,
+        "ci95": [
+          -3.8715300323116217,
+          -0.5739700158994276
+        ]
+      },
+      "return_conditional_on_reward": {
+        "estimate": 0.1368873849161325,
+        "ci95": [
+          -0.9259085023072755,
+          1.3010049654356588
+        ],
+        "empty_replicates": 0
+      },
+      "failure_time_conditional_on_failure": {
+        "estimate": -0.19731361932528113,
+        "ci95": [
+          -1.7439046479835951,
+          1.0702669259547863
+        ],
+        "empty_replicates": 0
+      }
+    },
+    "joint_p1_h1": {
+      "probability_any_reward": {
+        "estimate": -0.15397135416666666,
+        "ci95": [
+          -0.29462890625,
+          -0.0107421875
+        ]
+      },
+      "probability_failure": {
+        "estimate": 0.15983072916666666,
+        "ci95": [
+          0.015926106770833334,
+          0.30145670572916655
+        ]
+      },
+      "probability_survive_without_reward": {
+        "estimate": 0.0026041666666666665,
+        "ci95": [
+          0.0009765625,
+          0.004557291666666667
+        ]
+      },
+      "mean_discounted_return": {
+        "estimate": -1.6898613557077844,
+        "ci95": [
+          -3.3084889228346386,
+          -0.023900338557796243
+        ]
+      },
+      "return_conditional_on_reward": {
+        "estimate": 0.13242945617757407,
+        "ci95": [
+          -0.8550473268114755,
+          1.256628408258816
+        ],
+        "empty_replicates": 0
+      },
+      "failure_time_conditional_on_failure": {
+        "estimate": 0.33097115324447746,
+        "ci95": [
+          -1.1810438132902805,
+          1.6018421086686832
+        ],
+        "empty_replicates": 0
+      }
+    }
+  }
+}
