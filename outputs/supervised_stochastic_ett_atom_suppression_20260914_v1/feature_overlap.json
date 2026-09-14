@@ -1,0 +1,392 @@
+{
+  "definition": {
+    "horizontal_position": "state[:,0]",
+    "f4_motion_summary": "sqrt(mean over three frame differences of squared 2D displacement))",
+    "gate_scaled_distance": "Euclidean distance after dividing x by 2 and motion by 0.35"
+  },
+  "off_diagonal_actual_stationary": {
+    "rows": 1194,
+    "episodes": 9,
+    "horizontal_position": {
+      "min": 3.4821341037750244,
+      "q05": 3.4821341037750244,
+      "q25": 3.489600658416748,
+      "median": 4.463263988494873,
+      "q75": 4.495883464813232,
+      "q95": 5.477393627166748,
+      "max": 5.477393627166748,
+      "mean": 4.260259979933351
+    },
+    "f4_motion_summary": {
+      "min": 0.0,
+      "q05": 0.0,
+      "q25": 0.0,
+      "median": 0.0,
+      "q75": 0.0,
+      "q95": 0.577354133729782,
+      "max": 0.9986798060384618,
+      "mean": 0.05061311029099941
+    },
+    "nearest_moving_gate_scaled_distance": {
+      "min": 0.0017642744908336974,
+      "q05": 0.3085301331885448,
+      "q25": 1.465956687359668,
+      "median": 1.494800329208374,
+      "q75": 1.5045375881593896,
+      "q95": 1.505688436013046,
+      "max": 1.505688436013046,
+      "mean": 1.4022567082246744
+    },
+    "fraction_with_moving_neighbor_within": {
+      "0.1": 0.049413735343383586,
+      "0.25": 0.049413735343383586,
+      "0.5": 0.06365159128978225
+    },
+    "nearest_moving_gate_weight_l2_distance": {
+      "min": 0.00021431187588719832,
+      "q05": 0.09822092979990563,
+      "q25": 0.4768118865045048,
+      "median": 0.48905277070198433,
+      "q75": 0.5115642990356561,
+      "q95": 0.511848304401932,
+      "max": 0.511848304401932,
+      "mean": 0.4619090089424284
+    }
+  },
+  "alive_off_diagonal_actual_moving": {
+    "rows": 2337,
+    "episodes": 24,
+    "horizontal_position": {
+      "min": 0.5,
+      "q05": 1.5,
+      "q25": 8.263736724853516,
+      "median": 8.480548858642578,
+      "q75": 8.535667419433594,
+      "q95": 8.70091037750244,
+      "max": 8.949296951293945,
+      "mean": 7.448075928186116
+    },
+    "f4_motion_summary": {
+      "min": 0.0,
+      "q05": 0.012873407962744405,
+      "q25": 0.18300664470360264,
+      "median": 0.29348794208570245,
+      "q75": 0.48256486275753,
+      "q95": 0.9954827280977325,
+      "max": 1.048609374398682,
+      "mean": 0.36744746168014025
+    },
+    "nearest_stationary_gate_scaled_distance": {
+      "min": 0.0017642744908336974,
+      "q05": 0.09178561383174628,
+      "q25": 1.4910670518875122,
+      "median": 1.5546962698129925,
+      "q75": 1.6501169128249193,
+      "q95": 1.747869021120987,
+      "max": 1.880130798607899,
+      "mean": 1.3917220332909053
+    },
+    "fraction_with_stationary_neighbor_within": {
+      "0.1": 0.05562687205819426,
+      "0.25": 0.07359863072314933,
+      "0.5": 0.1069747539580659
+    },
+    "nearest_stationary_gate_weight_l2_distance": {
+      "min": 0.00021431187588719832,
+      "q05": 0.017971861161977905,
+      "q25": 0.4995577151702702,
+      "median": 0.5282002355252066,
+      "q75": 0.550284043292779,
+      "q95": 0.5823610018710657,
+      "max": 0.6543001567054828,
+      "mean": 0.47221455068242935
+    }
+  },
+  "same_context_checks": {
+    "alive_contexts_with_both_stationary_and_moving_off_diagonal_actual_outcomes": 0,
+    "episodes_for_those_mixed_contexts": 0,
+    "recorded_diagonal_stationary_paired_off_diagonal_moving_rows": 0,
+    "exact_feature_identity_within_each_paired_context": true
+  },
+  "checkpoint_response": {
+    "B_s0": {
+      "all_off_diagonal": {
+        "rows": 3531,
+        "pre_projection_response_norm": {
+          "min": 5.310946391170632e-05,
+          "q05": 0.010194386853573321,
+          "q25": 0.06802023804841661,
+          "median": 0.1608166324706137,
+          "q75": 0.43157978570751276,
+          "q95": 1.3172254900397635,
+          "max": 2.0379035587687997,
+          "mean": 0.31887004529981317
+        },
+        "action_difference_norm": {
+          "min": 0.0009067133069038391,
+          "q05": 0.07116623595356941,
+          "q25": 0.2354789674282074,
+          "median": 0.6682656407356262,
+          "q75": 1.3443509340286255,
+          "q95": 2.1217087507247925,
+          "max": 2.8284270763397217,
+          "mean": 0.8653887858589203
+        }
+      },
+      "already_dead_off_diagonal": {
+        "rows": 1194,
+        "pre_projection_response_norm": {
+          "min": 5.310946391170632e-05,
+          "q05": 0.0036885790628060334,
+          "q25": 0.019243259366371196,
+          "median": 0.06217412676341371,
+          "q75": 0.13393319763868525,
+          "q95": 0.23453039106038834,
+          "max": 2.0379035587687997,
+          "mean": 0.1293266050395304
+        },
+        "action_difference_norm": {
+          "min": 0.0009067133069038391,
+          "q05": 0.06961262822151185,
+          "q25": 0.4870136007666588,
+          "median": 1.4842243194580078,
+          "q75": 2.0014472603797913,
+          "q95": 2.622609484195709,
+          "max": 2.8284270763397217,
+          "mean": 1.3103212768875352
+        }
+      },
+      "alive_off_diagonal_actual_stationary": {
+        "rows": 0,
+        "pre_projection_response_norm": {
+          "available": false,
+          "reason": "zero rows"
+        },
+        "action_difference_norm": {
+          "available": false,
+          "reason": "zero rows"
+        }
+      },
+      "alive_off_diagonal_actual_moving": {
+        "rows": 2337,
+        "pre_projection_response_norm": {
+          "min": 0.00020938648844416464,
+          "q05": 0.03841892693251971,
+          "q25": 0.12533048890519197,
+          "median": 0.2825648332463873,
+          "q75": 0.5631930233899335,
+          "q95": 1.4597381857002043,
+          "max": 1.970715012193063,
+          "mean": 0.4157099544443479
+        },
+        "action_difference_norm": {
+          "min": 0.0014375426108017564,
+          "q05": 0.07165423929691316,
+          "q25": 0.21144090592861176,
+          "median": 0.4788062572479248,
+          "q75": 0.9324029684066772,
+          "q95": 1.9230043888092032,
+          "max": 2.603865146636963,
+          "mean": 0.6380676928815278
+        }
+      },
+      "alive_recorded_diagonal_stationary_paired_off_diagonal_moving": {
+        "rows": 0,
+        "pre_projection_response_norm": {
+          "available": false,
+          "reason": "zero rows"
+        },
+        "action_difference_norm": {
+          "available": false,
+          "reason": "zero rows"
+        }
+      },
+      "fatal_onset_off_diagonal": {
+        "rows": 62,
+        "pre_projection_response_norm": {
+          "min": 0.46915495788068334,
+          "q05": 0.5420862589388231,
+          "q25": 0.8245349430860345,
+          "median": 0.899733602304059,
+          "q75": 1.5819448875270417,
+          "q95": 1.7323097812279584,
+          "max": 1.970715012193063,
+          "mean": 1.115955208903063
+        },
+        "action_difference_norm": {
+          "min": 0.6693738698959351,
+          "q05": 0.8674064218997956,
+          "q25": 1.0096884369850159,
+          "median": 1.254952847957611,
+          "q75": 1.9939392507076263,
+          "q95": 2.160847496986389,
+          "max": 2.603865146636963,
+          "mean": 1.447818782060377
+        }
+      },
+      "all_diagonal": {
+        "rows": 1269,
+        "pre_projection_response_norm": {
+          "min": 0.0,
+          "q05": 0.0,
+          "q25": 0.0,
+          "median": 0.0,
+          "q75": 0.0,
+          "q95": 0.0,
+          "max": 0.0,
+          "mean": 0.0
+        },
+        "action_difference_norm": {
+          "min": 0.0,
+          "q05": 0.0,
+          "q25": 0.0,
+          "median": 0.0,
+          "q75": 0.0,
+          "q95": 0.0,
+          "max": 0.0,
+          "mean": 0.0
+        }
+      }
+    },
+    "B_s1": {
+      "all_off_diagonal": {
+        "rows": 3531,
+        "pre_projection_response_norm": {
+          "min": 6.164432157290975e-05,
+          "q05": 0.00894500179065449,
+          "q25": 0.053797000988688684,
+          "median": 0.15565344308002085,
+          "q75": 0.4287544463678673,
+          "q95": 1.315874727880828,
+          "max": 1.944961476528732,
+          "mean": 0.3113668974810518
+        },
+        "action_difference_norm": {
+          "min": 0.0009067133069038391,
+          "q05": 0.07116623595356941,
+          "q25": 0.2354789674282074,
+          "median": 0.6682656407356262,
+          "q75": 1.3443509340286255,
+          "q95": 2.1217087507247925,
+          "max": 2.8284270763397217,
+          "mean": 0.8653887858589203
+        }
+      },
+      "already_dead_off_diagonal": {
+        "rows": 1194,
+        "pre_projection_response_norm": {
+          "min": 6.164432157290975e-05,
+          "q05": 0.0027380204893798954,
+          "q25": 0.016082341893653044,
+          "median": 0.04053791325551879,
+          "q75": 0.11043090842054126,
+          "q95": 0.252065296171686,
+          "max": 1.944961476528732,
+          "mean": 0.1166903302086163
+        },
+        "action_difference_norm": {
+          "min": 0.0009067133069038391,
+          "q05": 0.06961262822151185,
+          "q25": 0.4870136007666588,
+          "median": 1.4842243194580078,
+          "q75": 2.0014472603797913,
+          "q95": 2.622609484195709,
+          "max": 2.8284270763397217,
+          "mean": 1.3103212768875352
+        }
+      },
+      "alive_off_diagonal_actual_stationary": {
+        "rows": 0,
+        "pre_projection_response_norm": {
+          "available": false,
+          "reason": "zero rows"
+        },
+        "action_difference_norm": {
+          "available": false,
+          "reason": "zero rows"
+        }
+      },
+      "alive_off_diagonal_actual_moving": {
+        "rows": 2337,
+        "pre_projection_response_norm": {
+          "min": 0.00047035960190806164,
+          "q05": 0.04011685130715266,
+          "q25": 0.12289765213193826,
+          "median": 0.2781890426071226,
+          "q75": 0.551956852178386,
+          "q95": 1.460245490856644,
+          "max": 1.8929209879811386,
+          "mean": 0.4108293798615772
+        },
+        "action_difference_norm": {
+          "min": 0.0014375426108017564,
+          "q05": 0.07165423929691316,
+          "q25": 0.21144090592861176,
+          "median": 0.4788062572479248,
+          "q75": 0.9324029684066772,
+          "q95": 1.9230043888092032,
+          "max": 2.603865146636963,
+          "mean": 0.6380676928815278
+        }
+      },
+      "alive_recorded_diagonal_stationary_paired_off_diagonal_moving": {
+        "rows": 0,
+        "pre_projection_response_norm": {
+          "available": false,
+          "reason": "zero rows"
+        },
+        "action_difference_norm": {
+          "available": false,
+          "reason": "zero rows"
+        }
+      },
+      "fatal_onset_off_diagonal": {
+        "rows": 62,
+        "pre_projection_response_norm": {
+          "min": 0.5231821323371645,
+          "q05": 0.544495989509402,
+          "q25": 0.8394719483096112,
+          "median": 0.9143353871304508,
+          "q75": 1.577383020855165,
+          "q95": 1.757308864754174,
+          "max": 1.8929209879811386,
+          "mean": 1.1226615339818733
+        },
+        "action_difference_norm": {
+          "min": 0.6693738698959351,
+          "q05": 0.8674064218997956,
+          "q25": 1.0096884369850159,
+          "median": 1.254952847957611,
+          "q75": 1.9939392507076263,
+          "q95": 2.160847496986389,
+          "max": 2.603865146636963,
+          "mean": 1.447818782060377
+        }
+      },
+      "all_diagonal": {
+        "rows": 1269,
+        "pre_projection_response_norm": {
+          "min": 0.0,
+          "q05": 0.0,
+          "q25": 0.0,
+          "median": 0.0,
+          "q75": 0.0,
+          "q95": 0.0,
+          "max": 0.0,
+          "mean": 0.0
+        },
+        "action_difference_norm": {
+          "min": 0.0,
+          "q05": 0.0,
+          "q25": 0.0,
+          "median": 0.0,
+          "q75": 0.0,
+          "q95": 0.0,
+          "max": 0.0,
+          "mean": 0.0
+        }
+      }
+    }
+  },
+  "interpretation_limit": "Overlap concerns this eight-gate response component only. It does not prove that the complete model family cannot fit the conditional law."
+}

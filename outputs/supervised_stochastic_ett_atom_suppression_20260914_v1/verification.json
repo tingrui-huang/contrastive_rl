@@ -1,0 +1,72 @@
+{
+  "target_commit": "54b36620ddd6818ad91679ec5f587ff9f59e2474",
+  "source_contract": {
+    "checks": {
+      "raw_atom_sets_zero_delta": true,
+      "kernel_passes_projected_anchor_to_emitter": true,
+      "kernel_saves_raw_atom_flag": true,
+      "response_is_one_vector_per_row": true,
+      "response_is_broadcast_across_anchor_draws": true,
+      "collector_uses_same_snapshot_for_each_query": true,
+      "collector_records_actual_queried_outcome": true,
+      "collector_query_zero_is_diagonal": true
+    },
+    "conclusion": "On a saved raw-atom draw the diagonal sampler's raw displacement is exactly zero, so its projected anchor is current XY.  The emitter computes one response per row and broadcasts it across anchor draws.  Replacing flagged draws by current XY is therefore exactly zeroing that response on raw atom draws, after emission, without reconstructing non-atom anchors."
+  },
+  "split": {
+    "train_episodes": [
+      0,
+      71
+    ],
+    "development_episodes": [
+      72,
+      95
+    ],
+    "development_episode_count": 24,
+    "development_rows": 4800,
+    "saved_split_exact": true,
+    "paired_four_query_contexts_verified": 1200
+  },
+  "seeds": {
+    "B_s0": {
+      "rows_exactly_aligned_to_saved_split": true,
+      "atom_flag_shape": [
+        4800,
+        64
+      ],
+      "atom_flag_dtype": "bool",
+      "atom_true_draws": 81255,
+      "atom_false_draws": 225945,
+      "stationary_flag_exactly_reconstructed": true,
+      "native_sample_legality_exactly_reconstructed": true,
+      "native_mean_legality_exactly_reconstructed": true,
+      "max_abs_saved_mean_difference": 0.0,
+      "max_abs_saved_squared_error_difference": 0.0,
+      "max_abs_saved_energy_score_difference": 0.0,
+      "full_u_statistic_reconstructed": true,
+      "diagonal_atom_draw_max_abs_current_xy_error": 0.0,
+      "rows_with_at_least_two_atom_draws": 1759,
+      "atom_output_max_within_row_spread": 0.0
+    },
+    "B_s1": {
+      "rows_exactly_aligned_to_saved_split": true,
+      "atom_flag_shape": [
+        4800,
+        64
+      ],
+      "atom_flag_dtype": "bool",
+      "atom_true_draws": 80958,
+      "atom_false_draws": 226242,
+      "stationary_flag_exactly_reconstructed": true,
+      "native_sample_legality_exactly_reconstructed": true,
+      "native_mean_legality_exactly_reconstructed": true,
+      "max_abs_saved_mean_difference": 0.0,
+      "max_abs_saved_squared_error_difference": 0.0,
+      "max_abs_saved_energy_score_difference": 0.0,
+      "full_u_statistic_reconstructed": true,
+      "diagonal_atom_draw_max_abs_current_xy_error": 0.0,
+      "rows_with_at_least_two_atom_draws": 1757,
+      "atom_output_max_within_row_spread": 0.0
+    }
+  }
+}
