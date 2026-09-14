@@ -1,0 +1,72 @@
+{
+  "source_commit": "b3d1423eb0064b63cce63ef5b8194d0f74a18449",
+  "frozen_checkpoint": "outputs/pointmaze_oracle_training_pilot_20260914_v1/checkpoints/C_s1_final.pkl",
+  "discovery_episode_count": 32,
+  "root_target": 24,
+  "train_root_count": 16,
+  "validation_root_count": 8,
+  "horizon": 50,
+  "discount": 0.95,
+  "active_probability": 0.3,
+  "motion_noise_standard_deviation": 0.01,
+  "task_goal_xy": [8.5, 3.5],
+  "reward_radius": 2.0,
+  "strict_success_radius": 0.5,
+  "candidate_actions": {
+    "down": [0.0, -1.0],
+    "right": [1.0, 0.0]
+  },
+  "candidate_exit_cells": {
+    "down": [1, 2],
+    "right": [2, 3]
+  },
+  "fork_geometry": {
+    "x_min_inclusive": 1.0,
+    "x_max_exclusive": 2.0,
+    "y_min_inclusive": 3.0,
+    "y_max_exclusive": 4.0,
+    "alive_before": true,
+    "no_prior_hazard_landing": true,
+    "minimum_remaining_steps": 3
+  },
+  "native_paths_per_root_action": 8,
+  "model_paths_per_root_action": 32,
+  "critic_updates_per_condition": 400,
+  "critic_batch_size": 256,
+  "root_anchor_rows_per_batch_per_action": 64,
+  "validation_nce_batches": 32,
+  "rank_weight_A": 0.0,
+  "rank_weight_B": 1.0,
+  "critic_learning_rate": 0.0003,
+  "evaluation_steps": [0, 10, 25, 50, 100, 200, 400],
+  "bootstrap_replicates": 5000,
+  "discovery_reset_seed_base": 520914000,
+  "discovery_actor_seed": 520914001,
+  "split_seed": 520914002,
+  "native_fork_seed": 520914003,
+  "model_fork_seed": 520914004,
+  "nce_train_seed": 520914005,
+  "nce_validation_seed": 520914006,
+  "bootstrap_seed": 520914007,
+  "clear_ranking_rule": "paired episode-bootstrap 95% interval for mean teacher-signed critic gap has lower endpoint above zero",
+  "primary_checkpoint_rule": "the fixed final update 400 is primary; intermediate evaluations are learning-curve diagnostics, never checkpoint selection",
+  "decision_rule": {
+    "coverage_sufficient": "A is clearly positive on held-out new roots",
+    "ranking_adds_missing_signal": "A is not clearly positive, B is clearly positive, and held-out B-minus-A signed-gap CI is above zero",
+    "neither_resolves": "neither A nor B is clearly positive",
+    "inconclusive_other": "all other patterns"
+  },
+  "caps": {
+    "native_discovery_steps": 1600,
+    "native_fork_paths": 384,
+    "native_fork_transition_slots": 19200,
+    "model_fork_paths": 1536,
+    "model_fork_transition_slots": 76800,
+    "critic_updates_total": 800,
+    "new_actor_training_episodes": 0,
+    "actor_updates": 0,
+    "model_updates": 0,
+    "checkpoint_searches": 0,
+    "runtime_seconds": 7200
+  }
+}

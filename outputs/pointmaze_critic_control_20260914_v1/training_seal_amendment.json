@@ -1,0 +1,16 @@
+{
+  "status": "sealed_after_zero_update_shape_fix_before_training_restart",
+  "preregistration_sha256": "acd4257a7a8a002b825b76b06bafebeb2f44ea6bbcd35650cf2c42dff0e7ee2d",
+  "training_seal_sha256": "67ea26928eb5755f61390e654a58bf0f0de6bc80f7252ec266bab361bfd14eb3",
+  "critic_updates_before_failure": 0,
+  "new_outcomes_after_training_seal": 0,
+  "changed_sources": {
+    "D:\\Users\\trhua\\Research\\contrastive_rl\\.worktrees\\pointmaze-p30\\outputs\\pointmaze_critic_control_20260914_v1\\run.py": {
+      "old": "22b19c81bdb4446f5329bdfd52893fd76df4ca668606678db3efa155ac341df3",
+      "new": "e1ccfed3e6233e2a0d2cb5ef6d3685712a093e6841fe9473d016e81b4e72f63f"
+    }
+  },
+  "fix": "Accept the existing single critic head returned as shape (N,1) and select column zero before asserting a one-dimensional score.",
+  "data_split_labels_streams_and_nce_indices_unchanged": true,
+  "hyperparameters_and_decision_rules_unchanged": true
+}

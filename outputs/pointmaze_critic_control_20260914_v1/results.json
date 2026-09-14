@@ -1,0 +1,520 @@
+{
+  "status": "complete",
+  "decision": "coverage_sufficient",
+  "decision_rule": {
+    "coverage_sufficient": "A is clearly positive on held-out new roots",
+    "ranking_adds_missing_signal": "A is not clearly positive, B is clearly positive, and held-out B-minus-A signed-gap CI is above zero",
+    "neither_resolves": "neither A nor B is clearly positive",
+    "inconclusive_other": "all other patterns"
+  },
+  "teacher": {
+    "train": {
+      "model_down_minus_right_return": {
+        "mean": 6.08668775554493,
+        "ci95": [
+          5.554176693598426,
+          6.617796870618324
+        ],
+        "episode_count": 16
+      },
+      "native_down_minus_right_return": {
+        "mean": 7.124184492497063,
+        "ci95": [
+          6.3522097995524955,
+          7.900055467214504
+        ],
+        "episode_count": 16
+      },
+      "direction_agreement": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "episode_count": 16
+      },
+      "model_preferred_down_fraction": 1.0,
+      "native_preferred_down_fraction": 1.0
+    },
+    "validation": {
+      "model_down_minus_right_return": {
+        "mean": 6.266759478412554,
+        "ci95": [
+          5.622106728767496,
+          7.0314496158040365
+        ],
+        "episode_count": 8
+      },
+      "native_down_minus_right_return": {
+        "mean": 7.9424566304263795,
+        "ci95": [
+          6.614441267339441,
+          9.369098868156348
+        ],
+        "episode_count": 8
+      },
+      "direction_agreement": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "episode_count": 8
+      },
+      "model_preferred_down_fraction": 1.0,
+      "native_preferred_down_fraction": 1.0
+    }
+  },
+  "conditions": {
+    "A_nce_only": {
+      "train": {
+        "signed_gap": {
+          "mean": 0.9425448477268219,
+          "ci95": [
+            0.919573400914669,
+            0.9681850008666515
+          ],
+          "episode_count": 16
+        },
+        "ranking_accuracy": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "episode_count": 16
+        },
+        "raw_down_minus_right_gap": {
+          "mean": 0.9425448477268219,
+          "ci95": [
+            0.919573400914669,
+            0.9681850008666515
+          ],
+          "episode_count": 16
+        },
+        "per_episode_gap": [
+          0.9186282157897949,
+          0.9344677925109863,
+          1.0154953002929688,
+          0.902592658996582,
+          1.0036134719848633,
+          0.8774418830871582,
+          0.8821306228637695,
+          1.0600905418395996,
+          0.9354639053344727,
+          0.9953970909118652,
+          0.9243888854980469,
+          0.9573278427124023,
+          0.9465289115905762,
+          0.9138965606689453,
+          0.9359478950500488,
+          0.8773059844970703
+        ],
+        "per_episode_teacher_sign": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "validation": {
+        "signed_gap": {
+          "mean": 0.771232545375824,
+          "ci95": [
+            0.5362412855029106,
+            0.9467049837112427
+          ],
+          "episode_count": 8
+        },
+        "ranking_accuracy": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "episode_count": 8
+        },
+        "raw_down_minus_right_gap": {
+          "mean": 0.771232545375824,
+          "ci95": [
+            0.5362412855029106,
+            0.9467049837112427
+          ],
+          "episode_count": 8
+        },
+        "per_episode_gap": [
+          0.6788177490234375,
+          0.9204006195068359,
+          0.023786544799804688,
+          1.0242633819580078,
+          0.8731651306152344,
+          0.8183364868164062,
+          0.760035514831543,
+          1.0710549354553223
+        ],
+        "per_episode_teacher_sign": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "reference": {
+        "signed_gap": {
+          "mean": 0.9484185874462128,
+          "ci95": [
+            0.9129055581986905,
+            0.9855287164449692
+          ],
+          "episode_count": 16
+        },
+        "ranking_accuracy": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "episode_count": 16
+        },
+        "raw_down_minus_right_gap": {
+          "mean": 0.9484185874462128,
+          "ci95": [
+            0.9129055581986905,
+            0.9855287164449692
+          ],
+          "episode_count": 16
+        },
+        "per_episode_gap": [
+          1.0219950675964355,
+          1.028271198272705,
+          0.8619279861450195,
+          0.9675073623657227,
+          1.0552597045898438,
+          0.9566164016723633,
+          0.9942121505737305,
+          0.8721013069152832,
+          1.0033025741577148,
+          1.063401699066162,
+          0.8783884048461914,
+          0.86187744140625,
+          0.8762469291687012,
+          0.8614392280578613,
+          0.8687176704406738,
+          1.003432273864746
+        ],
+        "per_episode_teacher_sign": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "heldout_native_nce_loss_initial": 0.045805566012859344,
+      "heldout_native_nce_loss_final": 0.03601543605327606
+    },
+    "B_nce_plus_rank": {
+      "train": {
+        "signed_gap": {
+          "mean": 8.808535099029541,
+          "ci95": [
+            8.704617427289486,
+            8.905563360452652
+          ],
+          "episode_count": 16
+        },
+        "ranking_accuracy": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "episode_count": 16
+        },
+        "raw_down_minus_right_gap": {
+          "mean": 8.808535099029541,
+          "ci95": [
+            8.704617427289486,
+            8.905563360452652
+          ],
+          "episode_count": 16
+        },
+        "per_episode_gap": [
+          8.9108247756958,
+          8.87307357788086,
+          9.035972595214844,
+          8.554160118103027,
+          8.877715110778809,
+          8.640459060668945,
+          8.563078880310059,
+          9.059331893920898,
+          8.997020721435547,
+          8.993976593017578,
+          8.842134475708008,
+          8.9968900680542,
+          8.28699779510498,
+          8.744363784790039,
+          8.88127326965332,
+          8.679288864135742
+        ],
+        "per_episode_teacher_sign": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "validation": {
+        "signed_gap": {
+          "mean": 8.783729434013367,
+          "ci95": [
+            8.570882797241211,
+            8.980534335970878
+          ],
+          "episode_count": 8
+        },
+        "ranking_accuracy": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "episode_count": 8
+        },
+        "raw_down_minus_right_gap": {
+          "mean": 8.783729434013367,
+          "ci95": [
+            8.570882797241211,
+            8.980534335970878
+          ],
+          "episode_count": 8
+        },
+        "per_episode_gap": [
+          8.221182823181152,
+          8.75658130645752,
+          9.174311637878418,
+          8.99352741241455,
+          8.569043159484863,
+          8.530683517456055,
+          9.008495330810547,
+          9.016010284423828
+        ],
+        "per_episode_teacher_sign": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "reference": {
+        "signed_gap": {
+          "mean": 8.838624238967896,
+          "ci95": [
+            8.73951102644205,
+            8.936368910968303
+          ],
+          "episode_count": 16
+        },
+        "ranking_accuracy": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "episode_count": 16
+        },
+        "raw_down_minus_right_gap": {
+          "mean": 8.838624238967896,
+          "ci95": [
+            8.73951102644205,
+            8.936368910968303
+          ],
+          "episode_count": 16
+        },
+        "per_episode_gap": [
+          8.941801071166992,
+          8.954505920410156,
+          8.968849182128906,
+          8.98655891418457,
+          9.00570011138916,
+          8.962475776672363,
+          8.901458740234375,
+          8.568679809570312,
+          9.053443908691406,
+          9.061588287353516,
+          8.813627243041992,
+          8.565110206604004,
+          8.636632919311523,
+          8.563946723937988,
+          8.429658889770508,
+          9.003950119018555
+        ],
+        "per_episode_teacher_sign": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "heldout_native_nce_loss_initial": 0.045805566012859344,
+      "heldout_native_nce_loss_final": 0.04013187065720558
+    }
+  },
+  "paired_comparison": {
+    "heldout_B_minus_A_teacher_signed_gap": {
+      "mean": 8.012496888637543,
+      "ci95": [
+        7.743300800025463,
+        8.379923462867737
+      ],
+      "episode_count": 8
+    },
+    "per_episode_signed_improvement": [
+      7.542365074157715,
+      7.836180686950684,
+      9.150525093078613,
+      7.969264030456543,
+      7.695878028869629,
+      7.712347030639648,
+      8.248459815979004,
+      7.944955348968506
+    ]
+  },
+  "data": {
+    "new_complete_native_discovery_episodes": 32,
+    "new_roots": 24,
+    "train_episode_roots": 16,
+    "validation_episode_roots": 8,
+    "native_fork_paths": 384,
+    "native_fork_transitions": 18816,
+    "model_fork_paths": 1536,
+    "model_fork_transitions": 75264,
+    "common_nce_batches": true,
+    "old_16_roots_role": "external reference only"
+  },
+  "training": {
+    "status": "complete",
+    "utc": "2026-09-14T21:52:57Z",
+    "conditions": {
+      "A_nce_only": 0.0,
+      "B_nce_plus_rank": 1.0
+    },
+    "updates_per_condition": 400,
+    "common_nce_batches": true,
+    "common_native_fork_data": true,
+    "starting_critic_sha256": "5425b06ddd05c37eb90ebf9cd57479ec6fcf06c12eed246b3e9e7175fa70e979",
+    "starting_optimizer_sha256": "9e4162d03a19d285a361024756d9b1d3ffee349736c9fb27c952870db40ac7cb",
+    "frozen_actor_sha256": "302a11a9f364e67d13abe6962172a2023ac455b3c2fa41103a3d9549bec2f60b",
+    "frozen_model_bundle_sha256": "f49f0cc5c78442ea89d67d1ab5a728436f99a54cb21b4c532a6699e9a2362150",
+    "final_checkpoints": {
+      "A_nce_only": {
+        "path": "checkpoints/A_nce_only.pkl",
+        "sha256": "155a81fe94c0faa50e9eee5bbdaa73e8927c584201be6d87794da3729863d4d8",
+        "critic_sha256": "afd8352af1dbb1ae06f6b16f6d8428212d7ac8dd8a3e2ed3a867a1937f8b3b61"
+      },
+      "B_nce_plus_rank": {
+        "path": "checkpoints/B_nce_plus_rank.pkl",
+        "sha256": "942a05fd4cbc96d832deaf7fb98b76f1b9ce45742d645971ce2e8b3f5f6bb2e7",
+        "critic_sha256": "e4d4f1bc949f002b63cc5194d0267cff3fb09486f3f0311b63f2db49287d0c1c"
+      }
+    },
+    "actor_updates": 0,
+    "model_updates": 0,
+    "new_actor_training_episodes": 0,
+    "checkpoint_searches": 0,
+    "runtime_seconds": 17.03120139997918
+  },
+  "limits": {
+    "actor_updates": 0,
+    "model_updates": 0,
+    "new_actor_training_episodes": 0,
+    "checkpoint_searches": 0,
+    "final_checkpoint_fixed_at_update": 400
+  },
+  "posthoc_saved_checkpoint_audit": {
+    "saved_arrays_and_checkpoints_only": true,
+    "new_rollouts": 0,
+    "training_updates": 0,
+    "A_nce_only": {
+      "critic_parameter_l2_from_initial": 2.3876825179714274,
+      "critic_parameter_relative_l2_from_initial": 0.031903836832799,
+      "initial_validation_signed_gap_mean": -0.9883496165275574,
+      "initial_validation_accuracy": 0.0,
+      "final_validation_signed_gap_mean": 0.771232545375824,
+      "final_validation_accuracy": 1.0,
+      "initial_reference_signed_gap_mean": -0.6472837924957275,
+      "initial_reference_accuracy": 0.0,
+      "final_reference_signed_gap_mean": 0.9484186172485352,
+      "final_reference_accuracy": 1.0
+    },
+    "B_nce_plus_rank": {
+      "critic_parameter_l2_from_initial": 3.9156361038953755,
+      "critic_parameter_relative_l2_from_initial": 0.05232011141139066,
+      "initial_validation_signed_gap_mean": -0.9883496165275574,
+      "initial_validation_accuracy": 0.0,
+      "final_validation_signed_gap_mean": 8.783729553222656,
+      "final_validation_accuracy": 1.0,
+      "initial_reference_signed_gap_mean": -0.6472837924957275,
+      "initial_reference_accuracy": 0.0,
+      "final_reference_signed_gap_mean": 8.838624000549316,
+      "final_reference_accuracy": 1.0
+    },
+    "A_B_final_critic_parameter_l2": 4.222485620652144
+  },
+  "recommended_next_intervention": "Use matched, naturally reached native fork continuations as an explicit NCE-only replay component while retaining the ordinary replay distribution; do not add the ranking loss yet. First verify task ranking and general held-out NCE retention with the actor frozen, then run a separately sealed actor-response probe and new complete native confirmation episodes."
+}
