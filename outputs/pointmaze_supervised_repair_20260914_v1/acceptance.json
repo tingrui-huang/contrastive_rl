@@ -1,0 +1,79 @@
+{
+  "head": {
+    "s0": {
+      "checks": {
+        "all": {
+          "brier_improved": true,
+          "absolute_bias_improved": true
+        },
+        "actual_hazardous_landing": {
+          "brier_improved": true,
+          "absolute_bias_improved": true
+        }
+      },
+      "passed": true
+    },
+    "s1": {
+      "checks": {
+        "all": {
+          "brier_improved": true,
+          "absolute_bias_improved": true
+        },
+        "actual_hazardous_landing": {
+          "brier_improved": true,
+          "absolute_bias_improved": true
+        }
+      },
+      "passed": true
+    }
+  },
+  "position": {
+    "s0": {
+      "checks": {
+        "diagonal_energy_improved": true,
+        "off_diagonal_energy_improved": true,
+        "residence_absolute_bias_improved": false,
+        "inside_hazard_dx_absolute_bias_improved": true,
+        "entry_absolute_bias_not_worse_by_over_0p03": true
+      },
+      "passed": false
+    },
+    "s1": {
+      "checks": {
+        "diagonal_energy_improved": true,
+        "off_diagonal_energy_improved": true,
+        "residence_absolute_bias_improved": true,
+        "inside_hazard_dx_absolute_bias_improved": false,
+        "entry_absolute_bias_not_worse_by_over_0p03": true
+      },
+      "passed": false
+    }
+  },
+  "combined": {
+    "s0": {
+      "checks": {
+        "reward_occurrence_absolute_gap_improved": true,
+        "failure_absolute_gap_improved": true,
+        "head_component_passed": true,
+        "position_component_passed": false
+      },
+      "passed": false,
+      "return_not_an_acceptance_input": true
+    },
+    "s1": {
+      "checks": {
+        "reward_occurrence_absolute_gap_improved": false,
+        "failure_absolute_gap_improved": false,
+        "head_component_passed": true,
+        "position_component_passed": false
+      },
+      "passed": false,
+      "return_not_an_acceptance_input": true
+    }
+  },
+  "overall": {
+    "head_passed_both_seeds": true,
+    "position_passed_both_seeds": false,
+    "combined_passed_both_seeds": false
+  }
+}

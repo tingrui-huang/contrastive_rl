@@ -1,0 +1,17 @@
+{
+  "split": "train",
+  "episodes": 128,
+  "rows": 25600,
+  "native_steps": 32000,
+  "teacher_queries": 6400,
+  "actor_queries": 6400,
+  "exact_prefix_branch_matches": 6400,
+  "prefix_source_episode_counts": {
+    "expert": 64,
+    "actor": 64
+  },
+  "all_outcomes_retained": true,
+  "teacher_query_preserved_environment_state_bits_and_rng": true,
+  "same_snapshot_branch_rng_coupled": true,
+  "output_sha256": "2a6857f3252ef7cbf93a8aa12200fc49c0517a8b4b5d050971e2566c32b6fe98"
+}
