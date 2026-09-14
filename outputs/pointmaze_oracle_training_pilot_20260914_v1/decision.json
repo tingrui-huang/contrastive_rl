@@ -1,0 +1,49 @@
+{
+  "conclusion": "The model-augmented condition did not improve native return over both the unchanged actor and equally budgeted offline-only continuation in both fixed training seeds.",
+  "native_added_value": {
+    "seed_0_C_minus_B_return": {
+      "difference": -0.5755689866284772,
+      "ci95": [-1.0214445473161422, -0.12932202988686817]
+    },
+    "seed_1_C_minus_B_return": {
+      "difference": 0.16158977042640466,
+      "ci95": [-0.34453185403395464, 0.681070573042914]
+    }
+  },
+  "generated_environment_added_value": {
+    "seed_0_C_minus_B_return": {
+      "difference": -0.22210378452993496,
+      "ci95": [-0.6517221026623697, 0.21505420941194897]
+    },
+    "seed_1_C_minus_B_return": {
+      "difference": -0.03292786120471014,
+      "ci95": [-0.3663455679114101, 0.29444763371469607]
+    },
+    "interpretation": "C did not outperform B even inside the corresponding frozen oracle model, so the observed failure is not the specific pattern of model-return exploitation without native transfer."
+  },
+  "implementation": {
+    "learner_received_data_and_updated": true,
+    "all_losses_and_gradients_finite": true,
+    "actor_and_critic_parameter_changes_nonzero": true,
+    "paired_offline_draws_and_permutations_verified": true,
+    "oracle_motion_absorption_and_future_sampling_verified": true
+  },
+  "bounded_saved_trace_finding": {
+    "C_s0_failed_before_generated_anchors": 5718,
+    "C_s0_generated_anchors": 25600,
+    "C_s0_fraction": 0.223359375,
+    "C_s1_failed_before_generated_anchors": 6891,
+    "C_s1_generated_anchors": 25600,
+    "C_s1_fraction": 0.2691796875,
+    "false_commanded_task_successes_from_failed_future_goals": 0,
+    "interpretation": "Post-failure sampled actions are ignored by the absorbing transition but still enter the unchanged behavior-cloning term. This is a concrete adapter concern, not a demonstrated cause."
+  },
+  "recommended_next_intervention": "One preregistered same-budget replay-adapter comparison: retain the fatal incoming transition and complete absorbed states as future goals, but exclude failed-before transitions as synthetic anchors/behavior-cloning targets using anchor cut equal to first onset time plus one. Keep the frozen oracle transition, heads, nominal, learner objective, update counts, and offline control unchanged.",
+  "do_not_infer": [
+    "failure of learned ETT motion",
+    "failure of observational identification",
+    "failure of pessimistic or worst-case optimization",
+    "AntMaze behavior",
+    "robust across-training-seed effectiveness"
+  ]
+}

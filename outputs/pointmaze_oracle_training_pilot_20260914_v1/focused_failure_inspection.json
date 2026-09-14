@@ -1,0 +1,93 @@
+{
+  "scope": "one bounded saved-trace/training diagnostic; no additional training, rollouts, or native episodes",
+  "reason": "prespecified native improvement over both controls was not resolved in both training seeds",
+  "learner_received_usable_data": true,
+  "runs": {
+    "B_s0": {
+      "finite_losses": true,
+      "actor_parameter_l2": 1.281232237815857,
+      "critic_parameter_l2": 1.381583333015442,
+      "synthetic_rows": 0,
+      "replay_audit": {
+        "pairs": 0,
+        "anchor_failed": 0,
+        "future_failed": 0,
+        "future_task_goal": 0,
+        "failed_future_task_goal": 0
+      },
+      "critic_loss_first_100": 0.01886026443913579,
+      "critic_loss_last_100": 0.018779775854200126,
+      "actor_loss_first_100": 3.986599600315094,
+      "actor_loss_last_100": 3.906227083206177
+    },
+    "C_s0": {
+      "finite_losses": true,
+      "actor_parameter_l2": 1.3742170333862305,
+      "critic_parameter_l2": 1.5829377174377441,
+      "synthetic_rows": 25600,
+      "replay_audit": {
+        "pairs": 25600,
+        "anchor_failed": 5718,
+        "future_failed": 6589,
+        "future_task_goal": 18110,
+        "failed_future_task_goal": 0
+      },
+      "critic_loss_first_100": 0.018918747380375862,
+      "critic_loss_last_100": 0.01872891088947654,
+      "actor_loss_first_100": 3.836030147075653,
+      "actor_loss_last_100": 3.7620937514305113
+    },
+    "B_s1": {
+      "finite_losses": true,
+      "actor_parameter_l2": 1.3193022012710571,
+      "critic_parameter_l2": 1.3973448276519775,
+      "synthetic_rows": 0,
+      "replay_audit": {
+        "pairs": 0,
+        "anchor_failed": 0,
+        "future_failed": 0,
+        "future_task_goal": 0,
+        "failed_future_task_goal": 0
+      },
+      "critic_loss_first_100": 0.018748454358428715,
+      "critic_loss_last_100": 0.01884405218064785,
+      "actor_loss_first_100": 3.9501438450813295,
+      "actor_loss_last_100": 4.010445199012756
+    },
+    "C_s1": {
+      "finite_losses": true,
+      "actor_parameter_l2": 1.4573137760162354,
+      "critic_parameter_l2": 1.674272894859314,
+      "synthetic_rows": 25600,
+      "replay_audit": {
+        "pairs": 25600,
+        "anchor_failed": 6891,
+        "future_failed": 7818,
+        "future_task_goal": 16657,
+        "failed_future_task_goal": 0
+      },
+      "critic_loss_first_100": 0.01871019635349512,
+      "critic_loss_last_100": 0.01880825649946928,
+      "actor_loss_first_100": 4.024652254581452,
+      "actor_loss_last_100": 3.4887530279159544
+    }
+  },
+  "model_native_gap": {
+    "B_s0": {
+      "predicted_minus_native_return": 0.476704054567878,
+      "predicted_minus_native_failure": -0.0234375
+    },
+    "C_s0": {
+      "predicted_minus_native_return": 0.8301692566664203,
+      "predicted_minus_native_failure": -0.06781250000000005
+    },
+    "B_s1": {
+      "predicted_minus_native_return": -0.008073347365932015,
+      "predicted_minus_native_failure": -0.004375000000000018
+    },
+    "C_s1": {
+      "predicted_minus_native_return": -0.2025909789970468,
+      "predicted_minus_native_failure": 0.012343749999999987
+    }
+  }
+}
