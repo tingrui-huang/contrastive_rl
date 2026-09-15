@@ -1,0 +1,692 @@
+{
+  "ladder": [
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.25,
+    0.3
+  ],
+  "benchmark": {
+    "p_active_1": 0.4,
+    "p_active_2": 0.4,
+    "collection_seed": 606,
+    "episodes": 1000,
+    "horizon": 800
+  },
+  "rule": "per-episode route coin route_rng.random() < p on a stream separate from the six environment reset streams; the deterministic teacher walks the shortcut unless the coin selects the long perimeter route",
+  "rungs": [
+    {
+      "teacher_detour_prob": 0.05,
+      "files": {
+        "raw": "antmaze_rockfall_clock_v6_p040.npz",
+        "xy": "antmaze_rockfall_clock_v6_p040_gxy.npz",
+        "sidecar": "antmaze_rockfall_clock_v6_p040_sidecar.npz",
+        "audit": "antmaze_rockfall_clock_v6_p040_composition_audit.json"
+      },
+      "n_episodes": 1000,
+      "detour_n": 54,
+      "detour_fraction": 0.054,
+      "detour_wilson99": [
+        0.038356,
+        0.075523
+      ],
+      "shortcut_n": 946,
+      "outcomes": {
+        "success_n": 999,
+        "success": 0.999,
+        "failure_n": 0,
+        "failure": 0.0,
+        "timeout_n": 1,
+        "timeout": 0.001,
+        "failure_zone_1_n": 0,
+        "failure_zone_2_n": 0
+      },
+      "n_transitions": 262493,
+      "gates": {
+        "composition_audit_all_pass": true,
+        "meta_detour_prob_matches_rung": true,
+        "audit_configured_prob_matches_rung": true,
+        "configured_prob_in_realized_wilson99": true,
+        "sidecar_detour_count_matches_audit": true,
+        "raw_sha_matches_audit": true,
+        "xy_sha_matches_audit": true,
+        "xy_is_column_selection_of_raw": true,
+        "same_benchmark_as_default_rung": true
+      }
+    },
+    {
+      "teacher_detour_prob": 0.1,
+      "files": {
+        "raw": "antmaze_rockfall_clock_v6_p040_far10.npz",
+        "xy": "antmaze_rockfall_clock_v6_p040_far10_gxy.npz",
+        "sidecar": "antmaze_rockfall_clock_v6_p040_far10_sidecar.npz",
+        "audit": "antmaze_rockfall_clock_v6_p040_far10_composition_audit.json"
+      },
+      "n_episodes": 1000,
+      "detour_n": 111,
+      "detour_fraction": 0.111,
+      "detour_wilson99": [
+        0.087932,
+        0.139196
+      ],
+      "shortcut_n": 889,
+      "outcomes": {
+        "success_n": 997,
+        "success": 0.997,
+        "failure_n": 0,
+        "failure": 0.0,
+        "timeout_n": 3,
+        "timeout": 0.003,
+        "failure_zone_1_n": 0,
+        "failure_zone_2_n": 0
+      },
+      "n_transitions": 269940,
+      "gates": {
+        "composition_audit_all_pass": true,
+        "meta_detour_prob_matches_rung": true,
+        "audit_configured_prob_matches_rung": true,
+        "configured_prob_in_realized_wilson99": true,
+        "sidecar_detour_count_matches_audit": true,
+        "raw_sha_matches_audit": true,
+        "xy_sha_matches_audit": true,
+        "xy_is_column_selection_of_raw": true,
+        "same_benchmark_as_default_rung": true
+      }
+    },
+    {
+      "teacher_detour_prob": 0.15,
+      "files": {
+        "raw": "antmaze_rockfall_clock_v6_p040_far15.npz",
+        "xy": "antmaze_rockfall_clock_v6_p040_far15_gxy.npz",
+        "sidecar": "antmaze_rockfall_clock_v6_p040_far15_sidecar.npz",
+        "audit": "antmaze_rockfall_clock_v6_p040_far15_composition_audit.json"
+      },
+      "n_episodes": 1000,
+      "detour_n": 165,
+      "detour_fraction": 0.165,
+      "detour_wilson99": [
+        0.136993,
+        0.197423
+      ],
+      "shortcut_n": 835,
+      "outcomes": {
+        "success_n": 996,
+        "success": 0.996,
+        "failure_n": 0,
+        "failure": 0.0,
+        "timeout_n": 4,
+        "timeout": 0.004,
+        "failure_zone_1_n": 0,
+        "failure_zone_2_n": 0
+      },
+      "n_transitions": 276301,
+      "gates": {
+        "composition_audit_all_pass": true,
+        "meta_detour_prob_matches_rung": true,
+        "audit_configured_prob_matches_rung": true,
+        "configured_prob_in_realized_wilson99": true,
+        "sidecar_detour_count_matches_audit": true,
+        "raw_sha_matches_audit": true,
+        "xy_sha_matches_audit": true,
+        "xy_is_column_selection_of_raw": true,
+        "same_benchmark_as_default_rung": true
+      }
+    },
+    {
+      "teacher_detour_prob": 0.2,
+      "files": {
+        "raw": "antmaze_rockfall_clock_v6_p040_far20.npz",
+        "xy": "antmaze_rockfall_clock_v6_p040_far20_gxy.npz",
+        "sidecar": "antmaze_rockfall_clock_v6_p040_far20_sidecar.npz",
+        "audit": "antmaze_rockfall_clock_v6_p040_far20_composition_audit.json"
+      },
+      "n_episodes": 1000,
+      "detour_n": 217,
+      "detour_fraction": 0.217,
+      "detour_wilson99": [
+        0.185348,
+        0.252382
+      ],
+      "shortcut_n": 783,
+      "outcomes": {
+        "success_n": 994,
+        "success": 0.994,
+        "failure_n": 0,
+        "failure": 0.0,
+        "timeout_n": 6,
+        "timeout": 0.006,
+        "failure_zone_1_n": 0,
+        "failure_zone_2_n": 0
+      },
+      "n_transitions": 283851,
+      "gates": {
+        "composition_audit_all_pass": true,
+        "meta_detour_prob_matches_rung": true,
+        "audit_configured_prob_matches_rung": true,
+        "configured_prob_in_realized_wilson99": true,
+        "sidecar_detour_count_matches_audit": true,
+        "raw_sha_matches_audit": true,
+        "xy_sha_matches_audit": true,
+        "xy_is_column_selection_of_raw": true,
+        "same_benchmark_as_default_rung": true
+      }
+    },
+    {
+      "teacher_detour_prob": 0.25,
+      "files": {
+        "raw": "antmaze_rockfall_clock_v6_p040_far25.npz",
+        "xy": "antmaze_rockfall_clock_v6_p040_far25_gxy.npz",
+        "sidecar": "antmaze_rockfall_clock_v6_p040_far25_sidecar.npz",
+        "audit": "antmaze_rockfall_clock_v6_p040_far25_composition_audit.json"
+      },
+      "n_episodes": 1000,
+      "detour_n": 267,
+      "detour_fraction": 0.267,
+      "detour_wilson99": [
+        0.232587,
+        0.304485
+      ],
+      "shortcut_n": 733,
+      "outcomes": {
+        "success_n": 990,
+        "success": 0.99,
+        "failure_n": 0,
+        "failure": 0.0,
+        "timeout_n": 10,
+        "timeout": 0.01,
+        "failure_zone_1_n": 0,
+        "failure_zone_2_n": 0
+      },
+      "n_transitions": 291930,
+      "gates": {
+        "composition_audit_all_pass": true,
+        "meta_detour_prob_matches_rung": true,
+        "audit_configured_prob_matches_rung": true,
+        "configured_prob_in_realized_wilson99": true,
+        "sidecar_detour_count_matches_audit": true,
+        "raw_sha_matches_audit": true,
+        "xy_sha_matches_audit": true,
+        "xy_is_column_selection_of_raw": true,
+        "same_benchmark_as_default_rung": true
+      }
+    },
+    {
+      "teacher_detour_prob": 0.3,
+      "files": {
+        "raw": "antmaze_rockfall_clock_v6_p040_far30.npz",
+        "xy": "antmaze_rockfall_clock_v6_p040_far30_gxy.npz",
+        "sidecar": "antmaze_rockfall_clock_v6_p040_far30_sidecar.npz",
+        "audit": "antmaze_rockfall_clock_v6_p040_far30_composition_audit.json"
+      },
+      "n_episodes": 1000,
+      "detour_n": 310,
+      "detour_fraction": 0.31,
+      "detour_wilson99": [
+        0.273683,
+        0.348821
+      ],
+      "shortcut_n": 690,
+      "outcomes": {
+        "success_n": 990,
+        "success": 0.99,
+        "failure_n": 0,
+        "failure": 0.0,
+        "timeout_n": 10,
+        "timeout": 0.01,
+        "failure_zone_1_n": 0,
+        "failure_zone_2_n": 0
+      },
+      "n_transitions": 296878,
+      "gates": {
+        "composition_audit_all_pass": true,
+        "meta_detour_prob_matches_rung": true,
+        "audit_configured_prob_matches_rung": true,
+        "configured_prob_in_realized_wilson99": true,
+        "sidecar_detour_count_matches_audit": true,
+        "raw_sha_matches_audit": true,
+        "xy_sha_matches_audit": true,
+        "xy_is_column_selection_of_raw": true,
+        "same_benchmark_as_default_rung": true
+      }
+    }
+  ],
+  "pairs": [
+    {
+      "low": 0.05,
+      "high": 0.1,
+      "n_episodes": 1000,
+      "both_shortcut": 889,
+      "both_detour": 54,
+      "promoted_to_detour": 57,
+      "demoted_to_shortcut": 0,
+      "shared_shortcut_mismatches": [],
+      "shared_detour_mismatches": [],
+      "promoted_unchanged": [],
+      "promoted_reset_mismatch": [],
+      "environment_columns_identical": {
+        "u1": true,
+        "u2": true,
+        "t0_1": true,
+        "t0_2": true,
+        "env_seed": true,
+        "reset_index": true
+      },
+      "gates": {
+        "detour_sets_nested": true,
+        "shared_shortcut_episodes_byte_identical": true,
+        "shared_detour_episodes_byte_identical": true,
+        "promoted_episodes_change_trajectory": true,
+        "promoted_episodes_keep_reset_observation": true,
+        "environment_draws_identical": true
+      }
+    },
+    {
+      "low": 0.05,
+      "high": 0.15,
+      "n_episodes": 1000,
+      "both_shortcut": 835,
+      "both_detour": 54,
+      "promoted_to_detour": 111,
+      "demoted_to_shortcut": 0,
+      "shared_shortcut_mismatches": [],
+      "shared_detour_mismatches": [],
+      "promoted_unchanged": [],
+      "promoted_reset_mismatch": [],
+      "environment_columns_identical": {
+        "u1": true,
+        "u2": true,
+        "t0_1": true,
+        "t0_2": true,
+        "env_seed": true,
+        "reset_index": true
+      },
+      "gates": {
+        "detour_sets_nested": true,
+        "shared_shortcut_episodes_byte_identical": true,
+        "shared_detour_episodes_byte_identical": true,
+        "promoted_episodes_change_trajectory": true,
+        "promoted_episodes_keep_reset_observation": true,
+        "environment_draws_identical": true
+      }
+    },
+    {
+      "low": 0.05,
+      "high": 0.2,
+      "n_episodes": 1000,
+      "both_shortcut": 783,
+      "both_detour": 54,
+      "promoted_to_detour": 163,
+      "demoted_to_shortcut": 0,
+      "shared_shortcut_mismatches": [],
+      "shared_detour_mismatches": [],
+      "promoted_unchanged": [],
+      "promoted_reset_mismatch": [],
+      "environment_columns_identical": {
+        "u1": true,
+        "u2": true,
+        "t0_1": true,
+        "t0_2": true,
+        "env_seed": true,
+        "reset_index": true
+      },
+      "gates": {
+        "detour_sets_nested": true,
+        "shared_shortcut_episodes_byte_identical": true,
+        "shared_detour_episodes_byte_identical": true,
+        "promoted_episodes_change_trajectory": true,
+        "promoted_episodes_keep_reset_observation": true,
+        "environment_draws_identical": true
+      }
+    },
+    {
+      "low": 0.05,
+      "high": 0.25,
+      "n_episodes": 1000,
+      "both_shortcut": 733,
+      "both_detour": 54,
+      "promoted_to_detour": 213,
+      "demoted_to_shortcut": 0,
+      "shared_shortcut_mismatches": [],
+      "shared_detour_mismatches": [],
+      "promoted_unchanged": [],
+      "promoted_reset_mismatch": [],
+      "environment_columns_identical": {
+        "u1": true,
+        "u2": true,
+        "t0_1": true,
+        "t0_2": true,
+        "env_seed": true,
+        "reset_index": true
+      },
+      "gates": {
+        "detour_sets_nested": true,
+        "shared_shortcut_episodes_byte_identical": true,
+        "shared_detour_episodes_byte_identical": true,
+        "promoted_episodes_change_trajectory": true,
+        "promoted_episodes_keep_reset_observation": true,
+        "environment_draws_identical": true
+      }
+    },
+    {
+      "low": 0.05,
+      "high": 0.3,
+      "n_episodes": 1000,
+      "both_shortcut": 690,
+      "both_detour": 54,
+      "promoted_to_detour": 256,
+      "demoted_to_shortcut": 0,
+      "shared_shortcut_mismatches": [],
+      "shared_detour_mismatches": [],
+      "promoted_unchanged": [],
+      "promoted_reset_mismatch": [],
+      "environment_columns_identical": {
+        "u1": true,
+        "u2": true,
+        "t0_1": true,
+        "t0_2": true,
+        "env_seed": true,
+        "reset_index": true
+      },
+      "gates": {
+        "detour_sets_nested": true,
+        "shared_shortcut_episodes_byte_identical": true,
+        "shared_detour_episodes_byte_identical": true,
+        "promoted_episodes_change_trajectory": true,
+        "promoted_episodes_keep_reset_observation": true,
+        "environment_draws_identical": true
+      }
+    },
+    {
+      "low": 0.1,
+      "high": 0.15,
+      "n_episodes": 1000,
+      "both_shortcut": 835,
+      "both_detour": 111,
+      "promoted_to_detour": 54,
+      "demoted_to_shortcut": 0,
+      "shared_shortcut_mismatches": [],
+      "shared_detour_mismatches": [],
+      "promoted_unchanged": [],
+      "promoted_reset_mismatch": [],
+      "environment_columns_identical": {
+        "u1": true,
+        "u2": true,
+        "t0_1": true,
+        "t0_2": true,
+        "env_seed": true,
+        "reset_index": true
+      },
+      "gates": {
+        "detour_sets_nested": true,
+        "shared_shortcut_episodes_byte_identical": true,
+        "shared_detour_episodes_byte_identical": true,
+        "promoted_episodes_change_trajectory": true,
+        "promoted_episodes_keep_reset_observation": true,
+        "environment_draws_identical": true
+      }
+    },
+    {
+      "low": 0.1,
+      "high": 0.2,
+      "n_episodes": 1000,
+      "both_shortcut": 783,
+      "both_detour": 111,
+      "promoted_to_detour": 106,
+      "demoted_to_shortcut": 0,
+      "shared_shortcut_mismatches": [],
+      "shared_detour_mismatches": [],
+      "promoted_unchanged": [],
+      "promoted_reset_mismatch": [],
+      "environment_columns_identical": {
+        "u1": true,
+        "u2": true,
+        "t0_1": true,
+        "t0_2": true,
+        "env_seed": true,
+        "reset_index": true
+      },
+      "gates": {
+        "detour_sets_nested": true,
+        "shared_shortcut_episodes_byte_identical": true,
+        "shared_detour_episodes_byte_identical": true,
+        "promoted_episodes_change_trajectory": true,
+        "promoted_episodes_keep_reset_observation": true,
+        "environment_draws_identical": true
+      }
+    },
+    {
+      "low": 0.1,
+      "high": 0.25,
+      "n_episodes": 1000,
+      "both_shortcut": 733,
+      "both_detour": 111,
+      "promoted_to_detour": 156,
+      "demoted_to_shortcut": 0,
+      "shared_shortcut_mismatches": [],
+      "shared_detour_mismatches": [],
+      "promoted_unchanged": [],
+      "promoted_reset_mismatch": [],
+      "environment_columns_identical": {
+        "u1": true,
+        "u2": true,
+        "t0_1": true,
+        "t0_2": true,
+        "env_seed": true,
+        "reset_index": true
+      },
+      "gates": {
+        "detour_sets_nested": true,
+        "shared_shortcut_episodes_byte_identical": true,
+        "shared_detour_episodes_byte_identical": true,
+        "promoted_episodes_change_trajectory": true,
+        "promoted_episodes_keep_reset_observation": true,
+        "environment_draws_identical": true
+      }
+    },
+    {
+      "low": 0.1,
+      "high": 0.3,
+      "n_episodes": 1000,
+      "both_shortcut": 690,
+      "both_detour": 111,
+      "promoted_to_detour": 199,
+      "demoted_to_shortcut": 0,
+      "shared_shortcut_mismatches": [],
+      "shared_detour_mismatches": [],
+      "promoted_unchanged": [],
+      "promoted_reset_mismatch": [],
+      "environment_columns_identical": {
+        "u1": true,
+        "u2": true,
+        "t0_1": true,
+        "t0_2": true,
+        "env_seed": true,
+        "reset_index": true
+      },
+      "gates": {
+        "detour_sets_nested": true,
+        "shared_shortcut_episodes_byte_identical": true,
+        "shared_detour_episodes_byte_identical": true,
+        "promoted_episodes_change_trajectory": true,
+        "promoted_episodes_keep_reset_observation": true,
+        "environment_draws_identical": true
+      }
+    },
+    {
+      "low": 0.15,
+      "high": 0.2,
+      "n_episodes": 1000,
+      "both_shortcut": 783,
+      "both_detour": 165,
+      "promoted_to_detour": 52,
+      "demoted_to_shortcut": 0,
+      "shared_shortcut_mismatches": [],
+      "shared_detour_mismatches": [],
+      "promoted_unchanged": [],
+      "promoted_reset_mismatch": [],
+      "environment_columns_identical": {
+        "u1": true,
+        "u2": true,
+        "t0_1": true,
+        "t0_2": true,
+        "env_seed": true,
+        "reset_index": true
+      },
+      "gates": {
+        "detour_sets_nested": true,
+        "shared_shortcut_episodes_byte_identical": true,
+        "shared_detour_episodes_byte_identical": true,
+        "promoted_episodes_change_trajectory": true,
+        "promoted_episodes_keep_reset_observation": true,
+        "environment_draws_identical": true
+      }
+    },
+    {
+      "low": 0.15,
+      "high": 0.25,
+      "n_episodes": 1000,
+      "both_shortcut": 733,
+      "both_detour": 165,
+      "promoted_to_detour": 102,
+      "demoted_to_shortcut": 0,
+      "shared_shortcut_mismatches": [],
+      "shared_detour_mismatches": [],
+      "promoted_unchanged": [],
+      "promoted_reset_mismatch": [],
+      "environment_columns_identical": {
+        "u1": true,
+        "u2": true,
+        "t0_1": true,
+        "t0_2": true,
+        "env_seed": true,
+        "reset_index": true
+      },
+      "gates": {
+        "detour_sets_nested": true,
+        "shared_shortcut_episodes_byte_identical": true,
+        "shared_detour_episodes_byte_identical": true,
+        "promoted_episodes_change_trajectory": true,
+        "promoted_episodes_keep_reset_observation": true,
+        "environment_draws_identical": true
+      }
+    },
+    {
+      "low": 0.15,
+      "high": 0.3,
+      "n_episodes": 1000,
+      "both_shortcut": 690,
+      "both_detour": 165,
+      "promoted_to_detour": 145,
+      "demoted_to_shortcut": 0,
+      "shared_shortcut_mismatches": [],
+      "shared_detour_mismatches": [],
+      "promoted_unchanged": [],
+      "promoted_reset_mismatch": [],
+      "environment_columns_identical": {
+        "u1": true,
+        "u2": true,
+        "t0_1": true,
+        "t0_2": true,
+        "env_seed": true,
+        "reset_index": true
+      },
+      "gates": {
+        "detour_sets_nested": true,
+        "shared_shortcut_episodes_byte_identical": true,
+        "shared_detour_episodes_byte_identical": true,
+        "promoted_episodes_change_trajectory": true,
+        "promoted_episodes_keep_reset_observation": true,
+        "environment_draws_identical": true
+      }
+    },
+    {
+      "low": 0.2,
+      "high": 0.25,
+      "n_episodes": 1000,
+      "both_shortcut": 733,
+      "both_detour": 217,
+      "promoted_to_detour": 50,
+      "demoted_to_shortcut": 0,
+      "shared_shortcut_mismatches": [],
+      "shared_detour_mismatches": [],
+      "promoted_unchanged": [],
+      "promoted_reset_mismatch": [],
+      "environment_columns_identical": {
+        "u1": true,
+        "u2": true,
+        "t0_1": true,
+        "t0_2": true,
+        "env_seed": true,
+        "reset_index": true
+      },
+      "gates": {
+        "detour_sets_nested": true,
+        "shared_shortcut_episodes_byte_identical": true,
+        "shared_detour_episodes_byte_identical": true,
+        "promoted_episodes_change_trajectory": true,
+        "promoted_episodes_keep_reset_observation": true,
+        "environment_draws_identical": true
+      }
+    },
+    {
+      "low": 0.2,
+      "high": 0.3,
+      "n_episodes": 1000,
+      "both_shortcut": 690,
+      "both_detour": 217,
+      "promoted_to_detour": 93,
+      "demoted_to_shortcut": 0,
+      "shared_shortcut_mismatches": [],
+      "shared_detour_mismatches": [],
+      "promoted_unchanged": [],
+      "promoted_reset_mismatch": [],
+      "environment_columns_identical": {
+        "u1": true,
+        "u2": true,
+        "t0_1": true,
+        "t0_2": true,
+        "env_seed": true,
+        "reset_index": true
+      },
+      "gates": {
+        "detour_sets_nested": true,
+        "shared_shortcut_episodes_byte_identical": true,
+        "shared_detour_episodes_byte_identical": true,
+        "promoted_episodes_change_trajectory": true,
+        "promoted_episodes_keep_reset_observation": true,
+        "environment_draws_identical": true
+      }
+    },
+    {
+      "low": 0.25,
+      "high": 0.3,
+      "n_episodes": 1000,
+      "both_shortcut": 690,
+      "both_detour": 267,
+      "promoted_to_detour": 43,
+      "demoted_to_shortcut": 0,
+      "shared_shortcut_mismatches": [],
+      "shared_detour_mismatches": [],
+      "promoted_unchanged": [],
+      "promoted_reset_mismatch": [],
+      "environment_columns_identical": {
+        "u1": true,
+        "u2": true,
+        "t0_1": true,
+        "t0_2": true,
+        "env_seed": true,
+        "reset_index": true
+      },
+      "gates": {
+        "detour_sets_nested": true,
+        "shared_shortcut_episodes_byte_identical": true,
+        "shared_detour_episodes_byte_identical": true,
+        "promoted_episodes_change_trajectory": true,
+        "promoted_episodes_keep_reset_observation": true,
+        "environment_draws_identical": true
+      }
+    }
+  ],
+  "all_pass": true
+}

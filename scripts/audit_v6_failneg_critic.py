@@ -200,6 +200,10 @@ def main():
   ap.add_argument('--heldout-dir', default=HELDOUT_DIR)
   ap.add_argument('--env-name', default=B.ENV_XY)
   ap.add_argument('--npz', default=None)
+  ap.add_argument('--teacher-detour-prob', type=float,
+                  default=B.CT.TEACHER_DETOUR_PROB,
+                  help='ladder rung the audited runs were trained on; picks '
+                       'the matching dataset when --npz is not given')
   ap.add_argument('--seed', type=int, default=0)
   ap.add_argument('--n-anchors', type=int, default=6000)
   ap.add_argument('--out-dir', default=OUT_DIR)
@@ -224,7 +228,8 @@ def main():
                       t0_min_1=V6.T0_MIN_1, t0_max_1=V6.T0_MAX_1,
                       t0_min_2=V6.T0_MIN_2, t0_max_2=V6.T0_MAX_2,
                       seed=args.seed, resume=False)
-  npz = args.npz or B._default_dataset(args.env_name)
+  npz = args.npz or B._default_dataset(args.env_name,
+                                       args.teacher_detour_prob)
   cfg = build_offline_cfg(max_steps=B.HORIZON, ckpt_dir='')
   B._apply_v6_config(cfg, a, npz)
   envs_mod.make_env(cfg.env_name, cfg, seed=cfg.seed)

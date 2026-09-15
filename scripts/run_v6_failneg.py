@@ -33,10 +33,22 @@ The failure trajectories are NEGATIVE-BANK DATA ONLY. The offline dataset is
 the untouched frozen V6 file; no failure episode is an anchor, a positive or a
 hindsight positive.
 
+TEACHER DETOUR LADDER
+---------------------
+``--teacher-detour-prob`` picks the training-set rung (0.05 default, then
+0.10 ... 0.30): the fraction of demonstrator episodes on which the teacher took
+the long safe perimeter route instead of the shortcut. The rungs share seed,
+benchmark and every shortcut episode; only the route coin threshold differs
+(see scripts/train_rockfall_clock_v6_baseline.py). The failure bank is
+rung-independent -- it holds shortcut death states collected with the route
+coin disabled -- so the same bank serves every rung. The run directory gets a
+``_far{pp}`` suffix on every rung except the historical 0.05 one.
+
 Usage:
   python scripts/run_v6_failneg.py --alpha 0.0 --check-only
   python scripts/run_v6_failneg.py --alpha 0.3 --seed 0 --steps 100000
   python scripts/run_v6_failneg.py --alpha 0.3 --seed 0 --smoke --smoke-steps 800
+  python scripts/run_v6_failneg.py --alpha 0.0 --seed 0 --teacher-detour-prob 0.15
 """
 import argparse
 import dataclasses
@@ -85,9 +97,10 @@ def run_name(args):
   goal_tag = 'gxy' if args.env_name == B.ENV_XY else 'gfull'
   return os.path.join(
       RUN_ROOT,
-      'v6fn_%s_s%d_%dk_%s_p%g-%g_h%d'
+      'v6fn_%s_s%d_%dk_%s_p%g-%g_h%d%s'
       % (alpha_tag(args.alpha), args.seed, args.steps // 1000, goal_tag,
-         args.p_active_1, args.p_active_2, args.horizon))
+         args.p_active_1, args.p_active_2, args.horizon,
+         B.run_detour_suffix(args.teacher_detour_prob)))
 
 
 def gate_bank(cfg, bank_path, alpha):
@@ -170,6 +183,11 @@ def build_parser():
   ap.add_argument('--env-name', choices=B.ENV_NAMES, default=B.ENV_XY)
   ap.add_argument('--npz', default=None,
                   help='override the frozen V6 dataset (probes only)')
+  ap.add_argument('--teacher-detour-prob', type=float,
+                  default=B.CT.TEACHER_DETOUR_PROB,
+                  help='training-set rung of the teacher detour ladder '
+                       '(%s); checked against the dataset meta'
+                       % ', '.join('%g' % r for r in B.DETOUR_LADDER))
   ap.add_argument('--horizon', type=int, default=B.HORIZON)
   ap.add_argument('--p-active-1', type=float, default=B.V6.P_ACTIVE_1)
   ap.add_argument('--p-active-2', type=float, default=B.V6.P_ACTIVE_2)
@@ -196,7 +214,8 @@ def main(argv=None):
   if args.steps <= 0 or args.steps % args.horizon:
     raise SystemExit('--steps (%d) must be positive and divisible by --horizon '
                      '(%d)' % (args.steps, args.horizon))
-  npz = args.npz or B._default_dataset(args.env_name)   # pylint: disable=protected-access
+  npz = args.npz or B._default_dataset(              # pylint: disable=protected-access
+      args.env_name, args.teacher_detour_prob)
   run_dir = args.ckpt_dir or run_name(args)
   if args.smoke:
     run_dir += '_smoke'
@@ -218,6 +237,12 @@ def main(argv=None):
         % (dataset_meta.get('outcomes'), dataset_meta.get('n_episodes')))
   print('  p_active        : %g / %g   (benchmark default, untouched)'
         % (args.p_active_1, args.p_active_2))
+  with open(composition_audit, encoding='utf-8') as f:
+    route_audit = json.load(f)['kept']['teacher_route']
+  print('  teacher detour  : %g   (dataset meta %s; %d of %d episodes took '
+        'the long route)'
+        % (args.teacher_detour_prob, dataset_meta.get('teacher_detour_prob'),
+           route_audit['detour_n'], dataset_meta.get('n_episodes')))
 
   cfg = build_offline_cfg(max_steps=args.steps, ckpt_dir=run_dir)
   B._apply_v6_config(cfg, args, npz)           # pylint: disable=protected-access
@@ -251,6 +276,7 @@ def main(argv=None):
                'dataset_sha256': dataset_sha,
                'p_active_1': float(args.p_active_1),
                'p_active_2': float(args.p_active_2),
+               'teacher_detour_prob': float(args.teacher_detour_prob),
                'smoke': bool(args.smoke),
                'failure_episodes_in_training_set': False,
                'note': 'the failure bank is NEGATIVE-distribution data only; '

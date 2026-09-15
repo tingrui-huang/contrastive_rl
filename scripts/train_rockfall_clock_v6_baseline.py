@@ -8,6 +8,8 @@ negative sampling is explicitly disabled here.
 Example::
 
   python scripts/train_rockfall_clock_v6_baseline.py --steps 300000 --seed 0
+  python scripts/train_rockfall_clock_v6_baseline.py --steps 300000 --seed 0 \
+      --teacher-detour-prob 0.15      # the 15%-detour rung of the ladder
 """
 import argparse
 import json
@@ -37,10 +39,18 @@ ENV_NAMES = (ENV_BASE, ENV_XY)
 #:   --p-active-1 0.35 --p-active-2 0.35
 #: _dataset_contract compares the CLI values against the dataset's own meta,
 #: so a mismatched pair is refused rather than silently trained.
-DATASET_BASE = os.path.join(
-    OUT_ROOT, 'dataset', 'antmaze_rockfall_clock_v6_p040.npz')
-DATASET_XY = os.path.join(
-    OUT_ROOT, 'dataset', 'antmaze_rockfall_clock_v6_p040_gxy.npz')
+#:
+#: The teacher's detour (long safe route) probability selects one rung of the
+#: p040 dataset ladder.  Every rung is 1000 episodes at seed 606 on the same
+#: benchmark; only the per-episode route coin threshold differs, so the
+#: detour sets are nested (0.05 subset of 0.10 subset of ... 0.30) and every
+#: episode that is a shortcut on two rungs is byte-identical on both.  The
+#: 0.05 rung is the original ``_p040`` file; the others carry ``_far{pp}``.
+DATASET_DIR = os.path.join(OUT_ROOT, 'dataset')
+DATASET_STEM = 'antmaze_rockfall_clock_v6_p040'
+DETOUR_LADDER = (0.05, 0.10, 0.15, 0.20, 0.25, 0.30)
+DATASET_BASE = os.path.join(DATASET_DIR, DATASET_STEM + '.npz')
+DATASET_XY = os.path.join(DATASET_DIR, DATASET_STEM + '_gxy.npz')
 HORIZON = int(CT.HORIZON)
 assert HORIZON == 800, 'V6 train/eval/teacher horizons must stay synchronized'
 ALGORITHM_CONTRACT = {
@@ -84,8 +94,46 @@ def _validate_benchmark_args(args):
       raise ValueError(f'zone {zone} t0 minimum exceeds maximum: {lo}>{hi}')
 
 
-def _default_dataset(env_name):
-  return DATASET_XY if env_name == ENV_XY else DATASET_BASE
+def detour_tag(detour_prob):
+  """0.05 -> 'far05', 0.3 -> 'far30'; the suffix used by files and run names."""
+  return f'far{int(round(float(detour_prob) * 100)):02d}'
+
+
+def _validate_detour_prob(detour_prob):
+  value = float(detour_prob)
+  if not 0.0 <= value <= 1.0:
+    raise ValueError(f'--teacher-detour-prob must be in [0, 1], got {value}')
+  return value
+
+
+def _is_default_detour(detour_prob):
+  return bool(np.isclose(float(detour_prob), CT.TEACHER_DETOUR_PROB,
+                         rtol=0.0, atol=1e-12))
+
+
+def _default_dataset(env_name, detour_prob=CT.TEACHER_DETOUR_PROB):
+  """Resolve the ladder rung for ``detour_prob`` (learner file only).
+
+  The original 0.05 rung keeps its historical ``_p040`` stem so existing run
+  manifests, hashes and the failure-bank provenance stay valid; every other
+  rung is ``_p040_far{pp}``.  A rung that was never collected is refused with
+  the exact collector command rather than silently falling back.
+  """
+  detour_prob = _validate_detour_prob(detour_prob)
+  if _is_default_detour(detour_prob):
+    return DATASET_XY if env_name == ENV_XY else DATASET_BASE
+  stem = f'{DATASET_STEM}_{detour_tag(detour_prob)}'
+  path = os.path.join(
+      DATASET_DIR, stem + ('_gxy.npz' if env_name == ENV_XY else '.npz'))
+  if not os.path.isfile(path):
+    rungs = ', '.join(f'{r:g}' for r in DETOUR_LADDER)
+    raise FileNotFoundError(
+        f'no V6 dataset for teacher detour probability {detour_prob:g}: '
+        f'{path}. The ladder defines rungs {rungs}. Collect this rung with\n'
+        f'  python scripts/collect_rockfall_clock_v6_dataset.py --episodes 1000 '
+        f'--seed 606 --p-active-1 0.4 --p-active-2 0.4 '
+        f'--teacher-detour-prob {detour_prob:g} --name {stem}')
+  return path
 
 
 def _dataset_contract(npz, args):
@@ -110,7 +158,7 @@ def _dataset_contract(npz, args):
       'horizon': int(args.horizon),
       'p_active_1': float(args.p_active_1),
       'p_active_2': float(args.p_active_2),
-      'teacher_detour_prob': float(CT.TEACHER_DETOUR_PROB),
+      'teacher_detour_prob': float(args.teacher_detour_prob),
       'obs_dim': 29,
       'goal_dim': goal_dim,
       'observation_width': 29 + goal_dim,
@@ -182,7 +230,15 @@ def _run_name(args):
       f'v6clock_crl_s{args.seed}_{args.steps // 1000}k_{goal_tag}_'
       f'p{args.p_active_1:g}-{args.p_active_2:g}_'
       f't{args.t0_min_1}-{args.t0_max_1}_'
-      f'{args.t0_min_2}-{args.t0_max_2}_h{args.horizon}')
+      f'{args.t0_min_2}-{args.t0_max_2}_h{args.horizon}'
+      + run_detour_suffix(args.teacher_detour_prob))
+
+
+def run_detour_suffix(detour_prob):
+  """'' on the historical 0.05 rung so existing run names are unchanged."""
+  if _is_default_detour(detour_prob):
+    return ''
+  return '_' + detour_tag(detour_prob)
 
 
 def _apply_v6_config(cfg, args, npz):
@@ -278,6 +334,8 @@ def _write_manifest(run_dir, args, npz, dataset_meta, dataset_sha,
       'steps': int(args.steps),
       'seed': int(args.seed),
       'dataset_collection_seed': dataset_meta.get('collection_seed'),
+      #: equals args.teacher_detour_prob: _dataset_contract refused any other
+      #: value before this manifest was written.
       'teacher_detour_prob': dataset_meta.get('teacher_detour_prob'),
       'algorithm': 'vanilla_crl_v5_recipe',
       'algorithm_contract': ALGORITHM_CONTRACT,
@@ -334,6 +392,11 @@ def parse_args(argv=None):
   parser.add_argument(
       '--npz', default=None,
       help=f'new V6 dataset (default for headline arm: {DATASET_XY})')
+  parser.add_argument(
+      '--teacher-detour-prob', type=float, default=CT.TEACHER_DETOUR_PROB,
+      help='teacher long-route probability of the training set; selects the '
+           f'dataset ladder rung ({", ".join(f"{r:g}" for r in DETOUR_LADDER)}) '
+           'and is checked against the dataset meta')
   parser.add_argument('--ckpt-dir', default=None)
   parser.add_argument('--resume', action='store_true')
   parser.add_argument('--horizon', type=int, default=HORIZON)
@@ -356,7 +419,8 @@ def main(argv=None):
         f'--steps ({args.steps}) must be divisible by --horizon '
         f'({args.horizon}); the offline trainer advances in horizon-sized '
         'update blocks')
-  npz = args.npz or _default_dataset(args.env_name)
+  _validate_detour_prob(args.teacher_detour_prob)
+  npz = args.npz or _default_dataset(args.env_name, args.teacher_detour_prob)
   run_dir = args.ckpt_dir or _run_name(args)
   dataset_meta, dataset_sha, composition_audit = _dataset_contract(npz, args)
 
@@ -374,6 +438,7 @@ def main(argv=None):
       f'| p=({args.p_active_1:g},{args.p_active_2:g}) '
       f'| t0=([{args.t0_min_1},{args.t0_max_1}],'
       f'[{args.t0_min_2},{args.t0_max_2}]) '
+      f'| teacher detour {args.teacher_detour_prob:g} '
       f'| failure-bank OFF | -> {run_dir}', flush=True)
   print('benchmark manifest ->', manifest, flush=True)
   train(cfg)

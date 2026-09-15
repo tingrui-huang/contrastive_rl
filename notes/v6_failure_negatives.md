@@ -13,6 +13,10 @@ LEVEL 3   q_deliberate = 0.50 q_zone1 + 0.50 q_zone2               exact
 Sections 1-5 were run on this machine (CPU). Sections 6c-6e are the GPU
 sweeps and the audits over their checkpoints.
 
+Every result below is on the 0.05 teacher-detour rung. The same sweep runs
+unchanged on the 0.10-0.30 rungs of the dataset ladder via `DETOUR=...`; see
+[v6_detour_ladder.md](v6_detour_ladder.md).
+
 ---
 
 ## 1. What was reused, and what is new

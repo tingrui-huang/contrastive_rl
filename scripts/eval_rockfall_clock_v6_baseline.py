@@ -101,6 +101,16 @@ def _training_contract(args):
     fingerprint = json.load(handle)
   dataset_meta = fingerprint.get('meta') or {}
 
+  # The teacher detour probability is a training-set property (which rung of
+  # the p040 ladder the checkpoint was trained on); the eval environment does
+  # not depend on it.  Unless overridden, take the checkpoint's own recorded
+  # rung and still require the manifest and dataset meta to agree on it.
+  # Manifests written before the ladder existed always mean the 0.05 rung.
+  if args.teacher_detour_prob is None:
+    recorded = manifest.get('teacher_detour_prob')
+    args.teacher_detour_prob = (float(CT.TEACHER_DETOUR_PROB)
+                                if recorded is None else float(recorded))
+
   goal_dim = 2 if args.env_name == ENV_XY else 29
   expected = {
       'environment_version': V6.ENV_VERSION,
@@ -108,7 +118,7 @@ def _training_contract(args):
       'horizon': int(args.horizon),
       'p_active_1': float(args.p_active_1),
       'p_active_2': float(args.p_active_2),
-      'teacher_detour_prob': float(CT.TEACHER_DETOUR_PROB),
+      'teacher_detour_prob': float(args.teacher_detour_prob),
   }
   manifest_values = {
       name: manifest.get(name) for name in expected}
@@ -431,6 +441,7 @@ def _write_results(rows, summary, step, args, dataset_sha256):
       'learner_input_dim': 31 if args.env_name == ENV_XY else 58,
       'failure_bank_enabled': False,
       'training_dataset_sha256': dataset_sha256,
+      'teacher_detour_prob': float(args.teacher_detour_prob),
       'summary': summary,
   }
   out_dir = args.out_dir or (os.path.dirname(args.ckpt) or '.')
@@ -470,6 +481,10 @@ def parse_args(argv=None):
   parser.add_argument('--t0-max-1', type=int, default=V6.T0_MAX_1)
   parser.add_argument('--t0-min-2', type=int, default=V6.T0_MIN_2)
   parser.add_argument('--t0-max-2', type=int, default=V6.T0_MAX_2)
+  parser.add_argument(
+      '--teacher-detour-prob', type=float, default=None,
+      help='training-set rung the checkpoint must have been trained on; '
+           'default: the rung recorded in the checkpoint manifest')
   parser.add_argument('--method-label', default=None)
   parser.add_argument('--out-dir', default=None)
   parser.add_argument('--results-root', default=OUT_ROOT)
@@ -487,7 +502,8 @@ def main(argv=None):
       f'| natural draws n={args.n}, seed={args.seed} | H={args.horizon} '
       f'| p=({args.p_active_1:g},{args.p_active_2:g}) '
       f'| t0=([{args.t0_min_1},{args.t0_max_1}],'
-      f'[{args.t0_min_2},{args.t0_max_2}])', flush=True)
+      f'[{args.t0_min_2},{args.t0_max_2}]) '
+      f'| trained on teacher detour {args.teacher_detour_prob:g}', flush=True)
   rows = evaluate(act_mean, args)
   summary = summarize(rows, args.p_active_1, args.p_active_2)
   print(json.dumps(summary, indent=2), flush=True)

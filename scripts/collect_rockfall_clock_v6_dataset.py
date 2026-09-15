@@ -24,6 +24,21 @@ Example::
       --p-active-1 0.35 --p-active-2 0.35 \
       --teacher-detour-prob 0.05 --t0-min-1 10 --t0-max-1 45 \
       --t0-min-2 90 --t0-max-2 125 --horizon 800
+
+Teacher-detour ladder.  ``--teacher-detour-prob`` is a per-episode coin drawn
+from its own RNG stream (``seed + ROUTE_SEED_OFFSET``), separate from the six
+environment reset streams, and the teacher is deterministic.  Collecting the
+same seed at a larger probability therefore keeps every environment draw and
+every shared shortcut episode byte-identical and only promotes more episodes
+to the long route (the detour sets are nested).  The p_active 0.40 ladder the
+trainer resolves by ``--teacher-detour-prob`` is named
+``antmaze_rockfall_clock_v6_p040`` (0.05) and
+``antmaze_rockfall_clock_v6_p040_far{pp}`` (0.10 ... 0.30), e.g.::
+
+  python scripts/collect_rockfall_clock_v6_dataset.py --episodes 1000       --seed 606 --p-active-1 0.4 --p-active-2 0.4       --teacher-detour-prob 0.15 --name antmaze_rockfall_clock_v6_p040_far15
+
+``scripts/audit_v6_detour_ladder.py`` checks the nesting and byte-identity
+claims across every collected rung.
 """
 import argparse
 import hashlib

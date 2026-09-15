@@ -18,22 +18,32 @@
 # alpha, and the guard proves each arm differs from the vanilla baseline in
 # fail_neg_alpha (plus the bank path it needs) and nothing else.
 #
+# DETOUR picks the training-set rung of the teacher detour ladder: the
+# fraction of demonstrator episodes on which the teacher took the long safe
+# perimeter route (0.05 default; 0.10 0.15 0.20 0.25 0.30 are collected). Every
+# rung shares seed, benchmark, failure bank and every shortcut episode; only
+# the route coin threshold differs. Run directories and logs carry a
+# far{pp} tag on every rung except the historical 0.05 one.
+#
 # Usage:
 #   bash scripts/run_v6_failneg_sweep.sh check     # gates only, no training
 #   bash scripts/run_v6_failneg_sweep.sh smoke     # tiny run, every arm
 #   bash scripts/run_v6_failneg_sweep.sh run       # the sweep
 #   SEEDS="0 1 2" bash scripts/run_v6_failneg_sweep.sh run
+#   DETOUR=0.15 SEEDS="0 1 2" bash scripts/run_v6_failneg_sweep.sh run
 set -uo pipefail
 
 MODE="${1:-check}"
 SEEDS="${SEEDS:-0}"
 ALPHAS="${ALPHAS:-0.0 0.1 0.2 0.3 0.4 0.5}"
+DETOUR="${DETOUR:-0.05}"
 STEPS="${STEPS:-100000}"
 SMOKE_STEPS="${SMOKE_STEPS:-800}"
 BANK="${BANK:-artifacts/v6_failneg/bank/v6_failure_bank_r60_z20_z20_p040.npz}"
 ENV_NAME="${ENV_NAME:-offline_antmaze_rockfall_clock_v6_gxy}"
-LOGDIR="${LOGDIR:-logs/v6_failneg_sweep}"
 PY="${PY:-python}"
+DETOUR_TAG=$($PY -c "import sys; p=float(sys.argv[1]); print('' if abs(p-0.05)<1e-12 else '_far%02d' % round(p*100))" "$DETOUR")
+LOGDIR="${LOGDIR:-logs/v6_failneg_sweep${DETOUR_TAG}}"
 EPISODES="${EPISODES:-300}"
 RUN_ROOT="artifacts/v6_failneg/runs"
 # Pin the artifact this sweep was defined against. The preflight prints it;
@@ -100,7 +110,7 @@ fi
 ARMS=()
 for s in $SEEDS; do for a in $ALPHAS; do ARMS+=("$a|$s"); done; done
 
-banner "SWEEP PLAN  (${#ARMS[@]} runs, mode=$MODE, jobs=$JOBS, steps=$STEPS)"
+banner "SWEEP PLAN  (${#ARMS[@]} runs, mode=$MODE, jobs=$JOBS, steps=$STEPS, teacher detour=$DETOUR)"
 for spec in "${ARMS[@]}"; do
   IFS='|' read -r alpha seed <<< "$spec"
   printf '  alpha=%-5s seed=%s\n' "$alpha" "$seed"
@@ -108,7 +118,7 @@ done
 
 argv_for() {
   local alpha="$1" seed="$2" steps="$3"
-  echo "--alpha $alpha --seed $seed --steps $steps --bank $BANK --env-name $ENV_NAME"
+  echo "--alpha $alpha --seed $seed --steps $steps --bank $BANK --env-name $ENV_NAME --teacher-detour-prob $DETOUR"
 }
 
 if [ "$MODE" = "check" ]; then
@@ -149,8 +159,14 @@ done
 banner "TRAINING COMPLETE  ($((${#pids[@]}-fail))/${#pids[@]} ok)"
 [ "$MODE" = "smoke" ] && exit $fail
 
-banner "EVALUATION  (n=$EPISODES, identical protocol for every alpha)"
+banner "EVALUATION  (n=$EPISODES, identical protocol for every alpha, teacher detour $DETOUR)"
 for d in "$RUN_ROOT"/v6fn_*; do
+  [ -f "$d/failneg_arm.json" ] || continue
+  $PY -c "
+import json, sys
+arm = json.load(open(sys.argv[1]))
+sys.exit(0 if abs(float(arm.get('teacher_detour_prob', 0.05)) - float(sys.argv[2])) < 1e-12 else 1)
+" "$d/failneg_arm.json" "$DETOUR" || continue
   [ -f "$d/final.pkl" ] || { echo "  skip $d (no final.pkl)"; continue; }
   $PY scripts/eval_rockfall_clock_v6_baseline.py --ckpt "$d/final.pkl" \
       --n "$EPISODES" > "$LOGDIR/$(basename "$d")_eval.log" 2>&1 \
@@ -158,16 +174,19 @@ for d in "$RUN_ROOT"/v6fn_*; do
     || echo "  EVAL FAILED $(basename "$d") (see $LOGDIR/)"
 done
 
-banner "RESULTS"
-$PY - "$RUN_ROOT" <<'PYEOF'
+banner "RESULTS  (teacher detour $DETOUR)"
+$PY - "$RUN_ROOT" "$DETOUR" <<'PYEOF'
 import glob, json, os, sys
-root = sys.argv[1]
+root, detour = sys.argv[1], float(sys.argv[2])
 rows = []
 for d in sorted(glob.glob(os.path.join(root, 'v6fn_*'))):
     arm_path = os.path.join(d, 'failneg_arm.json')
     if not os.path.exists(arm_path):
         continue
     arm = json.load(open(arm_path))
+    # runs written before the ladder existed carry no field and are 0.05
+    if abs(float(arm.get('teacher_detour_prob', 0.05)) - detour) > 1e-12:
+        continue
     ev = sorted(glob.glob(os.path.join(d, 'eval_*.json')))
     s = json.load(open(ev[-1])).get('summary', {}) if ev else {}
     o = s.get('overall', s)
