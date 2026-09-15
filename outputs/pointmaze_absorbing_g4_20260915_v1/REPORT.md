@@ -103,4 +103,18 @@ The x-component stays saturated at +1 at every BC weight; what a lower BC weight
 
 Reading: with bc = 0.05 the from-scratch method is stable across seeds under the repo's own evaluation — reach 0.80 / 0.86 / 1.00 against 0.375 for every baseline run — and the remaining shortfall is the geometric knife-edge of a saturated x-component, not the route preference. A cleaner downward action would need the actor to unpin a_x from the data's (1, 0), which the BC term prevents at every tested weight.
 
+## Addendum: baselines at bc = 0.3 / 0.1 / 0.05 with six seeds each
+
+Twelve more O runs (bc 0.3 seeds 0-5; bc 0.1 and 0.05 seeds 3-5), same recipe (`logs/g4_sweep_baselines.log`, `results/pointmaze_absorbing_g4_baselines/`). Pooled with the earlier O runs, every baseline coefficient now has six seeds (bc 0.2 has three). Final checkpoints on the 200 paired seeds:
+
+| baseline O | seeds | mode: reach | mode: lower route | sampled: reach (mean ± sd, range) | sampled: lower route (mean, range) | sampled: y < 2 | sampled: absorbed |
+|---|---:|---:|---:|---|---|---:|---:|
+| bc 0.3 | 6 | 0.375 (all) | 0.000 (all) | 0.359 ± 0.024 [0.340, 0.410] | 0.104 [0.045, 0.240] | 0.069 | 0.651 |
+| bc 0.2 | 3 | 0.375 (all) | 0.000 (all) | 0.358 ± 0.012 [0.345, 0.375] | 0.060 [0.030, 0.090] | 0.047 | 0.650 |
+| bc 0.1 | 6 | 0.375 (all) | 0.000 (all) | 0.364 ± 0.021 [0.335, 0.400] | 0.055 [0.030, 0.105] | 0.041 | 0.642 |
+| bc 0.05 | 6 | 0.375 (all) | 0.000 (all) | 0.369 ± 0.009 [0.350, 0.375] | 0.023 [0.005, 0.050] | 0.008 | 0.632 |
+| **P bc 0.05** (for comparison) | 3 | **0.795 / 0.860 / 1.000** | **0.835 / 0.805 / 1.000** | 0.825 / 0.780 / 0.715 | 0.795 / 0.755 / 0.610 | 0.685 / 0.660 / 0.560 | 0.175 / 0.220 / 0.285 |
+
+Under the mode protocol all 21 baseline finals are the same policy at the fork (full speed right) and therefore produce identical trajectories on identical seeds: reach 0.375, absorbed 0.625, far route 0.000, for every coefficient and seed. Under sampling, the baselines' far-route share shrinks as BC falls (0.104 → 0.023), i.e. lowering BC under the observational critic moves the actor toward the shortcut, the opposite of what it does under the pessimistic critic. During training, 3 of 21 baseline runs touched the detour mode once in the first 20k steps (bc 0.05 s3 and bc 0.1 s3 at 20k, bc 0.05 s5 at 10k, before the critic had learned anything) and never returned; no baseline run exceeds 0.58 after 20k steps.
+
 No commit until reviewed.
