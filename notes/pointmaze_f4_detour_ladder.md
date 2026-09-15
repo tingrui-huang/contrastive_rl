@@ -134,3 +134,71 @@ checkpoint are all trained on the 0.05 rung; retargeting it is a separate job).
   `arm_provenance.json` records `force_safe_prob 0.3`. The check/smoke run
   directories were removed afterwards; the rung datasets stay in
   `~/contrastive_rl/datasets/` on that node.
+
+## 5. Baseline vs the query-coverage method on the 0.10 / 0.20 / 0.30 rungs
+
+Run on 2026-09-15/16 with [`scripts/run_f4_ladder_ett.py`](../scripts/run_f4_ladder_ett.py):
+three rungs x two arms x three learner seeds, all at BC 0.05 and the sealed
+30k-update recipe. O = plain offline CRL on the rung's 6600 episodes. C = arm C
+of the sealed fixed-ETT query-coverage experiment
+(`outputs/pointmaze_ett_query_coverage_20260915_v1`): the fixed learned ETT
+generates 3300 rollouts from the 550 supervised fork contexts with the
+six-action covered first query, nominal advice and continuation actor; the
+replay is 50% those and 50% the predeclared 3300-episode original subset.
+The nominal MDN, the 150k/bc-0.5 continuation actor and the original half are
+re-derived from each rung; ETT checkpoint, roots, query set, 16 held-out
+roots and the 200 native reset seeds are the sealed ones. Within a seed O and
+C start from the identical learner state (verified per seed). Results and
+per-run provenance are in `outputs/pointmaze_ladder_ett_v1/` (checkpoints and
+replays stay on the GPU node).
+
+Mean over three seeds; mode = deterministic actor, sample = sampled actions;
+reach = success at 0.5; lower = took the safe lower route; critic = held-out
+down-minus-right logit (>0 prefers the detour).
+
+| rung | safe-route eps | arm | mode reach | mode lower | sample reach | sample lower | critic d-r |
+|---|---|---|---:|---:|---:|---:|---:|
+| 0.10 | 490/4800 | O | 0.305 | 0.000 | 0.350 | 0.108 | -0.012 |
+| 0.10 | | C | 0.937 | 0.912 | 0.750 | 0.697 | +0.202 |
+| 0.20 | 983/4800 | O | 0.305 | 0.000 | 0.343 | 0.107 | -0.077 |
+| 0.20 | | C | 0.453 | 0.217 | 0.517 | 0.365 | +0.286 |
+| 0.30 | 1461/4800 | O | 0.477 | 0.248 | 0.563 | 0.417 | +0.104 |
+| 0.30 | | C | 0.895 | 0.857 | 0.665 | 0.580 | +0.330 |
+
+Per seed (mode reach / mode lower; critic roots preferring down):
+
+| rung | seed | O | C | O roots | C roots |
+|---|---|---|---|---|---|
+| 0.10 | 0 | 0.305 / 0.000 | 1.000 / 1.000 | 0/16 | 16/16 |
+| 0.10 | 1 | 0.305 / 0.000 | 0.810 / 0.735 | 16/16 | 15/16 |
+| 0.10 | 2 | 0.305 / 0.000 | 1.000 / 1.000 | 1/16 | 16/16 |
+| 0.20 | 0 | 0.305 / 0.000 | 0.355 / 0.055 | 9/16 | 15/16 |
+| 0.20 | 1 | 0.305 / 0.000 | 0.305 / 0.000 | 15/16 | 16/16 |
+| 0.20 | 2 | 0.305 / 0.000 | 0.700 / 0.595 | 0/16 | 16/16 |
+| 0.30 | 0 | 0.305 / 0.000 | 0.840 / 0.790 | 13/16 | 16/16 |
+| 0.30 | 1 | 0.820 / 0.745 | 0.845 / 0.780 | 15/16 | 14/16 |
+| 0.30 | 2 | 0.305 / 0.000 | 1.000 / 1.000 | 12/16 | 16/16 |
+
+What the table says, and no more:
+
+* The baseline never takes the detour at 0.10 and 0.20 (0.305 on all six
+  seeds, the sealed 0.05 figure). At 0.30 one seed of three takes it (0.820);
+  the other two stay at 0.305. Six times more long-route expert data
+  (257 -> 1461 episodes) does not reliably move plain CRL's deterministic
+  actor onto the detour, although its critic ranking drifts the right way
+  (12-15/16 roots at 0.30).
+* C beats O on every rung and on 8 of 9 seed pairs (0.20 seed 1 ties at
+  0.305). Its critic prefers the detour on 14-16/16 held-out roots in all
+  nine runs.
+* C is seed-sensitive and not monotone in the rung: 0.937 at 0.10, 0.453 at
+  0.20 (0.355 / 0.305 / 0.700), 0.895 at 0.30. Because the PointMaze rungs
+  re-roll the 4800 teacher episodes (section 1), rung-to-rung differences
+  carry dataset-draw noise as well as the fraction, and three learner seeds
+  per rung do not separate the two. The 0.05 rung with the same driver, or
+  more seeds on 0.20, would be the next measurements.
+
+Execution: all three rungs ran sequentially on the 30025 node (RTX 3060 Ti,
+~18 min per rung). The 30123 node's RTX 3080 turned out to be shared with
+another tenant (a 4096x4096 matmul could not obtain 4 GB; 29 minutes of
+training had not reached the first checkpoint), so its 0.30 run was killed and
+rerun on 30025; port 30009 never accepted a connection.

@@ -1,0 +1,20 @@
+{
+  "force_safe_prob": 0.3,
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "arms": [
+    "O",
+    "C"
+  ],
+  "bc_coef": 0.05,
+  "crl_steps": 30000,
+  "smoke": false,
+  "sealed_experiment": "outputs/pointmaze_ett_query_coverage_20260915_v1",
+  "sealed_config_sha256": "c71656bb8f4f94b7522f5be6299c6aec8c116267df90d0076059bc55be403e2d",
+  "rollout_actor_recipe": "zbase 150k bc 0.5 seed 0 on the rung",
+  "nominal_recipe": "expert_positive MDN k=5 20k steps seed 0 on the rung",
+  "git_head": "91732fdafd67118be275ae1289640317897785a9"
+}

@@ -1,0 +1,135 @@
+{
+  "sha256": "228d26d44366c50cef3beed04d99ba239e94dca43b810bbb5db64709cdde8d6f",
+  "meta": {
+    "env_name": "point_two_route_swamp_windy_f4_v0",
+    "setting": "windy_lethal_merged_with_bad_demonstrator",
+    "episodes": 6600,
+    "seed": 0,
+    "mode": "teacher",
+    "behavior_policy": "windy_reactive_teacher(force_safe=0.2, per-step dodge) + random_frac=0.2",
+    "random_frac": 0.2,
+    "force_safe_prob": 0.2,
+    "teacher_noise": 0.15,
+    "per_cell_swamp_prob": 0.3,
+    "obs_dim": 8,
+    "goal_dim": 8,
+    "obs_layout": "[x_t, y_t, ..., x_{t-3}, y_{t-3}, g_x, g_y (x4)]",
+    "n_frames": 4,
+    "frame_order": "newest first; state[0:2] is the current position",
+    "goal_layout": "tile(GOAL, 4) -- at the goal and stationary",
+    "normalisation": "none; the stack holds raw maze-unit positions",
+    "action_dim": 2,
+    "max_episode_steps": 50,
+    "episode_len_rows_L": 51,
+    "obs_width_D": 16,
+    "n_transitions": 330000,
+    "frac_rows_frozen_stack": 0.12044117647058823,
+    "frac_rows_frozen_among_died": 0.6417735818607279,
+    "frac_rows_frozen_among_survived": 0.01965853962905767,
+    "death_lag_steps": 3,
+    "death_lag_note": "a newly dead agent still carries its pre-contact frames, so the all-equal signature only forms n_frames-1 steps after contact",
+    "teacher_mode_code": {
+      "random": 0,
+      "forced_safe": 1,
+      "immediate_shortcut": 2,
+      "wait_shortcut": 3,
+      "bad_demo": 4
+    },
+    "route_label_code": {
+      "random": 0,
+      "shortcut": 1,
+      "safe_detour": 2,
+      "other": 3
+    },
+    "died_rate_overall": 0.20924242424242423,
+    "reached_0p5_rate": 0.729,
+    "audit_fields": [
+      "swamp_bits",
+      "route_label",
+      "teacher_mode",
+      "force_safe",
+      "wait_count",
+      "entered_active_swamp"
+    ],
+    "note": "bad-demo episodes are POSITIVE-side support for the (forward | U active) branch; obs is still [x,y,gx,gy] and the confounder is not exposed",
+    "merge": {
+      "main_name": "swamp_windy_f4_far20_teacher_s0.npz",
+      "main_content_sha256": "8ec1e8d8532bd898425ae2b26d72ea7ac13a6175a33450e85a261550322bc7ac",
+      "main_episodes": 6000,
+      "main_index_range": [
+        0,
+        6000
+      ],
+      "bad_name": "swamp_windy_f4_baddemo_s0.npz",
+      "bad_content_sha256": "5e51979051873deef5ac01f66e3f1a44e8ad3139bded41dce812b1bc9fb3306c",
+      "bad_episodes": 600,
+      "bad_index_range": [
+        6000,
+        6600
+      ],
+      "bad_demo_teacher_mode_code": 4,
+      "bad_demo_meta": {
+        "env_name": "point_two_route_swamp_windy_f4_v0",
+        "setting": "windy_lethal_f4_baddemo",
+        "episodes": 600,
+        "seed": 0,
+        "mode": "baddemo",
+        "behavior_policy": "BFS shortcut oracle with the dodge step REMOVED",
+        "random_frac": 0.0,
+        "force_safe_prob": 0.0,
+        "teacher_noise": 0.15,
+        "per_cell_swamp_prob": 0.3,
+        "obs_dim": 8,
+        "goal_dim": 8,
+        "obs_layout": "[x_t, y_t, ..., x_{t-3}, y_{t-3}, g_x, g_y (x4)]",
+        "n_frames": 4,
+        "frame_order": "newest first; state[0:2] is the current position",
+        "goal_layout": "tile(GOAL, 4) -- at the goal and stationary",
+        "normalisation": "none; the stack holds raw maze-unit positions",
+        "action_dim": 2,
+        "max_episode_steps": 50,
+        "episode_len_rows_L": 51,
+        "obs_width_D": 16,
+        "n_transitions": 30000,
+        "frac_rows_frozen_stack": 0.6090849673202614,
+        "frac_rows_frozen_among_died": 0.8843664605206386,
+        "frac_rows_frozen_among_survived": 0.0196078431372549,
+        "death_lag_steps": 3,
+        "death_lag_note": "a newly dead agent still carries its pre-contact frames, so the all-equal signature only forms n_frames-1 steps after contact",
+        "teacher_mode_code": {
+          "random": 0,
+          "forced_safe": 1,
+          "immediate_shortcut": 2,
+          "wait_shortcut": 3,
+          "bad_demo": 4
+        },
+        "route_label_code": {
+          "random": 0,
+          "shortcut": 1,
+          "safe_detour": 2,
+          "other": 3
+        },
+        "died_rate_overall": 0.6816666666666666,
+        "reached_0p5_rate": 0.31833333333333336,
+        "audit_fields": [
+          "swamp_bits",
+          "route_label",
+          "teacher_mode",
+          "force_safe",
+          "wait_count",
+          "entered_active_swamp"
+        ],
+        "note": "entered_active_swamp == DIED; audit fields are AUDIT-ONLY; the learner obs is stacked positions + stacked goal only, and every entry is a position the agent actually occupied"
+      }
+    },
+    "teacher_mode_frequencies": {
+      "0": 1200,
+      "1": 983,
+      "2": 1235,
+      "3": 2582,
+      "4": 600
+    },
+    "died_rate_main": 0.162,
+    "died_rate_bad_demo": 0.6816666666666666
+  }
+}

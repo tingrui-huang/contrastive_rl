@@ -1,0 +1,96 @@
+{
+  "force_safe_prob": 0.2,
+  "dataset": {
+    "force_safe_prob": 0.2,
+    "dataset": "datasets/swamp_windy_f4_far20_merged_s0.npz",
+    "content_sha256": "e7ba45632a914a29ba4bcc973fd4c42581ace83e840e8b33a2a7570cc05db672",
+    "file_sha256": "228d26d44366c50cef3beed04d99ba239e94dca43b810bbb5db64709cdde8d6f",
+    "n_forced_safe": 983,
+    "n_teacher": 4800,
+    "episodes": 6600
+  },
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "arms": [
+    "O",
+    "C"
+  ],
+  "bc_coef": 0.05,
+  "steps": 30000,
+  "native_episodes": 200,
+  "per_seed": {
+    "0": {
+      "O": {
+        "mode_reach": 0.305,
+        "mode_lower": 0.0,
+        "sample_reach": 0.325,
+        "sample_lower": 0.065,
+        "critic_down_minus_right": -0.09923109412193298,
+        "critic_roots_down": 9
+      },
+      "C": {
+        "mode_reach": 0.355,
+        "mode_lower": 0.055,
+        "sample_reach": 0.51,
+        "sample_lower": 0.36,
+        "critic_down_minus_right": 0.19659721851348877,
+        "critic_roots_down": 15
+      }
+    },
+    "1": {
+      "O": {
+        "mode_reach": 0.305,
+        "mode_lower": 0.0,
+        "sample_reach": 0.335,
+        "sample_lower": 0.12,
+        "critic_down_minus_right": 0.15707194805145264,
+        "critic_roots_down": 15
+      },
+      "C": {
+        "mode_reach": 0.305,
+        "mode_lower": 0.0,
+        "sample_reach": 0.45,
+        "sample_lower": 0.25,
+        "critic_down_minus_right": 0.24334776401519775,
+        "critic_roots_down": 16
+      }
+    },
+    "2": {
+      "O": {
+        "mode_reach": 0.305,
+        "mode_lower": 0.0,
+        "sample_reach": 0.37,
+        "sample_lower": 0.135,
+        "critic_down_minus_right": -0.29001864790916443,
+        "critic_roots_down": 0
+      },
+      "C": {
+        "mode_reach": 0.7,
+        "mode_lower": 0.595,
+        "sample_reach": 0.59,
+        "sample_lower": 0.485,
+        "critic_down_minus_right": 0.4183472990989685,
+        "critic_roots_down": 16
+      }
+    }
+  },
+  "mean_over_seeds": {
+    "O": {
+      "mode_reach": 0.305,
+      "mode_lower": 0.0,
+      "sample_reach": 0.3433333333333333,
+      "sample_lower": 0.10666666666666667,
+      "critic_down_minus_right": -0.07739259799321492
+    },
+    "C": {
+      "mode_reach": 0.4533333333333333,
+      "mode_lower": 0.21666666666666667,
+      "sample_reach": 0.5166666666666666,
+      "sample_lower": 0.365,
+      "critic_down_minus_right": 0.2860974272092183
+    }
+  }
+}

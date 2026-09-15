@@ -1,0 +1,30 @@
+{
+  "force_safe_prob": 0.3,
+  "fixed_inputs": {
+    "ett_checkpoint": "outputs/pointmaze_learned_ett_crl_20260915_v1/ett_selected.pt",
+    "ett_checkpoint_sha256": "8ab13631350250ad77e12bc24f3a39d66fc71d814c8f79c97e5a96fae3354c54",
+    "construction_roots_sha256": "75e5360eb8af27d1a6801f82cc23ab5153de4c7d5f9d5c29814ef9d934a9b5c7"
+  },
+  "rung_inputs": {
+    "nominal_sha256": "fd9a4f0e4548aff4b9c06218f97a6de881aa25a994728f7422120fa6f349bcea",
+    "rollout_actor_sha256": "4dc842061839b3c5841493ee9c4e599cbdab24ce408e5b9d22b4ef628cbe914f",
+    "dataset_sha256": "63218221ebe79527a5aff703d532bede729cff47bb5c93a09e1d81fb095c8f9d"
+  },
+  "jax_devices": [
+    "cuda:0"
+  ],
+  "arms": {
+    "C": {
+      "arm": "C",
+      "paths": 3300,
+      "lower_route_fraction": 0.48818181818181816,
+      "reach_0p5_fraction": 0.6160606060606061,
+      "absorbed_fraction": 0.38575757575757574,
+      "onsets": 1273,
+      "first_query_down_sector": 1650,
+      "first_query_right_sector": 1650,
+      "wall_seconds": 3.8379344940185547,
+      "replay_sha256": "3a96c5965ed0f00fa15c54850a201fac9824551404433bff68d08c433a12f50f"
+    }
+  }
+}

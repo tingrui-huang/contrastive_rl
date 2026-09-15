@@ -1,0 +1,292 @@
+{
+  "rungs": [
+    {
+      "force_safe_prob": 0.1,
+      "dataset": {
+        "force_safe_prob": 0.1,
+        "dataset": "datasets/swamp_windy_f4_far10_merged_s0.npz",
+        "content_sha256": "b67b228139cb1c9502ab939a9e8572d392bca7b49e7ffca56e0da571bb63a51a",
+        "file_sha256": "ce319e1e8c7e6ac313921a6e8997d62d83c04bbedf5c61291c7875497452d40e",
+        "n_forced_safe": 490,
+        "n_teacher": 4800,
+        "episodes": 6600
+      },
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "arms": [
+        "O",
+        "C"
+      ],
+      "bc_coef": 0.05,
+      "steps": 30000,
+      "native_episodes": 200,
+      "per_seed": {
+        "0": {
+          "O": {
+            "mode_reach": 0.305,
+            "mode_lower": 0.0,
+            "sample_reach": 0.3,
+            "sample_lower": 0.045,
+            "critic_down_minus_right": -0.18456780910491943,
+            "critic_roots_down": 0
+          },
+          "C": {
+            "mode_reach": 1.0,
+            "mode_lower": 1.0,
+            "sample_reach": 0.805,
+            "sample_lower": 0.75,
+            "critic_down_minus_right": 0.3192715048789978,
+            "critic_roots_down": 16
+          }
+        },
+        "1": {
+          "O": {
+            "mode_reach": 0.305,
+            "mode_lower": 0.0,
+            "sample_reach": 0.325,
+            "sample_lower": 0.055,
+            "critic_down_minus_right": 0.2762276232242584,
+            "critic_roots_down": 16
+          },
+          "C": {
+            "mode_reach": 0.81,
+            "mode_lower": 0.735,
+            "sample_reach": 0.675,
+            "sample_lower": 0.59,
+            "critic_down_minus_right": 0.15630251169204712,
+            "critic_roots_down": 15
+          }
+        },
+        "2": {
+          "O": {
+            "mode_reach": 0.305,
+            "mode_lower": 0.0,
+            "sample_reach": 0.425,
+            "sample_lower": 0.225,
+            "critic_down_minus_right": -0.12817606329917908,
+            "critic_roots_down": 1
+          },
+          "C": {
+            "mode_reach": 1.0,
+            "mode_lower": 1.0,
+            "sample_reach": 0.77,
+            "sample_lower": 0.75,
+            "critic_down_minus_right": 0.1300559937953949,
+            "critic_roots_down": 16
+          }
+        }
+      },
+      "mean_over_seeds": {
+        "O": {
+          "mode_reach": 0.305,
+          "mode_lower": 0.0,
+          "sample_reach": 0.35000000000000003,
+          "sample_lower": 0.10833333333333334,
+          "critic_down_minus_right": -0.012172083059946695
+        },
+        "C": {
+          "mode_reach": 0.9366666666666666,
+          "mode_lower": 0.9116666666666666,
+          "sample_reach": 0.75,
+          "sample_lower": 0.6966666666666667,
+          "critic_down_minus_right": 0.2018766701221466
+        }
+      }
+    },
+    {
+      "force_safe_prob": 0.2,
+      "dataset": {
+        "force_safe_prob": 0.2,
+        "dataset": "datasets/swamp_windy_f4_far20_merged_s0.npz",
+        "content_sha256": "e7ba45632a914a29ba4bcc973fd4c42581ace83e840e8b33a2a7570cc05db672",
+        "file_sha256": "228d26d44366c50cef3beed04d99ba239e94dca43b810bbb5db64709cdde8d6f",
+        "n_forced_safe": 983,
+        "n_teacher": 4800,
+        "episodes": 6600
+      },
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "arms": [
+        "O",
+        "C"
+      ],
+      "bc_coef": 0.05,
+      "steps": 30000,
+      "native_episodes": 200,
+      "per_seed": {
+        "0": {
+          "O": {
+            "mode_reach": 0.305,
+            "mode_lower": 0.0,
+            "sample_reach": 0.325,
+            "sample_lower": 0.065,
+            "critic_down_minus_right": -0.09923109412193298,
+            "critic_roots_down": 9
+          },
+          "C": {
+            "mode_reach": 0.355,
+            "mode_lower": 0.055,
+            "sample_reach": 0.51,
+            "sample_lower": 0.36,
+            "critic_down_minus_right": 0.19659721851348877,
+            "critic_roots_down": 15
+          }
+        },
+        "1": {
+          "O": {
+            "mode_reach": 0.305,
+            "mode_lower": 0.0,
+            "sample_reach": 0.335,
+            "sample_lower": 0.12,
+            "critic_down_minus_right": 0.15707194805145264,
+            "critic_roots_down": 15
+          },
+          "C": {
+            "mode_reach": 0.305,
+            "mode_lower": 0.0,
+            "sample_reach": 0.45,
+            "sample_lower": 0.25,
+            "critic_down_minus_right": 0.24334776401519775,
+            "critic_roots_down": 16
+          }
+        },
+        "2": {
+          "O": {
+            "mode_reach": 0.305,
+            "mode_lower": 0.0,
+            "sample_reach": 0.37,
+            "sample_lower": 0.135,
+            "critic_down_minus_right": -0.29001864790916443,
+            "critic_roots_down": 0
+          },
+          "C": {
+            "mode_reach": 0.7,
+            "mode_lower": 0.595,
+            "sample_reach": 0.59,
+            "sample_lower": 0.485,
+            "critic_down_minus_right": 0.4183472990989685,
+            "critic_roots_down": 16
+          }
+        }
+      },
+      "mean_over_seeds": {
+        "O": {
+          "mode_reach": 0.305,
+          "mode_lower": 0.0,
+          "sample_reach": 0.3433333333333333,
+          "sample_lower": 0.10666666666666667,
+          "critic_down_minus_right": -0.07739259799321492
+        },
+        "C": {
+          "mode_reach": 0.4533333333333333,
+          "mode_lower": 0.21666666666666667,
+          "sample_reach": 0.5166666666666666,
+          "sample_lower": 0.365,
+          "critic_down_minus_right": 0.2860974272092183
+        }
+      }
+    },
+    {
+      "force_safe_prob": 0.3,
+      "dataset": {
+        "force_safe_prob": 0.3,
+        "dataset": "datasets/swamp_windy_f4_far30_merged_s0.npz",
+        "content_sha256": "7b0a9367132d515b0a24fdcb779510be4aa280610ae098a614f9e7f106fe2efa",
+        "file_sha256": "63218221ebe79527a5aff703d532bede729cff47bb5c93a09e1d81fb095c8f9d",
+        "n_forced_safe": 1461,
+        "n_teacher": 4800,
+        "episodes": 6600
+      },
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "arms": [
+        "O",
+        "C"
+      ],
+      "bc_coef": 0.05,
+      "steps": 30000,
+      "native_episodes": 200,
+      "per_seed": {
+        "0": {
+          "O": {
+            "mode_reach": 0.305,
+            "mode_lower": 0.0,
+            "sample_reach": 0.53,
+            "sample_lower": 0.355,
+            "critic_down_minus_right": 0.11905604600906372,
+            "critic_roots_down": 13
+          },
+          "C": {
+            "mode_reach": 0.84,
+            "mode_lower": 0.79,
+            "sample_reach": 0.655,
+            "sample_lower": 0.545,
+            "critic_down_minus_right": 0.5894438624382019,
+            "critic_roots_down": 16
+          }
+        },
+        "1": {
+          "O": {
+            "mode_reach": 0.82,
+            "mode_lower": 0.745,
+            "sample_reach": 0.7,
+            "sample_lower": 0.615,
+            "critic_down_minus_right": 0.12005451321601868,
+            "critic_roots_down": 15
+          },
+          "C": {
+            "mode_reach": 0.845,
+            "mode_lower": 0.78,
+            "sample_reach": 0.685,
+            "sample_lower": 0.58,
+            "critic_down_minus_right": 0.052968829870224,
+            "critic_roots_down": 14
+          }
+        },
+        "2": {
+          "O": {
+            "mode_reach": 0.305,
+            "mode_lower": 0.0,
+            "sample_reach": 0.46,
+            "sample_lower": 0.28,
+            "critic_down_minus_right": 0.07265731692314148,
+            "critic_roots_down": 12
+          },
+          "C": {
+            "mode_reach": 1.0,
+            "mode_lower": 1.0,
+            "sample_reach": 0.655,
+            "sample_lower": 0.615,
+            "critic_down_minus_right": 0.34671643376350403,
+            "critic_roots_down": 16
+          }
+        }
+      },
+      "mean_over_seeds": {
+        "O": {
+          "mode_reach": 0.4766666666666666,
+          "mode_lower": 0.24833333333333332,
+          "sample_reach": 0.5633333333333334,
+          "sample_lower": 0.4166666666666667,
+          "critic_down_minus_right": 0.10392262538274129
+        },
+        "C": {
+          "mode_reach": 0.895,
+          "mode_lower": 0.8566666666666668,
+          "sample_reach": 0.665,
+          "sample_lower": 0.58,
+          "critic_down_minus_right": 0.3297097086906433
+        }
+      }
+    }
+  ]
+}
