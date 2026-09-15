@@ -48,4 +48,23 @@ Baselines among themselves: vanilla_critic_bc0.2 − vanilla_bc0.5: reach +0.02 
 
 Under the strict definition P_bc0.2 uses the far route 46.5% of the time against 5.5% for plain CRL at the same bc and 11.5% for the checkpoint as trained. The baselines' far-route share is not new: the 09-14 native evaluations of the same original actor reported first-hazard entry 0.86 with failure 0.70 and reward 0.30 and no surviving unrewarded episode, i.e. about 14% of episodes reached the goal without ever landing in the swamp (oracle training pilot, supervised repair, matched failure audit). It comes from the 5% forced-safe teacher episodes and the random-policy down moves in the data, expressed through a stochastic tanh-Gaussian actor whose down-right diagonals slide into (1,2). The earlier 2-D swamp environment and the discrete corridor, where the baseline took the shortcut 100% of the time, used a different observation and a different actor.
 
+## Deterministic (mode-action) protocol — the repo's own evaluation convention
+
+G3 and the table above act by *sampling* the tanh-Gaussian policy (`tanh(loc + scale * eps)`), the convention of the 09-14 pilots' frozen-stochastic-actor harness. The repository's training-time evaluation (`crl/train.py::evaluate`, "greedy rollouts", `sample_eval = tanh_normal_mode`) and the earlier deployment audits act with the policy **mode** `tanh(loc)`; that is the protocol under which the earlier baselines showed 0% far route. [run_deterministic.py](run_deterministic.py) repeats the evaluation with the mode on the same 200 seeds ([results_mode.json](results_mode.json), [per_episode_mode_regionfork.csv](per_episode_mode_regionfork.csv), `native_mode_*.npz`):
+
+| policy (mode action) | reach | absorbed | lower route (= y < 2) | shortcut | discounted return |
+|---|---:|---:|---:|---:|---:|
+| vanilla_bc0.5 | 0.375 | 0.625 | 0.000 | 1.000 | 4.94 |
+| vanilla_critic_bc0.2 | 0.375 | 0.625 | 0.000 | 1.000 | 4.94 |
+| O_bc0.5 | 0.375 | 0.625 | 0.000 | 1.000 | 4.94 |
+| O_bc0.2 | 0.375 | 0.625 | 0.000 | 1.000 | 4.94 |
+| P_bc0.5 | 0.375 | 0.625 | 0.000 | 1.000 | 4.94 |
+| **P_bc0.2** | **0.875** | **0.125** | **0.800** | 0.200 | **10.37** |
+
+P_bc0.2 − O_bc0.2 (= − every baseline): reach +0.500 [+0.425, +0.570], absorbed −0.500, lower route +0.800 [+0.740, +0.855]. The five baselines are identical to the episode because their modes all drive straight into the corridor (first departure into (2,3) in 200/200 episodes) and the same seeds then produce the same hidden bits: 0.375 is the survival of a blind crossing (three landings at activation 0.30 give 0.343, plus the episodes that clear the corridor in fewer landings).
+
+How the deterministic P_bc0.2 decides: at t = 1, from (1.49–1.50, 3.35), its mode action is (+0.998, −0.737), a down-right wall diagonal. Under the X-then-Y substep rule the X update is refused once y < 3 (cell (2,2) is a wall); whether x crosses 2.0 before y crosses 3.0 depends on the 0.01 actuator noise of the first step, so 160/200 episodes slide into (1,2) and 40/200 enter the holding cell. The 160 lower-route episodes reach the goal 160/160 (time-to-goal 9.0, absorbed 0); the 40 shortcut episodes behave like the baselines (reach 0.375). The 80/20 split is therefore a knife-edge of the mode action against the wall geometry, not a designed 80%; the stochastic protocol's 59.5% / 46.5% (loose / strict) is the more conservative reading of the same policy.
+
+Both protocols agree on the ordering and on the mechanism; the deterministic one is the convention to use for comparison with the earlier baseline numbers.
+
 No commit until reviewed.
