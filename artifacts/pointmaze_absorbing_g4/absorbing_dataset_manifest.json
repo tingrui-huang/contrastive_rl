@@ -1,0 +1,51 @@
+{
+  "content_sha256": "6e046bdce64e1dc29f4240441ec45091eef9bd6b830eaeb9f2964c2b3213d754",
+  "file_sha256": "ade8896bd2ba05870987d46c3b987704d786e102d8f7388067df31b91f91ab1d",
+  "source": "artifacts/f4_p30_server_30076/results/datasets/swamp_windy_f4_merged_s0.npz",
+  "source_content_sha256": "ad8b4470df0ebcc1c03421dfb59b61f9faee48cfbf51e2b9c0a402e0403f544d",
+  "nominal": "artifacts/nominal_policy/f4_p30_expert_only_mdn_k5_s0",
+  "seed": 0,
+  "copies": 1,
+  "stats": {
+    "episodes_source": 6600,
+    "copies": 1,
+    "episodes_out": 6600,
+    "recorded_absorbed_episodes": 1458,
+    "added_onset_episodes": 4631,
+    "added_onset_fraction": 0.7016666666666667,
+    "mean_onset_time": 5.676959619952494,
+    "onset_landing_cells": {
+      "(3,3)": 2774,
+      "(4,3)": 1391,
+      "(5,3)": 466
+    },
+    "support_cells": [
+      [
+        3,
+        3
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        5,
+        3
+      ]
+    ],
+    "support_rule": {
+      "min_onsets": 10,
+      "min_absorbing_fraction": 0.5,
+      "onset": "moving transition followed by exactly stationary transition",
+      "absorbing": "stationary run continues to the episode end",
+      "bin": "floor(clip(xy)) on the 9x5 grid"
+    },
+    "added_onset_fraction_by_behaviour_audit_only": {
+      "random": 0.4625,
+      "forced_safe": 0.0,
+      "immediate_shortcut": 0.7020408163265306,
+      "wait_shortcut": 0.8867556134070941,
+      "4": 0.5316666666666666
+    }
+  }
+}
