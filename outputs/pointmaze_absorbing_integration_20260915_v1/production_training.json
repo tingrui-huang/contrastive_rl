@@ -1,0 +1,56 @@
+{
+  "actor_O": {
+    "actor_optimizer_sha256": "4d79f9d493920d7be5c57462cd9689f65a6561dc289dcf958b85835602e68eca",
+    "critic_sha256": "fd898a6559c86a46af168ffdec8d9acaa896ce504a7b5c31e9374cdd55168716",
+    "final_optimizer_update_l2": 0.014316377229988575,
+    "final_raw_gradient_l2": 3.495260238647461,
+    "mean_optimizer_update_l2": 0.014652012868784368,
+    "mean_raw_gradient_l2": 5.512293794155121,
+    "policy_parameter_delta_l2": 1.4386273397538267,
+    "policy_sha256": "12431e6327cceee4941308485b5dfb98441026bd770b6cfa9407a717365e56b8",
+    "updates": 1000
+  },
+  "actor_P": {
+    "actor_optimizer_sha256": "1abc5299d0d9bebd2d754992385cfeeb6eddb3fb3b46767d2996f0ba6e7e5262",
+    "critic_sha256": "1f2404f446a9b07fd14f6e4229370aa1fd6afd0fa04b26461da5d4e31284b3c1",
+    "final_optimizer_update_l2": 0.01376653928309679,
+    "final_raw_gradient_l2": 2.9206788539886475,
+    "mean_optimizer_update_l2": 0.014247234104201197,
+    "mean_raw_gradient_l2": 5.273274041414261,
+    "policy_parameter_delta_l2": 1.8427825934675532,
+    "policy_sha256": "6952a7cd633f03cdeb71a237f37b708fb5e5c306c9d785a410e3262ba473a990",
+    "updates": 1000
+  },
+  "critic_O": {
+    "actor_frozen": true,
+    "critic_optimizer_sha256": "62bf42431b43928c0970de266feb0097268c6ec0860134b91606e9d5a7fe973a",
+    "critic_parameter_delta_l2": 1.7725248562945397,
+    "critic_sha256": "fd898a6559c86a46af168ffdec8d9acaa896ce504a7b5c31e9374cdd55168716",
+    "final_loss": 0.019664926454424858,
+    "updates": 400
+  },
+  "critic_P": {
+    "actor_frozen": true,
+    "critic_optimizer_sha256": "9c63d68b2588594061721088aab277a3607d876218de446861a6fa9fe1a390c2",
+    "critic_parameter_delta_l2": 2.3870956959065746,
+    "critic_sha256": "1f2404f446a9b07fd14f6e4229370aa1fd6afd0fa04b26461da5d4e31284b3c1",
+    "final_loss": 0.02042229473590851,
+    "updates": 400
+  },
+  "initial": {
+    "actor_optimizer_sha256": "a88f938d34f1858d79779c7b617779e7873985c655f0eb6615d7207273e0b2e9",
+    "critic_optimizer_sha256": "ef079f59b8add225a33fad180ec3a4dd404041e76049d06118e9c17dd9c76878",
+    "critic_sha256": "376b0a4e806b82d5cead493eca8a975457493d664b3fa8abcd070fcb32a1dd1a",
+    "full_state_sha256": "359c22cb3c2db8f9e53282233f452be15793ca4b91067c2d60467af5dbaacc0b",
+    "policy_sha256": "1624664a334557bf8284eced5568dfffa47769a34c33216e1e8855a6a735a1aa"
+  },
+  "integrity": {
+    "O_positive_source": "100% original recorded continuation",
+    "P_positive_source": "100% final ETT cached continuation",
+    "actor_batches_identical": true,
+    "actor_keys_sha256": "d2bfce461eb312d25e61e6b6c4e89db9b8c978395cf835d3d0ee03d310693d30",
+    "actor_updates_occurred": true,
+    "matched_anchor_and_future_offset_plan": true,
+    "same_initial_full_state": true
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "base_driver": "ett/pointmaze_offline_causal_integration.py",
+  "base_driver_sha256": "c5837986217d9d57b77ec3561b05c7ff360e7fda347e6792012d47737862bf1c",
+  "dataset_fields_read": [
+    "obs",
+    "act"
+  ],
+  "failure_mechanism": {
+    "explicit_freeze_latent": true,
+    "learned_from": "visible exact-stationarity runs in obs of the training partition",
+    "off_diagonal_rule": "per-step Manski upper bound with landing-cell bins and the absorbing support",
+    "stationary_rows_relabelled_as_death": false
+  },
+  "g1_source_sha256": {
+    "ett/absorbing_ett.py": "0abe0805f439bb1a5134b773e46031613ac3e0467c0232fd5be06ada67fe8203",
+    "ett/pointmaze_absorbing_integration.py": "b01c415352bc98b8466ed238916d77a787f3588ef7f1f3238de892e96b06c5ee",
+    "notes/pointmaze_absorbing_integration.md": "480a790cbc05752ef4ae02a0970d7e9eff1d4a735f0f747749bdd94e230c8962"
+  },
+  "git": {
+    "branch": "feature/pointmaze-causal-transition",
+    "head": "a52c0a5a42d4b836821e462fb2d5b411732aa316"
+  },
+  "hidden_fields_read": [],
+  "runtime": {
+    "devices": [
+      "cpu:0"
+    ],
+    "jax": "0.10.2",
+    "python": "3.14.4"
+  }
+}
