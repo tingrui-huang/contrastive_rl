@@ -1,0 +1,14 @@
+{
+  "files": {
+    "run.py": "230522730d1a4d46f9abed71a5b0d659c109b4885b4038706d1d51e9948f29f2",
+    "learned_ett.py": "4e22a2905d49accfab54bf40fcee8f1cac61dd70f3f8d22ee96e658e48b5d271",
+    "remote_crl.py": "0cdb29100142aa2467366b2bc1a3b5af7aabd498be03afc85d29f18a76b18c76",
+    "audit_critic_ranking.py": "ea9b26185d92d4d6b40210c06360b3eb21a9323dafcbbb6b92c0ee020d953fbf"
+  },
+  "sealed_git_head": "4ad4aaf3cf85f17652ab8663ad63e7216e599525",
+  "post_seal_operational_repairs": [
+    "copy the trace action array before its first-step override because the JAX-backed NumPy view was read-only",
+    "set the offline CRL observation, goal, action, and horizon dimensions explicitly because no evaluation environment is constructed during training"
+  ],
+  "scientific_protocol_changed_after_seal": false
+}

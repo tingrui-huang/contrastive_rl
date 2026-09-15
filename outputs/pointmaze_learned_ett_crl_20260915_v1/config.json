@@ -1,0 +1,90 @@
+{
+  "experiment": "bounded_supervised_ett_to_crl",
+  "seed": 2026091501,
+  "training_sources": {
+    "older_probe_train_episodes": [0, 71],
+    "repair_train_episodes": 128,
+    "repair_validation_episodes": 32,
+    "older_probe_development_episodes_excluded": [72, 95],
+    "repair_final_episodes_excluded": 64
+  },
+  "diagonal_tolerance": 1e-6,
+  "model": {
+    "state_dim": 8,
+    "action_dim": 2,
+    "interaction_features": ["xq_minus_xb", "xq_times_xb", "xq_minus_xb_squared"],
+    "context_hidden": [128, 128],
+    "noise_dim": 4,
+    "generator_hidden": 128,
+    "onset_hidden": [64, 64],
+    "max_displacement": 1.25,
+    "minimum_scale": 0.01
+  },
+  "training": {
+    "updates": 2500,
+    "batch_per_movement_term": 256,
+    "movement_samples": 8,
+    "onset_batch_per_class": 256,
+    "learning_rate": 0.0003,
+    "weight_decay": 1e-6,
+    "onset_loss_weight": 0.25,
+    "validation_every": 100,
+    "selection": "earliest minimum diag_ES + off_ES + 0.25 * onset_BCE"
+  },
+  "preflight": {
+    "diagonal_es_max": 0.10,
+    "off_diagonal_es_max": 0.30,
+    "parameter_delta_l2_min": 0.0001,
+    "fork_effect_ratio_min": 0.25,
+    "fork_effect_cosine_min": 0.35,
+    "downward_exit_mean_dy_max": -0.15,
+    "downward_exit_sample_fraction_min": 0.25,
+    "onset_auroc_min": 0.75,
+    "onset_probability_gap_min": 0.15,
+    "stationary_history_onset_probability_max": 0.15,
+    "allowed_post_failure_recoveries": 0,
+    "allowed_f4_violations": 0,
+    "allowed_illegal_endpoints": 0
+  },
+  "generation": {
+    "paths": 3300,
+    "horizon": 50,
+    "trace_anchor_paths": 1,
+    "root_start_xy": [0.5, 3.5],
+    "nominal": "artifacts/nominal_policy/f4_p30_expert_only_mdn_k5_s0/best.pkl",
+    "rollout_policy": "artifacts/f4_p30_server_30076/results/runs/f4_p30_sweep/p30_a0_a01_a03_s0_s1/alpha0_seed0/final.pkl",
+    "synthetic_fraction": 0.5,
+    "original_episode_selection_seed": 2026091504
+  },
+  "crl": {
+    "seed": 0,
+    "steps_per_arm": 30000,
+    "batch_size": 256,
+    "num_sgd_steps_per_step": 10,
+    "repr_dim": 64,
+    "hidden_layer_sizes": [256, 256],
+    "discount": 0.95,
+    "random_goals": 0.5,
+    "bc_coef": 0.05,
+    "learning_rate": 0.0003,
+    "actor_learning_rate": 0.0003,
+    "entropy_coefficient": 0.0,
+    "native_training_evaluations": 0,
+    "final_checkpoint_rule": "fixed final iterate"
+  },
+  "final_evaluation": {
+    "episodes": 200,
+    "horizon": 50,
+    "reset_seed_base": 29300000,
+    "action_seed_base": 29400000,
+    "protocols": ["mode", "sample"],
+    "bootstrap_replicates": 2000
+  },
+  "hard_caps": {
+    "ett_updates": 2500,
+    "model_paths": 3300,
+    "model_transitions": 165000,
+    "learner_updates_per_arm": 30000,
+    "final_native_steps": 40000
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "class": "conditional implicit displacement generator plus separate onset MLP",
+  "parameter_count": 45955,
+  "movement_parameters": 36226,
+  "onset_parameters": 9729,
+  "visible_inputs_only": true,
+  "model_inputs": [
+    "s",
+    "xb",
+    "xq",
+    "xq-xb",
+    "xq*xb",
+    "(xq-xb)^2"
+  ],
+  "movement_target": "actual successor XY minus current XY",
+  "movement_loss": "full emitted-XY Energy Score U-statistic",
+  "onset_target": "not dead_before and dead_after / explicit onset",
+  "onset_loss": "natural-prevalence BCE",
+  "f4_emission": "[sampled_next_xy, s[:6]]",
+  "legality": "static free endpoint or live stationary fallback; never a death rule"
+}

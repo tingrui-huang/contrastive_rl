@@ -1,0 +1,39 @@
+{
+  "rows": 7680000,
+  "shape": [
+    30000,
+    256
+  ],
+  "discount": 0.95,
+  "batch_size": 256,
+  "offline_audit_rng_draws_reproduced_first": true,
+  "common_indices_both_arms": true,
+  "original_dataset_sha256": "83b4e81d9fca2d66b648c9c34ccdb68196e1acf89e2ca6829e4cb198d27c322c",
+  "learned_replay_sha256": "7e85d95df33cdd53ed45c8969c9dd7caee95ff61b6644c784e21b00fe68f1029",
+  "lineage_sha256": "97e57ac558f08c92c80a755a326acd3877d50c749d0e42578eaee091075ff24c",
+  "gates": {
+    "G1_FINGERPRINT": true,
+    "G2_KEY_SEPARATION": true,
+    "G3_SHAPES_DIMS": true,
+    "G4_DTYPES_FINITE": true,
+    "G5_EP_LENGTHS": true,
+    "G6_NO_AUDIT_LEAK": true,
+    "G7_RELABEL_BOUNDS": true,
+    "G8_FROZEN_BUFFER": true
+  },
+  "source_counts_P": {
+    "0": 3840593,
+    "1": 3839407
+  },
+  "verification": "positive for row [u,b] is dataset.obs[trajectory[u,b], future_time[u,b], :8]",
+  "config_diff": {
+    "offline_dataset": [
+      "D:\\Users\\trhua\\Research\\contrastive_rl\\.worktrees\\pointmaze-p30\\artifacts\\f4_p30_server_30076\\results\\datasets\\swamp_windy_f4_merged_s0.npz",
+      "D:\\Users\\trhua\\Research\\contrastive_rl\\.worktrees\\pointmaze-p30\\outputs\\pointmaze_learned_ett_crl_20260915_v1\\learned_ett_replay.npz"
+    ],
+    "ckpt_dir": [
+      "D:\\Users\\trhua\\Research\\contrastive_rl\\.worktrees\\pointmaze-p30\\outputs\\pointmaze_learned_ett_crl_20260915_v1\\crl\\O",
+      "D:\\Users\\trhua\\Research\\contrastive_rl\\.worktrees\\pointmaze-p30\\outputs\\pointmaze_learned_ett_crl_20260915_v1\\crl\\P"
+    ]
+  }
+}

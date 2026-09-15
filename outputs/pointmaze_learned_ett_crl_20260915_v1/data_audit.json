@@ -1,0 +1,139 @@
+{
+  "disclosure": "additional previously collected intervention data, not merely the original 6,600 observational episodes",
+  "sources": {
+    "older_probe": {
+      "path": "C:\\Users\\trhua\\Documents\\Codex\\2026-09-08\\f\\outputs\\supervised_ett_native_probe_v1\\paired_transitions.npz",
+      "sha256": "ac2ce17a28d64a4092c5f18142c6cd92ac7d05477e6efb8f706a8926c2b0a37f",
+      "train": {
+        "rows": 14400,
+        "episodes": 72,
+        "alive_before": 9248,
+        "already_failed": 5152,
+        "fatal_onset": 214,
+        "alive_non_onset": 9034,
+        "diagonal": 3860,
+        "off_diagonal": 10540,
+        "alive_diagonal": 2374,
+        "alive_off_diagonal": 6874,
+        "stationary_successor_alive_non_onset": 0,
+        "stationary_visible_history_alive": 288,
+        "terminal_padding_rows": 0
+      },
+      "previously_inspected_development": {
+        "rows": 4800,
+        "episodes": 24,
+        "alive_before": 3136,
+        "already_failed": 1664,
+        "fatal_onset": 62,
+        "alive_non_onset": 3074,
+        "diagonal": 1269,
+        "off_diagonal": 3531,
+        "alive_diagonal": 799,
+        "alive_off_diagonal": 2337,
+        "stationary_successor_alive_non_onset": 0,
+        "stationary_visible_history_alive": 96,
+        "terminal_padding_rows": 0
+      }
+    },
+    "repair_train": {
+      "path": "D:\\Users\\trhua\\Research\\contrastive_rl\\.worktrees\\pointmaze-p30\\outputs\\pointmaze_supervised_repair_20260914_v1\\train_paired.npz",
+      "sha256": "2a6857f3252ef7cbf93a8aa12200fc49c0517a8b4b5d050971e2566c32b6fe98",
+      "partition": {
+        "rows": 25600,
+        "episodes": 128,
+        "alive_before": 16288,
+        "already_failed": 9312,
+        "fatal_onset": 327,
+        "alive_non_onset": 15961,
+        "diagonal": 6811,
+        "off_diagonal": 18789,
+        "alive_diagonal": 4173,
+        "alive_off_diagonal": 12115,
+        "stationary_successor_alive_non_onset": 1,
+        "stationary_visible_history_alive": 512,
+        "terminal_padding_rows": 0
+      }
+    },
+    "repair_validation": {
+      "path": "D:\\Users\\trhua\\Research\\contrastive_rl\\.worktrees\\pointmaze-p30\\outputs\\pointmaze_supervised_repair_20260914_v1\\validation_paired.npz",
+      "sha256": "50bcf5c900983387a9a253327263f581b9b8376dbe344cd63fe3d8bb620147db",
+      "partition": {
+        "rows": 6400,
+        "episodes": 32,
+        "alive_before": 3528,
+        "already_failed": 2872,
+        "fatal_onset": 94,
+        "alive_non_onset": 3434,
+        "diagonal": 1730,
+        "off_diagonal": 4670,
+        "alive_diagonal": 901,
+        "alive_off_diagonal": 2627,
+        "stationary_successor_alive_non_onset": 0,
+        "stationary_visible_history_alive": 128,
+        "terminal_padding_rows": 0
+      }
+    },
+    "repair_final_excluded": {
+      "path": "D:\\Users\\trhua\\Research\\contrastive_rl\\.worktrees\\pointmaze-p30\\outputs\\pointmaze_supervised_repair_20260914_v1\\final_paired.npz",
+      "sha256": "ca699495f5c8c3b4016ad2a2cbf315ba89775b6d326401e557c9034f471f5998",
+      "episodes": 64,
+      "used": false,
+      "already_inspected": true
+    }
+  },
+  "fitted": {
+    "train": {
+      "rows": 25536,
+      "episodes": 128,
+      "alive_before": 25536,
+      "already_failed": 0,
+      "fatal_onset": 541,
+      "alive_non_onset": 24995,
+      "diagonal": 6547,
+      "off_diagonal": 18989,
+      "alive_diagonal": 6547,
+      "alive_off_diagonal": 18989,
+      "stationary_successor_alive_non_onset": 1,
+      "stationary_visible_history_alive": 800,
+      "terminal_padding_rows": 0
+    },
+    "validation": {
+      "rows": 3528,
+      "episodes": 32,
+      "alive_before": 3528,
+      "already_failed": 0,
+      "fatal_onset": 94,
+      "alive_non_onset": 3434,
+      "diagonal": 901,
+      "off_diagonal": 2627,
+      "alive_diagonal": 901,
+      "alive_off_diagonal": 2627,
+      "stationary_successor_alive_non_onset": 0,
+      "stationary_visible_history_alive": 128,
+      "terminal_padding_rows": 0
+    }
+  },
+  "fields_used_as_inputs": [
+    "s",
+    "xb",
+    "xq"
+  ],
+  "fields_used_as_targets": [
+    "y[:2]",
+    "onset"
+  ],
+  "audit_only_fields": [
+    "episode",
+    "time",
+    "dead_before",
+    "dead_after",
+    "reward",
+    "swamp_bits_before",
+    "teacher_mode",
+    "force_safe"
+  ],
+  "recorded_advice_preserved": true,
+  "failure_only_selection": false,
+  "no_new_environment_transitions": true,
+  "validation_boundary_preserved": true
+}
