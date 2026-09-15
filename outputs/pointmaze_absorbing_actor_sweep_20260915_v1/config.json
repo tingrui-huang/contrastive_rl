@@ -1,0 +1,39 @@
+{
+  "actor_updates": 1000,
+  "arms": [
+    "O",
+    "P"
+  ],
+  "away_paths": 8,
+  "bootstrap_seed": 0,
+  "coefs": [
+    0.5,
+    0.2,
+    0.1,
+    0.05,
+    0.0
+  ],
+  "environment_calls": 0,
+  "fields_read": [
+    "obs",
+    "act"
+  ],
+  "fork_paths": 32,
+  "fork_paths_diagonal": 16,
+  "g1_dir": "outputs/pointmaze_absorbing_integration_20260915_v1",
+  "git_head": "a52c0a5a42d4b836821e462fb2d5b411732aa316",
+  "native_steps": 0,
+  "objective": "bc_coef * bc_nll + (1 - bc_coef) * critic_term",
+  "protocol_sha256": "9470174830ddd6a26ee1f8fecadbe57d4007c6a06538fdcefc3d6008021efc72",
+  "rollout_cap": 30000000,
+  "rollout_horizon": 49,
+  "sha256": {
+    "ett/absorbing_ett.py": "0abe0805f439bb1a5134b773e46031613ac3e0467c0232fd5be06ada67fe8203",
+    "ett/pointmaze_absorbing_integration.py": "b01c415352bc98b8466ed238916d77a787f3588ef7f1f3238de892e96b06c5ee",
+    "ett/pointmaze_offline_causal_integration.py": "c5837986217d9d57b77ec3561b05c7ff360e7fda347e6792012d47737862bf1c",
+    "outputs/pointmaze_absorbing_integration_20260915_v1/checkpoints/critic_O_final.pkl": "23e32da2acb4c4958003b90ec2aeb5025ae6887771c548bffef4f4b76a68f59f",
+    "outputs/pointmaze_absorbing_integration_20260915_v1/checkpoints/critic_P_final.pkl": "9270939f5cc08fe18dd65dc648fa9ae1b66a08ca608965f1f09b86a57afbb0f7",
+    "outputs/pointmaze_absorbing_integration_20260915_v1/freeze_tables.json": "e2317425fd438729ea7187f8a95e79f514b783025d3257189f079aaffa9632e1",
+    "outputs/pointmaze_absorbing_integration_20260915_v1/sampler_plan.npz": "86659528574c4f690a3b4534b746ae181a93e9bfe5abd0afc2035276fb25bcff"
+  }
+}

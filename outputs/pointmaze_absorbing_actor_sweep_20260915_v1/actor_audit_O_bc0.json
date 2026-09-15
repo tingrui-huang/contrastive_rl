@@ -1,0 +1,229 @@
+{
+  "arm": "O",
+  "away": {
+    "bc_nll_change_vs_initial": {
+      "ci95": [
+        16934.07583384995,
+        32934.98074524096
+      ],
+      "mean": 24015.707376861363
+    },
+    "bc_nll_mean": 24014.529296875,
+    "landing_bin_agreement_initial_actor": 0.83203125,
+    "landing_bin_agreement_mode_vs_recorded": 0.712890625,
+    "mode_l2_change_vs_initial": {
+      "ci95": [
+        0.4029252130391342,
+        0.4499668553794578
+      ],
+      "mean": 0.425726869502455
+    },
+    "mode_l2_to_recorded": 0.5284801721572876,
+    "mode_ood_fraction": 0.0,
+    "rollout_manski_absorbing": {
+      "absorbed": {
+        "ci95": [
+          0.212646484375,
+          0.25830383300781246
+        ],
+        "mean": 0.2354736328125
+      },
+      "discounted_return": {
+        "ci95": [
+          8.488762969062309,
+          9.261023169122353
+        ],
+        "mean": 8.880359402225888
+      },
+      "entered_support": {
+        "ci95": [
+          0.2805145263671875,
+          0.33508605957031246
+        ],
+        "mean": 0.3065185546875
+      },
+      "reach": {
+        "ci95": [
+          0.7047088623046875,
+          0.751220703125
+        ],
+        "mean": 0.729248046875
+      }
+    },
+    "saturation_fraction_mode": 0.146484375,
+    "scale_mean": 0.018815970048308372
+  },
+  "bc_coef": 0.0,
+  "critic_at_actor": {
+    "actor_minus_down_probe": {
+      "ci95": [
+        0.20547969522999554,
+        0.33569834641203644
+      ],
+      "mean": 0.268069046299632
+    },
+    "actor_minus_right_probe": {
+      "ci95": [
+        -0.0541471808967067,
+        -0.020036226329280118
+      ],
+      "mean": -0.037009890486554405
+    },
+    "critic_endpoint_down_minus_right_G1": {
+      "ci95": [
+        -0.3613915360191973,
+        -0.2519648010956078
+      ],
+      "mean": -0.3050789367861864
+    },
+    "mean_q_actor_samples": -6.260481834411621,
+    "mean_q_down_probe": -6.52855110168457,
+    "mean_q_right_probe": -6.2234721183776855
+  },
+  "curve_tail_mean": {
+    "bc_nll": 19503.905341796875,
+    "critic_actor_term": 7.266631288528442,
+    "loc_abs_mean": 1.5032747888565063,
+    "loss": 7.266631288528442,
+    "optimizer_update_l2": 0.013149239448830485,
+    "raw_gradient_l2": 6.965980508327484,
+    "sample_entropy": -3.862408323287964,
+    "saturation_fraction": 0.18748046875,
+    "scale_median": 0.009817194221541285
+  },
+  "fork": {
+    "action_x_mean": 0.9998025894165039,
+    "action_x_quantiles": [
+      0.9999918341636658,
+      0.9999998807907104,
+      0.9999999403953552,
+      0.9999999403953552,
+      0.9999999403953552
+    ],
+    "action_x_std": 0.0010067378170788288,
+    "action_y_mean": 0.18896467983722687,
+    "action_y_quantiles": [
+      -0.10447865203022956,
+      0.14072011038661003,
+      0.25149236619472504,
+      0.30508092790842056,
+      0.3363930404186249
+    ],
+    "action_y_std": 0.17365248501300812,
+    "down_probability": 0.0,
+    "mode_ood_fraction": 0.0,
+    "other_probability": 0.0,
+    "paired_down_change_vs_initial": {
+      "ci95": [
+        -0.052758193597560975,
+        -0.0443261123285061
+      ],
+      "mean": -0.048542301829268296
+    },
+    "paired_right_change_vs_initial": {
+      "ci95": [
+        0.13943287919207317,
+        0.16831650152439023
+      ],
+      "mean": 0.1535227705792683
+    },
+    "right_probability": 1.0,
+    "sample_ood_fraction": 0.0,
+    "saturation_fraction": 0.9974037728658537
+  },
+  "fork_rollout_diagonal_motion": {
+    "discounted_return": {
+      "ci95": [
+        13.585242926922568,
+        13.746470925507639
+      ],
+      "mean": 13.673258493492579
+    },
+    "lower_route": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean": 0.0
+    },
+    "reach": {
+      "ci95": [
+        0.9918064024390244,
+        1.0
+      ],
+      "mean": 0.9963795731707317
+    },
+    "strict_success": {
+      "ci95": [
+        0.991234756097561,
+        1.0
+      ],
+      "mean": 0.9963795731707317
+    }
+  },
+  "fork_rollout_manski_absorbing": {
+    "absorbed": {
+      "ci95": [
+        0.6742568597560976,
+        0.6896913109756098
+      ],
+      "mean": 0.6820217225609756
+    },
+    "discounted_return": {
+      "ci95": [
+        4.2332536232098885,
+        4.441730346598729
+      ],
+      "mean": 4.340983782318248
+    },
+    "entered_support": {
+      "ci95": [
+        0.9937106993140243,
+        1.0
+      ],
+      "mean": 0.9976181402439024
+    },
+    "lower_route": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean": 0.0
+    },
+    "manski_onset": {
+      "ci95": [
+        0.6736363852896341,
+        0.6889791349085366
+      ],
+      "mean": 0.6813548018292683
+    },
+    "reach": {
+      "ci95": [
+        0.30754454077743903,
+        0.32293611852134146
+      ],
+      "mean": 0.3153582317073171
+    },
+    "strict_success": {
+      "ci95": [
+        0.30759098704268295,
+        0.32321836890243905
+      ],
+      "mean": 0.3151676829268293
+    }
+  },
+  "gradient_components": {
+    "bc_coef_weighted_gradient_l2": 0.0,
+    "bc_nll": 17354.540283203125,
+    "bc_raw_gradient_l2": 1078143.5807050657,
+    "bc_weighted_gradient_l2": 539071.7903525329,
+    "combined_raw_gradient_l2": 539071.7253659772,
+    "component_cosine": -0.014520474313121994,
+    "component_dot": 29112.74003493786,
+    "critic_actor_term": 7.395922064781189,
+    "critic_coef_weighted_gradient_l2": 6.332429624902927,
+    "critic_raw_gradient_l2": 6.332429624902927,
+    "critic_weighted_gradient_l2": 3.1662148124514635
+  },
+  "policy_parameter_delta_l2_vs_initial": 3.8066666461365606
+}
