@@ -1,0 +1,111 @@
+{
+  "experiment": "fixed_ett_query_coverage_to_crl",
+  "source_git_head": "d5e2da05f4a3f7174bc9f6130f7ad929f1b50823",
+  "seed": 2026091511,
+  "inputs": {
+    "ett_checkpoint": "outputs/pointmaze_learned_ett_crl_20260915_v1/ett_selected.pt",
+    "ett_checkpoint_sha256": "8ab13631350250ad77e12bc24f3a39d66fc71d814c8f79c97e5a96fae3354c54",
+    "supervision": "outputs/pointmaze_learned_ett_crl_20260915_v1/frozen_supervision.npz",
+    "supervision_sha256": "0a60713609f0862c97ba990c30626bb0616209e6899652345ebda3739711e28c",
+    "prior_replay": "outputs/pointmaze_learned_ett_crl_20260915_v1/learned_ett_replay.npz",
+    "prior_replay_sha256": "7e85d95df33cdd53ed45c8969c9dd7caee95ff61b6644c784e21b00fe68f1029",
+    "nominal": "artifacts/nominal_policy/f4_p30_expert_only_mdn_k5_s0/best.pkl",
+    "nominal_sha256": "6376e60185aa616c2d09c5e0250d762cde2fb845c5042488e64910fb3b745f23",
+    "rollout_actor": "artifacts/f4_p30_server_30076/results/runs/f4_p30_sweep/p30_a0_a01_a03_s0_s1/alpha0_seed0/final.pkl",
+    "rollout_actor_sha256": "ea8a71d3cb8d963259a54d47250b454462dae2ae62f03a55c370ca81a2c8ec54",
+    "original_dataset": "artifacts/f4_p30_server_30076/results/datasets/swamp_windy_f4_merged_s0.npz",
+    "original_dataset_sha256": "83b4e81d9fca2d66b648c9c34ccdb68196e1acf89e2ca6829e4cb198d27c322c",
+    "heldout_roots": "outputs/pointmaze_matched_fork_20260914_v1/root_selection.npz",
+    "heldout_roots_sha256": "4a422b8cc3e03dcf06461c2a6c488741aac36321f127b254a306bc24273638fc",
+    "posthoc_diagnostic": "C:/Users/trhua/Documents/Codex/2026-09-08/f/work/audit_d5_model_result.json",
+    "posthoc_diagnostic_sha256": "4867b1414ecb1cd567b029623b147e5ca3f225a4d02c08892b7590a33eb6911b"
+  },
+  "training_roots": {
+    "partition": "frozen supervised train only",
+    "rule": "time == 1 and current XY is in cell (1,3), then exact-F4 deduplicate",
+    "expected_unique_roots": 198,
+    "contexts": 550,
+    "replicates_per_root": [2, 3],
+    "roots_with_third_replicate": 154,
+    "selection_seed": 2026091512
+  },
+  "query_actions": {
+    "names": ["down_left", "down", "down_right", "right_down", "right", "right_up"],
+    "values": [
+      [-0.01, -0.99995],
+      [0.0, -1.0],
+      [0.01, -0.99995],
+      [0.99995, -0.01],
+      [1.0, 0.0],
+      [0.99995, 0.01]
+    ],
+    "down_sector": "abs(x) <= 0.35 and y <= -0.75",
+    "right_sector": "x >= 0.75 and abs(y) <= 0.35"
+  },
+  "generation": {
+    "arms": {
+      "B": "behavior-query control: frozen observational actor supplies first xq",
+      "C": "covered-query treatment: fixed six-action set supplies first xq"
+    },
+    "paths_per_arm": 3300,
+    "contexts_per_arm": 550,
+    "paths_per_context": 6,
+    "remaining_transitions": 49,
+    "stored_observations": 51,
+    "valid_observations_synthetic": 50,
+    "padding": "row 50 duplicates row 49 and is excluded by lengths=50",
+    "shared_first_step_nominal_within_context": true,
+    "same_nominal_actor_model_and_random_streams_across_arms": true,
+    "continuation": "frozen observational actor on each generated current state",
+    "retain_all_outcomes": true,
+    "result_filtering": false
+  },
+  "replay": {
+    "episodes_per_arm": 6600,
+    "original_episodes": 3300,
+    "synthetic_episodes": 3300,
+    "original_half": "exact original subset retained in the d5e2da0 P replay",
+    "ordinary_uniform_replay_sampling": true
+  },
+  "crl": {
+    "seed": 0,
+    "steps_per_arm": 30000,
+    "batch_size": 256,
+    "num_sgd_steps_per_step": 10,
+    "repr_dim": 64,
+    "hidden_layer_sizes": [256, 256],
+    "discount": 0.95,
+    "random_goals": 0.5,
+    "bc_coef": 0.05,
+    "learning_rate": 0.0003,
+    "actor_learning_rate": 0.0003,
+    "entropy_coefficient": 0.0,
+    "native_training_evaluations": 0,
+    "final_checkpoint_rule": "fixed final iterate"
+  },
+  "heldout_evaluation": {
+    "roots": 16,
+    "candidate_actions": [[0.0, -1.0], [1.0, 0.0]],
+    "canonical_goal_xy": [8.5, 3.5],
+    "actor_samples_per_root": 2048,
+    "bootstrap_replicates": 5000,
+    "bootstrap_seed": 2026091513,
+    "native_episodes": 200,
+    "native_reset_seed_base": 29800000,
+    "native_action_seed_base": 29900000,
+    "native_protocols": ["mode", "sample"]
+  },
+  "primary_decision": {
+    "absolute_C_gate": "C down-minus-right root-bootstrap 95% CI lower endpoint > 0",
+    "incremental_gate": "C-minus-B paired root-bootstrap 95% CI lower endpoint > 0",
+    "accuracy_gate": "C ranks down above right on at least 12 of 16 roots",
+    "pass_label": "QUERY_COVERAGE_SUFFICIENT_FOR_HELDOUT_CRITIC_RANKING_AT_FIXED_BUDGET",
+    "fail_label": "QUERY_COVERAGE_NOT_SUFFICIENT_AT_FIXED_BUDGET"
+  },
+  "hard_caps": {
+    "generated_paths_per_arm": 3300,
+    "generated_transitions_per_arm": 161700,
+    "learner_updates_per_arm": 30000,
+    "native_steps": 40000
+  }
+}

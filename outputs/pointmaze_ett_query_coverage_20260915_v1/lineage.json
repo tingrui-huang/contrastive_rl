@@ -1,0 +1,253 @@
+{
+  "rows": 7680000,
+  "shape": [
+    30000,
+    256
+  ],
+  "shared_sampler_indices": true,
+  "lineage_sha256": "d3cf4061233bab95747e6b0df2188bb1f1f6c85e115ad3a3e4636f50f46dbf15",
+  "config_diff": {
+    "offline_dataset": [
+      "D:\\Users\\trhua\\Research\\contrastive_rl\\.worktrees\\pointmaze-p30\\outputs\\pointmaze_ett_query_coverage_20260915_v1\\replay_B.npz",
+      "D:\\Users\\trhua\\Research\\contrastive_rl\\.worktrees\\pointmaze-p30\\outputs\\pointmaze_ett_query_coverage_20260915_v1\\replay_C.npz"
+    ],
+    "ckpt_dir": [
+      "D:\\Users\\trhua\\Research\\contrastive_rl\\.worktrees\\pointmaze-p30\\outputs\\pointmaze_ett_query_coverage_20260915_v1\\crl\\B",
+      "D:\\Users\\trhua\\Research\\contrastive_rl\\.worktrees\\pointmaze-p30\\outputs\\pointmaze_ett_query_coverage_20260915_v1\\crl\\C"
+    ]
+  },
+  "offline_audits": {
+    "B": {
+      "gates": {
+        "G1_FINGERPRINT": true,
+        "G2_KEY_SEPARATION": true,
+        "G3_SHAPES_DIMS": true,
+        "G4_DTYPES_FINITE": true,
+        "G5_EP_LENGTHS": true,
+        "G6_NO_AUDIT_LEAK": true,
+        "G7_RELABEL_BOUNDS": true,
+        "G8_FROZEN_BUFFER": true
+      },
+      "report": {
+        "fingerprint": {
+          "path": "D:\\Users\\trhua\\Research\\contrastive_rl\\.worktrees\\pointmaze-p30\\outputs\\pointmaze_ett_query_coverage_20260915_v1\\replay_B.npz",
+          "sha256": "fb53a95313d732cfd81d9f61bf45627d389434b2f223b255b27ed7f184f1cc55",
+          "n_episodes": 6600,
+          "n_transitions": 326700,
+          "obs_shape": [
+            6600,
+            51,
+            16
+          ],
+          "act_shape": [
+            6600,
+            51,
+            2
+          ],
+          "obs_dtype": "float32",
+          "act_dtype": "float32",
+          "ep_len_obs": 51,
+          "ep_lengths_min": 50,
+          "ep_lengths_max": 51,
+          "keys": {
+            "learner": [
+              "act",
+              "obs"
+            ],
+            "audit": [
+              "audit_candidate_id",
+              "audit_context_id",
+              "audit_failed_at_end",
+              "audit_onset_time",
+              "audit_original_episode",
+              "audit_root_id",
+              "audit_source"
+            ],
+            "meta": [
+              "meta"
+            ],
+            "structural": [
+              "lengths"
+            ],
+            "other": []
+          },
+          "meta": {
+            "action_dim": 2,
+            "arm": "B",
+            "env_name": "point_two_route_swamp_windy_f4_v0",
+            "goal_dim": 8,
+            "query_intervention_only_at_synthetic_time_zero": false,
+            "source_git_head": "d5e2da05f4a3f7174bc9f6130f7ad929f1b50823",
+            "state_dim": 8,
+            "synthetic_valid_observations": 50
+          }
+        },
+        "stats": {
+          "relabel": {
+            "samples": 16384,
+            "future_violations": 0,
+            "anchor_len_violations": 0,
+            "goal_len_violations": 0
+          },
+          "frozen": {
+            "add_episode_raised": true,
+            "checksum_stable": true,
+            "checksum": "92ceb4c29a263143"
+          },
+          "anchor_cut": {
+            "active": false
+          }
+        },
+        "gates": {
+          "G1_FINGERPRINT": true,
+          "G2_KEY_SEPARATION": true,
+          "G3_SHAPES_DIMS": true,
+          "G4_DTYPES_FINITE": true,
+          "G5_EP_LENGTHS": true,
+          "G6_NO_AUDIT_LEAK": true,
+          "G7_RELABEL_BOUNDS": true,
+          "G8_FROZEN_BUFFER": true
+        },
+        "verdict": "PASS"
+      }
+    },
+    "C": {
+      "gates": {
+        "G1_FINGERPRINT": true,
+        "G2_KEY_SEPARATION": true,
+        "G3_SHAPES_DIMS": true,
+        "G4_DTYPES_FINITE": true,
+        "G5_EP_LENGTHS": true,
+        "G6_NO_AUDIT_LEAK": true,
+        "G7_RELABEL_BOUNDS": true,
+        "G8_FROZEN_BUFFER": true
+      },
+      "report": {
+        "fingerprint": {
+          "path": "D:\\Users\\trhua\\Research\\contrastive_rl\\.worktrees\\pointmaze-p30\\outputs\\pointmaze_ett_query_coverage_20260915_v1\\replay_C.npz",
+          "sha256": "a39ef616b39d97388a9f9dc6e8e4c8df455a7fc81b205ce242368cb3f8d57e72",
+          "n_episodes": 6600,
+          "n_transitions": 326700,
+          "obs_shape": [
+            6600,
+            51,
+            16
+          ],
+          "act_shape": [
+            6600,
+            51,
+            2
+          ],
+          "obs_dtype": "float32",
+          "act_dtype": "float32",
+          "ep_len_obs": 51,
+          "ep_lengths_min": 50,
+          "ep_lengths_max": 51,
+          "keys": {
+            "learner": [
+              "act",
+              "obs"
+            ],
+            "audit": [
+              "audit_candidate_id",
+              "audit_context_id",
+              "audit_failed_at_end",
+              "audit_onset_time",
+              "audit_original_episode",
+              "audit_root_id",
+              "audit_source"
+            ],
+            "meta": [
+              "meta"
+            ],
+            "structural": [
+              "lengths"
+            ],
+            "other": []
+          },
+          "meta": {
+            "action_dim": 2,
+            "arm": "C",
+            "env_name": "point_two_route_swamp_windy_f4_v0",
+            "goal_dim": 8,
+            "query_intervention_only_at_synthetic_time_zero": true,
+            "source_git_head": "d5e2da05f4a3f7174bc9f6130f7ad929f1b50823",
+            "state_dim": 8,
+            "synthetic_valid_observations": 50
+          }
+        },
+        "stats": {
+          "relabel": {
+            "samples": 16384,
+            "future_violations": 0,
+            "anchor_len_violations": 0,
+            "goal_len_violations": 0
+          },
+          "frozen": {
+            "add_episode_raised": true,
+            "checksum_stable": true,
+            "checksum": "897faed08391c008"
+          },
+          "anchor_cut": {
+            "active": false
+          }
+        },
+        "gates": {
+          "G1_FINGERPRINT": true,
+          "G2_KEY_SEPARATION": true,
+          "G3_SHAPES_DIMS": true,
+          "G4_DTYPES_FINITE": true,
+          "G5_EP_LENGTHS": true,
+          "G6_NO_AUDIT_LEAK": true,
+          "G7_RELABEL_BOUNDS": true,
+          "G8_FROZEN_BUFFER": true
+        },
+        "verdict": "PASS"
+      }
+    }
+  },
+  "synthetic_time0_positive_pairs": 78222,
+  "B_time0_trajectory_action_counts": {
+    "down_sector": 409,
+    "right_sector": 22567,
+    "other": 55246
+  },
+  "C_candidate_positive_counts": {
+    "down_left": {
+      "all": 13164,
+      "full_f4_distance_le_0p5": 3155,
+      "xy_distance_lt_2": 5297
+    },
+    "down": {
+      "all": 12869,
+      "full_f4_distance_le_0p5": 2954,
+      "xy_distance_lt_2": 4886
+    },
+    "down_right": {
+      "all": 12915,
+      "full_f4_distance_le_0p5": 2921,
+      "xy_distance_lt_2": 4870
+    },
+    "right_down": {
+      "all": 13019,
+      "full_f4_distance_le_0p5": 1470,
+      "xy_distance_lt_2": 2292
+    },
+    "right": {
+      "all": 13176,
+      "full_f4_distance_le_0p5": 1475,
+      "xy_distance_lt_2": 2336
+    },
+    "right_up": {
+      "all": 13079,
+      "full_f4_distance_le_0p5": 1551,
+      "xy_distance_lt_2": 2312
+    }
+  },
+  "task_future_support": {
+    "B_full_f4_distance_le_0p5": 7409,
+    "C_full_f4_distance_le_0p5": 13526,
+    "B_xy_distance_lt_2": 11409,
+    "C_xy_distance_lt_2": 21993
+  }
+}
