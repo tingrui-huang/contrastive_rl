@@ -63,4 +63,44 @@ The x-component is saturated at +1 in every checkpoint (the BC term pins it to t
 3. The instability has a concrete geometric cause here — the saturated x-component and the wall-slide knife-edge — which suggests the faithful lever to test next: a lower BC weight from scratch (0.1, 0.05), which in G2 moved the fork action further down; and reporting the fraction of training spent in the detour mode (8/15, 5/15, 3/15 for P; 0/15 for O) alongside the final.
 4. AWR (the R7 remedy) and key balancing remain excluded from the method path.
 
+## Addendum: bc = 0.1 and bc = 0.05 from scratch (same recipe, six runs each)
+
+Launched with the same sweep script on the same node (`logs/g4_sweep_bc01_bc005.log`); evaluated exactly as above (`results/pointmaze_absorbing_g4_bc0p1/`, `results/pointmaze_absorbing_g4_bc0p05/`).
+
+Training curves (greedy, every 10k steps):
+
+| run | evals ≥ 0.8 | mean | final | run | evals ≥ 0.8 | mean | final |
+|---|---:|---:|---:|---|---:|---:|---:|
+| O bc0.1 s0 / s1 / s2 | 0 / 0 / 0 | 0.33 / 0.37 / 0.41 | 0.26 / 0.36 / 0.40 | O bc0.05 s0 / s1 / s2 | 0 / 0 / 0 | 0.31 / 0.32 / 0.36 | 0.30 / 0.30 / 0.20 |
+| **P bc0.1** s0 / s1 / s2 | **14** / 7 / 6 | 0.98 / 0.68 / 0.59 | 0.74 / 0.90 / 0.34 | **P bc0.05** s0 / s1 / s2 | **13 / 9 / 10** | 0.91 / 0.76 / 0.76 | **0.80 / 0.84 / 1.00** |
+
+(For reference bc 0.2: P 8 / 5 / 3 evals ≥ 0.8, finals 0.88 / 0.28 / 0.24.) Time in the detour mode grows as the BC weight falls; at bc = 0.05 all three P seeds end in it. No O run at any bc ever exceeds 0.58.
+
+Native evaluation of the finals, 200 paired seeds, mode protocol:
+
+| final | reach | absorbed | lower route | P − O reach [95% CI] | P − O lower route |
+|---|---:|---:|---:|---|---|
+| O bc0.1 s0/s1/s2 | 0.375 | 0.625 | 0.000 | | |
+| P bc0.1 s0 | 0.825 | 0.175 | 0.720 | +0.450 [+0.380, +0.520] | +0.720 |
+| P bc0.1 s1 | 0.860 | 0.140 | 0.755 | +0.485 [+0.415, +0.555] | +0.755 |
+| P bc0.1 s2 | 0.375 | 0.625 | 0.000 | 0 | 0 |
+| O bc0.05 s0/s1/s2 | 0.375 | 0.625 | 0.000 | | |
+| **P bc0.05 s0** | **0.795** | 0.120 | 0.835 | +0.420 [+0.325, +0.505] | +0.835 |
+| **P bc0.05 s1** | **0.860** | 0.140 | 0.805 | +0.485 [+0.395, +0.565] | +0.805 |
+| **P bc0.05 s2** | **1.000** | 0.000 | 1.000 | +0.625 [+0.555, +0.695] | +1.000 |
+
+Sampled protocol (secondary): P bc0.1 finals reach 0.615 / 0.690 / 0.470 vs O 0.345 / 0.370 / 0.335 (lower route 0.44 / 0.52 / 0.29 vs 0.05 / 0.04 / 0.04); P bc0.05 finals reach **0.825 / 0.780 / 0.715** vs O 0.375 / 0.370 / 0.375 (lower route 0.80 / 0.76 / 0.61 vs 0.02 / 0.05 / 0.01); every P − O interval excludes zero.
+
+Mode actions of the P finals at t = 1 (x ≈ 1.5) and the landing cell as x₁ varies over 1.47–1.52:
+
+| P final | a at t=1 | landing for x₁ = 1.47 … 1.52 |
+|---|---|---|
+| bc0.2 s0 / s1 / s2 | (+1.00, −1.00) / (+1.00, −0.74) / (+1.00, −0.52) | (1,2)×4 (2,3)×2 / (2,3)×6 / (2,3)×6 |
+| bc0.1 s0 / s1 / s2 | (+1.00, −0.95) / (+1.00, −1.00) / (+1.00, −0.80) | (1,2)×4 (2,3)×2 / (1,2)×4 (2,3)×2 / (2,3)×6 |
+| bc0.05 s0 / s1 / s2 | (+1.00, −1.00) / (+1.00, −0.99) / (+1.00, −0.95) | (1,2)×4 (2,3)×2 / (1,2)×4 (2,3)×2 / (1,2)×6 |
+
+The x-component stays saturated at +1 at every BC weight; what a lower BC weight buys is a y-component that sits reliably at −1 rather than drifting between −0.5 and −1, so the detour mode becomes the stable attractor (all three bc = 0.05 finals). The fork decision is still the wall-slide (+1, −1) with the actuator noise deciding about 20% of episodes, which is why the mode-protocol reach at bc = 0.05 is 0.80–0.86 rather than 1.0 on two seeds and 1.0 on the seed whose t = 1 position sits lower.
+
+Reading: with bc = 0.05 the from-scratch method is stable across seeds under the repo's own evaluation — reach 0.80 / 0.86 / 1.00 against 0.375 for every baseline run — and the remaining shortfall is the geometric knife-edge of a saturated x-component, not the route preference. A cleaner downward action would need the actor to unpin a_x from the data's (1, 0), which the BC term prevents at every tested weight.
+
 No commit until reviewed.
