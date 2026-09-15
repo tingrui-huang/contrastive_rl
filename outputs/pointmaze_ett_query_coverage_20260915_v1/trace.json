@@ -1,0 +1,131 @@
+{
+  "selection": "path 1 = context 0 central-down slot; fixed by array order, no outcome selection",
+  "collected_training_tuple": {
+    "supervision_row": 18112,
+    "source": 1,
+    "source_row": 13004,
+    "episode": 65,
+    "time": 1,
+    "s": [
+      1.4872361421585083,
+      3.5670711994171143,
+      0.5,
+      3.5,
+      0.5,
+      3.5,
+      0.5,
+      3.5
+    ],
+    "recorded_xb": [
+      0.9462879300117493,
+      -0.10708606988191605
+    ],
+    "recorded_xq": [
+      0.9462879300117493,
+      -0.10708606988191605
+    ],
+    "recorded_y": [
+      2.4257497787475586,
+      3.4667763710021973,
+      1.4872361421585083,
+      3.5670711994171143,
+      0.5,
+      3.5,
+      0.5,
+      3.5
+    ],
+    "recorded_onset": false
+  },
+  "shared_generated_context": {
+    "root_id": 136,
+    "context_id": 0,
+    "nominal_xb": [
+      1.0,
+      -0.10798534005880356
+    ],
+    "B_C_nominal_bit_identical": true
+  },
+  "nce_positive": {
+    "replay_trajectory": 3301,
+    "update": 832,
+    "batch_row": 49,
+    "anchor_time": 0,
+    "future_time": 4,
+    "future_offset": 4,
+    "shared_index_both_arms": true
+  },
+  "arms": {
+    "B": {
+      "first_query": [
+        -0.7923265099525452,
+        -0.8959701061248779
+      ],
+      "first_successor": [
+        1.4872361421585083,
+        3.5670711994171143,
+        1.4872361421585083,
+        3.5670711994171143,
+        0.5,
+        3.5,
+        0.5,
+        3.5
+      ],
+      "first_onset": false,
+      "absorbed_at_end": true,
+      "valid_continuation_sha256": "fa16dc275ab791ed7431ff502e210510b90bcec2a747abc647658d20a1eed498",
+      "nce_positive_future": [
+        4.149081707000732,
+        3.5499987602233887,
+        3.300039291381836,
+        3.5575151443481445,
+        2.4668736457824707,
+        3.4869487285614014,
+        1.4872361421585083,
+        3.5670711994171143
+      ],
+      "canonical_goal_down_logit": -7.286602973937988,
+      "canonical_goal_right_logit": -5.555792331695557,
+      "canonical_goal_down_minus_right": -1.7308106422424316,
+      "final_actor_mode_action": [
+        0.999886691570282,
+        -0.035697489976882935
+      ]
+    },
+    "C": {
+      "first_query": [
+        0.0,
+        -1.0
+      ],
+      "first_successor": [
+        1.4941223859786987,
+        2.689518690109253,
+        1.4872361421585083,
+        3.5670711994171143,
+        0.5,
+        3.5,
+        0.5,
+        3.5
+      ],
+      "first_onset": false,
+      "absorbed_at_end": false,
+      "valid_continuation_sha256": "df4196e5e9ae9452a805edf3e2e15a6ac751a7c58ed07571dfb646a722790890",
+      "nce_positive_future": [
+        3.456296682357788,
+        1.471101999282837,
+        2.4906585216522217,
+        1.4257466793060303,
+        1.5098503828048706,
+        1.7659413814544678,
+        1.4941223859786987,
+        2.689518690109253
+      ],
+      "canonical_goal_down_logit": -6.265491008758545,
+      "canonical_goal_right_logit": -6.136906147003174,
+      "canonical_goal_down_minus_right": -0.1285848617553711,
+      "final_actor_mode_action": [
+        0.9982032179832458,
+        -0.9783844351768494
+      ]
+    }
+  }
+}

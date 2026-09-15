@@ -733,10 +733,97 @@ def analysis_stage():
     print(json.dumps(plain(result["primary_decision"]), indent=2), flush=True)
 
 
+def trace_stage():
+    """Trace one deterministic context/action slot through generation and NCE."""
+    import jax.numpy as jnp
+    from crl import checkpoint
+
+    roots = load_npz(OUT / "construction_roots.npz")
+    supervision = load_npz(input_path("supervision"))
+    generated = {arm: load_npz(OUT / f"generated_{arm}.npz") for arm in ("B", "C")}
+    replay = {arm: load_npz(OUT / f"replay_{arm}.npz") for arm in ("B", "C")}
+    lineage = load_npz(OUT / "nce_lineage.npz")
+    path = 1  # context 0, sealed central-down candidate slot; no outcome selection.
+    replay_trajectory = 3300 + path
+    occurrences = np.argwhere(
+        (lineage["trajectory"] == replay_trajectory) & (lineage["anchor_time"] == 0)
+    )
+    if not len(occurrences):
+        raise RuntimeError("deterministic trace path has no time-zero NCE occurrence")
+    update, batch_row = map(int, occurrences[0])
+    future_time = int(lineage["future_time"][update, batch_row])
+    root_id = int(generated["C"]["root_id"][path])
+    supervision_row = int(roots["supervision_row"][root_id])
+    candidates = roots["candidate_action"].astype(np.float32)
+    network = make_network()
+    output = {
+        "selection": "path 1 = context 0 central-down slot; fixed by array order, no outcome selection",
+        "collected_training_tuple": {
+            "supervision_row": supervision_row,
+            "source": int(supervision["train_source"][supervision_row]),
+            "source_row": int(supervision["train_source_row"][supervision_row]),
+            "episode": int(supervision["train_episode"][supervision_row]),
+            "time": int(supervision["train_time"][supervision_row]),
+            "s": supervision["train_s"][supervision_row],
+            "recorded_xb": supervision["train_xb"][supervision_row],
+            "recorded_xq": supervision["train_xq"][supervision_row],
+            "recorded_y": supervision["train_y"][supervision_row],
+            "recorded_onset": bool(supervision["train_onset"][supervision_row]),
+        },
+        "shared_generated_context": {
+            "root_id": root_id,
+            "context_id": int(generated["C"]["context_id"][path]),
+            "nominal_xb": generated["C"]["advice"][path, 0],
+            "B_C_nominal_bit_identical": bool(np.array_equal(
+                generated["B"]["advice"][path, 0], generated["C"]["advice"][path, 0]
+            )),
+        },
+        "nce_positive": {
+            "replay_trajectory": replay_trajectory,
+            "update": update,
+            "batch_row": batch_row,
+            "anchor_time": 0,
+            "future_time": future_time,
+            "future_offset": future_time,
+            "shared_index_both_arms": True,
+        },
+        "arms": {},
+    }
+    for arm in ("B", "C"):
+        _, state = checkpoint.load_checkpoint(OUT / "crl" / arm / "final.pkl")
+        root = generated[arm]["states"][path, 0]
+        observation = jnp.asarray(np.concatenate([root, GOAL])[None])
+        action_score = []
+        for candidate in (candidates[1], candidates[4]):
+            phi, psi = network.representation_network.apply(
+                state.q_params, observation,
+                jnp.asarray(candidate[None]),
+            )
+            value = jnp.sum(phi * psi, axis=1)
+            action_score.append(float(np.asarray(value).reshape(-1)[0]))
+        distribution = network.policy_network.apply(state.policy_params, observation)
+        output["arms"][arm] = {
+            "first_query": generated[arm]["actions"][path, 0],
+            "first_successor": generated[arm]["states"][path, 1],
+            "first_onset": bool(generated[arm]["onset_event"][path, 0]),
+            "absorbed_at_end": bool(generated[arm]["failed"][path, 49]),
+            "valid_continuation_sha256": array_sha(generated[arm]["states"][path, :50]),
+            "nce_positive_future": replay[arm]["obs"][replay_trajectory, future_time, :8],
+            "canonical_goal_down_logit": action_score[0],
+            "canonical_goal_right_logit": action_score[1],
+            "canonical_goal_down_minus_right": action_score[0] - action_score[1],
+            "final_actor_mode_action": np.tanh(np.asarray(distribution.loc)[0]),
+        }
+    write_json(OUT / "trace.json", output)
+
+
 def finalize_stage():
+    trace_stage()
     generation = json.loads((OUT / "generation.json").read_text())
     lineage = json.loads((OUT / "lineage.json").read_text())
     heldout = json.loads((OUT / "heldout_evaluation.json").read_text())
+    fit = json.loads((OUT / "fit_diagnostic.json").read_text())
+    trace = json.loads((OUT / "trace.json").read_text())
     verification = json.loads((OUT / "crl_verification.json").read_text())
     native = {
         policy: json.loads((OUT / "native" / policy / "summary.json").read_text())
@@ -748,6 +835,8 @@ def finalize_stage():
         "generation": generation,
         "lineage": lineage,
         "heldout": heldout,
+        "fit_diagnostic": fit,
+        "trace": trace,
         "crl_verification": verification,
         "native": native,
         "one_seed_exploratory": True,
@@ -782,6 +871,10 @@ def finalize_stage():
     gen_b = generation["arms"]["B"]
     gen_c = generation["arms"]["C"]
     decision = heldout["primary_decision"]
+    fit_c = fit["arms"]["C"]
+    construction_fit = fit_c["canonical_goal_construction_roots"]
+    goal_support = fit["sampled_time0_goal_support"]
+    goal_bank = fit_c["heldout_margin_for_sampled_goal_banks"]
     report = f"""# Fixed-ETT query-coverage intervention
 
 Primary result: **`{decision['label']}`**. The selected ETT was not retrained, sigmoid-NCE was unchanged, and both 30k-step CRL arms used BC 0.05 from hash-matched initialization.
@@ -798,6 +891,14 @@ On 16 evaluation-only coherent alive roots, B's task-goal down-minus-right logit
 
 The exact 7,680,000-row sampler lineage contains {lineage['synthetic_time0_positive_pairs']:,} synthetic time-zero positives. Candidate and task-near-future counts are in `lineage.json`; this shows what entered NCE rather than relying on total generated transition count.
 
+## Where the remaining exact-goal error sits
+
+C remains negative even on the 198 construction roots: central down-minus-right {construction_fit['central_down_minus_right']:+.3f} [{construction_fit['central_ci95'][0]:+.3f}, {construction_fit['central_ci95'][1]:+.3f}], with {construction_fit['central_roots_positive']}/198 positive. The strict held-out failure is therefore not merely a held-out-root generalization failure.
+
+However, the relabeled target distribution contains zero exact copies of the canonical stationary F4 goal. Among C's time-zero positives, down/right have {goal_support['down']['positive_pairs']:,}/{goal_support['right']['positive_pairs']:,} goals; their nearest full-F4 distances to canonical are {goal_support['down']['minimum_full_f4_distance']:.3f}/{goal_support['right']['minimum_full_f4_distance']:.3f}, and only {goal_support['down']['full_f4_threshold_counts']['0.1']}/{goal_support['right']['full_f4_threshold_counts']['0.1']} lie within 0.1. Down nevertheless has {goal_support['down']['full_f4_threshold_counts']['0.5']:,} futures within 0.5 versus {goal_support['right']['full_f4_threshold_counts']['0.5']:,} for right.
+
+On 512 actual down-route goal-near F4 goals drawn from those positives, C's held-out down-minus-right logit is {goal_bank['down']['mean_down_minus_right']:+.3f}, positive on all 16 roots. On a right-route goal bank it is {goal_bank['right']['mean_down_minus_right']:+.3f}. Thus C learned action-to-supported-future discrimination, while the exact stationary canonical-goal probe remains a small extrapolation error. `fit_diagnostic.json` also evaluates 512 exact lineage batches: C improves time-zero positive-versus-negative separation, but the more diverse replay is harder overall. These logits are density-ratio diagnostics, not calibrated success probabilities.
+
 Actor samples on the held-out roots enter the noiseless lower cell with probability {b['actor_noiseless_lower_entry_probability']:.3f} (B) and {c['actor_noiseless_lower_entry_probability']:.3f} (C). Because C's covered actions also enter the unchanged BC term, actor movement is not a critic-only attribution.
 
 ## Fixed-final native evaluation
@@ -808,18 +909,26 @@ Actor samples on the held-out roots enter the noiseless lower cell with probabil
 
 Native evaluation used 200 fresh paired reset seeds only after training. It did not select checkpoints or change the fixed budget.
 
+Although the strict exact-canonical critic gate fails, the native policy effect is large in both protocols. Query coverage is therefore a demonstrated major cause of the prior policy failure and is sufficient for useful policy learning in this intervention, but the experiment does not establish it as the unique cause or satisfy the stricter canonical critic criterion.
+
+## Trace
+
+`trace.json` follows the deterministic context-0 central-down slot from its exact collected supervised tuple through the shared nominal condition, B/C first queries and learned successors, complete continuation hashes, one exact shared NCE `(trajectory, anchor, future)` occurrence, and final actor/critic preferences. The trace path is fixed by array order and was not selected by outcome.
+
 ## Interpretation limits
 
 This one-seed intervention tests sufficiency of a particular sealed action-covering generator at a fixed learner budget. It does not prove uniqueness of the cause. It intentionally leaves the fixed ETT's out-of-support death errors in the replay, so failure would still be compatible with goal-distribution, critic-fit, model-quality, or finite-sample limitations. Model-internal success is not native success.
 """
     (OUT / "REPORT.md").write_text(report, encoding="utf-8")
-    code_files = ("run.py", "remote_crl.py")
+    code_files = ("run.py", "remote_crl.py", "diagnose_fit.py")
     write_json(OUT / "completion.json", {
         "status": "complete",
         "primary_decision": decision,
         "report_sha256": sha256(OUT / "REPORT.md"),
         "results_sha256": sha256(OUT / "results.json"),
         "code_sha256": {name: sha256(OUT / name) for name in code_files},
+        "sealed_training_code_unchanged_during_generation_and_training": True,
+        "post_seal_changes": "read-only fit diagnostic, trace, and final reporting only",
         "commit_or_push": False,
     })
     print("coverage experiment report complete", flush=True)
