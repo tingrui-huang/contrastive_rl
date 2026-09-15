@@ -31,10 +31,22 @@ new arm per value. The run tag then carries the alpha (zfail_a3_s0), because
 without it every alpha in a sweep writes into ONE directory and the later runs
 silently overwrite the earlier ones.
 
+--force-safe-prob (f4 only) picks a rung of the teacher-detour dataset
+ladder: the probability that a teacher episode takes the always-safe lower
+route (0.05 is the registry dataset; 0.10 ... 0.30 are
+datasets/swamp_windy_f4_far{pp}_merged_s0.npz, built and pinned by
+scripts/build_f4_detour_ladder.py). The gate checks the rung's content sha
+against the ladder manifest and accepts the ladder's canonical bank -- the
+composed bank built from the 0.05 rung -- on every rung, so the bank is held
+fixed and only the dataset varies. The run tag carries far{pp} on every rung
+except 0.05.
+
 Usage:
   python scripts/run_swamp_windy_z_failneg.py --diff
   python scripts/run_swamp_windy_z_failneg.py --arm zbase --run
   python scripts/run_swamp_windy_z_failneg.py --arm zfail --run
+  python scripts/run_swamp_windy_z_failneg.py --version f4 --arm zbase \
+      --force-safe-prob 0.15 --run
 
   # frame-stacked alpha sweep against a composed bank (see
   # scripts/run_f4_failneg_sweep.sh, which drives exactly this):
@@ -93,6 +105,13 @@ ENV = VERSIONS['v0']['env']
 DATASET = VERSIONS['v0']['dataset']
 BANK = VERSIONS['v0']['bank']
 NORM = VERSIONS['v0']['norm']
+TAG = VERSIONS['v0']['tag']
+#: f4 teacher-detour ladder (see scripts/build_f4_detour_ladder.py). None
+#: means "the registry dataset, no ladder semantics" and reproduces every
+#: pre-ladder run exactly; 0.05 selects the same file but through the ladder.
+FORCE_SAFE_PROB = None
+F4_LADDER_MANIFEST = os.path.join('artifacts', 'swamp_windy_f4_detour_ladder',
+                                  'ladder_manifest.json')
 ARMS = ('zbase', 'zfail')
 ALPHA = {'zbase': 0.0, 'zfail': 0.1}
 # Set by --alpha (zfail only). A module-level override rather than a build_cfg
@@ -150,11 +169,49 @@ def select_bank(path):
 def select_version(v):
   """Point the module-level ENV/DATASET/BANK at one version. Called once, from
   main(), BEFORE any config is built, so build_cfg and gate() agree."""
-  global ENV, DATASET, BANK, NORM
+  global ENV, DATASET, BANK, NORM, TAG
   spec = VERSIONS[v]
   ENV, DATASET, BANK = spec['env'], spec['dataset'], spec['bank']
   NORM = spec['norm']
+  TAG = spec['tag']
   return spec
+
+
+def select_force_safe(p):
+  """Point DATASET at one rung of the f4 teacher-detour ladder.
+
+  Called once from main(), after select_version() and before any config is
+  built.  The 0.05 rung is the registry file itself; every other rung is the
+  ``_far{pp}`` file the ladder builder produces.  The run tag gets the same
+  suffix so rungs never share a directory.
+  """
+  global DATASET, FORCE_SAFE_PROB, TAG
+  if p is None:
+    return
+  from scripts import build_f4_detour_ladder as ladder
+  if ENV != VERSIONS['f4']['env']:
+    raise SystemExit('--force-safe-prob is defined for --version f4 only')
+  rung = ladder.parse_rungs([p])[0]
+  FORCE_SAFE_PROB = rung
+  if ladder.is_default(rung):
+    return
+  DATASET = ladder.merged_path(rung)
+  TAG = '%s_%s' % (VERSIONS['f4']['tag'], ladder.rung_tag(rung))
+
+
+def _ladder_entry():
+  """Manifest entry of the selected rung plus the canonical bank record."""
+  from scripts import build_f4_detour_ladder as ladder
+  if not os.path.exists(F4_LADDER_MANIFEST):
+    raise SystemExit('ladder manifest missing: %s\n  build the ladder with '
+                     'scripts/build_f4_detour_ladder.py' % F4_LADDER_MANIFEST)
+  with open(F4_LADDER_MANIFEST, encoding='utf-8') as f:
+    manifest = json.load(f)
+  entry = manifest['rungs'].get(ladder.rung_tag(FORCE_SAFE_PROB))
+  if entry is None:
+    raise SystemExit('rung %g is not pinned in %s'
+                     % (FORCE_SAFE_PROB, F4_LADDER_MANIFEST))
+  return entry, manifest.get('canonical_bank') or {}
 
 
 def build_cfg(arm, ckpt_dir, steps=STEPS, seed=0):
@@ -228,10 +285,29 @@ def gate(arm, seed):
   print('  arm          : %s   alpha %g   seed %d'
         % (arm, effective_alpha(arm), seed))
   if not os.path.exists(DATASET):
+    if FORCE_SAFE_PROB is not None:
+      raise SystemExit('ladder rung %g not built: %s\n  build it with\n'
+                       '    python scripts/build_f4_detour_ladder.py build '
+                       '--rungs %g' % (FORCE_SAFE_PROB, DATASET,
+                                       FORCE_SAFE_PROB))
     raise SystemExit('dataset missing: %s\n  regenerate with '
                      'scripts/collect_swamp_windy_z.py + '
                      'scripts/merge_swamp_windy_baddemo.py' % DATASET)
   ds = content_sha(DATASET)
+  ladder_bank_source = None
+  if FORCE_SAFE_PROB is not None:
+    entry, canonical_bank = _ladder_entry()
+    if entry['content_sha256'] != ds:
+      raise SystemExit('ladder rung %g content sha differs from the pinned '
+                       'manifest:\n  pinned %s\n  found  %s\n  the rung on '
+                       'this node is not the one the ladder was defined '
+                       'against (rebuild with --force, or fix the manifest '
+                       'deliberately)' % (FORCE_SAFE_PROB,
+                                          entry['content_sha256'], ds))
+    ladder_bank_source = canonical_bank.get('source_content_sha256')
+    print('  ladder rung  : force_safe_prob %g   (%d of %d teacher episodes '
+          'on the safe route; pinned sha OK)'
+          % (FORCE_SAFE_PROB, entry['n_forced_safe'], entry['n_teacher']))
   with np.load(DATASET, allow_pickle=False) as d:
     meta = json.loads(str(d['meta'])) if 'meta' in d else {}
     n_eps, L, W = d['obs'].shape
@@ -293,9 +369,19 @@ def gate(arm, seed):
     with np.load(BANK, allow_pickle=False) as b:
       g = np.asarray(b['goals'])
       bank_meta = json.loads(str(b['meta'])) if 'meta' in b else {}
-    if bank_meta.get('source_content_sha256') != ds:
-      raise SystemExit('failure bank was not built from the selected dataset; '
-                       'rebuild it from the current dataset before training')
+    bank_source = bank_meta.get('source_content_sha256')
+    if bank_source == ds:
+      bank_origin = 'built from the selected dataset'
+    elif (ladder_bank_source is not None and bank_source == ladder_bank_source):
+      bank_origin = ('the ladder\'s canonical bank (built from the 0.05 '
+                     'rung; held fixed across rungs)')
+    else:
+      raise SystemExit('failure bank was not built from the selected dataset'
+                       + (' or the ladder\'s canonical 0.05 rung'
+                          if ladder_bank_source is not None else '')
+                       + '; rebuild it from the current dataset before '
+                       'training')
+    print('  bank origin  : %s' % bank_origin)
     print('  bank         : %s' % BANK)
     print('  bank content : %s' % bs)
     if NORM[0] == 'z_physical':
@@ -328,7 +414,11 @@ def gate(arm, seed):
           'bank': BANK if arm == 'zfail' else None,
           'bank_content_sha256': content_sha(BANK) if arm == 'zfail' else None,
           'obs_norm_mode': NORM[0], 'obs_norm_z_scale': NORM[1],
-          'batch_size': BATCH_SIZE, 'steps': STEPS}
+          'batch_size': BATCH_SIZE, 'steps': STEPS,
+          'force_safe_prob': FORCE_SAFE_PROB,
+          'bank_source_content_sha256': (
+              json.loads(str(np.load(BANK, allow_pickle=False)['meta']))
+              .get('source_content_sha256') if arm == 'zfail' else None)}
 
 
 def main():
@@ -344,13 +434,18 @@ def main():
   ap.add_argument('--bank', default='',
                   help='override the version registry failure bank, e.g. a '
                        'composed one. Recorded in arm_provenance.json.')
+  ap.add_argument('--force-safe-prob', type=float, default=None,
+                  help='f4 only: rung of the teacher-detour dataset ladder '
+                       '(0.05 0.10 0.15 0.20 0.25 0.30); selects the dataset, '
+                       'pins its content sha and tags the run dir')
   ap.add_argument('--ckpt-dir', default='')
   ap.add_argument('--diff', action='store_true')
   ap.add_argument('--check-only', action='store_true')
   ap.add_argument('--smoke', action='store_true')
   ap.add_argument('--run', action='store_true')
   args = ap.parse_args()
-  spec = select_version(args.version)
+  select_version(args.version)
+  select_force_safe(args.force_safe_prob)
   select_alpha(args.alpha)
   select_bank(args.bank)
 
@@ -368,8 +463,8 @@ def main():
 
   # The alpha suffix is mandatory on zfail: without it every alpha in a sweep
   # writes into ONE directory and the later runs silently overwrite the earlier.
-  tag = ('%s_zbase_s%d' % (spec['tag'], args.seed) if args.arm == 'zbase' else
-         '%s_zfail_%s_s%d' % (spec['tag'], alpha_tag(effective_alpha('zfail')),
+  tag = ('%s_zbase_s%d' % (TAG, args.seed) if args.arm == 'zbase' else
+         '%s_zfail_%s_s%d' % (TAG, alpha_tag(effective_alpha('zfail')),
                               args.seed))
   ckpt = args.ckpt_dir or (tag + ('_smoke' if args.smoke else ''))
   steps = 2_000 if args.smoke else STEPS

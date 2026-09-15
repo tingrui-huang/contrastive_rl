@@ -1,7 +1,17 @@
 #!/usr/bin/env bash
 # F4 p=0.3: alpha 0, 0.1, 0.3 x learner seed 0, 1; 150k updates each.
-# Data and composed bank must already exist. No collection happens here.
+# Data and composed bank must already exist. No collection happens here,
+# except that a missing ladder rung (FORCE_SAFE set) is built in preflight.
+#
+# FORCE_SAFE picks a rung of the teacher-detour dataset ladder (0.05 0.10
+# 0.15 0.20 0.25 0.30 -- the probability that a teacher episode takes the
+# always-safe lower route; see scripts/build_f4_detour_ladder.py). Unset means
+# the registry dataset with no ladder semantics, exactly as before. The
+# composed bank is held fixed across rungs; RUN_ID and the eval root carry a
+# far{pp} suffix on every rung except 0.05.
+#
 # Usage: PY=/path/to/python bash scripts/run_f4_p30_sweep.sh [run|check|smoke]
+#        FORCE_SAFE=0.15 SEEDS="0 1 2" bash scripts/run_f4_p30_sweep.sh run
 set -Eeuo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
@@ -12,10 +22,26 @@ ALPHAS="${ALPHAS:-0.1 0.3}"
 JOBS="${JOBS:-1}"
 EPISODES="${EPISODES:-100}"
 LOGDIR="${LOGDIR:-logs/f4_p30_sweep}"
-RUN_ID="${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)_$$}"
+FORCE_SAFE="${FORCE_SAFE:-}"
+if [[ -n "$FORCE_SAFE" ]]; then
+  FORCE_SAFE_TAG=$("$PY" -c "
+import sys; sys.path.insert(0, '.')
+from scripts import build_f4_detour_ladder as ladder
+p = ladder.parse_rungs([sys.argv[1]])[0]
+print('' if ladder.is_default(p) else '_' + ladder.rung_tag(p))
+" "$FORCE_SAFE") || { echo "FORCE_SAFE=$FORCE_SAFE is not a ladder rung"; exit 1; }
+  DATASET=$("$PY" -c "
+import sys; sys.path.insert(0, '.')
+from scripts import build_f4_detour_ladder as ladder
+print(ladder.merged_path(ladder.parse_rungs([sys.argv[1]])[0]))
+" "$FORCE_SAFE")
+else
+  FORCE_SAFE_TAG=""
+  DATASET="datasets/swamp_windy_f4_merged_s0.npz"
+fi
+RUN_ID="${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)_$$$FORCE_SAFE_TAG}"
 RUN_ROOT="${RUN_ROOT:-runs/f4_p30_sweep/$RUN_ID}"
 EVAL_ROOT="${EVAL_ROOT:-artifacts/f4_p30_sweep/$RUN_ID}"
-DATASET="datasets/swamp_windy_f4_merged_s0.npz"
 BANK="${BANK:-artifacts/swamp_windy_f4_failure_bank/failure_bank_f4_r60d40.npz}"
 ENV_NAME="point_two_route_swamp_windy_f4_v0"
 export PYTHONUNBUFFERED=1
@@ -47,6 +73,10 @@ die() { write_status "FAILED $*"; exit 1; }
 [[ "$RUN_ID" =~ ^[A-Za-z0-9._-]+$ ]] || die "RUN_ID must contain only letters, digits, dot, underscore, or hyphen"
 exec 9>"$LOGDIR/.sweep.lock"
 flock -n 9 || die "another F4 p=0.3 sweep holds $LOGDIR/.sweep.lock"
+if [[ ! -f "$DATASET" && -n "$FORCE_SAFE" ]]; then
+  write_status "BUILDING_RUNG force_safe=$FORCE_SAFE"
+  "$PY" scripts/build_f4_detour_ladder.py build --rungs "$FORCE_SAFE"     > "$LOGDIR/$RUN_ID/build_rung.log" 2>&1 || die "rung build failed (see $LOGDIR/$RUN_ID/build_rung.log)"
+fi
 [[ -f "$DATASET" ]] || die "missing dataset: $DATASET"
 [[ -f "$BANK" ]] || die "missing composed bank: $BANK"
 read -r -a SEED_LIST <<< "$SEEDS"
@@ -55,11 +85,11 @@ read -r -a ALPHA_LIST <<< "$ALPHAS"
 for seed in "${SEED_LIST[@]}"; do
   [[ "$seed" =~ ^[0-9]+$ ]] || die "invalid seed: $seed"
 done
-write_status "START mode=$MODE jobs=$JOBS run_root=$RUN_ROOT"
+write_status "START mode=$MODE jobs=$JOBS run_root=$RUN_ROOT force_safe=${FORCE_SAFE:-registry}"
 
 # Reuse the launcher's provenance gate instead of pinning obsolete p=0.1
 # artifact hashes. Record the hashes of the actual p=0.3 arrays and git HEAD.
-"$PY" - "$DATASET" "$BANK" "$RUN_ROOT" "$MODE" "$SEEDS" "$ALPHAS" "$EPISODES" <<'PYEOF' 2>&1 | tee "$LOGDIR/$RUN_ID/preflight.log"
+"$PY" - "$DATASET" "$BANK" "$RUN_ROOT" "$MODE" "$SEEDS" "$ALPHAS" "$EPISODES" "$FORCE_SAFE" <<'PYEOF' 2>&1 | tee "$LOGDIR/$RUN_ID/preflight.log"
 import collections
 import json
 import pathlib
@@ -70,7 +100,7 @@ import jax
 import numpy as np
 from scripts import run_swamp_windy_z_failneg as launcher
 
-dataset, bank, run_root, mode, seeds, alphas, episodes = sys.argv[1:]
+dataset, bank, run_root, mode, seeds, alphas, episodes, force_safe = sys.argv[1:]
 seed_values = [int(s) for s in seeds.split()]
 alpha_values = [float(a) for a in alphas.split()]
 assert len(set(seed_values)) == len(seed_values), 'duplicate learner seeds'
@@ -82,6 +112,7 @@ assert all(device.platform == 'gpu' for device in devices), devices
 assert float((jax.numpy.ones((2, 2)) @ jax.numpy.ones((2, 2))).block_until_ready()[0, 0]) == 2
 print('GPU execution passed:', devices, flush=True)
 launcher.select_version('f4')
+launcher.select_force_safe(float(force_safe) if force_safe else None)
 assert dataset == launcher.DATASET, 'dataset must match launcher registry'
 launcher.select_bank(bank)
 prov = launcher.gate('zfail', seed_values[0])
@@ -108,6 +139,7 @@ prov.update({
     'git_head': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
     'git_branch': subprocess.check_output(['git', 'branch', '--show-current'], text=True).strip(),
     'mode': mode, 'learner_seeds': seed_values, 'alphas': [0.0] + alpha_values,
+    'force_safe_prob': (float(force_safe) if force_safe else None),
     'steps_per_run': launcher.STEPS if mode == 'run' else (2000 if mode == 'smoke' else 0),
     'eval_episodes_per_condition': int(episodes), 'jax_devices': [str(d) for d in devices],
 })
@@ -126,6 +158,9 @@ run_one() {
   local train_log="$LOGDIR/$RUN_ID/${tag}_train.log"
   local eval_log="$LOGDIR/$RUN_ID/${tag}_eval.log"
   local -a cmd=("$PY" scripts/run_swamp_windy_z_failneg.py --version f4 --arm "$arm" --seed "$seed" --ckpt-dir "$run_dir")
+  if [[ -n "$FORCE_SAFE" ]]; then
+    cmd+=(--force-safe-prob "$FORCE_SAFE")
+  fi
   if [[ "$arm" == zfail ]]; then
     cmd+=(--alpha "$alpha" --bank "$BANK")
   fi

@@ -1,0 +1,238 @@
+{
+  "ladder": [
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.25,
+    0.3
+  ],
+  "default_rung": 0.05,
+  "env_name": "point_two_route_swamp_windy_f4_v0",
+  "recipe": {
+    "teacher_episodes": 6000,
+    "bad_demo_episodes": 600,
+    "random_frac": 0.2,
+    "teacher_noise": 0.15,
+    "seed": 0,
+    "force_safe_prob": "the only value that differs per rung; applies to the 4800 teacher episodes (not the random or bad-demo ones)"
+  },
+  "canonical_bank": {
+    "path": "artifacts/swamp_windy_f4_failure_bank/failure_bank_f4_r60d40.npz",
+    "content_sha256": "022f2d0d52cf6e0147def46cd800ae2da65e4b5592090397f606f051f6e2c7e9",
+    "source_content_sha256": "ad8b4470df0ebcc1c03421dfb59b61f9faee48cfbf51e2b9c0a402e0403f544d",
+    "built_from_rung": "far05"
+  },
+  "rungs": {
+    "far05": {
+      "force_safe_prob": 0.05,
+      "merged": "datasets/swamp_windy_f4_merged_s0.npz",
+      "content_sha256": "ad8b4470df0ebcc1c03421dfb59b61f9faee48cfbf51e2b9c0a402e0403f544d",
+      "teacher_content_sha256": "35e0cb428cad902b091282f6794a1af38b1746ddb8694c5c94441303065a5ef2",
+      "bad_content_sha256": "5e51979051873deef5ac01f66e3f1a44e8ad3139bded41dce812b1bc9fb3306c",
+      "meta_force_safe_prob": 0.05,
+      "per_cell_swamp_prob": 0.3,
+      "env_name": "point_two_route_swamp_windy_f4_v0",
+      "episodes": 6600,
+      "rows": 51,
+      "obs_width": 16,
+      "n_random": 1200,
+      "n_bad_demo": 600,
+      "n_teacher": 4800,
+      "n_forced_safe": 257,
+      "forced_safe_fraction_of_teacher": 0.05354166666666667,
+      "forced_safe_fraction_of_all": 0.03893939393939394,
+      "forced_safe_wilson99_of_teacher": [
+        0.04577166734236486,
+        0.06254421430888861
+      ],
+      "n_route_safe_detour": 257,
+      "teacher_mode_counts": {
+        "0": 1200,
+        "1": 257,
+        "2": 1470,
+        "3": 3073,
+        "4": 600
+      },
+      "died_rate_overall": 0.22045454545454546,
+      "died_rate_teacher": 0.10645833333333334,
+      "died_rate_forced_safe": 0.0,
+      "reached_0p5_rate": 0.7166666666666667
+    },
+    "far10": {
+      "force_safe_prob": 0.1,
+      "merged": "datasets/swamp_windy_f4_far10_merged_s0.npz",
+      "content_sha256": "b67b228139cb1c9502ab939a9e8572d392bca7b49e7ffca56e0da571bb63a51a",
+      "teacher_content_sha256": "9f34a8f53ef26e47b41c1b98c00d471cc7c14f41e4995b40460da9ff1a5782e4",
+      "bad_content_sha256": "5e51979051873deef5ac01f66e3f1a44e8ad3139bded41dce812b1bc9fb3306c",
+      "meta_force_safe_prob": 0.1,
+      "per_cell_swamp_prob": 0.3,
+      "env_name": "point_two_route_swamp_windy_f4_v0",
+      "episodes": 6600,
+      "rows": 51,
+      "obs_width": 16,
+      "n_random": 1200,
+      "n_bad_demo": 600,
+      "n_teacher": 4800,
+      "n_forced_safe": 490,
+      "forced_safe_fraction_of_teacher": 0.10208333333333333,
+      "forced_safe_fraction_of_all": 0.07424242424242425,
+      "forced_safe_wilson99_of_teacher": [
+        0.09137076876707675,
+        0.11389443606441838
+      ],
+      "n_route_safe_detour": 490,
+      "teacher_mode_counts": {
+        "0": 1200,
+        "1": 490,
+        "2": 1408,
+        "3": 2902,
+        "4": 600
+      },
+      "died_rate_overall": 0.21272727272727274,
+      "died_rate_teacher": 0.09583333333333334,
+      "died_rate_forced_safe": 0.0,
+      "reached_0p5_rate": 0.7251666666666666
+    },
+    "far15": {
+      "force_safe_prob": 0.15,
+      "merged": "datasets/swamp_windy_f4_far15_merged_s0.npz",
+      "content_sha256": "057dee606fe3f6c33f2c685d5e6f44c6c7a36023ad14e62c06427b86ef7be65e",
+      "teacher_content_sha256": "b240e587773074ce7810ed877eacfe023580519d042771b08f942fcfaff876f9",
+      "bad_content_sha256": "5e51979051873deef5ac01f66e3f1a44e8ad3139bded41dce812b1bc9fb3306c",
+      "meta_force_safe_prob": 0.15,
+      "per_cell_swamp_prob": 0.3,
+      "env_name": "point_two_route_swamp_windy_f4_v0",
+      "episodes": 6600,
+      "rows": 51,
+      "obs_width": 16,
+      "n_random": 1200,
+      "n_bad_demo": 600,
+      "n_teacher": 4800,
+      "n_forced_safe": 738,
+      "forced_safe_fraction_of_teacher": 0.15375,
+      "forced_safe_fraction_of_all": 0.11181818181818182,
+      "forced_safe_wilson99_of_teacher": [
+        0.1408179301494791,
+        0.16763797059918314
+      ],
+      "n_route_safe_detour": 738,
+      "teacher_mode_counts": {
+        "0": 1200,
+        "1": 738,
+        "2": 1307,
+        "3": 2755,
+        "4": 600
+      },
+      "died_rate_overall": 0.21075757575757575,
+      "died_rate_teacher": 0.093125,
+      "died_rate_forced_safe": 0.0,
+      "reached_0p5_rate": 0.7273333333333334
+    },
+    "far20": {
+      "force_safe_prob": 0.2,
+      "merged": "datasets/swamp_windy_f4_far20_merged_s0.npz",
+      "content_sha256": "e7ba45632a914a29ba4bcc973fd4c42581ace83e840e8b33a2a7570cc05db672",
+      "teacher_content_sha256": "8ec1e8d8532bd898425ae2b26d72ea7ac13a6175a33450e85a261550322bc7ac",
+      "bad_content_sha256": "5e51979051873deef5ac01f66e3f1a44e8ad3139bded41dce812b1bc9fb3306c",
+      "meta_force_safe_prob": 0.2,
+      "per_cell_swamp_prob": 0.3,
+      "env_name": "point_two_route_swamp_windy_f4_v0",
+      "episodes": 6600,
+      "rows": 51,
+      "obs_width": 16,
+      "n_random": 1200,
+      "n_bad_demo": 600,
+      "n_teacher": 4800,
+      "n_forced_safe": 983,
+      "forced_safe_fraction_of_teacher": 0.20479166666666668,
+      "forced_safe_fraction_of_all": 0.14893939393939393,
+      "forced_safe_wilson99_of_teacher": [
+        0.19020046664291534,
+        0.22019785547552895
+      ],
+      "n_route_safe_detour": 983,
+      "teacher_mode_counts": {
+        "0": 1200,
+        "1": 983,
+        "2": 1235,
+        "3": 2582,
+        "4": 600
+      },
+      "died_rate_overall": 0.20924242424242423,
+      "died_rate_teacher": 0.09104166666666667,
+      "died_rate_forced_safe": 0.0,
+      "reached_0p5_rate": 0.729
+    },
+    "far25": {
+      "force_safe_prob": 0.25,
+      "merged": "datasets/swamp_windy_f4_far25_merged_s0.npz",
+      "content_sha256": "be7137e2b43497fd059d8469d3552b77f91cbed242b098ff49675f656baa8ddb",
+      "teacher_content_sha256": "ffd52910d4d03c568b8b53dade5cc5653404d988c0b0cac036513772473b68ee",
+      "bad_content_sha256": "5e51979051873deef5ac01f66e3f1a44e8ad3139bded41dce812b1bc9fb3306c",
+      "meta_force_safe_prob": 0.25,
+      "per_cell_swamp_prob": 0.3,
+      "env_name": "point_two_route_swamp_windy_f4_v0",
+      "episodes": 6600,
+      "rows": 51,
+      "obs_width": 16,
+      "n_random": 1200,
+      "n_bad_demo": 600,
+      "n_teacher": 4800,
+      "n_forced_safe": 1244,
+      "forced_safe_fraction_of_teacher": 0.25916666666666666,
+      "forced_safe_fraction_of_all": 0.18848484848484848,
+      "forced_safe_wilson99_of_teacher": [
+        0.24321601210138788,
+        0.27578219563955886
+      ],
+      "n_route_safe_detour": 1244,
+      "teacher_mode_counts": {
+        "0": 1200,
+        "1": 1244,
+        "2": 1155,
+        "3": 2401,
+        "4": 600
+      },
+      "died_rate_overall": 0.1984848484848485,
+      "died_rate_teacher": 0.07625,
+      "died_rate_forced_safe": 0.0,
+      "reached_0p5_rate": 0.7408333333333333
+    },
+    "far30": {
+      "force_safe_prob": 0.3,
+      "merged": "datasets/swamp_windy_f4_far30_merged_s0.npz",
+      "content_sha256": "7b0a9367132d515b0a24fdcb779510be4aa280610ae098a614f9e7f106fe2efa",
+      "teacher_content_sha256": "fa7c0e5a3b01530daa3202d89af586ba711b444bec4fdb241382dc4031aa7fc9",
+      "bad_content_sha256": "5e51979051873deef5ac01f66e3f1a44e8ad3139bded41dce812b1bc9fb3306c",
+      "meta_force_safe_prob": 0.3,
+      "per_cell_swamp_prob": 0.3,
+      "env_name": "point_two_route_swamp_windy_f4_v0",
+      "episodes": 6600,
+      "rows": 51,
+      "obs_width": 16,
+      "n_random": 1200,
+      "n_bad_demo": 600,
+      "n_teacher": 4800,
+      "n_forced_safe": 1461,
+      "forced_safe_fraction_of_teacher": 0.304375,
+      "forced_safe_fraction_of_all": 0.22136363636363637,
+      "forced_safe_wilson99_of_teacher": [
+        0.2875471337563665,
+        0.3217429329121015
+      ],
+      "n_route_safe_detour": 1461,
+      "teacher_mode_counts": {
+        "0": 1200,
+        "1": 1461,
+        "2": 1073,
+        "3": 2266,
+        "4": 600
+      },
+      "died_rate_overall": 0.20136363636363636,
+      "died_rate_teacher": 0.08020833333333334,
+      "died_rate_forced_safe": 0.0,
+      "reached_0p5_rate": 0.7376666666666667
+    }
+  }
+}
