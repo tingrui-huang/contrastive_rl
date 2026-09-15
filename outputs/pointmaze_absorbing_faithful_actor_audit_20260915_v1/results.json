@@ -1,0 +1,1734 @@
+{
+  "config": {
+    "actor_training": 0,
+    "arms": [
+      "O",
+      "P"
+    ],
+    "bootstrap_seed": 0,
+    "checkpoints": [
+      [
+        "bc0p5",
+        0.5
+      ],
+      [
+        "bc0p2",
+        0.2
+      ],
+      [
+        "bc0p1",
+        0.1
+      ],
+      [
+        "bc0p05",
+        0.05
+      ]
+    ],
+    "environment_calls": 0,
+    "fields_read": [
+      "obs",
+      "act"
+    ],
+    "fork_paths": 32,
+    "fork_paths_diagonal": 16,
+    "git_head": "a52c0a5a42d4b836821e462fb2d5b411732aa316",
+    "horizon": 49,
+    "native_steps": 0,
+    "protocol_sha256": "39a23f9d40622af48d8d127e8b15e944c59267f250befea56a06cb4ce58c87bf",
+    "rollout_cap": 30000000,
+    "sha256": {
+      "ett/absorbing_ett.py": "0abe0805f439bb1a5134b773e46031613ac3e0467c0232fd5be06ada67fe8203",
+      "ett/pointmaze_absorbing_integration.py": "b01c415352bc98b8466ed238916d77a787f3588ef7f1f3238de892e96b06c5ee",
+      "outputs/pointmaze_absorbing_actor_sweep_20260915_v1/checkpoints/actor_O_bc0p05.pkl": "f13e86ed112fdd4fd4cba6712945f4cbf942790a2200b67b73138246ae3b8322",
+      "outputs/pointmaze_absorbing_actor_sweep_20260915_v1/checkpoints/actor_O_bc0p1.pkl": "d4cb5de781afb215f3692c5804292427a6a2ff247c06ba1b0b1305bbb78a8662",
+      "outputs/pointmaze_absorbing_actor_sweep_20260915_v1/checkpoints/actor_O_bc0p2.pkl": "1ed341555cec31c4f3ae2dbe5323e6ce0cde4cd8dec7ed14a812dfb3d3800bdb",
+      "outputs/pointmaze_absorbing_actor_sweep_20260915_v1/checkpoints/actor_O_bc0p5.pkl": "8cd2c58a42ebe8e4deb28b51a122278c6f70f758ed424a32390c4b3d53467168",
+      "outputs/pointmaze_absorbing_actor_sweep_20260915_v1/checkpoints/actor_P_bc0p05.pkl": "90099babf501ca6ece4120c1ba6bbbfe4893bf2fad477078b863f9a287cf9d44",
+      "outputs/pointmaze_absorbing_actor_sweep_20260915_v1/checkpoints/actor_P_bc0p1.pkl": "29a0a85323a37c5900ecea8cf12f6573b242e9b4317458a0178b0fcc470b1ec1",
+      "outputs/pointmaze_absorbing_actor_sweep_20260915_v1/checkpoints/actor_P_bc0p2.pkl": "3aef3e6f47685dbef1097ad5b5946d5cca865b17c17dd6b5e58b7415dd5aabe3",
+      "outputs/pointmaze_absorbing_actor_sweep_20260915_v1/checkpoints/actor_P_bc0p5.pkl": "fe941ea43efc84106c080857a8d9127ad6690ad9e0bb3b6967eb18a445e0221e",
+      "outputs/pointmaze_absorbing_integration_20260915_v1/checkpoints/critic_O_final.pkl": "23e32da2acb4c4958003b90ec2aeb5025ae6887771c548bffef4f4b76a68f59f",
+      "outputs/pointmaze_absorbing_integration_20260915_v1/checkpoints/critic_P_final.pkl": "9270939f5cc08fe18dd65dc648fa9ae1b66a08ca608965f1f09b86a57afbb0f7",
+      "outputs/pointmaze_absorbing_integration_20260915_v1/sampler_plan.npz": "86659528574c4f690a3b4534b746ae181a93e9bfe5abd0afc2035276fb25bcff"
+    }
+  },
+  "elapsed_seconds": 114.93385767936707,
+  "part_a": {
+    "O_bc0p05": {
+      "arm": "O",
+      "bc_coef": 0.05,
+      "continuation": {
+        "a1_first_step_12": {
+          "ci95": [
+            0.0018102134146341464,
+            0.004096798780487805
+          ],
+          "mean": 0.0029535060975609756
+        },
+        "a1_lower_route": {
+          "ci95": [
+            0.0009527439024390244,
+            0.0024771341463414634
+          ],
+          "mean": 0.0016196646341463414
+        },
+        "a1_reach": {
+          "ci95": [
+            0.9945693597560976,
+            0.9999047256097561
+          ],
+          "mean": 0.9981897865853658
+        },
+        "a3_absorbed": {
+          "ci95": [
+            0.7285620712652439,
+            0.7421398628048781
+          ],
+          "mean": 0.7357088414634146
+        },
+        "a3_absorbed_given_first12": 0.35135135135135137,
+        "a3_ever_in_12": {
+          "ci95": [
+            0.005144817073170732,
+            0.008050685975609756
+          ],
+          "mean": 0.006526295731707317
+        },
+        "a3_first_step_12": {
+          "ci95": [
+            0.002761766387195122,
+            0.0045255335365853655
+          ],
+          "mean": 0.0035251524390243903
+        },
+        "a3_first_step_cell": {
+          "(0,3) left": 0.0030964176829268294,
+          "(1,2) lower entry": 0.0035251524390243903,
+          "(1,3) stay": 0.3192168445121951,
+          "(2,3) right": 0.6741615853658537
+        },
+        "a3_lower_given_first12": 0.4864864864864865,
+        "a3_lower_given_not_first12": 0.00038244574051056506,
+        "a3_lower_route": {
+          "ci95": [
+            0.001524390243902439,
+            0.0027153201219512193
+          ],
+          "mean": 0.002096036585365854
+        },
+        "a3_reach": {
+          "ci95": [
+            0.26014553163109755,
+            0.27358041158536583
+          ],
+          "mean": 0.26676829268292684
+        },
+        "actor_at_first_12_state": {
+          "mean_action": [
+            0.9661179184913635,
+            -0.43102598190307617
+          ],
+          "mean_state_xy": [
+            1.677106261253357,
+            2.8200321197509766
+          ],
+          "physical_landing_of_actor_sample": {
+            "(1,2) lower entry": 0.6642335766423357,
+            "(1,3) stay": 0.021897810218978103,
+            "(2,3) right": 0.06569343065693431,
+            "other free (1, 1)": 0.072992700729927,
+            "other free (2, 1)": 0.17518248175182483
+          },
+          "states": 137
+        },
+        "first12_outcome_classes": {
+          "continued (y<2 before revisiting fork/right)": 0.4864864864864865,
+          "returned to fork/right": 0.16216216216216217,
+          "returned to fork/right then absorbed": 0.35135135135135137
+        },
+        "first12_paths": 74,
+        "mean_time_to_lower_given_lower": 3.4545454545454546
+      },
+      "first_step": {
+        "a1_a3_first_transition": {
+          "(0,3) left": 0.0032631478658536584,
+          "(1,2) lower entry": 0.0032393292682926828,
+          "(1,3) stay": 0.31958603277439024,
+          "(2,3) right": 0.6739114900914634
+        },
+        "diagonal_wall_actions": {
+          "definition": "naive cell is a wall cell and physical landing is (1,2)",
+          "fraction_of_samples": 0.033441310975609755,
+          "mean_action": [
+            0.9643789529800415,
+            -0.6109390258789062
+          ],
+          "mean_model_displacement": 0.00391721585765481,
+          "mean_physical_displacement": 0.9167456092055652,
+          "model_cell": {
+            "(1,2) lower entry": 0.002136752136752137,
+            "(1,3) stay": 0.9960826210826211,
+            "(2,3) right": 0.0017806267806267807
+          }
+        },
+        "joint_physical_x_model_top": {
+          "(0,3) left -> (0,3) left": 0.0032393292682926828,
+          "(0,3) left -> (1,2) lower entry": 1.1909298780487805e-05,
+          "(0,3) left -> (1,3) stay": 0.0009408346036585366,
+          "(1,2) lower entry -> (1,2) lower entry": 0.0031797827743902437,
+          "(1,2) lower entry -> (1,3) stay": 0.0335961318597561,
+          "(1,2) lower entry -> (2,3) right": 8.336509146341464e-05,
+          "(1,3) stay -> (0,3) left": 2.381859756097561e-05,
+          "(1,3) stay -> (1,2) lower entry": 4.763719512195122e-05,
+          "(1,3) stay -> (1,3) stay": 0.011552019817073171,
+          "(1,3) stay -> (2,3) right": 0.0005835556402439024,
+          "(2,3) right -> (1,3) stay": 0.27349704649390244,
+          "(2,3) right -> (2,3) right": 0.6732445693597561
+        },
+        "kernel_zero_offsets": {
+          "(0,3) left": 0.0005001905487804878,
+          "(1,2) lower entry": 0.021139005335365852,
+          "(1,3) stay": 0.09807307545731707,
+          "(2,3) right": 0.8802877286585366
+        },
+        "model_12_fraction": 0.0032393292682926828,
+        "model_atom_fraction": 0.00046446265243902437,
+        "model_cell_given_physical_12": {
+          "(1,2) lower entry": 0.08626817447495962,
+          "(1,3) stay": 0.911470113085622,
+          "(2,3) right": 0.002261712439418417
+        },
+        "model_cell_given_physical_23": {
+          "(1,3) stay": 0.28888245949481733,
+          "(2,3) right": 0.7111175405051826
+        },
+        "model_onset_fraction_first_step": 0.0,
+        "naive": {
+          "(0,3) left": 0.003227419969512195,
+          "(1,2) lower entry": 0.00341796875,
+          "(1,3) stay": 0.011563929115853659,
+          "(2,3) right": 0.6733279344512195,
+          "wall cell": 0.30846274771341464
+        },
+        "per_root": {
+          "mean_P_model12_given_physical12": 0.22420852068309108,
+          "mean_disagreement_fraction": 0.3087842987804878,
+          "model_12": {
+            "ci95": [
+              0.0026915015243902437,
+              0.003834794207317073
+            ],
+            "mean": 0.0032393292682926828
+          },
+          "model_minus_physical_12": {
+            "ci95": [
+              -0.03949272341844512,
+              -0.028415586890243903
+            ],
+            "mean": -0.033619950457317076
+          },
+          "physical_12": {
+            "ci95": [
+              0.03152212747713415,
+              0.04263677829649389
+            ],
+            "mean": 0.036859279725609755
+          },
+          "roots_with_disagreement_over_half": 10
+        },
+        "physical": {
+          "(0,3) left": 0.004192073170731708,
+          "(1,2) lower entry": 0.036859279725609755,
+          "(1,3) stay": 0.01220703125,
+          "(2,3) right": 0.9467416158536586
+        },
+        "physical_12_fraction": 0.036859279725609755,
+        "samples": 83968
+      }
+    },
+    "O_bc0p1": {
+      "arm": "O",
+      "bc_coef": 0.1,
+      "continuation": {
+        "a1_first_step_12": {
+          "ci95": [
+            0.005144817073170732,
+            0.009336890243902439
+          ],
+          "mean": 0.007145579268292683
+        },
+        "a1_lower_route": {
+          "ci95": [
+            0.0029535060975609756,
+            0.005525914634146341
+          ],
+          "mean": 0.004192073170731708
+        },
+        "a1_reach": {
+          "ci95": [
+            0.9948551829268293,
+            0.9995236280487805
+          ],
+          "mean": 0.9979039634146342
+        },
+        "a3_absorbed": {
+          "ci95": [
+            0.7439488852896341,
+            0.7570991330030488
+          ],
+          "mean": 0.7505716463414634
+        },
+        "a3_absorbed_given_first12": 0.358974358974359,
+        "a3_ever_in_12": {
+          "ci95": [
+            0.014242330411585366,
+            0.019817073170731708
+          ],
+          "mean": 0.016958841463414635
+        },
+        "a3_first_step_12": {
+          "ci95": [
+            0.005859375,
+            0.009241615853658536
+          ],
+          "mean": 0.00743140243902439
+        },
+        "a3_first_step_cell": {
+          "(0,3) left": 0.004477896341463414,
+          "(1,2) lower entry": 0.00743140243902439,
+          "(1,3) stay": 0.4420731707317073,
+          "(2,3) right": 0.5460175304878049
+        },
+        "a3_lower_given_first12": 0.5256410256410257,
+        "a3_lower_given_not_first12": 0.0014878095603762717,
+        "a3_lower_route": {
+          "ci95": [
+            0.00428734756097561,
+            0.006622761051829262
+          ],
+          "mean": 0.005383003048780487
+        },
+        "a3_reach": {
+          "ci95": [
+            0.24471227134146342,
+            0.2571944073932927
+          ],
+          "mean": 0.25095274390243905
+        },
+        "actor_at_first_12_state": {
+          "mean_action": [
+            0.9164837002754211,
+            -0.31987613439559937
+          ],
+          "mean_state_xy": [
+            1.6550215482711792,
+            2.783426284790039
+          ],
+          "physical_landing_of_actor_sample": {
+            "(0,3) left": 0.0028089887640449437,
+            "(1,2) lower entry": 0.5533707865168539,
+            "(1,3) stay": 0.014044943820224719,
+            "(2,3) right": 0.16853932584269662,
+            "other free (1, 1)": 0.07303370786516854,
+            "other free (2, 1)": 0.18820224719101122
+          },
+          "states": 356
+        },
+        "first12_outcome_classes": {
+          "continued (y<2 before revisiting fork/right)": 0.5256410256410257,
+          "returned to fork/right": 0.11538461538461539,
+          "returned to fork/right then absorbed": 0.358974358974359
+        },
+        "first12_paths": 156,
+        "mean_time_to_lower_given_lower": 4.088495575221239
+      },
+      "first_step": {
+        "a1_a3_first_transition": {
+          "(0,3) left": 0.004930449695121951,
+          "(1,2) lower entry": 0.007598132621951219,
+          "(1,3) stay": 0.44301400533536583,
+          "(2,3) right": 0.544457412347561
+        },
+        "diagonal_wall_actions": {
+          "definition": "naive cell is a wall cell and physical landing is (1,2)",
+          "fraction_of_samples": 0.07069359756097561,
+          "mean_action": [
+            0.9641767144203186,
+            -0.7147173881530762
+          ],
+          "mean_model_displacement": 0.004581791814416647,
+          "mean_physical_displacement": 0.9686791035370634,
+          "model_cell": {
+            "(1,2) lower entry": 0.003706199460916442,
+            "(1,3) stay": 0.9952830188679245,
+            "(2,3) right": 0.0010107816711590297
+          }
+        },
+        "joint_physical_x_model_top": {
+          "(0,3) left -> (0,3) left": 0.004894721798780487,
+          "(0,3) left -> (1,2) lower entry": 2.381859756097561e-05,
+          "(0,3) left -> (1,3) stay": 0.002024580792682927,
+          "(1,2) lower entry -> (1,2) lower entry": 0.007514767530487805,
+          "(1,2) lower entry -> (1,3) stay": 0.07078887195121951,
+          "(1,2) lower entry -> (2,3) right": 0.00010718368902439024,
+          "(1,3) stay -> (0,3) left": 3.572789634146341e-05,
+          "(1,3) stay -> (1,2) lower entry": 4.763719512195122e-05,
+          "(1,3) stay -> (1,3) stay": 0.018090224847560975,
+          "(1,3) stay -> (2,3) right": 0.0008693788109756098,
+          "(2,3) right -> (1,3) stay": 0.35211032774390244,
+          "(2,3) right -> (2,3) right": 0.543480849847561
+        },
+        "kernel_zero_offsets": {
+          "(0,3) left": 0.0005001905487804878,
+          "(1,2) lower entry": 0.021139005335365852,
+          "(1,3) stay": 0.09807307545731707,
+          "(2,3) right": 0.8802877286585366
+        },
+        "model_12_fraction": 0.007598132621951219,
+        "model_atom_fraction": 0.0005478277439024391,
+        "model_cell_given_physical_12": {
+          "(1,2) lower entry": 0.09583839611178614,
+          "(1,3) stay": 0.9027946537059538,
+          "(2,3) right": 0.0013669501822600244
+        },
+        "model_cell_given_physical_23": {
+          "(1,2) lower entry": 1.329751868301375e-05,
+          "(1,3) stay": 0.3931544373819845,
+          "(2,3) right": 0.6068322650993324
+        },
+        "model_onset_fraction_first_step": 0.0,
+        "naive": {
+          "(0,3) left": 0.00498999618902439,
+          "(1,2) lower entry": 0.0077172256097560975,
+          "(1,3) stay": 0.01763767149390244,
+          "(2,3) right": 0.5426352896341463,
+          "wall cell": 0.4270198170731707
+        },
+        "per_root": {
+          "mean_P_model12_given_physical12": 0.2544939321791968,
+          "mean_disagreement_fraction": 0.42601943597560976,
+          "model_12": {
+            "ci95": [
+              0.0063235399199695124,
+              0.00900342987804878
+            ],
+            "mean": 0.007598132621951219
+          },
+          "model_minus_physical_12": {
+            "ci95": [
+              -0.0787207626714939,
+              -0.06329345703125001
+            ],
+            "mean": -0.07081269054878049
+          },
+          "physical_12": {
+            "ci95": [
+              0.07108660442073171,
+              0.08685451600609756
+            ],
+            "mean": 0.07841082317073171
+          },
+          "roots_with_disagreement_over_half": 190
+        },
+        "physical": {
+          "(0,3) left": 0.00694312118902439,
+          "(1,2) lower entry": 0.07841082317073171,
+          "(1,3) stay": 0.01904296875,
+          "(2,3) right": 0.8956030868902439
+        },
+        "physical_12_fraction": 0.07841082317073171,
+        "samples": 83968
+      }
+    },
+    "O_bc0p2": {
+      "arm": "O",
+      "bc_coef": 0.2,
+      "continuation": {
+        "a1_first_step_12": {
+          "ci95": [
+            0.01209984756097561,
+            0.019721798780487805
+          ],
+          "mean": 0.015720274390243903
+        },
+        "a1_lower_route": {
+          "ci95": [
+            0.016482469512195123,
+            0.02419969512195122
+          ],
+          "mean": 0.02029344512195122
+        },
+        "a1_reach": {
+          "ci95": [
+            0.9936166158536586,
+            0.999047256097561
+          ],
+          "mean": 0.997141768292683
+        },
+        "a3_absorbed": {
+          "ci95": [
+            0.7734375,
+            0.7851098037347561
+          ],
+          "mean": 0.7793445121951219
+        },
+        "a3_absorbed_given_first12": 0.30097087378640774,
+        "a3_ever_in_12": {
+          "ci95": [
+            0.04296755907012195,
+            0.053353658536585365
+          ],
+          "mean": 0.04811356707317073
+        },
+        "a3_first_step_12": {
+          "ci95": [
+            0.01171875,
+            0.018102134146341462
+          ],
+          "mean": 0.014719893292682926
+        },
+        "a3_first_step_cell": {
+          "(0,3) left": 0.01329077743902439,
+          "(1,2) lower entry": 0.014719893292682926,
+          "(1,3) stay": 0.5353467987804879,
+          "(2,3) right": 0.4366425304878049
+        },
+        "a3_lower_given_first12": 0.6116504854368932,
+        "a3_lower_given_not_first12": 0.010201614852777643,
+        "a3_lower_route": {
+          "ci95": [
+            0.016625381097560975,
+            0.021722560975609755
+          ],
+          "mean": 0.019054878048780487
+        },
+        "a3_reach": {
+          "ci95": [
+            0.22132240853658536,
+            0.23318407012195122
+          ],
+          "mean": 0.22722942073170732
+        },
+        "actor_at_first_12_state": {
+          "mean_action": [
+            0.7374292612075806,
+            -0.3221452534198761
+          ],
+          "mean_state_xy": [
+            1.6311362981796265,
+            2.7472469806671143
+          ],
+          "physical_landing_of_actor_sample": {
+            "(0,3) left": 0.0009900990099009901,
+            "(1,2) lower entry": 0.602970297029703,
+            "(1,3) stay": 0.02178217821782178,
+            "(2,3) right": 0.1405940594059406,
+            "other free (1, 1)": 0.11089108910891089,
+            "other free (2, 1)": 0.12277227722772277
+          },
+          "states": 1010
+        },
+        "first12_outcome_classes": {
+          "continued (y<2 before revisiting fork/right)": 0.6116504854368932,
+          "returned to fork/right": 0.09061488673139159,
+          "returned to fork/right then absorbed": 0.29449838187702265,
+          "stuck in (1,2)": 0.003236245954692557
+        },
+        "first12_paths": 309,
+        "mean_time_to_lower_given_lower": 4.0075
+      },
+      "first_step": {
+        "a1_a3_first_transition": {
+          "(0,3) left": 0.012993044969512195,
+          "(1,2) lower entry": 0.015589272103658536,
+          "(1,3) stay": 0.5396698742378049,
+          "(2,3) right": 0.4317478086890244
+        },
+        "diagonal_wall_actions": {
+          "definition": "naive cell is a wall cell and physical landing is (1,2)",
+          "fraction_of_samples": 0.1149366425304878,
+          "mean_action": [
+            0.940680742263794,
+            -0.7755314111709595
+          ],
+          "mean_model_displacement": 0.0037155982572585344,
+          "mean_physical_displacement": 0.988128252684165,
+          "model_cell": {
+            "(1,2) lower entry": 0.0032121023728111076,
+            "(1,3) stay": 0.9961662003937416,
+            "(2,3) right": 0.0006216972334473111
+          }
+        },
+        "joint_physical_x_model_top": {
+          "(0,3) left -> (0,3) left": 0.012826314786585366,
+          "(0,3) left -> (1,2) lower entry": 5.954649390243902e-05,
+          "(0,3) left -> (1,3) stay": 0.006550114329268292,
+          "(1,2) lower entry -> (1,2) lower entry": 0.015362995426829269,
+          "(1,2) lower entry -> (1,3) stay": 0.11538919588414634,
+          "(1,2) lower entry -> (2,3) right": 7.145579268292682e-05,
+          "(1,3) stay -> (0,3) left": 0.00016673018292682928,
+          "(1,3) stay -> (1,2) lower entry": 0.00013100228658536586,
+          "(1,3) stay -> (1,3) stay": 0.031976467225609755,
+          "(1,3) stay -> (2,3) right": 0.0006907393292682926,
+          "(2,3) right -> (1,3) stay": 0.3857540967987805,
+          "(2,3) right -> (2,3) right": 0.43098561356707316
+        },
+        "kernel_zero_offsets": {
+          "(0,3) left": 0.0005001905487804878,
+          "(1,2) lower entry": 0.021139005335365852,
+          "(1,3) stay": 0.09807307545731707,
+          "(2,3) right": 0.8802877286585366
+        },
+        "model_12_fraction": 0.015589272103658536,
+        "model_atom_fraction": 0.0006192835365853659,
+        "model_cell_given_physical_12": {
+          "(1,2) lower entry": 0.11743286299499317,
+          "(1,3) stay": 0.8820209376422394,
+          "(2,3) right": 0.0005461993627674101
+        },
+        "model_cell_given_physical_23": {
+          "(1,2) lower entry": 4.3742618433139404e-05,
+          "(1,3) stay": 0.47228905122260617,
+          "(2,3) right": 0.5276672061589607
+        },
+        "model_onset_fraction_first_step": 0.0,
+        "naive": {
+          "(0,3) left": 0.012766768292682926,
+          "(1,2) lower entry": 0.015887004573170733,
+          "(1,3) stay": 0.02924923780487805,
+          "(2,3) right": 0.4291039443597561,
+          "wall cell": 0.5129930449695121
+        },
+        "per_root": {
+          "mean_P_model12_given_physical12": 0.31408622851918877,
+          "mean_disagreement_fraction": 0.5088486089939024,
+          "model_12": {
+            "ci95": [
+              0.012921291444359757,
+              0.01849543873856707
+            ],
+            "mean": 0.015589272103658536
+          },
+          "model_minus_physical_12": {
+            "ci95": [
+              -0.12558772389481707,
+              -0.10539550781250001
+            ],
+            "mean": -0.115234375
+          },
+          "physical_12": {
+            "ci95": [
+              0.12137957317073171,
+              0.1409718583269817
+            ],
+            "mean": 0.13082364710365854
+          },
+          "roots_with_disagreement_over_half": 446
+        },
+        "physical": {
+          "(0,3) left": 0.019435975609756097,
+          "(1,2) lower entry": 0.13082364710365854,
+          "(1,3) stay": 0.032964939024390245,
+          "(2,3) right": 0.8167754382621951
+        },
+        "physical_12_fraction": 0.13082364710365854,
+        "samples": 83968
+      }
+    },
+    "O_bc0p5": {
+      "arm": "O",
+      "bc_coef": 0.5,
+      "continuation": {
+        "a1_first_step_12": {
+          "ci95": [
+            0.025724085365853657,
+            0.034870426829268296
+          ],
+          "mean": 0.03010670731707317
+        },
+        "a1_lower_route": {
+          "ci95": [
+            0.09203267911585367,
+            0.10651676829268293
+          ],
+          "mean": 0.09937118902439024
+        },
+        "a1_reach": {
+          "ci95": [
+            0.9830411585365854,
+            0.9905678353658537
+          ],
+          "mean": 0.987328506097561
+        },
+        "a3_absorbed": {
+          "ci95": [
+            0.7497141768292683,
+            0.762623856707317
+          ],
+          "mean": 0.7561451981707317
+        },
+        "a3_absorbed_given_first12": 0.2547008547008547,
+        "a3_ever_in_12": {
+          "ci95": [
+            0.1686821169969512,
+            0.18712009336890245
+          ],
+          "mean": 0.17797256097560976
+        },
+        "a3_first_step_12": {
+          "ci95": [
+            0.023913871951219513,
+            0.032203934832317066
+          ],
+          "mean": 0.027867759146341462
+        },
+        "a3_first_step_cell": {
+          "(0,3) left": 0.025533536585365852,
+          "(1,2) lower entry": 0.027867759146341462,
+          "(1,3) stay": 0.606469131097561,
+          "(2,3) right": 0.3401295731707317
+        },
+        "a3_lower_given_first12": 0.7042735042735043,
+        "a3_lower_given_not_first12": 0.07918851374528348,
+        "a3_lower_route": {
+          "ci95": [
+            0.09079530297256097,
+            0.10261051829268293
+          ],
+          "mean": 0.09660823170731707
+        },
+        "a3_reach": {
+          "ci95": [
+            0.24223513719512196,
+            0.2553353658536585
+          ],
+          "mean": 0.24861852134146342
+        },
+        "actor_at_first_12_state": {
+          "mean_action": [
+            0.46274515986442566,
+            -0.2617337107658386
+          ],
+          "mean_state_xy": [
+            1.5661661624908447,
+            2.7067172527313232
+          ],
+          "physical_landing_of_actor_sample": {
+            "(0,3) left": 0.015792291220556746,
+            "(1,2) lower entry": 0.5420235546038544,
+            "(1,3) stay": 0.05513918629550321,
+            "(2,3) right": 0.12981798715203427,
+            "other free (1, 1)": 0.15711991434689507,
+            "other free (2, 1)": 0.10010706638115632
+          },
+          "states": 3736
+        },
+        "first12_outcome_classes": {
+          "continued (y<2 before revisiting fork/right)": 0.6854700854700855,
+          "returned to fork/right": 0.08034188034188035,
+          "returned to fork/right then absorbed": 0.2341880341880342
+        },
+        "first12_paths": 585,
+        "mean_time_to_lower_given_lower": 6.481755424063117
+      },
+      "first_step": {
+        "a1_a3_first_transition": {
+          "(0,3) left": 0.025128620426829267,
+          "(1,2) lower entry": 0.027641482469512195,
+          "(1,3) stay": 0.6085770769817073,
+          "(2,3) right": 0.3386528201219512
+        },
+        "diagonal_wall_actions": {
+          "definition": "naive cell is a wall cell and physical landing is (1,2)",
+          "fraction_of_samples": 0.1455078125,
+          "mean_action": [
+            0.8985843062400818,
+            -0.8327094316482544
+          ],
+          "mean_model_displacement": 0.004257214721292257,
+          "mean_physical_displacement": 1.0183457744807614,
+          "model_cell": {
+            "(0,3) left": 0.0001636929120969062,
+            "(1,2) lower entry": 0.0044197086266164675,
+            "(1,3) stay": 0.9953347520052381,
+            "(2,3) right": 8.18464560484531e-05
+          }
+        },
+        "joint_physical_x_model_top": {
+          "(0,3) left -> (0,3) left": 0.024699885670731708,
+          "(0,3) left -> (1,2) lower entry": 0.00014291158536585365,
+          "(0,3) left -> (1,3) stay": 0.017721036585365852,
+          "(1,2) lower entry -> (0,3) left": 3.572789634146341e-05,
+          "(1,2) lower entry -> (1,2) lower entry": 0.027153201219512195,
+          "(1,2) lower entry -> (1,3) stay": 0.14709174923780488,
+          "(1,3) stay -> (0,3) left": 0.0003930068597560976,
+          "(1,3) stay -> (1,2) lower entry": 0.00030964176829268293,
+          "(1,3) stay -> (1,3) stay": 0.050376333841463415,
+          "(1,3) stay -> (2,3) right": 0.0007264672256097561,
+          "(2,3) right -> (1,3) stay": 0.39338795731707316,
+          "(2,3) right -> (2,3) right": 0.3379025342987805
+        },
+        "kernel_zero_offsets": {
+          "(0,3) left": 0.0005001905487804878,
+          "(1,2) lower entry": 0.021139005335365852,
+          "(1,3) stay": 0.09807307545731707,
+          "(2,3) right": 0.8802877286585366
+        },
+        "model_12_fraction": 0.027641482469512195,
+        "model_atom_fraction": 0.0010837461890243903,
+        "model_cell_given_physical_12": {
+          "(0,3) left": 0.00020497403662202789,
+          "(1,2) lower entry": 0.15578026783274118,
+          "(1,3) stay": 0.8438781087728887,
+          "(2,3) right": 0.00013664935774801857
+        },
+        "model_cell_given_physical_23": {
+          "(1,2) lower entry": 4.885356956748306e-05,
+          "(1,3) stay": 0.5379103699843668,
+          "(2,3) right": 0.46204077644606567
+        },
+        "model_onset_fraction_first_step": 0.0,
+        "naive": {
+          "(0,3) left": 0.023687595274390245,
+          "(1,2) lower entry": 0.028796684451219513,
+          "(1,3) stay": 0.03921732088414634,
+          "(2,3) right": 0.33415110518292684,
+          "wall cell": 0.574147294207317
+        },
+        "per_root": {
+          "mean_P_model12_given_physical12": 0.33987601856516403,
+          "mean_disagreement_fraction": 0.5598680449695121,
+          "model_12": {
+            "ci95": [
+              0.02425834841844512,
+              0.03127411633003049
+            ],
+            "mean": 0.027641482469512195
+          },
+          "model_minus_physical_12": {
+            "ci95": [
+              -0.1580733136432927,
+              -0.13591993378429879
+            ],
+            "mean": -0.14666301448170732
+          },
+          "physical_12": {
+            "ci95": [
+              0.16369301400533537,
+              0.18544058450838413
+            ],
+            "mean": 0.17430449695121952
+          },
+          "roots_with_disagreement_over_half": 521
+        },
+        "physical": {
+          "(0,3) left": 0.042563833841463415,
+          "(1,2) lower entry": 0.17430449695121952,
+          "(1,3) stay": 0.05180544969512195,
+          "(2,3) right": 0.7313262195121951
+        },
+        "physical_12_fraction": 0.17430449695121952,
+        "samples": 83968
+      }
+    },
+    "P_bc0p05": {
+      "arm": "P",
+      "bc_coef": 0.05,
+      "continuation": {
+        "a1_first_step_12": {
+          "ci95": [
+            0.08546112804878049,
+            0.09708698551829267
+          ],
+          "mean": 0.09127286585365854
+        },
+        "a1_lower_route": {
+          "ci95": [
+            0.22017911585365854,
+            0.23733088795731708
+          ],
+          "mean": 0.22894435975609756
+        },
+        "a1_reach": {
+          "ci95": [
+            0.80859375,
+            0.8248856707317073
+          ],
+          "mean": 0.8170731707317073
+        },
+        "a3_absorbed": {
+          "ci95": [
+            0.7594309737042683,
+            0.7727705792682927
+          ],
+          "mean": 0.7659584603658537
+        },
+        "a3_absorbed_given_first12": 0.18356734269370775,
+        "a3_ever_in_12": {
+          "ci95": [
+            0.35156130907012195,
+            0.3686166158536585
+          ],
+          "mean": 0.36051829268292684
+        },
+        "a3_first_step_12": {
+          "ci95": [
+            0.08707960175304878,
+            0.09622713414634146
+          ],
+          "mean": 0.0916063262195122
+        },
+        "a3_first_step_cell": {
+          "(0,3) left": 0.009908536585365854,
+          "(1,2) lower entry": 0.0916063262195122,
+          "(1,3) stay": 0.8162633384146342,
+          "(2,3) right": 0.0822217987804878
+        },
+        "a3_lower_given_first12": 0.8840353614144566,
+        "a3_lower_given_not_first12": 0.1691226598143584,
+        "a3_lower_route": {
+          "ci95": [
+            0.22784751333841463,
+            0.24142649580792683
+          ],
+          "mean": 0.23461318597560976
+        },
+        "a3_reach": {
+          "ci95": [
+            0.1546779725609756,
+            0.1657786299542683
+          ],
+          "mean": 0.16015625
+        },
+        "actor_at_first_12_state": {
+          "mean_action": [
+            0.8867979049682617,
+            -0.5024403929710388
+          ],
+          "mean_state_xy": [
+            1.5759459733963013,
+            2.6188712120056152
+          ],
+          "physical_landing_of_actor_sample": {
+            "(0,3) left": 0.000660676532769556,
+            "(1,2) lower entry": 0.4660412262156448,
+            "(1,3) stay": 0.007003171247357294,
+            "(2,3) right": 0.052457716701902746,
+            "other free (1, 1)": 0.0931553911205074,
+            "other free (2, 1)": 0.3806818181818182
+          },
+          "states": 7568
+        },
+        "first12_outcome_classes": {
+          "continued (y<2 before revisiting fork/right)": 0.8829953198127926,
+          "returned to fork/right": 0.006760270410816433,
+          "returned to fork/right then absorbed": 0.10972438897555903,
+          "stuck in (1,2)": 0.0005200208008320333
+        },
+        "first12_paths": 1923,
+        "mean_time_to_lower_given_lower": 5.342741116751269
+      },
+      "first_step": {
+        "a1_a3_first_transition": {
+          "(0,3) left": 0.010515910823170731,
+          "(1,2) lower entry": 0.09273770960365854,
+          "(1,3) stay": 0.8181926448170732,
+          "(2,3) right": 0.07855373475609756
+        },
+        "diagonal_wall_actions": {
+          "definition": "naive cell is a wall cell and physical landing is (1,2)",
+          "fraction_of_samples": 0.42329220655487804,
+          "mean_action": [
+            0.8184264302253723,
+            -0.9441297054290771
+          ],
+          "mean_model_displacement": 0.004557583015412092,
+          "mean_physical_displacement": 1.100801563500916,
+          "model_cell": {
+            "(1,2) lower entry": 0.0042483752074951465,
+            "(1,3) stay": 0.995695354922207,
+            "(2,3) right": 5.626987029794896e-05
+          }
+        },
+        "joint_physical_x_model_top": {
+          "(0,3) left -> (0,3) left": 0.010337271341463415,
+          "(0,3) left -> (1,3) stay": 0.04612471417682927,
+          "(1,2) lower entry -> (1,2) lower entry": 0.09217797256097561,
+          "(1,2) lower entry -> (1,3) stay": 0.42788919588414637,
+          "(1,2) lower entry -> (2,3) right": 0.00011909298780487805,
+          "(1,3) stay -> (0,3) left": 0.00015482088414634147,
+          "(1,3) stay -> (1,2) lower entry": 0.00027391387195121954,
+          "(1,3) stay -> (1,3) stay": 0.01573218368902439,
+          "(1,3) stay -> (2,3) right": 0.00046446265243902437,
+          "(2,3) right -> (1,2) lower entry": 0.0002262766768292683,
+          "(2,3) right -> (1,3) stay": 0.32844655106707316,
+          "(2,3) right -> (2,3) right": 0.07797017911585366
+        },
+        "kernel_zero_offsets": {
+          "(0,3) left": 0.0005001905487804878,
+          "(1,2) lower entry": 0.021139005335365852,
+          "(1,3) stay": 0.09807307545731707,
+          "(2,3) right": 0.8802877286585366
+        },
+        "model_12_fraction": 0.09273770960365854,
+        "model_atom_fraction": 0.002024580792682927,
+        "model_cell_given_physical_12": {
+          "(0,3) left": 4.5786497561869004e-05,
+          "(1,2) lower entry": 0.17719374556443304,
+          "(1,3) stay": 0.8225315354501957,
+          "(2,3) right": 0.00022893248780934502
+        },
+        "model_cell_given_physical_23": {
+          "(1,2) lower entry": 0.0005564504319812564,
+          "(1,3) stay": 0.8077024454532142,
+          "(2,3) right": 0.19174110411480452
+        },
+        "model_onset_fraction_first_step": 0.0,
+        "naive": {
+          "(0,3) left": 0.009027248475609756,
+          "(1,2) lower entry": 0.09691787347560976,
+          "(1,3) stay": 0.015291539634146341,
+          "(2,3) right": 0.06871665396341463,
+          "wall cell": 0.8100466844512195
+        },
+        "per_root": {
+          "mean_P_model12_given_physical12": 0.34482918807823293,
+          "mean_disagreement_fraction": 0.803782393292683,
+          "model_12": {
+            "ci95": [
+              0.08929592225609756,
+              0.09645341082317073
+            ],
+            "mean": 0.09273770960365854
+          },
+          "model_minus_physical_12": {
+            "ci95": [
+              -0.4544603301257622,
+              -0.40061154249237807
+            ],
+            "mean": -0.4274723704268293
+          },
+          "physical_12": {
+            "ci95": [
+              0.49539050590701217,
+              0.5460493878620426
+            ],
+            "mean": 0.5202100800304879
+          },
+          "roots_with_disagreement_over_half": 608
+        },
+        "physical": {
+          "(0,3) left": 0.05652153201219512,
+          "(1,2) lower entry": 0.5202100800304879,
+          "(1,3) stay": 0.016625381097560975,
+          "(2,3) right": 0.4066430068597561
+        },
+        "physical_12_fraction": 0.5202100800304879,
+        "samples": 83968
+      }
+    },
+    "P_bc0p1": {
+      "arm": "P",
+      "bc_coef": 0.1,
+      "continuation": {
+        "a1_first_step_12": {
+          "ci95": [
+            0.07288490853658537,
+            0.08555640243902439
+          ],
+          "mean": 0.07917301829268293
+        },
+        "a1_lower_route": {
+          "ci95": [
+            0.18835508765243902,
+            0.20541396722560976
+          ],
+          "mean": 0.19702743902439024
+        },
+        "a1_reach": {
+          "ci95": [
+            0.8900509717987805,
+            0.9030106707317073
+          ],
+          "mean": 0.8966272865853658
+        },
+        "a3_absorbed": {
+          "ci95": [
+            0.7592404249237805,
+            0.7716284775152439
+          ],
+          "mean": 0.7654344512195121
+        },
+        "a3_absorbed_given_first12": 0.16718266253869968,
+        "a3_ever_in_12": {
+          "ci95": [
+            0.3479420731707317,
+            0.3651391006097561
+          ],
+          "mean": 0.3565167682926829
+        },
+        "a3_first_step_12": {
+          "ci95": [
+            0.07202743902439024,
+            0.0819359756097561
+          ],
+          "mean": 0.07693407012195122
+        },
+        "a3_first_step_cell": {
+          "(0,3) left": 0.023532774390243903,
+          "(1,2) lower entry": 0.07693407012195122,
+          "(1,3) stay": 0.7625285823170732,
+          "(2,3) right": 0.1370045731707317
+        },
+        "a3_lower_given_first12": 0.8569659442724458,
+        "a3_lower_given_not_first12": 0.14130154306652218,
+        "a3_lower_route": {
+          "ci95": [
+            0.19007240853658536,
+            0.2029344512195122
+          ],
+          "mean": 0.19636051829268292
+        },
+        "a3_reach": {
+          "ci95": [
+            0.15844131097560976,
+            0.1684939500762195
+          ],
+          "mean": 0.16349085365853658
+        },
+        "actor_at_first_12_state": {
+          "mean_action": [
+            0.812189519405365,
+            -0.38648587465286255
+          ],
+          "mean_state_xy": [
+            1.565539002418518,
+            2.6577773094177246
+          ],
+          "physical_landing_of_actor_sample": {
+            "(0,3) left": 0.0033404596472474614,
+            "(1,2) lower entry": 0.5160342063067879,
+            "(1,3) stay": 0.0172367717797969,
+            "(2,3) right": 0.1038214858364511,
+            "other free (1, 1)": 0.0950026723677178,
+            "other free (2, 1)": 0.26456440406199894
+          },
+          "states": 7484
+        },
+        "first12_outcome_classes": {
+          "continued (y<2 before revisiting fork/right)": 0.8551083591331269,
+          "returned to fork/right": 0.01238390092879257,
+          "returned to fork/right then absorbed": 0.1325077399380805
+        },
+        "first12_paths": 1615,
+        "mean_time_to_lower_given_lower": 4.766132945172246
+      },
+      "first_step": {
+        "a1_a3_first_transition": {
+          "(0,3) left": 0.02333031631097561,
+          "(1,2) lower entry": 0.07774390243902439,
+          "(1,3) stay": 0.7667444740853658,
+          "(2,3) right": 0.13218130716463414
+        },
+        "diagonal_wall_actions": {
+          "definition": "naive cell is a wall cell and physical landing is (1,2)",
+          "fraction_of_samples": 0.33935546875,
+          "mean_action": [
+            0.809037446975708,
+            -0.9174104928970337
+          ],
+          "mean_model_displacement": 0.004662774968892336,
+          "mean_physical_displacement": 1.0787220755607483,
+          "model_cell": {
+            "(0,3) left": 3.50938761186173e-05,
+            "(1,2) lower entry": 0.004456922267064397,
+            "(1,3) stay": 0.9954377961045797,
+            "(2,3) right": 7.01877522372346e-05
+          }
+        },
+        "joint_physical_x_model_top": {
+          "(0,3) left -> (0,3) left": 0.022961128048780487,
+          "(0,3) left -> (1,2) lower entry": 8.336509146341464e-05,
+          "(0,3) left -> (1,3) stay": 0.05502096036585366,
+          "(1,2) lower entry -> (1,2) lower entry": 0.07707698170731707,
+          "(1,2) lower entry -> (1,3) stay": 0.34292825838414637,
+          "(1,3) stay -> (0,3) left": 0.0002977324695121951,
+          "(1,3) stay -> (1,2) lower entry": 0.00038109756097560977,
+          "(1,3) stay -> (1,3) stay": 0.030678353658536585,
+          "(1,3) stay -> (2,3) right": 0.0006192835365853659,
+          "(2,3) right -> (1,2) lower entry": 0.00020245807926829267,
+          "(2,3) right -> (1,3) stay": 0.3381169016768293,
+          "(2,3) right -> (2,3) right": 0.13150247713414634
+        },
+        "kernel_zero_offsets": {
+          "(0,3) left": 0.0005001905487804878,
+          "(1,2) lower entry": 0.021139005335365852,
+          "(1,3) stay": 0.09807307545731707,
+          "(2,3) right": 0.8802877286585366
+        },
+        "model_12_fraction": 0.07774390243902439,
+        "model_atom_fraction": 0.001953125,
+        "model_cell_given_physical_12": {
+          "(0,3) left": 0.00017007766880208628,
+          "(1,2) lower entry": 0.18345711208118373,
+          "(1,3) stay": 0.8162310788593458,
+          "(2,3) right": 0.00014173139066840523
+        },
+        "model_cell_given_physical_23": {
+          "(1,2) lower entry": 0.0004309252217997465,
+          "(1,3) stay": 0.7196704689480354,
+          "(2,3) right": 0.2798986058301648
+        },
+        "model_onset_fraction_first_step": 0.0,
+        "naive": {
+          "(0,3) left": 0.020757907774390245,
+          "(1,2) lower entry": 0.08078077362804878,
+          "(1,3) stay": 0.027260384908536585,
+          "(2,3) right": 0.12503572789634146,
+          "wall cell": 0.746165205792683
+        },
+        "per_root": {
+          "mean_P_model12_given_physical12": 0.35422459350832747,
+          "mean_disagreement_fraction": 0.7377810594512195,
+          "model_12": {
+            "ci95": [
+              0.07381383384146341,
+              0.08203184546493902
+            ],
+            "mean": 0.07774390243902439
+          },
+          "model_minus_physical_12": {
+            "ci95": [
+              -0.36520400628810973,
+              -0.32028838366996953
+            ],
+            "mean": -0.3423923399390244
+          },
+          "physical_12": {
+            "ci95": [
+              0.39910263433689025,
+              0.44121897627667683
+            ],
+            "mean": 0.4201362423780488
+          },
+          "roots_with_disagreement_over_half": 595
+        },
+        "physical": {
+          "(0,3) left": 0.07806545350609756,
+          "(1,2) lower entry": 0.4201362423780488,
+          "(1,3) stay": 0.031976467225609755,
+          "(2,3) right": 0.4698218368902439
+        },
+        "physical_12_fraction": 0.4201362423780488,
+        "samples": 83968
+      }
+    },
+    "P_bc0p2": {
+      "arm": "P",
+      "bc_coef": 0.2,
+      "continuation": {
+        "a1_first_step_12": {
+          "ci95": [
+            0.059546493902439025,
+            0.07145579268292683
+          ],
+          "mean": 0.06554878048780488
+        },
+        "a1_lower_route": {
+          "ci95": [
+            0.21541539634146342,
+            0.23380573551829267
+          ],
+          "mean": 0.22437118902439024
+        },
+        "a1_reach": {
+          "ci95": [
+            0.8741425304878049,
+            0.8887195121951219
+          ],
+          "mean": 0.8813833841463414
+        },
+        "a3_absorbed": {
+          "ci95": [
+            0.6457197980182927,
+            0.6588700457317073
+          ],
+          "mean": 0.6526295731707317
+        },
+        "a3_absorbed_given_first12": 0.11319340329835083,
+        "a3_ever_in_12": {
+          "ci95": [
+            0.3548018292682927,
+            0.3709984756097561
+          ],
+          "mean": 0.36323361280487804
+        },
+        "a3_first_step_12": {
+          "ci95": [
+            0.058784298780487805,
+            0.06840701219512195
+          ],
+          "mean": 0.06354801829268293
+        },
+        "a3_first_step_cell": {
+          "(0,3) left": 0.033727134146341466,
+          "(1,2) lower entry": 0.06354801829268293,
+          "(1,3) stay": 0.7036966463414634,
+          "(2,3) right": 0.1990282012195122
+        },
+        "a3_lower_given_first12": 0.8853073463268366,
+        "a3_lower_given_not_first12": 0.17560280801709227,
+        "a3_lower_route": {
+          "ci95": [
+            0.21393745236280487,
+            0.22723061166158537
+          ],
+          "mean": 0.220703125
+        },
+        "a3_reach": {
+          "ci95": [
+            0.23928163109756098,
+            0.2504763719512195
+          ],
+          "mean": 0.24480754573170732
+        },
+        "actor_at_first_12_state": {
+          "mean_action": [
+            0.6201682090759277,
+            -0.3606056571006775
+          ],
+          "mean_state_xy": [
+            1.5705238580703735,
+            2.7000362873077393
+          ],
+          "physical_landing_of_actor_sample": {
+            "(0,3) left": 0.005901639344262295,
+            "(1,2) lower entry": 0.5432131147540984,
+            "(1,3) stay": 0.03042622950819672,
+            "(2,3) right": 0.10898360655737704,
+            "other free (1, 1)": 0.17114754098360654,
+            "other free (2, 1)": 0.14032786885245901
+          },
+          "states": 7625
+        },
+        "first12_outcome_classes": {
+          "continued (y<2 before revisiting fork/right)": 0.8770614692653673,
+          "returned to fork/right": 0.031484257871064465,
+          "returned to fork/right then absorbed": 0.09070464767616192,
+          "stuck in (1,2)": 0.0007496251874062968
+        },
+        "first12_paths": 1334,
+        "mean_time_to_lower_given_lower": 5.7146557306281025
+      },
+      "first_step": {
+        "a1_a3_first_transition": {
+          "(0,3) left": 0.03494188262195122,
+          "(1,2) lower entry": 0.06496522484756098,
+          "(1,3) stay": 0.7044231135670732,
+          "(2,3) right": 0.19566977896341464
+        },
+        "diagonal_wall_actions": {
+          "definition": "naive cell is a wall cell and physical landing is (1,2)",
+          "fraction_of_samples": 0.2554663681402439,
+          "mean_action": [
+            0.8048392534255981,
+            -0.8879203200340271
+          ],
+          "mean_model_displacement": 0.004148672800511122,
+          "mean_physical_displacement": 1.0553379904477047,
+          "model_cell": {
+            "(0,3) left": 9.323574658524078e-05,
+            "(1,2) lower entry": 0.004242226469628456,
+            "(1,3) stay": 0.9956179199104936,
+            "(2,3) right": 4.661787329262039e-05
+          }
+        },
+        "joint_physical_x_model_top": {
+          "(0,3) left -> (0,3) left": 0.03429878048780488,
+          "(0,3) left -> (1,2) lower entry": 9.527439024390244e-05,
+          "(0,3) left -> (1,3) stay": 0.049876143292682924,
+          "(1,2) lower entry -> (1,2) lower entry": 0.06419112042682927,
+          "(1,2) lower entry -> (1,3) stay": 0.2582650533536585,
+          "(1,3) stay -> (0,3) left": 0.0006192835365853659,
+          "(1,3) stay -> (1,2) lower entry": 0.0005001905487804878,
+          "(1,3) stay -> (1,3) stay": 0.048411299542682924,
+          "(1,3) stay -> (2,3) right": 0.0008336509146341463,
+          "(2,3) right -> (1,2) lower entry": 0.00017863948170731707,
+          "(2,3) right -> (1,3) stay": 0.3478706173780488,
+          "(2,3) right -> (2,3) right": 0.19481230945121952
+        },
+        "kernel_zero_offsets": {
+          "(0,3) left": 0.0005001905487804878,
+          "(1,2) lower entry": 0.021139005335365852,
+          "(1,3) stay": 0.09807307545731707,
+          "(2,3) right": 0.8802877286585366
+        },
+        "model_12_fraction": 0.06496522484756098,
+        "model_atom_fraction": 0.0015958460365853658,
+        "model_cell_given_physical_12": {
+          "(0,3) left": 7.385524372230428e-05,
+          "(1,2) lower entry": 0.19903988183161003,
+          "(1,3) stay": 0.8008124076809453,
+          "(2,3) right": 7.385524372230428e-05
+        },
+        "model_cell_given_physical_23": {
+          "(1,2) lower entry": 0.000329070048044227,
+          "(1,3) stay": 0.6408090735581248,
+          "(2,3) right": 0.35886185639383106
+        },
+        "model_onset_fraction_first_step": 0.0,
+        "naive": {
+          "(0,3) left": 0.031702553353658534,
+          "(1,2) lower entry": 0.06703744283536585,
+          "(1,3) stay": 0.039693692835365856,
+          "(2,3) right": 0.18959603658536586,
+          "wall cell": 0.6719702743902439
+        },
+        "per_root": {
+          "mean_P_model12_given_physical12": 0.36623648077968324,
+          "mean_disagreement_fraction": 0.6582864900914634,
+          "model_12": {
+            "ci95": [
+              0.061178067835365856,
+              0.06906202362804878
+            ],
+            "mean": 0.06496522484756098
+          },
+          "model_minus_physical_12": {
+            "ci95": [
+              -0.27518548732850606,
+              -0.24029332602896342
+            ],
+            "mean": -0.2575385861280488
+          },
+          "physical_12": {
+            "ci95": [
+              0.30642268483231705,
+              0.33972793206935975
+            ],
+            "mean": 0.32250381097560976
+          },
+          "roots_with_disagreement_over_half": 583
+        },
+        "physical": {
+          "(0,3) left": 0.08427019817073171,
+          "(1,2) lower entry": 0.32250381097560976,
+          "(1,3) stay": 0.050364424542682924,
+          "(2,3) right": 0.5428615663109756
+        },
+        "physical_12_fraction": 0.32250381097560976,
+        "samples": 83968
+      }
+    },
+    "P_bc0p5": {
+      "arm": "P",
+      "bc_coef": 0.5,
+      "continuation": {
+        "a1_first_step_12": {
+          "ci95": [
+            0.038679020579268295,
+            0.04849466463414634
+          ],
+          "mean": 0.043540396341463415
+        },
+        "a1_lower_route": {
+          "ci95": [
+            0.22389481707317074,
+            0.2420946074695122
+          ],
+          "mean": 0.23256478658536586
+        },
+        "a1_reach": {
+          "ci95": [
+            0.8728063071646341,
+            0.8878620426829268
+          ],
+          "mean": 0.8804306402439024
+        },
+        "a3_absorbed": {
+          "ci95": [
+            0.6657286108993903,
+            0.6802138910060975
+          ],
+          "mean": 0.6730182926829268
+        },
+        "a3_absorbed_given_first12": 0.18903150525087514,
+        "a3_ever_in_12": {
+          "ci95": [
+            0.33531821646341464,
+            0.35494593178353656
+          ],
+          "mean": 0.3451791158536585
+        },
+        "a3_first_step_12": {
+          "ci95": [
+            0.0368699980945122,
+            0.04497189405487803
+          ],
+          "mean": 0.040825076219512195
+        },
+        "a3_first_step_cell": {
+          "(0,3) left": 0.039681783536585365,
+          "(1,2) lower entry": 0.040825076219512195,
+          "(1,3) stay": 0.6466749237804879,
+          "(2,3) right": 0.27281821646341464
+        },
+        "a3_lower_given_first12": 0.822637106184364,
+        "a3_lower_given_not_first12": 0.19875838092873108,
+        "a3_lower_route": {
+          "ci95": [
+            0.216748046875,
+            0.23137385670731708
+          ],
+          "mean": 0.2242282774390244
+        },
+        "a3_reach": {
+          "ci95": [
+            0.22599085365853658,
+            0.23775724085365854
+          ],
+          "mean": 0.23199314024390244
+        },
+        "actor_at_first_12_state": {
+          "mean_action": [
+            0.313554972410202,
+            -0.2805997133255005
+          ],
+          "mean_state_xy": [
+            1.527182698249817,
+            2.6906838417053223
+          ],
+          "physical_landing_of_actor_sample": {
+            "(0,3) left": 0.028291471156500138,
+            "(1,2) lower entry": 0.49544576317968536,
+            "(1,3) stay": 0.07797405465084184,
+            "(2,3) right": 0.09715705216671267,
+            "other free (1, 1)": 0.20480264973778636,
+            "other free (2, 1)": 0.09632900910847364
+          },
+          "states": 7246
+        },
+        "first12_outcome_classes": {
+          "continued (y<2 before revisiting fork/right)": 0.7899649941656943,
+          "returned to fork/right": 0.073512252042007,
+          "returned to fork/right then absorbed": 0.13652275379229872
+        },
+        "first12_paths": 857,
+        "mean_time_to_lower_given_lower": 8.58508604206501
+      },
+      "first_step": {
+        "a1_a3_first_transition": {
+          "(0,3) left": 0.040241520579268296,
+          "(1,2) lower entry": 0.04084889481707317,
+          "(1,3) stay": 0.6456864519817073,
+          "(2,3) right": 0.2732231326219512
+        },
+        "diagonal_wall_actions": {
+          "definition": "naive cell is a wall cell and physical landing is (1,2)",
+          "fraction_of_samples": 0.1600490663109756,
+          "mean_action": [
+            0.8314592838287354,
+            -0.8624429702758789
+          ],
+          "mean_model_displacement": 0.006600525695830584,
+          "mean_physical_displacement": 1.0342183038120598,
+          "model_cell": {
+            "(0,3) left": 0.00014882059677059304,
+            "(1,2) lower entry": 0.006920157749832577,
+            "(1,3) stay": 0.9929310216533969
+          }
+        },
+        "joint_physical_x_model_top": {
+          "(0,3) left -> (0,3) left": 0.03955078125,
+          "(0,3) left -> (1,2) lower entry": 0.00016673018292682928,
+          "(0,3) left -> (1,3) stay": 0.036966463414634144,
+          "(1,2) lower entry -> (0,3) left": 5.954649390243902e-05,
+          "(1,2) lower entry -> (1,2) lower entry": 0.04030106707317073,
+          "(1,2) lower entry -> (1,3) stay": 0.16159727515243902,
+          "(1,3) stay -> (0,3) left": 0.0006311928353658537,
+          "(1,3) stay -> (1,2) lower entry": 0.00033346036585365856,
+          "(1,3) stay -> (1,3) stay": 0.06548923399390244,
+          "(1,3) stay -> (2,3) right": 0.0007264672256097561,
+          "(2,3) right -> (1,3) stay": 0.3816334794207317,
+          "(2,3) right -> (2,3) right": 0.27248475609756095
+        },
+        "kernel_zero_offsets": {
+          "(0,3) left": 0.0005001905487804878,
+          "(1,2) lower entry": 0.021139005335365852,
+          "(1,3) stay": 0.09807307545731707,
+          "(2,3) right": 0.8802877286585366
+        },
+        "model_12_fraction": 0.04084889481707317,
+        "model_atom_fraction": 0.0014767530487804878,
+        "model_cell_given_physical_12": {
+          "(0,3) left": 0.0002948287045226723,
+          "(1,2) lower entry": 0.19954006722094464,
+          "(1,3) stay": 0.8001061383336282,
+          "(2,3) right": 5.896574090453446e-05
+        },
+        "model_cell_given_physical_23": {
+          "(1,2) lower entry": 7.282127837754192e-05,
+          "(1,3) stay": 0.5833894664020827,
+          "(2,3) right": 0.4165377123195398
+        },
+        "model_onset_fraction_first_step": 0.0,
+        "naive": {
+          "(0,3) left": 0.0352515243902439,
+          "(1,2) lower entry": 0.041920731707317076,
+          "(1,3) stay": 0.045445884146341466,
+          "(2,3) right": 0.2673756669207317,
+          "wall cell": 0.6100061928353658
+        },
+        "per_root": {
+          "mean_P_model12_given_physical12": 0.36976607658472743,
+          "mean_disagreement_fraction": 0.5821741615853658,
+          "model_12": {
+            "ci95": [
+              0.03751399342606707,
+              0.044576505335365856
+            ],
+            "mean": 0.04084889481707317
+          },
+          "model_minus_physical_12": {
+            "ci95": [
+              -0.17268959603658537,
+              -0.14984220179115854
+            ],
+            "mean": -0.16112090320121952
+          },
+          "physical_12": {
+            "ci95": [
+              0.19103646627286586,
+              0.21342684117759148
+            ],
+            "mean": 0.20196979801829268
+          },
+          "roots_with_disagreement_over_half": 540
+        },
+        "physical": {
+          "(0,3) left": 0.07668397484756098,
+          "(1,2) lower entry": 0.20196979801829268,
+          "(1,3) stay": 0.06718035442073171,
+          "(2,3) right": 0.6541658727134146
+        },
+        "physical_12_fraction": 0.20196979801829268,
+        "samples": 83968
+      }
+    }
+  },
+  "part_b": {
+    "G1_stratified_reference": {
+      "O": {
+        "ci95": [
+          -0.3613915360191973,
+          -0.2519648010956078
+        ],
+        "mean": -0.3050789367861864
+      },
+      "P": {
+        "ci95": [
+          1.0319730486084775,
+          1.108209306328762
+        ],
+        "mean": 1.0709317813559276
+      },
+      "initial": {
+        "ci95": [
+          -0.6692865885612441,
+          -0.5420375834151012
+        ],
+        "mean": -0.6028903250287219
+      },
+      "paired_P_minus_O": {
+        "ci95": [
+          1.3385777291183065,
+          1.4168254286232518
+        ],
+        "mean": 1.376010717415228
+      }
+    },
+    "O": {
+      "critic_parameter_delta_l2": 1.4779877435096425,
+      "endpoint_down_minus_right": {
+        "ci95": [
+          -0.42593286827933496,
+          -0.2955887152290926
+        ],
+        "mean": -0.3602082344090066
+      },
+      "final_loss": 0.018692403472959994,
+      "neighborhood_down_minus_right": {
+        "ci95": [
+          -0.31107391893136793,
+          -0.19480848786670987
+        ],
+        "mean": -0.24980071041642166
+      }
+    },
+    "P": {
+      "critic_parameter_delta_l2": 2.2711339927347907,
+      "endpoint_down_minus_right": {
+        "ci95": [
+          0.02336590448167266,
+          0.0734792582872437
+        ],
+        "mean": 0.05065901831882756
+      },
+      "final_loss": 0.01961491473019123,
+      "neighborhood_down_minus_right": {
+        "ci95": [
+          0.051416302690418754,
+          0.09370542886417085
+        ],
+        "mean": 0.07390525864391792
+      }
+    },
+    "initial": {
+      "endpoint_down_minus_right": {
+        "ci95": [
+          -0.6694427930182074,
+          -0.5420241842182671
+        ],
+        "mean": -0.6028903250287219
+      },
+      "neighborhood_down_minus_right": {
+        "ci95": [
+          -0.5593838018251629,
+          -0.45149061590796574
+        ],
+        "mean": -0.503671670832285
+      }
+    },
+    "model_outputs": 104808,
+    "paired_P_minus_O_endpoint_gap": {
+      "ci95": [
+        0.3607577190711731,
+        0.4591360667129842
+      ],
+      "mean": 0.4108672527278342
+    },
+    "pool": {
+      "anchors": 4096,
+      "fork_anchors": 170,
+      "fork_down_anchors": 19,
+      "fork_right_anchors": 94,
+      "sampling": "uniform rows of the training partition, seed 0, without replacement"
+    }
+  },
+  "recorded_actions_at_1_2_train": {
+    "mean_action": [
+      -0.011439685709774494,
+      -0.04164404049515724
+    ],
+    "physical_landing": {
+      "(0,3) left": 0.06487311581759206,
+      "(1,2) lower entry": 0.47548177828658655,
+      "(1,3) stay": 0.14214844495325318,
+      "(2,3) right": 0.04922724670864339,
+      "other free (1, 1)": 0.220568593779813,
+      "other free (2, 1)": 0.04770082045411181
+    },
+    "rows": 5241
+  },
+  "rollout_transitions": 12343296
+}
