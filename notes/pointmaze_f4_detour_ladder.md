@@ -124,6 +124,13 @@ checkpoint are all trained on the 0.05 rung; retargeting it is a separate job).
   `eval_swamp_windy_z_deployment` on the checkpoint: OK. The trainer's own
   `offline_dataset.sha256` fingerprint equals the file sha of
   `swamp_windy_f4_far15_merged_s0.npz`, not the 0.05 file's.
-* GPU node (`34.94.247.177:30025`): rungs rebuilt from scratch with the same
-  content shas as the manifest; `FORCE_SAFE=0.15 ... run_f4_p30_sweep.sh check`
-  and a `smoke` on the same rung: see the end of this note.
+* GPU node (RTX 3060 Ti, `~/contrastive_rl` at this commit): the five rungs
+  rebuilt from scratch reproduce the manifest's content shas exactly
+  (Windows and Linux agree), the ladder audit passes there,
+  `FORCE_SAFE=0.15 ALPHAS=0.3 bash scripts/run_f4_p30_sweep.sh check` passes
+  both arms with the bank accepted as the canonical one, and
+  `FORCE_SAFE=0.30 ALPHAS=0.3 EPISODES=20 ... smoke` trains and evaluates both
+  arms; each arm's `offline_dataset.sha256` equals the far30 file's sha and
+  `arm_provenance.json` records `force_safe_prob 0.3`. The check/smoke run
+  directories were removed afterwards; the rung datasets stay in
+  `~/contrastive_rl/datasets/` on that node.
