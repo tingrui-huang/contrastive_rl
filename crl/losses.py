@@ -52,6 +52,13 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
   """
   adaptive_entropy_coefficient = config.entropy_coefficient is None
   obs_dim = config.obs_dim
+  bc_sampling = getattr(config, 'bc_sampling', 'shared') or 'shared'
+  if bc_sampling not in ('shared', 'independent', 'balanced'):
+    raise ValueError(f'unknown bc_sampling {bc_sampling!r}')
+  if bc_sampling != 'shared' and (config.random_goals != 0.0
+                                  or config.bc_coef <= 0):
+    raise ValueError('bc_sampling independent/balanced requires '
+                     'random_goals 0 and bc_coef > 0')
 
   # --- Failure-aware negatives (Part 1): static setup -----------------------
   # Negative-distribution mixture q_alpha = (1-alpha)*p_clean + alpha*q_fail.
@@ -252,7 +259,8 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
     return loss, metrics
 
   # ------------------------------------------------------------------ actor
-  def actor_loss(policy_params, q_params, alpha, transitions, key):
+  def actor_loss(policy_params, q_params, alpha, transitions, key,
+                 bc_transitions=None):
     obs = transitions.observation
     if config.use_gcbc:
       dist_params = networks.policy_network.apply(policy_params, obs)
@@ -313,7 +321,15 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
       # Offline actor objective (paper Eq 7-8 / WindyCorridor recipe):
       # max (1-bc)*E_pi[f] + bc*log pi(a_orig|s,g). log_prob clips boundary
       # actions internally, so dataset actions at exactly +/-1 are safe.
-      bc_nll = -networks.log_prob(dist_params, orig_action)
+      if bc_transitions is None:
+        bc_nll = -networks.log_prob(dist_params, orig_action)
+      else:
+        # BC rows drawn separately (config.bc_sampling != 'shared'): the
+        # critic term above keeps the buffer batch, the BC term gets its own
+        # (state, goal, recorded action) rows, e.g. region-balanced ones.
+        bc_dist = networks.policy_network.apply(
+            policy_params, bc_transitions.observation)
+        bc_nll = -networks.log_prob(bc_dist, bc_transitions.action)
       loss = config.bc_coef * bc_nll + (1 - config.bc_coef) * q_term
       bc_nll_mean = jnp.mean(bc_nll)
       q_term_mean = jnp.mean(q_term)
@@ -339,6 +355,12 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
 
   # ------------------------------------------------------------- update step
   def update_step(state, transitions):
+    # ``transitions`` is a Transition, or a (Transition, Transition-or-None)
+    # pair whose second element holds the BC term's own rows.
+    if isinstance(transitions, Transition):
+      bc_transitions = None
+    else:
+      transitions, bc_transitions = transitions
     key, key_alpha, key_critic, key_actor = jax.random.split(state.key, 4)
     if adaptive_entropy_coefficient:
       alpha_loss_value, alpha_grads = alpha_grad(
@@ -353,7 +375,8 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
           transitions, key_critic)
 
     (actor_loss_value, actor_aux), actor_grads = actor_grad(
-        state.policy_params, state.q_params, alpha, transitions, key_actor)
+        state.policy_params, state.q_params, alpha, transitions, key_actor,
+        bc_transitions)
 
     actor_update, policy_optimizer_state = policy_optimizer.update(
         actor_grads, state.policy_optimizer_state)

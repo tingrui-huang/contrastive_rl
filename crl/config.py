@@ -62,6 +62,22 @@ class Config:
   # loss = (1-bc_coef)*(alpha*logp - Q) + bc_coef*(-log pi(a_orig|s,g)).
   # 0.0 = pure online SAC-style actor (unchanged default); offline runs use 0.5.
   bc_coef: float = 0.0
+  # Tanh-normal log-prob at the action boundary (BC term and entropy): 'clip'
+  # = this port's historical rule (clip to 1-1e-6, density at atanh), 'acme'
+  # = dm-acme 0.4.0's boundary-band rule of the original contrastive_rl actor
+  # (crl/networks.py tanh_normal_log_prob_acme). Byte-identical off boundary.
+  log_prob_mode: str = 'clip'
+  # Rows of the actor's BC term (offline only; see crl/bc_balanced.py):
+  # 'shared' = the buffer batch the critic term uses (unchanged default);
+  # 'independent' = a second batch from the same relabeling law;
+  # 'balanced' = a second batch with the recorded-action regions flattened
+  # inside each (state cell, goal cell) group, no region above bc_balance_cap
+  # of its group, (state, goal) marginal unchanged. Requires random_goals 0.
+  bc_sampling: str = 'shared'
+  bc_balance_cap: float = 0.25
+  bc_balance_cell: float = 1.0
+  bc_balance_sectors: int = 8
+  bc_balance_wait_eps: float = 0.1
 
   # offline_ant_umaze eval goal source. 'd4rl' (default) = the benchmark
   # goal_sampler (single U_MAZE goal cell + [0,1.5] noise, resampled per

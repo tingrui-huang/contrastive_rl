@@ -16,6 +16,7 @@ Algorithm selection mirrors lp_contrastive.py:
 """
 import argparse
 import dataclasses
+import json
 import os
 import time
 
@@ -237,7 +238,8 @@ def train(config: Config):
       repr_norm=config.repr_norm, repr_norm_temp=config.repr_norm_temp,
       hidden_layer_sizes=config.hidden_layer_sizes,
       twin_q=config.twin_q, use_image_obs=config.use_image_obs,
-      use_layer_norm=config.use_layer_norm, obs_scale=_obs_scale)
+      use_layer_norm=config.use_layer_norm, obs_scale=_obs_scale,
+      log_prob_mode=getattr(config, 'log_prob_mode', 'clip') or 'clip')
 
   policy_optimizer = optax.adam(config.actor_learning_rate, eps=1e-7)
   q_optimizer = optax.adam(config.learning_rate, eps=1e-7)
@@ -369,12 +371,51 @@ def train(config: Config):
   G = max(1, config.num_sgd_steps_per_step)
   B = config.batch_size
 
-  def sample_G():
-    batches = [buffer.sample(B) for _ in range(G)]
-    stacked = losses_mod.Transition(*[
+  def _stack(batches):
+    return losses_mod.Transition(*[
         jnp.asarray(np.stack([getattr(b, field) for b in batches], axis=0))
         for field in losses_mod.Transition._fields])
-    return stacked
+
+  # BC rows drawn separately from the critic batch (offline only; see
+  # crl/bc_balanced.py). The buffer's own stream is untouched, so the
+  # critic-term batches are byte-identical to a bc_sampling='shared' run.
+  bc_sampler = None
+  bc_sampling = getattr(config, 'bc_sampling', 'shared') or 'shared'
+  if bc_sampling != 'shared':
+    if not offline:
+      raise ValueError('bc_sampling independent/balanced needs an offline dataset')
+    from crl.bc_balanced import GroupBalancedBCSampler
+    with np.load(config.offline_dataset, allow_pickle=False) as _d:
+      bc_sampler = GroupBalancedBCSampler(
+          _d['obs'], _d['act'], _d['lengths'], config.discount, config.obs_dim,
+          cell=config.bc_balance_cell, n_sectors=config.bc_balance_sectors,
+          wait_eps=config.bc_balance_wait_eps,
+          cap=None if bc_sampling == 'independent' else config.bc_balance_cap,
+          seed=10_000 + int(config.seed))
+    _law = bc_sampler.law_check(buffer)
+    _fork = {f'fork(1,3)->goal{g}': bc_sampler.group_composition((1, 3), g)
+             for g in ((8, 3), (2, 3), (1, 2), (1, 3), (3, 3), (4, 3))}
+    print(f'BC ROWS: {bc_sampling} (cap {bc_sampler.cap}, cell '
+          f'{bc_sampler.cell}, {bc_sampler.n_sectors} sectors + wait): '
+          f'{bc_sampler.stats["n_pairs"]:,} (e,i,j) pairs, '
+          f'{bc_sampler.stats["n_groups"]} groups, max multiplier '
+          f'{bc_sampler.stats["max_multiplier"]:.2f}, ESS '
+          f'{bc_sampler.stats["ess_original"] / 1e6:.2f}M -> '
+          f'{bc_sampler.stats["ess_reweighted"] / 1e6:.2f}M, law check max '
+          f'share dev {_law:.1e}')
+    if config.ckpt_dir:
+      os.makedirs(config.ckpt_dir, exist_ok=True)
+      with open(os.path.join(config.ckpt_dir, 'bc_sampling_audit.json'), 'w',
+                encoding='utf-8') as _f:
+        json.dump({'bc_sampling': bc_sampling, 'stats': bc_sampler.stats,
+                   'law_check_max_abs_share_dev': _law, 'fork_groups': _fork},
+                  _f, indent=2)
+
+  def sample_G():
+    stacked = _stack([buffer.sample(B) for _ in range(G)])
+    if bc_sampler is None:
+      return stacked
+    return stacked, _stack([bc_sampler.sample(B) for _ in range(G)])
 
   # --- Main loop ---
   env_steps = start_step
