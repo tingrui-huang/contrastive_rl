@@ -216,7 +216,13 @@ def _configure_env(args, seed):
 
 
 def build_mean_policy(ckpt_path, args):
-  """Restore a checkpoint and return the deterministic tanh(actor.loc)."""
+  """Restore a checkpoint and return the evaluation policy.
+
+  ``args.policy == 'mean'`` (the headline) returns tanh(actor.loc).
+  ``'sample'`` returns tanh(loc + scale * eps) with eps drawn from a JAX key
+  stream seeded by ``args.action_seed``, advanced once per call, so two
+  checkpoints evaluated with the same seeds see the same innovations.
+  """
   cfg, _ = _configure_env(args, seed=1)
   nets = networks_mod.make_networks(
       obs_dim=cfg.obs_dim, goal_dim=cfg.goal_dim, action_dim=cfg.action_dim,
@@ -227,10 +233,22 @@ def build_mean_policy(ckpt_path, args):
   step, state = ckpt_mod.load_checkpoint(ckpt_path)
   policy_params = state.policy_params
 
-  @jax.jit
-  def act_mean(observation):
-    return jnp.tanh(nets.policy_network.apply(
-        policy_params, observation).loc)
+  if getattr(args, 'policy', 'mean') == 'sample':
+    action_key = [jax.random.PRNGKey(int(args.action_seed))]
+
+    @jax.jit
+    def _act_sample(observation, key):
+      params = nets.policy_network.apply(policy_params, observation)
+      return nets.sample(params, key)
+
+    def act_mean(observation):          # name kept: the rollout loop's hook
+      action_key[0], sub = jax.random.split(action_key[0])
+      return _act_sample(observation, sub)
+  else:
+    @jax.jit
+    def act_mean(observation):
+      return jnp.tanh(nets.policy_network.apply(
+          policy_params, observation).loc)
 
   width = int(cfg.obs_dim) + int(cfg.goal_dim)
   try:
@@ -422,10 +440,13 @@ def summarize(rows, p_active_1=V6.P_ACTIVE_1,
 def _write_results(rows, summary, step, args, dataset_sha256):
   label = args.method_label or os.path.basename(
       os.path.dirname(os.path.abspath(args.ckpt)))
-  label = f'{label}_mean'
+  label = f'{label}_{args.policy}'
   record = {
       'label': label,
-      'policy': 'deterministic_actor_mean',
+      'policy': ('deterministic_actor_mean' if args.policy == 'mean'
+                 else 'sampled_actor_tanh_normal'),
+      'action_seed': (int(args.action_seed) if args.policy == 'sample'
+                      else None),
       'env': args.env_name,
       'environment_version': V6.ENV_VERSION,
       'ckpt': args.ckpt,
@@ -446,7 +467,8 @@ def _write_results(rows, summary, step, args, dataset_sha256):
   }
   out_dir = args.out_dir or (os.path.dirname(args.ckpt) or '.')
   os.makedirs(out_dir, exist_ok=True)
-  local_path = os.path.join(out_dir, 'eval_rockfall_clock_v6_mean.json')
+  local_path = os.path.join(out_dir,
+                            f'eval_rockfall_clock_v6_{args.policy}.json')
   with open(local_path, 'w', encoding='utf-8') as handle:
     json.dump({**record, 'episodes': rows}, handle, indent=2)
 
@@ -485,6 +507,12 @@ def parse_args(argv=None):
       '--teacher-detour-prob', type=float, default=None,
       help='training-set rung the checkpoint must have been trained on; '
            'default: the rung recorded in the checkpoint manifest')
+  parser.add_argument('--policy', choices=('mean', 'sample'), default='mean',
+                      help='mean = deterministic tanh(loc), the headline; '
+                           'sample = tanh-normal samples with a fixed '
+                           'action seed')
+  parser.add_argument('--action-seed', type=int, default=9909,
+                      help='JAX key for --policy sample')
   parser.add_argument('--method-label', default=None)
   parser.add_argument('--out-dir', default=None)
   parser.add_argument('--results-root', default=OUT_ROOT)
@@ -497,7 +525,8 @@ def main(argv=None):
   _, dataset_sha256 = _training_contract(args)
   act_mean, step, cfg = build_mean_policy(args.ckpt, args)
   print(
-      f'ckpt {args.ckpt} @ step {step} | deterministic actor mean '
+      f'ckpt {args.ckpt} @ step {step} | '
+      f'{"deterministic actor mean" if args.policy == "mean" else "sampled actor (action seed %d)" % args.action_seed} '
       f'| env {args.env_name} | input {cfg.obs_dim + cfg.goal_dim} '
       f'| natural draws n={args.n}, seed={args.seed} | H={args.horizon} '
       f'| p=({args.p_active_1:g},{args.p_active_2:g}) '
@@ -506,6 +535,9 @@ def main(argv=None):
       f'| trained on teacher detour {args.teacher_detour_prob:g}', flush=True)
   rows = evaluate(act_mean, args)
   summary = summarize(rows, args.p_active_1, args.p_active_2)
+  summary['policy_headline'] = ('deterministic_actor_mean'
+                                if args.policy == 'mean'
+                                else 'sampled_actor_tanh_normal')
   print(json.dumps(summary, indent=2), flush=True)
   local_path, aggregate_path = _write_results(
       rows, summary, step, args, dataset_sha256)
