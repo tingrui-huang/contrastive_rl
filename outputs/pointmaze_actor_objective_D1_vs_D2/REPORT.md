@@ -14,7 +14,7 @@ L(loc) = (1-bc) * E_(a~tanh N(loc, scale))[-q(s,a)] + bc * E_(a_data)[-log pi(a_
 | D1 | -6.626 | -6.561 | -6.675 | -5.894 | 1.268 | 0.323 | -0.0353 | +0.0271 | -0.0082 | -0.0232 / +0.0285 |
 | D2 | -6.113 | -6.081 | -6.507 | -5.937 | 1.708 | -0.137 | +0.0274 | -0.0386 | -0.0112 | -0.0152 / +0.0227 |
 
-Sign convention: loc_y more negative = more DOWN. A negative d/dloc_y means the term pushes loc_y down (towards the detour); the actor rests where the total is ~0 (or where tanh saturation kills the critic gradient).
+Sign convention: the columns are LOSS gradients dL/dloc_y and gradient descent moves loc_y by -lr * dL/dloc_y, so a NEGATIVE entry pushes loc_y UP (away from DOWN) and a POSITIVE entry pushes loc_y DOWN (towards the detour). For D1 the critic term (-0.035) pushes up and the BC term (+0.027) pushes down; for D2 the critic term (+0.027) pushes down and the BC term (-0.039) pushes up. The totals are ~0 at the actors' loc. This is a local, fixed-scale, loc-only picture with the BC term aggregated over an XY neighbourhood (no F4 history or goal conditioning, shared parameters ignored, scale not varied), so it supports the objective conflict locally; it does not show that the actors are at the minimum of the full training objective.
 
 ## Why the scale is wide, and what that does to Qbar (mean over the 16 roots)
 
@@ -31,10 +31,14 @@ both axes), at the fresh actor's mean loc and at the DOWN loc (0, -5):
 | 2.0 | 0.72 | 2.36 | -6.72 | -6.75 | 6.50 | 6.45 | 2.04 | 2.36 | -6.61 | -6.11 | 6.40 | 5.91 |
 | 3.0 | 0.26 | 0.98 | -6.88 | -6.87 | 6.59 | 6.54 | 0.84 | 0.98 | -6.75 | -6.27 | 6.46 | 6.00 |
 
-The boundary-clipped actions make the BC NLL explode at any scale below ~1
-(97-170 nats at 0.3), so the BC term alone drives the scale to 1.5-2 where it
-is cheap; there it still charges the DOWN loc (x = 0) about 3 nats more than
-a loc with x ~ +4 (D1: 4.8 vs 1.9), because 13% of the data x's sit at +1.
+The BC NLL is very large at any scale below ~1 (97-170 nats at 0.3) and keeps
+decreasing up to scale 3 in this table, so the observed scale of 1.5-2 is a
+trade-off between the BC term and the sampled-average critic term, not a
+value the BC term sets by itself; how much of the BC's preference for width
+is due to the boundary-clipped actions versus the diversity/mixture of the
+data actions and the single-Gaussian form is not separated here. At scale
+1.5-2 the BC term still charges the DOWN loc (x = 0) about 3 nats more than a
+loc with x ~ +4 (D1: 4.8 vs 1.9), because 13% of the data x's sit at +1.
 At that scale D1's sampled-average critic advantage of DOWN over the actor's
 plateau is only ~0.07 (-6.61 vs -6.68), worth 0.95 * 0.07 = 0.07 in the
 objective, while the BC penalty of DOWN is 0.05 * 2.9 = 0.15: the objective

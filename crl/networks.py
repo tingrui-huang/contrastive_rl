@@ -40,6 +40,43 @@ def tanh_normal_mode(params: TanhNormalParams) -> jnp.ndarray:
   return jnp.tanh(params.loc)
 
 
+def tanh_normal_log_prob_acme(params: TanhNormalParams, actions: jnp.ndarray,
+                              threshold: float = 0.999) -> jnp.ndarray:
+  """log pi(a|s) exactly as Acme 0.4.0's ``TanhTransformedDistribution``.
+
+  The original contrastive_rl actor is ``Independent(TanhTransformedDistribution
+  (Normal(loc, scale)), 1)`` from dm-acme 0.4.0 (acme/jax/networks/
+  distributional.py).  Per action dimension:
+
+    |a| <  threshold : the tanh-Gaussian density at atanh(a)
+    a  >= threshold  : log P_Normal(x >= atanh(threshold)) - log(1 - threshold)
+    a  <= -threshold : log P_Normal(x <= -atanh(threshold)) - log(1 - threshold)
+
+  i.e. an action in the boundary band [threshold, 1] is scored with the
+  average density of the whole right tail over that band, not with the
+  density at one extreme pre-tanh point.  The tail terms are log-CDF /
+  log-survival values of the Normal and stay differentiable in loc and
+  scale.  Summed over the action dimension like ``Independent(..., 1)``.
+  """
+  loc, scale = params.loc, params.scale
+  t = jnp.asarray(threshold, dtype=actions.dtype)
+  inverse_threshold = jnp.arctanh(t)
+  log_epsilon = jnp.log(1.0 - t)
+  z_right = (inverse_threshold - loc) / scale
+  z_left = (-inverse_threshold - loc) / scale
+  log_prob_right = jax.scipy.stats.norm.logsf(z_right) - log_epsilon
+  log_prob_left = jax.scipy.stats.norm.logcdf(z_left) - log_epsilon
+  event = jnp.clip(actions, -t, t)
+  x = jnp.arctanh(event)
+  log_unnormalized = -0.5 * jnp.square((x - loc) / scale)
+  log_normalization = 0.5 * jnp.log(2.0 * np.pi) + jnp.log(scale)
+  interior = (log_unnormalized - log_normalization
+              - 2.0 * (jnp.log(2.0) - x - jax.nn.softplus(-2.0 * x)))
+  per_dim = jnp.where(event <= -t, log_prob_left,
+                      jnp.where(event >= t, log_prob_right, interior))
+  return jnp.sum(per_dim, axis=-1)
+
+
 def tanh_normal_log_prob(params: TanhNormalParams, actions: jnp.ndarray,
                          eps: float = 1e-6) -> jnp.ndarray:
   """log pi(a|s), summed over action dims, with the tanh change-of-variables.
@@ -133,8 +170,14 @@ def make_networks(
     use_image_obs: bool = False,
     use_layer_norm: bool = False,
     obs_scale=None,
+    log_prob_mode: str = 'clip',
 ) -> ContrastiveNetworks:
   """Creates the contrastive RL networks.
+
+  ``log_prob_mode``: 'clip' (this port's historical log-prob: boundary actions
+  are clipped to 1 - 1e-6 and scored at atanh of that point) or 'acme'
+  (dm-acme 0.4.0's boundary-band treatment, the one the original
+  contrastive_rl actor used).  Every existing run was trained with 'clip'.
 
   Args:
     obs_dim: size of the STATE part of the observation.
@@ -262,7 +305,8 @@ def make_networks(
       q_network=FeedForward(
           init=lambda key: critic.init(key, dummy_obs, dummy_action),
           apply=critic.apply),
-      log_prob=tanh_normal_log_prob,
+      log_prob=(tanh_normal_log_prob if log_prob_mode == 'clip'
+                else tanh_normal_log_prob_acme),
       sample=tanh_normal_sample,
       sample_eval=lambda params, key: tanh_normal_mode(params),
       representation_network=FeedForward(

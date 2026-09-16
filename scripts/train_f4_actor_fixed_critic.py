@@ -55,12 +55,13 @@ def tree_sha(tree):
   return d.hexdigest()
 
 
-def make_network():
+def make_network(log_prob_mode='clip'):
   from crl import networks
   return networks.make_networks(
       8, 8, 2, repr_dim=64, repr_norm=False, repr_norm_temp=True,
       hidden_layer_sizes=(256, 256), actor_min_std=1e-6, twin_q=False,
-      use_image_obs=False, use_layer_norm=False, obs_scale=None)
+      use_image_obs=False, use_layer_norm=False, obs_scale=None,
+      log_prob_mode=log_prob_mode)
 
 
 def crl_config(replay, seed):
@@ -86,6 +87,11 @@ def main(argv=None):
   ap.add_argument('--actor-seed', type=int, required=True)
   ap.add_argument('--replay', default=str(SEALED / 'replay_C.npz'))
   ap.add_argument('--steps', type=int, default=STEPS)
+  ap.add_argument('--log-prob', choices=('clip', 'acme'), default='clip',
+                  help="BC log-prob at the action boundary: 'clip' = this "
+                       "port's historical rule (clip to 1-1e-6, density at "
+                       "atanh), 'acme' = dm-acme 0.4.0's boundary-band rule "
+                       "used by the original contrastive_rl actor")
   ap.add_argument('--out', required=True)
   args = ap.parse_args(argv)
 
@@ -100,7 +106,7 @@ def main(argv=None):
   if (out / 'final.pkl').exists():
     print(f'{out}: final.pkl exists', flush=True)
     return 0
-  nets = make_network()
+  nets = make_network(args.log_prob)
   cfg = crl_config(args.replay, args.actor_seed)
   # buffer RNG = actor seed -> identical batch order across critics
   buffer, fp = offline_audit.build_offline_buffer(cfg.offline_dataset, cfg)
@@ -160,7 +166,7 @@ def main(argv=None):
   print(f'fixed critic {args.critic} (q sha {tree_sha(q_params)[:12]}) | '
         f'actor seed {args.actor_seed} init sha {tree_sha(policy_params)[:12]} '
         f'| replay {args.replay} sha {fp["sha256"][:12]} | {args.steps} x {G} '
-        f'updates, bc {BC_COEF}', flush=True)
+        f'updates, bc {BC_COEF} | log_prob {args.log_prob}', flush=True)
   init_sha = tree_sha(policy_params)
   history = []
   t0 = time.time()
@@ -190,6 +196,7 @@ def main(argv=None):
                'replay': args.replay, 'replay_sha256': fp['sha256'],
                'steps': args.steps, 'sgd_steps_per_step': G, 'batch': BATCH,
                'bc_coef': BC_COEF, 'lr': LR, 'random_goals': 0.5,
+               'log_prob_mode': args.log_prob,
                'critic_frozen': True, 'env_steps_during_training': 0,
                'wall_seconds': time.time() - t0, 'history': history,
                'jax_devices': [str(d) for d in jax.devices()]}, f, indent=2)

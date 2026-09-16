@@ -273,16 +273,26 @@ tanh-normal log-prob on the D-replay actions taken within 0.15 of each root.
 | D1 | 16/0/0 | **6/10/0** | 16/0/0 | **2/14/0** | (+1.00, -0.30) |
 | D2 | 13/3/0 | 7/9/0 | 16/0/0 | 7/9/0 | (+1.00, -1.00) |
 
-At the fresh actors' loc (mean over roots), d/dloc_y of the critic term is
--0.035 (down) for D1 and +0.027 (up) for D2, of the BC term +0.027 (up) for
-D1 and -0.039 (down) for D2; the totals are ~0. Both actors sit at the
-minimum of their own objective: D1's at the right plateau (+1, -0.3..-0.5),
-D2's at the corner (+1, -1) -- neither at DOWN.
+At the fresh actors' loc (mean over roots), the LOSS gradient dL/dloc_y of
+the critic term is -0.035 for D1 and +0.027 for D2, of the BC term +0.027 for
+D1 and -0.039 for D2; descent moves loc_y by -lr * dL/dloc_y, so under D1 the
+critic term pushes the actor UP (away from DOWN) and the BC term pushes it
+DOWN, and under D2 the roles are reversed; the totals are ~0. In this local,
+fixed-scale, loc-only picture (BC aggregated over an XY neighbourhood, no F4
+history / goal conditioning, shared parameters and the learned scale
+ignored) both actors sit near a minimum of the local objective -- D1's at the
+right plateau (+1, -0.3..-0.5), D2's at the corner (+1, -1), neither at
+DOWN. That supports an objective conflict; it does not prove the actors are
+at the minimum of the full training objective.
 
 Mechanism (scale table in the REPORT): 13% of the x components and 4% of the
 y components of the replay actions near the fork are boundary-clipped
-(atanh ~ +/-7.25), so the BC NLL is 97-170 nats at scale 0.3 and only ~1-2 at
-scale 1.5-2 -- the BC term alone forces the wide policy. With that width,
+(atanh ~ +/-7.25); the BC NLL is 97-170 nats at scale 0.3, ~1-2 at scale
+1.5-2, and still decreasing at 3, so the observed width 1.5-2 is a trade-off
+between BC and the sampled-average critic term rather than something BC sets
+alone, and the boundary handling is one suspect for BC's preference for
+width alongside action diversity, mixed behaviour and the single-Gaussian
+form (not separated here). With that width,
 D1's narrow DOWN peak (the x ~ 0 column of the action square) averages to
 only ~0.07 above the broad right plateau, worth 0.07 in the objective, while
 BC still charges the DOWN loc ~3 nats more than an x ~ +4 loc (0.15 in the
@@ -293,10 +303,48 @@ both terms agree and the actor saturates at (+1, -1); its detours come from
 the axis race, not from choosing (0, -1). At a sharp scale (0.3) both
 critics' Qbar argmax would be the lower route on 16/16 roots.
 
-Chain summary: the coverage fix made the critic's argmax DOWN, but under
-BC-on-clipped-actions the policy is wide and x-biased to +1, and a narrow
-DOWN optimum cannot win the sampled-average objective against a broad
-plateau; only a critic that happens to score the whole bottom-right high
-(D2) produces a detour actor, and only via saturation. The actor-side lever
-is the BC term's treatment of boundary-clipped actions and the resulting
-scale, not the loss weights.
+Chain summary: the coverage fix made the critic's argmax DOWN, but the
+objective formed by the BC term, the policy width and the critic's scores
+locally prefers a policy that performs worse; a narrow DOWN optimum cannot
+win the sampled-average objective against a broad plateau, and only a critic
+that happens to score the whole bottom-right high (D2) produces a detour
+actor, via saturation. The boundary handling of the BC log-prob is a
+concrete suspect but has not been isolated; Step 6 tests it directly by
+restoring the original Acme 0.4.0 rule.
+
+## Step 6: restore the original Acme 0.4.0 boundary log-prob (D1 fixed, fresh actors)
+
+The port's `tanh_normal_log_prob` clips boundary actions to 1 - 1e-6 and
+scores them at the density of atanh(1 - 1e-6) ~ 7.25; the original
+contrastive_rl actor (dm-acme 0.4.0 `TanhTransformedDistribution`,
+threshold 0.999) scores an action in the band [0.999, 1] with the average
+density of the whole tail, log P(x >= atanh 0.999) - log 0.001, symmetric on
+the left. `crl.networks.tanh_normal_log_prob_acme` implements the Acme rule
+and `make_networks(log_prob_mode='acme')` selects it (default 'clip', so
+nothing else changes). [`scripts/test_tanh_log_prob_acme.py`](../scripts/test_tanh_log_prob_acme.py)
+checks it against an independent float64 reference: interior values (1e-4),
+values at +/-1, +/-0.9995 and the threshold (rel 1e-6), band value = the
+quadrature average density over [0.999, 1], interior + bands integrate to
+one, and d/dloc, d/dscale against central finite differences (rel 3e-5).
+For loc 0 the log-prob of action +1 is -14.1 (clip) vs -2.6 (Acme) at scale
+1, and -278 vs -77 at scale 0.3.
+
+Same protocol as Step 4 for critic D1 (D replay, three fresh actors with
+the same initializations, batch order, Adam and 30k x 10 updates, bc 0.05,
+scale learned), the only change being the BC log-prob rule:
+
+| log-prob | actor seed | mode reach | mode lower | sample reach | sample lower | mode at roots | pre-tanh |loc| x, y | scale x, y |
+|---|---|---:|---:|---:|---:|---|---|---|
+| clip (Step 4) | 0 / 1 / 2 | 0.305 x3 | 0.000 x3 | 0.375 / 0.470 / 0.440 | 0.115 / 0.255 / 0.205 | (+1.00, -0.30 / -0.51 / -0.37) | 4.0-4.7, 0.3-0.8 | 2.1-2.2, 1.1-1.3 |
+| acme (Step 6) | 0 / 1 / 2 | 0.305 x3 | 0.000 x3 | 0.345 / 0.355 / 0.345 | 0.085 / 0.080 / 0.095 | (+1.00, -0.20 / -0.19 / -0.09) | 3.7-3.8, 0.1-0.2 | 1.6-1.7, 0.7-0.8 |
+
+No improvement; the sampled policy is slightly worse. The Acme rule does
+change the policy shape as predicted -- the scale shrinks from (2.2, 1.1) to
+(1.65, 0.75) and loc_x settles at 3.7-3.8 (the tail band is covered once
+loc_x >= atanh 0.999) instead of 4-4.7 -- so the clip rule was inflating
+the width, but the narrower policy tracks the BC mean action (data y ~ -0.24
+near the fork) even more tightly and the critic term still does not move y.
+Under the plan's own criterion, the boundary implementation difference is
+not the cause of D1's failure. What remains is the conflict between the BC
+term on the data's mixed, x = +1-heavy behaviour and the critic, and the
+single-Gaussian form on a multimodal action set; neither is separated yet.
