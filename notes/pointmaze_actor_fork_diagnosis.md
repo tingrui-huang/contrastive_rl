@@ -570,3 +570,214 @@ property of the 300k critic blocks the actor is open.
    not yet identified.
 4. The fork ranking of a 30k critic on 16 roots is not reproducible across
    GPUs and is not sufficient as a usability criterion.
+
+### 9d. Critic-seed stability of the two-stage recipe
+
+Every other 30k critic frozen, three fresh balanced-BC actors each
+(`refreeze/`; new seeds, 300 episodes):
+
+| frozen critic | node | 16-root ranking (d-r, roots down, argmax -> shortcut) | mode lower (3 actors) |
+|---|---|---|---|
+| D1 (Step 8) | RTX 4080 | +0.36, 16/16, 0 | 1.000 / 1.000 / 1.000 |
+| D0 | RTX 4080 | +0.11, 14/16, 3 | 1.000 / 1.000 / 1.000 |
+| D2 | RTX 4080 | +0.17, 13/16, 3 | 0.813 / **0.007** / 0.880 |
+| joint 30k balanced seed 0 | RTX 5060 Ti | +0.28, 16/16, 0 | 1.000 / 1.000 / 1.000 |
+| joint 30k balanced seed 1 (same training as D1) | RTX 5060 Ti | +0.25, 16/16, 2 | **0.000 / 0.000 / 0.000** |
+| joint 30k balanced seed 2 | RTX 5060 Ti | +0.17, 16/16, 0 | 0.880 / 1.000 / **0.000** |
+
+13 of 18. Actor-seed variance reappears under the marginal critics (D2,
+joint seed 2), and the critic side is fragile: seed 1 trained on the 4080
+(D1) gives 3/3, the same training on the 5060 Ti gives 0/3. The 16-root
+ranking does not predict the outcome (D0 ranks worst among the successes).
+
+### 9e. The fair plain-CRL control
+
+Plain CRL critics (NCE on the full 6600-episode 0.05-rung dataset, sealed
+30k budget, no ETT data) frozen, then the same balanced-BC two-stage actors
+on the original dataset (`control_O/`, driver stage `control`):
+
+| O critic seed | q(DOWN) - q(RIGHT) at the roots | mode lower (3 actors) | sample lower |
+|---|---|---|---|
+| 0 | +0.34 | 0.763 / 0.547 / 0.633 | 0.51 / 0.44 / 0.45 |
+| 1 | -0.49 | 0.000 / 0.000 / 0.000 | 0.01 x3 |
+| 2 | -0.04 | 0.000 / 0.000 / 0.000 | 0.02 / 0.09 / 0.03 |
+
+So plain CRL with the same actor treatment is not zero: one critic seed of
+three prefers DOWN at the fork and its actors detour 0.55-0.76 (all of them
+corner policies, see 9f). Against the ETT-D critics (13/18 actors at
+>= 0.81, 9/18 at 1.000) the ETT data still makes the difference, but the
+earlier statement "O never detours" was a statement about the joint recipe,
+not about O critics.
+
+### 9f. Whole-policy objective: does training prefer the failed actor?
+
+[`scripts/audit_f4_policy_objective.py`](../scripts/audit_f4_policy_objective.py)
+(`policy_objective_audit/`): for the D2 trio (0.81 / 0.01 / 0.88), the
+exact training objective 0.95 E[-f(s, a~pi, g)] + 0.05 E[-log pi(a_data|s,g)]
+on identical rows -- critic rows from the buffer's relabeling law, BC rows
+from the balanced law, the actor's own width, Acme log-prob, shared
+innovations -- on the full distribution and conditionally on the approach,
+fork and fork -> goal-(8,3) rows; then the same policies under every other
+critic.
+
+Under their own critic the three totals differ by at most 0.3% of their
+value and the sign flips across subsets: on the full distribution the two
+successful actors are lower by 0.002-0.003 (s.e. 0.0003), on the fork rows
+the failed actor is lower by 0.002-0.007 (s.e. 0.001). No other critic
+separates them either (differences -0.04..+0.03 on totals of 2.4-3.1).
+The three policies are the same policy: their fork modes under the task
+goal are (+0.95, -1.00), (+0.94, -1.00), (+0.96, -1.00). The route is
+decided by the axis-by-axis substep race at the action boundary, and at x
+0.94-0.96 that race flips between resets. The training objective does not
+reward the failure; it is flat across a family of saturated policies whose
+outcomes the environment separates.
+
+The same classification over every two-stage actor
+(`policy_objective_audit/two_stage_actor_modes.json`):
+
+| family (fork mode under the task goal) | actors | mode lower |
+|---|---|---|
+| DOWN: y = -1.00, x 0.2-0.4 | D1 x3, joint s0 x3 | 1.000 x6 |
+| CORNER: y = -1.00, x 0.65-1.00 | D0 (x 0.65-0.69), joint s2 (0.79-0.91), D2 (0.94-0.96), O seed 0 (1.00) | 1.000 x3; 0.88/1.00/0.00; 0.81/0.01/0.88; 0.76/0.55/0.63 |
+| RIGHT: y > -0.5 | joint s1, joint 300k, O seeds 1-2, C | 0.000 x15 |
+
+Within the CORNER family the detour rate is a steep function of x: 1.000 at
+x <= 0.7, all-or-nothing at 0.8-0.96, 0.55-0.76 at 1.00. So there are two
+kinds of "success": the DOWN family (robust across actor seeds and evaluation
+seeds) and the CORNER family (a physics race that actor seeds and resets
+decide). Only D1 and joint seed 0 produce the DOWN family. What separates
+those two critics from the CORNER-producing ones is the next question; the
+16-root DOWN-vs-RIGHT margin does not (D0 +0.11 -> corner at x 0.67 and
+1.000, D2 +0.17 -> corner at 0.95). A smoothed DOWN-vs-CORNER preference at
+the policy width (Qbar at loc (0.3, -6) minus Qbar at (5, -5)) fits the
+DOWN/CORNER split of the D critics (D1 +0.54, joint s0 +0.59 vs D0 +0.23,
+joint s2 +0.28, D2 -0.20) but not the RIGHT family (joint s1 +0.31, joint
+300k +0.73), which fails for a reason this audit does not reach.
+
+### 9g. The RIGHT family: the probe measured a goal frame the actor never trains on
+
+Three read-only audits on the two unexplained critics (joint 30k balanced
+seed 1 = R1, joint 300k balanced seed 0 = R2) against two DOWN-family
+critics (joint 30k seed 0 = D-a, D1 = D-b), their fresh balanced-BC actors
+(3 each), and the training rows themselves:
+[`scripts/audit_f4_right_family.py`](../scripts/audit_f4_right_family.py),
+[`scripts/audit_f4_goal_frames.py`](../scripts/audit_f4_goal_frames.py),
+[`scripts/audit_f4_jitter_margin_all_critics.py`](../scripts/audit_f4_jitter_margin_all_critics.py);
+outputs in `outputs/pointmaze_balanced_bc_joint_v1/right_family_audit/`
+(CPU, this machine).
+
+**1. Not the optimizer.** The exact training objective (0.95 critic term on
+the buffer law + 0.05 balanced BC term, 40k shared rows, 16 samples per row)
+is LOWER for each RIGHT critic's own actors than for the DOWN actors: R1
+-0.089 on the full distribution, -0.030 on the fork rows, -0.012 (s.e.
+0.005) on the fork -> goal-(8,3) rows; R2 -0.489 / -0.162 / -0.243.  Under
+the two DOWN critics the DOWN actors are the ones preferred.  Training
+found what these critics ask for.
+
+**2. The actor never sees the canonical goal.** The task goal
+tile((8.5, 3.5), 4) is a stationary stack.  Of the replay's fork -> (8,3)
+rows (mass 0.0069, 13% of the fork rows), 83% carry a goal frame that
+jitters inside the goal cell (median frame-to-frame displacement 0.22 --
+the teacher and the continuation actor keep moving around the goal), 14%
+an arrival frame along the middle route, 3% an arrival frame from below,
+and 3% a frame with displacement < 0.05.  All twelve actors output the
+same mode on the canonical goal as on the jitter frames (D2 table of
+`goal_frames_REPORT.md`), so the task-goal action is the jitter-frame
+action.  The route-identified arrival frames are handled correctly by every
+critic and every actor (arrival-middle -> RIGHT, arrival-below -> DOWN).
+
+**3. What splits the families is the policy-width margin on the jitter
+frames.** On those rows, Qbar(DOWN loc) - Qbar(RIGHT loc) at width 0.75:
+
+| critic | family | 16 roots x canonical, point / width | jitter frames, point / width |
+|---|---|---:|---:|
+| D1 (4080) | DOWN | +0.36 / +0.17 | +0.24 / **+0.11** |
+| joint 30k s0 | DOWN | +0.28 / +0.14 | +0.14 / **+0.05** |
+| D0 | CORNER x0.67 | +0.11 / +0.03 | +0.03 / **-0.01** |
+| joint 30k s2 | CORNER x0.85 | +0.17 / +0.15 | +0.03 / **+0.06** |
+| D2 | CORNER x0.95 | +0.17 / +0.25 | +0.13 / **+0.21** |
+| O seed 0 | CORNER x1.00 | +0.34 / +0.22 | +0.35 / **+0.22** |
+| joint 30k s1 (R1) | RIGHT | +0.25 / +0.01 | +0.12 / **-0.05** |
+| joint 300k s0 (R2) | RIGHT | +0.71 / +0.20 | -0.07 / **-0.28** |
+| O seed 1 | RIGHT | -0.49 / -0.36 | -0.45 / **-0.35** |
+| O seed 2 | RIGHT | -0.04 / +0.11 | -0.18 / **+0.03** |
+| C seed 2 | RIGHT | +0.20 / +0.02 | -0.11 / **-0.16** |
+| C seed 0 | RIGHT (9a) | -0.10 / -0.11 | -0.27 / **-0.20** |
+
+Every RIGHT critic has a jitter-frame width margin <= +0.03, every DOWN and
+CORNER critic >= +0.05 except D0 (-0.01, whose actors sit at x 0.67 and win
+the race).  The 16-root canonical point margin -- the criterion used since
+Step 1 -- ranks R1 (+0.25) and R2 (+0.71) among the best critics.  Two
+different reasons, both visible in the cross probes (`goal_frames_REPORT.md`
+D2): for R1 the +0.25 is a narrow peak, the width margin at the very same
+roots and goal is +0.01; for R2 the DOWN preference is real at the policy
+width but lives on the stationary goal frame only (+0.71 / +0.20 on the
+canonical goal, +0.03 / -0.24 with the replay's jitter frames substituted at
+the same 16 roots).  R2's margin falls monotonically with the goal frame's
+displacement (+0.14 at < 0.05, +0.10, -0.03, -0.29 at >= 0.3) while the
+DOWN critics are flat across the bins (+0.06 / +0.12); the 300k critic
+reads the goal frame's velocity as a route cue, and among the jitter frames
+the moving ones come mostly from shortcut survivors (recorded fork actions
+on jitter-goal rows: R 0.55 / D 0.20 / DR 0.17).
+
+**4. Why the margin is this small.** The data's own discounted answer at
+the fork is weak: under the relabeling law P(goal cell (8,3) | fork, D) =
+0.25 against 0.19 for R (original episodes alone 0.14 vs 0.46, the C
+queries 0.32 vs 0.12, the diagonal queries 0.10 vs 0.07).  The lower route
+is longer, gamma 0.95 discounts it, the DOWN continuation paths reach
+0.3-0.8, and the 1200 random-walker episodes supply DOWN actions at the
+fork that go nowhere.  A target of a quarter of a nat is inside the seed
+and GPU noise of a 30k critic and inside what smoothing at the policy
+width flips.
+
+So: the actor at the task goal follows the critic's policy-width preference
+on the replay's jittering (8,3) goal frames; the 16-root canonical-goal
+point probe measures an extrapolation the actor is never trained on and
+does not predict the family (10 of 12 by sign, 11 of 12 with a +0.04
+threshold on the width margin).  The DOWN-vs-CORNER split within the
+positive side is not explained by this margin (D2 +0.21, O0 +0.22 are
+corner critics) and remains the 9f question.
+
+## Step 10: corner / edge query coverage (arm E) -- a net regression
+
+[`scripts/run_f4_corner_coverage_fix.py`](../scripts/run_f4_corner_coverage_fix.py),
+`outputs/pointmaze_corner_coverage_fix_v1/`. Six bottom-edge / right-edge
+first queries were audited against the native physics at the 16 held-out
+roots (64 paired replicates, `audit/REPORT.md`): natively the bottom edge is
+a smooth ramp (lower route 1.00 at (0.3,-1), 0.85 at (0.6,-1), 0.55 at
+(0.85,-1), 0.46 at the corner, 0.21 at (1,-0.6)); the fixed ETT gets
+(0.3,-1) right (lower 1.00), is direction-right but over-pessimistic on the
+corner (lower 0.15, absorbed 0.77 vs native 0.46 / 0.46 -- the Step 3 kind
+of bias), and flattens everything with x >= 0.6 to RIGHT-like outcomes
+((0.6,-1): native lower 0.85, ETT 0.16). By the user's decision only the
+two queries the ETT gets right were generated: replay_E = replay_D + 550 x
+(0.3,-1) paths (reach 0.76, lower 0.91) + 550 corner paths (reach 0.23,
+lower 0.07), 11,000 episodes.
+
+Five 30k critics (sealed recipe), three fresh balanced-BC actors each,
+300 new-seed episodes:
+
+| E critic | d-r at the roots | Qbar DOWN-CORNER | actor family (fork mode) | mode lower |
+|---|---|---|---|---|
+| seed 0 | -0.10, 0/16 | +0.43 | RIGHT x3 (+0.9, -0.65) | 0 / 0 / 0 |
+| seed 1 | +0.02, 11/16 | +0.56 | RIGHT x3 (+1.0, +0.2) | 0 / 0 / 0 |
+| seed 2 | +0.35, 16/16 | +0.60 | DOWN x3 (+0.3, -1.0) | 1.000 x3 |
+| seed 3 | -0.29, 0/16 | +0.35 | RIGHT x3 (+1.0, 0.0) | 0 / 0 / 0 |
+| seed 4 | +0.10, 14/16 | +0.68 | RIGHT x3 (+1.0, -0.35) | 0 / 0 / 0 |
+
+3/15 against the D series' 13/18. The corner data did exactly what it was
+added for -- every E critic separates the gentle-down action from the corner
+(+0.35..+0.68 at the policy width, 16/16 roots; no CORNER-family actor
+remains) -- and the DOWN-vs-RIGHT separation got worse: mean raw margin at
+the roots +0.02 (D series +0.21; the same recipe on this node +0.23). The
+loss is not a generalization gap: at the 550 training contexts themselves,
+where 550 added paths say (0.3,-1) reaches the goal 0.76 and RIGHT 0.25,
+three of five E critics score RIGHT at or above the gentle-down action
+(E3: -5.86 vs -6.21). The NCE critic is not fitting the action dependence
+of the fork rows it is given; adding rows changed which failure the seeds
+fall into (CORNER -> RIGHT), not the fraction that fail. Whether this is
+the fork rows' small share of the batches (5% of anchors, 0.7% for
+fork -> goal cell), the 30k budget, or the dot-product critic's capacity for
+action discrimination at one state, is the open question; the stratified
+critic batches of the earlier absorbing line (G1: 128 ordinary + 64 + 64
+fork rows) are the obvious next probe, and were not run here.

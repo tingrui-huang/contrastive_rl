@@ -1,0 +1,560 @@
+{
+  "policy": "mode",
+  "episodes": 300,
+  "reset_seed_base": 31500000,
+  "manifest": {
+    "E0_a0": {
+      "path": "/root/contrastive_rl/outputs/pointmaze_corner_coverage_fix_v1/seeds/seed_0/actor_s0/final.pkl",
+      "step": 30000
+    },
+    "E0_a1": {
+      "path": "/root/contrastive_rl/outputs/pointmaze_corner_coverage_fix_v1/seeds/seed_0/actor_s1/final.pkl",
+      "step": 30000
+    },
+    "E0_a2": {
+      "path": "/root/contrastive_rl/outputs/pointmaze_corner_coverage_fix_v1/seeds/seed_0/actor_s2/final.pkl",
+      "step": 30000
+    }
+  },
+  "policies": {
+    "E0_a0": {
+      "reach": {
+        "mean": 0.36333333333333334,
+        "ci95": [
+          0.31,
+          0.4166666666666667
+        ]
+      },
+      "strict_success": {
+        "mean": 0.36333333333333334,
+        "ci95": [
+          0.31,
+          0.4166666666666667
+        ]
+      },
+      "discounted_return": {
+        "mean": 4.782534251530879,
+        "ci95": [
+          4.080510875159374,
+          5.484557627902383
+        ]
+      },
+      "undiscounted_return": {
+        "mean": 15.986666666666666,
+        "ci95": [
+          13.64,
+          18.333333333333332
+        ]
+      },
+      "absorbed": {
+        "mean": 0.6366666666666667,
+        "ci95": [
+          0.5833333333333334,
+          0.69
+        ]
+      },
+      "lower_route": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "reached_y_below_2": {
+        "mean": 0.36333333333333334,
+        "ci95": [
+          0.31,
+          0.4166666666666667
+        ]
+      },
+      "shortcut": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "stuck_other": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "first_departure_1_2": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "first_departure_2_3": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "hazard_landings": {
+        "mean": 2.25,
+        "ci95": [
+          2.1533333333333333,
+          2.3433333333333333
+        ]
+      },
+      "route_classes": {
+        "shortcut": 1.0
+      },
+      "first_departure_cells": {
+        "(2, 3)": 1.0
+      },
+      "time_to_goal_given_reach": 7.0
+    },
+    "E0_a1": {
+      "reach": {
+        "mean": 0.36333333333333334,
+        "ci95": [
+          0.31,
+          0.4166666666666667
+        ]
+      },
+      "strict_success": {
+        "mean": 0.013333333333333334,
+        "ci95": [
+          0.0033333333333333335,
+          0.02666666666666667
+        ]
+      },
+      "discounted_return": {
+        "mean": 4.7685675056090036,
+        "ci95": [
+          4.073411112649087,
+          5.465935300006549
+        ]
+      },
+      "undiscounted_return": {
+        "mean": 15.966666666666667,
+        "ci95": [
+          13.629833333333334,
+          18.30666666666667
+        ]
+      },
+      "absorbed": {
+        "mean": 0.6366666666666667,
+        "ci95": [
+          0.5833333333333334,
+          0.69
+        ]
+      },
+      "lower_route": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "reached_y_below_2": {
+        "mean": 0.36333333333333334,
+        "ci95": [
+          0.31,
+          0.4166666666666667
+        ]
+      },
+      "shortcut": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "stuck_other": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "first_departure_1_2": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "first_departure_2_3": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "hazard_landings": {
+        "mean": 2.25,
+        "ci95": [
+          2.1533333333333333,
+          2.3433333333333333
+        ]
+      },
+      "route_classes": {
+        "shortcut": 1.0
+      },
+      "first_departure_cells": {
+        "(2, 3)": 1.0
+      },
+      "time_to_goal_given_reach": 7.0
+    },
+    "E0_a2": {
+      "reach": {
+        "mean": 0.36333333333333334,
+        "ci95": [
+          0.31,
+          0.4166666666666667
+        ]
+      },
+      "strict_success": {
+        "mean": 0.0033333333333333335,
+        "ci95": [
+          0.0,
+          0.01
+        ]
+      },
+      "discounted_return": {
+        "mean": 4.761584132648066,
+        "ci95": [
+          4.071083321662108,
+          5.456682330833308
+        ]
+      },
+      "undiscounted_return": {
+        "mean": 15.956666666666667,
+        "ci95": [
+          13.6265,
+          18.293416666666666
+        ]
+      },
+      "absorbed": {
+        "mean": 0.6366666666666667,
+        "ci95": [
+          0.5833333333333334,
+          0.69
+        ]
+      },
+      "lower_route": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "reached_y_below_2": {
+        "mean": 0.36333333333333334,
+        "ci95": [
+          0.31,
+          0.4166666666666667
+        ]
+      },
+      "shortcut": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "stuck_other": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "first_departure_1_2": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "first_departure_2_3": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "hazard_landings": {
+        "mean": 2.25,
+        "ci95": [
+          2.1533333333333333,
+          2.3433333333333333
+        ]
+      },
+      "route_classes": {
+        "shortcut": 1.0
+      },
+      "first_departure_cells": {
+        "(2, 3)": 1.0
+      },
+      "time_to_goal_given_reach": 7.0
+    }
+  },
+  "comparisons": {
+    "E0_a0_minus_E0_a1": {
+      "reach": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "strict_success": {
+        "mean": 0.35,
+        "ci95": [
+          0.2966666666666667,
+          0.4066666666666667
+        ]
+      },
+      "discounted_return": {
+        "mean": 0.013966745921875016,
+        "ci95": [
+          0.004655581973958339,
+          0.025605700856770865
+        ]
+      },
+      "undiscounted_return": {
+        "mean": 0.02,
+        "ci95": [
+          0.006666666666666667,
+          0.03666666666666667
+        ]
+      },
+      "absorbed": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "lower_route": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "reached_y_below_2": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "shortcut": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "stuck_other": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "first_departure_1_2": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "first_departure_2_3": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "hazard_landings": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "E0_a0_minus_E0_a2": {
+      "reach": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "strict_success": {
+        "mean": 0.36,
+        "ci95": [
+          0.30666666666666664,
+          0.41333333333333333
+        ]
+      },
+      "discounted_return": {
+        "mean": 0.020950118882812525,
+        "ci95": [
+          0.009311163947916678,
+          0.034916864804687545
+        ]
+      },
+      "undiscounted_return": {
+        "mean": 0.03,
+        "ci95": [
+          0.013333333333333334,
+          0.05
+        ]
+      },
+      "absorbed": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "lower_route": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "reached_y_below_2": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "shortcut": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "stuck_other": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "first_departure_1_2": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "first_departure_2_3": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "hazard_landings": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "E0_a1_minus_E0_a2": {
+      "reach": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "strict_success": {
+        "mean": 0.01,
+        "ci95": [
+          -0.0033333333333333335,
+          0.02666666666666667
+        ]
+      },
+      "discounted_return": {
+        "mean": 0.006983372960937508,
+        "ci95": [
+          -0.0023277909869791696,
+          0.016294536908854185
+        ]
+      },
+      "undiscounted_return": {
+        "mean": 0.01,
+        "ci95": [
+          -0.0033333333333333335,
+          0.023333333333333334
+        ]
+      },
+      "absorbed": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "lower_route": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "reached_y_below_2": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "shortcut": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "stuck_other": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "first_departure_1_2": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "first_departure_2_3": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "hazard_landings": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      }
+    }
+  }
+}
