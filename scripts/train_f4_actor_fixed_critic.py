@@ -4,7 +4,9 @@ Take the critic (q_params) of an existing query-coverage checkpoint, freeze
 it, and train a NEW actor from a fresh initialization with the unchanged
 actor objective of the sealed recipe -- (1 - 0.05) * critic term + 0.05 * BC
 NLL, random_goals 0.5, alpha 0, tanh-normal policy -- on the same C replay,
-same 30k x 10 update budget, Adam 3e-4.  The batch order, the actor
+30k iterations x 10 = 300k actor updates (NOTE: ten times the sealed joint
+recipe, whose max_number_of_steps 30000 amounts to 30k updates), Adam 3e-4.
+The batch order, the actor
 initialization and the reparameterization keys depend only on --actor-seed,
 so the same actor seed sees byte-identical inputs under different critics.
 No environment step is taken during training; the saved checkpoint carries

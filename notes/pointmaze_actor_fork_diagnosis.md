@@ -14,6 +14,21 @@ checkpoints (`outputs/pointmaze_ett_query_coverage_20260915_v1`, arm C):
   and budget. [`scripts/train_f4_actor_fixed_critic.py`](../scripts/train_f4_actor_fixed_critic.py),
   outputs in `outputs/pointmaze_fixed_critic_actor_v1/`.
 
+**Budget note (added with Step 9).** The sealed joint recipe runs
+`max_number_of_steps` 30000 with 50 updates per 50-step iteration, i.e.
+30,000 gradient updates for critic and actor (the D-arm checkpoint's Adam
+count is 30,000). `train_f4_actor_fixed_critic.py` runs 30,000 iterations
+x 10 = 300,000 actor updates. Earlier text in this file called both
+"30k x 10"; the figures have been corrected in place. Steps 2-8 are
+internally consistent (all 300k), but their actors received ten times the
+sealed actor budget, which is why Step 9 runs the joint training at both.
+
+**RNG note (Step 8).** The Step 8 runs called the sampler's law check on the
+training buffer before training, which advanced the buffer's stream by 200k
+draws, so their critic-term batch order was not byte-identical to Step 7's
+(the `independent` control, which shares that shift, reproduces Step 7 and
+carries the comparison). `crl/bc_balanced.py` now restores the RNG state.
+
 The seed-1 C checkpoint (the 100% seed) is not on disk: only a truncated B
 copy and the JSONs came back from the remote node, which no longer exists.
 The successful seed used here is therefore seed 0 (mode success 0.845, lower
@@ -94,7 +109,8 @@ atanh(1 - 1e-6) ~ 7.25 in pre-tanh space; the replay has many such actions
 ## Step 2
 
 Fixed critic, fresh actor, three actor seeds per critic; same replay,
-initializations, batch order and 30k x 10 budget; BC 0.05; 200 native
+initializations, batch order and 300k actor updates (30k iterations x 10;
+see the budget note below); BC 0.05; 200 native
 episodes at the sealed reset/action seeds (run on an RTX 4080 node, ~4 min
 per run; the actor-seed index fixes the initialization, the buffer's batch
 order and the reparameterization keys, so actor seed a sees byte-identical
@@ -190,7 +206,8 @@ six diagonal first queries between DOWN and RIGHT -- (0.5,-0.3),
 (0.35,-0.45), (0.65,-0.2), (0.5,-0.5), (0.3,-0.3), (0.7,-0.4) -- are
 generated with the fixed ETT / nominal / continuation actor exactly as arm
 C's queries were; all 3300 paths (reach 0.28, absorbed 0.70) are appended
-to the C replay (9900 episodes). Same CRL loss, bc 0.05, 30k x 10, identical
+to the C replay (9900 episodes). Same CRL loss, bc 0.05, the sealed 30k
+updates, identical
 initialization per seed, 200 native episodes at the sealed seeds. Run on an
 RTX 4080 node.
 
@@ -235,7 +252,7 @@ So the chain has two breaks and the first is now confirmed and closed:
 ## Step 4: fixed D critics, fresh actors, actor-only training
 
 Each of the three repaired D critics frozen; three fresh actors per critic;
-D replay; the unchanged actor loss, bc 0.05, 30k x 10; 200 native episodes
+D replay; the unchanged actor loss, bc 0.05, 300k actor updates; 200 native episodes
 at the sealed seeds ([`scripts/train_f4_actor_fixed_critic.py`](../scripts/train_f4_actor_fixed_critic.py)
 with `--replay replay_D.npz`; outputs in `outputs/pointmaze_fixed_dcritic_actor_v1/`).
 
@@ -330,7 +347,7 @@ For loc 0 the log-prob of action +1 is -14.1 (clip) vs -2.6 (Acme) at scale
 1, and -278 vs -77 at scale 0.3.
 
 Same protocol as Step 4 for critic D1 (D replay, three fresh actors with
-the same initializations, batch order, Adam and 30k x 10 updates, bc 0.05,
+the same initializations, batch order, Adam and 300k actor updates, bc 0.05,
 scale learned), the only change being the BC log-prob rule:
 
 | log-prob | actor seed | mode reach | mode lower | sample reach | sample lower | mode at roots | pre-tanh |loc| x, y | scale x, y |
@@ -355,7 +372,7 @@ single-Gaussian form on a multimodal action set; neither is separated yet.
 random_goals 0.5 branch (batch doubled, second half with rolled goals) by
 crl/losses.py's random_goals 0 branch (each state with its own relabeled
 future goal only); Acme log-prob, D1 critic, D replay, bc 0.05, the same three
-initializations, batch order, Adam and 30k x 10 updates.
+initializations, batch order, Adam and 300k actor updates.
 
 | arm | seed | mode reach | mode lower | sample reach | sample lower | mode at roots |
 |---|---|---:|---:|---:|---:|---|
@@ -390,8 +407,8 @@ own had never been balanced.
 `train_f4_actor_fixed_critic.py --bc-sampling balanced` (class
 `GroupBalancedBCSampler`) keeps everything of Step 7 -- D1 critic frozen, D
 replay, Acme log-prob, random_goals 0, bc 0.05, the same three
-initializations, the same critic-term batches (the buffer's RNG stream is
-untouched) and 30k x 10 updates -- and draws the BC term's 256 rows per update
+initializations, the same critic-term batch stream up to the law-check shift
+described in the RNG note above, and 300k actor updates -- and draws the BC term's 256 rows per update
 from a second stream instead:
 
 * every (episode, anchor i, future j) triple of the replay is enumerated with
