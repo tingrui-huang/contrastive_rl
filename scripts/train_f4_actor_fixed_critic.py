@@ -92,6 +92,13 @@ def main(argv=None):
                        "port's historical rule (clip to 1-1e-6, density at "
                        "atanh), 'acme' = dm-acme 0.4.0's boundary-band rule "
                        "used by the original contrastive_rl actor")
+  ap.add_argument('--random-goals', type=float, choices=(0.0, 0.5, 1.0),
+                  default=0.5,
+                  help="actor goal pairing, as crl/losses.py actor_loss: 0.5 = "
+                       "the sealed recipe (batch doubled, second half with "
+                       "rolled goals); 0.0 = the original offline pairing "
+                       "(each state with its own relabeled future goal only); "
+                       "1.0 = rolled goals only")
   ap.add_argument('--out', required=True)
   args = ap.parse_args(argv)
 
@@ -120,12 +127,21 @@ def main(argv=None):
   opt_state = optimizer.init(policy_params)
   obs_dim = cfg.obs_dim
 
+  random_goals = float(args.random_goals)
+
   def actor_loss(params, transitions, k):
+    # goal pairing exactly as crl/losses.py actor_loss's three branches
     obs = transitions.observation
     state, goal = obs[:, :obs_dim], obs[:, obs_dim:]
-    new_state = jnp.concatenate([state, state], axis=0)
-    new_goal = jnp.concatenate([goal, jnp.roll(goal, 1, axis=0)], axis=0)
-    orig_action = jnp.concatenate([transitions.action, transitions.action], 0)
+    if random_goals == 0.0:
+      new_state, new_goal, orig_action = state, goal, transitions.action
+    elif random_goals == 0.5:
+      new_state = jnp.concatenate([state, state], axis=0)
+      new_goal = jnp.concatenate([goal, jnp.roll(goal, 1, axis=0)], axis=0)
+      orig_action = jnp.concatenate([transitions.action, transitions.action], 0)
+    else:
+      new_state, new_goal = state, jnp.roll(goal, 1, axis=0)
+      orig_action = transitions.action
     new_obs = jnp.concatenate([new_state, new_goal], axis=1)
     dist = nets.policy_network.apply(params, new_obs)
     action = nets.sample(dist, k)
@@ -166,7 +182,8 @@ def main(argv=None):
   print(f'fixed critic {args.critic} (q sha {tree_sha(q_params)[:12]}) | '
         f'actor seed {args.actor_seed} init sha {tree_sha(policy_params)[:12]} '
         f'| replay {args.replay} sha {fp["sha256"][:12]} | {args.steps} x {G} '
-        f'updates, bc {BC_COEF} | log_prob {args.log_prob}', flush=True)
+        f'updates, bc {BC_COEF} | log_prob {args.log_prob} | random_goals '
+        f'{random_goals:g}', flush=True)
   init_sha = tree_sha(policy_params)
   history = []
   t0 = time.time()
@@ -195,8 +212,8 @@ def main(argv=None):
                'final_policy_sha256': tree_sha(policy_params),
                'replay': args.replay, 'replay_sha256': fp['sha256'],
                'steps': args.steps, 'sgd_steps_per_step': G, 'batch': BATCH,
-               'bc_coef': BC_COEF, 'lr': LR, 'random_goals': 0.5,
-               'log_prob_mode': args.log_prob,
+               'bc_coef': BC_COEF, 'lr': LR,
+               'log_prob_mode': args.log_prob, 'random_goals': random_goals,
                'critic_frozen': True, 'env_steps_during_training': 0,
                'wall_seconds': time.time() - t0, 'history': history,
                'jax_devices': [str(d) for d in jax.devices()]}, f, indent=2)

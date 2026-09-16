@@ -348,3 +348,30 @@ Under the plan's own criterion, the boundary implementation difference is
 not the cause of D1's failure. What remains is the conflict between the BC
 term on the data's mixed, x = +1-heavy behaviour and the critic, and the
 single-Gaussian form on a multimodal action set; neither is separated yet.
+
+## Step 7: original offline goal pairing (random_goals 0) on top of Step 6
+
+`train_f4_actor_fixed_critic.py --random-goals 0` replaces the hard-coded
+random_goals 0.5 branch (batch doubled, second half with rolled goals) by
+crl/losses.py's random_goals 0 branch (each state with its own relabeled
+future goal only); Acme log-prob, D1 critic, D replay, bc 0.05, the same three
+initializations, batch order, Adam and 30k x 10 updates.
+
+| arm | seed | mode reach | mode lower | sample reach | sample lower | mode at roots |
+|---|---|---:|---:|---:|---:|---|
+| acme, rg 0.5 (Step 6) | 0/1/2 | 0.305 x3 | 0.000 x3 | 0.345 / 0.355 / 0.345 | 0.085 / 0.080 / 0.095 | (+1.00, -0.20 / -0.19 / -0.09) |
+| acme, rg 0 (Step 7) | 0/1/2 | 0.305 x3 | 0.000 x3 | 0.340 / 0.325 / 0.345 | 0.065 / 0.050 / 0.065 | (+1.00, -0.12 / -0.10 / -0.24) |
+
+No improvement. Goal sensitivity ([`scripts/audit_f4_actor_goal_sensitivity.py`](../scripts/audit_f4_actor_goal_sensitivity.py),
+`outputs/pointmaze_actor_goal_sensitivity_v1/`): every fixed-critic actor
+(Steps 4, 6, 7) is strongly goal-conditioned at the fork -- canonical goal
+(8.5, 3.5): (+1.00, -0.1..-0.3); a goal inside the lower corridor (1.5, 1.0):
+(-1.00, -1.00); a goal inside the shortcut corridor: (+1.00, -0.4..-0.6);
+the start cell: (-1.00, +1.00); std 0.6-0.7 per component over 64 replay
+goals. The actor has learned "move towards the goal": with hindsight
+relabeling the data actions are aligned with the direction to the relabeled
+goal, the majority of fork data (shortcut teacher episodes) pairs a rightward
+action with goals to the right, and the single-Gaussian BC averages to that
+side; the detour requires moving against the goal direction at the fork,
+which the BC term penalizes and the correct critic does not overcome at
+0.95. Neither the boundary rule nor the goal pairing changes this.
