@@ -231,3 +231,29 @@ So the chain has two breaks and the first is now confirmed and closed:
    actor side (the BC term on clipped actions / the tanh-normal
    parameterization / the action distribution), not on the critic or the
    ETT.
+
+## Step 4: fixed D critics, fresh actors, actor-only training
+
+Each of the three repaired D critics frozen; three fresh actors per critic;
+D replay; the unchanged actor loss, bc 0.05, 30k x 10; 200 native episodes
+at the sealed seeds ([`scripts/train_f4_actor_fixed_critic.py`](../scripts/train_f4_actor_fixed_critic.py)
+with `--replay replay_D.npz`; outputs in `outputs/pointmaze_fixed_dcritic_actor_v1/`).
+
+| critic | actor seed | mode reach | mode lower | sample reach | sample lower | actor mode at roots | pre-tanh |loc| x, y |
+|---|---|---:|---:|---:|---:|---|---|
+| D0 (argmax -> lower 13/16) | 0 / 1 / 2 | 0.305 / 0.305 / 0.305 | 0.000 | 0.46 / 0.49 / 0.47 | 0.24 / 0.29 / 0.25 | (+1.00, -0.69 / -0.45 / -0.74) | 3.9-4.3, 0.6-1.1 |
+| D1 (argmax (+0.06, -1.00), 16/16) | 0 / 1 / 2 | 0.305 / 0.305 / 0.305 | 0.000 | 0.38 / 0.47 / 0.44 | 0.12 / 0.26 / 0.21 | (+1.00, -0.30 / -0.51 / -0.37) | 4.0-4.7, 0.3-0.8 |
+| D2 (argmax -> lower 13/16) | 0 / 1 / 2 | 0.845 / 0.770 / 0.805 | 0.78 / 0.68 / 0.73 | 0.69 / 0.66 / 0.67 | 0.59 / 0.53 / 0.56 | (+1.00, -1.00) x3 | 3.3-3.8, 4.9-5.5 |
+
+Whether fresh actors take the detour is decided by which critic they are
+trained against, not by the actor seed (within a critic the three actors are
+near-identical). The critic whose best action is exactly DOWN on every root
+(D1) does not bring out the detour at all: its three actors sit at
+(+1.00, -0.3..-0.5) and enter the shortcut. D2's actors succeed only as the
+usual saturated corner (+1.00, -1.00) with y at loc -5, i.e. by winning the
+axis race, not by learning (0, -1). All nine actors saturate x at +1 (loc
+3.3-4.7). Under this loss the actor's fork action is essentially the BC mean
+action plus whatever offset the critic gradient can add before x saturates;
+a correct critic ranking is not sufficient. The remaining break is the actor
+objective -- the BC term's dominance (boundary-clipped replay actions through
+atanh) and tanh saturation -- not the data and not the critic.
