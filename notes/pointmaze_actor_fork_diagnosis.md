@@ -375,3 +375,82 @@ action with goals to the right, and the single-Gaussian BC averages to that
 side; the detour requires moving against the goal direction at the fork,
 which the BC term penalizes and the correct critic does not overcome at
 0.95. Neither the boundary rule nor the goal pairing changes this.
+
+## Step 8: balanced BC rows inside (state, goal) groups
+
+Balanced sampling had been tried twice before on PointMaze and both times on
+*every* term at once: the Aug-29 windy-swamp sweep balanced the shared replay
+over global (state cell, action sector) buckets for critic and actor (commit
+434cb0b; all nine arms a null, 8d3fc0d), and G2c balanced the whole actor
+batch over (cell, landing cell) keys (`outputs/pointmaze_absorbing_balanced_g2c_20260915_v1`;
+retracted because 96 of 134 keys are random-walker keys, so the balanced
+batches were 80% random rows and navigation collapsed). The BC term on its
+own had never been balanced.
+
+`train_f4_actor_fixed_critic.py --bc-sampling balanced` (class
+`GroupBalancedBCSampler`) keeps everything of Step 7 -- D1 critic frozen, D
+replay, Acme log-prob, random_goals 0, bc 0.05, the same three
+initializations, the same critic-term batches (the buffer's RNG stream is
+untouched) and 30k x 10 updates -- and draws the BC term's 256 rows per update
+from a second stream instead:
+
+* every (episode, anchor i, future j) triple of the replay is enumerated with
+  the weight the buffer's variable-length sampler gives it, `1/N * 1/(L_e-1) *
+  gamma^(j-i) / sum_k gamma^k` (12,292,500 triples; a 200k-draw check against
+  the buffer agrees to a max bucket-share deviation of 6e-4);
+* group = (floor cell of the anchor's newest frame, floor cell of the
+  relabeled goal's newest frame), 282 groups; region = the recorded action's
+  angle in 8 sectors rotated half a width (cardinals and diagonals at bin
+  centres) plus a wait bucket for |a| < 0.1, 2,211 non-empty buckets;
+* inside a group a region's share is ceiled at 0.25 and the group is
+  renormalised, so the (state, goal) marginal of the BC rows is exactly the
+  original one (max deviation 1e-12) and only the conditional over action
+  regions is flattened; regions under the ceiling keep their natural relative
+  frequency, which is what keeps the random-walker regions from being
+  amplified (max multiplier 3.25, effective sample size 5.08M -> 4.89M).
+  The cap was fixed at 0.25 after tabulating the fork composition for caps
+  0.2 / 0.25 / 0.33 / 0.5 and strict uniform; only 0.25 was trained.
+
+No action label, no trajectory and no coefficient changes. A control arm
+`--bc-sampling independent` draws the BC rows from the same second stream
+with the original weights, to separate "a separate BC batch" from "a balanced
+BC batch".
+
+At the fork group that the task goal queries, (1,3) -> goal cell (8,3), the
+BC rows change from R 0.55 / D 0.20 / DR 0.17 / other 0.08 to R 0.36 / D 0.29
+/ DR 0.24 / other 0.11; the goal-(2,3), (3,3), (4,3) groups move from R
+0.40-0.54 to 0.32-0.37 with DR at 0.32-0.37.
+
+| arm | seed | mode reach | mode lower | sample reach | sample lower | mode at roots (task goal) | scale | bc_nll |
+|---|---|---:|---:|---:|---:|---|---:|---:|
+| shared BC rows (Step 7) | 0/1/2 | 0.305 x3 | 0.000 x3 | 0.340 / 0.325 / 0.345 | 0.065 / 0.050 / 0.065 | (+1.00, -0.12 / -0.10 / -0.24) | 0.81 / 0.82 / 0.81 | 1.21 / 1.03 / 1.18 |
+| independent BC rows | 0/1/2 | 0.305 x3 | 0.000 x3 | 0.340 / 0.345 / 0.335 | 0.055 / 0.060 / 0.065 | (+1.00, -0.12 / -0.10 / -0.20) | 0.82 / 0.85 / 0.80 | 1.12 / 1.02 / 1.05 |
+| **balanced BC rows** | 0/1/2 | **1.000 x3** | **1.000 x3** | 0.930 / 0.930 / 0.910 | 0.885 / 0.900 / 0.875 | (+0.31, -1.00) / (+0.26, -1.00) / (+0.32, -1.00) | 0.80 / 0.83 / 0.84 | 1.38 / 1.38 / 1.28 |
+
+(`outputs/pointmaze_fixed_dcritic_actor_bcbal_v1/`; 200 paired native
+episodes with the reset and innovation seeds of Steps 4-7.)
+
+All three balanced actors take the lower route on every mode episode and
+reach the goal on every one; with sampled actions they detour 0.875-0.900
+and reach 0.91-0.93 (the residual 10-12% are shortcut samples; 7-9% of
+all episodes end absorbed in the swamp). The independent control reproduces Step 7 to within
+one episode, so the whole effect is the reweighting, not the decoupled batch.
+Under the task goal the mode moves from a saturated +x with a shallow -y to
+a saturated -y with x +0.3 -- "down" through the gap rather than the corner
+race of Step 4 -- while the lower-corridor goal still gives (-1, -1), the
+shortcut-corridor goal (+1, -0.4) and the start (-1, +0.9)
+(`outputs/pointmaze_actor_goal_sensitivity_v1/REPORT.md`): the actor is still
+goal-conditioned, it has stopped averaging to the majority side at the fork.
+Policy scale and |loc| are unchanged (0.80-0.84, 1.6-1.7); the BC NLL is
+higher by 0.25-0.35 because the balanced rows are harder to fit with one
+Gaussian, as expected.
+
+What this does and does not show. With a critic that ranks DOWN first at the
+fork (D1), flattening the BC term's route imbalance at 0.05 is enough for the
+critic term to decide; this is consistent with Step 5, where the narrow DOWN
+peak lost to the broad right plateau by a margin the BC pull supplied. It does
+not show what the balanced BC does with a critic that prefers the shortcut
+(the C / O critics), nor what happens when the critic is trained jointly
+rather than frozen -- the critic batches were deliberately left alone here.
+Those are the two attribution controls to run next; nothing else was changed
+or tuned.
