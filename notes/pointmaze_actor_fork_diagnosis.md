@@ -257,3 +257,46 @@ action plus whatever offset the critic gradient can add before x saturates;
 a correct critic ranking is not sufficient. The remaining break is the actor
 objective -- the BC term's dominance (boundary-clipped replay actions through
 atanh) and tanh saturation -- not the data and not the critic.
+
+## Step 5: D1 vs D2 under the objective the actor actually optimizes
+
+[`scripts/compare_f4_actor_objective.py`](../scripts/compare_f4_actor_objective.py),
+outputs in `outputs/pointmaze_actor_objective_D1_vs_D2/` (landscape figures
+for roots 0, 7, 14). The actor minimizes
+L(loc) = 0.95 E_{a~tanh N(loc,scale)}[-q(s,a)] + 0.05 E_{a_data}[-log pi(a_data|loc,scale)],
+so the relevant critic quantity is Qbar(loc), the sampled-action mean score at
+the policy's own width, and the BC term is evaluated with the exact
+tanh-normal log-prob on the D-replay actions taken within 0.15 of each root.
+
+| critic | raw argmax region (lower/shortcut/other) | Qbar argmax region at the actor's scale | at scale 0.3 | total-objective argmin region | fresh actor mode |
+|---|---|---|---|---|---|
+| D1 | 16/0/0 | **6/10/0** | 16/0/0 | **2/14/0** | (+1.00, -0.30) |
+| D2 | 13/3/0 | 7/9/0 | 16/0/0 | 7/9/0 | (+1.00, -1.00) |
+
+At the fresh actors' loc (mean over roots), d/dloc_y of the critic term is
+-0.035 (down) for D1 and +0.027 (up) for D2, of the BC term +0.027 (up) for
+D1 and -0.039 (down) for D2; the totals are ~0. Both actors sit at the
+minimum of their own objective: D1's at the right plateau (+1, -0.3..-0.5),
+D2's at the corner (+1, -1) -- neither at DOWN.
+
+Mechanism (scale table in the REPORT): 13% of the x components and 4% of the
+y components of the replay actions near the fork are boundary-clipped
+(atanh ~ +/-7.25), so the BC NLL is 97-170 nats at scale 0.3 and only ~1-2 at
+scale 1.5-2 -- the BC term alone forces the wide policy. With that width,
+D1's narrow DOWN peak (the x ~ 0 column of the action square) averages to
+only ~0.07 above the broad right plateau, worth 0.07 in the objective, while
+BC still charges the DOWN loc ~3 nats more than an x ~ +4 loc (0.15 in the
+objective) because 13% of the data x's are +1. The objective therefore
+prefers the plateau, i.e. the shortcut. D2's critic puts its high region in
+the bottom-right corner, where BC's x = +1 preference is also satisfied, so
+both terms agree and the actor saturates at (+1, -1); its detours come from
+the axis race, not from choosing (0, -1). At a sharp scale (0.3) both
+critics' Qbar argmax would be the lower route on 16/16 roots.
+
+Chain summary: the coverage fix made the critic's argmax DOWN, but under
+BC-on-clipped-actions the policy is wide and x-biased to +1, and a narrow
+DOWN optimum cannot win the sampled-average objective against a broad
+plateau; only a critic that happens to score the whole bottom-right high
+(D2) produces a detour actor, and only via saturation. The actor-side lever
+is the BC term's treatment of boundary-clipped actions and the resulting
+scale, not the loss weights.
