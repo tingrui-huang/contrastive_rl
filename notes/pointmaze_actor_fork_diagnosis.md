@@ -471,3 +471,102 @@ not show what the balanced BC does with a critic that prefers the shortcut
 rather than frozen -- the critic batches were deliberately left alone here.
 Those are the two attribution controls to run next; nothing else was changed
 or tuned.
+
+## Step 9: attribution on the C critics, joint training, new evaluation seeds
+
+Driver [`scripts/run_f4_balanced_bc_joint.py`](../scripts/run_f4_balanced_bc_joint.py);
+the balancing rule is now a learner option (`crl/bc_balanced.py`,
+`Config.bc_sampling`, `Config.log_prob_mode`); outputs in
+`outputs/pointmaze_balanced_bc_joint_v1/` (REPORT.md, results.json,
+failure_audit/). Everything below uses Acme log-prob, random_goals 0, bc
+0.05, the D replay and cap 0.25. "New" = 300 paired native episodes on reset
+seeds from 31.5M / innovation seeds from 31.6M, never used before; "sealed" =
+the 200-episode protocol of Steps 4-8. All runs on one RTX 5060 Ti node
+(a first attempt with six parallel processes exceeded the pod's 15 GB and
+restarted it; everything was redone with three).
+
+### 9a. Attribution: the same balanced BC rows on the sealed C critics
+
+Fixed critic, three fresh actors, 300k actor updates -- Step 8 with the
+critic swapped.
+
+| critic | mode lower, new (seeds 0/1/2) | mode reach, new | sample lower, new | mode lower, sealed |
+|---|---|---|---|---|
+| C seed 2 (the failed sealed seed) | 0.000 / 0.000 / 0.000 | 0.363 x3 | 0.42 / 0.40 / 0.40 | 0.000 x3 |
+| C seed 0 | 0.223 / 0.000 / 0.263 | 0.50 / 0.36 / 0.52 | 0.45 / 0.36 / 0.42 | 0.25 / 0.00 / 0.30 |
+| D1 (Step 8) | -- | -- | -- | 1.000 x3 |
+
+The balanced BC rows do not turn a shortcut-preferring critic into a detour
+actor. The gain of Step 8 depends on the repaired critic; the balancing only
+removes the BC pull that a correct critic could not overcome.
+
+### 9b. Joint training: critic and actor together, shared vs balanced BC rows
+
+`crl.train` on the D replay, NCE critic unchanged, actor's critic term on the
+buffer batch, BC term on its own rows (`bc_sampling` shared / balanced),
+three training seeds, sealed budget (30k updates) and 10x (300k). Because
+the NCE critic does not depend on the actor, the two arms' critics are the
+same training up to GPU floating-point non-determinism; only the actor
+differs.
+
+| budget | arm | mode lower, new (seeds 0/1/2) | sample lower, new | critic on the 16 roots: DOWN-RIGHT, roots down, argmax -> shortcut/lower |
+|---|---|---|---|---|
+| 30k | shared | 0.000 / 0.000 / 1.000 | 0.16 / 0.09 / 0.74 | +0.20 13/16 3/13; +0.25 16/16 2/14; +0.17 16/16 0/16 |
+| 30k | balanced | 0.000 / 0.000 / 0.377 | 0.27 / 0.14 / 0.60 | +0.28 16/16 0/16; +0.25 16/16 2/14; +0.17 16/16 0/16 |
+| 300k | shared | 0.000 / 0.000 / 0.000 | 0.15 / 0.03 / 0.10 | +0.89 16/16 0/16; +1.07 16/16 1/15; +0.64 15/16 3/13 |
+| 300k | balanced | 0.000 / 0.000 / 0.000 | 0.05 / 0.06 / 0.07 | +0.70 16/16 0/16; +0.76 16/16 0/16; +1.06 16/16 0/16 |
+
+Sealed-seed numbers are the same (0.305 / 0.000 everywhere except 30k seed
+2). Joint training does not produce a stable detour at either budget, with
+or without the balanced rows, although every 300k critic ranks DOWN first on
+the roots by a wider margin than D1.
+
+The seed-1 30k critic is the same training as D1 (same replay, seed, batch
+stream) and on the RTX 4080 it ranked DOWN 16/16 with +0.36; on this node
+it is 16/16 with +0.25 and its argmax leads to the shortcut on 2 roots. The
+fork ranking of a 30k critic is sensitive to floating-point differences
+between GPUs.
+
+### 9c. Where the joint runs fail: the actor, not (only) the critic
+
+Freezing the jointly trained critics and training fresh balanced-BC actors on
+them (the Step 8 procedure; `refreeze/`):
+
+| frozen critic | mode lower, new (3 fresh actors) | mode reach, new | sample lower, new | mode lower, sealed |
+|---|---|---|---|---|
+| joint 30k balanced seed 0 (its own joint actor: 0.000) | **1.000 / 1.000 / 1.000** | 1.000 x3 | 0.87 / 0.84 / 0.89 | 1.000 x3 |
+| joint 300k balanced seed 0 (its own joint actor: 0.000) | 0.000 / 0.000 / 0.000 | 0.363 x3 | 0.02 / 0.05 / 0.06 | 0.000 x3 |
+
+So the sealed-budget critic is usable: with the actor started fresh against
+the finished critic it detours on every mode episode of the new seeds, as
+D1 did in Step 8. Trained jointly, the same critic's actor never detours.
+`failure_audit/REPORT.md` shows why: at the fork the joint actors sit at
+pre-tanh loc x = +1.8..+5.2 (mode x = 0.94..1.00, tanh slope 0.000-0.11)
+while their critics score DOWN 0.2-0.8 above the actor's own mode -- the
+actor committed to RIGHT while the critic was still immature (BC majority
+plus a noisy critic term) and a saturated tanh cannot be pulled back. The
+two-stage actors rest at (+0.2..+0.4, -1.00) with slope ~0.9 in x.
+
+The 300k critic is different: it fails even frozen, its fresh actors settle
+at (+1.00, +0.2..+0.3). Its fork-root ranking is the strongest of all, so
+the 16-root metric does not capture what makes a critic usable. A crude
+look along the approach path (Qbar(DOWN) - Qbar(RIGHT) at policy width over
+x 0.5-1.45, y 3.2-3.8, moving and still; `failure_audit` part B) does not
+separate the cases either: D1 prefers DOWN in 13/30 cells, the working 30k
+seed-0 critic in 3/30, the failing 300k one in 1/30, C seed 2 in 1/30. What
+property of the 300k critic blocks the actor is open.
+
+### What Step 9 establishes
+
+1. The balanced BC rows need a critic that already prefers the detour
+   (9a) -- they are not a substitute for the critic repair.
+2. With such a critic frozen and the actor trained fresh, the detour is
+   stable on new evaluation seeds: 6 of 6 actors on two different 30k critics
+   (D1 on the 4080, joint seed 0 on the 5060 Ti) at mode 1.000, sample
+   0.84-0.90, on 300 unseen resets each.
+3. Training critic and actor together does not work at either budget: the
+   actor saturates towards the shortcut before the critic is ready (30k), and
+   at 300k the critic itself stops being usable for the actor for a reason
+   not yet identified.
+4. The fork ranking of a 30k critic on 16 roots is not reproducible across
+   GPUs and is not sufficient as a usability criterion.
