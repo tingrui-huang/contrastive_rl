@@ -1,0 +1,3652 @@
+{
+  "reps": 64,
+  "continuation_actor": "artifacts\\f4_p30_server_30076\\results\\runs\\f4_p30_sweep\\p30_a0_a01_a03_s0_s1\\alpha0_seed0\\final.pkl",
+  "critics": {
+    "0": "outputs\\pointmaze_ett_query_coverage_20260915_v1\\crl\\C\\final.pkl",
+    "2": "outputs\\pointmaze_ett_query_coverage_20260915_v1\\cross_seeds\\seed_2\\crl\\C\\final.pkl"
+  },
+  "actions": [
+    "down",
+    "right",
+    "actor_s0",
+    "actor_s2",
+    "argmax_s0",
+    "argmax_s2"
+  ],
+  "summary": {
+    "down": {
+      "mean_action": [
+        0.0,
+        -1.0
+      ],
+      "q_s0_mean": -6.348106116056442,
+      "q_s2_mean": -6.040704071521759,
+      "q_s0_rank_mean": 4.9375,
+      "q_s2_rank_mean": 2.9375,
+      "native": {
+        "reach": 0.9501953125,
+        "strict_success": 0.943359375,
+        "discounted_return": 9.911671527562177,
+        "lower": 1.0,
+        "shortcut": 0.0,
+        "absorbed": 0.041015625
+      },
+      "ett": {
+        "reach": 0.8251953125,
+        "strict_success": 0.8134765625,
+        "discounted_return": 7.302569343399617,
+        "lower": 1.0,
+        "shortcut": 0.0,
+        "absorbed": 0.1298828125
+      },
+      "replay": {
+        "transitions": 1182.125,
+        "synthetic_first_step_queries": 1089.5625,
+        "synthetic_later_steps": 20.375,
+        "original_transitions": 72.1875
+      },
+      "replay_episode_reach_fraction": 0.8126111840645907
+    },
+    "right": {
+      "mean_action": [
+        1.0,
+        0.0
+      ],
+      "q_s0_mean": -6.248823553323746,
+      "q_s2_mean": -6.2456991374492645,
+      "q_s0_rank_mean": 4.0625,
+      "q_s2_rank_mean": 4.1875,
+      "native": {
+        "reach": 0.3046875,
+        "strict_success": 0.30078125,
+        "discounted_return": 3.538696903741084,
+        "lower": 0.0556640625,
+        "shortcut": 0.9443359375,
+        "absorbed": 0.69921875
+      },
+      "ett": {
+        "reach": 0.2666015625,
+        "strict_success": 0.26171875,
+        "discounted_return": 3.247084037724445,
+        "lower": 0.0400390625,
+        "shortcut": 0.8662109375,
+        "absorbed": 0.73828125
+      },
+      "replay": {
+        "transitions": 2564.1875,
+        "synthetic_first_step_queries": 1089.5625,
+        "synthetic_later_steps": 205.3125,
+        "original_transitions": 1269.3125
+      },
+      "replay_episode_reach_fraction": 0.5546904600527964
+    },
+    "actor_s0": {
+      "mean_action": [
+        0.9966239929199219,
+        -0.975468099117279
+      ],
+      "q_s0_mean": -6.3649609088897705,
+      "q_s2_mean": -6.629086285829544,
+      "q_s0_rank_mean": 5.625,
+      "q_s2_rank_mean": 6.0,
+      "native": {
+        "reach": 0.5888671875,
+        "strict_success": 0.580078125,
+        "discounted_return": 6.289832540958374,
+        "lower": 0.4990234375,
+        "shortcut": 0.5009765625,
+        "absorbed": 0.41015625
+      },
+      "ett": {
+        "reach": 0.23828125,
+        "strict_success": 0.2353515625,
+        "discounted_return": 2.3424843709874343,
+        "lower": 0.1572265625,
+        "shortcut": 0.6298828125,
+        "absorbed": 0.7568359375
+      },
+      "replay": {
+        "transitions": 37.0,
+        "synthetic_first_step_queries": 0.0,
+        "synthetic_later_steps": 23.75,
+        "original_transitions": 13.25
+      },
+      "replay_episode_reach_fraction": 0.12072451711945931
+    },
+    "actor_s2": {
+      "mean_action": [
+        0.9999193549156189,
+        -0.7239922881126404
+      ],
+      "q_s0_mean": -6.137036710977554,
+      "q_s2_mean": -6.366905599832535,
+      "q_s0_rank_mean": 3.375,
+      "q_s2_rank_mean": 4.8125,
+      "native": {
+        "reach": 0.5078125,
+        "strict_success": 0.5009765625,
+        "discounted_return": 5.638247465355191,
+        "lower": 0.384765625,
+        "shortcut": 0.615234375,
+        "absorbed": 0.4931640625
+      },
+      "ett": {
+        "reach": 0.2509765625,
+        "strict_success": 0.24609375,
+        "discounted_return": 2.6409462891440283,
+        "lower": 0.134765625,
+        "shortcut": 0.69140625,
+        "absorbed": 0.7421875
+      },
+      "replay": {
+        "transitions": 109.0625,
+        "synthetic_first_step_queries": 0.0,
+        "synthetic_later_steps": 71.5,
+        "original_transitions": 37.5625
+      },
+      "replay_episode_reach_fraction": 0.27025540220955213
+    },
+    "argmax_s0": {
+      "mean_action": [
+        0.518750011920929,
+        -0.3229166865348816
+      ],
+      "q_s0_mean": -5.998103708028793,
+      "q_s2_mean": -5.81934729218483,
+      "q_s0_rank_mean": 1.0,
+      "q_s2_rank_mean": 2.0625,
+      "native": {
+        "reach": 0.4931640625,
+        "strict_success": 0.4892578125,
+        "discounted_return": 4.8662271444577945,
+        "lower": 0.46875,
+        "shortcut": 0.53125,
+        "absorbed": 0.5068359375
+      },
+      "ett": {
+        "reach": 0.3193359375,
+        "strict_success": 0.306640625,
+        "discounted_return": 2.9476056762910297,
+        "lower": 0.2607421875,
+        "shortcut": 0.58984375,
+        "absorbed": 0.6728515625
+      },
+      "replay": {
+        "transitions": 194.0625,
+        "synthetic_first_step_queries": 0.0,
+        "synthetic_later_steps": 57.1875,
+        "original_transitions": 136.875
+      },
+      "replay_episode_reach_fraction": 0.2834646384930827
+    },
+    "argmax_s2": {
+      "mean_action": [
+        0.48750001192092896,
+        -0.32083335518836975
+      ],
+      "q_s0_mean": -6.029217928647995,
+      "q_s2_mean": -5.646351844072342,
+      "q_s0_rank_mean": 2.0,
+      "q_s2_rank_mean": 1.0,
+      "native": {
+        "reach": 0.4111328125,
+        "strict_success": 0.40625,
+        "discounted_return": 4.141031098907596,
+        "lower": 0.34765625,
+        "shortcut": 0.65234375,
+        "absorbed": 0.5859375
+      },
+      "ett": {
+        "reach": 0.283203125,
+        "strict_success": 0.275390625,
+        "discounted_return": 2.8559431388025787,
+        "lower": 0.306640625,
+        "shortcut": 0.56640625,
+        "absorbed": 0.703125
+      },
+      "replay": {
+        "transitions": 104.6875,
+        "synthetic_first_step_queries": 0.0,
+        "synthetic_later_steps": 46.25,
+        "original_transitions": 58.4375
+      },
+      "replay_episode_reach_fraction": 0.23547903449244956
+    }
+  },
+  "comparisons": {
+    "native:reach:argmax_s2_vs_down": {
+      "mean_diff": -0.5390625,
+      "roots_a_better": 0,
+      "roots_b_better": 16
+    },
+    "native:reach:argmax_s0_vs_down": {
+      "mean_diff": -0.45703125,
+      "roots_a_better": 0,
+      "roots_b_better": 16
+    },
+    "native:reach:actor_s2_vs_actor_s0": {
+      "mean_diff": -0.0810546875,
+      "roots_a_better": 1,
+      "roots_b_better": 6
+    },
+    "native:discounted_return:argmax_s2_vs_down": {
+      "mean_diff": -5.770640428654582,
+      "roots_a_better": 0,
+      "roots_b_better": 16
+    },
+    "native:discounted_return:argmax_s0_vs_down": {
+      "mean_diff": -5.045444383104384,
+      "roots_a_better": 0,
+      "roots_b_better": 16
+    },
+    "native:discounted_return:actor_s2_vs_actor_s0": {
+      "mean_diff": -0.6515850756031826,
+      "roots_a_better": 10,
+      "roots_b_better": 5
+    },
+    "native:lower:argmax_s2_vs_down": {
+      "mean_diff": -0.65234375,
+      "roots_a_better": 0,
+      "roots_b_better": 14
+    },
+    "native:lower:argmax_s0_vs_down": {
+      "mean_diff": -0.53125,
+      "roots_a_better": 0,
+      "roots_b_better": 15
+    },
+    "native:lower:actor_s2_vs_actor_s0": {
+      "mean_diff": -0.1142578125,
+      "roots_a_better": 3,
+      "roots_b_better": 5
+    },
+    "native:absorbed:argmax_s2_vs_down": {
+      "mean_diff": 0.544921875,
+      "roots_a_better": 16,
+      "roots_b_better": 0
+    },
+    "native:absorbed:argmax_s0_vs_down": {
+      "mean_diff": 0.4658203125,
+      "roots_a_better": 16,
+      "roots_b_better": 0
+    },
+    "native:absorbed:actor_s2_vs_actor_s0": {
+      "mean_diff": 0.0830078125,
+      "roots_a_better": 7,
+      "roots_b_better": 1
+    },
+    "ett:reach:argmax_s2_vs_down": {
+      "mean_diff": -0.5419921875,
+      "roots_a_better": 0,
+      "roots_b_better": 16
+    },
+    "ett:reach:argmax_s0_vs_down": {
+      "mean_diff": -0.505859375,
+      "roots_a_better": 0,
+      "roots_b_better": 16
+    },
+    "ett:reach:actor_s2_vs_actor_s0": {
+      "mean_diff": 0.0126953125,
+      "roots_a_better": 9,
+      "roots_b_better": 5
+    },
+    "ett:discounted_return:argmax_s2_vs_down": {
+      "mean_diff": -4.446626204597039,
+      "roots_a_better": 0,
+      "roots_b_better": 16
+    },
+    "ett:discounted_return:argmax_s0_vs_down": {
+      "mean_diff": -4.354963667108588,
+      "roots_a_better": 0,
+      "roots_b_better": 16
+    },
+    "ett:discounted_return:actor_s2_vs_actor_s0": {
+      "mean_diff": 0.2984619181565936,
+      "roots_a_better": 9,
+      "roots_b_better": 7
+    },
+    "ett:lower:argmax_s2_vs_down": {
+      "mean_diff": -0.693359375,
+      "roots_a_better": 0,
+      "roots_b_better": 15
+    },
+    "ett:lower:argmax_s0_vs_down": {
+      "mean_diff": -0.7392578125,
+      "roots_a_better": 0,
+      "roots_b_better": 16
+    },
+    "ett:lower:actor_s2_vs_actor_s0": {
+      "mean_diff": -0.0224609375,
+      "roots_a_better": 2,
+      "roots_b_better": 8
+    },
+    "ett:absorbed:argmax_s2_vs_down": {
+      "mean_diff": 0.5732421875,
+      "roots_a_better": 16,
+      "roots_b_better": 0
+    },
+    "ett:absorbed:argmax_s0_vs_down": {
+      "mean_diff": 0.54296875,
+      "roots_a_better": 16,
+      "roots_b_better": 0
+    },
+    "ett:absorbed:actor_s2_vs_actor_s0": {
+      "mean_diff": -0.0146484375,
+      "roots_a_better": 6,
+      "roots_b_better": 9
+    }
+  },
+  "per_root": [
+    {
+      "root": 0,
+      "xy": [
+        1.4964648886053573,
+        3.3276047442580516
+      ],
+      "actions": {
+        "down": {
+          "action": [
+            0.0,
+            -1.0
+          ],
+          "q_s0": -6.328803062438965,
+          "q_s2": -5.944583892822266,
+          "native": {
+            "reach": 0.96875,
+            "strict_success": 0.953125,
+            "discounted_return": 10.014612488284808,
+            "absorbed": 0.015625,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.78125,
+            "strict_success": 0.765625,
+            "discounted_return": 7.003430093236371,
+            "absorbed": 0.15625,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "replay": {
+            "transitions": 1299,
+            "synthetic_first_step_queries": 1218,
+            "synthetic_later_steps": 12,
+            "original_transitions": 69,
+            "episodes": 1297,
+            "episode_reach_fraction": 0.8188126445643793,
+            "episode_absorbed_fraction": 0.15959907478797225
+          }
+        },
+        "right": {
+          "action": [
+            1.0,
+            0.0
+          ],
+          "q_s0": -6.155527591705322,
+          "q_s2": -6.15013313293457,
+          "native": {
+            "reach": 0.359375,
+            "strict_success": 0.359375,
+            "discounted_return": 4.341160830170411,
+            "absorbed": 0.640625,
+            "lower": 0.046875,
+            "shortcut": 0.953125
+          },
+          "ett": {
+            "reach": 0.203125,
+            "strict_success": 0.203125,
+            "discounted_return": 2.6235891148079635,
+            "absorbed": 0.796875,
+            "lower": 0.015625,
+            "shortcut": 0.875
+          },
+          "replay": {
+            "transitions": 2851,
+            "synthetic_first_step_queries": 1218,
+            "synthetic_later_steps": 198,
+            "original_transitions": 1435,
+            "episodes": 2708,
+            "episode_reach_fraction": 0.5627769571639586,
+            "episode_absorbed_fraction": 0.353397341211226
+          }
+        },
+        "actor_s0": {
+          "action": [
+            0.9953921437263489,
+            -0.9923628568649292
+          ],
+          "q_s0": -6.362988471984863,
+          "q_s2": -6.662710666656494,
+          "native": {
+            "reach": 0.96875,
+            "strict_success": 0.9375,
+            "discounted_return": 9.952741194399199,
+            "absorbed": 0.03125,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.25,
+            "strict_success": 0.25,
+            "discounted_return": 2.4179328070386576,
+            "absorbed": 0.75,
+            "lower": 0.21875,
+            "shortcut": 0.65625
+          },
+          "replay": {
+            "transitions": 25,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 16,
+            "original_transitions": 9,
+            "episodes": 23,
+            "episode_reach_fraction": 0.17391304347826086,
+            "episode_absorbed_fraction": 0.4782608695652174
+          }
+        },
+        "actor_s2": {
+          "action": [
+            0.999919056892395,
+            -0.7476743459701538
+          ],
+          "q_s0": -6.162771224975586,
+          "q_s2": -6.404045104980469,
+          "native": {
+            "reach": 0.9375,
+            "strict_success": 0.9375,
+            "discounted_return": 10.242845899365811,
+            "absorbed": 0.0625,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.25,
+            "strict_success": 0.25,
+            "discounted_return": 2.393681147088941,
+            "absorbed": 0.71875,
+            "lower": 0.1875,
+            "shortcut": 0.671875
+          },
+          "replay": {
+            "transitions": 73,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 55,
+            "original_transitions": 18,
+            "episodes": 55,
+            "episode_reach_fraction": 0.2,
+            "episode_absorbed_fraction": 0.5272727272727272
+          }
+        },
+        "argmax_s0": {
+          "action": [
+            0.30000001192092896,
+            -0.30000001192092896
+          ],
+          "q_s0": -6.002226829528809,
+          "q_s2": -5.780449867248535,
+          "native": {
+            "reach": 0.703125,
+            "strict_success": 0.703125,
+            "discounted_return": 6.69597181360649,
+            "absorbed": 0.28125,
+            "lower": 0.875,
+            "shortcut": 0.125
+          },
+          "ett": {
+            "reach": 0.34375,
+            "strict_success": 0.34375,
+            "discounted_return": 2.9461550939884944,
+            "absorbed": 0.640625,
+            "lower": 0.5,
+            "shortcut": 0.265625
+          },
+          "replay": {
+            "transitions": 57,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 27,
+            "original_transitions": 30,
+            "episodes": 51,
+            "episode_reach_fraction": 0.09803921568627451,
+            "episode_absorbed_fraction": 0.3137254901960784
+          }
+        },
+        "argmax_s2": {
+          "action": [
+            0.46666666865348816,
+            -0.30000001192092896
+          ],
+          "q_s0": -6.013760566711426,
+          "q_s2": -5.619007110595703,
+          "native": {
+            "reach": 0.453125,
+            "strict_success": 0.453125,
+            "discounted_return": 4.337566316629621,
+            "absorbed": 0.546875,
+            "lower": 0.4375,
+            "shortcut": 0.5625
+          },
+          "ett": {
+            "reach": 0.328125,
+            "strict_success": 0.328125,
+            "discounted_return": 2.9422047786012326,
+            "absorbed": 0.640625,
+            "lower": 0.34375,
+            "shortcut": 0.484375
+          },
+          "replay": {
+            "transitions": 92,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 40,
+            "original_transitions": 52,
+            "episodes": 78,
+            "episode_reach_fraction": 0.16666666666666666,
+            "episode_absorbed_fraction": 0.2948717948717949
+          }
+        }
+      }
+    },
+    {
+      "root": 1,
+      "xy": [
+        1.4971259518151188,
+        3.3383917568179546
+      ],
+      "actions": {
+        "down": {
+          "action": [
+            0.0,
+            -1.0
+          ],
+          "q_s0": -6.324007987976074,
+          "q_s2": -5.945430278778076,
+          "native": {
+            "reach": 0.9375,
+            "strict_success": 0.9375,
+            "discounted_return": 9.918882974921178,
+            "absorbed": 0.046875,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.84375,
+            "strict_success": 0.828125,
+            "discounted_return": 7.5080799481202565,
+            "absorbed": 0.09375,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "replay": {
+            "transitions": 1321,
+            "synthetic_first_step_queries": 1239,
+            "synthetic_later_steps": 11,
+            "original_transitions": 71,
+            "episodes": 1319,
+            "episode_reach_fraction": 0.8180439727065959,
+            "episode_absorbed_fraction": 0.1607278241091736
+          }
+        },
+        "right": {
+          "action": [
+            1.0,
+            0.0
+          ],
+          "q_s0": -6.146142959594727,
+          "q_s2": -6.151455879211426,
+          "native": {
+            "reach": 0.34375,
+            "strict_success": 0.34375,
+            "discounted_return": 4.162298236595694,
+            "absorbed": 0.65625,
+            "lower": 0.046875,
+            "shortcut": 0.953125
+          },
+          "ett": {
+            "reach": 0.3125,
+            "strict_success": 0.3125,
+            "discounted_return": 3.897972591968801,
+            "absorbed": 0.6875,
+            "lower": 0.015625,
+            "shortcut": 0.875
+          },
+          "replay": {
+            "transitions": 2909,
+            "synthetic_first_step_queries": 1239,
+            "synthetic_later_steps": 202,
+            "original_transitions": 1468,
+            "episodes": 2765,
+            "episode_reach_fraction": 0.5649186256781193,
+            "episode_absorbed_fraction": 0.3515370705244123
+          }
+        },
+        "actor_s0": {
+          "action": [
+            0.9955682158470154,
+            -0.9920225143432617
+          ],
+          "q_s0": -6.357784271240234,
+          "q_s2": -6.66031551361084,
+          "native": {
+            "reach": 0.9375,
+            "strict_success": 0.9375,
+            "discounted_return": 9.875417310648437,
+            "absorbed": 0.046875,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.328125,
+            "strict_success": 0.3125,
+            "discounted_return": 3.233833462827066,
+            "absorbed": 0.65625,
+            "lower": 0.1875,
+            "shortcut": 0.625
+          },
+          "replay": {
+            "transitions": 26,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 16,
+            "original_transitions": 10,
+            "episodes": 24,
+            "episode_reach_fraction": 0.16666666666666666,
+            "episode_absorbed_fraction": 0.4583333333333333
+          }
+        },
+        "actor_s2": {
+          "action": [
+            0.9999189376831055,
+            -0.7456474304199219
+          ],
+          "q_s0": -6.152939796447754,
+          "q_s2": -6.400662422180176,
+          "native": {
+            "reach": 0.921875,
+            "strict_success": 0.921875,
+            "discounted_return": 10.187248092132704,
+            "absorbed": 0.078125,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.171875,
+            "strict_success": 0.171875,
+            "discounted_return": 1.9324686029397806,
+            "absorbed": 0.796875,
+            "lower": 0.140625,
+            "shortcut": 0.6875
+          },
+          "replay": {
+            "transitions": 76,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 56,
+            "original_transitions": 20,
+            "episodes": 58,
+            "episode_reach_fraction": 0.1896551724137931,
+            "episode_absorbed_fraction": 0.5172413793103449
+          }
+        },
+        "argmax_s0": {
+          "action": [
+            0.30000001192092896,
+            -0.30000001192092896
+          ],
+          "q_s0": -5.991984844207764,
+          "q_s2": -5.780299186706543,
+          "native": {
+            "reach": 0.6875,
+            "strict_success": 0.6875,
+            "discounted_return": 6.4625727712799375,
+            "absorbed": 0.296875,
+            "lower": 0.875,
+            "shortcut": 0.125
+          },
+          "ett": {
+            "reach": 0.421875,
+            "strict_success": 0.40625,
+            "discounted_return": 3.2489926415440626,
+            "absorbed": 0.578125,
+            "lower": 0.4375,
+            "shortcut": 0.453125
+          },
+          "replay": {
+            "transitions": 56,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 26,
+            "original_transitions": 30,
+            "episodes": 50,
+            "episode_reach_fraction": 0.08,
+            "episode_absorbed_fraction": 0.32
+          }
+        },
+        "argmax_s2": {
+          "action": [
+            0.46666666865348816,
+            -0.30000001192092896
+          ],
+          "q_s0": -6.004862308502197,
+          "q_s2": -5.616843223571777,
+          "native": {
+            "reach": 0.4375,
+            "strict_success": 0.4375,
+            "discounted_return": 4.324537203788398,
+            "absorbed": 0.5625,
+            "lower": 0.390625,
+            "shortcut": 0.609375
+          },
+          "ett": {
+            "reach": 0.3125,
+            "strict_success": 0.3125,
+            "discounted_return": 3.10489333466785,
+            "absorbed": 0.6875,
+            "lower": 0.3125,
+            "shortcut": 0.484375
+          },
+          "replay": {
+            "transitions": 92,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 39,
+            "original_transitions": 53,
+            "episodes": 78,
+            "episode_reach_fraction": 0.16666666666666666,
+            "episode_absorbed_fraction": 0.2948717948717949
+          }
+        }
+      }
+    },
+    {
+      "root": 2,
+      "xy": [
+        1.44463175246277,
+        3.218515558847418
+      ],
+      "actions": {
+        "down": {
+          "action": [
+            0.0,
+            -1.0
+          ],
+          "q_s0": -6.425846099853516,
+          "q_s2": -6.002806186676025,
+          "native": {
+            "reach": 0.96875,
+            "strict_success": 0.953125,
+            "discounted_return": 9.996323744516893,
+            "absorbed": 0.015625,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.8125,
+            "strict_success": 0.8125,
+            "discounted_return": 6.500717271076498,
+            "absorbed": 0.09375,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "replay": {
+            "transitions": 966,
+            "synthetic_first_step_queries": 873,
+            "synthetic_later_steps": 48,
+            "original_transitions": 45,
+            "episodes": 964,
+            "episode_reach_fraction": 0.8049792531120332,
+            "episode_absorbed_fraction": 0.17012448132780084
+          }
+        },
+        "right": {
+          "action": [
+            1.0,
+            0.0
+          ],
+          "q_s0": -6.2509918212890625,
+          "q_s2": -6.098548889160156,
+          "native": {
+            "reach": 0.375,
+            "strict_success": 0.359375,
+            "discounted_return": 4.144967010028029,
+            "absorbed": 0.640625,
+            "lower": 0.0625,
+            "shortcut": 0.9375
+          },
+          "ett": {
+            "reach": 0.171875,
+            "strict_success": 0.171875,
+            "discounted_return": 2.0895252570342535,
+            "absorbed": 0.828125,
+            "lower": 0.046875,
+            "shortcut": 0.796875
+          },
+          "replay": {
+            "transitions": 1902,
+            "synthetic_first_step_queries": 873,
+            "synthetic_later_steps": 103,
+            "original_transitions": 926,
+            "episodes": 1848,
+            "episode_reach_fraction": 0.5384199134199135,
+            "episode_absorbed_fraction": 0.37716450216450215
+          }
+        },
+        "actor_s0": {
+          "action": [
+            0.9935973882675171,
+            -0.9942297339439392
+          ],
+          "q_s0": -6.446348190307617,
+          "q_s2": -6.63874626159668,
+          "native": {
+            "reach": 0.96875,
+            "strict_success": 0.953125,
+            "discounted_return": 9.985753395073527,
+            "absorbed": 0.015625,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.21875,
+            "strict_success": 0.21875,
+            "discounted_return": 2.127197189076082,
+            "absorbed": 0.78125,
+            "lower": 0.265625,
+            "shortcut": 0.53125
+          },
+          "replay": {
+            "transitions": 18,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 12,
+            "original_transitions": 6,
+            "episodes": 17,
+            "episode_reach_fraction": 0.29411764705882354,
+            "episode_absorbed_fraction": 0.35294117647058826
+          }
+        },
+        "actor_s2": {
+          "action": [
+            0.9999277591705322,
+            -0.7445211410522461
+          ],
+          "q_s0": -6.2750139236450195,
+          "q_s2": -6.39320707321167,
+          "native": {
+            "reach": 0.953125,
+            "strict_success": 0.9375,
+            "discounted_return": 10.169000272451898,
+            "absorbed": 0.03125,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.265625,
+            "strict_success": 0.265625,
+            "discounted_return": 2.2866400158860185,
+            "absorbed": 0.734375,
+            "lower": 0.265625,
+            "shortcut": 0.578125
+          },
+          "replay": {
+            "transitions": 57,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 44,
+            "original_transitions": 13,
+            "episodes": 42,
+            "episode_reach_fraction": 0.23809523809523808,
+            "episode_absorbed_fraction": 0.4523809523809524
+          }
+        },
+        "argmax_s0": {
+          "action": [
+            0.7333333492279053,
+            0.10000000149011612
+          ],
+          "q_s0": -6.121269702911377,
+          "q_s2": -5.941258430480957,
+          "native": {
+            "reach": 0.328125,
+            "strict_success": 0.3125,
+            "discounted_return": 3.5246836263929056,
+            "absorbed": 0.6875,
+            "lower": 0.0625,
+            "shortcut": 0.9375
+          },
+          "ett": {
+            "reach": 0.234375,
+            "strict_success": 0.21875,
+            "discounted_return": 2.599840887060946,
+            "absorbed": 0.78125,
+            "lower": 0.0625,
+            "shortcut": 0.90625
+          },
+          "replay": {
+            "transitions": 511,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 61,
+            "original_transitions": 450,
+            "episodes": 491,
+            "episode_reach_fraction": 0.7331975560081466,
+            "episode_absorbed_fraction": 0.0814663951120163
+          }
+        },
+        "argmax_s2": {
+          "action": [
+            0.46666666865348816,
+            -0.30000001192092896
+          ],
+          "q_s0": -6.135941028594971,
+          "q_s2": -5.646768569946289,
+          "native": {
+            "reach": 0.71875,
+            "strict_success": 0.703125,
+            "discounted_return": 6.306222030864861,
+            "absorbed": 0.28125,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.265625,
+            "strict_success": 0.25,
+            "discounted_return": 1.9326999203220607,
+            "absorbed": 0.6875,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "replay": {
+            "transitions": 75,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 31,
+            "original_transitions": 44,
+            "episodes": 66,
+            "episode_reach_fraction": 0.13636363636363635,
+            "episode_absorbed_fraction": 0.25757575757575757
+          }
+        }
+      }
+    },
+    {
+      "root": 3,
+      "xy": [
+        1.5000000000000002,
+        3.5582169744264327
+      ],
+      "actions": {
+        "down": {
+          "action": [
+            0.0,
+            -1.0
+          ],
+          "q_s0": -6.256409645080566,
+          "q_s2": -6.015100955963135,
+          "native": {
+            "reach": 0.953125,
+            "strict_success": 0.953125,
+            "discounted_return": 9.901983264177774,
+            "absorbed": 0.03125,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.890625,
+            "strict_success": 0.890625,
+            "discounted_return": 7.801583039904138,
+            "absorbed": 0.09375,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "replay": {
+            "transitions": 1488,
+            "synthetic_first_step_queries": 1395,
+            "synthetic_later_steps": 3,
+            "original_transitions": 90,
+            "episodes": 1486,
+            "episode_reach_fraction": 0.8209959623149394,
+            "episode_absorbed_fraction": 0.15746971736204576
+          }
+        },
+        "right": {
+          "action": [
+            1.0,
+            0.0
+          ],
+          "q_s0": -6.126368045806885,
+          "q_s2": -6.193868160247803,
+          "native": {
+            "reach": 0.3125,
+            "strict_success": 0.3125,
+            "discounted_return": 3.7072540145218067,
+            "absorbed": 0.6875,
+            "lower": 0.046875,
+            "shortcut": 0.953125
+          },
+          "ett": {
+            "reach": 0.359375,
+            "strict_success": 0.328125,
+            "discounted_return": 4.207693475377498,
+            "absorbed": 0.671875,
+            "lower": 0.03125,
+            "shortcut": 0.890625
+          },
+          "replay": {
+            "transitions": 3359,
+            "synthetic_first_step_queries": 1395,
+            "synthetic_later_steps": 267,
+            "original_transitions": 1697,
+            "episodes": 3148,
+            "episode_reach_fraction": 0.5727445997458704,
+            "episode_absorbed_fraction": 0.3443456162642948
+          }
+        },
+        "actor_s0": {
+          "action": [
+            0.9981043338775635,
+            -0.9798104763031006
+          ],
+          "q_s0": -6.2925615310668945,
+          "q_s2": -6.612586975097656,
+          "native": {
+            "reach": 0.375,
+            "strict_success": 0.375,
+            "discounted_return": 4.2737055972879165,
+            "absorbed": 0.625,
+            "lower": 0.09375,
+            "shortcut": 0.90625
+          },
+          "ett": {
+            "reach": 0.21875,
+            "strict_success": 0.21875,
+            "discounted_return": 2.4165958931409066,
+            "absorbed": 0.75,
+            "lower": 0.046875,
+            "shortcut": 0.78125
+          },
+          "replay": {
+            "transitions": 38,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 25,
+            "original_transitions": 13,
+            "episodes": 35,
+            "episode_reach_fraction": 0.08571428571428572,
+            "episode_absorbed_fraction": 0.5714285714285714
+          }
+        },
+        "actor_s2": {
+          "action": [
+            0.9999178051948547,
+            -0.717595636844635
+          ],
+          "q_s0": -6.023562431335449,
+          "q_s2": -6.32703971862793,
+          "native": {
+            "reach": 0.375,
+            "strict_success": 0.375,
+            "discounted_return": 4.254350950666723,
+            "absorbed": 0.625,
+            "lower": 0.109375,
+            "shortcut": 0.890625
+          },
+          "ett": {
+            "reach": 0.25,
+            "strict_success": 0.234375,
+            "discounted_return": 2.191887993474813,
+            "absorbed": 0.765625,
+            "lower": 0.078125,
+            "shortcut": 0.625
+          },
+          "replay": {
+            "transitions": 121,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 79,
+            "original_transitions": 42,
+            "episodes": 93,
+            "episode_reach_fraction": 0.3118279569892473,
+            "episode_absorbed_fraction": 0.46236559139784944
+          }
+        },
+        "argmax_s0": {
+          "action": [
+            0.3333333432674408,
+            -0.46666666865348816
+          ],
+          "q_s0": -5.905180931091309,
+          "q_s2": -5.65618371963501,
+          "native": {
+            "reach": 0.78125,
+            "strict_success": 0.765625,
+            "discounted_return": 7.184461680329202,
+            "absorbed": 0.234375,
+            "lower": 0.84375,
+            "shortcut": 0.15625
+          },
+          "ett": {
+            "reach": 0.296875,
+            "strict_success": 0.28125,
+            "discounted_return": 2.0919306582955945,
+            "absorbed": 0.6875,
+            "lower": 0.390625,
+            "shortcut": 0.390625
+          },
+          "replay": {
+            "transitions": 65,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 33,
+            "original_transitions": 32,
+            "episodes": 55,
+            "episode_reach_fraction": 0.09090909090909091,
+            "episode_absorbed_fraction": 0.4
+          }
+        },
+        "argmax_s2": {
+          "action": [
+            0.5,
+            -0.30000001192092896
+          ],
+          "q_s0": -5.92805290222168,
+          "q_s2": -5.573122978210449,
+          "native": {
+            "reach": 0.234375,
+            "strict_success": 0.234375,
+            "discounted_return": 2.404183767874108,
+            "absorbed": 0.765625,
+            "lower": 0.140625,
+            "shortcut": 0.859375
+          },
+          "ett": {
+            "reach": 0.25,
+            "strict_success": 0.25,
+            "discounted_return": 2.8299100320239416,
+            "absorbed": 0.75,
+            "lower": 0.140625,
+            "shortcut": 0.65625
+          },
+          "replay": {
+            "transitions": 116,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 55,
+            "original_transitions": 61,
+            "episodes": 89,
+            "episode_reach_fraction": 0.34831460674157305,
+            "episode_absorbed_fraction": 0.29213483146067415
+          }
+        }
+      }
+    },
+    {
+      "root": 4,
+      "xy": [
+        1.5000000000000002,
+        3.384720349413487
+      ],
+      "actions": {
+        "down": {
+          "action": [
+            0.0,
+            -1.0
+          ],
+          "q_s0": -6.304014205932617,
+          "q_s2": -5.949028968811035,
+          "native": {
+            "reach": 0.953125,
+            "strict_success": 0.953125,
+            "discounted_return": 10.030127371585092,
+            "absorbed": 0.03125,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.828125,
+            "strict_success": 0.828125,
+            "discounted_return": 7.569549682808819,
+            "absorbed": 0.09375,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "replay": {
+            "transitions": 1376,
+            "synthetic_first_step_queries": 1293,
+            "synthetic_later_steps": 2,
+            "original_transitions": 81,
+            "episodes": 1375,
+            "episode_reach_fraction": 0.8196363636363636,
+            "episode_absorbed_fraction": 0.1570909090909091
+          }
+        },
+        "right": {
+          "action": [
+            1.0,
+            0.0
+          ],
+          "q_s0": -6.105364799499512,
+          "q_s2": -6.155277252197266,
+          "native": {
+            "reach": 0.25,
+            "strict_success": 0.25,
+            "discounted_return": 2.9302516854036558,
+            "absorbed": 0.75,
+            "lower": 0.046875,
+            "shortcut": 0.953125
+          },
+          "ett": {
+            "reach": 0.265625,
+            "strict_success": 0.265625,
+            "discounted_return": 3.1039282652646176,
+            "absorbed": 0.734375,
+            "lower": 0.03125,
+            "shortcut": 0.9375
+          },
+          "replay": {
+            "transitions": 3127,
+            "synthetic_first_step_queries": 1293,
+            "synthetic_later_steps": 234,
+            "original_transitions": 1600,
+            "episodes": 2945,
+            "episode_reach_fraction": 0.5731748726655348,
+            "episode_absorbed_fraction": 0.34159592529711374
+          }
+        },
+        "actor_s0": {
+          "action": [
+            0.9962621927261353,
+            -0.9903795719146729
+          ],
+          "q_s0": -6.338166236877441,
+          "q_s2": -6.652339935302734,
+          "native": {
+            "reach": 0.953125,
+            "strict_success": 0.953125,
+            "discounted_return": 9.935443204922034,
+            "absorbed": 0.046875,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.359375,
+            "strict_success": 0.359375,
+            "discounted_return": 3.757617716161209,
+            "absorbed": 0.640625,
+            "lower": 0.15625,
+            "shortcut": 0.625
+          },
+          "replay": {
+            "transitions": 25,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 13,
+            "original_transitions": 12,
+            "episodes": 23,
+            "episode_reach_fraction": 0.08695652173913043,
+            "episode_absorbed_fraction": 0.43478260869565216
+          }
+        },
+        "actor_s2": {
+          "action": [
+            0.9999185800552368,
+            -0.7361779808998108
+          ],
+          "q_s0": -6.108930587768555,
+          "q_s2": -6.383037567138672,
+          "native": {
+            "reach": 0.296875,
+            "strict_success": 0.296875,
+            "discounted_return": 3.468954019303358,
+            "absorbed": 0.703125,
+            "lower": 0.109375,
+            "shortcut": 0.890625
+          },
+          "ett": {
+            "reach": 0.265625,
+            "strict_success": 0.265625,
+            "discounted_return": 2.9644539122713036,
+            "absorbed": 0.734375,
+            "lower": 0.140625,
+            "shortcut": 0.65625
+          },
+          "replay": {
+            "transitions": 91,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 67,
+            "original_transitions": 24,
+            "episodes": 67,
+            "episode_reach_fraction": 0.16417910447761194,
+            "episode_absorbed_fraction": 0.5373134328358209
+          }
+        },
+        "argmax_s0": {
+          "action": [
+            0.3333333432674408,
+            -0.2666666805744171
+          ],
+          "q_s0": -5.950922012329102,
+          "q_s2": -5.7673211097717285,
+          "native": {
+            "reach": 0.53125,
+            "strict_success": 0.53125,
+            "discounted_return": 4.907438770611265,
+            "absorbed": 0.46875,
+            "lower": 0.53125,
+            "shortcut": 0.46875
+          },
+          "ett": {
+            "reach": 0.296875,
+            "strict_success": 0.28125,
+            "discounted_return": 2.286933870576247,
+            "absorbed": 0.703125,
+            "lower": 0.328125,
+            "shortcut": 0.375
+          },
+          "replay": {
+            "transitions": 60,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 32,
+            "original_transitions": 28,
+            "episodes": 51,
+            "episode_reach_fraction": 0.0784313725490196,
+            "episode_absorbed_fraction": 0.37254901960784315
+          }
+        },
+        "argmax_s2": {
+          "action": [
+            0.5,
+            -0.2666666805744171
+          ],
+          "q_s0": -5.9630022048950195,
+          "q_s2": -5.6058502197265625,
+          "native": {
+            "reach": 0.34375,
+            "strict_success": 0.34375,
+            "discounted_return": 3.535942288883814,
+            "absorbed": 0.65625,
+            "lower": 0.234375,
+            "shortcut": 0.765625
+          },
+          "ett": {
+            "reach": 0.234375,
+            "strict_success": 0.234375,
+            "discounted_return": 2.38055101249324,
+            "absorbed": 0.765625,
+            "lower": 0.203125,
+            "shortcut": 0.640625
+          },
+          "replay": {
+            "transitions": 113,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 48,
+            "original_transitions": 65,
+            "episodes": 92,
+            "episode_reach_fraction": 0.2826086956521739,
+            "episode_absorbed_fraction": 0.2608695652173913
+          }
+        }
+      }
+    },
+    {
+      "root": 5,
+      "xy": [
+        1.5000000000000002,
+        3.5665370503331886
+      ],
+      "actions": {
+        "down": {
+          "action": [
+            0.0,
+            -1.0
+          ],
+          "q_s0": -6.2549285888671875,
+          "q_s2": -6.017912864685059,
+          "native": {
+            "reach": 0.953125,
+            "strict_success": 0.953125,
+            "discounted_return": 9.957935079703361,
+            "absorbed": 0.046875,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.796875,
+            "strict_success": 0.78125,
+            "discounted_return": 7.851786367502685,
+            "absorbed": 0.15625,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "replay": {
+            "transitions": 1474,
+            "synthetic_first_step_queries": 1380,
+            "synthetic_later_steps": 3,
+            "original_transitions": 91,
+            "episodes": 1472,
+            "episode_reach_fraction": 0.8220108695652174,
+            "episode_absorbed_fraction": 0.15760869565217392
+          }
+        },
+        "right": {
+          "action": [
+            1.0,
+            0.0
+          ],
+          "q_s0": -6.1343994140625,
+          "q_s2": -6.197579383850098,
+          "native": {
+            "reach": 0.328125,
+            "strict_success": 0.3125,
+            "discounted_return": 3.769623632444273,
+            "absorbed": 0.6875,
+            "lower": 0.046875,
+            "shortcut": 0.953125
+          },
+          "ett": {
+            "reach": 0.296875,
+            "strict_success": 0.28125,
+            "discounted_return": 3.51566953473369,
+            "absorbed": 0.71875,
+            "lower": 0.03125,
+            "shortcut": 0.875
+          },
+          "replay": {
+            "transitions": 3334,
+            "synthetic_first_step_queries": 1380,
+            "synthetic_later_steps": 265,
+            "original_transitions": 1689,
+            "episodes": 3126,
+            "episode_reach_fraction": 0.5735764555342291,
+            "episode_absorbed_fraction": 0.34325015994881636
+          }
+        },
+        "actor_s0": {
+          "action": [
+            0.9981679320335388,
+            -0.9790316820144653
+          ],
+          "q_s0": -6.2912492752075195,
+          "q_s2": -6.609897613525391,
+          "native": {
+            "reach": 0.34375,
+            "strict_success": 0.328125,
+            "discounted_return": 3.7713271543231794,
+            "absorbed": 0.671875,
+            "lower": 0.09375,
+            "shortcut": 0.90625
+          },
+          "ett": {
+            "reach": 0.28125,
+            "strict_success": 0.28125,
+            "discounted_return": 2.7899297655555886,
+            "absorbed": 0.71875,
+            "lower": 0.125,
+            "shortcut": 0.703125
+          },
+          "replay": {
+            "transitions": 38,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 25,
+            "original_transitions": 13,
+            "episodes": 35,
+            "episode_reach_fraction": 0.08571428571428572,
+            "episode_absorbed_fraction": 0.5714285714285714
+          }
+        },
+        "actor_s2": {
+          "action": [
+            0.9999176859855652,
+            -0.7169814705848694
+          ],
+          "q_s0": -6.026728630065918,
+          "q_s2": -6.325209617614746,
+          "native": {
+            "reach": 0.328125,
+            "strict_success": 0.3125,
+            "discounted_return": 3.660418199787047,
+            "absorbed": 0.6875,
+            "lower": 0.109375,
+            "shortcut": 0.890625
+          },
+          "ett": {
+            "reach": 0.21875,
+            "strict_success": 0.21875,
+            "discounted_return": 2.1599106752428465,
+            "absorbed": 0.78125,
+            "lower": 0.078125,
+            "shortcut": 0.65625
+          },
+          "replay": {
+            "transitions": 124,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 80,
+            "original_transitions": 44,
+            "episodes": 96,
+            "episode_reach_fraction": 0.3020833333333333,
+            "episode_absorbed_fraction": 0.4583333333333333
+          }
+        },
+        "argmax_s0": {
+          "action": [
+            0.3333333432674408,
+            -0.46666666865348816
+          ],
+          "q_s0": -5.904715538024902,
+          "q_s2": -5.657630920410156,
+          "native": {
+            "reach": 0.6875,
+            "strict_success": 0.671875,
+            "discounted_return": 6.618424801205373,
+            "absorbed": 0.328125,
+            "lower": 0.765625,
+            "shortcut": 0.234375
+          },
+          "ett": {
+            "reach": 0.359375,
+            "strict_success": 0.34375,
+            "discounted_return": 3.0130826759420746,
+            "absorbed": 0.578125,
+            "lower": 0.40625,
+            "shortcut": 0.4375
+          },
+          "replay": {
+            "transitions": 65,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 33,
+            "original_transitions": 32,
+            "episodes": 55,
+            "episode_reach_fraction": 0.09090909090909091,
+            "episode_absorbed_fraction": 0.4
+          }
+        },
+        "argmax_s2": {
+          "action": [
+            0.5,
+            -0.30000001192092896
+          ],
+          "q_s0": -5.932624816894531,
+          "q_s2": -5.572271823883057,
+          "native": {
+            "reach": 0.25,
+            "strict_success": 0.25,
+            "discounted_return": 2.5391193587458902,
+            "absorbed": 0.75,
+            "lower": 0.171875,
+            "shortcut": 0.828125
+          },
+          "ett": {
+            "reach": 0.15625,
+            "strict_success": 0.140625,
+            "discounted_return": 1.2932832820334987,
+            "absorbed": 0.859375,
+            "lower": 0.125,
+            "shortcut": 0.734375
+          },
+          "replay": {
+            "transitions": 116,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 55,
+            "original_transitions": 61,
+            "episodes": 89,
+            "episode_reach_fraction": 0.3595505617977528,
+            "episode_absorbed_fraction": 0.29213483146067415
+          }
+        }
+      }
+    },
+    {
+      "root": 6,
+      "xy": [
+        1.4909083120459157,
+        3.28416092796627
+      ],
+      "actions": {
+        "down": {
+          "action": [
+            0.0,
+            -1.0
+          ],
+          "q_s0": -6.350951194763184,
+          "q_s2": -5.945128917694092,
+          "native": {
+            "reach": 0.953125,
+            "strict_success": 0.9375,
+            "discounted_return": 9.96635847705732,
+            "absorbed": 0.03125,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.8125,
+            "strict_success": 0.796875,
+            "discounted_return": 6.6726008392590375,
+            "absorbed": 0.140625,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "replay": {
+            "transitions": 1233,
+            "synthetic_first_step_queries": 1143,
+            "synthetic_later_steps": 31,
+            "original_transitions": 59,
+            "episodes": 1231,
+            "episode_reach_fraction": 0.8147847278635256,
+            "episode_absorbed_fraction": 0.16328188464662877
+          }
+        },
+        "right": {
+          "action": [
+            1.0,
+            0.0
+          ],
+          "q_s0": -6.187351226806641,
+          "q_s2": -6.14234733581543,
+          "native": {
+            "reach": 0.28125,
+            "strict_success": 0.28125,
+            "discounted_return": 3.2799008751246594,
+            "absorbed": 0.71875,
+            "lower": 0.0625,
+            "shortcut": 0.9375
+          },
+          "ett": {
+            "reach": 0.203125,
+            "strict_success": 0.203125,
+            "discounted_return": 2.520162280694477,
+            "absorbed": 0.796875,
+            "lower": 0.03125,
+            "shortcut": 0.90625
+          },
+          "replay": {
+            "transitions": 2584,
+            "synthetic_first_step_queries": 1143,
+            "synthetic_later_steps": 191,
+            "original_transitions": 1250,
+            "episodes": 2450,
+            "episode_reach_fraction": 0.5506122448979592,
+            "episode_absorbed_fraction": 0.3669387755102041
+          }
+        },
+        "actor_s0": {
+          "action": [
+            0.9946263432502747,
+            -0.9935526251792908
+          ],
+          "q_s0": -6.385894298553467,
+          "q_s2": -6.668464660644531,
+          "native": {
+            "reach": 0.953125,
+            "strict_success": 0.9375,
+            "discounted_return": 9.981776495700508,
+            "absorbed": 0.046875,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.171875,
+            "strict_success": 0.171875,
+            "discounted_return": 1.646563930564953,
+            "absorbed": 0.828125,
+            "lower": 0.15625,
+            "shortcut": 0.609375
+          },
+          "replay": {
+            "transitions": 21,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 15,
+            "original_transitions": 6,
+            "episodes": 19,
+            "episode_reach_fraction": 0.15789473684210525,
+            "episode_absorbed_fraction": 0.5789473684210527
+          }
+        },
+        "actor_s2": {
+          "action": [
+            0.9999200701713562,
+            -0.7542240619659424
+          ],
+          "q_s0": -6.203158378601074,
+          "q_s2": -6.414434909820557,
+          "native": {
+            "reach": 0.953125,
+            "strict_success": 0.9375,
+            "discounted_return": 10.312317509447029,
+            "absorbed": 0.046875,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.25,
+            "strict_success": 0.234375,
+            "discounted_return": 2.442272793089344,
+            "absorbed": 0.75,
+            "lower": 0.171875,
+            "shortcut": 0.59375
+          },
+          "replay": {
+            "transitions": 68,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 51,
+            "original_transitions": 17,
+            "episodes": 50,
+            "episode_reach_fraction": 0.16,
+            "episode_absorbed_fraction": 0.52
+          }
+        },
+        "argmax_s0": {
+          "action": [
+            0.699999988079071,
+            0.10000000149011612
+          ],
+          "q_s0": -6.036917209625244,
+          "q_s2": -5.977477073669434,
+          "native": {
+            "reach": 0.265625,
+            "strict_success": 0.265625,
+            "discounted_return": 2.9769653563592287,
+            "absorbed": 0.734375,
+            "lower": 0.0625,
+            "shortcut": 0.9375
+          },
+          "ett": {
+            "reach": 0.21875,
+            "strict_success": 0.1875,
+            "discounted_return": 2.3630696655375774,
+            "absorbed": 0.8125,
+            "lower": 0.015625,
+            "shortcut": 0.890625
+          },
+          "replay": {
+            "transitions": 517,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 70,
+            "original_transitions": 447,
+            "episodes": 492,
+            "episode_reach_fraction": 0.7215447154471545,
+            "episode_absorbed_fraction": 0.08739837398373984
+          }
+        },
+        "argmax_s2": {
+          "action": [
+            0.46666666865348816,
+            -0.30000001192092896
+          ],
+          "q_s0": -6.053923606872559,
+          "q_s2": -5.6326494216918945,
+          "native": {
+            "reach": 0.671875,
+            "strict_success": 0.671875,
+            "discounted_return": 5.995099562717818,
+            "absorbed": 0.3125,
+            "lower": 0.96875,
+            "shortcut": 0.03125
+          },
+          "ett": {
+            "reach": 0.296875,
+            "strict_success": 0.296875,
+            "discounted_return": 2.672952529418578,
+            "absorbed": 0.6875,
+            "lower": 0.8125,
+            "shortcut": 0.15625
+          },
+          "replay": {
+            "transitions": 88,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 40,
+            "original_transitions": 48,
+            "episodes": 74,
+            "episode_reach_fraction": 0.17567567567567569,
+            "episode_absorbed_fraction": 0.2972972972972973
+          }
+        }
+      }
+    },
+    {
+      "root": 7,
+      "xy": [
+        1.5000000000000002,
+        3.810473081405611
+      ],
+      "actions": {
+        "down": {
+          "action": [
+            0.0,
+            -1.0
+          ],
+          "q_s0": -6.43235969543457,
+          "q_s2": -6.207304954528809,
+          "native": {
+            "reach": 0.96875,
+            "strict_success": 0.96875,
+            "discounted_return": 9.8635841016518,
+            "absorbed": 0.015625,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.796875,
+            "strict_success": 0.796875,
+            "discounted_return": 7.24646966199022,
+            "absorbed": 0.15625,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "replay": {
+            "transitions": 796,
+            "synthetic_first_step_queries": 723,
+            "synthetic_later_steps": 3,
+            "original_transitions": 70,
+            "episodes": 793,
+            "episode_reach_fraction": 0.8020176544766708,
+            "episode_absorbed_fraction": 0.15384615384615385
+          }
+        },
+        "right": {
+          "action": [
+            1.0,
+            0.0
+          ],
+          "q_s0": -6.512247085571289,
+          "q_s2": -6.496124267578125,
+          "native": {
+            "reach": 0.234375,
+            "strict_success": 0.21875,
+            "discounted_return": 2.399615447208816,
+            "absorbed": 0.78125,
+            "lower": 0.0625,
+            "shortcut": 0.9375
+          },
+          "ett": {
+            "reach": 0.25,
+            "strict_success": 0.25,
+            "discounted_return": 3.1751858589483613,
+            "absorbed": 0.75,
+            "lower": 0.015625,
+            "shortcut": 0.890625
+          },
+          "replay": {
+            "transitions": 1691,
+            "synthetic_first_step_queries": 723,
+            "synthetic_later_steps": 176,
+            "original_transitions": 792,
+            "episodes": 1565,
+            "episode_reach_fraction": 0.5437699680511182,
+            "episode_absorbed_fraction": 0.37507987220447286
+          }
+        },
+        "actor_s0": {
+          "action": [
+            0.9988843202590942,
+            -0.9402844309806824
+          ],
+          "q_s0": -6.38848876953125,
+          "q_s2": -6.627395153045654,
+          "native": {
+            "reach": 0.265625,
+            "strict_success": 0.25,
+            "discounted_return": 2.6857964355846726,
+            "absorbed": 0.75,
+            "lower": 0.109375,
+            "shortcut": 0.890625
+          },
+          "ett": {
+            "reach": 0.203125,
+            "strict_success": 0.203125,
+            "discounted_return": 2.2178436004158644,
+            "absorbed": 0.78125,
+            "lower": 0.171875,
+            "shortcut": 0.625
+          },
+          "replay": {
+            "transitions": 65,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 42,
+            "original_transitions": 23,
+            "episodes": 52,
+            "episode_reach_fraction": 0.057692307692307696,
+            "episode_absorbed_fraction": 0.5384615384615384
+          }
+        },
+        "actor_s2": {
+          "action": [
+            0.9999158978462219,
+            -0.6915901303291321
+          ],
+          "q_s0": -6.167243957519531,
+          "q_s2": -6.366019248962402,
+          "native": {
+            "reach": 0.265625,
+            "strict_success": 0.25,
+            "discounted_return": 2.6967079558361373,
+            "absorbed": 0.75,
+            "lower": 0.09375,
+            "shortcut": 0.90625
+          },
+          "ett": {
+            "reach": 0.28125,
+            "strict_success": 0.28125,
+            "discounted_return": 3.5223677115648435,
+            "absorbed": 0.703125,
+            "lower": 0.078125,
+            "shortcut": 0.796875
+          },
+          "replay": {
+            "transitions": 153,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 88,
+            "original_transitions": 65,
+            "episodes": 115,
+            "episode_reach_fraction": 0.34782608695652173,
+            "episode_absorbed_fraction": 0.391304347826087
+          }
+        },
+        "argmax_s0": {
+          "action": [
+            0.8333333134651184,
+            -0.46666666865348816
+          ],
+          "q_s0": -6.038607120513916,
+          "q_s2": -6.007424354553223,
+          "native": {
+            "reach": 0.25,
+            "strict_success": 0.234375,
+            "discounted_return": 2.578419100438685,
+            "absorbed": 0.765625,
+            "lower": 0.0625,
+            "shortcut": 0.9375
+          },
+          "ett": {
+            "reach": 0.34375,
+            "strict_success": 0.34375,
+            "discounted_return": 4.169210764100807,
+            "absorbed": 0.65625,
+            "lower": 0.03125,
+            "shortcut": 0.921875
+          },
+          "replay": {
+            "transitions": 435,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 131,
+            "original_transitions": 304,
+            "episodes": 369,
+            "episode_reach_fraction": 0.5663956639566395,
+            "episode_absorbed_fraction": 0.15718157181571815
+          }
+        },
+        "argmax_s2": {
+          "action": [
+            0.5,
+            -0.36666667461395264
+          ],
+          "q_s0": -6.1125640869140625,
+          "q_s2": -5.764025688171387,
+          "native": {
+            "reach": 0.265625,
+            "strict_success": 0.265625,
+            "discounted_return": 2.8409300881455155,
+            "absorbed": 0.734375,
+            "lower": 0.125,
+            "shortcut": 0.875
+          },
+          "ett": {
+            "reach": 0.3125,
+            "strict_success": 0.296875,
+            "discounted_return": 3.7584354340452455,
+            "absorbed": 0.703125,
+            "lower": 0.09375,
+            "shortcut": 0.75
+          },
+          "replay": {
+            "transitions": 112,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 45,
+            "original_transitions": 67,
+            "episodes": 83,
+            "episode_reach_fraction": 0.1927710843373494,
+            "episode_absorbed_fraction": 0.2289156626506024
+          }
+        }
+      }
+    },
+    {
+      "root": 8,
+      "xy": [
+        1.4807883812133895,
+        3.5071402565995493
+      ],
+      "actions": {
+        "down": {
+          "action": [
+            0.0,
+            -1.0
+          ],
+          "q_s0": -6.281534194946289,
+          "q_s2": -6.020068168640137,
+          "native": {
+            "reach": 0.96875,
+            "strict_success": 0.953125,
+            "discounted_return": 9.97660053536611,
+            "absorbed": 0.03125,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.84375,
+            "strict_success": 0.828125,
+            "discounted_return": 7.42795504727523,
+            "absorbed": 0.09375,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "replay": {
+            "transitions": 1515,
+            "synthetic_first_step_queries": 1425,
+            "synthetic_later_steps": 3,
+            "original_transitions": 87,
+            "episodes": 1513,
+            "episode_reach_fraction": 0.8241903502974224,
+            "episode_absorbed_fraction": 0.15598149372108394
+          }
+        },
+        "right": {
+          "action": [
+            1.0,
+            0.0
+          ],
+          "q_s0": -6.102626800537109,
+          "q_s2": -6.160900115966797,
+          "native": {
+            "reach": 0.3125,
+            "strict_success": 0.296875,
+            "discounted_return": 3.583527982212474,
+            "absorbed": 0.703125,
+            "lower": 0.046875,
+            "shortcut": 0.953125
+          },
+          "ett": {
+            "reach": 0.25,
+            "strict_success": 0.25,
+            "discounted_return": 3.2552980376296192,
+            "absorbed": 0.75,
+            "lower": 0.046875,
+            "shortcut": 0.90625
+          },
+          "replay": {
+            "transitions": 3411,
+            "synthetic_first_step_queries": 1425,
+            "synthetic_later_steps": 259,
+            "original_transitions": 1727,
+            "episodes": 3198,
+            "episode_reach_fraction": 0.5709818636647905,
+            "episode_absorbed_fraction": 0.3436522826766729
+          }
+        },
+        "actor_s0": {
+          "action": [
+            0.9977323412895203,
+            -0.9833070635795593
+          ],
+          "q_s0": -6.309728145599365,
+          "q_s2": -6.617824554443359,
+          "native": {
+            "reach": 0.3125,
+            "strict_success": 0.296875,
+            "discounted_return": 3.385411901612935,
+            "absorbed": 0.703125,
+            "lower": 0.109375,
+            "shortcut": 0.890625
+          },
+          "ett": {
+            "reach": 0.25,
+            "strict_success": 0.25,
+            "discounted_return": 2.6556615722084604,
+            "absorbed": 0.75,
+            "lower": 0.109375,
+            "shortcut": 0.65625
+          },
+          "replay": {
+            "transitions": 30,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 18,
+            "original_transitions": 12,
+            "episodes": 28,
+            "episode_reach_fraction": 0.10714285714285714,
+            "episode_absorbed_fraction": 0.5
+          }
+        },
+        "actor_s2": {
+          "action": [
+            0.9999209046363831,
+            -0.7154457569122314
+          ],
+          "q_s0": -6.021014213562012,
+          "q_s2": -6.3221940994262695,
+          "native": {
+            "reach": 0.3125,
+            "strict_success": 0.296875,
+            "discounted_return": 3.385411901612935,
+            "absorbed": 0.703125,
+            "lower": 0.109375,
+            "shortcut": 0.890625
+          },
+          "ett": {
+            "reach": 0.25,
+            "strict_success": 0.25,
+            "discounted_return": 2.7312109910551254,
+            "absorbed": 0.75,
+            "lower": 0.109375,
+            "shortcut": 0.703125
+          },
+          "replay": {
+            "transitions": 106,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 71,
+            "original_transitions": 35,
+            "episodes": 80,
+            "episode_reach_fraction": 0.2875,
+            "episode_absorbed_fraction": 0.4625
+          }
+        },
+        "argmax_s0": {
+          "action": [
+            0.3333333432674408,
+            -0.36666667461395264
+          ],
+          "q_s0": -5.912505149841309,
+          "q_s2": -5.6879563331604,
+          "native": {
+            "reach": 0.671875,
+            "strict_success": 0.671875,
+            "discounted_return": 6.541042580173464,
+            "absorbed": 0.3125,
+            "lower": 0.703125,
+            "shortcut": 0.296875
+          },
+          "ett": {
+            "reach": 0.3125,
+            "strict_success": 0.3125,
+            "discounted_return": 2.3762183683320703,
+            "absorbed": 0.65625,
+            "lower": 0.34375,
+            "shortcut": 0.40625
+          },
+          "replay": {
+            "transitions": 72,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 36,
+            "original_transitions": 36,
+            "episodes": 59,
+            "episode_reach_fraction": 0.06779661016949153,
+            "episode_absorbed_fraction": 0.3559322033898305
+          }
+        },
+        "argmax_s2": {
+          "action": [
+            0.5,
+            -0.30000001192092896
+          ],
+          "q_s0": -5.9313154220581055,
+          "q_s2": -5.574610233306885,
+          "native": {
+            "reach": 0.34375,
+            "strict_success": 0.328125,
+            "discounted_return": 3.5607521355597616,
+            "absorbed": 0.65625,
+            "lower": 0.203125,
+            "shortcut": 0.796875
+          },
+          "ett": {
+            "reach": 0.21875,
+            "strict_success": 0.21875,
+            "discounted_return": 2.4217649642964494,
+            "absorbed": 0.765625,
+            "lower": 0.125,
+            "shortcut": 0.6875
+          },
+          "replay": {
+            "transitions": 123,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 56,
+            "original_transitions": 67,
+            "episodes": 97,
+            "episode_reach_fraction": 0.30927835051546393,
+            "episode_absorbed_fraction": 0.28865979381443296
+          }
+        }
+      }
+    },
+    {
+      "root": 9,
+      "xy": [
+        1.4820324020090254,
+        3.43911407750681
+      ],
+      "actions": {
+        "down": {
+          "action": [
+            0.0,
+            -1.0
+          ],
+          "q_s0": -6.301541328430176,
+          "q_s2": -5.982666969299316,
+          "native": {
+            "reach": 0.921875,
+            "strict_success": 0.90625,
+            "discounted_return": 9.765382312584428,
+            "absorbed": 0.0625,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.859375,
+            "strict_success": 0.859375,
+            "discounted_return": 7.808666384295215,
+            "absorbed": 0.109375,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "replay": {
+            "transitions": 1466,
+            "synthetic_first_step_queries": 1380,
+            "synthetic_later_steps": 4,
+            "original_transitions": 82,
+            "episodes": 1464,
+            "episode_reach_fraction": 0.8203551912568307,
+            "episode_absorbed_fraction": 0.15846994535519127
+          }
+        },
+        "right": {
+          "action": [
+            1.0,
+            0.0
+          ],
+          "q_s0": -6.09755802154541,
+          "q_s2": -6.149470329284668,
+          "native": {
+            "reach": 0.296875,
+            "strict_success": 0.296875,
+            "discounted_return": 3.508486898111349,
+            "absorbed": 0.703125,
+            "lower": 0.046875,
+            "shortcut": 0.953125
+          },
+          "ett": {
+            "reach": 0.234375,
+            "strict_success": 0.234375,
+            "discounted_return": 3.0520530968683324,
+            "absorbed": 0.765625,
+            "lower": 0.0625,
+            "shortcut": 0.84375
+          },
+          "replay": {
+            "transitions": 3340,
+            "synthetic_first_step_queries": 1380,
+            "synthetic_later_steps": 261,
+            "original_transitions": 1699,
+            "episodes": 3131,
+            "episode_reach_fraction": 0.5726604918556372,
+            "episode_absorbed_fraction": 0.34078569147237303
+          }
+        },
+        "actor_s0": {
+          "action": [
+            0.9970315098762512,
+            -0.9875718951225281
+          ],
+          "q_s0": -6.327719688415527,
+          "q_s2": -6.633681297302246,
+          "native": {
+            "reach": 0.9375,
+            "strict_success": 0.921875,
+            "discounted_return": 9.819727391994356,
+            "absorbed": 0.0625,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.171875,
+            "strict_success": 0.171875,
+            "discounted_return": 1.5697107152428136,
+            "absorbed": 0.828125,
+            "lower": 0.125,
+            "shortcut": 0.71875
+          },
+          "replay": {
+            "transitions": 27,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 16,
+            "original_transitions": 11,
+            "episodes": 26,
+            "episode_reach_fraction": 0.15384615384615385,
+            "episode_absorbed_fraction": 0.46153846153846156
+          }
+        },
+        "actor_s2": {
+          "action": [
+            0.9999216794967651,
+            -0.7177794575691223
+          ],
+          "q_s0": -6.055696487426758,
+          "q_s2": -6.337577819824219,
+          "native": {
+            "reach": 0.34375,
+            "strict_success": 0.34375,
+            "discounted_return": 4.219200359669246,
+            "absorbed": 0.65625,
+            "lower": 0.109375,
+            "shortcut": 0.890625
+          },
+          "ett": {
+            "reach": 0.1875,
+            "strict_success": 0.171875,
+            "discounted_return": 1.6733550827704677,
+            "absorbed": 0.8125,
+            "lower": 0.125,
+            "shortcut": 0.71875
+          },
+          "replay": {
+            "transitions": 111,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 79,
+            "original_transitions": 32,
+            "episodes": 82,
+            "episode_reach_fraction": 0.2682926829268293,
+            "episode_absorbed_fraction": 0.47560975609756095
+          }
+        },
+        "argmax_s0": {
+          "action": [
+            0.3333333432674408,
+            -0.2666666805744171
+          ],
+          "q_s0": -5.915596961975098,
+          "q_s2": -5.77101993560791,
+          "native": {
+            "reach": 0.421875,
+            "strict_success": 0.421875,
+            "discounted_return": 4.196551246336405,
+            "absorbed": 0.578125,
+            "lower": 0.390625,
+            "shortcut": 0.609375
+          },
+          "ett": {
+            "reach": 0.3125,
+            "strict_success": 0.3125,
+            "discounted_return": 2.84603076531196,
+            "absorbed": 0.671875,
+            "lower": 0.265625,
+            "shortcut": 0.546875
+          },
+          "replay": {
+            "transitions": 66,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 40,
+            "original_transitions": 26,
+            "episodes": 47,
+            "episode_reach_fraction": 0.0851063829787234,
+            "episode_absorbed_fraction": 0.3829787234042553
+          }
+        },
+        "argmax_s2": {
+          "action": [
+            0.5,
+            -0.2666666805744171
+          ],
+          "q_s0": -5.9313178062438965,
+          "q_s2": -5.5887980461120605,
+          "native": {
+            "reach": 0.375,
+            "strict_success": 0.359375,
+            "discounted_return": 3.9689592290045184,
+            "absorbed": 0.625,
+            "lower": 0.234375,
+            "shortcut": 0.765625
+          },
+          "ett": {
+            "reach": 0.203125,
+            "strict_success": 0.203125,
+            "discounted_return": 2.18648654583966,
+            "absorbed": 0.765625,
+            "lower": 0.171875,
+            "shortcut": 0.640625
+          },
+          "replay": {
+            "transitions": 124,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 59,
+            "original_transitions": 65,
+            "episodes": 92,
+            "episode_reach_fraction": 0.30434782608695654,
+            "episode_absorbed_fraction": 0.2608695652173913
+          }
+        }
+      }
+    },
+    {
+      "root": 10,
+      "xy": [
+        1.4802598319803257,
+        3.6380671006569134
+      ],
+      "actions": {
+        "down": {
+          "action": [
+            0.0,
+            -1.0
+          ],
+          "q_s0": -6.29212760925293,
+          "q_s2": -6.079165935516357,
+          "native": {
+            "reach": 0.953125,
+            "strict_success": 0.9375,
+            "discounted_return": 9.995296796304876,
+            "absorbed": 0.046875,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.859375,
+            "strict_success": 0.828125,
+            "discounted_return": 7.600433664788192,
+            "absorbed": 0.140625,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "replay": {
+            "transitions": 1397,
+            "synthetic_first_step_queries": 1308,
+            "synthetic_later_steps": 3,
+            "original_transitions": 86,
+            "episodes": 1397,
+            "episode_reach_fraction": 0.8246241947029349,
+            "episode_absorbed_fraction": 0.15676449534717252
+          }
+        },
+        "right": {
+          "action": [
+            1.0,
+            0.0
+          ],
+          "q_s0": -6.226723670959473,
+          "q_s2": -6.233282566070557,
+          "native": {
+            "reach": 0.234375,
+            "strict_success": 0.234375,
+            "discounted_return": 2.6878270391327774,
+            "absorbed": 0.765625,
+            "lower": 0.046875,
+            "shortcut": 0.953125
+          },
+          "ett": {
+            "reach": 0.390625,
+            "strict_success": 0.390625,
+            "discounted_return": 4.84864573255143,
+            "absorbed": 0.609375,
+            "lower": 0.03125,
+            "shortcut": 0.859375
+          },
+          "replay": {
+            "transitions": 3121,
+            "synthetic_first_step_queries": 1308,
+            "synthetic_later_steps": 251,
+            "original_transitions": 1562,
+            "episodes": 2925,
+            "episode_reach_fraction": 0.5661538461538461,
+            "episode_absorbed_fraction": 0.3524786324786325
+          }
+        },
+        "actor_s0": {
+          "action": [
+            0.9984409809112549,
+            -0.9700002670288086
+          ],
+          "q_s0": -6.325356483459473,
+          "q_s2": -6.581296920776367,
+          "native": {
+            "reach": 0.25,
+            "strict_success": 0.25,
+            "discounted_return": 2.7293953785545204,
+            "absorbed": 0.75,
+            "lower": 0.09375,
+            "shortcut": 0.90625
+          },
+          "ett": {
+            "reach": 0.234375,
+            "strict_success": 0.234375,
+            "discounted_return": 2.3626342058147243,
+            "absorbed": 0.75,
+            "lower": 0.109375,
+            "shortcut": 0.65625
+          },
+          "replay": {
+            "transitions": 47,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 33,
+            "original_transitions": 14,
+            "episodes": 40,
+            "episode_reach_fraction": 0.075,
+            "episode_absorbed_fraction": 0.6
+          }
+        },
+        "actor_s2": {
+          "action": [
+            0.9999191164970398,
+            -0.7094928026199341
+          ],
+          "q_s0": -6.061912536621094,
+          "q_s2": -6.3151116371154785,
+          "native": {
+            "reach": 0.28125,
+            "strict_success": 0.28125,
+            "discounted_return": 3.1376318253945987,
+            "absorbed": 0.71875,
+            "lower": 0.109375,
+            "shortcut": 0.890625
+          },
+          "ett": {
+            "reach": 0.171875,
+            "strict_success": 0.171875,
+            "discounted_return": 1.6944306188484437,
+            "absorbed": 0.828125,
+            "lower": 0.109375,
+            "shortcut": 0.71875
+          },
+          "replay": {
+            "transitions": 146,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 93,
+            "original_transitions": 53,
+            "episodes": 110,
+            "episode_reach_fraction": 0.3,
+            "episode_absorbed_fraction": 0.4636363636363636
+          }
+        },
+        "argmax_s0": {
+          "action": [
+            0.4333333373069763,
+            -0.5
+          ],
+          "q_s0": -5.92388916015625,
+          "q_s2": -5.648725986480713,
+          "native": {
+            "reach": 0.484375,
+            "strict_success": 0.484375,
+            "discounted_return": 4.773822787107619,
+            "absorbed": 0.515625,
+            "lower": 0.421875,
+            "shortcut": 0.578125
+          },
+          "ett": {
+            "reach": 0.375,
+            "strict_success": 0.34375,
+            "discounted_return": 3.0767700898285044,
+            "absorbed": 0.609375,
+            "lower": 0.3125,
+            "shortcut": 0.484375
+          },
+          "replay": {
+            "transitions": 77,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 47,
+            "original_transitions": 30,
+            "episodes": 55,
+            "episode_reach_fraction": 0.10909090909090909,
+            "episode_absorbed_fraction": 0.43636363636363634
+          }
+        },
+        "argmax_s2": {
+          "action": [
+            0.5,
+            -0.3333333432674408
+          ],
+          "q_s0": -5.972963333129883,
+          "q_s2": -5.596571922302246,
+          "native": {
+            "reach": 0.3125,
+            "strict_success": 0.296875,
+            "discounted_return": 3.2555686942519078,
+            "absorbed": 0.6875,
+            "lower": 0.125,
+            "shortcut": 0.875
+          },
+          "ett": {
+            "reach": 0.28125,
+            "strict_success": 0.265625,
+            "discounted_return": 3.254955045991721,
+            "absorbed": 0.734375,
+            "lower": 0.09375,
+            "shortcut": 0.75
+          },
+          "replay": {
+            "transitions": 108,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 55,
+            "original_transitions": 53,
+            "episodes": 77,
+            "episode_reach_fraction": 0.2987012987012987,
+            "episode_absorbed_fraction": 0.3246753246753247
+          }
+        }
+      }
+    },
+    {
+      "root": 11,
+      "xy": [
+        1.5000000000000002,
+        3.837831423184629
+      ],
+      "actions": {
+        "down": {
+          "action": [
+            0.0,
+            -1.0
+          ],
+          "q_s0": -6.472314834594727,
+          "q_s2": -6.236668586730957,
+          "native": {
+            "reach": 0.9375,
+            "strict_success": 0.9375,
+            "discounted_return": 9.753564404565882,
+            "absorbed": 0.0625,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.796875,
+            "strict_success": 0.78125,
+            "discounted_return": 6.823940780897763,
+            "absorbed": 0.203125,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "replay": {
+            "transitions": 666,
+            "synthetic_first_step_queries": 600,
+            "synthetic_later_steps": 3,
+            "original_transitions": 63,
+            "episodes": 663,
+            "episode_reach_fraction": 0.7948717948717948,
+            "episode_absorbed_fraction": 0.15535444947209653
+          }
+        },
+        "right": {
+          "action": [
+            1.0,
+            0.0
+          ],
+          "q_s0": -6.56134033203125,
+          "q_s2": -6.5399556159973145,
+          "native": {
+            "reach": 0.203125,
+            "strict_success": 0.203125,
+            "discounted_return": 2.3869558555484405,
+            "absorbed": 0.796875,
+            "lower": 0.0625,
+            "shortcut": 0.9375
+          },
+          "ett": {
+            "reach": 0.265625,
+            "strict_success": 0.265625,
+            "discounted_return": 3.2962814136404175,
+            "absorbed": 0.734375,
+            "lower": 0.046875,
+            "shortcut": 0.859375
+          },
+          "replay": {
+            "transitions": 1402,
+            "synthetic_first_step_queries": 600,
+            "synthetic_later_steps": 145,
+            "original_transitions": 657,
+            "episodes": 1296,
+            "episode_reach_fraction": 0.5455246913580247,
+            "episode_absorbed_fraction": 0.3742283950617284
+          }
+        },
+        "actor_s0": {
+          "action": [
+            0.9989558458328247,
+            -0.9334604144096375
+          ],
+          "q_s0": -6.4100751876831055,
+          "q_s2": -6.637866973876953,
+          "native": {
+            "reach": 0.21875,
+            "strict_success": 0.21875,
+            "discounted_return": 2.480217286025498,
+            "absorbed": 0.78125,
+            "lower": 0.140625,
+            "shortcut": 0.859375
+          },
+          "ett": {
+            "reach": 0.203125,
+            "strict_success": 0.203125,
+            "discounted_return": 2.170056976460646,
+            "absorbed": 0.796875,
+            "lower": 0.109375,
+            "shortcut": 0.5625
+          },
+          "replay": {
+            "transitions": 60,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 38,
+            "original_transitions": 22,
+            "episodes": 47,
+            "episode_reach_fraction": 0.06382978723404255,
+            "episode_absorbed_fraction": 0.5106382978723404
+          }
+        },
+        "actor_s2": {
+          "action": [
+            0.9999156594276428,
+            -0.6882816553115845
+          ],
+          "q_s0": -6.195669174194336,
+          "q_s2": -6.378580093383789,
+          "native": {
+            "reach": 0.21875,
+            "strict_success": 0.21875,
+            "discounted_return": 2.627001331910048,
+            "absorbed": 0.78125,
+            "lower": 0.09375,
+            "shortcut": 0.90625
+          },
+          "ett": {
+            "reach": 0.28125,
+            "strict_success": 0.265625,
+            "discounted_return": 3.2762911941558386,
+            "absorbed": 0.734375,
+            "lower": 0.046875,
+            "shortcut": 0.84375
+          },
+          "replay": {
+            "transitions": 148,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 86,
+            "original_transitions": 62,
+            "episodes": 108,
+            "episode_reach_fraction": 0.37037037037037035,
+            "episode_absorbed_fraction": 0.37962962962962965
+          }
+        },
+        "argmax_s0": {
+          "action": [
+            0.8333333134651184,
+            -0.46666666865348816
+          ],
+          "q_s0": -6.079463481903076,
+          "q_s2": -6.037929534912109,
+          "native": {
+            "reach": 0.234375,
+            "strict_success": 0.234375,
+            "discounted_return": 2.6852271710727345,
+            "absorbed": 0.765625,
+            "lower": 0.0625,
+            "shortcut": 0.9375
+          },
+          "ett": {
+            "reach": 0.40625,
+            "strict_success": 0.375,
+            "discounted_return": 4.699193076144329,
+            "absorbed": 0.625,
+            "lower": 0.03125,
+            "shortcut": 0.921875
+          },
+          "replay": {
+            "transitions": 406,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 115,
+            "original_transitions": 291,
+            "episodes": 350,
+            "episode_reach_fraction": 0.5771428571428572,
+            "episode_absorbed_fraction": 0.14857142857142858
+          }
+        },
+        "argmax_s2": {
+          "action": [
+            0.5,
+            -0.4000000059604645
+          ],
+          "q_s0": -6.135274887084961,
+          "q_s2": -5.791626930236816,
+          "native": {
+            "reach": 0.3125,
+            "strict_success": 0.3125,
+            "discounted_return": 3.4513971094944633,
+            "absorbed": 0.6875,
+            "lower": 0.125,
+            "shortcut": 0.875
+          },
+          "ett": {
+            "reach": 0.265625,
+            "strict_success": 0.265625,
+            "discounted_return": 3.206413804039772,
+            "absorbed": 0.734375,
+            "lower": 0.109375,
+            "shortcut": 0.765625
+          },
+          "replay": {
+            "transitions": 105,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 39,
+            "original_transitions": 66,
+            "episodes": 80,
+            "episode_reach_fraction": 0.15,
+            "episode_absorbed_fraction": 0.2
+          }
+        }
+      }
+    },
+    {
+      "root": 12,
+      "xy": [
+        1.5000000000000002,
+        3.707102701034283
+      ],
+      "actions": {
+        "down": {
+          "action": [
+            0.0,
+            -1.0
+          ],
+          "q_s0": -6.317765235900879,
+          "q_s2": -6.102589130401611,
+          "native": {
+            "reach": 0.953125,
+            "strict_success": 0.953125,
+            "discounted_return": 9.9274499402772,
+            "absorbed": 0.046875,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.84375,
+            "strict_success": 0.828125,
+            "discounted_return": 7.731494735858442,
+            "absorbed": 0.125,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "replay": {
+            "transitions": 1316,
+            "synthetic_first_step_queries": 1233,
+            "synthetic_later_steps": 2,
+            "original_transitions": 81,
+            "episodes": 1316,
+            "episode_reach_fraction": 0.8153495440729484,
+            "episode_absorbed_fraction": 0.1580547112462006
+          }
+        },
+        "right": {
+          "action": [
+            1.0,
+            0.0
+          ],
+          "q_s0": -6.327208995819092,
+          "q_s2": -6.3328752517700195,
+          "native": {
+            "reach": 0.296875,
+            "strict_success": 0.296875,
+            "discounted_return": 3.4750969914486847,
+            "absorbed": 0.703125,
+            "lower": 0.046875,
+            "shortcut": 0.953125
+          },
+          "ett": {
+            "reach": 0.28125,
+            "strict_success": 0.265625,
+            "discounted_return": 3.439166265785022,
+            "absorbed": 0.734375,
+            "lower": 0.015625,
+            "shortcut": 0.90625
+          },
+          "replay": {
+            "transitions": 2762,
+            "synthetic_first_step_queries": 1233,
+            "synthetic_later_steps": 240,
+            "original_transitions": 1289,
+            "episodes": 2571,
+            "episode_reach_fraction": 0.5472578763127188,
+            "episode_absorbed_fraction": 0.37845196421625826
+          }
+        },
+        "actor_s0": {
+          "action": [
+            0.9986023902893066,
+            -0.9610918164253235
+          ],
+          "q_s0": -6.344433784484863,
+          "q_s2": -6.591632843017578,
+          "native": {
+            "reach": 0.296875,
+            "strict_success": 0.296875,
+            "discounted_return": 3.5369802226909894,
+            "absorbed": 0.703125,
+            "lower": 0.109375,
+            "shortcut": 0.890625
+          },
+          "ett": {
+            "reach": 0.265625,
+            "strict_success": 0.25,
+            "discounted_return": 2.5537721608083657,
+            "absorbed": 0.75,
+            "lower": 0.140625,
+            "shortcut": 0.640625
+          },
+          "replay": {
+            "transitions": 56,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 38,
+            "original_transitions": 18,
+            "episodes": 48,
+            "episode_reach_fraction": 0.0625,
+            "episode_absorbed_fraction": 0.5833333333333334
+          }
+        },
+        "actor_s2": {
+          "action": [
+            0.9999164938926697,
+            -0.7041091322898865
+          ],
+          "q_s0": -6.085844993591309,
+          "q_s2": -6.335961818695068,
+          "native": {
+            "reach": 0.296875,
+            "strict_success": 0.296875,
+            "discounted_return": 3.5484660334820055,
+            "absorbed": 0.703125,
+            "lower": 0.109375,
+            "shortcut": 0.890625
+          },
+          "ett": {
+            "reach": 0.3125,
+            "strict_success": 0.3125,
+            "discounted_return": 3.96697819346256,
+            "absorbed": 0.6875,
+            "lower": 0.09375,
+            "shortcut": 0.78125
+          },
+          "replay": {
+            "transitions": 155,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 94,
+            "original_transitions": 61,
+            "episodes": 118,
+            "episode_reach_fraction": 0.3135593220338983,
+            "episode_absorbed_fraction": 0.4406779661016949
+          }
+        },
+        "argmax_s0": {
+          "action": [
+            0.6333333253860474,
+            -0.5
+          ],
+          "q_s0": -5.92656135559082,
+          "q_s2": -5.780024528503418,
+          "native": {
+            "reach": 0.28125,
+            "strict_success": 0.28125,
+            "discounted_return": 2.9942875314813877,
+            "absorbed": 0.71875,
+            "lower": 0.140625,
+            "shortcut": 0.859375
+          },
+          "ett": {
+            "reach": 0.25,
+            "strict_success": 0.25,
+            "discounted_return": 2.6606547371725044,
+            "absorbed": 0.75,
+            "lower": 0.171875,
+            "shortcut": 0.75
+          },
+          "replay": {
+            "transitions": 143,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 61,
+            "original_transitions": 82,
+            "episodes": 111,
+            "episode_reach_fraction": 0.2972972972972973,
+            "episode_absorbed_fraction": 0.23423423423423423
+          }
+        },
+        "argmax_s2": {
+          "action": [
+            0.5,
+            -0.36666667461395264
+          ],
+          "q_s0": -5.995299816131592,
+          "q_s2": -5.65400505065918,
+          "native": {
+            "reach": 0.28125,
+            "strict_success": 0.28125,
+            "discounted_return": 3.025326777696028,
+            "absorbed": 0.703125,
+            "lower": 0.109375,
+            "shortcut": 0.890625
+          },
+          "ett": {
+            "reach": 0.265625,
+            "strict_success": 0.265625,
+            "discounted_return": 3.123209298462042,
+            "absorbed": 0.703125,
+            "lower": 0.125,
+            "shortcut": 0.796875
+          },
+          "replay": {
+            "transitions": 114,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 49,
+            "original_transitions": 65,
+            "episodes": 84,
+            "episode_reach_fraction": 0.23809523809523808,
+            "episode_absorbed_fraction": 0.25
+          }
+        }
+      }
+    },
+    {
+      "root": 13,
+      "xy": [
+        1.5000000000000002,
+        3.846748206025387
+      ],
+      "actions": {
+        "down": {
+          "action": [
+            0.0,
+            -1.0
+          ],
+          "q_s0": -6.4853363037109375,
+          "q_s2": -6.246236801147461,
+          "native": {
+            "reach": 0.9375,
+            "strict_success": 0.9375,
+            "discounted_return": 9.767666681488027,
+            "absorbed": 0.0625,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.796875,
+            "strict_success": 0.78125,
+            "discounted_return": 7.221005974000142,
+            "absorbed": 0.140625,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "replay": {
+            "transitions": 626,
+            "synthetic_first_step_queries": 564,
+            "synthetic_later_steps": 3,
+            "original_transitions": 59,
+            "episodes": 623,
+            "episode_reach_fraction": 0.7929373996789727,
+            "episode_absorbed_fraction": 0.15569823434991975
+          }
+        },
+        "right": {
+          "action": [
+            1.0,
+            0.0
+          ],
+          "q_s0": -6.577341079711914,
+          "q_s2": -6.555337905883789,
+          "native": {
+            "reach": 0.328125,
+            "strict_success": 0.328125,
+            "discounted_return": 3.749321901706048,
+            "absorbed": 0.671875,
+            "lower": 0.0625,
+            "shortcut": 0.9375
+          },
+          "ett": {
+            "reach": 0.296875,
+            "strict_success": 0.28125,
+            "discounted_return": 3.3274581056875716,
+            "absorbed": 0.71875,
+            "lower": 0.046875,
+            "shortcut": 0.890625
+          },
+          "replay": {
+            "transitions": 1316,
+            "synthetic_first_step_queries": 564,
+            "synthetic_later_steps": 143,
+            "original_transitions": 609,
+            "episodes": 1212,
+            "episode_reach_fraction": 0.5437293729372937,
+            "episode_absorbed_fraction": 0.37623762376237624
+          }
+        },
+        "actor_s0": {
+          "action": [
+            0.998978316783905,
+            -0.9310781955718994
+          ],
+          "q_s0": -6.417611122131348,
+          "q_s2": -6.641114234924316,
+          "native": {
+            "reach": 0.3125,
+            "strict_success": 0.3125,
+            "discounted_return": 3.622455077574621,
+            "absorbed": 0.6875,
+            "lower": 0.125,
+            "shortcut": 0.875
+          },
+          "ett": {
+            "reach": 0.1875,
+            "strict_success": 0.171875,
+            "discounted_return": 1.685147112720188,
+            "absorbed": 0.828125,
+            "lower": 0.109375,
+            "shortcut": 0.578125
+          },
+          "replay": {
+            "transitions": 60,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 38,
+            "original_transitions": 22,
+            "episodes": 47,
+            "episode_reach_fraction": 0.06382978723404255,
+            "episode_absorbed_fraction": 0.5106382978723404
+          }
+        },
+        "actor_s2": {
+          "action": [
+            0.999915599822998,
+            -0.6871967911720276
+          ],
+          "q_s0": -6.204928398132324,
+          "q_s2": -6.383305549621582,
+          "native": {
+            "reach": 0.3125,
+            "strict_success": 0.3125,
+            "discounted_return": 3.7539204986670636,
+            "absorbed": 0.6875,
+            "lower": 0.09375,
+            "shortcut": 0.90625
+          },
+          "ett": {
+            "reach": 0.28125,
+            "strict_success": 0.28125,
+            "discounted_return": 3.495864989504865,
+            "absorbed": 0.71875,
+            "lower": 0.046875,
+            "shortcut": 0.796875
+          },
+          "replay": {
+            "transitions": 148,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 85,
+            "original_transitions": 63,
+            "episodes": 108,
+            "episode_reach_fraction": 0.37037037037037035,
+            "episode_absorbed_fraction": 0.37037037037037035
+          }
+        },
+        "argmax_s0": {
+          "action": [
+            0.8333333134651184,
+            -0.46666666865348816
+          ],
+          "q_s0": -6.093390464782715,
+          "q_s2": -6.048778533935547,
+          "native": {
+            "reach": 0.375,
+            "strict_success": 0.375,
+            "discounted_return": 4.350071099880555,
+            "absorbed": 0.625,
+            "lower": 0.0625,
+            "shortcut": 0.9375
+          },
+          "ett": {
+            "reach": 0.28125,
+            "strict_success": 0.28125,
+            "discounted_return": 3.375886227769387,
+            "absorbed": 0.703125,
+            "lower": 0.046875,
+            "shortcut": 0.890625
+          },
+          "replay": {
+            "transitions": 402,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 114,
+            "original_transitions": 288,
+            "episodes": 346,
+            "episode_reach_fraction": 0.5751445086705202,
+            "episode_absorbed_fraction": 0.14739884393063585
+          }
+        },
+        "argmax_s2": {
+          "action": [
+            0.5,
+            -0.4000000059604645
+          ],
+          "q_s0": -6.150018692016602,
+          "q_s2": -5.801836013793945,
+          "native": {
+            "reach": 0.359375,
+            "strict_success": 0.359375,
+            "discounted_return": 4.061345669056212,
+            "absorbed": 0.640625,
+            "lower": 0.125,
+            "shortcut": 0.875
+          },
+          "ett": {
+            "reach": 0.25,
+            "strict_success": 0.25,
+            "discounted_return": 2.7683035046174806,
+            "absorbed": 0.734375,
+            "lower": 0.109375,
+            "shortcut": 0.78125
+          },
+          "replay": {
+            "transitions": 105,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 39,
+            "original_transitions": 66,
+            "episodes": 80,
+            "episode_reach_fraction": 0.15,
+            "episode_absorbed_fraction": 0.2
+          }
+        }
+      }
+    },
+    {
+      "root": 14,
+      "xy": [
+        1.4648279307996321,
+        3.051707893594381
+      ],
+      "actions": {
+        "down": {
+          "action": [
+            0.0,
+            -1.0
+          ],
+          "q_s0": -6.477385520935059,
+          "q_s2": -5.948464393615723,
+          "native": {
+            "reach": 0.9375,
+            "strict_success": 0.921875,
+            "discounted_return": 9.80568811442871,
+            "absorbed": 0.046875,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.8125,
+            "strict_success": 0.796875,
+            "discounted_return": 6.310017689848071,
+            "absorbed": 0.15625,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "replay": {
+            "transitions": 483,
+            "synthetic_first_step_queries": 258,
+            "synthetic_later_steps": 192,
+            "original_transitions": 33,
+            "episodes": 483,
+            "episode_reach_fraction": 0.7846790890269151,
+            "episode_absorbed_fraction": 0.15527950310559005
+          }
+        },
+        "right": {
+          "action": [
+            1.0,
+            0.0
+          ],
+          "q_s0": -6.367524147033691,
+          "q_s2": -6.192083358764648,
+          "native": {
+            "reach": 0.3125,
+            "strict_success": 0.3125,
+            "discounted_return": 3.5690867744889707,
+            "absorbed": 0.6875,
+            "lower": 0.109375,
+            "shortcut": 0.890625
+          },
+          "ett": {
+            "reach": 0.1875,
+            "strict_success": 0.1875,
+            "discounted_return": 1.9659417066085831,
+            "absorbed": 0.8125,
+            "lower": 0.140625,
+            "shortcut": 0.703125
+          },
+          "replay": {
+            "transitions": 525,
+            "synthetic_first_step_queries": 258,
+            "synthetic_later_steps": 74,
+            "original_transitions": 193,
+            "episodes": 495,
+            "episode_reach_fraction": 0.47474747474747475,
+            "episode_absorbed_fraction": 0.43434343434343436
+          }
+        },
+        "actor_s0": {
+          "action": [
+            0.9877678155899048,
+            -0.997089684009552
+          ],
+          "q_s0": -6.542349815368652,
+          "q_s2": -6.609462261199951,
+          "native": {
+            "reach": 0.921875,
+            "strict_success": 0.90625,
+            "discounted_return": 9.839301362729408,
+            "absorbed": 0.046875,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.34375,
+            "strict_success": 0.34375,
+            "discounted_return": 2.884037504663518,
+            "absorbed": 0.640625,
+            "lower": 0.390625,
+            "shortcut": 0.4375
+          },
+          "replay": {
+            "transitions": 22,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 13,
+            "original_transitions": 9,
+            "episodes": 20,
+            "episode_reach_fraction": 0.2,
+            "episode_absorbed_fraction": 0.35
+          }
+        },
+        "actor_s2": {
+          "action": [
+            0.9999251961708069,
+            -0.7874464988708496
+          ],
+          "q_s0": -6.432596206665039,
+          "q_s2": -6.452305793762207,
+          "native": {
+            "reach": 0.921875,
+            "strict_success": 0.90625,
+            "discounted_return": 9.969166963404184,
+            "absorbed": 0.046875,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.25,
+            "strict_success": 0.234375,
+            "discounted_return": 2.0124160523734775,
+            "absorbed": 0.703125,
+            "lower": 0.390625,
+            "shortcut": 0.453125
+          },
+          "replay": {
+            "transitions": 51,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 35,
+            "original_transitions": 16,
+            "episodes": 36,
+            "episode_reach_fraction": 0.19444444444444445,
+            "episode_absorbed_fraction": 0.3611111111111111
+          }
+        },
+        "argmax_s0": {
+          "action": [
+            0.699999988079071,
+            -0.13333334028720856
+          ],
+          "q_s0": -6.260870933532715,
+          "q_s2": -5.889784812927246,
+          "native": {
+            "reach": 0.53125,
+            "strict_success": 0.53125,
+            "discounted_return": 4.96705834901241,
+            "absorbed": 0.46875,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.296875,
+            "strict_success": 0.28125,
+            "discounted_return": 2.22932510040841,
+            "absorbed": 0.6875,
+            "lower": 0.453125,
+            "shortcut": 0.390625
+          },
+          "replay": {
+            "transitions": 96,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 49,
+            "original_transitions": 47,
+            "episodes": 74,
+            "episode_reach_fraction": 0.28378378378378377,
+            "episode_absorbed_fraction": 0.24324324324324326
+          }
+        },
+        "argmax_s2": {
+          "action": [
+            0.4333333373069763,
+            -0.3333333432674408
+          ],
+          "q_s0": -6.282593250274658,
+          "q_s2": -5.7274580001831055,
+          "native": {
+            "reach": 0.828125,
+            "strict_success": 0.828125,
+            "discounted_return": 8.786155220621497,
+            "absorbed": 0.140625,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.671875,
+            "strict_success": 0.609375,
+            "discounted_return": 5.5327731889330005,
+            "absorbed": 0.265625,
+            "lower": 0.984375,
+            "shortcut": 0.015625
+          },
+          "replay": {
+            "transitions": 64,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 27,
+            "original_transitions": 37,
+            "episodes": 58,
+            "episode_reach_fraction": 0.1896551724137931,
+            "episode_absorbed_fraction": 0.2413793103448276
+          }
+        }
+      }
+    },
+    {
+      "root": 15,
+      "xy": [
+        1.4967415786430434,
+        3.528754518557972
+      ],
+      "actions": {
+        "down": {
+          "action": [
+            0.0,
+            -1.0
+          ],
+          "q_s0": -6.2643723487854,
+          "q_s2": -6.008108139038086,
+          "native": {
+            "reach": 0.9375,
+            "strict_success": 0.9375,
+            "discounted_return": 9.945288154081396,
+            "absorbed": 0.0625,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "ett": {
+            "reach": 0.828125,
+            "strict_success": 0.8125,
+            "discounted_return": 7.763378313532799,
+            "absorbed": 0.125,
+            "lower": 1.0,
+            "shortcut": 0.0
+          },
+          "replay": {
+            "transitions": 1492,
+            "synthetic_first_step_queries": 1401,
+            "synthetic_later_steps": 3,
+            "original_transitions": 88,
+            "episodes": 1490,
+            "episode_reach_fraction": 0.823489932885906,
+            "episode_absorbed_fraction": 0.15570469798657718
+          }
+        },
+        "right": {
+          "action": [
+            1.0,
+            0.0
+          ],
+          "q_s0": -6.102460861206055,
+          "q_s2": -6.181946754455566,
+          "native": {
+            "reach": 0.40625,
+            "strict_success": 0.40625,
+            "discounted_return": 4.923775285711255,
+            "absorbed": 0.59375,
+            "lower": 0.046875,
+            "shortcut": 0.953125
+          },
+          "ett": {
+            "reach": 0.296875,
+            "strict_success": 0.296875,
+            "discounted_return": 3.6347738659904802,
+            "absorbed": 0.703125,
+            "lower": 0.03125,
+            "shortcut": 0.84375
+          },
+          "replay": {
+            "transitions": 3393,
+            "synthetic_first_step_queries": 1401,
+            "synthetic_later_steps": 276,
+            "original_transitions": 1716,
+            "episodes": 3169,
+            "episode_reach_fraction": 0.5739981066582518,
+            "episode_absorbed_fraction": 0.3417481855474913
+          }
+        },
+        "actor_s0": {
+          "action": [
+            0.9978718757629395,
+            -0.98221755027771
+          ],
+          "q_s0": -6.298619270324707,
+          "q_s2": -6.620044708251953,
+          "native": {
+            "reach": 0.40625,
+            "strict_success": 0.40625,
+            "discounted_return": 4.761871246212181,
+            "absorbed": 0.59375,
+            "lower": 0.109375,
+            "shortcut": 0.890625
+          },
+          "ett": {
+            "reach": 0.125,
+            "strict_success": 0.125,
+            "discounted_return": 0.9912153230999129,
+            "absorbed": 0.859375,
+            "lower": 0.09375,
+            "shortcut": 0.671875
+          },
+          "replay": {
+            "transitions": 34,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 22,
+            "original_transitions": 12,
+            "episodes": 31,
+            "episode_reach_fraction": 0.0967741935483871,
+            "episode_absorbed_fraction": 0.5483870967741935
+          }
+        },
+        "actor_s2": {
+          "action": [
+            0.999918520450592,
+            -0.7197121381759644
+          ],
+          "q_s0": -6.014576435089111,
+          "q_s2": -6.331797122955322,
+          "native": {
+            "reach": 0.40625,
+            "strict_success": 0.390625,
+            "discounted_return": 4.579317632552273,
+            "absorbed": 0.609375,
+            "lower": 0.109375,
+            "shortcut": 0.890625
+          },
+          "ett": {
+            "reach": 0.328125,
+            "strict_success": 0.328125,
+            "discounted_return": 3.5109106525757867,
+            "absorbed": 0.65625,
+            "lower": 0.09375,
+            "shortcut": 0.78125
+          },
+          "replay": {
+            "transitions": 117,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 81,
+            "original_transitions": 36,
+            "episodes": 85,
+            "episode_reach_fraction": 0.3058823529411765,
+            "episode_absorbed_fraction": 0.4823529411764706
+          }
+        },
+        "argmax_s0": {
+          "action": [
+            0.3333333432674408,
+            -0.4000000059604645
+          ],
+          "q_s0": -5.905557632446289,
+          "q_s2": -5.677292346954346,
+          "native": {
+            "reach": 0.65625,
+            "strict_success": 0.65625,
+            "discounted_return": 6.4026356260370445,
+            "absorbed": 0.328125,
+            "lower": 0.640625,
+            "shortcut": 0.359375
+          },
+          "ett": {
+            "reach": 0.359375,
+            "strict_success": 0.34375,
+            "discounted_return": 3.1783961986435036,
+            "absorbed": 0.625,
+            "lower": 0.375,
+            "shortcut": 0.40625
+          },
+          "replay": {
+            "transitions": 77,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 40,
+            "original_transitions": 37,
+            "episodes": 62,
+            "episode_reach_fraction": 0.08064516129032258,
+            "episode_absorbed_fraction": 0.3709677419354839
+          }
+        },
+        "argmax_s2": {
+          "action": [
+            0.5,
+            -0.30000001192092896
+          ],
+          "q_s0": -5.923972129821777,
+          "q_s2": -5.576184272766113,
+          "native": {
+            "reach": 0.390625,
+            "strict_success": 0.375,
+            "discounted_return": 3.86339212918712,
+            "absorbed": 0.625,
+            "lower": 0.171875,
+            "shortcut": 0.828125
+          },
+          "ett": {
+            "reach": 0.21875,
+            "strict_success": 0.21875,
+            "discounted_return": 2.2862535450554873,
+            "absorbed": 0.765625,
+            "lower": 0.15625,
+            "shortcut": 0.71875
+          },
+          "replay": {
+            "transitions": 128,
+            "synthetic_first_step_queries": 0,
+            "synthetic_later_steps": 63,
+            "original_transitions": 65,
+            "episodes": 97,
+            "episode_reach_fraction": 0.29896907216494845,
+            "episode_absorbed_fraction": 0.30927835051546393
+          }
+        }
+      }
+    }
+  ]
+}

@@ -145,3 +145,89 @@ in the shortcut region on 13/16 roots) is the primary suspect, not the actor
 optimizer by itself; the two-point DOWN-vs-RIGHT gate is not an adequate
 critic criterion, and the saturated-corner policy family means "success" is
 not a learned route choice on either seed.
+
+## Step 3a: consequence check of the six fork actions
+
+[`scripts/audit_f4_action_consequences.py`](../scripts/audit_f4_action_consequences.py),
+outputs in `outputs/pointmaze_action_consequences_v1/`. At each of the 16
+held-out roots: DOWN, RIGHT, the two actors' modes, the two critics' argmax
+actions; both critics score all six; each action is executed from the root
+followed by the sealed observational continuation actor (sampled, paired
+keys) in the native environment (64 paired replicates, evaluation only) and
+in the fixed ETT with the sealed generation rule.
+
+| first action | mean action | q s0 (rank) | q s2 (rank) | native reach | disc. ret | lower | absorbed | ETT reach | disc. ret | lower | absorbed |
+|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| DOWN | (0, -1) | -6.348 (4.9) | -6.041 (2.9) | **0.950** | **9.91** | 1.000 | 0.041 | **0.825** | **7.30** | 1.000 | 0.130 |
+| RIGHT | (1, 0) | -6.249 (4.1) | -6.246 (4.2) | 0.305 | 3.54 | 0.056 | 0.699 | 0.267 | 3.25 | 0.040 | 0.738 |
+| actor s0 mode | (+1.00, -0.98) | -6.365 (5.6) | -6.629 (6.0) | 0.589 | 6.29 | 0.499 | 0.410 | 0.238 | 2.34 | 0.157 | 0.757 |
+| actor s2 mode | (+1.00, -0.72) | -6.137 (3.4) | -6.367 (4.8) | 0.508 | 5.64 | 0.385 | 0.493 | 0.251 | 2.64 | 0.135 | 0.742 |
+| critic s0 argmax | (+0.52, -0.32) | **-5.998 (1.0)** | -5.819 (2.1) | 0.493 | 4.87 | 0.469 | 0.507 | 0.319 | 2.95 | 0.261 | 0.673 |
+| critic s2 argmax | (+0.49, -0.32) | -6.029 (2.0) | **-5.646 (1.0)** | 0.411 | 4.14 | 0.348 | 0.586 | 0.283 | 2.86 | 0.307 | 0.703 |
+
+Paired per root, the failed critic's argmax is worse than DOWN on 16/16
+roots (reach -0.54, discounted return -5.8, absorbed +0.55); the same holds
+for the successful critic's argmax and in the ETT (-0.54 reach, 0/16). The
+ETT therefore already ranks DOWN >> diagonal ~ RIGHT; it over-predicts
+absorption for the diagonal (0.70 vs 0.59) and under-predicts the corner
+actions (0.24 vs 0.55), but the preference order matches the environment.
+
+Did the diagonal ever enter NCE?  C-replay transitions within 0.3 of a root
+with an action within 0.25 of the action: DOWN 1182 (1090 covered
+first-step queries), RIGHT 2564 (1090), critic-argmax actions 105-194 with
+**zero** covered first-step queries -- only sparse teacher transitions and
+later synthetic steps, whose episodes reach at 0.24-0.28. Verdict: case 2 of
+the plan -- the real consequence is bad, the ETT knows, but the region was
+never queried, and the critic interpolates a high score between the DOWN
+and RIGHT clusters.
+
+## Step 3b: the fix -- diagonal query coverage (arm D)
+
+[`scripts/run_f4_diagonal_coverage_fix.py`](../scripts/run_f4_diagonal_coverage_fix.py),
+outputs in `outputs/pointmaze_diagonal_coverage_fix_v1/`. At the same 550
+training contexts the sealed generator used (not the 16 evaluation roots),
+six diagonal first queries between DOWN and RIGHT -- (0.5,-0.3),
+(0.35,-0.45), (0.65,-0.2), (0.5,-0.5), (0.3,-0.3), (0.7,-0.4) -- are
+generated with the fixed ETT / nominal / continuation actor exactly as arm
+C's queries were; all 3300 paths (reach 0.28, absorbed 0.70) are appended
+to the C replay (9900 episodes). Same CRL loss, bc 0.05, 30k x 10, identical
+initialization per seed, 200 native episodes at the sealed seeds. Run on an
+RTX 4080 node.
+
+| seed | arm | mode reach | mode lower | sample reach | sample lower | critic d-r (roots down) | critic argmax -> shortcut / lower | actor mode at the roots |
+|---|---|---:|---:|---:|---:|---|---|---|
+| 0 | C | 1.000 | 1.000 | 0.755 | 0.685 | +0.025 (13/16) | 11 / 5 | (+1.00, -1.00) |
+| 0 | D | 0.860 | 0.805 | 0.555 | 0.445 | +0.114 (14/16) | **3 / 13** | (+1.00, -0.72) |
+| 1 | C | 0.320 | 0.020 | 0.535 | 0.380 | +0.042 (13/16) | 13 / 3 | (+1.00, -1.00) |
+| 1 | D | 0.305 | 0.000 | 0.380 | 0.145 | +0.359 (16/16) | **0 / 16** | (+1.00, -0.17) |
+| 2 | C | 1.000 | 0.995 | 0.640 | 0.575 | -0.221 (0/16) | 15 / 1 | (+1.00, -0.96) |
+| 2 | D | 1.000 | 1.000 | 0.845 | 0.825 | +0.168 (13/16) | **3 / 13** | (+1.00, -1.00) |
+| mean | C | 0.773 | 0.672 | 0.643 | 0.547 | -0.051 | 13.0 / 3.0 | |
+| mean | D | 0.722 | 0.602 | 0.593 | 0.472 | +0.214 | 2.0 / 14.0 | |
+
+**The fix repairs the critic and leaves the actor where it was.** With the
+diagonal covered, every D critic's best action over the square physically
+leads into the lower corridor on 13-16 of 16 roots (C: 3), its mean argmax
+moves from the diagonal to (+0.06..+0.31, -0.78..-1.00), and it scores DOWN
+0.4-0.6 above the corner the actor ends at (q(DOWN) -5.85/-5.89/-5.94 vs
+q(mode) -6.46/-6.32/-6.08). Yet the D actors converge to the same saturated
+corner family (+1.00, y) with x at loc +3.6..+5.4, and seed 1 -- whose
+critic now ranks (+0.06, -1.00) first on 16/16 roots -- ends at
+(+1.00, -0.17), i.e. straight into the shortcut. Mode success is unchanged
+in mean (0.773 vs 0.722) and seed 1 fails in both arms.
+
+So the chain has two breaks and the first is now confirmed and closed:
+
+1. **critic**: the diagonal region between the two covered clusters was
+   never queried and the critic scored it highest although its consequence
+   is bad and the ETT knew it. Covering it fixes the critic's action ranking
+   (this is a sampling fix; loss unchanged).
+2. **actor**: with a correct critic the actor still does not follow it. The
+   x component saturates at +1 (pre-tanh loc 3.6-5.4, tanh slope < 1e-3)
+   under the BC term, whose gradient on boundary-clipped replay actions is
+   40x the critic term's at the fork; once saturated the critic cannot move
+   it, and whether the episode ends on the lower route is decided by how far
+   y was pushed before that -- the seed lottery. The next fix belongs on the
+   actor side (the BC term on clipped actions / the tanh-normal
+   parameterization / the action distribution), not on the critic or the
+   ETT.
