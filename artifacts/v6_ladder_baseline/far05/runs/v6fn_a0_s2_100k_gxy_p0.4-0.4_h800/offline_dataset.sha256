@@ -1,0 +1,145 @@
+{
+  "sha256": "b3609eab9a983d98577752333cd84beb89a28a57c3f1a528b6274dd12bc6f5f3",
+  "meta": {
+    "benchmark": "long rectangular AntMaze with two independent rockfalls",
+    "environment_version": "rockfall_clock_v6_long_two_rockfall",
+    "source_env": "offline_antmaze_rockfall_clock_v6",
+    "action_dim": 8,
+    "horizon": 800,
+    "n_episodes": 1000,
+    "n_transitions": 262493,
+    "seed": 606,
+    "collection_seed": 606,
+    "route_rng_seed": 370609,
+    "randomness": {
+      "natural_environment_reset": true,
+      "hazards": "U1 and U2 sampled by distinct env RNG streams",
+      "schedules": "t0_1 and t0_2 sampled by distinct env RNG streams",
+      "rock_jitter": "one distinct env RNG stream per zone",
+      "teacher_route": "independent collector RNG stream",
+      "fixed_order_consumption_on_every_reset": true,
+      "stream_seeds": {
+        "ant_reset": 606,
+        "goal": 1383,
+        "u1": 191817,
+        "u2": 291817,
+        "t0_1": 178025,
+        "t0_2": 278025,
+        "rock_jitter_1": 156409,
+        "rock_jitter_2": 256409,
+        "teacher_take_detour": 370609
+      }
+    },
+    "p_active_1": 0.4,
+    "p_active_2": 0.4,
+    "teacher_detour_prob": 0.05,
+    "timing": {
+      "t0_range_1_inclusive": [
+        10,
+        45
+      ],
+      "t0_range_2_inclusive": [
+        90,
+        125
+      ],
+      "rockfall_steps": 72,
+      "wave_period": 12,
+      "teacher_crossing_steps": {
+        "1": 50,
+        "2": 50
+      },
+      "teacher_safety_margin": 8,
+      "teacher_release_margin": 0
+    },
+    "geometry": {
+      "map_cells": [
+        5,
+        9
+      ],
+      "cell_size": 4.0,
+      "outer_world_bounds": {
+        "x": [
+          -6.0,
+          30.0
+        ],
+        "y": [
+          -6.0,
+          14.0
+        ]
+      },
+      "start_cell": [
+        1,
+        1
+      ],
+      "start_xy": [
+        0.0,
+        0.0
+      ],
+      "goal_cell": [
+        1,
+        7
+      ],
+      "goal_cell_xy": [
+        24.0,
+        0.0
+      ],
+      "shortcut": "row 1: x=0 -> 24 at |y|<2",
+      "detour": "west column north to y=8, east to x=24, south to goal",
+      "hazard_zone_1": [
+        6.6,
+        9.4,
+        -2.0,
+        2.0
+      ],
+      "hazard_zone_2": [
+        14.6,
+        17.4,
+        -2.0,
+        2.0
+      ],
+      "mouth_x": {
+        "1": 5.4,
+        "2": 13.4
+      },
+      "rocks_per_zone": 4
+    },
+    "teacher": {
+      "class": "LongTwoRockfallTeacher",
+      "walker_controller": {
+        "path": "artifacts/walker/phase1/walker_best.pkl",
+        "sha256": "70b0a460b2e38332821f1846b48c75fbcdc884dd315b29c97ebc69083388cdd5",
+        "step": 1950016,
+        "qualified": true
+      },
+      "route_rule": "independent detour coin at episode start; otherwise shortcut with a separate prospective timetable decision at each zone",
+      "hold_action": "zero torque",
+      "detour_turn_bias": -0.8,
+      "detour_turn_bias_steps": 60,
+      "privileged_schedule_never_in_learner_observation": true
+    },
+    "outcomes": {
+      "success": 0.999,
+      "failure": 0.0,
+      "timeout": 0.001
+    },
+    "discard": {
+      "n_draws": 1000,
+      "n_discarded": 0,
+      "discard_fraction": 0.0,
+      "selection_rule": "none; every natural draw is retained",
+      "details_location": "antmaze_rockfall_clock_v6_p040_sidecar.npz"
+    },
+    "privileged_episode_metadata": "antmaze_rockfall_clock_v6_p040_sidecar.npz",
+    "composition_audit": "antmaze_rockfall_clock_v6_p040_composition_audit.json",
+    "failure_bank": false,
+    "name": "antmaze_rockfall_clock_v6_p040_gxy",
+    "env": "offline_antmaze_rockfall_clock_v6_gxy",
+    "env_name": "offline_antmaze_rockfall_clock_v6_gxy",
+    "obs_dim": 29,
+    "goal_dim": 2,
+    "goal_rep": "xy",
+    "observation_width": 31,
+    "derived_from": "antmaze_rockfall_clock_v6_p040.npz",
+    "derivation": "direct column selection state[0:29] + goal[0:2]; no re-simulation"
+  }
+}

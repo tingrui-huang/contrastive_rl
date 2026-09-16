@@ -1,0 +1,18 @@
+{
+  "fail_neg_alpha": 0.0,
+  "fail_bank_path": null,
+  "bank": null,
+  "seed": 0,
+  "steps": 100000,
+  "env_name": "offline_antmaze_rockfall_clock_v6_gxy",
+  "dataset": "artifacts/rockfall_clock_v6/dataset/antmaze_rockfall_clock_v6_p040_far30_gxy.npz",
+  "dataset_sha256": "16c3ce94be01a5b341209b999041476215eb6dcf0acd1588bebcde8484c523fa",
+  "p_active_1": 0.4,
+  "p_active_2": 0.4,
+  "teacher_detour_prob": 0.3,
+  "smoke": false,
+  "failure_episodes_in_training_set": false,
+  "note": "the failure bank is NEGATIVE-distribution data only; the offline dataset is the frozen V6 file and no failure episode is an anchor, a positive or a hindsight positive.",
+  "code_commit": "85cbf84ac808ac18d17463657c3ac373ba404933",
+  "command": "scripts/run_v6_failneg.py --alpha 0.0 --seed 0 --steps 100000 --teacher-detour-prob 0.3"
+}

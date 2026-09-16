@@ -141,3 +141,39 @@ Nothing in `crl/` was touched. The teacher, the environment, the failure
 bank, the vanilla recipe and its guard, the evaluation protocol and the
 `_p040` bytes are as they were at the previous commit; the 0.05 rung with no
 flag reproduces the previous run names and manifests exactly.
+
+## 5. Vanilla CRL on the 0.05 and 0.30 rungs, 3 seeds, mode and sample
+
+Run on 2026-09-16 with [`scripts/run_v6_ladder_baseline.py`](../scripts/run_v6_ladder_baseline.py):
+the plain baseline through the existing launcher (`run_v6_failneg.py
+--alpha 0.0`: no bank loaded, the failure-negative branch skipped), the
+frozen V6 recipe with bc_coef 0.05, 100k updates, the final checkpoint, and
+the authoritative natural-draw evaluation (n = 300, reset seed 909) under
+both policies: `mean` = deterministic tanh(loc) (the repository headline) and
+`sample` = tanh-normal samples at a fixed action seed (new `--policy sample`
+on the V6 eval). Two GPU nodes (3060 Ti and a shared 3090); provenance and
+per-episode rows in `artifacts/v6_ladder_baseline/`.
+
+| rung | seed | policy | success | failure | timeout | shortcut | detour |
+|---|---|---|---:|---:|---:|---:|---:|
+| 0.05 | 0 | mean | 0.370 | 0.630 | 0.000 | 0.973 | 0.000 |
+| 0.05 | 0 | sample | 0.373 | 0.627 | 0.000 | 0.977 | 0.003 |
+| 0.05 | 1 | mean | 0.370 | 0.630 | 0.000 | 0.960 | 0.000 |
+| 0.05 | 1 | sample | 0.370 | 0.630 | 0.000 | 0.977 | 0.000 |
+| 0.05 | 2 | mean | 0.370 | 0.630 | 0.000 | 0.963 | 0.000 |
+| 0.05 | 2 | sample | 0.367 | 0.630 | 0.003 | 0.983 | 0.000 |
+| 0.30 | 0 | mean | 0.370 | 0.630 | 0.000 | 0.963 | 0.000 |
+| 0.30 | 0 | sample | 0.373 | 0.617 | 0.010 | 0.973 | 0.017 |
+| 0.30 | 1 | mean | 0.370 | 0.630 | 0.000 | 0.977 | 0.000 |
+| 0.30 | 1 | sample | 0.370 | 0.630 | 0.000 | 0.977 | 0.000 |
+| 0.30 | 2 | mean | 0.370 | 0.630 | 0.000 | 0.987 | 0.000 |
+| 0.30 | 2 | sample | 0.377 | 0.620 | 0.003 | 0.973 | 0.000 |
+
+Every deterministic policy, on both rungs and all seeds, gives success 0.370
+= the fraction of the 300 seeded episodes with both zones inactive (U00:
+111/300), failure 0.630 (123 zone-1 and 66 zone-2 deaths, identical in every
+run), by-latent success U00 1.0 / U10 0.0 / U01 0.0 / U11 0.0, and detour
+rate 0.000. The sampled policy adds at most 1.7% detour episodes (0.30 seed
+0) and otherwise matches. Six times more long-route demonstrations (54 ->
+310 episodes) change nothing about blind vanilla CRL on this benchmark: it
+is always-go through the shortcut, and dies whenever a zone is active.
