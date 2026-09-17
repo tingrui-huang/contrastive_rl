@@ -608,3 +608,29 @@ still goes east: torque-centroid distance is not direction.  So with
 lambda 0.5 the BC term keeps the actor walking and the critic term
 still spends its gradient off the manifold rather than on the
 north-vs-east choice the critic does rank correctly among real torques.
+
+Its milestones (10k / 30k / 60k, 60 episodes each): shortcut 0.40 /
+0.27 / 0.65, detour 0.000 throughout, timeouts 0.58 / 0.75 / 0.43 -- the
+actor never passes through a north-going phase; the critic term costs
+locomotion early and the BC term wins it back.
+
+### Proposal-and-rank: the first detours on the Ant
+
+`eval_v6_rank_policy.py`: at every step K tanh-normal samples from a BC
+actor plus its mode, scored by a 30k critic f(s, a, g) (min over the twin
+heads), argmax.  With the lambda-0.5 actor as the proposal and critic seed
+0, K = 32, 100 natural draws at density 0.50:
+
+    success 0.41 / failure 0.34 / timeout 0.25; detour 0.12, shortcut
+    0.77; by latent U00 0.81, U10 0.30, U01 0.13, U11 0.38; the chosen
+    candidate scores +2.3 nats above the BC mode on average.
+
+Twelve per cent of episodes take the detour -- against 0.000-0.017 for
+every gradient-trained actor on this rung and 0.000 for the vanilla
+controls -- with nothing trained: the same critic that no gradient actor
+could use, applied only to actions the data policy proposes.  Still
+mostly shortcut: the proposal is a shortcut walker (its samples rarely
+point north) and the decision is re-made at every step from a fresh
+sample.  The queued runs sharpen both: the pure-BC proposal (lambda 1.0,
+which samples the recorded 5% detour torques) with all five 30k critics
+at K = 32, and the K dependence (8, 128).
