@@ -537,3 +537,22 @@ critic; the transplanted-donor probes are the gate for the Ant.
 Next, queued on the node in this order: the tagged gate on the 30k
 critics, frozen-critic actors (critic lr 0, actor + BC, 100k) on all
 five, a 30k joint variant on all five, then the p050 vanilla control.
+
+For the record, the 100k-critic joint actors at p050 (300 natural draws;
+`joint/seed_*/eval_*.json`):
+
+| seed | policy | success | failure | timeout | detour | shortcut | discounted | mouth 1 median | after-burst z1 |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| 0 | mean | 0.603 | 0.027 | 0.370 | 0.003 | 0.790 | 0.019 | 156 | 0.93 |
+| 0 | sample | 0.337 | 0.000 | 0.663 | 0.250 | 0.477 | 0.003 | 285 | 1.00 |
+| 1 | mean | 0.453 | 0.033 | 0.513 | 0.017 | 0.543 | 0.015 | 143 | 0.84 |
+| 1 | sample | 0.450 | 0.023 | 0.527 | 0.050 | 0.563 | 0.013 | 158 | 0.93 |
+| 2 | mean | 0.000 | 0.000 | 1.000 | 0.000 | 0.000 | 0.000 | -- | -- |
+| 2 | sample | 0.000 | 0.000 | 1.000 | 0.077 | 0.040 | 0.000 | 410 | 1.00 |
+| 3 | mean | 0.000 | 0.000 | 1.000 | 0.000 | 0.000 | 0.000 | -- | -- |
+| 3 | sample | 0.000 | 0.000 | 1.000 | 0.243 | 0.140 | 0.000 | 355 | 1.00 |
+
+Seeds 2 and 3 never leave the start under the mean policy (timeout
+1.000, no route); the sampled policies wander north (detour 0.24 on seed
+3) but never arrive.  A memorised critic teaches either a slow shortcut
+or no locomotion at all.
