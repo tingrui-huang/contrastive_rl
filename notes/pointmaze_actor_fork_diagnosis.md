@@ -781,3 +781,352 @@ fork -> goal cell), the 30k budget, or the dot-product critic's capacity for
 action discrimination at one state, is the open question; the stratified
 critic batches of the earlier absorbing line (G1: 128 ordinary + 64 + 64
 fork rows) are the obvious next probe, and were not run here.
+
+### 10b. What the law asks for at the fork, and what the critics deliver
+
+[`scripts/audit_f4_fork_target_margin.py`](../scripts/audit_f4_fork_target_margin.py),
+`outputs/pointmaze_corner_coverage_fix_v1/target_margin/`.  At the NCE
+optimum f(s, a, g) = log p(g | s, a) / p(g) + const, so the DOWN-vs-RIGHT
+margin a critic is asked for at the fork, for a goal frame in cell (8,3),
+is the log ratio of the discounted relabeling-law conditionals, mixed over
+every source that contributes fork anchors.  The per-path reach of the
+added queries (0.76 vs 0.25) is not that target.  On replay_E:
+
+| anchors | P((8,3) \| DOWN) | P((8,3) \| DR) | P((8,3) \| RIGHT) | target DOWN - RIGHT (jitter frames) | undiscounted |
+|---|---:|---:|---:|---:|---:|
+| all fork anchors | 0.251 | 0.085 | 0.171 | **+0.39** (+0.37) | +0.56 |
+| the 550 training contexts | 0.325 | 0.132 | 0.158 | **+0.72** (+0.71) | +0.91 |
+
+By source (all fork anchors): original episodes give RIGHT 0.463 (the
+sighted teacher survives the swamp) against DOWN 0.144 (random-walker
+DOWN), the C queries 0.121 / 0.315, the diagonal queries 0.065 / 0.098,
+the E queries 0.031 / 0.251.  The original rows are 25% of the RIGHT
+sector's fork mass and 12% of DOWN's, and they cap the target: synthetic
+sources alone would ask for +1.26, C + E alone +1.23, the original rows
+alone -1.17.  (Shares of absorbed-looking goal frames -- four equal frames
+outside (8,3) -- at the contexts: DOWN 0.08, DR 0.46, RIGHT 0.53.)
+
+The eight critics on those rows, point margin q(DOWN) - q(RIGHT) / width-0.75
+margin at the actors' locs, on the buffer-law fork -> jitter-(8,3) rows:
+
+| critic | family | 198 contexts x canonical | 198 contexts x jitter frames | buffer-law jitter rows |
+|---|---|---:|---:|---:|
+| E0 | RIGHT | -0.12 / -0.18 | -0.06 / -0.15 | -0.06 / -0.12 |
+| E1 | RIGHT | -0.02 / -0.29 | +0.01 / -0.28 | +0.01 / -0.23 |
+| E2 | DOWN | +0.27 / +0.18 | +0.24 / +0.15 | +0.25 / +0.17 |
+| E3 | RIGHT | -0.37 / -0.25 | -0.32 / -0.22 | -0.20 / -0.13 |
+| E4 | RIGHT | -0.01 / -0.06 | +0.02 / -0.04 | +0.01 / -0.04 |
+| D0 | CORNER | +0.08 / -0.02 | +0.07 / -0.03 | +0.02 / -0.04 |
+| D1 | DOWN | +0.32 / +0.16 | +0.34 / +0.17 | +0.24 / +0.12 |
+| D2 | CORNER | +0.11 / +0.16 | +0.17 / +0.20 | +0.13 / +0.15 |
+
+Mean over the five E critics on the buffer-law jitter rows: point +0.00,
+width -0.07, against a target of +0.39 (all fork) / +0.72 (contexts);
+seed scatter +-0.25.  The D critics average +0.13 / +0.08 against +0.27.
+The critics recover none to a third of the fork target on average, with a
+scatter as large as the target -- both bias and variance, on the one
+discrimination that decides the route.  The same critics recover the
+DOWN-vs-corner discrimination in every seed (+0.6..+1.2 raw at the roots,
+Step 10), whose futures differ in most goals (corner: 46% absorbed frames
+at the contexts), whereas DOWN and RIGHT differ on the (8,3) frames only
+in rate, and fork -> (8,3) rows are 0.7% of what the critic trains on.
+
+Two consequences.  Ensembling the E critics would not help (their mean is
+zero); a longer budget did not help before (the joint 300k critic, 9g).
+The levers left are the weight of the fork rows in the critic's loss (the
+stratified batches of the absorbing line, G1: 128 ordinary + 64 + 64 fork
+anchors), which attacks the recovery, and the source mixture at the queried
+contexts, which sets the ceiling: the original rows' sighted-teacher RIGHT
+continuation is the confounded quantity the ETT paths were generated to
+replace, and keeping it at 25% of the fork's RIGHT mass leaves a 0.39-nat
+target for a 30k critic with +-0.25 seed noise.  Neither was run here.
+
+## Step 11: fork-stratified critic batches, two arms, gated on the critic
+
+Pre-registered before the critics finished. Driver
+[`scripts/run_f4_fork_strata.py`](../scripts/run_f4_fork_strata.py), outputs in
+`outputs/pointmaze_fork_strata_v1/`; the buffer gained
+`TrajectoryBuffer.set_anchor_strata` (`crl/replay.py`: fixed per-stratum
+anchor counts per batch, weighted rows inside a stratum, the relabeling law
+and the future window untouched; checked against the plain law with a single
+stratum: episode marginal and offset law within 0.0014) and
+`build_offline_buffer` / `train` accept a `prepare` hook that runs before the
+freeze, so the offline gates audit the buffer as it is sampled (G1-G8 PASS
+with the strata on).
+
+Both arms: replay_E, the sealed 30k critic recipe, five seeds; only the
+ANCHOR distribution of the critic's batches changes.
+
+* `strat`: every batch of 256 = 128 anchors from the buffer's own law + 64
+  fork anchors with a DOWN-sector recorded action + 64 with a RIGHT-sector
+  action (the G1 composition).  Fork share of the anchors 0.048 -> 0.524.
+  The law's target at the fork is unchanged (+0.39); this arm tests whether
+  the critic recovers it once the fork rows carry weight.
+* `strat_synth`: the same composition with the original episodes' fork-cell
+  rows (6,006 of 542,300 anchor rows) dropped from every stratum, so at the
+  fork the critic's positives come from the ETT continuations only and the
+  observational rows stay everywhere else; row provenance selects anchors
+  and is never fed to a network.  Target at the fork +1.26.
+
+Gate (fixed): width-0.75 margin Qbar(DOWN loc) - Qbar(RIGHT loc) on the
+Step 10b buffer-law fork -> jitter-(8,3) rows >= +0.10 (D1's value, the
+critic whose three actors all went DOWN; on the same rows E2 +0.17 passes,
+E0/E1/E3/E4 and D0 fail, D2 +0.15 passes).  Actors (three fresh balanced-BC
+actors, Step 8 recipe on replay_E, 300 new-seed episodes) only for critics
+that pass.  Reading rule: `strat` 5/5 -> the deficit was recovery and the
+mixture can stay; `strat` short of 5/5 with `strat_synth` 5/5 -> the +0.39
+target is the ceiling and the original fork rows have to leave the critic's
+positives; both short -> neither the weight nor the target is the limit.
+A 200-update smoke of all four stages ran on this machine (CPU) before the
+real runs; the real critics run here on CPU (~20 min each, three at a time).
+
+### 11a. Critic side: `strat` 1/5, `strat_synth` 5/5
+
+All ten critics trained here (CPU, 8.3-8.6 min each; `gate.md`):
+
+| critic | jitter point | jitter width | gate | 16 roots d-r | Qbar DOWN-CORNER |
+|---|---:|---:|---|---:|---:|
+| strat 0 / 1 / 2 / 3 / 4 | -0.10 / +0.05 / +0.27 / +0.23 / +0.45 | -0.36 / -0.38 / -0.25 / -0.17 / **+0.23** | 1/5 | +0.06 .. +0.61 | +0.10 .. +0.44 |
+| strat_synth 0 / 1 / 2 / 3 / 4 | +0.70 / +0.71 / +0.87 / +0.36 / +0.90 | **+0.56 / +0.51 / +0.76 / +0.31 / +0.71** | 5/5 | +0.34 .. +0.92 | +0.30 .. +0.92 |
+| E 0-4 (reference) | -0.06 .. +0.24 | -0.23 .. +0.17 | 1/5 | | |
+| D 0-2 (reference) | +0.02 / +0.24 / +0.13 | -0.04 / +0.12 / +0.15 | 2/3 | | |
+
+Every `strat_synth` critic clears the gate by 3-7x D1's value, on every
+probe (point, width, 16 roots, DOWN-vs-corner); the seed scatter is the
+same +-0.2 as before, sitting on a mean of +0.57 instead of 0.
+
+Where `strat` fails ([`scripts/audit_f4_fork_action_landscape.py`](../scripts/audit_f4_fork_action_landscape.py),
+`action_landscape/REPORT.md`, a 6 x 6 action grid on the jitter rows).
+The law's own landscape at the fork: the DOWN column P((8,3)) = 0.29 at
+a_x in [-0.33, 0.33] on the bottom edge, flanked by 0.06 on both sides
+(the corner and diagonal queries); the right column 0.19 / 0.19 / 0.08
+/ 0.02 from a_y = -0.17 upwards.  Averaged over the actors' width-0.75
+neighbourhoods the law itself asks for only **+0.22** (DOWN loc 0.134 vs
+RIGHT loc 0.108) -- the data-side version of Step 5's "narrow peak against a
+plateau".  The `strat` critics do lift the DOWN column (seed 2: +0.32 /
++0.35 above RIGHT on the bottom row, against E2's -0.19 / +0.06), but
+they also lift the UP-RIGHT lobe (a = (0.83, +0.17 .. +0.5): +0.35 ..
++0.56 above RIGHT for seed 2, +0.16 .. +0.19 for seed 0) where the law
+says 0.19 -> 0.08 -> 0.02, i.e. worse than RIGHT; the E and D critics score
+that lobe -0.1 .. -0.9.  The width average at the RIGHT loc is dominated
+by that lobe, so the point margin improves while the decision variable gets
+worse.  Which rows produce the lobe is not settled (the RIGHT stratum at
+25% of the batch sharpens the a_y ~ 0 band and the up-right bins reach the
+critic only through the own-law half); the arm is recorded as a failure of
+shape, not of recovery.
+
+Under the `strat_synth` mixture the law's width margin at the same locs is
+**+0.88** (right column 0.03 / 0.04 / 0.08 / 0.07: with the sighted
+teacher's rows gone, RIGHT at the fork is what the ETT says it is), and the
+critics land at +0.29 .. +0.73 with the DOWN column at +0.6 and the up-right
+lobe negative.  By the reading rule fixed above: the +0.39 (point) / +0.22
+(width) target of the as-trained mixture is the ceiling, and the original
+episodes' fork rows -- the confounded observational continuation the ETT
+paths were generated to replace -- have to leave the critic's positives at
+the queried contexts.  Actors: pending (section 11b).
+
+### 11b. Actor side: every critic that passed the gate gives 3/3 DOWN actors
+
+Actors trained on the RTX 5060 Ti node (three fresh balanced-BC actors per
+passing critic, Step 8 recipe on replay_E, 300k updates; 300 new-seed
+episodes, reset seeds from 31.5M; `REPORT.md`):
+
+| arm | critic (jitter width) | actor fork modes under the task goal | family | mode reach | mode lower | sample lower |
+|---|---|---|---|---:|---:|---|
+| strat | seed 4 (+0.23) | (+0.46 / +0.08 / +0.15, -1.00) | DOWN x3 | 1.000 x3 | **1.000 x3** | 0.80 / 0.94 / 0.92 |
+| strat_synth | seed 0 (+0.56) | (+0.30 / +0.18 / +0.28, -1.00) | DOWN x3 | 1.000 x3 | **1.000 x3** | 0.97 / 0.93 / 0.96 |
+| strat_synth | seed 1 (+0.51) | (+0.41 / +0.29 / +0.23, -1.00) | DOWN x3 | 1.000 x3 | **1.000 x3** | 0.92 / 0.96 / 0.92 |
+| strat_synth | seed 2 (+0.76) | (+0.06 / +0.04 / +0.08, -1.00) | DOWN x3 | 1.000 x3 | **1.000 x3** | 0.94 / 0.98 / 0.98 |
+| strat_synth | seed 3 (+0.31) | (+0.40 / +0.11 / +0.33, -1.00) | DOWN x3 | 1.000 x3 | **1.000 x3** | 0.90 / 0.93 / 0.91 |
+| strat_synth | seed 4 (+0.71) | (-0.11 / -0.11 / -0.19, -1.00) | DOWN x3 | 1.000 x3 | **1.000 x3** | 0.94 / 0.98 / 0.94 |
+
+`strat_synth`: 15/15 DOWN-family actors, mode lower route 1.000 on every
+one of the 15 x 300 episodes, sampled-action lower route 0.90-0.98 (the
+best sampled figures of the whole line; Step 8's D1 actors were
+0.875-0.900).  Against the references: E series 3/15, D series 13/18 (9/18
+DOWN family), joint training 0/6.  The four `strat` critics that failed the
+gate were not given actors (pre-registered); the one that passed gave 3/3.
+
+Reading, by the rule fixed in Step 11's preamble: the ceiling was the
+target, not the fit.  With the sighted teacher's fork rows out of the
+critic's positives at the queried contexts, five 30k critics of five learn
+the fork's action dependence with margins 3-7x the best earlier critic,
+and every actor trained on them takes the detour.  The gate itself is now
+6 for 6 as a predictor of the DOWN family on critics it was applied to
+before the actors existed (and 3 for 3 on the Step 9-10 critics with width
+>= +0.10 that were not corner critics: D1, E2; D2 at +0.15 is the corner
+family, which the margin does not address).
+
+What did not change: the loss, the networks, the ETT, the actor recipe
+(its BC rows still include the original fork rows at their balanced
+share), the evaluation.  What changed: the anchor distribution of the
+critic's batches (fork rows 5% -> 52%) and, decisively, which continuation
+counts as the positive at the fork.  Provenance (`audit_source`) is used to
+select anchors and is never an input to a network; the same selection is
+expressible without it as "at a queried context, the model's continuation
+replaces the recorded one" (the P design of G1), which is how it should be
+implemented if this becomes the method rather than a diagnosis.
+
+## Step 12: the fair version -- interventional futures for every anchor (branch replay)
+
+Step 11's `strat_synth` selected rows by provenance at one place; the user
+ruled that out as a method ("vanilla CRL does not pick its futures").  The
+uniform rule that achieves the same thing without selecting anything:
+**the critic's positive futures are the interventional ones, p(g | s,
+do(a)), from the fixed ETT rolled out of every recorded anchor; the
+recorded futures fit the ETT and are never positives.**  Vanilla CRL is the
+same recipe with the recorded continuation in place of the model's.  This
+is the P design of G1 (`notes/pointmaze_absorbing_integration.md`: "all P
+production positives come from P; no observational mix"), now with the
+fixed action-sensitive ETT and applied to every anchor rather than a cache.
+
+[`scripts/build_f4_branch_replay.py`](../scripts/build_f4_branch_replay.py):
+for each of the 3,300 original episodes of the D subset and each anchor
+time t in [0, 49], a path with state[0] = the recorded s_t, action[0] = the
+recorded a_t, then the fixed ETT / nominal / continuation actor for the
+50 - t remaining steps (the C/D/E generator verbatim, seed stream +30k).
+165,000 branch paths + the 7,700 query paths of arms C/D/E (same form:
+queried first action, model continuation) = replay_P (172,700 paths,
+generated on this machine in 3 minutes).  Anchors = row 0 of every path
+(`set_anchor_strata`, one stratum), so the anchor law is uniform over
+recorded rows plus queries, exactly vanilla's (s, a) rows; later rows are
+goals only.  Fork first rows 13,706 (7.9%).  Under the model, recorded fork
+anchors reach the goal 0.39 (DOWN sector) / 0.24 (RIGHT) / 0.21 (DR); the
+whole replay reaches 0.74, absorbed 0.21.
+
+One model defect surfaced and is carried as an ablation, not corrected in
+the rule: 15% of the recorded anchors are stationary rows (four identical
+frames, t >= 4; all 24,760 of them in the swamp cells, and in the record a
+stationary row is followed by a stationary row 100% of the time), and the
+ETT moves out of 84% of them.  `replay_P_frozen` starts those paths as
+absorbed (the F4 death signature is an observable, not a hidden label);
+arm `P_frozen` trains on it.
+
+Arms, all with the sealed 30k critic recipe, five seeds, Step 11's gate,
+actor recipe (replay_E, unchanged) and evaluation
+([`scripts/run_f4_branch_replay.py`](../scripts/run_f4_branch_replay.py),
+`outputs/pointmaze_branch_replay_v1/`, RTX 5060 Ti node):
+`P` (uniform batches), `P_strat` (Step 11's 128/64/64 composition, to
+separate the replay from the stratification), `P_frozen`.
+
+### 12a. Critic side: `P` 5/5, `P_strat` 5/5 -- no selection needed
+
+The node's container was re-created twice between critic trainings and
+their actors (a 15 GB node; both restarts coincided with six learner
+processes on the 172k-path replays, so the third run is strictly
+sequential), and everything on it was lost each time.  The ten critics
+were therefore trained three times from the same seeds and data; all three
+trainings are reported, the third is the one the actors use.
+
+| critic | jitter width: 1st / 2nd / **3rd** training | gate | jitter point (3rd) | 16 roots d-r (3rd) | Qbar DOWN-CORNER (3rd) |
+|---|---|---|---:|---:|---:|
+| P seed 0 | +0.38 / +0.26 / **+0.45** | PASS x3 | +0.72 | +0.53 | +0.93 |
+| P seed 1 | +0.50 / +0.42 / **+0.59** | PASS x3 | +0.86 | +0.74 | +0.66 |
+| P seed 2 | +0.48 / +0.45 / **+0.60** | PASS x3 | +0.82 | +0.71 | +0.93 |
+| P seed 3 | +0.63 / +0.56 / **+0.65** | PASS x3 | +0.76 | +0.33 | +0.68 |
+| P seed 4 | +0.75 / +0.65 / **+0.66** | PASS x3 | +1.03 | +0.79 | +0.70 |
+| P_strat 0-4 | +0.43 / +0.62 / +0.30 / +0.37 / +0.26; +0.57 / +0.52 / +0.21 / +0.33 / +0.33; **+0.50 / +0.55 / +0.34 / +0.40 / +0.26** | PASS x15 | +0.34 .. +0.73 | +0.32 .. +0.82 | +0.34 .. +0.73 |
+| strat_synth 0-4 (Step 11) | +0.56 / +0.51 / +0.76 / +0.31 / +0.71 | 5/5 | | | |
+| E 0-4 | -0.12 / -0.23 / +0.17 / -0.13 / -0.04 | 1/5 | | | |
+
+The plain arm `P` -- uniform batches, no provenance, no stratification --
+passes on every seed in all three trainings (30 of 30 critic trainings
+across both arms; mean width margin of `P` +0.55 / +0.47 / +0.59 against
+E's -0.07 and D1's +0.12); a repeated training of one seed moves its
+margin by up to 0.2 while no critic of either arm comes within 0.15 of the
+gate.  Stratification adds nothing on top of the replay.  Actors: pending
+(12b).
+
+### 12b. Actor side: `P` 15/15, `P_strat` 15/15
+
+Three fresh balanced-BC actors per critic (Step 8 recipe on replay_E,
+300k updates, RTX 5060 Ti node), 300 new-seed episodes each (`REPORT.md`):
+
+| arm | critic (jitter width) | actor fork modes under the task goal | family | mode reach | mode lower | sample lower |
+|---|---|---|---|---:|---:|---|
+| P | seed 0 (+0.45) | (-0.05 / -0.04 / -0.02, -1.00) | DOWN x3 | 1.000 x3 | **1.000 x3** | 0.92 / 0.92 / 0.94 |
+| P | seed 1 (+0.59) | (+0.25 / +0.17 / +0.21, -1.00) | DOWN x3 | 1.000 x3 | **1.000 x3** | 0.96 / 0.99 / 0.91 |
+| P | seed 2 (+0.60) | (-0.30 / -0.15 / -0.39, -1.00) | DOWN x3 | 1.000 x3 | **1.000 x3** | 0.98 / 0.99 / 0.98 |
+| P | seed 3 (+0.65) | (+0.11 / +0.17 / +0.11, -1.00) | DOWN x3 | 1.000 x3 | **1.000 x3** | 0.95 / 0.97 / 0.95 |
+| P | seed 4 (+0.66) | (+0.11 / +0.06 / +0.11, -1.00) | DOWN x3 | 1.000 x3 | **1.000 x3** | 0.99 / 1.00 / 1.00 |
+| P_strat | seeds 0-4 (+0.26 .. +0.55) | x in [-0.03, +0.53], y = -1.00 | DOWN x15 | 1.000 x15 | **1.000 x15** | 0.70 .. 1.00 (median 0.96) |
+
+`P`: 15 of 15 actors in the DOWN family, lower route on every one of the
+15 x 300 mode episodes, 0.91-1.00 with sampled actions (Step 11's
+`strat_synth`: 0.90-0.98; Step 8's D1 actors: 0.875-0.90).  `P_strat` the
+same at mode, slightly wider at sample (one actor at 0.70).  The
+references on the identical protocol: E 3/15, D 13/18 (9/18 DOWN), plain
+CRL O 0/9 at mode >= 0.9, joint training 0/6.
+
+What this establishes.  With the critic's positive futures taken from the
+fixed ETT rolled out of every recorded anchor -- one rule for every row,
+no provenance, no state or outcome selection, anchors exactly vanilla's
+(s, a) rows, the loss, networks, actor recipe and evaluation unchanged --
+five critic seeds of five learn the fork's action dependence (width
+margins +0.45 .. +0.66 against a gate of +0.10) and fifteen actors of
+fifteen take the detour on every new-seed episode.  The confounded
+quantity was the recorded continuation itself; replacing it everywhere is
+what the method (G1's P design) said to do, and it works once the ETT is
+action-sensitive at the fork (Step 3b's coverage) -- the 50/50 append of
+arms C/D/E was the compromise that kept the confounding in.
+
+Costs and limits, stated: (i) the ETT's errors now enter every anchor,
+including its over-pessimism on corner actions (Step 10 audit) and its
+84% revival rate on recorded stationary anchors; `P_frozen` measures the
+second (12c).  (ii) The actor's BC term still imitates the recorded
+actions (as vanilla does); only the critic's futures changed.  (iii) One
+benchmark, one ETT, one continuation actor; the branch replay is 172,700
+paths for 3,300 episodes (generation 3 minutes on a CPU), and the critic
+holds two copies of it in memory (~3 GB per process).
+
+### 12c. `P_frozen`: the revival of recorded dead states does not matter
+
+Same protocol on replay_P_frozen (recorded stationary anchors at t >= 4
+start absorbed instead of being handed to the model): critics 5/5 pass
+(jitter width +0.36 / +0.30 / +0.29 / +0.37 / +0.56 -- slightly BELOW
+arm P's +0.45 .. +0.66, so the model's 84% revival of dead anchors was
+not inflating the margin), actors 15/15 DOWN, mode lower 1.000 x15, sample
+0.91 .. 0.99.  The defect is real (Step 12 preamble) but the fork decision
+does not depend on it; the uniform rule stands without the correction.
+
+## Step 13: joint training on the branch replay, critic warm-started -- 5/5
+
+The two-stage recipe (frozen critic, then a fresh actor) was a diagnostic
+device; the original learner updates critic and actor together at every
+step.  Step 9 showed the joint schedule fails from scratch on replay_D
+(0/6): the actor commits to RIGHT before the critic is ready.  Here the
+joint schedule runs with the critic warm-started
+([`scripts/run_f4_joint_warm.py`](../scripts/run_f4_joint_warm.py),
+`outputs/pointmaze_joint_warm_v1/`, RTX 5060 Ti node):
+
+* critic = the Step 12 arm-P critic of the same seed (30k updates on
+  replay_P), with its Adam state; actor fresh (PRNGKey 20000 + seed);
+* then 300,000 joint updates through `crl.train`'s own loop
+  (`build_learner.update_step`: critic update then actor update on the same
+  batch), resumed from a constructed `latest.pkl` at step 0;
+* critic term on replay_P (row-0 anchors, the P strata), the actor's BC
+  rows from replay_E's balanced law (`Config.bc_dataset`, new), bc 0.05,
+  Acme log-prob, random_goals 0 -- i.e. the two-stage actor recipe with the
+  critic unfrozen;
+* checkpoints at 10k / 20k / 30k / 50k / 75k / 100k / 150k / 200k / 250k
+  (crl/train.py now saves step milestones every iteration, not only at
+  eval time; seed 0 predates the fix and has warm + final only);
+* the Step 10b gate on every checkpoint, the actor's fork mode at every
+  checkpoint, 300 new-seed episodes on the final actor.
+
+| seed | critic width: warm -> 10k .. 250k -> final | actor at 10k / final | mode reach | mode lower | sample lower |
+|---|---|---|---:|---:|---:|
+| 0 | +0.45 -> (no milestones) -> +0.22 | -- / (+0.17, -1.00) DOWN | 1.000 | **1.000** | 0.960 |
+| 1 | +0.59 -> +0.77 +0.70 +0.51 +0.47 +0.56 +0.38 +0.41 +0.48 +0.41 -> +0.43 | (+0.09, -1.00) / (-0.02, -1.00) DOWN | 1.000 | **1.000** | 0.997 |
+| 2 | +0.60 -> +0.39 +0.56 +0.44 +0.50 +0.42 +0.38 +0.61 +0.48 +0.43 -> +0.41 | (+0.33, -0.99) / (+0.07, -1.00) DOWN | 1.000 | **1.000** | 0.897 |
+| 3 | +0.65 -> +0.76 +0.60 +0.54 +0.53 +0.69 +0.54 +0.49 +0.55 +0.59 -> +0.59 | (-0.26, -0.99) / (-0.06, -1.00) DOWN | 1.000 | **1.000** | 1.000 |
+| 4 | +0.66 -> +0.46 +0.42 +0.66 +0.64 +0.56 +0.50 +0.43 +0.44 +0.36 -> +0.48 | (+0.20, -1.00) / (+0.22, -1.00) DOWN | 1.000 | **1.000** | 0.900 |
+
+5/5 DOWN, lower route on all 5 x 300 mode episodes, 0.90-1.00 with sampled
+actions.  On every seed with milestones the actor is in the DOWN family by
+10k joint updates and never leaves it; the critic's width margin moves
+inside +0.36 .. +0.77 for the whole 300k (seed 0's end value +0.22 is the
+lowest seen), never near the gate.  Joint training with the critic
+warm-started on the branch replay therefore reproduces the two-stage result
+without freezing anything; what made Step 9's joint runs fail was the
+actor meeting an immature critic on a replay whose fork target was small.
