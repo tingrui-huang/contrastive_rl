@@ -157,7 +157,7 @@ def train_critic(seed, steps):
 
 
 def vanilla_dir(seed):
-  return OUT / 'vanilla_g0999' / f'seed_{seed}'
+  return OUT / ('vanilla_g0999' + CRITIC_TAG) / f'seed_{seed}'   # the tag names a matched-budget vanilla set too
 
 
 def train_vanilla(seed, steps):

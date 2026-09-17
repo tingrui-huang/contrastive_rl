@@ -790,3 +790,33 @@ own proportion).  The 0.33-0.47 above is the critic's ranking, not the
 candidate set or the commitment rule.  Control 2 (the same policy ranked
 by the vanilla critics trained on the recorded futures) waits for the
 vanilla learners.
+
+### Control 2 is not clean: the vanilla critic also ranks north segments up
+
+The same segment-rank policy ranked by the p050 vanilla critic seed 0
+(100k updates on the recorded futures, gamma 0.999; 300 draws): success
+0.397 / failure 0.270 / timeout 0.333; **detour 0.383**, shortcut 0.437;
+172 north picks in 1025 decisions -- indistinguishable from the branch
+critics (0.33-0.47).  The vanilla actor itself is the blind shortcut
+(seed 0, mean: success 0.260 / failure 0.730, detour 0.003).
+
+Four-group same-state probe on the three p050 vanilla critics (200 start
+states; replay north-donor minus east-donor torques / recorded north
+minus east): +0.22 / +0.23 / +0.38 and +0.07 / +0.06 / +0.03 (the branch
+30k critic 0: +0.68 and +0.15).  So the vanilla critics carry a north
+preference of a few tenths of a nat at the start state on the same
+torques, against their own data's observational target of -0.45, and
+the argmax over 64 candidates turns a preference of that size into ~40%
+north picks just as it does for the branch critics' +0.7..+1.1.  The
+segment-rank number therefore does not separate the two critic families
+at this rung; the random-pick control only shows that some critic
+preference is being decoded.  What does separate them is the margin
+itself (2-3x), and the recorded-torque gate (+0.11..+0.26 against
++0.03..+0.07).
+
+Open: why a critic trained on recorded futures prefers north-donor
+torques at all (100k vanilla critics may memorise as the branch ones do;
+the rare north rows come from detour episodes that always reach).
+Running: vanilla critics at the matched 30k budget (three seeds), their
+probes and their segment-rank; the same probe on the p040 and p060
+vanilla critics.
