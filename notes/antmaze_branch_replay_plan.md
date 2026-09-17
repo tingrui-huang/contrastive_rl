@@ -845,3 +845,33 @@ donor torques and +0.08..+0.26 on recorded torques (5/5 the right sign at
 3-10x the vanilla size), vanilla +0.07..+0.42 and +0.01..+0.07.  Next: a
 magnitude-respecting decoding (Boltzmann over the candidates' f, tau 1)
 on both families, and the matched 30k vanilla critics.
+
+### Remedy 1: Boltzmann segment choice separates the families
+
+Same candidates (K = 64 recorded 25-step segments at the start, pure-BC
+walker elsewhere), the segment sampled with p ~ exp(f / 1) instead of
+argmax, 100 draws per ranker:
+
+| ranker | success | failure | timeout | **detour** | shortcut | north picks / decisions |
+|---|---:|---:|---:|---:|---:|---|
+| branch 30k critic 0 | 0.33 | 0.40 | 0.27 | **0.23** | 0.60 | 33 / 286 (0.115) |
+| branch 30k critic 1 | 0.30 | 0.39 | 0.31 | **0.21** | 0.54 | 35 / 303 (0.116) |
+| branch 30k critic 2 | 0.24 | 0.50 | 0.26 | **0.18** | 0.63 | 30 / 341 (0.088) |
+| branch 30k critic 3 | 0.43 | 0.37 | 0.20 | **0.26** | 0.58 | 33 / 218 (0.151) |
+| branch 30k critic 4 | 0.32 | 0.40 | 0.28 | **0.20** | 0.60 | 29 / 242 (0.120) |
+| vanilla 100k critic 0 | 0.25 | 0.60 | 0.15 | **0.04** | 0.83 | 10 / 197 (0.051) |
+| vanilla 100k critic 1 | 0.29 | 0.48 | 0.23 | **0.08** | 0.72 | 18 / 261 (0.069) |
+| vanilla 100k critic 2 | 0.27 | 0.52 | 0.21 | **0.11** | 0.72 | 14 / 222 (0.063) |
+| (uniform pick, from above) | 0.24 | 0.56 | 0.20 | 0.05 | 0.77 | 22 / 684 (0.032) |
+
+Branch critics detour 0.18-0.26 (mean 0.22; north-pick rate 0.09-0.15),
+vanilla critics 0.04-0.11 (mean 0.08; 0.05-0.07), uniform 0.05 (0.03).
+With the decoding made to respect the size of the preference, the
+branch critics' +0.7..+1.1 nats show as a north-pick rate 3-4x the
+candidates' proportion on 5/5 seeds, and the vanilla critics' few tenths
+of a nat as 1.5-2x -- consistent with a Boltzmann rate of p_north *
+exp(margin) / Z at those margins.  This is the honest behavioural readout
+of the rung: the branch replay's contribution is a ~3x larger north
+preference at the start state, which under a magnitude-respecting
+decoding is a detour rate of ~0.22 against ~0.08, with the argmax figure
+(~0.4 for both) an artefact of amplification.
