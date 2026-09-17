@@ -875,3 +875,52 @@ of the rung: the branch replay's contribution is a ~3x larger north
 preference at the start state, which under a magnitude-respecting
 decoding is a detour rate of ~0.22 against ~0.08, with the argmax figure
 (~0.4 for both) an artefact of amplification.
+
+### Remedy 2: matched-budget vanilla critics (30k) -- the argmax reads the tail, not the mean
+
+Three vanilla critics at 30,000 updates on the recorded p050 data
+(`vanilla_g0999_30k`), the four-group probe and the argmax segment-rank
+(300 draws each):
+
+| vanilla 30k critic | north-donor minus east-donor | recorded north minus east | argmax segment-rank detour | north picks / decisions |
+|---|---:|---:|---:|---|
+| seed 0 | -0.01 | +0.00 | **0.307** | 0.112 |
+| seed 1 | -0.29 | -0.04 | **0.193** | 0.075 |
+| seed 2 | -0.07 | +0.01 | **0.280** | 0.105 |
+
+At the matched budget the vanilla critics carry no north tilt at all on
+the same-state mean (seed 1 leans east by 0.29), and the argmax
+segment-rank still detours 0.19-0.31 -- four to six times the 0.05 of a
+uniform pick.  So the argmax over 64 candidates is not reading the
+critic's mean preference; it reads the upper tail of f over the
+candidate set, and the rare north segments (5% of the data, a
+less-trained region of the critic) have the wider f spread and win the
+max more often than their mean warrants.  This closes the argmax
+decoding as a readout of anything: its 0.33-0.47 for the branch
+critics, 0.38-0.47 for the 100k vanilla critics and 0.19-0.31 for the
+30k vanilla critics all sit on the same tail effect.  The Boltzmann
+choice (remedy 1) is the one that reads the mean and separates the
+families (0.18-0.26 against 0.04-0.11); its cell on the 30k vanilla
+critics was not run (the study stops here at the user's request) and
+is the obvious next measurement.
+
+### Where the rung stands (stop point, 2026-09-17 evening)
+
+* Critic level (the method's own claim): branch-replay critics at 30k
+  updates rank real north torques above real east torques at the same
+  start state on 5/5 seeds, +0.68..+1.11 on the replay's donor torques
+  and +0.08..+0.26 on recorded torques, against a law target of +0.60;
+  every vanilla critic (100k or 30k, any rung) is within +-0.4 on the
+  donor torques and within +-0.07 on recorded torques.  At 100k the
+  branch critics memorise their rows and the preference is gone.
+* Actor level (the paper's recipe): no gradient-trained actor on the Ant
+  detours (0.00-0.02 on 300 draws for joint 100k, frozen critic with BC
+  0.05 / 0.5 / 1.0); the 8-d actor climbs the NCE critic off the data
+  manifold within 10k updates.  Vanilla at p 0.50: success 0.26,
+  failure 0.73, detour 0.003-0.007 (3 seeds).
+* Decoding level: a Boltzmann choice over recorded 25-step segments at
+  the start, ranked by the branch critics, detours 0.18-0.26 (5/5)
+  against 0.04-0.11 for the 100k vanilla critics and 0.05 uniform; the
+  argmax variant is a tail artefact and is withdrawn as evidence.
+* Everything on the Ant is at the oracle model (simulator with hazards
+  redrawn); Phase 2 (a learned macro-ETT) has not started.
