@@ -1183,3 +1183,105 @@ Baselines: random, the frozen policy's own log-likelihood of the
 candidate, the vanilla critics.  The split-half sign agreement of the
 differences themselves is the ceiling.  PASS = pooled dense-set
 validated agreement >= 0.65 and above 0.5 by two s.e.
+
+### Round 1 result (2026-09-18): stopped at the first rule -- the critic fits its own keys and carries nothing to new states
+
+Chain `node_r1_30108.sh`, outputs under `outputs/antmaze_branch_replay_p050/`
+(`generation_policy_r1.md`, `gate_policy_r1.md`, `gate_policy_r1_knn.md`,
+`probe_r1_fit_agreement.md`, `holdout_policy_r1.npz`; the replay itself
+and the checkpoints stay on the node / local disk).  Replay: 17,756 fit
+paths in 1,791 s (10 workers); the policy's tanh-normal scale at the
+anchors 0.445 (median 0.211), so the sampled candidates are real
+perturbations of the mode (torque distance ~0.3-0.5).  Three 30k critics
+(7.6 min each), two matched 30k vanilla critics on the recorded futures.
+
+**1. What the replay contains (held-out anchors, 60 per set, 5 candidates
+x 4 paired draws).**  Between-candidate differences at ONE state are
+reproducible across hazard draws only in the turning process and on the
+north leg; at the start they are noise:
+
+| set | candidates' reach (recorded / mode / 3 samples) | pairs with abs log ratio > 0.3 | split-half sign agreement | validated pairs |
+|---|---|---:|---:|---:|
+| start (t <= 5) | 0.25 / 0.26 / 0.27 / 0.24 / 0.25 | 0.22 | **0.38** | 28 |
+| start late (shortcut eps, t > 5) | 0.21 / 0.22 / 0.22 / 0.22 / 0.21 | 0.24 | **0.41** | 39 |
+| shortcut early | 0.25 x5 | 0.21 | **0.26** | 16 |
+| turning (detour eps, x<2, y<2, t>5) | 0.65 / 0.53 / 0.58 / 0.56 / 0.51 | 0.67 | **0.76** | 287 |
+| north leg | 0.83 / 0.80 / 0.70 / 0.88 / 0.72 | 0.74 | **0.82** | 314 |
+| whole maze (every k-th row) | 0.73 / 0.71 / 0.71 / 0.69 / 0.69 | 0.32 | **0.89** | 143 |
+
+A split-half agreement below 0.5 is regression to the mean: a pair
+selected for a large difference on draws {0,1} reverses on draws {2,3}
+more often than not, i.e. at the start region the single torque's effect
+on the outcome is smaller than the hazard-draw noise even at the same
+state.  Where the differences are real (turning, north leg) they are
+about completing the walk -- the reach spread across a state's five
+candidates is 0.63 / 0.61 -- and not about the route: within-anchor
+correlation of a candidate's P_goal with its going-around is 0.10
+(went-around spread 0.33 in the turning set, 0 on the north leg).  The
+same picture in the fit set (2 draws): split-half 0.29 / 0.29 / 0.23 at
+the three start-type sets, 0.78 / 0.78 at turning / north leg.
+
+**2. The gate (`gate_policy_r1.md`; validated pairs, chance 0.50; s.e. =
+anchor bootstrap; a random scorer over 40 seeds gives 0.50 +- 0.03 pooled
+and +- 0.035-0.048 per set).**
+
+| scorer | turning (287 pairs, 50 anchors) | north leg (314, 57) | pooled dense (684, 123) | samples-only pooled (222) | pick gain pooled |
+|---|---:|---:|---:|---:|---:|
+| r1 critic seed 0 / 1 / 2 (30k) | 0.47 / 0.47 / 0.46 | 0.52 / 0.54 / 0.54 | **0.51 / 0.52 / 0.50** (s.e. 0.025) | 0.50 / 0.52 / 0.45 | +0.03 / +0.02 / -0.10 |
+| r1 critic seed 0 at 10k / 20k | 0.39 / 0.41 | 0.55 / 0.60 | 0.48 / 0.51 | 0.46 / 0.50 | -0.06 / +0.02 |
+| vanilla 30k seed 0 / 1 (recorded futures) | 0.44 / 0.45 | 0.46 / 0.47 | 0.46 / 0.46 | 0.49 / 0.50 | -0.17 / -0.01 |
+| policy log-likelihood of the candidate | 0.52 | 0.47 | 0.52 | 0.53 | -0.06 |
+| kNN on the fit keys (k 10; torque weight 1 / 4) | 0.40 / 0.44 | 0.48 / 0.48 | 0.43 / 0.45 | 0.46 / 0.45 | -0.01 / 0.00 |
+| a predictor that saw two of the four draws at the same state | (1.00 by construction) | | | | 0.76 |
+
+No scorer is above chance on held-out states; the pass line (0.65 pooled)
+is not approached by any critic at any milestone; 0/3 pass, chain
+stopped before the actor stage (`MARK_R1_STOP_CRITIC`), per the first
+stop rule.
+
+**3. Why: the critics DO fit the differences on their own keys
+(`probe_r1_fit_agreement.md`, the fit anchors' 3 candidates x 2 draws,
+validated the same way).**
+
+| scorer | turning (319 pairs) | north leg (410) | pooled dense (795) | samples-only (249) | pick gain pooled (938 anchors) |
+|---|---:|---:|---:|---:|---:|
+| r1 critic seed 0 / 1 / 2 (30k) | 0.92 / 0.92 / 0.91 | 0.84 / 0.85 / 0.87 | **0.87 / 0.88 / 0.88** | 0.88 / 0.88 / 0.88 | 0.46 / 0.41 / 0.40 |
+| r1 critic seed 0 at 20k | 0.93 | 0.79 | 0.84 | 0.84 | 0.34 |
+| random | 0.48 | 0.52 | 0.51 | 0.53 | 0.06 |
+
+On the training states the critic orders the candidates the way their
+(two-draw-validated) consequences go, 0.87-0.88, including pairs of two
+policy samples; on states from other episodes of the same kind it is at
+0.50.  The nearest-neighbour control says the same thing without a
+network: the fit keys' own outcomes, averaged over the 10 nearest
+(state, torque) keys, order held-out candidates at 0.43-0.45.  So the
+value the critic learns is a per-(state, torque) table entry: the effect
+of a torque perturbation on whether the walker completes the turn is a
+function of the exact pose at a resolution that 300 turning anchors and
+300 north-leg anchors do not cover, and it does not transfer by
+proximity in (s, a) space at this sample size.
+
+**Reading against the round's premise.**  The premise was right in one
+part and not in the other.  Right: concrete torques DO have
+state-conditioned consequences that are reproducible at the same state
+(0.76-0.82 on the turn and the north leg), which the aggregate N/E
+reading had hidden.  Not right: those consequences are not learnable as a
+function of the state from this data -- they neither transfer through
+an NCE critic nor through nearest neighbours -- and they are about
+finishing the walk, not about the route.  At the start region, the only
+place where the route is decided, the single torque's consequences are
+not reproducible even at the same state under this continuation, so
+there is nothing for any value estimator to carry there in round 1, and
+the iteration the plan relies on (improve the turn first, then the
+front torques' values change) cannot start: the mid-turn signal the
+critic would improve from does not generalise to the states the
+updated actor will meet.
+
+What "fix value estimation" would have to mean here.  Not a different
+loss: the differences are real per state but do not transfer.  The
+levers are data density in the turning process (the dataset has 54
+detour episodes, 1,277 turning rows; a rung collected with more teacher
+detours multiplies that) and a coarser action variable at which the
+consequences are smooth across states -- the second is the macro-action
+/ subgoal change the user has kept off the table, the first cannot touch
+the start region.  Both are the user's call; the actor stage was not run.

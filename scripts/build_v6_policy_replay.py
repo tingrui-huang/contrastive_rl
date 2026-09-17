@@ -471,6 +471,31 @@ def critic_fn(nets, q_params):
   return score
 
 
+def knn_scorer(replay_path, k=10, w_act=1.0):
+  with np.load(replay_path, allow_pickle=False) as d:
+    o0 = d['obs'][:, 0].astype(np.float32); a0 = d['act'][:, 0].astype(np.float32)
+    aid = d['audit_anchor_id']; cand = d['audit_cand'].astype(str); pg = d['audit_p_goal'].astype(np.float64)
+  keys = {}
+  for i in range(len(pg)):
+    e = keys.setdefault((int(aid[i]), cand[i]), {'o': o0[i], 'a': a0[i], 'p': []})
+    e['p'].append(pg[i])
+  O = np.stack([e['o'] for e in keys.values()]); A = np.stack([e['a'] for e in keys.values()])
+  y = np.array([np.mean(e['p']) for e in keys.values()])
+  mu_o, sd_o = O.mean(0), O.std(0) + 1e-6
+  mu_a, sd_a = A.mean(0), A.std(0) + 1e-6
+  X = np.concatenate([(O - mu_o) / sd_o, w_act * (A - mu_a) / sd_a], 1)
+
+  def score(o, a):
+    Q = np.concatenate([(o[:, :B.STATE_DIM + 2] - mu_o) / sd_o, w_act * (a - mu_a) / sd_a], 1)
+    out = np.zeros(len(Q))
+    for i in range(0, len(Q), 256):
+      d2 = ((Q[i:i + 256, None, :] - X[None, :, :]) ** 2).sum(-1)
+      nn = np.argpartition(d2, k, axis=1)[:, :k]
+      out[i:i + 256] = y[nn].mean(1)
+    return out
+  return score
+
+
 def keyed(T):
   """Held-out table -> per (anchor, cand): obs0, act0, set, p by draw."""
   keys = {}
@@ -502,6 +527,7 @@ def gate_metrics(keys, ks, scores, sets, thr=0.3, halves=((0, 1), (2, 3))):
     out[name] = {}
     for sset in sets + ['dense_all']:
       agree_v, w_agree, w_all, gains, pick_p, best_p, mean_p, agree_samples = [], 0.0, 0.0, [], [], [], [], []
+      agree_by_anchor = []
       for aid, cands in by_anchor.items():
         s0 = keys[(aid, cands[0])]['set']
         if not (s0 == sset or (sset == 'dense_all' and s0 in DENSE_SETS)):
@@ -526,6 +552,7 @@ def gate_metrics(keys, ks, scores, sets, thr=0.3, halves=((0, 1), (2, 3))):
               b = np.log((np.mean([P[ci][x] for x in h2]) + EPS_P) / (np.mean([P[cj][x] for x in h2]) + EPS_P))
               if abs(a) > thr and abs(b) > thr and np.sign(a) == np.sign(b):
                 agree_v.append(float(fs == np.sign(a)))
+                agree_by_anchor.append(aid)
                 if ci != 'recorded' and cj != 'recorded' and ci != 'mode' and cj != 'mode':
                   agree_samples.append(float(fs == np.sign(a)))
         # the pick
@@ -535,8 +562,23 @@ def gate_metrics(keys, ks, scores, sets, thr=0.3, halves=((0, 1), (2, 3))):
         if pv.max() - pv.mean() > 1e-6:
           gains.append((pv[k_star] - pv.mean()) / (pv.max() - pv.mean()))
       n_v = len(agree_v)
-      m = {'n_validated_pairs': n_v, 'validated_agreement': float(np.mean(agree_v)) if n_v else None,
-           'validated_se': float(np.sqrt(np.mean(agree_v) * (1 - np.mean(agree_v)) / n_v)) if n_v else None,
+      # anchor-level bootstrap: the validated pairs of one anchor share its candidates and draws
+      cl_se, n_cl = None, 0
+      if n_v:
+        av, aa = np.array(agree_v), np.array(agree_by_anchor)
+        anchors_u = np.unique(aa); n_cl = len(anchors_u)
+        if n_cl > 1:
+          brng = np.random.default_rng(0)
+          sums = {u: (av[aa == u].sum(), (aa == u).sum()) for u in anchors_u}
+          boots = []
+          for _ in range(1000):
+            pick = brng.choice(anchors_u, size=n_cl, replace=True)
+            num = sum(sums[u][0] for u in pick); den = sum(sums[u][1] for u in pick)
+            boots.append(num / den)
+          cl_se = float(np.std(boots))
+      m = {'n_validated_pairs': n_v, 'n_anchors_validated': int(n_cl),
+           'validated_agreement': float(np.mean(agree_v)) if n_v else None,
+           'validated_se': cl_se,
            'validated_agreement_samples_only': float(np.mean(agree_samples)) if agree_samples else None,
            'n_validated_samples_only': len(agree_samples),
            'weighted_agreement': float(w_agree / w_all) if w_all > 0 else None,
@@ -562,6 +604,14 @@ def gate(args):
     l_, s_ = bundle['params_fn'](o)
     return np.asarray(networks.tanh_normal_log_prob(networks.TanhNormalParams(jnp.asarray(l_), jnp.asarray(s_)), jnp.asarray(a)))
   scorers['policy_logprob'] = bc_logprob
+  if args.fit_replay:
+    # non-parametric control: the fit keys' own mean P_goal, averaged over the
+    # k nearest fit keys in standardised (state, torque) space, with the
+    # torque columns up-weighted by w -- if this cannot order held-out
+    # candidates either, the per-state torque effect is not smooth enough at
+    # this sample size for ANY function approximator, not just the NCE critic
+    for w in (1.0, 4.0):
+      scorers[f'knn_fit_w{w:g}'] = knn_scorer(B.OUT / args.fit_replay, k=args.knn_k, w_act=w)
   labels = {}
   for ck in args.critics:
     p = Path(ck)
@@ -574,7 +624,7 @@ def gate(args):
   metrics = gate_metrics(keys, ks, scores, sets, thr=args.thr)
   ceiling = pair_stats([{'set': keys[k]['set'], 'anchor_id': k[0], 'cand': k[1], 'draw': d, 'p_goal': p}
                         for k in keys for d, p in keys[k]['p'].items()], sets, thr=args.thr)
-  # pass rule: pooled dense sets, validated agreement above chance by > 2 s.e. and >= the line
+  # pass rule: pooled dense sets, validated agreement above chance by > 2 clustered s.e. and >= the line
   res = {'holdout': str(B.OUT / args.holdout), 'thr': args.thr, 'ceiling': ceiling, 'metrics': metrics, 'critics': labels, 'pass': {}}
   for name in scorers:
     m = metrics[name]['dense_all']
@@ -588,7 +638,7 @@ def gate(args):
        f'Agreement = share of validated pairs whose critic ordering matches (chance 0.50); samples-only = pairs of two policy '
        f'samples (excludes recorded and mode); weighted = |ratio|-weighted sign agreement over all pairs; pick gain = '
        f'(P[argmax f] - mean P) / (max P - mean P) over anchors with spread (1 = oracle, 0 = random).  '
-       f'PASS = pooled dense-set validated agreement >= {args.gate:.2f} and > 0.5 by 2 s.e.', '',
+       f'PASS = pooled dense-set validated agreement >= {args.gate:.2f} and > 0.5 by 2 s.e. (s.e. = anchor-level bootstrap: the pairs of one anchor share its candidates and draws).', '',
        '## Ceiling: split-half sign agreement of the differences themselves', '',
        '| set | pairs | mean abs log ratio | frac > thr | split-half agreement | validated pairs |', '|---|---:|---:|---:|---:|---:|']
   f_ = lambda v, fmt='.2f': (format(v, fmt) if isinstance(v, (int, float)) and v is not None else '-')
@@ -596,12 +646,12 @@ def gate(args):
     L.append(f'| {sset} | {c["n_pairs"]} | {f_(c["mean_abs_log_ratio"])} | {f_(c["frac_abs_gt_thr"])} | '
              f'{f_(c["split_half_sign_agreement"])} | {c["n_validated_pairs"]} |')
   L += ['', '## Critics', '',
-        '| scorer | set | validated pairs | agreement | s.e. | samples-only agreement (n) | weighted agreement | pick gain (anchors) | P pick / mean / best |',
+        '| scorer | set | validated pairs (anchors) | agreement | s.e. | samples-only agreement (n) | weighted agreement | pick gain (anchors) | P pick / mean / best |',
         '|---|---|---:|---:|---:|---:|---:|---:|---|']
   for name in scorers:
     for sset in sets + ['dense_all']:
       m = metrics[name][sset]
-      L.append(f'| {name} | {sset} | {m["n_validated_pairs"]} | **{f_(m["validated_agreement"])}** | {f_(m["validated_se"], ".3f")} | '
+      L.append(f'| {name} | {sset} | {m["n_validated_pairs"]} ({m["n_anchors_validated"]}) | **{f_(m["validated_agreement"])}** | {f_(m["validated_se"], ".3f")} | '
                f'{f_(m["validated_agreement_samples_only"])} ({m["n_validated_samples_only"]}) | {f_(m["weighted_agreement"])} | '
                f'{f_(m["pick_gain"])} ({m["n_anchors_with_spread"]}) | {f_(m["pick_p_goal"], ".3f")} / {f_(m["mean_p_goal"], ".3f")} / {f_(m["best_p_goal"], ".3f")} |')
   L += ['', '## Pass', ''] + [f'- {name}: {"PASS" if ok else "fail"}' for name, ok in res['pass'].items()]
@@ -727,6 +777,8 @@ def main(argv=None):
   ap.add_argument('--limit', type=int, default=0, help='build: smoke with the first N jobs of each block')
   ap.add_argument('--holdout', default='holdout_policy_r1.npz', help='gate/validate: the held-out table (under V6_BRANCH_OUT)')
   ap.add_argument('--critics', nargs='*', default=[], help='gate: critic checkpoints')
+  ap.add_argument('--fit-replay', default='', help='gate: the fit replay (under V6_BRANCH_OUT) for the kNN control')
+  ap.add_argument('--knn-k', type=int, default=10)
   ap.add_argument('--thr', type=float, default=0.3, help='gate: |log ratio| line for a validated pair')
   ap.add_argument('--gate', type=float, default=0.65, help='gate: pooled validated agreement pass line')
   ap.add_argument('--actors', nargs='*', default=[], help='validate: updated actor checkpoints')
