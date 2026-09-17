@@ -394,7 +394,9 @@ def train(config: Config, buffer_prepare=None):
           cell=config.bc_balance_cell, n_sectors=config.bc_balance_sectors,
           wait_eps=config.bc_balance_wait_eps,
           cap=None if bc_sampling == 'independent' else config.bc_balance_cap,
-          seed=10_000 + int(config.seed))
+          seed=10_000 + int(config.seed),
+          region_mode=getattr(config, 'bc_balance_region', 'action') or 'action',
+          goal_indices=getattr(config, 'goal_indices', None))
     # the law check compares the sampler's enumeration with the buffer's own
     # draws, which only means something when both read the same dataset
     _law = (bc_sampler.law_check(buffer) if _bc_path == config.offline_dataset

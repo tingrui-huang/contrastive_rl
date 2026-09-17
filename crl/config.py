@@ -82,6 +82,9 @@ class Config:
   bc_balance_cell: float = 1.0
   bc_balance_sectors: int = 8
   bc_balance_wait_eps: float = 0.1
+  # 'action' = the recorded 2-dim action's angle (PointMaze); 'displacement' =
+  # the recorded step's next-frame XY displacement (high-dimensional actions)
+  bc_balance_region: str = 'action'
 
   # offline_ant_umaze eval goal source. 'd4rl' (default) = the benchmark
   # goal_sampler (single U_MAZE goal cell + [0,1.5] noise, resampled per

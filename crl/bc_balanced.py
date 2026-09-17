@@ -45,7 +45,8 @@ class GroupBalancedBCSampler:
   """
 
   def __init__(self, obs, act, lengths, discount, obs_dim, cell=1.0,
-               n_sectors=8, wait_eps=0.1, cap=0.25, seed=0):
+               n_sectors=8, wait_eps=0.1, cap=0.25, seed=0, region_mode='action',
+               goal_indices=None):
     obs = np.asarray(obs)
     act = np.asarray(act)
     lengths = np.asarray(lengths, np.int64)
@@ -66,7 +67,15 @@ class GroupBalancedBCSampler:
          / (g * (1.0 - g ** k) / (1.0 - g)) / (lt - 1) / n_eps)
     s_cell = np.floor(obs[self.tr, self.ii, :2] / cell).astype(np.int64)
     g_cell = np.floor(obs[self.tr, self.jj, :2] / cell).astype(np.int64)
-    a = act[self.tr, self.ii].astype(np.float64)
+    if region_mode == 'action':
+      a = act[self.tr, self.ii].astype(np.float64)          # 2-dim actions: their angle
+    elif region_mode == 'displacement':
+      # high-dimensional actions (the Ant's 8 torques): the region is the
+      # VISIBLE next-frame XY displacement of the recorded step, which is what
+      # a route decision looks like in the data (north / east / still)
+      a = (obs[self.tr, self.ii + 1, :2] - obs[self.tr, self.ii, :2]).astype(np.float64)
+    else:
+      raise ValueError(f"region_mode must be 'action' or 'displacement', got {region_mode!r}")
     mag = np.linalg.norm(a, axis=1)
     ang = np.arctan2(a[:, 1], a[:, 0])
     width = 2.0 * np.pi / n_sectors
@@ -93,6 +102,10 @@ class GroupBalancedBCSampler:
     self.b_id, self.g_id, self.region = b_id, g_id, region
     self.n_reg, self.n_sectors, self.cap, self.cell = n_reg, n_sectors, cap, cell
     self.wait_eps = wait_eps
+    self.region_mode = region_mode
+    # the goal contract: None = the full state (PointMaze), else the state
+    # columns the learner sees as its goal (the Ant's XY, goal_indices (0, 1))
+    self.goal_indices = None if goal_indices is None else np.asarray(goal_indices, np.int64)
     self.w_bucket, self.w_bucket_new = w_bucket, w_bucket * mult
     self.cdf = np.cumsum(self.w / self.w.sum())
     self.cdf[-1] = 1.0
@@ -126,7 +139,10 @@ class GroupBalancedBCSampler:
   def bucket_of(self, traj, i, j):
     s_cell = np.floor(self.obs[traj, i, :2] / self.cell).astype(np.int64)
     g_cell = np.floor(self.obs[traj, j, :2] / self.cell).astype(np.int64)
-    a = self.act[traj, i].astype(np.float64)
+    if self.region_mode == 'action':
+      a = self.act[traj, i].astype(np.float64)
+    else:
+      a = (self.obs[traj, i + 1, :2] - self.obs[traj, i, :2]).astype(np.float64)
     mag = np.linalg.norm(a, axis=1)
     ang = np.arctan2(a[:, 1], a[:, 0])
     width = 2.0 * np.pi / self.n_sectors
@@ -166,6 +182,8 @@ class GroupBalancedBCSampler:
     state = self.obs[traj, i, :self.obs_dim].astype(np.float32)
     next_state = self.obs[traj, i + 1, :self.obs_dim].astype(np.float32)
     goal = self.obs[traj, j, :self.obs_dim].astype(np.float32)   # obs_to_goal(0, -1)
+    if self.goal_indices is not None:
+      goal = goal[:, self.goal_indices]
     return Transition(
         observation=np.concatenate([state, goal], 1),
         action=self.act[traj, i].astype(np.float32),

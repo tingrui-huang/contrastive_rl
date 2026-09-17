@@ -129,3 +129,41 @@ Changed for the Ant:
 
 Nothing here changes `crl/rockfall_clock_v6.py`, the dataset bytes, the
 teacher or `eval_rockfall_clock_v6_baseline.py`.
+
+## Phase 0 result (2026-09-17, `scripts/build_v6_branch_replay.py phase0`)
+
+400 recorded start-region anchors (x < 2, y < 2, t <= 60; half of them at
+t <= 5) branched north (detour legs) and east (shortcut legs, blind go)
+from the restored Ant state with hazards and clocks redrawn; 60 recorded
+detour rows on the north leg and 60 on the east leg driven on with the
+detour legs.  Three conventions for what happens after the goal, in the
+order they were tried:
+
+1. Paths end at the first goal reach (the collector's convention).  The
+   law's goal frame is then the single last row, diluted by the path
+   length (mass ~ 0.999^T / T): +0.27 at t = 0, +0.15 at t <= 5, negative
+   over all anchors.  Not a property of the routes.
+2. The driver keeps driving after the reach.  The shortcut legs hover near
+   the goal, the detour legs push south into the wall: P_goal 0.137 vs
+   0.007, "target" -3.0.  A controller artefact, discarded.
+3. **Hold with zero torque after the reach** (goal states absorbing; the
+   teacher's own waiting action; identical for both routes).  This is the
+   convention of the replay.
+
+| anchor time | n per route | detour reach | go reach | target g=0.999 r=0.5 | r=1.0 |
+|---|---:|---:|---:|---:|---:|
+| t = 0 | 42 | 1.00 | 0.38 | **+0.60** | +0.58 |
+| t <= 5 | 200 | 0.92 | 0.33 | **+0.58** | +0.57 |
+| t <= 10 | 266 | 0.86 | 0.32 | +0.52 | +0.51 |
+| 11 <= t <= 60 | 134 | 0.16 | 0.36 | -1.38 | -1.37 |
+
+The blind north turn executes only near the reset pose (x < 0.5: reach
+0.94; x >= 1: 0.00), so the query branches of the replay are placed at
+t <= 5 (every second step), where the decision the deployed actor faces
+(t = 0, the canonical pose) lives; later anchors carry only their natural
+continuation, and for them the law correctly says the detour is no longer
+available.  Placed on the detour, the driver completes it 0.97-0.98 at
+368-375 steps.  Go/no-go: +0.58 at t <= 5 >= +0.5 -- **go**.  The
+observational counterpart on the same rows is -0.48 (the sighted teacher's
+shortcut), the sign the confounding gives.  The go branches reproduce the
+blind prior (reach 0.33, death 0.67).
