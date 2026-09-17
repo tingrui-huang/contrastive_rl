@@ -782,3 +782,11 @@ reach 0.60-0.69 (the rest are walker timeouts on the long corridor);
 shortcut episodes die at 0.61-0.69, the density's rate.  The controls
 (same candidates picked uniformly; the same policy ranked by the vanilla
 critics) and the vanilla actors at p 0.50 follow.
+
+Control 1, the same candidates picked uniformly (no critic; 300 draws):
+success 0.240 / failure 0.557 / timeout 0.203; **detour 0.050**,
+shortcut 0.767; 22 north picks in 684 decisions (3.2%, the candidates'
+own proportion).  The 0.33-0.47 above is the critic's ranking, not the
+candidate set or the commitment rule.  Control 2 (the same policy ranked
+by the vanilla critics trained on the recorded futures) waits for the
+vanilla learners.
