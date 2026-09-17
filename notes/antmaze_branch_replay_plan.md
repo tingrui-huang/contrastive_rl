@@ -731,3 +731,11 @@ donor probes) turns into behaviour once the decision is (i) made among
 real recorded torques and (ii) committed for the length the critic was
 trained on, instead of being re-sampled every step from a unimodal
 proposal.  Seeds 1-4 and the K dependence (32, 128) follow.
+
+By route (same 100 draws): the 40 detour episodes -- success 0.57,
+failure 0.00, timeout 0.42 (mean 605 steps: the BC walker, fitted to 5%
+detour data, stalls on the long corridor); the 47 shortcut episodes --
+success 0.34, failure 0.66 (the density's rate); 13 never leave the
+start.  Discounted 0.017 overall.  The decision is now the critic's; what
+the detour loses is walker competence on the corridor it has 5% of the
+data for, not deaths.
