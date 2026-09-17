@@ -594,3 +594,17 @@ which also serves as the proposal for (ii)); (ii) a proposal-and-rank
 policy: K samples from the BC policy, the critic picks the argmax -- the
 continuous counterpart of the discrete repo's categorical argmax, on
 the data manifold by construction.
+
+### BC weight 0.5 on the frozen 30k critic (seed 0): walks, shortcut, no detour
+
+60-episode look (mean policy): success 0.35 / failure 0.45 / timeout
+0.20; detour 0.000, shortcut 0.833; mouth 1 at step 68 (median; the
+teacher's pace), 21 of 25 active-latent entries during the burst (18
+die) -- an ordinary blind shortcut walker.  Manifold probe: f(pi) -9.6,
+still +4.5 above the recorded torque (distance 1.92, 33% saturated) --
+half the climb of the 0.05 actor.  Start-state mean torque 1.02 from the
+recorded-north centroid against 1.34 from the east one, and the ant
+still goes east: torque-centroid distance is not direction.  So with
+lambda 0.5 the BC term keeps the actor walking and the critic term
+still spends its gradient off the manifold rather than on the
+north-vs-east choice the critic does rank correctly among real torques.
