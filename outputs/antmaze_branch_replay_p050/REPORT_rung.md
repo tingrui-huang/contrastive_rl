@@ -2,6 +2,10 @@
 
 | policy | n | success | failure | timeout | detour | shortcut | discounted (g 0.99) | mouth 1 median step / after-burst share | detour episodes: success / timeout | shortcut episodes: failure |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---:|
+| vanilla g0.999 (recorded data), seed 0, mean | 300 | 0.260 | 0.730 | 0.010 | **0.003** | 0.970 | 0.028 | 51.000 / 0.000 | 0.00 / 1.00 | 0.73 |
+| vanilla g0.999 (recorded data), seed 1, mean | 300 | 0.260 | 0.737 | 0.003 | **0.007** | 0.960 | 0.028 | 51.000 / 0.000 | 1.00 / 0.00 | 0.74 |
+| vanilla g0.999 (recorded data), seed 0, sample | 300 | 0.260 | 0.737 | 0.003 | **0.003** | 0.960 | 0.027 | 52.000 / 0.007 | 1.00 / 0.00 | 0.73 |
+| vanilla g0.999 (recorded data), seed 1, sample | 300 | 0.260 | 0.733 | 0.007 | **0.017** | 0.960 | 0.027 | 52.000 / 0.000 | 0.60 / 0.40 | 0.74 |
 | joint 100k on the 100k branch critic, seed 0, mean | 300 | 0.603 | 0.027 | 0.370 | **0.003** | 0.790 | 0.019 | 156.000 / 0.926 | 0.00 / 1.00 | 0.03 |
 | joint 100k on the 100k branch critic, seed 1, mean | 300 | 0.453 | 0.033 | 0.513 | **0.017** | 0.543 | 0.015 | 143.000 / 0.837 | 0.00 / 1.00 | 0.06 |
 | joint 100k on the 100k branch critic, seed 2, mean | 300 | 0.000 | 0.000 | 1.000 | **0.000** | 0.000 | 0.000 | -- / -- | -- | -- |
@@ -39,5 +43,8 @@
 | segrank64_L25 | critic critics_30k/seed_3 | 300 | 0.467 | 0.237 | 0.297 | **0.473** | 0.383 | 0.018 | 56.000 / 0.107 | 0.69 / 0.31 | 0.61 |
 | segrank64_L25 | critic critics_30k/seed_4 | 300 | 0.377 | 0.313 | 0.310 | **0.330** | 0.447 | 0.017 | 56.000 / 0.071 | 0.68 / 0.32 | 0.65 |
 | segrank64_L25_random | no critic (uniform pick) | 300 | 0.240 | 0.557 | 0.203 | **0.050** | 0.767 | 0.020 | 55.000 / 0.035 | 0.47 / 0.53 | 0.71 |
+| segrank64_L25 | critic vanilla_g0999/seed_0 | 300 | 0.397 | 0.270 | 0.333 | **0.383** | 0.437 | 0.017 | 60.000 / 0.111 | 0.58 / 0.42 | 0.58 |
+| segrank64_L25 | critic vanilla_g0999/seed_1 | 300 | 0.407 | 0.250 | 0.343 | **0.473** | 0.377 | 0.014 | 56.000 / 0.164 | 0.61 / 0.39 | 0.64 |
+| segrank64_L25 | critic vanilla_g0999/seed_2 | 300 | 0.427 | 0.207 | 0.367 | **0.463** | 0.350 | 0.014 | 63.000 / 0.193 | 0.61 / 0.39 | 0.56 |
 
 mode = tanh(loc), the repo and the paper's evaluation convention; sample = tanh(loc + scale eps), secondary.  rank policies: K proposals scored by the critic, argmax (per-step: K tanh-normal samples of the BC actor; segrank: K recorded 25-step torque segments at the start, run open-loop, BC mode elsewhere).  The rockfall clocks run from the reset (zone 1 closes by step 117): an after-burst share near one means the shortcut survives by lateness.

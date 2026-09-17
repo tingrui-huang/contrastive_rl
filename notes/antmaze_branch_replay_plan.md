@@ -820,3 +820,28 @@ the rare north rows come from detour episodes that always reach).
 Running: vanilla critics at the matched 30k budget (three seeds), their
 probes and their segment-rank; the same probe on the p040 and p060
 vanilla critics.
+
+All three p050 vanilla critics as the ranker (300 draws each): detour
+**0.383 / 0.473 / 0.463** (success 0.40 / 0.41 / 0.43) -- the same
+band as the branch critics.  The same four-group probe on the p040 and
+p060 vanilla critics: north-donor minus east-donor +0.11 / +0.19 / +0.42
+(p040) and +0.07 / +0.18 / +0.28 (p060); recorded north minus east
++0.01..+0.07 everywhere.  Every vanilla critic at every rung carries a
+small north tilt on these torques, independent of the density, while
+its own observational law at the start is negative at every radius
+(p050, gamma 0.999: -0.44 at r 0.5, -0.25 / -0.24 / -0.27 / -0.07 at r
+1 / 2 / 4 / 8), and the tagged gate shows the vanilla critics to be
+nearly action-blind (paired s.e. 0.003, row margin +0.01..+0.10, states
+> 0 up to 0.93): a hair of consistent tilt, which an argmax over 64
+candidates turns into 40% north picks exactly as it does for the branch
+critics' +0.7..+1.1.
+
+Conclusion for the record: **segment-rank with argmax does not separate
+the branch critics from the vanilla critics at this rung**; it amplifies
+any consistent tilt, and the vanilla critics have one.  The behavioural
+number cannot be attributed to the branch replay.  What separates the
+families is the critic-level preference: branch 30k +0.68..+1.11 on the
+donor torques and +0.08..+0.26 on recorded torques (5/5 the right sign at
+3-10x the vanilla size), vanilla +0.07..+0.42 and +0.01..+0.07.  Next: a
+magnitude-respecting decoding (Boltzmann over the candidates' f, tau 1)
+on both families, and the matched 30k vanilla critics.
