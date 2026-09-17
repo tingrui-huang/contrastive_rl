@@ -682,3 +682,15 @@ be tabulated the same way), or iterate -- regenerate the replay with the
 learner's own policy as the continuation.  Benchmark-side, a burst
 triggered by entry instead of the reset clock would close the loophole;
 the environment stays fixed in this study.
+
+Recorded torques of the K = 32 nearest recorded states (60k-row bank,
+standardised 29-dim state distance) as the candidates, same critic, 100
+draws: success 0.06 / failure 0.12 / timeout 0.82; detour 0.03, shortcut
+0.55.  Torques taken from different episodes at every step do not form a
+gait; the ant stalls.  The candidate set therefore has to come from one
+coherent policy, and the rank-policy summary on this critic reads: K =
+32 at temperature 1 detour 0.12 (chosen +2.3 nats), K = 128 0.08 (+2.9),
+temperature 0.3 0.03 (+0.9), nearest-recorded torques 0.03 (stalls).  A
+shortcut-walking proposal gives the critic few real north candidates and
+the argmax spends its choice on far samples.  The pure-BC proposal is the
+remaining fair candidate source and its five-critic evaluation is queued.
