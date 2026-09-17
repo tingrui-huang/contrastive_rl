@@ -270,3 +270,36 @@ density) or the detour's length, both benchmark properties that this
 study keeps fixed; on the learner side only the query turn's execution
 (0.72 -> 0.98 is worth +0.5) remains.  The v2 joint actors are still
 trained for the record.
+
+## Option B (user decision, 2026-09-17): raise the hazard density to 0.50 / 0.60
+
+The user chose to lift the target by the density lever rather than stop
+or rework the query turn.  Nothing else moves: same maze, clocks, teacher
+(5% forced detour), frozen walker, horizon, collection seed 606, 1000
+episodes.  Both rungs recollected with
+`scripts/collect_rockfall_clock_v6_dataset.py --p-active-1 p --p-active-2 p`
+(`antmaze_rockfall_clock_v6_p050` / `_p060`); every composition gate passes
+on both (no discards; u1/u2 observed 0.49/0.51 and inside the Wilson-99
+band at 0.60; teacher success 1.0).  The generator and the driver read the
+rung from `V6_DATASET_STEM` / `V6_P_ACTIVE` (commit 9220012); the frozen
+p040 files stay the default.
+
+Phase 0 at the two rungs (400 start anchors, driver turn, zero-torque hold
+after reaching, gamma 0.999, r 0.5):
+
+| rung | go reach (t<=5) | detour reach (t<=5) | target t<=5 | t=0 | t<=10 | 11-60 | all t<=60 | observational |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| p040 (benchmark) | 0.38 | 0.91 | +0.58 | +0.60 | -- | -- | +0.14 | -0.48 |
+| p050 | 0.23 | 0.91 | **+0.85** | +1.00 | +0.85 | -0.72 | +0.56 | -0.45 |
+| p060 | 0.15 | 0.92 | **+1.30** | +1.35 | +1.26 | -0.43 | +0.95 | -0.43 |
+
+The measured targets land on the ceiling table's driver-turn column
+(+0.83 / +1.27 predicted from reach times alone).  With the v2 donor turn
+(reach 0.72) the replay's own law target should come out near +0.50
+(p050) and +0.95 (p060); the gate stage prints the realised number.
+
+Run order on the node (one learner slot; the p040 v2 chain owns the
+other): per rung, v2 replay (`--every 25 --query-every 2 --t-max 5
+--query-donor recorded`) -> critics seeds 0-2 -> paired gate.  The joint
+actors and the vanilla control at the same density are trained only for
+a rung whose critics pass the gate; the gate is the cheap decisive stage.
