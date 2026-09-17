@@ -460,3 +460,13 @@ anchor several times with the same donor torques and different hazard
 draws, so the identical (s, a, g) row appears with different futures and
 the row-identity fit stops paying.  (i) is cheap and runs next in the
 freed slot; (ii) is a generator flag.
+
+First chain evaluations (300 natural draws, mean policy): p050 joint seed
+0 -- success 0.603 / failure 0.027 / timeout 0.370, detour 0.003,
+shortcut 0.790, mouth 1 at step 156 (median; 0.93 of active-latent
+entries after the burst), mouth 2 at 240 (0.89), discounted 0.019.  p060
+vanilla seed 0 -- success 0.150 / failure 0.847, detour 0, mouth 1 at
+step 52 (0.006 after the burst), discounted 0.015: the blind learner at
+its natural speed dies at the density's survival rate.  Raw success
+therefore favours the slow walker 4:1, the benchmark's discounted score
+puts both near zero, and neither takes the detour.
