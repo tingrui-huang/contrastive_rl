@@ -74,6 +74,10 @@ class Config:
   # inside each (state cell, goal cell) group, no region above bc_balance_cap
   # of its group, (state, goal) marginal unchanged. Requires random_goals 0.
   bc_sampling: str = 'shared'
+  # Dataset the BC term's rows are drawn from when bc_sampling is
+  # independent/balanced; '' = offline_dataset.  Lets the critic train on a
+  # model-generated replay while BC keeps imitating the recorded actions.
+  bc_dataset: str = ''
   bc_balance_cap: float = 0.25
   bc_balance_cell: float = 1.0
   bc_balance_sectors: int = 8

@@ -156,8 +156,10 @@ def main(argv=None):
   bc_audit = None
   if args.bc_sampling != 'shared':
     with np.load(args.replay, allow_pickle=False) as d:
+      lengths = (d['lengths'] if 'lengths' in d.files
+                 else np.full(len(d['obs']), d['obs'].shape[1], np.int64))
       bc_sampler = GroupBalancedBCSampler(
-          d['obs'], d['act'], d['lengths'], cfg.discount, obs_dim,
+          d['obs'], d['act'], lengths, cfg.discount, obs_dim,
           cell=args.bc_cell, n_sectors=args.bc_sectors,
           cap=None if args.bc_sampling == 'independent' else args.bc_cap,
           seed=10_000 + int(args.actor_seed))     # own stream: the critic

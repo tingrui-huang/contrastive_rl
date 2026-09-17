@@ -265,6 +265,73 @@ class TrajectoryBuffer:
   def balanced_bucket_sizes(self):
     return self._bal_count.copy() if self.use_balanced else None
 
+  def set_anchor_strata(self, strata, counts):
+    """Enable STRATIFIED anchor sampling: every batch holds a fixed number of
+    anchors from each stratum, each stratum drawn from its own weighted list
+    of (traj, row) anchors; the future-goal window and the discounted
+    relabeling law are untouched (as in the anchor-cut and balanced paths).
+
+    Motivation (PointMaze fork diagnosis, Step 10b): the rows that decide the
+    route -- fork anchors whose relabeled goal is the task goal cell -- are
+    0.7% of what the critic trains on, and the 30k critics recover none to a
+    third of the fork margin the relabeling law asks for.  A stratum that
+    fixes a share of every batch to fork anchors raises that weight without
+    changing any loss.  The absorbing line's G1 experiment used the same
+    composition (128 ordinary + 64 down + 64 right anchors per batch of 256).
+
+    The first stratum is normally the buffer's own law -- every eligible
+    anchor with weight 1 / (L_e - 1), i.e. episode uniform then anchor
+    uniform -- so counts (B, 0, ...) reproduce the plain law up to the RNG
+    stream.  A batch size other than sum(counts) is split proportionally, the
+    remainder going to the first stratum.
+
+    Args:
+      strata: list of (traj_idx, row_idx, weight) triples; weight None means
+        uniform over that stratum's rows.
+      counts: anchors per batch from each stratum (same length as strata).
+    """
+    if self._frozen:
+      raise RuntimeError('TrajectoryBuffer is frozen: set_anchor_strata() '
+                         'would change the sampling distribution after audit.')
+    if getattr(self, '_use_balanced', False):
+      raise ValueError('set_anchor_strata() and set_balanced_buckets() are '
+                       'mutually exclusive')
+    if len(strata) == 0 or len(strata) != len(counts):
+      raise ValueError('strata and counts must be non-empty and equal in length')
+    lengths = self._lengths_arr
+    parts = []
+    for k, (tj, rw, w) in enumerate(strata):
+      tj = np.asarray(tj, np.int64)
+      rw = np.asarray(rw, np.int64)
+      if len(tj) == 0 or len(tj) != len(rw):
+        raise ValueError(f'stratum {k}: empty or mismatched traj/row arrays')
+      if np.any(tj < 0) or np.any(tj >= self._num_eps):
+        raise ValueError(f'stratum {k}: trajectory index out of range')
+      if np.any(rw < 0) or np.any(rw >= lengths[tj] - 1):
+        raise ValueError(f'stratum {k}: anchor row outside [0, len - 2]')
+      w = (np.ones(len(tj), np.float64) if w is None
+           else np.asarray(w, np.float64))
+      if len(w) != len(tj) or np.any(w < 0) or not w.sum() > 0:
+        raise ValueError(f'stratum {k}: invalid weights')
+      cdf = np.cumsum(w / w.sum())
+      cdf[-1] = 1.0                               # guard fp drift
+      parts.append((tj, rw, cdf))
+    counts = np.asarray(counts, np.int64)
+    if np.any(counts < 0) or not counts.sum() > 0:
+      raise ValueError('counts must be non-negative with a positive sum')
+    self._strata = parts
+    self._strata_counts = counts
+    self._use_strata = True
+
+  @property
+  def use_anchor_strata(self):
+    return getattr(self, '_use_strata', False)
+
+  @property
+  def anchor_strata_sizes(self):
+    return ([len(p[0]) for p in self._strata] if self.use_anchor_strata
+            else None)
+
   def content_sha256(self):
     """SHA-256 over the stored obs+act tensors (immutability checksum)."""
     import hashlib
@@ -313,6 +380,32 @@ class TrajectoryBuffer:
     L = self._L
     ne = self._num_eps
     rng = self._rng
+
+    if getattr(self, '_use_strata', False):
+      # Fixed per-stratum counts, weighted rows inside each stratum, then the
+      # SAME discounted future-goal law over the episode's valid rows.
+      counts = self._strata_counts
+      if batch_size != int(counts.sum()):
+        counts = np.floor(counts * (batch_size / counts.sum())).astype(np.int64)
+        counts[0] += batch_size - int(counts.sum())
+      traj_parts, i_parts = [], []
+      for (tj, rw, cdf), n in zip(self._strata, counts):
+        if n <= 0:
+          continue
+        pos = np.minimum(np.searchsorted(cdf, rng.random(n), side='right'),
+                         len(cdf) - 1)
+        traj_parts.append(tj[pos])
+        i_parts.append(rw[pos])
+      perm = rng.permutation(batch_size)
+      traj = np.concatenate(traj_parts)[perm]
+      i = np.concatenate(i_parts)[perm]
+      arange = np.arange(L)
+      valid = arange[None, :] < self._lengths_arr[traj][:, None]
+      future = (arange[None, :] > i[:, None]) & valid
+      logp = (arange[None, :] - i[:, None]) * self._log_discount
+      logits = np.where(future, logp, -np.inf)
+      g = -np.log(-np.log(rng.uniform(size=logits.shape).clip(1e-20, 1.0)))
+      return traj, i, np.argmax(logits + g, axis=1)
 
     if getattr(self, '_use_balanced', False):
       # Bucket uniform, then a row uniform inside that bucket. The future-goal

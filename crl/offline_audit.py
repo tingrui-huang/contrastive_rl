@@ -384,9 +384,15 @@ def compute_balanced_buckets(obs, act, obs_dim, cell_size, n_sectors, cuts=None,
   return tj.astype(np.int64), rw.astype(np.int64), bucket, stats
 
 
-def build_offline_buffer(path, config):
+def build_offline_buffer(path, config, prepare=None):
   """Load the fixed dataset into a TrajectoryBuffer sized EXACTLY to it, freeze
-  it, and return (buffer, fingerprint). No env, no growth room."""
+  it, and return (buffer, fingerprint). No env, no growth room.
+
+  ``prepare(buffer, path)``, if given, runs on the filled buffer BEFORE the
+  freeze (an experiment-side sampling rule such as
+  TrajectoryBuffer.set_anchor_strata); whatever it returns is recorded under
+  ``fingerprint['prepare']``.  The gates that follow audit the buffer as it
+  will actually be sampled."""
   from crl.replay import TrajectoryBuffer
   fp = fingerprint(path)
   n_eps, L = fp['n_episodes'], fp['ep_len_obs']
@@ -446,6 +452,8 @@ def build_offline_buffer(path, config):
             f'({cut_stats["anchor_row_fraction"]:.1%}); cut mean '
             f'{cut_stats["cut_mean"]:.1f}, arrived {cut_stats["n_arrived"]}, '
             f'frozen-tail {cut_stats["n_frozen_tail"]}; future window UNCHANGED')
+  if prepare is not None:
+    fp['prepare'] = prepare(buffer, path) or {}
   buffer.freeze()
   return buffer, fp
 

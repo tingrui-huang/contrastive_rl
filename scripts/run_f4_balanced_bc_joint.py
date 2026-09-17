@@ -50,6 +50,10 @@ SEALED = ROOT / 'outputs' / 'pointmaze_ett_query_coverage_20260915_v1'
 DIAG = ROOT / 'outputs' / 'pointmaze_actor_fork_diagnosis_v1'
 OUT = ROOT / 'outputs' / 'pointmaze_balanced_bc_joint_v1'
 REPLAY_D = FIX / 'replay_D.npz'
+#: the plain-CRL baseline's data: the full 0.05-rung dataset behind the sealed O arm
+#: (6600 episodes; the D replay is 3300 of these plus 6600 ETT paths)
+O_DATASET = (ROOT / 'artifacts' / 'f4_p30_server_30076' / 'results' / 'datasets'
+             / 'swamp_windy_f4_merged_s0.npz')
 D1_CRITIC = FIX / 'seeds' / 'seed_1' / 'crl' / 'D' / 'final.pkl'
 C_CRITICS = {2: SEALED / 'cross_seeds' / 'seed_2' / 'crl' / 'C' / 'final.pkl',
              0: SEALED / 'crl' / 'C' / 'final.pkl'}
@@ -141,10 +145,10 @@ def _wait(procs):
 
 
 # ------------------------------------------------------------------ train
-def crl_config(seed, arm, budget, ckpt_dir):
+def crl_config(seed, arm, budget, ckpt_dir, dataset=REPLAY_D):
   from crl.config import Config
   return Config(
-      env_name='point_two_route_swamp_windy_f4_v0', offline_dataset=str(REPLAY_D),
+      env_name='point_two_route_swamp_windy_f4_v0', offline_dataset=str(dataset),
       obs_dim=8, goal_dim=8, action_dim=2, max_episode_steps=50,
       start_index=0, end_index=-1, max_number_of_steps=int(budget),
       fail_bank_path='', fail_neg_alpha=0.0, obs_norm_mode='',
@@ -160,18 +164,23 @@ def crl_config(seed, arm, budget, ckpt_dir):
       ckpt_every_steps=int(budget), ckpt_dir=str(ckpt_dir))
 
 
-def _train_one(seed, arm, budget_tag):
+def _train_one(seed, arm, budget_tag, control=False):
   from crl.train import train
-  out = OUT / 'joint' / budget_tag / f'seed_{seed}' / arm
+  if control:
+    out = OUT / 'control_O' / f'seed_{seed}' / 'critic'
+    dataset = O_DATASET
+  else:
+    out = OUT / 'joint' / budget_tag / f'seed_{seed}' / arm
+    dataset = REPLAY_D
   if (out / 'final.pkl').exists():
     print(f'{out} exists', flush=True)
     return
-  cfg = crl_config(seed, arm, BUDGETS[budget_tag], out)
+  cfg = crl_config(seed, arm, BUDGETS[budget_tag], out, dataset=dataset)
   t0 = time.time()
   train(cfg)
   write_json(out / 'run_summary.json', {
       'seed': seed, 'arm': arm, 'budget_updates': BUDGETS[budget_tag],
-      'dataset': str(REPLAY_D), 'dataset_sha256': sha256(REPLAY_D),
+      'dataset': str(dataset), 'dataset_sha256': sha256(dataset),
       'bc_coef': BC_COEF, 'bc_cap': BC_CAP if arm == 'balanced' else None,
       'log_prob_mode': 'acme', 'random_goals': 0.0,
       'wall_seconds': time.time() - t0})
@@ -199,6 +208,58 @@ def stage_train(seeds, budgets, parallel):
         if len(procs) >= parallel:
           _wait(procs)
   _wait(procs)
+
+
+# ---------------------------------------------------------------- control
+def stage_control(seeds, parallel):
+  """The fair baseline: plain CRL critics (NCE on the full original dataset,
+  sealed 30k budget; the critic never sees the actor) frozen, then three fresh
+  actors each with the SAME balanced-BC rule on the original dataset and the
+  same two-stage schedule; evaluated on the new seeds.  If these detour, the
+  ETT replay is not what the gain comes from."""
+  procs = []
+  for seed in seeds:
+    out = OUT / 'control_O' / f'seed_{seed}' / 'critic'
+    if (out / 'final.pkl').exists():
+      continue
+    log = OUT / 'logs' / f'control_O_critic_seed{seed}.log'
+    log.parent.mkdir(parents=True, exist_ok=True)
+    cmd = [sys.executable, str(Path(__file__).resolve()), '_train_one', '--control',
+           '--seeds', str(seed), '--arm', 'shared', '--budgets', 'b30k']
+    if ATTR_STEPS:
+      cmd.append('--smoke')
+    f = open(log, 'w', encoding='utf-8')
+    procs.append((subprocess.Popen(cmd, stdout=f, stderr=subprocess.STDOUT, cwd=str(ROOT),
+                                   env={**os.environ, 'PYTHONPATH': str(ROOT)}), f, out))
+    if len(procs) >= parallel:
+      _wait(procs)
+  _wait(procs)
+  for seed in seeds:
+    critic = OUT / 'control_O' / f'seed_{seed}' / 'critic' / 'final.pkl'
+    for a in seeds:
+      out = OUT / 'control_O' / f'seed_{seed}' / f'actor_s{a}'
+      if (out / 'final.pkl').exists():
+        continue
+      log = OUT / 'logs' / f'control_O_seed{seed}_actor_s{a}.log'
+      cmd = [sys.executable, str(ROOT / 'scripts' / 'train_f4_actor_fixed_critic.py'),
+             '--critic', str(critic), '--replay', str(O_DATASET),
+             '--actor-seed', str(a), '--log-prob', 'acme', '--random-goals', '0',
+             '--bc-sampling', 'balanced', '--bc-cap', str(BC_CAP), '--out', str(out)]
+      if ATTR_STEPS:
+        cmd += ['--steps', str(ATTR_STEPS)]
+      f = open(log, 'w', encoding='utf-8')
+      f.write(' '.join(cmd) + '\n')
+      procs.append((subprocess.Popen(cmd, stdout=f, stderr=subprocess.STDOUT, cwd=str(ROOT),
+                                     env={**os.environ, 'PYTHONPATH': str(ROOT)}), f, out))
+      if len(procs) >= parallel:
+        _wait(procs)
+  _wait(procs)
+  for seed in seeds:
+    ckpts = {f'O{seed}_a{a}': OUT / 'control_O' / f'seed_{seed}' / f'actor_s{a}' / 'final.pkl'
+             for a in seeds}
+    for pol in PROTOCOLS:
+      native_eval(ckpts, pol, NEW_EVAL, OUT / 'control_O' / f'native_new_{pol}_seed{seed}',
+                  OUT / 'logs' / f'control_O_eval_new_{pol}_seed{seed}.log')
 
 
 # --------------------------------------------------------------- evaluate
@@ -339,7 +400,8 @@ def stage_summarize(seeds, budgets, critic_seeds):
 def main(argv=None):
   ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
   ap.add_argument('command', choices=('attribution', 'train', 'evaluate',
-                                      'summarize', 'all', '_train_one'))
+                                      'control', 'summarize', 'all', '_train_one'))
+  ap.add_argument('--control', action='store_true', help='_train_one only')
   ap.add_argument('--seeds', type=int, nargs='+', default=[0, 1, 2])
   ap.add_argument('--critic-seeds', type=int, nargs='+', default=[2, 0])
   ap.add_argument('--budgets', nargs='+', default=list(BUDGETS), choices=list(BUDGETS))
@@ -356,7 +418,7 @@ def main(argv=None):
     SEALED_EVAL.update({'episodes': 4})
     NEW_EVAL.update({'episodes': 4})
   if args.command == '_train_one':
-    _train_one(args.seeds[0], args.arm, args.budgets[0])
+    _train_one(args.seeds[0], args.arm, args.budgets[0], control=args.control)
     return 0
   stages = (('attribution', 'train', 'evaluate', 'summarize')
             if args.command == 'all' else (args.command,))
@@ -368,6 +430,8 @@ def main(argv=None):
       stage_train(args.seeds, args.budgets, args.parallel)
     elif st == 'evaluate':
       stage_evaluate(args.seeds, args.budgets)
+    elif st == 'control':
+      stage_control(args.seeds, args.parallel)
     elif st == 'summarize':
       stage_summarize(args.seeds, args.budgets, args.critic_seeds)
   return 0

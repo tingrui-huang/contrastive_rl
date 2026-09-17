@@ -181,7 +181,7 @@ def evaluate_push_physical(env, eval_act_fn, params, episodes, np_rng):
           float(np.mean(min_dists)))
 
 
-def train(config: Config):
+def train(config: Config, buffer_prepare=None):
   print('Config:', config)
   key = jax.random.PRNGKey(config.seed)
   np_rng = np.random.default_rng(config.seed)
@@ -309,7 +309,7 @@ def train(config: Config):
     # gate aborts training. See crl/offline_audit.py for the gate definitions.
     from crl import offline_audit
     buffer, off_fp = offline_audit.build_offline_buffer(
-        config.offline_dataset, config)
+        config.offline_dataset, config, prepare=buffer_prepare)
     passed, gates, audit_report = offline_audit.run_static_audit(
         config.offline_dataset, config, buffer=buffer)
     print('OFFLINE AUDIT (pre-training gates):')
@@ -385,17 +385,23 @@ def train(config: Config):
     if not offline:
       raise ValueError('bc_sampling independent/balanced needs an offline dataset')
     from crl.bc_balanced import GroupBalancedBCSampler
-    with np.load(config.offline_dataset, allow_pickle=False) as _d:
+    _bc_path = getattr(config, 'bc_dataset', '') or config.offline_dataset
+    with np.load(_bc_path, allow_pickle=False) as _d:
+      _lengths = (_d['lengths'] if 'lengths' in _d.files
+                  else np.full(len(_d['obs']), _d['obs'].shape[1], np.int64))
       bc_sampler = GroupBalancedBCSampler(
-          _d['obs'], _d['act'], _d['lengths'], config.discount, config.obs_dim,
+          _d['obs'], _d['act'], _lengths, config.discount, config.obs_dim,
           cell=config.bc_balance_cell, n_sectors=config.bc_balance_sectors,
           wait_eps=config.bc_balance_wait_eps,
           cap=None if bc_sampling == 'independent' else config.bc_balance_cap,
           seed=10_000 + int(config.seed))
-    _law = bc_sampler.law_check(buffer)
+    # the law check compares the sampler's enumeration with the buffer's own
+    # draws, which only means something when both read the same dataset
+    _law = (bc_sampler.law_check(buffer) if _bc_path == config.offline_dataset
+            else float('nan'))
     _fork = {f'fork(1,3)->goal{g}': bc_sampler.group_composition((1, 3), g)
              for g in ((8, 3), (2, 3), (1, 2), (1, 3), (3, 3), (4, 3))}
-    print(f'BC ROWS: {bc_sampling} (cap {bc_sampler.cap}, cell '
+    print(f'BC ROWS: {bc_sampling} from {_bc_path} (cap {bc_sampler.cap}, cell '
           f'{bc_sampler.cell}, {bc_sampler.n_sectors} sectors + wait): '
           f'{bc_sampler.stats["n_pairs"]:,} (e,i,j) pairs, '
           f'{bc_sampler.stats["n_groups"]} groups, max multiplier '
@@ -407,7 +413,7 @@ def train(config: Config):
       os.makedirs(config.ckpt_dir, exist_ok=True)
       with open(os.path.join(config.ckpt_dir, 'bc_sampling_audit.json'), 'w',
                 encoding='utf-8') as _f:
-        json.dump({'bc_sampling': bc_sampling, 'stats': bc_sampler.stats,
+        json.dump({'bc_sampling': bc_sampling, 'bc_dataset': _bc_path, 'stats': bc_sampler.stats,
                    'law_check_max_abs_share_dev': _law, 'fork_groups': _fork},
                   _f, indent=2)
 
@@ -553,6 +559,17 @@ def train(config: Config):
       last_log = env_steps
 
     # Eval.
+    # Explicit step-numbered milestones (e.g. 10k/20k/30k/50k/70k) saved as
+    # <step>.pkl at the first iteration at or past each target -- checked
+    # every iteration, independent of the eval period, so a run with a long
+    # eval interval still keeps its intermediate checkpoints.
+    if config.ckpt_dir and config.ckpt_milestone_steps:
+      for ms in config.ckpt_milestone_steps:
+        tag = f'ckpt_{int(ms)}'
+        if tag not in saved_phases and env_steps >= ms:
+          ckpt_mod.save_named(config.ckpt_dir, str(int(ms)), env_steps, state)
+          saved_phases.add(tag)
+
     if env_steps - last_eval >= config.eval_every_steps:
       # Snapshot the eval-env step counter BEFORE evaluate() so the offline
       # contract can check evaluate()'s OWN consumption via a delta -- the
@@ -637,14 +654,6 @@ def train(config: Config):
             ckpt_mod.save_named(config.ckpt_dir, nm, env_steps, state)
             saved_phases.add(nm)
 
-      # Explicit step-numbered milestones (e.g. 10k/20k/30k/50k/70k) saved as
-      # <step>.pkl the first eval at or past each target.
-      if config.ckpt_dir and config.ckpt_milestone_steps:
-        for ms in config.ckpt_milestone_steps:
-          tag = f'ckpt_{int(ms)}'
-          if tag not in saved_phases and env_steps >= ms:
-            ckpt_mod.save_named(config.ckpt_dir, str(int(ms)), env_steps, state)
-            saved_phases.add(tag)
 
   # Final offline-contract check (content hash) before the last save.
   if offline:
