@@ -1,0 +1,53 @@
+{
+  "rows": {
+    "north": 451,
+    "east": 3621
+  },
+  "law_target": {
+    "r0.5": {
+      "p_detour": 0.2819539848674563,
+      "p_go": 0.15541182917672616,
+      "log_ratio": 0.5956653275300149
+    },
+    "r1.0": {
+      "p_detour": 0.2948808351992285,
+      "p_go": 0.15846669443926933,
+      "log_ratio": 0.62102688473717
+    }
+  },
+  "critics": {
+    "branch critic seed 0": {
+      "arm": "branch",
+      "f_north": -22.167978286743164,
+      "f_east": -24.934524536132812,
+      "margin": 2.7665462493896484,
+      "se": 0.4211462140083313,
+      "paired_margin": 0.16502724587917328,
+      "paired_se": 0.104111957975815,
+      "paired_frac_positive": 0.5433333333333333,
+      "pass": true
+    },
+    "branch critic seed 1": {
+      "arm": "branch",
+      "f_north": -21.622652053833008,
+      "f_east": -24.506649017333984,
+      "margin": 2.8839969635009766,
+      "se": 0.4294368326663971,
+      "paired_margin": 0.2763192355632782,
+      "paired_se": 0.10341477615234558,
+      "paired_frac_positive": 0.57,
+      "pass": true
+    },
+    "branch critic seed 2": {
+      "arm": "branch",
+      "f_north": -23.161264419555664,
+      "f_east": -24.958759307861328,
+      "margin": 1.797494888305664,
+      "se": 0.45239102840423584,
+      "paired_margin": -0.2610444724559784,
+      "paired_se": 0.10267867349991065,
+      "paired_frac_positive": 0.46,
+      "pass": false
+    }
+  }
+}

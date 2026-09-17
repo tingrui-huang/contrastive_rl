@@ -303,3 +303,37 @@ other): per rung, v2 replay (`--every 25 --query-every 2 --t-max 5
 --query-donor recorded`) -> critics seeds 0-2 -> paired gate.  The joint
 actors and the vanilla control at the same density are trained only for
 a rung whose critics pass the gate; the gate is the cheap decisive stage.
+
+### Gate results: p040 v2 (five critics) and the p050 rung (three critics)
+
+p040, replay v2, all five critics (`outputs/antmaze_branch_replay_v2/gate.md`,
+law target on the replay's query paths +0.23):
+
+| critic | row margin | paired same-state margin | s.e. | states > 0 |
+|---|---:|---:|---:|---:|
+| seed 0 | +1.73 | **-0.53** | 0.11 | 0.36 |
+| seed 1 | +0.72 | **-0.65** | 0.11 | 0.37 |
+| seed 2 | +0.68 | **-0.59** | 0.13 | 0.41 |
+| seed 3 | +1.88 | **-0.05** | 0.12 | 0.48 |
+| seed 4 | +0.78 | **-0.29** | 0.10 | 0.42 |
+
+0/5 pass (mean -0.42).  The p040 v2 joint chain was stopped after its
+first actor (seed 0, kept for the record) to free the learner slot.
+
+p050, replay v2 (17,165 paths, 13 min; north queries reach 0.72, east
+0.25 / death 0.75), law target on the query paths **+0.60** (r 0.5):
+
+| critic | row margin | paired same-state margin | s.e. | states > 0 | gate |
+|---|---:|---:|---:|---:|---|
+| seed 0 | +2.77 | **+0.17** | 0.10 | 0.54 | PASS |
+| seed 1 | +2.88 | **+0.28** | 0.10 | 0.57 | PASS |
+| seed 2 | +1.80 | **-0.26** | 0.10 | 0.46 | fail |
+
+2/3 pass.  Read against p040: the target moved by +0.37 (0.23 -> 0.60)
+and the critics' paired margin moved by +0.48 (mean -0.42 -> +0.06), so
+the critic does track the law's number, with an offset of about -0.5 nat
+and a seed spread of about 0.3 -- the same shrinkage PointMaze's critics
+showed (+0.45..+0.66 against +0.88).  Decision: the p050 rung goes on to
+the second half (critics 3-4, five-seed gate, warm-started joint actors
+on every critic, vanilla control at p 0.50 / gamma 0.999); the p060 rung
+(target ~+0.95 expected) runs its gate in the other slot.
