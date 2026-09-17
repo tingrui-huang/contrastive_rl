@@ -556,3 +556,41 @@ Seeds 2 and 3 never leave the start under the mean policy (timeout
 1.000, no route); the sampled policies wander north (detour 0.24 on seed
 3) but never arrive.  A memorised critic teaches either a slow shortcut
 or no locomotion at all.
+
+### The actor climbs the 30k critic off the data manifold
+
+Recorded-torque gate on the 30k critics (`gate_30k.md`): +0.11 / +0.26
+/ +0.20 / +0.11 / +0.08 (s.e. 0.06) -- positive on all five, small
+because those torques are a different cloud from the donor torques.
+
+Frozen-critic actor on critic seed 0 (critic lr 0, actor loss 0.95 (-f)
++ 0.05 BC on balanced rows, 100k): **no locomotion** -- 100-episode
+look: timeout 1.000, 89 of 100 never reach a mouth; the 10k milestone
+is the same (60/60 timeouts, no mouth).  `probe_v6_actor_f.py` at 200
+recorded start states, scored by the critic the actor was trained
+against:
+
+| actor ckpt | f(pi mode) | f(recorded torque) | f(north donor) | f(east donor) | f(pi) - f(rec) | policy scale | frac |a| > 0.95 | pi-to-recorded torque distance |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| frozen30k seed 0 @10k | -8.58 | -14.10 | -13.12 | -13.50 | **+5.5** | 0.64 | 0.43 | 2.60 |
+| frozen30k seed 0 @40k | -8.32 | -14.10 | -13.12 | -13.50 | **+5.8** | 0.66 | 0.47 | 2.60 |
+| frozen30k seed 0 final | -8.28 | -14.10 | -13.12 | -13.50 | **+5.8** | 1.25 | 0.51 | 2.69 |
+| 100k joint seed 0 final | -33.43 | -36.56 | -38.03 | -37.31 | +3.1 | 3.97 | 0.52 | 2.43 |
+
+Within 10k actor updates the mode sits 2.6 torque units from any
+recorded torque (the recorded clouds are 0.87 apart), half its
+components saturated, and the critic pays it 5.8 nats more than any
+real torque: the NCE critic has no negatives off the data manifold, so
+its f is unconstrained there and an 8-dimensional gradient ascent finds
+the peak at once; the 0.05 BC term is no match for +5.8 nats.  PointMaze
+never met this either (2-d action, dense action coverage).  The critic
+ranks real torques correctly (previous section) and is useless to an
+unconstrained actor; the remaining seeds of the frozen chain and the
+30k joint variant (same actor loss) were stopped.
+
+Two remedies inside the recipe, to run next on critic seed 0: (i) the
+BC weight -- the paper's own lambda -- raised to 0.5 and 1.0 (pure BC,
+which also serves as the proposal for (ii)); (ii) a proposal-and-rank
+policy: K samples from the BC policy, the critic picks the argmax -- the
+continuous counterpart of the discrete repo's categorical argmax, on
+the data manifold by construction.
