@@ -351,8 +351,14 @@ def build_replay(args):
           # visible record, one at random per query
           dn, de = donors_north[t], donors_east[t]
           if len(dn) and len(de):
-            jobs.append((e, t, 'detour', 'query', args.k_recorded, int(rng.choice(dn))))
-            jobs.append((e, t, 'go', 'query', args.k_recorded, int(rng.choice(de))))
+            # --query-repeats: the SAME (anchor, donor torques) row branched several
+            # times, each with its own hazard/clock draw, so the replay carries the
+            # expectation over draws as repeated identical keys instead of one
+            # realised future per key (which an Ant critic can memorise row by row)
+            d_n, d_e = int(rng.choice(dn)), int(rng.choice(de))
+            for _ in range(args.query_repeats):
+              jobs.append((e, t, 'detour', 'query', args.k_recorded, d_n))
+              jobs.append((e, t, 'go', 'query', args.k_recorded, d_e))
   if args.branch_only:
     jobs = [j for j in jobs if j[3] == 'branch']
   if args.queries_only:
@@ -374,11 +380,12 @@ def build_replay(args):
   m = json.loads(meta)
   m.update({'arm': 'branch_replay_oracle', 'source_dataset': str(DATASET), 'p_active': P_ACTIVE, 'every': args.every,
             'k_recorded': args.k_recorded, 'query_every': args.query_every, 'gen_seed': GEN_SEED,
-            'query_donor': args.query_donor,
+            'query_donor': args.query_donor, 'query_repeats': args.query_repeats,
             'anchor_rule': 'row 0 of every path (set_anchor_strata in the driver)',
             'hazards': 'redrawn from the priors at every branch (interventional continuation)'})
   OUT.mkdir(parents=True, exist_ok=True)
-  stem = 'replay_branch' + ('_v2' if args.query_donor == 'recorded' else '') + ('_queries' if args.queries_only else '') + ('_branches' if args.branch_only else '')
+  stem = ('replay_branch' + ('_v2' if args.query_donor == 'recorded' else '') + (f'_rep{args.query_repeats}' if args.query_repeats > 1 else '')
+          + ('_queries' if args.queries_only else '') + ('_branches' if args.branch_only else ''))
   path = OUT / (f'{stem}.npz' if not args.limit else f'{stem}_smoke.npz')
   np.savez_compressed(
       path, obs=obs_p, act=act_p, lengths=lengths_p.astype(np.int64),
@@ -414,6 +421,8 @@ def main(argv=None):
   ap.add_argument('--query-every', type=int, default=10, help='replay: start-region query anchors every k steps')
   ap.add_argument('--k-recorded', type=int, default=25, help='replay: recorded torques before the driver')
   ap.add_argument('--limit', type=int, default=0, help='replay: smoke with the first N jobs')
+  ap.add_argument('--query-repeats', type=int, default=1,
+                  help='replay: futures per start-region query key (same donor torques, fresh hazard draws)')
   ap.add_argument('--query-donor', choices=('driver', 'recorded'), default='recorded',
                   help="replay: the query branch's first K torques -- the driver's own (v1) or a recorded "
                        "segment of a donor episode moving that way (v2; matches the recorded torque distribution)")
