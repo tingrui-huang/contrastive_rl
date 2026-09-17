@@ -1034,3 +1034,73 @@ reading for the driver: the continuation policy takes every trajectory
 back to the shortcut, and a replay generated once under it carries no
 policy-improvement signal for the route.  Part 2 (the pure-BC actor as
 the continuation) follows.
+
+### Honest single-step evaluation, part 2: the pure-BC actor as the continuation; the walker comparison
+
+Same protocol (`diag_single/`, both continuations in one run, 4,500
+rollouts), the deployment pure-BC actor's mode acting closed-loop from
+step 2.  Route taken = the path went around (max y >= 6); the
+final-position rule misreads successful detours, which end at the goal.
+
+| continuation | state set | around N / E / own | reach N / E / own | death N / E | P_goal N / E | **log N/E** | paired win / tie / loss | around differs N vs E |
+|---|---|---|---|---|---|---:|---|---:|
+| driver | start | 0.00 / 0.00 / 0.00 | 0.21 / 0.21 / 0.21 | 0.79 / 0.79 | 0.132 / 0.121 | +0.09 | 0.08 / 0.83 / 0.09 | 0.00 |
+| driver | turn in progress | 0.24 / 0.23 / 0.27 | 0.60 / 0.60 / 0.60 | 0.39 / 0.39 | 0.313 / 0.316 | -0.01 | 0.23 / 0.43 / 0.34 | 0.03 |
+| driver | north leg low / high | 1.00 / 1.00 / 1.00 | 0.99 / 0.96 / 0.97 ; 0.98 / 0.99 / 0.99 | 0 | 0.388 / 0.384 ; 0.429 / 0.428 | +0.01 ; +0.00 | 0.52 / 0.01 ; 0.37 / 0.07 | 0.00 |
+| driver | shortcut early | 0 | 0.25 x3 | 0.75 | 0.173 / 0.173 | -0.00 | 0.10 / 0.77 / 0.13 | 0.00 |
+| bc | start | 0.05 / 0.01 / 0.03 | 0.21 / 0.21 / 0.23 | 0.67 / 0.77 | 0.111 / 0.113 | -0.02 | 0.09 / 0.77 / 0.14 | 0.04 |
+| bc | turn in progress | 0.56 / 0.59 / 0.63 | 0.50 / 0.45 / 0.53 | 0.11 / 0.09 | 0.155 / 0.138 | +0.12 | 0.38 / 0.33 / 0.29 | 0.20 |
+| bc | north leg low / high | 0.99 / 0.99 / 0.99 ; 1.00 x3 | 0.81 / 0.79 / 0.83 ; 0.82 / 0.82 / 0.83 | 0 | 0.252 / 0.245 ; 0.250 / 0.253 | +0.03 ; -0.01 | 0.52 / 0.04 ; 0.45 / 0.05 | 0.01 ; 0.00 |
+| bc | shortcut early | 0 | 0.25 / 0.25 / 0.25 | 0.72 / 0.72 | 0.167 / 0.134 | +0.22 | 0.15 / 0.77 / 0.08 | 0.00 |
+
+Mid-turn states under the BC continuation, by how far into the turn
+the recorded row is: t in [6, 15) n 54, around N 0.50 / E 0.61, log
++0.16, win 0.46 / loss 0.26; t in [15, 30) n 57, around 0.84 / 0.79,
+log -0.06, win 0.39 / loss 0.42; t >= 30 n 39, around 0.23 / 0.26, log
++0.60 (P_goal 0.084 / 0.046, win 0.26 / loss 0.13).  The shortcut-early
++0.22 under BC rests on 11 of 150 pairs (positive differences summing
+to 5.7 against 0.7 negative; reach steps 190 / 194): a few paths, not
+a systematic effect.
+
+What this says.  (1) Under a fixed blind continuation the single torque
+carries at most ~0.1 nat about the route anywhere: 0.09 / -0.01 / 0.01
+/ 0.00 (driver), -0.02 / +0.12 / +0.03 / -0.01 (BC) at the start,
+mid-turn, and north-leg states, with paired wins 0.08-0.52 against ties
+of 0.01-0.83 and losses 0.09-0.34.  (2) The route is decided by the
+continuation policy's own state: the driver's latched position rule
+takes every mid-turn state back east (around 0.23-0.27 for all three
+torques); the BC actor goes around from mid-turn states 0.56-0.63 on
+its own, and the north torque does not raise that (0.56 against 0.59
+for the east torque; the pairs that differ, 0.20, go both ways).  At
+the start the BC continuation goes around 0.05 after a north torque
+against 0.01 after an east one -- a real but 4-point effect that does
+not survive to P_goal (-0.02) because those late detours mostly time
+out.  (3) The 0.1-nat figure is below the critics' measured seed noise
+(~0.3 on the paired margins), so a replay built honestly on either
+continuation gives a single-step critic nothing to separate at the
+route level.
+
+This is the second branch of the user's reading, stated precisely: the
+"fix this continuation, generate the replay once" recipe has no
+policy-improvement signal for the route on this benchmark, because no
+fixed blind continuation lets one 8-d torque decide a 400-step route;
+the route lives in what the continuation policy does after the torque.
+The problem is at the continuation / action-interface level, not in the
+critic.  (PointMaze was different in kind: a 2-d action IS a heading,
+and one step at the fork cell decides the corridor.)
+
+Walker comparison (`diag_walker/`, the same 100 placed rows per leg,
+paired hazards):
+
+| leg | walker | reach | death | timeout | reach step (median) | P_goal |
+|---|---|---:|---:|---:|---:|---:|
+| north | generation (frozen walker + blind driver) | 0.95 | 0.00 | 0.05 | 322 | 0.434 |
+| north | deployment (pure-BC mode) | 0.83 | 0.00 | 0.17 | 380 | 0.256 |
+| east | generation | 0.98 | 0.00 | 0.02 | 184 | 0.604 |
+| east | deployment (pure-BC mode) | 0.92 | 0.00 | 0.08 | 236 | 0.402 |
+
+Placed on the detour, the deployment walker completes it 0.83 / 0.92
+(generation 0.95 / 0.98), about 50 steps slower.  The deployment gap
+is modest; the missing piece is entering and sustaining the turn from
+the start (BC around 0.01-0.05 from the start, 0.56-0.63 once mid-turn),
+which -- per part 2 -- is not a single-torque quantity.

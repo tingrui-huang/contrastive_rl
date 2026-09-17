@@ -128,23 +128,7 @@ def _run_walker_jobs(args):
   env, teacher = B._worker_env(seed)
   with np.load(B.DATASET, allow_pickle=False) as d:
     obs = d['obs']
-  act_fn = None
-  if bc_ckpt:
-    import jax
-    import jax.numpy as jnp
-    from crl import checkpoint, networks
-    cfg = teacher_cfg()
-    nets = networks.make_networks(
-        obs_dim=cfg.obs_dim, goal_dim=cfg.goal_dim, action_dim=cfg.action_dim, repr_dim=int(cfg.repr_dim),
-        repr_norm=cfg.repr_norm, repr_norm_temp=cfg.repr_norm_temp, hidden_layer_sizes=cfg.hidden_layer_sizes,
-        twin_q=cfg.twin_q, use_image_obs=cfg.use_image_obs, use_layer_norm=cfg.use_layer_norm)
-    _, st = checkpoint.load_checkpoint(bc_ckpt)
-    pp = st.policy_params
-
-    @jax.jit
-    def _mode(o):
-      return jnp.tanh(nets.policy_network.apply(pp, o).loc)
-    act_fn = lambda o: np.asarray(_mode(jnp.asarray(o[None, :B.STATE_DIM + 2], jnp.float32)))[0]
+  act_fn = _bc_act_fn(bc_ckpt) if bc_ckpt else None
   out = []
   for (i, e, t, leg, walker, pair_seed) in jobs:
     state = obs[e, t, :B.STATE_DIM].astype(np.float64)
@@ -203,10 +187,15 @@ def _continue(env, teacher, o, t, act_fn):
 
 
 def _bc_act_fn(bc_ckpt):
+  """The deployment actor: networks built from the learner config it was trained with
+  (run_v6_branch_replay.base_config, the 31-column XY environment)."""
   import jax
   import jax.numpy as jnp
+  import run_v6_branch_replay as D
   from crl import checkpoint, networks
-  cfg = teacher_cfg()
+  from crl import envs as envs_mod
+  cfg = D.base_config(0, D.REPLAY, 1, D.OUT / '_cfg_diag')
+  envs_mod.make_env(cfg.env_name, cfg, seed=1)          # populates obs/goal/action dims
   nets = networks.make_networks(
       obs_dim=cfg.obs_dim, goal_dim=cfg.goal_dim, action_dim=cfg.action_dim, repr_dim=int(cfg.repr_dim),
       repr_norm=cfg.repr_norm, repr_norm_temp=cfg.repr_norm_temp, hidden_layer_sizes=cfg.hidden_layer_sizes,
