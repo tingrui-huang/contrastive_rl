@@ -167,3 +167,43 @@ available.  Placed on the detour, the driver completes it 0.97-0.98 at
 observational counterpart on the same rows is -0.48 (the sighted teacher's
 shortcut), the sign the confounding gives.  The go branches reproduce the
 blind prior (reach 0.33, death 0.67).
+
+## Phase 1, first pass (replay v1, driver-torque queries): the gate and what it found
+
+Five critics (V6 recipe, gamma 0.999, 100k updates, row-0 anchors) on the
+v1 replay (10,913 branch paths + 3,000 north / 3,000 east query paths whose
+first torque is the DRIVER's).  Law target on the replay's query paths at
+the start region: +0.49.
+
+| probe (start-region states, t <= 5) | seed 0 | 1 | 2 | 3 | 4 |
+|---|---:|---:|---:|---:|---:|
+| paired same-state: recorded north torques - recorded east torques | -0.61 | -0.57 | -0.35 | -0.23 | -0.82 |
+| paired same-state: query north torques - query go torques | +0.58 | +0.77 | +1.55 | +0.95 | -0.14 |
+| replay rows themselves: f(north query row) - f(go query row) | +6.1 | +5.6 | +6.7 | +6.2 | -- |
+| replay go rows: f(branch reached) - f(branch died) | +10.5 | +10.9 | +12.0 | +11.7 | -- |
+
+Reading.  (i) The critics learned the route preference the replay carries
+-- but on the replay's own torques: the query north torque (the driver's
+first output at the anchor, with the teacher's turn bias and a freshly
+reset controller) sits 1.9 torque-units from the recorded north torques,
+farther than recorded north is from recorded east (0.87), while the
+query go torque is 0.32 from the recorded east torques.  The critics
+score recorded north torques 1.1-2.4 BELOW the query north torques at the
+same states, so on the torques the BC term imitates and the actor can
+produce, the critic prefers east.  (ii) f on the replay rows tracks each
+path's own outcome by ~11 nats (reached vs died): the critic keys on
+row identity rather than on a torque -> route rule -- the same
+"narrow-peak" structure PointMaze showed, now in 8 torque dimensions where
+a single torque carries only weak route information (linear AUC north vs
+east on recorded rows at t <= 5: 0.80).
+
+Consequence: the query branch's first action must come from the recorded
+torque distribution.  Replay v2 (`--query-donor recorded`, the default
+now): at each start-region query anchor the first K = 25 torques are a
+recorded segment of a donor episode chosen by the VISIBLE record (its
+displacement over those K steps points north / east: 49 north donors and
+946 east donors per t), then the driver continues on the queried route.
+This is PointMaze's rule (the query action is one the data contains),
+not a new label.  The actors of the v1 critics are being trained anyway
+(warm-started joint, all five seeds) to see whether the torque-signature
+mismatch matters for the policy; v2 critics follow.

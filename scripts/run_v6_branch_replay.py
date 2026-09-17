@@ -227,6 +227,28 @@ def critic_scores(q_params, nets, o, a):
   return np.concatenate(out)
 
 
+def paired_margin(q_params, nets, rows, n_states=300, n_actions=200, seed=0):
+  """Same-state comparison: each start-region anchor state (with its own goal)
+  is scored with recorded north-moving torques and with recorded east-moving
+  torques (transplanted; at t <= 5 every pose is the reset pose up to noise),
+  and the per-state difference is averaged.  Removes the state / episode
+  confound of the row-wise margin."""
+  rng = np.random.default_rng(seed)
+  o_n, a_n = rows['north']
+  o_e, a_e = rows['east']
+  states = np.concatenate([o_n, o_e])
+  pick = rng.choice(len(states), size=min(n_states, len(states)), replace=False)
+  an = a_n[rng.choice(len(a_n), size=min(n_actions, len(a_n)), replace=False)]
+  ae = a_e[rng.choice(len(a_e), size=min(n_actions, len(a_e)), replace=False)]
+  diffs = []
+  for k in pick:
+    o = np.repeat(states[k][None], len(an) + len(ae), 0)
+    f = critic_scores(q_params, nets, o, np.concatenate([an, ae]))
+    diffs.append(f[:len(an)].mean() - f[len(an):].mean())
+  diffs = np.array(diffs)
+  return float(diffs.mean()), float(diffs.std() / np.sqrt(len(diffs))), float((diffs > 0).mean())
+
+
 def law_target():
   """The replay's own answer at the start region: the relabeling law's
   goal-frame probability of the north vs east query paths."""
@@ -265,8 +287,9 @@ def stage_gate(seeds, gate, vanilla_seeds=()):
        'displacement), each scored with its own recorded goal; critic score = min over the twin heads.  '
        + (f'Law target on the replay\'s query paths (gamma {DISCOUNT}): r0.5 {target["r0.5"]["log_ratio"]:+.2f}, '
           f'r1.0 {target["r1.0"]["log_ratio"]:+.2f}.  ' if target else '')
-       + f'PASS = margin >= +{gate:.2f}.', '',
-       '| critic | mean f north | mean f east | margin | s.e. | gate |', '|---|---:|---:|---:|---:|---|']
+       + f'PASS = paired same-state margin >= +{gate:.2f} (300 states x 200 north / 200 east recorded torques).', '',
+       '| critic | mean f north | mean f east | row margin | s.e. | paired margin (same state) | s.e. | states > 0 | gate |',
+       '|---|---:|---:|---:|---:|---:|---:|---:|---|']
   for label, path, arm in entries:
     if not path.exists():
       continue
@@ -275,11 +298,13 @@ def stage_gate(seeds, gate, vanilla_seeds=()):
     fe = critic_scores(st.q_params, nets, *rows['east'])
     margin = float(fn.mean() - fe.mean())
     se = float(np.sqrt(fn.var() / len(fn) + fe.var() / len(fe)))
+    pm, pse, pfrac = paired_margin(st.q_params, nets, rows)
     m = {'arm': arm, 'f_north': float(fn.mean()), 'f_east': float(fe.mean()), 'margin': margin, 'se': se,
-         'pass': bool(margin >= gate)}
+         'paired_margin': pm, 'paired_se': pse, 'paired_frac_positive': pfrac,
+         'pass': bool(pm >= gate)}
     res['critics'][label] = m
-    L.append(f'| {label} | {m["f_north"]:+.3f} | {m["f_east"]:+.3f} | **{margin:+.3f}** | {se:.3f} | '
-             f'{"PASS" if m["pass"] else "fail"} |')
+    L.append(f'| {label} | {m["f_north"]:+.3f} | {m["f_east"]:+.3f} | {margin:+.3f} | {se:.3f} | '
+             f'**{pm:+.3f}** | {pse:.3f} | {pfrac:.2f} | {"PASS" if m["pass"] else "fail"} |')
     print(L[-1], flush=True)
   write_json(OUT / 'gate.json', res)
   (OUT / 'gate.md').write_text('\n'.join(L) + '\n', encoding='utf-8')
@@ -425,7 +450,7 @@ def stage_summarize(seeds, vanilla_seeds):
         h = _headline(sm)
         res.append({'arm': arm, 'seed': s, 'policy': pol, **h, 'gate_margin': g.get('margin')})
         fmt = lambda v: f'{v:.3f}' if isinstance(v, (int, float)) else str(v)
-        L.append(f'| {arm} | {s} | {g.get("margin", float("nan")):+.3f} | {pol} | ' + ' | '.join(
+        L.append(f'| {arm} | {s} | {g.get("paired_margin", g.get("margin", float("nan"))):+.3f} | {pol} | ' + ' | '.join(
             fmt(h[k]) for k in ('success_rate', 'failure_rate', 'timeout_rate', 'detour_rate', 'shortcut_rate'))
             + ' | ' + ' / '.join(fmt(h['by_latent'][u]) for u in ('U00', 'U10', 'U01', 'U11')) + ' |')
   L.append('\nReference: vanilla at gamma 0.99 (notes/v6_detour_ladder.md): success 0.370, detour 0.000 on every seed.')

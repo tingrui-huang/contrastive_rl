@@ -162,13 +162,16 @@ def _run_jobs(args):
   with np.load(DATASET, allow_pickle=False) as d:
     obs, act, lengths = d['obs'], d['act'], d['lengths']
   out = []
-  for (e, t, intent, kind, k_rec) in jobs:
+  for job in jobs:
+    e, t, intent, kind, k_rec = job[:5]
+    donor = job[5] if len(job) > 5 else e
     state = obs[e, t, :STATE_DIM].astype(np.float64)
     goal_xy = obs[e, t, STATE_DIM:STATE_DIM + 2].astype(np.float64)
-    last = int(lengths[e]) - 1                  # last obs row; actions valid for rows < last
-    rec = act[e, t:min(t + k_rec, last)] if k_rec > 0 else act[e, t:t]
+    last = int(lengths[donor]) - 1              # donor's last obs row; its actions valid for rows < last
+    rec = act[donor, t:min(t + k_rec, last)] if k_rec > 0 else act[donor, t:t]
     r = rollout(env, teacher, state, goal_xy, t, rec, intent, HORIZON - t, park=PARK)
-    r.update({'episode': int(e), 't': int(t), 'kind': kind, 'intent': intent, 'k_rec': int(len(rec))})
+    r.update({'episode': int(e), 't': int(t), 'kind': kind, 'intent': intent, 'k_rec': int(len(rec)),
+              'donor': int(donor)})
     out.append(r)
   return out
 
@@ -318,6 +321,15 @@ def build_replay(args):
   with np.load(DATASET, allow_pickle=False) as d:
     obs, lengths, meta = d['obs'], d['lengths'], str(d['meta'])
   n_eps, L = obs.shape[:2]
+  rng = np.random.default_rng(GEN_SEED + 7)
+  donors_north, donors_east = {}, {}
+  for t in range(0, args.t_max + 1):
+    ok = (lengths - 1) > t + args.k_recorded
+    d = obs[:, min(t + args.k_recorded, L - 1), :2] - obs[:, t, :2]
+    donors_north[t] = np.flatnonzero(ok & (d[:, 1] > 1.0) & (d[:, 1] > np.abs(d[:, 0])))
+    donors_east[t] = np.flatnonzero(ok & (d[:, 0] > 1.0) & (d[:, 0] > np.abs(d[:, 1])))
+  if args.query_donor == 'recorded':
+    print('query donors per t (north / east):', {t: (len(donors_north[t]), len(donors_east[t])) for t in donors_north}, flush=True)
   jobs = []
   for e in range(n_eps):
     last = int(lengths[e]) - 1
@@ -326,8 +338,21 @@ def build_replay(args):
     for t in range(0, min(last, args.t_max + 1)):
       xx, yy = obs[e, t, 0], obs[e, t, 1]
       if xx < START_REGION['x_max'] and yy < START_REGION['y_max'] and t % args.query_every == 0:
-        jobs.append((e, t, 'detour', 'query', 0))
-        jobs.append((e, t, 'go', 'query', 0))
+        if args.query_donor == 'driver':
+          jobs.append((e, t, 'detour', 'query', 0))
+          jobs.append((e, t, 'go', 'query', 0))
+        else:
+          # donors: recorded episodes whose displacement over the next K steps from
+          # time t points north (y up by > 1) / east (x up by > 1); chosen by the
+          # visible record, one at random per query
+          dn, de = donors_north[t], donors_east[t]
+          if len(dn) and len(de):
+            jobs.append((e, t, 'detour', 'query', args.k_recorded, int(rng.choice(dn))))
+            jobs.append((e, t, 'go', 'query', args.k_recorded, int(rng.choice(de))))
+  if args.branch_only:
+    jobs = [j for j in jobs if j[3] == 'branch']
+  if args.queries_only:
+    jobs = [j for j in jobs if j[3] == 'query']
   if args.limit:
     jobs = jobs[:args.limit]
   print(f'replay: {sum(j[3] == "branch" for j in jobs)} branch paths + {sum(j[3] == "query" for j in jobs)} '
@@ -345,10 +370,12 @@ def build_replay(args):
   m = json.loads(meta)
   m.update({'arm': 'branch_replay_oracle', 'source_dataset': str(DATASET), 'every': args.every,
             'k_recorded': args.k_recorded, 'query_every': args.query_every, 'gen_seed': GEN_SEED,
+            'query_donor': args.query_donor,
             'anchor_rule': 'row 0 of every path (set_anchor_strata in the driver)',
             'hazards': 'redrawn from the priors at every branch (interventional continuation)'})
   OUT.mkdir(parents=True, exist_ok=True)
-  path = OUT / ('replay_branch.npz' if not args.limit else 'replay_branch_smoke.npz')
+  stem = 'replay_branch' + ('_v2' if args.query_donor == 'recorded' else '') + ('_queries' if args.queries_only else '') + ('_branches' if args.branch_only else '')
+  path = OUT / (f'{stem}.npz' if not args.limit else f'{stem}_smoke.npz')
   np.savez_compressed(
       path, obs=obs_p, act=act_p, lengths=lengths_p.astype(np.int64),
       eval_goals=obs_p[:, 0, STATE_DIM:STATE_DIM + 2].astype(np.float32),
@@ -356,6 +383,7 @@ def build_replay(args):
       audit_kind=np.array([r['kind'] for r in res]), audit_intent=np.array([str(r['intent']) for r in res]),
       audit_episode=np.array([r['episode'] for r in res], np.int32), audit_anchor_time=np.array([r['t'] for r in res], np.int16),
       audit_success=np.array([r['success'] for r in res]), audit_failure=np.array([r['failure'] for r in res]),
+      audit_donor=np.array([r.get('donor', r['episode']) for r in res], np.int32),
       audit_u1=np.array([r['u1'] for r in res]), audit_u2=np.array([r['u2'] for r in res]))
   succ = np.array([r['success'] for r in res]); fail = np.array([r['failure'] for r in res])
   kinds = np.array([r['kind'] for r in res]); intents = np.array([str(r['intent']) for r in res])
@@ -366,7 +394,7 @@ def build_replay(args):
                                      'death': float(fail[(kinds == k) & (intents == i)].mean())}
                          for k, i in {(k, i) for k, i in zip(kinds, intents)}},
              'bytes': int(os.path.getsize(path)), 'path': str(path)}
-  (OUT / ('generation.json' if not args.limit else 'generation_smoke.json')).write_text(json.dumps(summary, indent=1), encoding='utf-8')
+  (OUT / (f'generation_{stem}.json' if not args.limit else f'generation_{stem}_smoke.json')).write_text(json.dumps(summary, indent=1), encoding='utf-8')
   print(json.dumps(summary, indent=1), flush=True)
 
 
@@ -382,6 +410,11 @@ def main(argv=None):
   ap.add_argument('--query-every', type=int, default=10, help='replay: start-region query anchors every k steps')
   ap.add_argument('--k-recorded', type=int, default=25, help='replay: recorded torques before the driver')
   ap.add_argument('--limit', type=int, default=0, help='replay: smoke with the first N jobs')
+  ap.add_argument('--query-donor', choices=('driver', 'recorded'), default='recorded',
+                  help="replay: the query branch's first K torques -- the driver's own (v1) or a recorded "
+                       "segment of a donor episode moving that way (v2; matches the recorded torque distribution)")
+  ap.add_argument('--branch-only', action='store_true', help='replay: no query branches')
+  ap.add_argument('--queries-only', action='store_true', help='replay: only the query branches')
   args = ap.parse_args(argv)
   if args.mode == 'phase0':
     phase0(args)
