@@ -135,7 +135,9 @@ def manifest(run_dir, cfg, arm, extra=None):
 
 # ----------------------------------------------------------------- critics
 def critic_dir(seed):
-  return OUT / 'critics' / f'seed_{seed}'
+  # V6_CRITIC_TAG names a side-by-side critic set (e.g. '_ms' for the
+  # milestone-probed retrain) without touching the chain's own critics
+  return OUT / ('critics' + os.environ.get('V6_CRITIC_TAG', '')) / f'seed_{seed}'
 
 
 def train_critic(seed, steps):
@@ -145,9 +147,10 @@ def train_critic(seed, steps):
     print(f'{d} exists', flush=True)
     return
   cfg = base_config(seed, REPLAY, steps, d)
+  cfg.ckpt_milestone_steps = tuple(m for m in MILESTONES if m < steps)   # the critic's own trajectory, for the probes
   t0 = time.time()
   train(cfg, buffer_prepare=row0_prepare)
-  manifest(d, cfg, 'branch_critic', {'wall_seconds': time.time() - t0})
+  manifest(d, cfg, 'branch_critic', {'wall_seconds': time.time() - t0, 'milestones': list(cfg.ckpt_milestone_steps)})
 
 
 def vanilla_dir(seed):
