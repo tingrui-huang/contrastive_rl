@@ -51,6 +51,9 @@ OUT = Path(os.environ.get('V6_BRANCH_OUT', ROOT / 'outputs' / 'antmaze_branch_re
 REPLAY = Path(os.environ.get('V6_BRANCH_REPLAY', OUT / 'replay_branch.npz'))
 STEM = os.environ.get('V6_DATASET_STEM', 'antmaze_rockfall_clock_v6_p040')
 P_ACTIVE = float(os.environ.get('V6_P_ACTIVE', '0.40'))
+CRITIC_TAG = os.environ.get('V6_CRITIC_TAG', '')   # side-by-side critic set, e.g. '_30k'
+JOINT_TAG = os.environ.get('V6_JOINT_TAG', '')     # side-by-side actor set, e.g. '_frozen30k'
+JOINT_MODE = os.environ.get('V6_JOINT_MODE', 'joint')   # 'joint' (critic keeps training) | 'frozen' (critic lr 0)
 DATASET = ROOT / 'artifacts' / 'rockfall_clock_v6' / 'dataset' / f'{STEM}_gxy.npz'
 ENV_XY = 'offline_antmaze_rockfall_clock_v6_gxy'
 HORIZON = 800
@@ -137,7 +140,7 @@ def manifest(run_dir, cfg, arm, extra=None):
 def critic_dir(seed):
   # V6_CRITIC_TAG names a side-by-side critic set (e.g. '_ms' for the
   # milestone-probed retrain) without touching the chain's own critics
-  return OUT / ('critics' + os.environ.get('V6_CRITIC_TAG', '')) / f'seed_{seed}'
+  return OUT / ('critics' + CRITIC_TAG) / f'seed_{seed}'
 
 
 def train_critic(seed, steps):
@@ -312,14 +315,14 @@ def stage_gate(seeds, gate, vanilla_seeds=()):
     L.append(f'| {label} | {m["f_north"]:+.3f} | {m["f_east"]:+.3f} | {margin:+.3f} | {se:.3f} | '
              f'**{pm:+.3f}** | {pse:.3f} | {pfrac:.2f} | {"PASS" if m["pass"] else "fail"} |')
     print(L[-1], flush=True)
-  write_json(OUT / 'gate.json', res)
-  (OUT / 'gate.md').write_text('\n'.join(L) + '\n', encoding='utf-8')
+  write_json(OUT / f'gate{CRITIC_TAG}.json', res)
+  (OUT / f'gate{CRITIC_TAG}.md').write_text('\n'.join(L) + '\n', encoding='utf-8')
   print('\n'.join(L), flush=True)
 
 
 # ------------------------------------------------------------------- joint
 def joint_dir(seed):
-  return OUT / 'joint' / f'seed_{seed}'
+  return OUT / ('joint' + JOINT_TAG) / f'seed_{seed}'
 
 
 def joint_config(seed, steps):
@@ -332,6 +335,8 @@ def joint_config(seed, steps):
   cfg.bc_dataset = str(DATASET)
   cfg.resume = True
   cfg.ckpt_milestone_steps = tuple(m for m in MILESTONES if m < steps)
+  if JOINT_MODE == 'frozen':
+    cfg.learning_rate = 0.0    # the critic optimiser: a zero step keeps the warm critic exactly (actor + BC only)
   return cfg
 
 
@@ -358,7 +363,8 @@ def prep_joint(seed):
   d.mkdir(parents=True, exist_ok=True)
   checkpoint.save_named(str(d), 'latest', 0, new)
   write_json(d / 'prep.json', {'seed': seed, 'warm_critic': str(critic_dir(seed) / 'final.pkl'),
-                               'warm_critic_sha256': sha256(critic_dir(seed) / 'final.pkl'), 'actor': 'fresh'})
+                               'warm_critic_sha256': sha256(critic_dir(seed) / 'final.pkl'), 'actor': 'fresh',
+                               'joint_mode': JOINT_MODE, 'critic_tag': CRITIC_TAG})
 
 
 def train_joint(seed, steps):
@@ -399,7 +405,7 @@ def evaluate_ckpt(ckpt, out_dir, policy):
 
 
 def stage_joint(seeds, steps, parallel, all_critics):
-  gate = json.loads((OUT / 'gate.json').read_text(encoding='utf-8')) if (OUT / 'gate.json').exists() else {'critics': {}}
+  gate = json.loads((OUT / f'gate{CRITIC_TAG}.json').read_text(encoding='utf-8')) if (OUT / f'gate{CRITIC_TAG}.json').exists() else {'critics': {}}
   chosen = [s for s in seeds if all_critics or gate['critics'].get(f'branch critic seed {s}', {}).get('pass')]
   print(f'joint for seeds {chosen}', flush=True)
   procs = []
@@ -454,7 +460,7 @@ def _headline(summary, episodes=None):
 
 def stage_summarize(seeds, vanilla_seeds):
   from crl import rockfall_clock_v6 as V6
-  gate = json.loads((OUT / 'gate.json').read_text(encoding='utf-8')) if (OUT / 'gate.json').exists() else {}
+  gate = json.loads((OUT / f'gate{CRITIC_TAG}.json').read_text(encoding='utf-8')) if (OUT / f'gate{CRITIC_TAG}.json').exists() else {}
   L = ['# AntMaze V6 Phase 1: oracle branch replay', '',
        f'Critic recipe: V6 vanilla at gamma {DISCOUNT}, {CRITIC_STEPS:,} updates, anchors = row 0 of every branch '
        f'path; joint stage: {JOINT_STEPS:,} warm-started joint updates with balanced BC rows (displacement key, '
@@ -488,8 +494,8 @@ def stage_summarize(seeds, vanilla_seeds):
            '0.000 on every seed.  The rockfall clocks run from the reset (zone 1 closes by step '
            f'{V6.T0_MAX_1 + V6.ROCKFALL_STEPS}, zone 2 by {V6.T0_MAX_2 + V6.ROCKFALL_STEPS}); an after-burst share near one '
            'means the shortcut survives by lateness, not by a route decision.')
-  (OUT / 'REPORT.md').write_text('\n'.join(L) + '\n', encoding='utf-8')
-  write_json(OUT / 'results.json', {'rows': res, 'gate': gate})
+  (OUT / f'REPORT{CRITIC_TAG}{JOINT_TAG}.md').write_text('\n'.join(L) + '\n', encoding='utf-8')
+  write_json(OUT / f'results{CRITIC_TAG}{JOINT_TAG}.json', {'rows': res, 'gate': gate})
   print('\n'.join(L), flush=True)
 
 
