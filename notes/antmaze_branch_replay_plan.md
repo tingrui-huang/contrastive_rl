@@ -405,3 +405,9 @@ the burst; 43 of the 52 timeouts never reach a mouth.  Start-state torque
 actors, one picture: the branch-replay warm start makes a slow, stalling
 shortcut walker; the critic's gate margin (+0.17 / +0.28 on these two)
 does not appear as a north turn in behaviour.
+
+p060 completed to five critics: seeds 3 and 4 add **-0.02** and **-0.14**
+(0/5 pass, mean -0.16 against +1.02).  Its joint stage was SIGKILLed on
+the node (rc -9: two replay-loaded learners at once on 15 GB) and is
+queued to re-run alone after both chains finish; the p060 vanilla
+control runs meanwhile.
