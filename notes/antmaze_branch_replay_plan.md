@@ -739,3 +739,23 @@ success 0.34, failure 0.66 (the density's rate); 13 never leave the
 start.  Discounted 0.017 overall.  The decision is now the critic's; what
 the detour loses is walker competence on the corridor it has 5% of the
 data for, not deaths.
+
+Segment-rank on all five 30k critics (K = 64, 100 draws each) and the K
+dependence on critic 0:
+
+| critic (30k) | success | failure | timeout | **detour** | shortcut | decisions | north picks |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| seed 0 | 0.39 | 0.31 | 0.30 | **0.40** | 0.47 | 251 | 56 |
+| seed 1 | 0.45 | 0.24 | 0.31 | **0.52** | 0.33 | 291 | 69 |
+| seed 2 | 0.42 | 0.32 | 0.26 | **0.36** | 0.47 | 365 | 53 |
+| seed 3 | 0.43 | 0.24 | 0.33 | **0.43** | 0.38 | 386 | 70 |
+| seed 4 | 0.34 | 0.38 | 0.28 | **0.26** | 0.52 | 273 | 42 |
+| seed 0, K = 32 | 0.38 | 0.23 | 0.39 | 0.35 | 0.37 | 288 | 58 |
+| seed 0, K = 128 | 0.36 | 0.29 | 0.35 | 0.34 | 0.45 | 357 | 57 |
+
+5/5 critics detour 0.26-0.52 (mean 0.39) against ~0.05 north candidates,
+0.000-0.017 for every gradient actor and 0.000 for vanilla; K 32 / 64 /
+128 flat.  The formal version (300 draws per critic), the no-critic
+control (same candidates, uniform pick -- the 5% prior) and the same
+policy ranked by the vanilla critics (trained on the recorded futures)
+are running.
