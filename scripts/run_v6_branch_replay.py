@@ -54,6 +54,7 @@ P_ACTIVE = float(os.environ.get('V6_P_ACTIVE', '0.40'))
 CRITIC_TAG = os.environ.get('V6_CRITIC_TAG', '')   # side-by-side critic set, e.g. '_30k'
 JOINT_TAG = os.environ.get('V6_JOINT_TAG', '')     # side-by-side actor set, e.g. '_frozen30k'
 JOINT_MODE = os.environ.get('V6_JOINT_MODE', 'joint')   # 'joint' (critic keeps training) | 'frozen' (critic lr 0)
+# V6_JOINT_ACTOR_INIT=<ckpt>: warm-start the joint stage's actor from that checkpoint's policy (round-1 step)
 DATASET = ROOT / 'artifacts' / 'rockfall_clock_v6' / 'dataset' / f'{STEM}_gxy.npz'
 ENV_XY = 'offline_antmaze_rockfall_clock_v6_gxy'
 HORIZON = 800
@@ -365,13 +366,22 @@ def prep_joint(seed):
   _, st = checkpoint.load_checkpoint(critic_dir(seed) / 'final.pkl')
   key = jax.random.PRNGKey(30_000 + int(seed))
   k_pol, key = jax.random.split(key)
-  policy_params = nets.policy_network.init(k_pol)
+  actor_init = os.environ.get('V6_JOINT_ACTOR_INIT', '')
+  if actor_init:
+    # the round-1 policy-improvement step: the actor starts from the frozen
+    # deployment policy (the replay's continuation) instead of a fresh init,
+    # so the critic term moves a walker rather than building one
+    policy_params = checkpoint.load_checkpoint(actor_init)[1].policy_params
+  else:
+    policy_params = nets.policy_network.init(k_pol)
   pol_opt = optax.adam(cfg.actor_learning_rate, eps=1e-7).init(policy_params)
   new = st._replace(policy_params=policy_params, policy_optimizer_state=pol_opt, key=key)
   d.mkdir(parents=True, exist_ok=True)
   checkpoint.save_named(str(d), 'latest', 0, new)
   write_json(d / 'prep.json', {'seed': seed, 'warm_critic': str(critic_dir(seed) / 'final.pkl'),
-                               'warm_critic_sha256': sha256(critic_dir(seed) / 'final.pkl'), 'actor': 'fresh',
+                               'warm_critic_sha256': sha256(critic_dir(seed) / 'final.pkl'),
+                               'actor': (f'warm from {actor_init}' if actor_init else 'fresh'),
+                               'actor_init_sha256': (sha256(actor_init) if actor_init else None),
                                'joint_mode': JOINT_MODE, 'critic_tag': CRITIC_TAG, 'bc_coef': os.environ.get('V6_BC_COEF')})
 
 

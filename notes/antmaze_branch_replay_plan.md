@@ -1104,3 +1104,82 @@ Placed on the detour, the deployment walker completes it 0.83 / 0.92
 is modest; the missing piece is entering and sustaining the turn from
 the start (BC around 0.01-0.05 from the start, 0.56-0.63 once mid-turn),
 which -- per part 2 -- is not a single-torque quantity.
+
+## Round 1 (user decision, 2026-09-18): the single-step actor kept, the replay's continuation = the policy itself
+
+The user rejected two readings of the diagnostic and set the next step.
+Rejected: (a) letting the critic choose a ROUTE and training BC on the
+rows of that route (that changes the policy-extraction step, so it could
+no longer be described as a change to where the positives come from);
+(b) the conclusion that "N/E labels carry no consistent advantage" shows
+"no concrete torque carries a learnable advantage".  The second point is
+the important one: at one state candidate A may lead somewhere better, at
+another candidate B, and a state-conditioned critic can pick A here and
+B there without any torque ever "meaning north" -- the original CRL actor
+optimises f(s, a, g) at the state, action and goal at hand, not a ranking
+of action families.  The 20% of mid-turn pairs whose route flipped,
+cancelling in aggregate, are therefore not evidence of noise until the
+per-key differences have been checked on fresh consequences.
+
+The round (one iteration, then decide):
+
+1. The full continuous problem is kept: critic f(s, a, g) on 8-d torques,
+   actor = the original critic term + BC at 0.05, no route command, no
+   route-filtered BC rows.  The actor is INITIALISED from the pure-BC
+   walker (`joint_purebc/seed_0/final.pkl`, lambda 1.0, 100k) so the
+   critic term moves a walker instead of building one; the final policy
+   is still the CRL actor, not BC.
+2. The replay scores what the current policy would actually execute:
+   at a recorded state, one query torque, then the FROZEN current policy
+   (its mode) acts closed-loop from the resulting state to the horizon;
+   hazards / clocks / jitter redrawn per draw and paired across the
+   candidates of one state; successes and failures kept; the future law
+   unchanged (gamma 0.999, radius 0.5, anchor = row 0, zero-torque hold
+   after reaching).  Candidates = the recorded torque and samples from
+   the policy's own tanh-normal at that state (no donor labels).  The
+   same (state, torque) key is branched several times so the replay
+   carries the expectation over consequences rather than one realised
+   future the critic could memorise.  States: the start region (t <= 5),
+   the turning process (detour episodes still in the start region after
+   t = 5), late start-region rows of shortcut episodes, the north leg,
+   the early shortcut, plus every 60th row of every episode.
+3. The updated actor is checked on states and consequences it was not
+   fitted on: its mode torque once, then the OLD frozen policy, paired
+   fresh draws against the old mode torque and the recorded torque; the
+   full policy's walking ability by the usual 300-episode evaluation.
+   The critic's own scores are not the evidence.
+
+Stop rules (the user's): critic fails to order even the repeated,
+validated single-step differences -> fix value estimation, no actor;
+critic orders them but the actor update keeps choosing worse or
+non-walking torques -> the policy-extraction step is the bottleneck here;
+one real improvement -> the updated actor becomes the next round's
+continuation (the front torques' values change once the later turning
+improves, so "no advantage at the start under the old BC continuation"
+is not "never").  The virtual data being regenerated with the policy is a
+change to the sampling procedure and is stated as such; this stage is
+the oracle (simulator) model, not an offline result.
+
+Implementation: `scripts/build_v6_policy_replay.py` (build / gate /
+validate; `V6_JOINT_ACTOR_INIT=<ckpt>` in `run_v6_branch_replay.py` warms
+the joint stage's actor), chain `node_r1_30108.sh`: replay (1,500 dense
+anchors x {recorded, 2 samples} x 2 draws + 4,378 general anchors x
+{recorded, 1 sample} x 1 draw = 17,756 paths; 100 held-out episodes give
+360 anchors x {recorded, mode, 3 samples} x 4 draws = 7,200 paths for the
+gate), 30k critics (3 seeds, milestones 10k / 20k), 30k vanilla critics
+on the recorded futures (2 seeds), the gate, then for every passing
+critic the 30k actor update (frozen critic, warm actor, bc 0.05,
+balanced BC rows as before), the 300-episode evaluation and the
+validation of the 10k / 20k / 30k actor milestones.
+
+Gate definition.  On a held-out state, a pair of candidates (a_i, a_j)
+is VALIDATED when the log P_goal ratio has the same sign on draws {0, 1}
+and on draws {2, 3}, with |ratio| > 0.3 on both.  Agreement = share of
+validated pairs whose critic ordering f(s, a_i, g) - f(s, a_j, g) matches
+(chance 0.50), also restricted to pairs of two policy samples (so that
+"recorded beats a perturbed torque" alone cannot pass it); pick gain =
+(P[argmax f] - mean P) / (max P - mean P) over anchors with spread.
+Baselines: random, the frozen policy's own log-likelihood of the
+candidate, the vanilla critics.  The split-half sign agreement of the
+differences themselves is the ceiling.  PASS = pooled dense-set
+validated agreement >= 0.65 and above 0.5 by two s.e.
