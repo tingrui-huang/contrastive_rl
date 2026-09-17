@@ -411,3 +411,52 @@ p060 completed to five critics: seeds 3 and 4 add **-0.02** and **-0.14**
 the node (rc -9: two replay-loaded learners at once on 15 GB) and is
 queued to re-run alone after both chains finish; the p060 vanilla
 control runs meanwhile.
+
+### The critic memorises rows: the p050 critics on the replay's own query torques
+
+Two probes on the five p050 critics (`probe_v6_torques.py`,
+`probe_v6_replay_rows.py`; 200 start states, 150-200 torques per group).
+
+Same 200 recorded start states, four torque groups transplanted onto
+each (mean f, min over twin heads):
+
+| critic | rec north - rec east | replay north-donor - replay east-donor | rec north - replay north-donor |
+|---|---:|---:|---:|
+| seed 0 | -0.07 | **-0.78** | +0.70 |
+| seed 1 | -0.00 | **-0.71** | +0.70 |
+| seed 2 | -0.35 | **-1.15** | +0.85 |
+| seed 3 | -0.15 | **-1.30** | +1.03 |
+| seed 4 | +0.06 | **-0.42** | +0.38 |
+
+On the replay's own query rows (identical anchor state, north-donor
+torque vs east-donor torque, same goal): row margin **+2.5 .. +3.5** on
+every critic -- but the same north-donor torques transplanted onto other
+query states of the same kind: **-0.82 / -0.11 / -0.77 / -0.74 / -0.47**.
+And among the east ("go") query rows, those whose branch reached the goal
+score -10 against -23 for those that died: 13 nats for an outcome that
+is decided by the hazard draw made after the row, i.e. not a function of
+(s, a) at all.
+
+Reading: the critic fits each replay row's realised future as an
+identity of that row's (state, torque) pair.  Every Ant row is a unique
+key (29-dim state, 8-dim torque; torques from different donors differ by
+~0.85 per dimension), so nothing in the NCE objective forces the
+expectation over hazard draws that the law target is: the +2.5..+3.5 on
+the training rows is memorised, and away from the exact training torque
+the critic falls back on torque typicality (east-going torques are 12x
+more common in the recorded data), which is why every transplanted test
+-- the gate's recorded torques, the replay's own donor torques -- comes
+out at or below zero regardless of the target.  PointMaze never met this:
+its (cell, action-angle) keys repeat across many draws, so the critic
+averaged them; it also used 30k-update critics, and its 300k critic was
+the unusable one.
+
+This is the reason option B could not work: raising the density changes
+the expectation, and the critic is not learning an expectation.  The two
+levers that address it directly are (i) early stopping -- probe the
+paired margin along the critic's own training trajectory (milestones
+every 10k) and (ii) repeated futures per query key -- branch each query
+anchor several times with the same donor torques and different hazard
+draws, so the identical (s, a, g) row appears with different futures and
+the row-identity fit stops paying.  (i) is cheap and runs next in the
+freed slot; (ii) is a generator flag.
