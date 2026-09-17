@@ -16,6 +16,7 @@ Algorithm selection mirrors lp_contrastive.py:
 """
 import argparse
 import dataclasses
+import json
 import os
 import time
 
@@ -180,7 +181,7 @@ def evaluate_push_physical(env, eval_act_fn, params, episodes, np_rng):
           float(np.mean(min_dists)))
 
 
-def train(config: Config):
+def train(config: Config, buffer_prepare=None):
   print('Config:', config)
   key = jax.random.PRNGKey(config.seed)
   np_rng = np.random.default_rng(config.seed)
@@ -223,13 +224,22 @@ def train(config: Config):
         f'goal_slice=[{config.start_index}:{config.end_index}]')
 
   # --- Networks + learner ---
+  from crl.obs_norm import obs_scale_vector
+  _obs_scale = obs_scale_vector(
+      config.obs_dim, config.goal_dim,
+      getattr(config, 'obs_norm_mode', '') or '',
+      getattr(config, 'obs_norm_z_scale', 0.0) or None)
+  if _obs_scale is not None:
+    print(f'  [obs_norm] mode={config.obs_norm_mode} '
+          f'scale={_obs_scale.tolist()}  (applied once, inside the networks)')
   nets = networks_mod.make_networks(
       obs_dim=config.obs_dim, goal_dim=config.goal_dim,
       action_dim=config.action_dim, repr_dim=int(config.repr_dim),
       repr_norm=config.repr_norm, repr_norm_temp=config.repr_norm_temp,
       hidden_layer_sizes=config.hidden_layer_sizes,
       twin_q=config.twin_q, use_image_obs=config.use_image_obs,
-      use_layer_norm=config.use_layer_norm)
+      use_layer_norm=config.use_layer_norm, obs_scale=_obs_scale,
+      log_prob_mode=getattr(config, 'log_prob_mode', 'clip') or 'clip')
 
   policy_optimizer = optax.adam(config.actor_learning_rate, eps=1e-7)
   q_optimizer = optax.adam(config.learning_rate, eps=1e-7)
@@ -299,7 +309,7 @@ def train(config: Config):
     # gate aborts training. See crl/offline_audit.py for the gate definitions.
     from crl import offline_audit
     buffer, off_fp = offline_audit.build_offline_buffer(
-        config.offline_dataset, config)
+        config.offline_dataset, config, prepare=buffer_prepare)
     passed, gates, audit_report = offline_audit.run_static_audit(
         config.offline_dataset, config, buffer=buffer)
     print('OFFLINE AUDIT (pre-training gates):')
@@ -361,12 +371,57 @@ def train(config: Config):
   G = max(1, config.num_sgd_steps_per_step)
   B = config.batch_size
 
-  def sample_G():
-    batches = [buffer.sample(B) for _ in range(G)]
-    stacked = losses_mod.Transition(*[
+  def _stack(batches):
+    return losses_mod.Transition(*[
         jnp.asarray(np.stack([getattr(b, field) for b in batches], axis=0))
         for field in losses_mod.Transition._fields])
-    return stacked
+
+  # BC rows drawn separately from the critic batch (offline only; see
+  # crl/bc_balanced.py). The buffer's own stream is untouched, so the
+  # critic-term batches are byte-identical to a bc_sampling='shared' run.
+  bc_sampler = None
+  bc_sampling = getattr(config, 'bc_sampling', 'shared') or 'shared'
+  if bc_sampling != 'shared':
+    if not offline:
+      raise ValueError('bc_sampling independent/balanced needs an offline dataset')
+    from crl.bc_balanced import GroupBalancedBCSampler
+    _bc_path = getattr(config, 'bc_dataset', '') or config.offline_dataset
+    with np.load(_bc_path, allow_pickle=False) as _d:
+      _lengths = (_d['lengths'] if 'lengths' in _d.files
+                  else np.full(len(_d['obs']), _d['obs'].shape[1], np.int64))
+      bc_sampler = GroupBalancedBCSampler(
+          _d['obs'], _d['act'], _lengths, config.discount, config.obs_dim,
+          cell=config.bc_balance_cell, n_sectors=config.bc_balance_sectors,
+          wait_eps=config.bc_balance_wait_eps,
+          cap=None if bc_sampling == 'independent' else config.bc_balance_cap,
+          seed=10_000 + int(config.seed))
+    # the law check compares the sampler's enumeration with the buffer's own
+    # draws, which only means something when both read the same dataset
+    _law = (bc_sampler.law_check(buffer) if _bc_path == config.offline_dataset
+            else float('nan'))
+    _fork = {f'fork(1,3)->goal{g}': bc_sampler.group_composition((1, 3), g)
+             for g in ((8, 3), (2, 3), (1, 2), (1, 3), (3, 3), (4, 3))}
+    print(f'BC ROWS: {bc_sampling} from {_bc_path} (cap {bc_sampler.cap}, cell '
+          f'{bc_sampler.cell}, {bc_sampler.n_sectors} sectors + wait): '
+          f'{bc_sampler.stats["n_pairs"]:,} (e,i,j) pairs, '
+          f'{bc_sampler.stats["n_groups"]} groups, max multiplier '
+          f'{bc_sampler.stats["max_multiplier"]:.2f}, ESS '
+          f'{bc_sampler.stats["ess_original"] / 1e6:.2f}M -> '
+          f'{bc_sampler.stats["ess_reweighted"] / 1e6:.2f}M, law check max '
+          f'share dev {_law:.1e}')
+    if config.ckpt_dir:
+      os.makedirs(config.ckpt_dir, exist_ok=True)
+      with open(os.path.join(config.ckpt_dir, 'bc_sampling_audit.json'), 'w',
+                encoding='utf-8') as _f:
+        json.dump({'bc_sampling': bc_sampling, 'bc_dataset': _bc_path, 'stats': bc_sampler.stats,
+                   'law_check_max_abs_share_dev': _law, 'fork_groups': _fork},
+                  _f, indent=2)
+
+  def sample_G():
+    stacked = _stack([buffer.sample(B) for _ in range(G)])
+    if bc_sampler is None:
+      return stacked
+    return stacked, _stack([bc_sampler.sample(B) for _ in range(G)])
 
   # --- Main loop ---
   env_steps = start_step
@@ -504,6 +559,17 @@ def train(config: Config):
       last_log = env_steps
 
     # Eval.
+    # Explicit step-numbered milestones (e.g. 10k/20k/30k/50k/70k) saved as
+    # <step>.pkl at the first iteration at or past each target -- checked
+    # every iteration, independent of the eval period, so a run with a long
+    # eval interval still keeps its intermediate checkpoints.
+    if config.ckpt_dir and config.ckpt_milestone_steps:
+      for ms in config.ckpt_milestone_steps:
+        tag = f'ckpt_{int(ms)}'
+        if tag not in saved_phases and env_steps >= ms:
+          ckpt_mod.save_named(config.ckpt_dir, str(int(ms)), env_steps, state)
+          saved_phases.add(tag)
+
     if env_steps - last_eval >= config.eval_every_steps:
       # Snapshot the eval-env step counter BEFORE evaluate() so the offline
       # contract can check evaluate()'s OWN consumption via a delta -- the
@@ -588,14 +654,6 @@ def train(config: Config):
             ckpt_mod.save_named(config.ckpt_dir, nm, env_steps, state)
             saved_phases.add(nm)
 
-      # Explicit step-numbered milestones (e.g. 10k/20k/30k/50k/70k) saved as
-      # <step>.pkl the first eval at or past each target.
-      if config.ckpt_dir and config.ckpt_milestone_steps:
-        for ms in config.ckpt_milestone_steps:
-          tag = f'ckpt_{int(ms)}'
-          if tag not in saved_phases and env_steps >= ms:
-            ckpt_mod.save_named(config.ckpt_dir, str(int(ms)), env_steps, state)
-            saved_phases.add(tag)
 
   # Final offline-contract check (content hash) before the last save.
   if offline:

@@ -17,6 +17,16 @@ that make the original pipeline work for contrastive learning:
 
 Only the STATE part ``obs[:, :obs_dim]`` is used for relabeling (as in the
 original); the env's own goal half of the stored observation is discarded.
+
+Two OPT-IN deviations exist, both inactive by default so the fixed-length draw
+stays byte-identical to the original RNG stream:
+
+  * variable ``lengths`` (``add_episode(..., length=)``) -- shortens BOTH the
+    anchor range and the future-goal window, for datasets with padded tails;
+  * ``set_anchor_cuts()`` -- shortens ONLY the anchor range and leaves the
+    future-goal window at full length, for fixed-length datasets whose tails
+    are real (an agent parked on the goal, or frozen after a terminal event)
+    and should stay samplable as goals while no longer being fitted as anchors.
 """
 from typing import Optional
 
@@ -75,6 +85,13 @@ class TrajectoryBuffer:
     # future-goal relabeling never samples across a padded tail (see sample()).
     self._lengths_arr = np.full(self._capacity_eps, self._L, dtype=np.int64)
     self._use_lengths = False
+    # Per-episode ANCHOR cut: anchor times i are drawn from [0, cut) only.
+    # DISTINCT from _lengths_arr -- it does NOT shrink the future-goal window,
+    # which stays the full L rows (see set_anchor_cuts / _draw_indices).
+    # Inactive unless set_anchor_cuts() is called.
+    self._anchor_cut_arr = np.full(self._capacity_eps, self._L - 1,
+                                   dtype=np.int64)
+    self._use_anchor_cut = False
     self._write = 0      # next episode slot to write (ring).
     self._num_eps = 0    # number of valid episodes stored.
     self._frozen = False  # offline mode locks the buffer (see freeze()).
@@ -132,6 +149,189 @@ class TrajectoryBuffer:
     """Per-episode valid observation counts for the stored episodes."""
     return self._lengths_arr[:self._num_eps].copy()
 
+  def set_anchor_cuts(self, cuts):
+    """Restrict ANCHOR times to rows [0, cut_e) per episode ("scheme C").
+
+    The future-goal window is deliberately LEFT AT FULL LENGTH: j is still
+    drawn from all rows > i up to L-1, so the geometric relabeling law
+    ``P(j) prop discount**(j-i)`` is exactly the fixed-length one. Only the
+    marginal over anchors changes -- episodes are still drawn uniformly, then
+    the row is drawn uniformly inside that episode's [0, cut).
+
+    Why this is the safe half of the knob: the anchor marginal decides only
+    WHERE the critic is fitted, not the conditional target p(g|s,a) at each
+    (s, a). The induced change in the goal marginal p(g) shifts the NCE
+    optimum ``log[p(g|s,a)/p(g)]`` by a term depending on g alone, which
+    cancels in the actor's argmax over a.
+
+    Mutually exclusive with variable ``lengths`` (that path truncates the
+    future window, which is exactly what this mode must not do).
+
+    Args:
+      cuts: [num_eps] ints, clipped into [1, L-1].
+    """
+    if self._frozen:
+      raise RuntimeError('TrajectoryBuffer is frozen: set_anchor_cuts() would '
+                         'change the sampling distribution after the audit.')
+    if self._use_lengths:
+      raise ValueError(
+          'set_anchor_cuts() is incompatible with variable episode lengths: '
+          'the lengths path also truncates the future-goal window, while the '
+          'anchor cut must leave it at full length.')
+    cuts = np.asarray(cuts, dtype=np.int64)
+    if cuts.shape != (self._num_eps,):
+      raise ValueError(f'expected cuts of shape ({self._num_eps},), '
+                       f'got {cuts.shape}')
+    self._anchor_cut_arr[:self._num_eps] = np.clip(cuts, 1, self._L - 1)
+    self._use_anchor_cut = True
+
+  @property
+  def anchor_cuts(self):
+    """Per-episode anchor cut rows (L-1 for every episode when inactive)."""
+    return self._anchor_cut_arr[:self._num_eps].copy()
+
+  @property
+  def use_anchor_cut(self):
+    return self._use_anchor_cut
+
+  def set_balanced_buckets(self, traj_idx, row_idx, bucket_id, cap=None):
+    """Enable BALANCED (s, a) anchor sampling: pick a bucket uniformly, then a
+    row uniformly inside it.
+
+    Motivation: in an offline dataset each transition appears in proportion to
+    how often the behaviour policy chose it, so drawing anchors uniformly over
+    ROWS is really drawing them weighted by the behaviour policy's preference.
+    That fights the whole point of a pessimistic method, whose job is to move
+    the agent onto a route the behaviour policy rarely took: the safe route is
+    rare *because* it needs protecting, and rare means quiet in a
+    frequency-weighted gradient. Measured at the fork of this benchmark, the
+    shortcut outnumbers the safe branch 5:1 under uniform row sampling and
+    13.8:1 once anchor cuts are on.
+
+    Caveat, recorded rather than hidden: balancing changes the distribution the
+    loss takes its expectation over, which shifts the contrastive optimum by a
+    term depending on the goal alone. Harmless while a single fixed goal is
+    ever commanded (this env), but it must be re-derived before any
+    cross-goal/HER-style comparison.
+
+    ``cap`` guards the other end. Strictly uniform-over-buckets upweights a
+    bucket by N / (n_buckets * count), so on continuous data a bucket holding
+    one row gets amplified ~1000x: measured here, 22.5% of every batch would
+    have come from buckets backed by 348 of 93,779 rows. With a cap, a bucket
+    is drawn with probability proportional to ``min(count, cap)``, so buckets
+    at or below the cap keep their relative frequencies (no amplification of
+    near-empty ones) while over-represented buckets are flattened -- which is
+    the part that actually matters. ``None`` restores strict uniform.
+
+    Args:
+      traj_idx, row_idx: [M] eligible anchor coordinates.
+      bucket_id: [M] contiguous bucket ids in [0, n_buckets).
+      cap: weight ceiling per bucket, or None for strict uniform.
+    """
+    if self._frozen:
+      raise RuntimeError('TrajectoryBuffer is frozen: set_balanced_buckets() '
+                         'would change the sampling distribution after audit.')
+    traj_idx = np.asarray(traj_idx, np.int64)
+    row_idx = np.asarray(row_idx, np.int64)
+    bucket_id = np.asarray(bucket_id, np.int64)
+    if not (len(traj_idx) == len(row_idx) == len(bucket_id)):
+      raise ValueError('traj_idx/row_idx/bucket_id must be the same length')
+    if len(traj_idx) == 0:
+      raise ValueError('no eligible anchors for balanced sampling')
+    # Sort by bucket so each bucket is a contiguous slice (CSR-style), which
+    # makes "uniform bucket, then uniform member" a vectorised gather.
+    order = np.argsort(bucket_id, kind='stable')
+    self._bal_traj = traj_idx[order]
+    self._bal_row = row_idx[order]
+    b = bucket_id[order]
+    uniq, first, counts = np.unique(b, return_index=True, return_counts=True)
+    self._bal_offset = first.astype(np.int64)
+    self._bal_count = counts.astype(np.int64)
+    self._n_buckets = len(uniq)
+    if cap is None:
+      self._bal_cdf = None                        # strict uniform over buckets
+    else:
+      w = np.minimum(self._bal_count, int(cap)).astype(np.float64)
+      self._bal_cdf = np.cumsum(w / w.sum())
+      self._bal_cdf[-1] = 1.0                     # guard fp drift
+    self._bal_cap = cap
+    self._use_balanced = True
+
+  @property
+  def use_balanced(self):
+    return getattr(self, '_use_balanced', False)
+
+  @property
+  def balanced_bucket_sizes(self):
+    return self._bal_count.copy() if self.use_balanced else None
+
+  def set_anchor_strata(self, strata, counts):
+    """Enable STRATIFIED anchor sampling: every batch holds a fixed number of
+    anchors from each stratum, each stratum drawn from its own weighted list
+    of (traj, row) anchors; the future-goal window and the discounted
+    relabeling law are untouched (as in the anchor-cut and balanced paths).
+
+    Motivation (PointMaze fork diagnosis, Step 10b): the rows that decide the
+    route -- fork anchors whose relabeled goal is the task goal cell -- are
+    0.7% of what the critic trains on, and the 30k critics recover none to a
+    third of the fork margin the relabeling law asks for.  A stratum that
+    fixes a share of every batch to fork anchors raises that weight without
+    changing any loss.  The absorbing line's G1 experiment used the same
+    composition (128 ordinary + 64 down + 64 right anchors per batch of 256).
+
+    The first stratum is normally the buffer's own law -- every eligible
+    anchor with weight 1 / (L_e - 1), i.e. episode uniform then anchor
+    uniform -- so counts (B, 0, ...) reproduce the plain law up to the RNG
+    stream.  A batch size other than sum(counts) is split proportionally, the
+    remainder going to the first stratum.
+
+    Args:
+      strata: list of (traj_idx, row_idx, weight) triples; weight None means
+        uniform over that stratum's rows.
+      counts: anchors per batch from each stratum (same length as strata).
+    """
+    if self._frozen:
+      raise RuntimeError('TrajectoryBuffer is frozen: set_anchor_strata() '
+                         'would change the sampling distribution after audit.')
+    if getattr(self, '_use_balanced', False):
+      raise ValueError('set_anchor_strata() and set_balanced_buckets() are '
+                       'mutually exclusive')
+    if len(strata) == 0 or len(strata) != len(counts):
+      raise ValueError('strata and counts must be non-empty and equal in length')
+    lengths = self._lengths_arr
+    parts = []
+    for k, (tj, rw, w) in enumerate(strata):
+      tj = np.asarray(tj, np.int64)
+      rw = np.asarray(rw, np.int64)
+      if len(tj) == 0 or len(tj) != len(rw):
+        raise ValueError(f'stratum {k}: empty or mismatched traj/row arrays')
+      if np.any(tj < 0) or np.any(tj >= self._num_eps):
+        raise ValueError(f'stratum {k}: trajectory index out of range')
+      if np.any(rw < 0) or np.any(rw >= lengths[tj] - 1):
+        raise ValueError(f'stratum {k}: anchor row outside [0, len - 2]')
+      w = (np.ones(len(tj), np.float64) if w is None
+           else np.asarray(w, np.float64))
+      if len(w) != len(tj) or np.any(w < 0) or not w.sum() > 0:
+        raise ValueError(f'stratum {k}: invalid weights')
+      cdf = np.cumsum(w / w.sum())
+      cdf[-1] = 1.0                               # guard fp drift
+      parts.append((tj, rw, cdf))
+    counts = np.asarray(counts, np.int64)
+    if np.any(counts < 0) or not counts.sum() > 0:
+      raise ValueError('counts must be non-negative with a positive sum')
+    self._strata = parts
+    self._strata_counts = counts
+    self._use_strata = True
+
+  @property
+  def use_anchor_strata(self):
+    return getattr(self, '_use_strata', False)
+
+  @property
+  def anchor_strata_sizes(self):
+    return ([len(p[0]) for p in self._strata] if self.use_anchor_strata
+            else None)
+
   def content_sha256(self):
     """SHA-256 over the stored obs+act tensors (immutability checksum)."""
     import hashlib
@@ -181,12 +381,67 @@ class TrajectoryBuffer:
     ne = self._num_eps
     rng = self._rng
 
+    if getattr(self, '_use_strata', False):
+      # Fixed per-stratum counts, weighted rows inside each stratum, then the
+      # SAME discounted future-goal law over the episode's valid rows.
+      counts = self._strata_counts
+      if batch_size != int(counts.sum()):
+        counts = np.floor(counts * (batch_size / counts.sum())).astype(np.int64)
+        counts[0] += batch_size - int(counts.sum())
+      traj_parts, i_parts = [], []
+      for (tj, rw, cdf), n in zip(self._strata, counts):
+        if n <= 0:
+          continue
+        pos = np.minimum(np.searchsorted(cdf, rng.random(n), side='right'),
+                         len(cdf) - 1)
+        traj_parts.append(tj[pos])
+        i_parts.append(rw[pos])
+      perm = rng.permutation(batch_size)
+      traj = np.concatenate(traj_parts)[perm]
+      i = np.concatenate(i_parts)[perm]
+      arange = np.arange(L)
+      valid = arange[None, :] < self._lengths_arr[traj][:, None]
+      future = (arange[None, :] > i[:, None]) & valid
+      logp = (arange[None, :] - i[:, None]) * self._log_discount
+      logits = np.where(future, logp, -np.inf)
+      g = -np.log(-np.log(rng.uniform(size=logits.shape).clip(1e-20, 1.0)))
+      return traj, i, np.argmax(logits + g, axis=1)
+
+    if getattr(self, '_use_balanced', False):
+      # Bucket uniform, then a row uniform inside that bucket. The future-goal
+      # window is untouched, exactly as in the anchor-cut path.
+      if self._bal_cdf is None:
+        kb = rng.integers(0, self._n_buckets, size=batch_size)
+      else:
+        kb = np.searchsorted(self._bal_cdf, rng.random(batch_size), side='right')
+        kb = np.minimum(kb, self._n_buckets - 1)
+      pos = self._bal_offset[kb] + np.floor(
+          rng.random(batch_size) * self._bal_count[kb]).astype(np.int64)
+      traj = self._bal_traj[pos]
+      i = self._bal_row[pos]
+      arange = np.arange(L)
+      future = arange[None, :] > i[:, None]              # [B, L] FULL length.
+      logp = (arange[None, :] - i[:, None]) * self._log_discount
+      logits = np.where(future, logp, -np.inf)
+      g = -np.log(-np.log(rng.uniform(size=logits.shape).clip(1e-20, 1.0)))
+      return traj, i, np.argmax(logits + g, axis=1)
+
     traj = rng.integers(0, ne, size=batch_size)          # which trajectory.
-    if not self._use_lengths:
+    if not self._use_lengths and not self._use_anchor_cut:
       # Fixed-length path -- byte-identical RNG stream to the original.
       i = rng.integers(0, L - 1, size=batch_size)        # anchor in [0, L-2].
       arange = np.arange(L)                              # [L]
       future = arange[None, :] > i[:, None]              # [B, L]
+    elif self._use_anchor_cut:
+      # Scheme C: episode uniform (above), then anchor uniform inside that
+      # episode's [0, cut). The FUTURE WINDOW IS NOT TOUCHED -- j still ranges
+      # over every row > i up to L-1, so the relabeling law is identical to the
+      # fixed-length one and post-cut (parked / dead) states remain reachable
+      # as positive goals, exactly as in the original.
+      Ct = self._anchor_cut_arr[traj]                    # [B] cut per row.
+      i = np.floor(rng.random(batch_size) * Ct).astype(np.int64)
+      arange = np.arange(L)                              # [L]
+      future = arange[None, :] > i[:, None]              # [B, L] FULL length.
     else:
       # Variable-length: mask the padded tail per row (valid = arange < len).
       Lt = self._lengths_arr[traj]                       # [B] valid obs counts.

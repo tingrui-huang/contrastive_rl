@@ -62,6 +62,26 @@ class Config:
   # loss = (1-bc_coef)*(alpha*logp - Q) + bc_coef*(-log pi(a_orig|s,g)).
   # 0.0 = pure online SAC-style actor (unchanged default); offline runs use 0.5.
   bc_coef: float = 0.0
+  # Tanh-normal log-prob at the action boundary (BC term and entropy): 'clip'
+  # = this port's historical rule (clip to 1-1e-6, density at atanh), 'acme'
+  # = dm-acme 0.4.0's boundary-band rule of the original contrastive_rl actor
+  # (crl/networks.py tanh_normal_log_prob_acme). Byte-identical off boundary.
+  log_prob_mode: str = 'clip'
+  # Rows of the actor's BC term (offline only; see crl/bc_balanced.py):
+  # 'shared' = the buffer batch the critic term uses (unchanged default);
+  # 'independent' = a second batch from the same relabeling law;
+  # 'balanced' = a second batch with the recorded-action regions flattened
+  # inside each (state cell, goal cell) group, no region above bc_balance_cap
+  # of its group, (state, goal) marginal unchanged. Requires random_goals 0.
+  bc_sampling: str = 'shared'
+  # Dataset the BC term's rows are drawn from when bc_sampling is
+  # independent/balanced; '' = offline_dataset.  Lets the critic train on a
+  # model-generated replay while BC keeps imitating the recorded actions.
+  bc_dataset: str = ''
+  bc_balance_cap: float = 0.25
+  bc_balance_cell: float = 1.0
+  bc_balance_sectors: int = 8
+  bc_balance_wait_eps: float = 0.1
 
   # offline_ant_umaze eval goal source. 'd4rl' (default) = the benchmark
   # goal_sampler (single U_MAZE goal cell + [0,1.5] noise, resampled per
@@ -97,7 +117,6 @@ class Config:
   rockfall_death_settle_substeps: Optional[int] = None
   # Canonical episode-independent full reset. False => legacy reset.
   rockfall_reset_fix: bool = False
-
   # --- rockfall_clock_v6_long_two_rockfall overrides ---
   # V6 has two independently sampled hazards and two independently sampled
   # reset-time absolute clocks.  None preserves the explicit defaults in
@@ -129,6 +148,43 @@ class Config:
   # scored, no sampling). 0.0 => the fail branch is skipped entirely and the
   # critic loss/gradients are byte-identical to the baseline.
   fail_neg_alpha: float = 0.0
+  # Observation preprocessing: '' / 'none' = identity (every existing run);
+  # 'z_physical' = divide the z column of state AND goal by |z_min|, for the
+  # 3-D point_two_route_swamp_windy_z_v0 only. See crl/obs_norm.py.
+  obs_norm_mode: str = ''
+  obs_norm_z_scale: float = 0.0        # 0 => taken from env.z_min
+
+  # --- Anchor sampling ("scheme C"; OFF by default) ---
+  # '' keeps the original fixed-length draw (anchor uniform over ALL rows).
+  # 'arrival' restricts ANCHORS to rows before the episode parks -- the first
+  # row within anchor_cut_radius of its own goal, or the start of a frozen
+  # terminal run (an absorbing/dead state), whichever comes first. The
+  # future-goal window is NOT truncated: the geometric relabeling law and the
+  # set of samplable goals are unchanged, so this is not the 'lengths' path.
+  # Rationale: on a fixed-length dataset most rows can be post-arrival idling,
+  # which costs anchor budget without carrying a decision.
+  anchor_cut_mode: str = ''
+  anchor_cut_radius: float = 0.5
+
+  # --- Balanced (s, a) anchor sampling (OFF by default) ---
+  # Draw a (discretised state, action sector) bucket uniformly, then a row
+  # uniformly inside it, instead of drawing rows uniformly. Uniform-over-rows
+  # is really "weighted by how often the behaviour policy chose it", which
+  # fights any method whose goal is to move the agent onto a rarely-taken
+  # route. Continuous (s, a) pairs are almost all unique, so the discretisation
+  # below is a required modelling choice, not a convenience.
+  # NOTE: this changes the distribution the loss integrates over, shifting the
+  # contrastive optimum by a goal-only term -- harmless with a single fixed
+  # commanded goal, but re-derive before any cross-goal comparison.
+  balanced_sampling: bool = False
+  balanced_cell_size: float = 1.0
+  balanced_action_sectors: int = 4
+  # Weight ceiling per bucket: a bucket is drawn with probability
+  # proportional to min(count, cap). Strict uniform (cap None) amplifies a
+  # one-row bucket by ~1000x on continuous data; the cap leaves small
+  # buckets at their natural relative frequency and flattens only the
+  # over-represented ones. 0 => strict uniform.
+  balanced_cap: int = 0
 
   # --- Replay ---
   min_replay_size: int = 10_000     # env steps before learning starts.
