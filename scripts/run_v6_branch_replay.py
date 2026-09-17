@@ -337,6 +337,8 @@ def joint_config(seed, steps):
   cfg.ckpt_milestone_steps = tuple(m for m in MILESTONES if m < steps)
   if JOINT_MODE == 'frozen':
     cfg.learning_rate = 0.0    # the critic optimiser: a zero step keeps the warm critic exactly (actor + BC only)
+  if os.environ.get('V6_BC_COEF'):
+    cfg.bc_coef = float(os.environ['V6_BC_COEF'])   # the paper's lambda; the V6 recipe's 0.05 lets an 8-d actor leave the data
   return cfg
 
 
@@ -364,7 +366,7 @@ def prep_joint(seed):
   checkpoint.save_named(str(d), 'latest', 0, new)
   write_json(d / 'prep.json', {'seed': seed, 'warm_critic': str(critic_dir(seed) / 'final.pkl'),
                                'warm_critic_sha256': sha256(critic_dir(seed) / 'final.pkl'), 'actor': 'fresh',
-                               'joint_mode': JOINT_MODE, 'critic_tag': CRITIC_TAG})
+                               'joint_mode': JOINT_MODE, 'critic_tag': CRITIC_TAG, 'bc_coef': os.environ.get('V6_BC_COEF')})
 
 
 def train_joint(seed, steps):
