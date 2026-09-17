@@ -349,6 +349,12 @@ def prep_joint(seed):
   d = joint_dir(seed)
   if (d / 'latest.pkl').exists() or (d / 'final.pkl').exists():
     return
+  if os.environ.get('V6_JOINT_FRESH') == '1':
+    # no warm critic at all (a pure-BC walker needs none): crl.train initialises everything
+    d.mkdir(parents=True, exist_ok=True)
+    write_json(d / 'prep.json', {'seed': seed, 'warm_critic': None, 'actor': 'fresh', 'critic': 'fresh',
+                                 'joint_mode': JOINT_MODE, 'bc_coef': os.environ.get('V6_BC_COEF')})
+    return
   cfg = base_config(seed, REPLAY, 1, d)
   from crl import envs as envs_mod
   envs_mod.make_env(cfg.env_name, cfg, seed=1)
