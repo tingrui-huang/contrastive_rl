@@ -765,3 +765,20 @@ draws per critic): detour 0.023 / 0.037 / 0.027 / 0.030 / 0.013 on
 critics 0-4 (success 0.25-0.27, failure 0.69-0.73); K = 8 on critic 0
 0.017.  A unimodal proposal with scale 0.26 offers no north candidates;
 the per-step rank is closed as a variant.
+
+Formal segment-rank, 300 natural draws per critic (K = 64, 25-step
+commitment, pure-BC walker, mode everywhere else; density 0.50):
+
+| critic (30k) | success | failure | timeout | **detour** | shortcut | discounted (g 0.99) | detour episodes: success / timeout | shortcut episodes: failure |
+|---|---:|---:|---:|---:|---:|---:|---|---:|
+| seed 0 | 0.407 | 0.280 | 0.313 | **0.443** | 0.423 | 0.016 | 0.60 / 0.40 | 0.65 |
+| seed 1 | 0.390 | 0.290 | 0.320 | **0.457** | 0.383 | 0.013 | 0.63 / 0.37 | 0.69 |
+| seed 2 | 0.373 | 0.320 | 0.307 | **0.360** | 0.457 | 0.016 | 0.64 / 0.36 | 0.68 |
+| seed 3 | 0.467 | 0.237 | 0.297 | **0.473** | 0.383 | 0.018 | 0.69 / 0.31 | 0.61 |
+| seed 4 | 0.377 | 0.313 | 0.310 | **0.330** | 0.447 | 0.017 | 0.68 / 0.32 | 0.65 |
+
+Detour 0.33-0.47 (mean 0.41) on 5/5; detour episodes never die and
+reach 0.60-0.69 (the rest are walker timeouts on the long corridor);
+shortcut episodes die at 0.61-0.69, the density's rate.  The controls
+(same candidates picked uniformly; the same policy ranked by the vanilla
+critics) and the vanilla actors at p 0.50 follow.
