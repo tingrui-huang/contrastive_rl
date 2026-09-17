@@ -421,17 +421,36 @@ def stage_vanilla_eval(seeds):
 
 
 # --------------------------------------------------------------- summarize
-def _headline(summary):
+def _mouth_timing(episodes):
+  """Slow-shortcut audit: the discounted score (gamma 0.99, the benchmark's
+  own field) and, for shortcut episodes under an active latent, how many
+  reach the zone's mouth only after its burst has closed (the rockfall
+  clocks run from the reset, so a walker slower than the teacher passes a
+  closed zone without ever having decided anything)."""
+  from crl import rockfall_clock_v6 as V6
+  out = {'discounted': (float(np.mean([r.get('discounted', 0.0) for r in episodes])) if episodes else None)}
+  for z in (1, 2):
+    sc = [r for r in episodes if r.get('route') == 'shortcut' and r.get(f'mouth_step_{z}') is not None]
+    act = [r for r in sc if r.get(f'rockfall_start_{z}') is not None]
+    late = [r for r in act if r[f'mouth_step_{z}'] > r[f'rockfall_start_{z}'] + V6.ROCKFALL_STEPS]
+    out[f'mouth{z}_median'] = float(np.median([r[f'mouth_step_{z}'] for r in sc])) if sc else None
+    out[f'mouth{z}_after_burst'] = (len(late) / len(act)) if act else None
+  return out
+
+
+def _headline(summary, episodes=None):
   o = summary.get('overall', {})
   routes = o.get('routes', {})
   by = summary.get('by_latent', {})
   return {'success_rate': o.get('success'), 'failure_rate': o.get('failure'), 'timeout_rate': o.get('timeout'),
           'detour_rate': routes.get('detour', {}).get('rate'), 'shortcut_rate': routes.get('shortcut', {}).get('rate'),
           'by_latent': {k: (by.get(k, {}).get('success') if isinstance(by.get(k), dict) else None)
-                        for k in ('U00', 'U10', 'U01', 'U11')}}
+                        for k in ('U00', 'U10', 'U01', 'U11')},
+          **(_mouth_timing(episodes) if episodes is not None else {})}
 
 
 def stage_summarize(seeds, vanilla_seeds):
+  from crl import rockfall_clock_v6 as V6
   gate = json.loads((OUT / 'gate.json').read_text(encoding='utf-8')) if (OUT / 'gate.json').exists() else {}
   L = ['# AntMaze V6 Phase 1: oracle branch replay', '',
        f'Critic recipe: V6 vanilla at gamma {DISCOUNT}, {CRITIC_STEPS:,} updates, anchors = row 0 of every branch '
@@ -440,8 +459,9 @@ def stage_summarize(seeds, vanilla_seeds):
   if gate.get('law_target'):
     L.append(f'Law target on the replay (start region, t <= 5): r0.5 {gate["law_target"]["r0.5"]["log_ratio"]:+.2f}, '
              f'r1.0 {gate["law_target"]["r1.0"]["log_ratio"]:+.2f}.\n')
-  L += ['| arm | seed | gate margin | policy | success | failure | timeout | detour | shortcut | success U00/U10/U01/U11 |',
-        '|---|---|---:|---|---:|---:|---:|---:|---:|---|']
+  L += ['| arm | seed | gate margin | policy | success | failure | timeout | detour | shortcut | success U00/U10/U01/U11 '
+        '| discounted (g 0.99) | mouth 1 / 2 median step | after-burst share z1 / z2 |',
+        '|---|---|---:|---|---:|---:|---:|---:|---:|---|---:|---|---|']
   res = []
   for arm, dirs, label in (('branch joint', {s: joint_dir(s) for s in seeds}, 'branch critic seed {}'),
                            ('vanilla g0.999', {s: vanilla_dir(s) for s in vanilla_seeds}, 'vanilla g0.999 seed {}')):
@@ -451,14 +471,20 @@ def stage_summarize(seeds, vanilla_seeds):
         p = d / f'eval_{pol}.json'
         if not p.exists():
           continue
-        sm = json.loads(p.read_text(encoding='utf-8'))['summary']
-        h = _headline(sm)
+        ev = json.loads(p.read_text(encoding='utf-8'))
+        sm = ev['summary']
+        h = _headline(sm, ev.get('episodes'))
         res.append({'arm': arm, 'seed': s, 'policy': pol, **h, 'gate_margin': g.get('margin')})
         fmt = lambda v: f'{v:.3f}' if isinstance(v, (int, float)) else str(v)
         L.append(f'| {arm} | {s} | {g.get("paired_margin", g.get("margin", float("nan"))):+.3f} | {pol} | ' + ' | '.join(
             fmt(h[k]) for k in ('success_rate', 'failure_rate', 'timeout_rate', 'detour_rate', 'shortcut_rate'))
-            + ' | ' + ' / '.join(fmt(h['by_latent'][u]) for u in ('U00', 'U10', 'U01', 'U11')) + ' |')
-  L.append('\nReference: vanilla at gamma 0.99 (notes/v6_detour_ladder.md): success 0.370, detour 0.000 on every seed.')
+            + ' | ' + ' / '.join(fmt(h['by_latent'][u]) for u in ('U00', 'U10', 'U01', 'U11'))
+            + f' | {fmt(h.get("discounted"))} | {fmt(h.get("mouth1_median"))} / {fmt(h.get("mouth2_median"))}'
+            + f' | {fmt(h.get("mouth1_after_burst"))} / {fmt(h.get("mouth2_after_burst"))} |')
+  L.append('\nReference: vanilla at gamma 0.99 on the p040 benchmark (notes/v6_detour_ladder.md): success 0.370, detour '
+           '0.000 on every seed.  The rockfall clocks run from the reset (zone 1 closes by step '
+           f'{V6.T0_MAX_1 + V6.ROCKFALL_STEPS}, zone 2 by {V6.T0_MAX_2 + V6.ROCKFALL_STEPS}); an after-burst share near one '
+           'means the shortcut survives by lateness, not by a route decision.')
   (OUT / 'REPORT.md').write_text('\n'.join(L) + '\n', encoding='utf-8')
   write_json(OUT / 'results.json', {'rows': res, 'gate': gate})
   print('\n'.join(L), flush=True)
