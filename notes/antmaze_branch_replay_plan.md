@@ -924,3 +924,81 @@ is the obvious next measurement.
   argmax variant is a tail artefact and is withdrawn as evidence.
 * Everything on the Ant is at the oracle model (simulator with hazards
   redrawn); Phase 2 (a learned macro-ETT) has not started.
+
+## Diagnostic (user-requested, 2026-09-17 night): does the first torque explain the outcome?
+
+`scripts/diag_v6_first_step_crossover.py crossover` (`diag_crossover/`),
+oracle stage, not a training result.  300 start-region anchors (t <= 5)
+at p 0.50; per anchor one north donor and one east donor; four arms
+crossing the donors' FIRST torque with their steps 2-25; the four arms
+share the anchor's hazards, clocks and rock jitter (the env's six hidden
+streams reseeded before each reset); after the 25 torques the same blind
+driver takes over and picks its route FROM ITS POSITION (never from a
+query label), zero-torque hold after reaching.
+
+| arm | first | continuation | north @25 | east @25 | driver picks detour | reach | death | timeout | P_goal (g 0.999, r 0.5) |
+|---|---|---|---:|---:|---:|---:|---:|---:|---:|
+| NN | north | north | 0.67 | 0.20 | 0.18 | 0.53 | 0.38 | 0.09 | 0.263 |
+| NE | north | east | 0.02 | 0.91 | 0.00 | 0.22 | 0.77 | 0.01 | 0.139 |
+| EN | east | north | 0.61 | 0.23 | 0.10 | 0.49 | 0.44 | 0.07 | 0.247 |
+| EE | east | east | 0.02 | 0.97 | 0.01 | 0.23 | 0.77 | 0.00 | 0.145 |
+
+| outcome | first-torque effect (N - E) | continuation effect (N - E) | interaction |
+|---|---:|---:|---:|
+| P(north after 25) | +0.03 | **+0.62** | +0.06 |
+| P(driver takes detour) | +0.04 | +0.14 | +0.09 |
+| reach | +0.02 | **+0.28** | +0.05 |
+| death | -0.03 | **-0.36** | -0.06 |
+| P_goal | +0.005 | **+0.113** | +0.02 |
+
+log P_goal ratios: NN/EE +0.59, EN/EE +0.53 (only the continuation is
+north), **NE/EE -0.05** (only the first torque is north), NN/EN +0.06.
+Within anchor, paired hazards: swapping only the first torque changes
+the 25-step direction in 0.22 of the pairs, swapping only the
+continuation in 0.77.
+
+**The first torque explains nothing of the outcome.**  Everything the
+replay's north-query rows carried (+0.60 on their own paths) is the
+property of the continuation; the (s, a_1) key the critic scores holds
+a target of -0.05 .. +0.06 once the continuation is held fixed.  The
+30k critics' +0.7..+1.1 on the north-donor torques was therefore not a
+property of those torques: it was the label of the episode they came
+from, read off a torque signature that happens to identify north
+donors.  This is the same confound as PointMaze's Step 9g, one level
+down -- there it was the teacher's recorded continuation; here it is
+the query intent that steered the driver for the remaining ~400 steps
+of every north-query path.
+
+Two further readings from the split by the route the driver actually
+took (`rollouts.json`):
+
+| arm | driver route | n | reach | death | reach step (median) |
+|---|---|---:|---:|---:|---:|
+| NN | detour | 55 | 0.95 | 0.00 | 372 |
+| NN | shortcut | 245 | 0.43 | 0.47 | 263 |
+| EN | detour | 29 | 0.93 | 0.00 | 372 |
+| EN | shortcut | 271 | 0.44 | 0.49 | 272 |
+| NE / EE | shortcut | 299 / 298 | 0.22 / 0.23 | 0.77 / 0.77 | 229 / 226 |
+
+(i) Twenty-five north torques do not commit the route: the driver, left
+to its position, turns back east in 82-90% of the north-continuation
+paths (the ant is not yet past y > 2).  The v2 replay's north-query
+paths reached 0.72 because the query INTENT drove the driver north for
+the whole episode -- a label, not the recorded segment.  (ii) The
+north-continuation paths that turn back still die only 0.47-0.49
+against 0.77: they arrive at the mouths ~40 steps later (263-272 vs
+226-229) and pass more bursts.  Half of the continuation's benefit in
+this position-driven version is the lateness loophole again, not the
+detour.
+
+Consequence, as the user framed it.  Keeping a single-step actor with
+an honest generator (fix the first torque, one blind continuation from
+the position) gives a start-state target of ~0: the law then says,
+correctly, that the first torque does not decide the route on the Ant,
+and there is nothing at that key for the critic to learn.  The route
+lives at the macro-action level -- a committed segment or a command --
+and a critic that is to carry it has to score that object (the
+segment-rank policy did this by hand at evaluation time; it is not the
+paper's actor and changes the action interface).  That choice is the
+user's; the walker comparison (`walker` mode) follows for the
+"right route, cannot finish" half.
