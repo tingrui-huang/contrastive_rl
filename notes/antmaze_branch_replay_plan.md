@@ -470,3 +470,42 @@ step 52 (0.006 after the burst), discounted 0.015: the blind learner at
 its natural speed dies at the density's survival rate.  Raw success
 therefore favours the slow walker 4:1, the benchmark's discounted score
 puts both near zero, and neither takes the detour.
+
+### Early stopping: the critic's own trajectory (p050 seed 0 retrained with 10k milestones)
+
+`probe_v6_critic_milestones.py` on `critics_ms/seed_0` (150 start
+states; four torque groups transplanted; the replay's own rows):
+
+| updates | rec north - east | replay north-donor - east-donor (transplanted) | own rows north - go | go rows reached - died | north-donor own - transplanted |
+|---:|---:|---:|---:|---:|---:|
+| 10k | -6.04 | -23.8 | -21.7 | -1.3 | +3.2 |
+| 20k | +0.09 | **+0.99** | +1.30 | +4.8 | +0.33 |
+| 30k | +0.13 | **+1.29** | +1.60 | +6.2 | +0.60 |
+| 40k | +0.25 | **+1.02** | +1.81 | +8.9 | +1.51 |
+| 50k | +0.23 | +0.72 | +2.05 | +9.8 | +2.33 |
+| 60k | +0.12 | +0.34 | +2.12 | +10.3 | +3.30 |
+| 70k | +0.15 | -0.04 | +2.16 | +10.9 | +4.06 |
+| 80k | +0.21 | +0.09 | +2.75 | +12.0 | +4.99 |
+| 90k | +0.03 | -0.18 | +2.90 | +13.3 | +5.36 |
+| 100k | +0.05 | +0.02 | +3.32 | +14.8 | +6.71 |
+
+The action preference the law asks for is there at 20k-40k updates
+(+1.0..+1.3 on the replay's own donor torques transplanted across
+states, against a query-path target of +0.60) and is then eaten by the
+row-identity fit: reached-vs-died grows monotonically to +14.8 and the
+own-vs-transplanted gap to +6.7 while the transplanted margin decays to
+zero.  Same shape as PointMaze (30k critics usable, 300k not).  The
+recorded-torque margin peaks at +0.25 (40k): the gate's recorded torques
+are a different cloud from the donor torques the replay was built from,
+so that gate stays a blunt instrument here.
+
+Consequences.  (1) Every critic evaluated so far on the Ant was a 100k
+critic, i.e. read after the memorisation; the five gate tables above
+measure the memorised state, not the recipe.  (2) The warm-started joint
+stage keeps updating the critic on the same replay for another 100k
+updates, so it drives even a well-stopped critic back into the
+memorised state -- the joint actors' slow shortcut is what a memorised
+critic teaches.  Next: five 30k critics (`critics_30k`), the two probes
+on each, then actors that do not move the critic (frozen critic, actor
++ BC only) and a short joint variant for comparison.  The queued p060
+joint retry (100k critics) was dropped.
