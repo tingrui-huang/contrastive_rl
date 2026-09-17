@@ -634,3 +634,15 @@ point north) and the decision is re-made at every step from a fresh
 sample.  The queued runs sharpen both: the pure-BC proposal (lambda 1.0,
 which samples the recorded 5% detour torques) with all five 30k critics
 at K = 32, and the K dependence (8, 128).
+
+K = 128 with the same proposal and critic (100 draws): success 0.44 /
+failure 0.26 / timeout 0.30; detour 0.08, shortcut 0.76; the chosen
+candidate now +2.9 nats above the mode.  More candidates do not raise
+the detour rate; they raise the chosen f -- i.e. the argmax increasingly
+picks the proposal's far samples (scale 0.62 per component), which are
+the off-manifold directions the critic overvalues.  The candidate set
+has to stay on the data manifold: next a proposal temperature (samples
+at 0.3 of the actor's scale) and, if needed, recorded torques of the
+nearest recorded states as the candidates.  The lambda-0.5 actor's
+300-draw evaluation: mean 0.30 / 0.47 / 0.23, detour 0.003, shortcut
+0.75; sampled 0.42 / 0.47 / 0.12, detour 0.037, shortcut 0.88.
