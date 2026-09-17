@@ -646,3 +646,39 @@ at 0.3 of the actor's scale) and, if needed, recorded torques of the
 nearest recorded states as the candidates.  The lambda-0.5 actor's
 300-draw evaluation: mean 0.30 / 0.47 / 0.23, detour 0.003, shortcut
 0.75; sampled 0.42 / 0.47 / 0.12, detour 0.037, shortcut 0.88.
+
+Proposal temperature 0.3 (K = 32, same proposal and critic, 100 draws):
+success 0.33 / failure 0.46 / timeout 0.21; detour 0.03, shortcut 0.83;
+chosen candidate +0.9 nats above the mode.  Closer samples reproduce the
+proposal's own east-going mode; the 0.12 at temperature 1 came partly
+from the far samples.  With a shortcut-walking proposal the candidate set
+cannot be both on-manifold and north-inclusive; the pure-BC proposal (it
+samples the recorded 5% detour torques) and recorded torques of the
+nearest recorded states as candidates are the two ways to get north
+candidates that are real torques.
+
+### Continuation pessimism and the waiting loophole (for the write-up)
+
+The branch replay does not deny the shortcut a future: its east branches
+reach at the blind survival rate (0.36 / 0.25 / 0.16 at p 0.40 / 0.50 /
+0.60; exactly (1 - p)^2), the target is a log ratio of +0.6, and the same
+recipe at gamma 0.99 says go (-0.78 at p 0.40).  The recorded futures are
+the optimistic ones for a confounded reason: the sighted teacher went
+only when safe (observational target -0.45).  What the recipe does assume
+is the continuation after the queried action -- the blind driver, "go
+now" -- so do(a) is valued as "a, then the nominal blind continuation":
+pessimistic against a better blind continuation, optimistic against a
+worse one, as in every ETT.  On V6 a better blind continuation exists:
+the burst clocks run from the reset with bounded t0, so arriving after
+step 117 / 197 is safe, and the 100k joint actors found it (a slow
+shortcut, success 0.60, discounted 0.02).  The replay contains no
+waiting, so the critic cannot value it; this is a real pessimism about
+the shortcut, of the continuation kind, not of the hazard-redraw kind.
+(The replay is if anything pessimistic about the detour: north branches
+reach 0.72 because the transplanted turn fails a quarter of the time.)
+Remedies: state the continuation assumption and its sensitivity (the
+ceiling table already does this for the turn; a waiting continuation can
+be tabulated the same way), or iterate -- regenerate the replay with the
+learner's own policy as the continuation.  Benchmark-side, a burst
+triggered by entry instead of the reset clock would close the loophole;
+the environment stays fixed in this study.
