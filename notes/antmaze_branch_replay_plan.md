@@ -694,3 +694,14 @@ temperature 0.3 0.03 (+0.9), nearest-recorded torques 0.03 (stalls).  A
 shortcut-walking proposal gives the critic few real north candidates and
 the argmax spends its choice on far samples.  The pure-BC proposal is the
 remaining fair candidate source and its five-critic evaluation is queued.
+
+### Pure BC (lambda 1.0) on the same data: the proposal is unimodal
+
+300 draws: mean policy success 0.253 / failure 0.743 / timeout 0.003,
+detour 0.000, shortcut 0.977; sampled 0.260 / 0.740 / 0.000, detour
+0.000.  Manifold probe: f(pi) = f(recorded) (+0.03), torque distance
+0.29, policy scale 0.26 -- on the manifold, at the teacher's pace, dying
+at the density's rate.  The tanh-normal actor fitted to 95/5 route data
+does not keep a 5% north mode at the start: the sampled policy detours
+0/300.  So the pure-BC proposal offers the rank policy almost no north
+candidates either; its five-critic evaluation runs for the record.
