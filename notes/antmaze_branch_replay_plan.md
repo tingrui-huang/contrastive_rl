@@ -372,3 +372,27 @@ read the full f landscape at the visited states.  p050's actors are
 training; p060's second half (critics 3-4, actors, vanilla control) was
 launched in the freed slot for the same reason -- the bigger target is
 the more informative test of (a) versus (b).
+
+### p050 joint actor seed 0: a slow shortcut, not a detour (100-episode look, mean policy, density 0.50)
+
+success 0.53 / failure 0.04 / timeout 0.43; route detour 0.01, shortcut
+0.72; by latent U00 0.69, U10 0.47, U01 0.48, U11 0.48.  Mean start-state
+torque 1.36 from the recorded-north centroid, 1.14 from the east one.
+
+Where the success comes from (`quick_eval_joint_seed0.log`): the actor
+reaches mouth 1 at step 166 (median; q10-q90 108-262) and mouth 2 at 251
+(195-383), against burst windows that close by step 117 (zone 1) and 197
+(zone 2).  Of the shortcut entries under an active latent, 33/35 (zone 1)
+and 25/28 (zone 2) arrive AFTER the burst and mostly succeed (23, 19);
+only 5 arrive during a burst (2 die).  The 43 timeouts: 25 never reach a
+mouth, 17 stall inside the shortcut corridor.
+
+So at gamma 0.999 with the V6 own-clock bursts, a walker three times
+slower than the teacher passes both zones after they have closed:
+undiscounted success rewards slowness, and the critic's route preference
+(if any) never appears in the behaviour.  Vanilla at gamma 0.999 on p040
+was not slow (0.37 / detour 0, identical to 0.99), so the slowness comes
+with the branch-replay warm start.  The comparison that matters for the
+rung is therefore detour rate and the discounted score (gamma 0.99
+`discounted` field), not raw success; the chain's 300-episode evaluations
+of all five actors and of the vanilla control at p 0.50 follow.
