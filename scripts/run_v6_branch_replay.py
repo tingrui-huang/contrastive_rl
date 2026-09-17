@@ -49,7 +49,9 @@ os.environ.setdefault('XLA_PYTHON_CLIENT_PREALLOCATE', 'false')
 
 OUT = Path(os.environ.get('V6_BRANCH_OUT', ROOT / 'outputs' / 'antmaze_branch_replay_v1'))
 REPLAY = Path(os.environ.get('V6_BRANCH_REPLAY', OUT / 'replay_branch.npz'))
-DATASET = ROOT / 'artifacts' / 'rockfall_clock_v6' / 'dataset' / 'antmaze_rockfall_clock_v6_p040_gxy.npz'
+STEM = os.environ.get('V6_DATASET_STEM', 'antmaze_rockfall_clock_v6_p040')
+P_ACTIVE = float(os.environ.get('V6_P_ACTIVE', '0.40'))
+DATASET = ROOT / 'artifacts' / 'rockfall_clock_v6' / 'dataset' / f'{STEM}_gxy.npz'
 ENV_XY = 'offline_antmaze_rockfall_clock_v6_gxy'
 HORIZON = 800
 DISCOUNT = 0.999
@@ -89,8 +91,8 @@ def base_config(seed, dataset, steps, ckpt_dir):
   cfg.eval_goal_mode = 'd4rl'
   cfg.rockfall_max_steps = HORIZON
   cfg.max_episode_steps = HORIZON
-  cfg.rockfall_p_active_1 = float(V6.P_ACTIVE_1)
-  cfg.rockfall_p_active_2 = float(V6.P_ACTIVE_2)
+  cfg.rockfall_p_active_1 = P_ACTIVE
+  cfg.rockfall_p_active_2 = P_ACTIVE
   cfg.rockfall_t0_min_1, cfg.rockfall_t0_max_1 = int(V6.T0_MIN_1), int(V6.T0_MAX_1)
   cfg.rockfall_t0_min_2, cfg.rockfall_t0_max_2 = int(V6.T0_MIN_2), int(V6.T0_MAX_2)
   cfg.seed = int(seed)
@@ -127,6 +129,7 @@ def manifest(run_dir, cfg, arm, extra=None):
       'horizon': HORIZON, 'p_active': [cfg.rockfall_p_active_1, cfg.rockfall_p_active_2],
       't0_ranges': [[cfg.rockfall_t0_min_1, cfg.rockfall_t0_max_1], [cfg.rockfall_t0_min_2, cfg.rockfall_t0_max_2]],
       'note': 'discount 0.999 deviates from the frozen V6 recipe (0.99) on purpose: plan section 0',
+      'dataset_stem': STEM, 'p_active_env': P_ACTIVE,
       **(extra or {})})
 
 
@@ -379,13 +382,15 @@ def evaluate_ckpt(ckpt, out_dir, policy):
   if out.exists():
     return json.loads(out.read_text(encoding='utf-8'))['summary']
   args = EV.parse_args(['--ckpt', str(ckpt), '--n', str(EVAL['n']), '--seed', str(EVAL['seed']),
-                        '--policy', policy, '--action-seed', str(EVAL['action_seed'])])
+                        '--policy', policy, '--action-seed', str(EVAL['action_seed']),
+                        '--p-active-1', str(P_ACTIVE), '--p-active-2', str(P_ACTIVE)])
   act, step, cfg = EV.build_mean_policy(str(ckpt), args)
   rows = EV.evaluate(act, args)
   summary = EV.summarize(rows, args.p_active_1, args.p_active_2)
   summary['policy_headline'] = 'deterministic_actor_mean' if policy == 'mean' else 'sampled_actor_tanh_normal'
   write_json(out, {'ckpt': str(ckpt), 'ckpt_step': int(step), 'policy': policy, 'n': EVAL['n'],
                    'eval_seed': EVAL['seed'], 'env': ENV_XY, 'environment_version': V6.ENV_VERSION,
+                   'p_active': P_ACTIVE, 'dataset_stem': STEM,
                    'summary': summary, 'episodes': rows})
   return summary
 

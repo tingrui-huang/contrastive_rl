@@ -207,3 +207,66 @@ This is PointMaze's rule (the query action is one the data contains),
 not a new label.  The actors of the v1 critics are being trained anyway
 (warm-started joint, all five seeds) to see whether the torque-signature
 mismatch matters for the policy; v2 critics follow.
+
+### v1 joint actor, seed 0 (30-episode look, before the v2 replay)
+
+Warm-started joint training (100k, balanced BC by displacement, bc 0.05)
+on the v1 critic seed 0: at 200 recorded start states the actor's mean
+torque is 1.41 from the recorded-north centroid and 1.32 from the
+recorded-east centroid (the two centroids are 0.91 apart) -- it produces
+torques unlike either recorded behaviour -- and on 30 natural draws it
+times out 0.87-0.93, succeeds 0.07-0.13, takes the detour 0.03-0.07 and the
+shortcut 0.10-0.13; no deaths because it rarely reaches a zone.  The
+critic's start-state peak (the query torque signature, section above)
+lies off the recorded manifold and the actor chases it; vanilla at 0.99
+walks east and succeeds 0.37.  The remaining v1 joint seeds were stopped
+as uninformative; the vanilla control at gamma 0.999 runs first (does the
+discount alone keep locomotion?), then the v2 replay.
+
+### Vanilla control at gamma 0.999 (recorded data, 100k updates, 3 seeds, 300 natural draws)
+
+| seed | policy | success | failure | timeout | detour | shortcut |
+|---|---|---:|---:|---:|---:|---:|
+| 0 | mean | 0.363 | 0.630 | 0.007 | 0.000 | 0.980 |
+| 0 | sample | 0.373 | 0.627 | 0.000 | 0.000 | 0.970 |
+| 1 | mean | 0.370 | 0.623 | 0.007 | 0.000 | 0.980 |
+| 1 | sample | 0.373 | 0.623 | 0.003 | 0.003 | 0.960 |
+| 2 | mean | 0.370 | 0.627 | 0.003 | 0.000 | 0.967 |
+
+Identical to vanilla at 0.99 (`notes/v6_detour_ladder.md`: 0.370 / 0.000 on
+every seed): the discount alone changes neither locomotion nor the route.
+The v1 joint actor's stalling therefore came from the branch critic's
+off-manifold peak, not from gamma.
+
+### Replay v2 (donor-torque queries): the first critic, and the target's ceiling
+
+Replay v2 on the node: 10,913 branch paths + 3,000 north / 3,000 east
+queries whose first 25 torques are a recorded donor segment; north queries
+reach 0.72 (the driver's own turn reached 0.91; the transplanted segment
+turns less reliably), east 0.36 / death 0.63.  v2 critic seed 0, paired
+same-state margin (recorded north vs recorded east torques): -0.53 (s.e.
+0.11); with the query torques themselves: -1.67.  Six critics over v1 and
+v2 now, all negative on the recorded torques.
+
+The ceiling the law allows on this benchmark, from the measured reach times
+(north 365-430, east 222, both parked to the 800-step horizon), as a
+function of how well the queried turn executes and of the shortcut's
+blind survival (0.36 at p_active 0.40):
+
+| gamma | north reach 0.72 @430 | 0.91 @400 | 0.98 @365 |   east survival 0.36 / 0.25 / 0.16 |
+|---|---|---|---|---|
+| 0.999 | +0.13 / +0.50 / +0.95 | +0.46 / +0.83 / +1.27 | +0.64 / +1.00 / +1.45 | (p_active 0.40 / 0.50 / 0.60) |
+| 1.0 | +0.25 / +0.61 / +1.06 | +0.56 / +0.92 / +1.37 | +0.72 / +1.08 / +1.53 | |
+
+With the benchmark as it is (survival 0.36) the target is +0.13 with the
+v2 turn and at most +0.64 even with a perfect turn at gamma -> 1; PointMaze's
+P replay asked for +0.88 at the policy width and its critics returned
++0.45..+0.66.  On the Ant the critics' same-state action margin has a
+seed spread of ~0.5 and sits below zero on every critic so far, so a
+target of a few tenths of a nat is inside the noise -- the same situation
+as PointMaze's Step 10 (E critics at 0.00 +- 0.25 against +0.39).  The
+levers that would lift the target are the shortcut's survival (hazard
+density) or the detour's length, both benchmark properties that this
+study keeps fixed; on the learner side only the query turn's execution
+(0.72 -> 0.98 is worth +0.5) remains.  The v2 joint actors are still
+trained for the record.

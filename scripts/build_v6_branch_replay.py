@@ -56,8 +56,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / 'scripts'))
 
-DATASET = ROOT / 'artifacts' / 'rockfall_clock_v6' / 'dataset' / 'antmaze_rockfall_clock_v6_p040_gxy.npz'
-SIDECAR = ROOT / 'artifacts' / 'rockfall_clock_v6' / 'dataset' / 'antmaze_rockfall_clock_v6_p040_sidecar.npz'
+# the benchmark rung: dataset stem and hazard density (both zones); the p040
+# files are the frozen V6 benchmark, p050 / p060 are the raised-density rungs
+STEM = os.environ.get('V6_DATASET_STEM', 'antmaze_rockfall_clock_v6_p040')
+P_ACTIVE = float(os.environ.get('V6_P_ACTIVE', '0.40'))
+DATASET = ROOT / 'artifacts' / 'rockfall_clock_v6' / 'dataset' / f'{STEM}_gxy.npz'
+SIDECAR = ROOT / 'artifacts' / 'rockfall_clock_v6' / 'dataset' / f'{STEM}_sidecar.npz'
 OUT = Path(os.environ.get('V6_BRANCH_OUT', ROOT / 'outputs' / 'antmaze_branch_replay_v1'))
 STATE_DIM, NQ, NV, ACTION_DIM = 29, 15, 14, 8
 HORIZON = 800
@@ -76,7 +80,7 @@ def _worker_env(seed):
   if _ENV is None:
     from crl import envs as envs_mod
     import rockfall_clock_v6_teacher as CT
-    cfg, teacher = CT.make_teacher()
+    cfg, teacher = CT.make_teacher(p_active_1=P_ACTIVE, p_active_2=P_ACTIVE)
     _ENV = envs_mod.make_env(CT.ENV_NAME, cfg, seed=int(seed))
     _TEACHER = teacher
   return _ENV, _TEACHER
@@ -368,7 +372,7 @@ def build_replay(args):
     obs_p[i, :k] = r['obs']; act_p[i, :k] = r['act']; lengths_p[i] = k
     obs_p[i, k:] = r['obs'][-1]                     # never sampled: masked by lengths
   m = json.loads(meta)
-  m.update({'arm': 'branch_replay_oracle', 'source_dataset': str(DATASET), 'every': args.every,
+  m.update({'arm': 'branch_replay_oracle', 'source_dataset': str(DATASET), 'p_active': P_ACTIVE, 'every': args.every,
             'k_recorded': args.k_recorded, 'query_every': args.query_every, 'gen_seed': GEN_SEED,
             'query_donor': args.query_donor,
             'anchor_rule': 'row 0 of every path (set_anchor_strata in the driver)',
