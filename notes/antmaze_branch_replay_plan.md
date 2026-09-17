@@ -509,3 +509,31 @@ critic teaches.  Next: five 30k critics (`critics_30k`), the two probes
 on each, then actors that do not move the critic (frozen critic, actor
 + BC only) and a short joint variant for comparison.  The queued p060
 joint retry (100k critics) was dropped.
+
+### Five 30k critics (p050): the interventional action preference, 5/5
+
+`critics_30k/seed_{0..4}` (30,000 updates, same recipe otherwise), the
+two probes (`probe_torques_30k.log`, `probe_replay_rows_30k.log`):
+
+| critic (30k) | rec north - east | replay north-donor - east-donor (transplanted, 150 states) | replay north-query torques across north-query states (paired, 200) | s.e. | states > 0 | own rows north - go | go rows reached - died |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| seed 0 | +0.15 | **+0.68** | **+1.06** | 0.12 | 0.77 | +1.82 | +6.9 |
+| seed 1 | +0.03 | **+1.01** | **+1.51** | 0.11 | 0.84 | +2.11 | +7.6 |
+| seed 2 | +0.22 | **+1.11** | **+1.38** | 0.12 | 0.81 | +2.02 | +7.5 |
+| seed 3 | +0.10 | **+0.84** | **+0.98** | 0.14 | 0.70 | +1.32 | +7.2 |
+| seed 4 | +0.03 | **+0.83** | **+1.03** | 0.14 | 0.77 | +1.65 | +6.9 |
+
+Against the query-path target +0.60, every 30k critic ranks the north
+donor torques above the east donor torques at the same state, on
+torques it did not see at that state (+0.7..+1.5), on all five seeds
+(the 100k critics: -0.4..-1.3 and -0.1..-0.8 on the same two probes).
+The row-identity fit is already present at 30k (reached-vs-died ~+7)
+but has not yet overwritten the action preference.  The recorded-torque
+gate stays near zero (+0.03..+0.22): the recorded start-region torques
+are a different cloud from the donor torques (centroid distance 1.23
+against 0.87 between north and east), so that gate cannot read this
+critic; the transplanted-donor probes are the gate for the Ant.
+
+Next, queued on the node in this order: the tagged gate on the 30k
+critics, frozen-critic actors (critic lr 0, actor + BC, 100k) on all
+five, a 30k joint variant on all five, then the p050 vanilla control.
