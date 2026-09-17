@@ -396,3 +396,12 @@ with the branch-replay warm start.  The comparison that matters for the
 rung is therefore detour rate and the discounted score (gamma 0.99
 `discounted` field), not raw success; the chain's 300-episode evaluations
 of all five actors and of the vanilla control at p 0.50 follow.
+
+Seed 1 (its critic had the best gate margin, +0.28), same 100-episode
+look: success 0.47 / failure 0.01 / timeout 0.52; detour 0.01, shortcut
+0.56; mouth 1 at step 140 (median), 25/28 active-latent entries after
+the burst; 43 of the 52 timeouts never reach a mouth.  Start-state torque
+0.97 from the east centroid, 1.23 from the north one.  Two of five
+actors, one picture: the branch-replay warm start makes a slow, stalling
+shortcut walker; the critic's gate margin (+0.17 / +0.28 on these two)
+does not appear as a north turn in behaviour.
