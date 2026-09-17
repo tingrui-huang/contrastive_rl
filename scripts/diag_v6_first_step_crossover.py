@@ -78,6 +78,16 @@ def reseed(env, seed):
                      2: np.random.default_rng(seed + V6._JITTER_SEED_OFFSET_2)}
 
 
+def route_closed(x, y):
+  """The generator's position rule (detour iff y >= 6 or x < 2 and y > 2) plus the
+  descent leg (x > 22, y > 1.5): re-deciding the route at EVERY step with the
+  generator's rule alone flips a detour path to "shortcut" as it comes down
+  past y = 6 at x ~ 24, and the shortcut driver cannot descend -- a rule
+  artefact, not a property of the continuation.  Used only by the per-step
+  re-deciding driver of the ``single`` mode; the generator is untouched."""
+  return 'detour' if (y >= B.DETOUR_Y or (x < B.START_REGION['x_max'] and y > 2.0) or (x > 22.0 and y > 1.5)) else 'shortcut'
+
+
 def direction(d):
   dx, dy = float(d[0]), float(d[1])
   if dy > 1.0 and dy > abs(dx):
@@ -174,7 +184,7 @@ def _continue(env, teacher, o, t, act_fn):
     if reached:
       a = np.zeros(B.ACTION_DIM, np.float32)
     elif act_fn is None:
-      r_now = B.route_from_position(float(o[0]), float(o[1]))
+      r_now = route_closed(float(o[0]), float(o[1]))
       if r_now != route:
         teacher.fresh(route=r_now); flips += int(route is not None); route = r_now
       a = teacher.act(o, env.schedule, intent='detour' if route == 'detour' else 'go')
@@ -241,7 +251,7 @@ def _run_single_jobs(args):
                 'continuation': cont, 'disp25': disp.tolist(), 'dir25': direction(disp), 'success': r['success'],
                 'failure': r['failure'], 'steps': r['steps'], 'reach_step': r['reach_step'],
                 'route_flips': r['route_flips'], 'final_route': r['final_route'],
-                'route_by_final_xy': B.route_from_position(float(r['obs'][-1, 0]), float(r['obs'][-1, 1])),
+                'route_by_final_xy': route_closed(float(r['obs'][-1, 0]), float(r['obs'][-1, 1])),
                 'max_y': float(r['obs'][:, 1].max()),
                 'p_goal': B.goal_frame_probability(r['obs'], goal_xy, GAMMA, RADIUS), 'u1': r['u1'], 'u2': r['u2'],
                 'final_xy': r['obs'][-1, :2].tolist()})

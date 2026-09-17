@@ -1002,3 +1002,35 @@ segment-rank policy did this by hand at evaluation time; it is not the
 paper's actor and changes the action interface).  That choice is the
 user's; the walker comparison (`walker` mode) follows for the
 "right route, cannot finish" half.
+
+### Honest single-step evaluation, part 1: the blind driver as the continuation
+
+`diag_v6_first_step_crossover.py single` (`diag_single_driver/`): one
+query torque at the state (N = a north donor's torque at the same time
+step, E = an east donor's, own = the row's recorded torque), then the
+replay's blind driver acting closed-loop from step 2, re-deciding its
+route from its position at every step (the generator's rule plus the
+descent leg x > 22, y > 1.5 -- without it a detour path flips to
+"shortcut" as it comes down at x ~ 24 and stalls; that first pass is kept
+as `diag_single_driver_rule_v0`).  150 states per set, paired hazards,
+gamma 0.999, r 0.5.
+
+| state set | reach (N / E / own) | death | P_goal N / E | log N/E | paired P_goal(N) > P_goal(E) | route differs N vs E |
+|---|---|---:|---|---:|---:|---:|
+| start (x<2, y<2, t<=5) | 0.21 / 0.21 / 0.21 | 0.79 | 0.132 / 0.121 | **+0.09** | 0.08 | 0.01 |
+| detour turn in progress (detour eps, y<2, t>5) | 0.60 / 0.60 / 0.60 | 0.39 | 0.313 / 0.316 | **-0.01** | 0.23 | 0.02 |
+| north leg low (x<2, 2<=y<4) | 0.99 / 0.96 / 0.97 | 0.00 | 0.388 / 0.384 | **+0.01** | 0.52 | 0.10 |
+| north leg high (x<2, 4<=y<6) | 0.98 / 0.99 / 0.99 | 0.00 | 0.429 / 0.428 | **+0.00** | 0.37 | 0.11 |
+| shortcut early (2<=x<5, y<2) | 0.25 / 0.25 / 0.25 | 0.75 | 0.173 / 0.173 | **-0.00** | 0.10 | 0.02 |
+
+Under this continuation the single torque decides nothing anywhere: the
+driver's route is a function of position, one torque does not move the
+position across the rule's threshold, and from every turning state below
+y = 2 the driver goes east (148/150 of the recorded mid-turn states end
+on the shortcut).  A start-state target of +0.09 and turning-state
+targets of ~0 are what a single-step replay built on this continuation
+would ask the critic to learn.  This is the second branch of the user's
+reading for the driver: the continuation policy takes every trajectory
+back to the shortcut, and a replay generated once under it carries no
+policy-improvement signal for the route.  Part 2 (the pure-BC actor as
+the continuation) follows.
