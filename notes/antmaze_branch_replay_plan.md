@@ -759,3 +759,9 @@ dependence on critic 0:
 control (same candidates, uniform pick -- the 5% prior) and the same
 policy ranked by the vanilla critics (trained on the recorded futures)
 are running.
+
+Per-step rank with the pure-BC proposal, for the record (K = 32, 300
+draws per critic): detour 0.023 / 0.037 / 0.027 / 0.030 / 0.013 on
+critics 0-4 (success 0.25-0.27, failure 0.69-0.73); K = 8 on critic 0
+0.017.  A unimodal proposal with scale 0.26 offers no north candidates;
+the per-step rank is closed as a variant.
