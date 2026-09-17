@@ -705,3 +705,29 @@ at the density's rate.  The tanh-normal actor fitted to 95/5 route data
 does not keep a 5% north mode at the start: the sampled policy detours
 0/300.  So the pure-BC proposal offers the rank policy almost no north
 candidates either; its five-critic evaluation runs for the record.
+
+### Segment-rank: one critic-ranked route decision over recorded macro-actions -- detour 0.40
+
+`eval_v6_segment_rank_policy.py`: while the ant is in the start region and
+no segment is running, K recorded 25-step torque segments (the first
+torques of K random recorded episodes at the current time step, both
+routes in their recorded 95/5 proportion) are scored by the critic at the
+current state with each segment's first torque; the argmax segment runs
+open-loop for 25 steps; everywhere else the pure-BC actor's mode acts.
+Candidates are recorded torques, the ranking is the learned critic, the
+walker is the learned BC actor; the only design choice is the 25-step
+commitment (the replay's own K).
+
+Critic seed 0 (30k), K = 64, 100 natural draws at density 0.50:
+
+    success 0.39 / failure 0.31 / timeout 0.30; **detour 0.40**, shortcut
+    0.47; by latent U00 0.77, U10 0.37, U01 0.13, U11 0.24; 251
+    decisions, 56 north picks (22% against ~5% north candidates).
+
+Against 0.000-0.017 for every gradient-trained actor on this rung, 0.000
+for the vanilla controls and 0.03-0.12 for the per-step rank policy.
+The critic's same-state preference for north torques (+0.7..+1.5 on the
+donor probes) turns into behaviour once the decision is (i) made among
+real recorded torques and (ii) committed for the length the critic was
+trained on, instead of being re-sampled every step from a unimodal
+proposal.  Seeds 1-4 and the K dependence (32, 128) follow.
