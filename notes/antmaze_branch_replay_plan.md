@@ -337,3 +337,38 @@ showed (+0.45..+0.66 against +0.88).  Decision: the p050 rung goes on to
 the second half (critics 3-4, five-seed gate, warm-started joint actors
 on every critic, vanilla control at p 0.50 / gamma 0.999); the p060 rung
 (target ~+0.95 expected) runs its gate in the other slot.
+
+p050 completed to five critics (`gate.md`, target +0.60): seeds 3 and 4
+add **-0.06** and **-0.16**, so 2/5 pass and the five-seed mean is
+-0.01 (s.e. of each ~0.10).  The p040-to-p050 shift of the critics'
+mean is therefore +0.41 for a +0.37 shift of the target: the slope is
+one, the intercept about -0.6 nat.  The warm-started joint actors are
+trained on all five critics for the record (the actor sees the full f
+landscape, not only the north-vs-east sign at the recorded torques).
+
+p060, replay v2 (17,367 paths; north queries reach 0.72, east 0.16 /
+death 0.83), law target on the query paths **+1.02** (r 0.5):
+
+| critic | row margin | paired same-state margin | s.e. | states > 0 | gate |
+|---|---:|---:|---:|---:|---|
+| seed 0 | +2.14 | **-0.66** | 0.09 | 0.37 | fail |
+| seed 1 | +1.61 | **-0.09** | 0.10 | 0.44 | fail |
+| seed 2 | +2.11 | **+0.13** | 0.11 | 0.52 | fail |
+
+0/3 pass, mean -0.20.  This breaks the slope-one reading of p040 -> p050:
+across the three rungs the paired margin on transplanted recorded
+torques is -0.42 / -0.01 / -0.20 while the target is +0.23 / +0.60 /
++1.02.  The row margin (each row scored with its own goal) is positive
+on every critic at every rung (+0.7..+2.9) -- the critics do learn that
+north-moving rows lead to the goal -- but at a fixed state the recorded
+north and east torques are not ranked by the law's number.  Two readings
+remain open: (a) the critic's action sensitivity at the start states is
+weak and seed-noisy (the torque is a 1.9-unit-wide cloud within each
+direction group against 0.87 between the groups' centroids -- a
+transplanted torque may not carry its direction to another joint
+configuration, so the gate itself is a blunt instrument on the Ant), or
+(b) the critic ranks by state only.  The joint actors settle it: they
+read the full f landscape at the visited states.  p050's actors are
+training; p060's second half (critics 3-4, actors, vanilla control) was
+launched in the freed slot for the same reason -- the bigger target is
+the more informative test of (a) versus (b).
