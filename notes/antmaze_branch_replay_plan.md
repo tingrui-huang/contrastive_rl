@@ -1638,3 +1638,21 @@ randomness).  Reading: 5x more independent detour episodes at equal
 budget did not move held-out generalisation for this recipe; both arms
 at chance on new episodes despite +0.16 of usable signal.  Not
 committed.  Details `exp_episode_coverage/SUMMARY.md`.
+
+### Restore determinism and one-step vs long-horizon predictability (2026-09-18, user's two-part check)
+
+`scripts/diag_v6_restore_onestep.py`, `outputs/antmaze_branch_replay_p050/diag_restore_onestep/`.
+(1) Restore: 60 anchors, recorded torque, fixed hidden seeds -- a fresh env
+and an env that had just run 150 steps of another anchor agree to 0.0 at
+step 1 and step 10; restore + recorded torque reproduces the original
+next frame to 5e-7 (float32); warmstart and time are zero after restore
+(mj_resetData).  No restoration defect.  (2) One-step change Delta s is
+predictable from (s, a) with the critic's inputs: MLP R^2 0.999 (train, A),
+0.99 (B, new torques), 0.91 (old C), 0.84 (Cnew, new episodes); kNN
+0.87 / 0.86 / 0.76 / 0.60.  Long-horizon P_goal with the same
+architecture and data: R^2 0.95 train, 0.25-0.32 A, below zero at B, old
+C and Cnew (S predictors).  Within-anchor Spearman(one-step distance, P
+difference) 0.34-0.40 on A / B / old C, 0.03 on Cnew.  Reading: the
+second branch -- physics and one-step representation are fine; learning
+the long-continuation value is the problem; adding samples of the same
+kind is not the lever.  Not committed.

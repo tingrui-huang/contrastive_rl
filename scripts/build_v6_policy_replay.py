@@ -103,6 +103,8 @@ def split_episodes(route_rec, frac, rng):
   """Held-out episodes, stratified by realised route: their rows are anchors of
   the gate / validation sets only."""
   held = np.zeros(len(route_rec), bool)
+  if frac <= 0:
+    return held
   for name in ('detour', 'shortcut'):
     idx = np.flatnonzero(route_rec == name)
     k = max(1, int(round(frac * len(idx))))
@@ -361,7 +363,7 @@ def build(args):
   for (e, t) in general_rows(lengths, held, 7, rng, args.n_holdout):
     anchors_h.append((hid, e, t, 'general')); hid += 1
   hold_kinds = ['recorded', 'mode'] + [f'sample{k}' for k in range(args.n_samples_holdout)]
-  jobs_h, sc_h = make_jobs(anchors_h, bundle, obs, act, hold_kinds, args.draws_holdout, R1_SEED + 300_000, R1_SEED + 13, False)
+  jobs_h, sc_h = (make_jobs(anchors_h, bundle, obs, act, hold_kinds, args.draws_holdout, R1_SEED + 300_000, R1_SEED + 13, False) if anchors_h else ([], None))
   jobs = jobs_d + jobs_g + jobs_h
   if args.limit:
     jobs = jobs_d[:args.limit] + jobs_g[:args.limit] + jobs_h[:args.limit]
@@ -408,17 +410,20 @@ def build(args):
       audit_max_y=np.array([r['max_y'] for r in fit_res], np.float32))
   # --- the held-out table (no paths)
   hold_res = [r for r in res if 'obs' not in r]
+  if not hold_res:
+    hold_res = None
   hpath = B.OUT / (f'holdout_policy_{tag}.npz' if not args.limit else f'holdout_policy_{tag}_smoke.npz')
-  save_table(hpath, hold_res, {'continuation_ckpt': str(args.cont_ckpt), 'candidates': hold_kinds,
-                               'draws': args.draws_holdout, 'held_out_episodes': int(held.sum()),
-                               'held_out_episode_ids': np.flatnonzero(held).tolist()})
+  if hold_res:
+    save_table(hpath, hold_res, {'continuation_ckpt': str(args.cont_ckpt), 'candidates': hold_kinds,
+                                 'draws': args.draws_holdout, 'held_out_episodes': int(held.sum()),
+                                 'held_out_episode_ids': np.flatnonzero(held).tolist()})
   # --- summary
-  summary = {'paths': n, 'holdout_paths': len(hold_res), 'wall_seconds': wall, 'replay': str(path), 'holdout': str(hpath),
+  summary = {'paths': n, 'holdout_paths': len(hold_res or []), 'wall_seconds': wall, 'replay': str(path), 'holdout': str(hpath),
              'bytes': int(os.path.getsize(path)), 'policy_scale': sc_d, 'held_out_episodes': int(held.sum()),
              'fit_by_set_cand': stats_table(fit_res, list(DENSE_SETS) + ['general']),
-             'holdout_by_set_cand': stats_table(hold_res, list(DENSE_SETS) + ['general']),
+             'holdout_by_set_cand': stats_table(hold_res or [], list(DENSE_SETS) + ['general']),
              'fit_pairs': pair_stats(fit_res, list(DENSE_SETS) + ['general'], halves=((0,), (1,))),
-             'holdout_pairs': pair_stats(hold_res, list(DENSE_SETS) + ['general'])}
+             'holdout_pairs': pair_stats(hold_res or [], list(DENSE_SETS) + ['general'])}
   (B.OUT / f'generation_policy_{tag}{"_smoke" if args.limit else ""}.json').write_text(json.dumps(summary, indent=1), encoding='utf-8')
   print(build_report(summary, args), flush=True)
   (B.OUT / f'generation_policy_{tag}{"_smoke" if args.limit else ""}.md').write_text(build_report(summary, args) + '\n', encoding='utf-8')

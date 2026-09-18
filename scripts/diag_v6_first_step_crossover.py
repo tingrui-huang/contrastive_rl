@@ -477,6 +477,10 @@ def walker(args):
     route_rec = sc['route_realized'].astype(str)
   x, y = obs[:, :, 0], obs[:, :, 1]
   det = np.flatnonzero(route_rec == 'detour')
+  if os.environ.get('V6_WALKER_EPISODES'):
+    # restrict the placed rows to given episodes (e.g. reserved evaluation episodes)
+    keep = {int(x) for x in os.environ['V6_WALKER_EPISODES'].split(',')}
+    det = np.array([e for e in det if int(e) in keep], int)
   north = [(int(e), int(t)) for e in det for t in range(1, int(lengths[e]) - 1) if x[e, t] < 2.0 and 2.0 < y[e, t] < 7.5]
   east = [(int(e), int(t)) for e in det for t in range(1, int(lengths[e]) - 1) if y[e, t] >= 7.5 and 2.0 < x[e, t] < 22.0]
   jobs = []
@@ -491,7 +495,7 @@ def walker(args):
   t0 = time.time()
   res = run(_run_walker_jobs, jobs, args.workers, extra=(args.bc_ckpt,))
   print(f'rollouts done in {time.time() - t0:.0f}s', flush=True)
-  out = B.OUT / 'diag_walker'
+  out = B.OUT / ('diag_walker' + os.environ.get('V6_WALKER_TAG', ''))
   out.mkdir(parents=True, exist_ok=True)
   (out / 'rollouts.json').write_text(json.dumps(res), encoding='utf-8')
   L_ = ['# Detour-corridor completion: generation walker vs deployment BC walker (paired hazards, same placed rows)', '',
