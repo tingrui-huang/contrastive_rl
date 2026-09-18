@@ -115,6 +115,27 @@ def base_config(seed, dataset, steps, ckpt_dir):
 
 def row0_prepare(buffer, path):
   n = int(buffer.lengths.shape[0])
+  if os.environ.get('V6_ANCHOR_WEIGHTS') == 'audit':
+    # the torque-coverage experiment: every path is still an anchor at row 0, but
+    # with the per-path weight the replay carries (audit_weight), so that a state
+    # with more generated branches is NOT more likely to be drawn, and the
+    # recorded-vs-policy mixture stays what it was; the in-batch negatives follow
+    # the same weighted draw
+    with np.load(path, allow_pickle=False) as d:
+      w = d['audit_weight'].astype(np.float64)
+      kind = d['audit_kind'].astype(str); cand = d['audit_cand'].astype(str)
+    assert len(w) == n
+    buffer.set_anchor_strata([(np.arange(n), np.zeros(n, np.int64), w)], (buffer_batch(),))
+    tot = w.sum()
+    audit = {'anchor_rule': 'row 0 of every path, weighted by audit_weight', 'paths': n,
+             'mass_by_kind': {k: float(w[kind == k].sum() / tot) for k in np.unique(kind)},
+             'mass_recorded': float(w[cand == 'recorded'].sum() / tot),
+             'mass_policy': float(w[cand != 'recorded'].sum() / tot),
+             'mass_general': float(w[kind == 'general'].sum() / tot),
+             'mass_dense_recorded': float(w[(kind != 'general') & (cand == 'recorded')].sum() / tot),
+             'mass_dense_policy': float(w[(kind != 'general') & (cand != 'recorded')].sum() / tot),
+             'distinct_weights': {str(v): int((w == v).sum()) for v in np.unique(w)}}
+    return audit
   buffer.set_anchor_strata([(np.arange(n), np.zeros(n, np.int64), None)], (buffer_batch(),))
   return {'anchor_rule': 'row 0 of every path, uniform over paths', 'paths': n}
 
@@ -154,7 +175,8 @@ def train_critic(seed, steps):
   cfg.ckpt_milestone_steps = tuple(m for m in MILESTONES if m < steps)   # the critic's own trajectory, for the probes
   t0 = time.time()
   train(cfg, buffer_prepare=row0_prepare)
-  manifest(d, cfg, 'branch_critic', {'wall_seconds': time.time() - t0, 'milestones': list(cfg.ckpt_milestone_steps)})
+  manifest(d, cfg, 'branch_critic', {'wall_seconds': time.time() - t0, 'milestones': list(cfg.ckpt_milestone_steps),
+                                     'anchor_weights': os.environ.get('V6_ANCHOR_WEIGHTS', 'uniform')})
 
 
 def vanilla_dir(seed):

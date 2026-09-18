@@ -521,7 +521,7 @@ def knn_scorer(replay_path, k=10, w_act=1.0):
   return score
 
 
-def marginal_goal_frames(replay_path, per_path=4, gamma=GAMMA, seed=0):
+def marginal_goal_frames(replay_path, per_path=4, gamma=GAMMA, seed=0, weighted=False):
   """The goal marginal the NCE negatives are drawn from: the buffer takes an
   anchor (row 0 of a path, uniform over paths) and a future row j with
   P(j) proportional to gamma^j over the path's rows 1..len-1 (the geometric
@@ -530,15 +530,21 @@ def marginal_goal_frames(replay_path, per_path=4, gamma=GAMMA, seed=0):
   rng = np.random.default_rng(seed)
   with np.load(replay_path, allow_pickle=False) as d:
     xy = d['obs'][:, :, :2].astype(np.float32); lengths = d['lengths']
+    pw = d['audit_weight'].astype(np.float64) if (weighted and 'audit_weight' in d.files) else None
+  n = len(lengths)
+  if pw is None:
+    paths = np.repeat(np.arange(n), per_path)
+  else:
+    # the weighted replay: paths drawn with the anchor weights the critic trained under
+    paths = rng.choice(n, size=per_path * n, replace=True, p=pw / pw.sum())
   out = []
-  for i in range(len(lengths)):
+  for i in paths:
     L = int(lengths[i])
     if L < 2:
       continue
     j = np.arange(1, L)
     w = gamma ** j; w /= w.sum()
-    pick = rng.choice(j, size=per_path, replace=True, p=w)
-    out.append(xy[i, pick])
+    out.append(xy[i, rng.choice(j, p=w)][None])
   return np.concatenate(out)
 
 
@@ -621,11 +627,11 @@ def keys_from_replay(replay_path):
   with np.load(replay_path, allow_pickle=False) as d:
     o0 = d['obs'][:, 0]; a0 = d['act'][:, 0]
     aid = d['audit_anchor_id']; cand = d['audit_cand'].astype(str); draw = d['audit_draw']
-    sset = d['audit_kind'].astype(str); pg = d['audit_p_goal']; ep = d['audit_episode']
+    sset = d['audit_kind'].astype(str); pg = d['audit_p_goal']; ep = d['audit_episode']; at = d['audit_anchor_time']
   keys = {}
   for i in range(len(pg)):
     k = (int(aid[i]), cand[i])
-    e = keys.setdefault(k, {'obs0': o0[i], 'act0': a0[i], 'set': sset[i], 'episode': int(ep[i]), 'p': {}})
+    e = keys.setdefault(k, {'obs0': o0[i], 'act0': a0[i], 'set': sset[i], 'episode': int(ep[i]), 't': int(at[i]), 'p': {}})
     e['p'][int(draw[i])] = float(pg[i])
   return keys
 

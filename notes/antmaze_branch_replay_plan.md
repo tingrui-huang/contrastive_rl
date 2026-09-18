@@ -1383,3 +1383,122 @@ four draws, and deciding them needs more consequences per key before
 any network is asked to fit them.  What stands from round 1: the
 pre-registered gate failed for all three critics, and the actor stage
 stays unrun.
+
+### Diagnostic A / B / C (2026-09-18, after 69e6572; frozen checkpoints, fresh oracle outcomes): which generalisation boundary fails
+
+Task: distinguish (A) memorisation of the realised training futures, (B)
+no generalisation to new torques at a familiar state, (C) no
+generalisation to states of other episodes -- with the round-1 critics
+and the replay's continuation policy frozen, nothing trained.  Script
+`scripts/diag_v6_r1_abc.py` (seal / run / analyze), outputs
+`outputs/antmaze_branch_replay_p050/diag_r1_abc/` (manifest.json sealed
+before any rollout: hashes, anchors, torques, seeds, rules; outcomes.npz
+per draw; metrics.json; REPORT.md; SUMMARY.md).  Design: 5 strata x 32
+anchors per pool, chosen round-robin over episodes without consulting
+outcomes or scores; A = fit keys with their original three torques
+(131 episodes), B = the same anchors with three new policy samples and
+the same draw seeds, C = held-out anchors with their existing five
+candidates (67 episodes; turning and north leg from the 5 held-out
+detour episodes); 16 new paired hazard / clock / jitter draws per anchor
+(28,160 paths, 2,192 s on 10 workers); the same continuation mode, hold,
+horizon and law as round 1; region-integrated readout (radius 0.5, NCE
+goal marginal of the fit replay, per head and deployed min) primary,
+exact-goal logit secondary; pair classes tie / weak / decided (|log
+ratio| > 0.3 on 16 draws) with ties never counted as wrong; s.e. by
+episode bootstrap; a cross-fitted empirical selector (eight draws pick,
+the other eight score) as the usable-signal reference.
+
+Result (pooled dense strata, region min, agreement among decided pairs,
+seeds 0 / 1 / 2):
+
+| layer | agreement | pick gain in P_goal | verdict |
+|---|---|---|---|
+| A familiar state + familiar torque, fresh outcomes (230 pairs, 131 eps) | 0.77 / 0.71 / 0.70 (s.e. 0.03) | +0.042 / +0.032 / +0.032 (s.e. 0.007) | succeeds 3/3 |
+| A, policy-sample pairs only (73) | 0.77 / 0.71 / 0.67 | +0.025 / +0.020 / +0.016 | succeeds |
+| B familiar state + three new torques (222 pairs) | 0.55 / 0.51 / 0.55 (s.e. 0.035) | +0.013 / -0.000 / +0.005 (s.e. 0.006) | fails to inconclusive |
+| A x B cross pairs (660) | 0.60 / 0.57 / 0.57 (s.e. 0.023) | - | the familiar member carries it |
+| C held-out-episode states, five candidates (758 pairs, 67 eps) | 0.50 / 0.48 / 0.49 (s.e. 0.025) | -0.000 / +0.001 / -0.005 | fails 3/3 |
+| C matched types (227) | 0.47 / 0.48 / 0.46 | -0.006 / -0.008 / -0.003 | fails |
+
+Memorisation check at A: the critic against the ORIGINAL two-draw
+labels 0.86 / 0.82 / 0.78, against the FRESH sixteen-draw labels 0.77 /
+0.71 / 0.70; where it matched the original label it keeps the sign on
+fresh draws 130 / 6 (seed 0).  Original and fresh labels agree on the
+turning / north-leg strata (Spearman 0.82-0.90 per key) and barely on
+the start-type strata (0.12-0.36), where most 16-draw pairs are weak or
+tied.  The fresh outcomes carry usable selection signal in every layer
+(cross-fitted empirical selector +0.061 / +0.055 / +0.078; the critic's
+own pick recovers +0.042 of the +0.061 at its keys and nothing in B or
+C).  Exact-goal and per-head readouts: A 0.66-0.79, B 0.48-0.58, C
+0.47-0.53 -- the same pattern.
+
+Reading (the task's rules): A succeeds, B fails, C fails -> the critic's
+value is specific to the trained (state, torque) keys; it does not
+interpolate across torques at a known pose, and consequently carries
+nothing to poses of other episodes.  Not memorisation of realised
+futures (A held up on fresh consequences), not label noise (the earlier
+report's reading, already withdrawn).  Open: B's residual (0.55 on two
+seeds, 0.51 on one, 222 pairs at sixteen draws); C's turning / north-leg
+strata on 5 episodes; how the critic learned the start-type keys whose
+own two draws were nearly uninformative (from the surrounding rows of
+the same replay, mechanism not identified).  Single next intervention
+best supported: a controlled comparison of torque coverage per state in
+the replay (more policy-sampled candidates per anchor, repeated draws;
+anchors, continuation, NCE, 8-d torque, actor objective, BC 0.05
+unchanged), read out with this A / B / C design -- a diagnostic finding,
+not a guarantee; "more episodes alone" is not what the pattern points
+at.  Round-1 gate status unchanged; actor stage still unrun; nothing
+committed from this diagnostic yet (user to decide).
+
+### Torque-coverage experiment (2026-09-18, after the A / B / C diagnostic): repeated outcomes (R) vs action coverage (COV), equal budget
+
+User task: test whether insufficient within-state torque coverage is
+responsible for the B failure, without touching loss, architecture,
+actor, route abstraction or environment.  Script
+`scripts/exp_v6_r1_coverage.py` (seal / build / analyze / report), the
+weighted anchor prepare in `run_v6_branch_replay.py`
+(V6_ANCHOR_WEIGHTS=audit -> TrajectoryBuffer.set_anchor_strata with
+per-path weights), the weighted goal marginal in
+`build_v6_policy_replay.marginal_goal_frames`, and the unsealed-critic /
+extra-layer options in `diag_v6_r1_abc.py analyze`; paired comparison
+`scripts/probe_v6_coverage_paired_boot.py`.  Outputs
+`outputs/antmaze_branch_replay_p050/exp_r1_coverage/` (manifest.json
+sealed before any rollout, manifest_git_sidecar.json, build_arm{R,COV}.json,
+REPORT.md, SUMMARY.md, logs/) and `diag_r1_abc/{REPORT,metrics}_arm{R,COV}.*`,
+`outcomes_armCOV_A.npz`, `paired_boot_{A,B,C}.json`; critics
+`critics_arm{R,COV}/seed_{0,1,2}` (final.pkl pulled locally; the arm
+replays, 1.6 GB each, stay on the two rented nodes and are reproducible
+from the manifest).  Arms: on the 1,500 round-1 dense anchors, R = the
+same two policy torques x 8 fresh outcomes, COV = eight new policy
+torques (a training-torque stream disjoint from every validation
+stream) x 2 outcomes; 16 policy branches per state in both; the round-1
+general and recorded paths verbatim; per-path anchor weights 1 / 0.25 so
+that state mass (dense 0.5069) and the recorded / policy mixture (0.4155
+/ 0.5845, within dense 1/3) equal round 1 exactly (audited from the built
+replays); 30k NCE, seeds 0 / 1 / 2, the round-1 recipe unchanged; the
+same A / B / C diagnostic and readout, COV's layer A on its own training
+torques (cov0 / cov1, run with the diagnostic's draw seeds).
+
+Result (pooled dense, agreement among decided pairs; seed 0 / 1 / 2):
+
+| layer | r1 | R | COV | seed-mean r1 / R / COV |
+|---|---|---|---|---|
+| A | 0.77 / 0.71 / 0.70 | 0.67 / 0.67 / 0.70 | 0.63 / 0.62 / 0.66 (cov0 / cov1) | 0.73 / 0.68 / 0.64 |
+| B | 0.55 / 0.51 / 0.55 | 0.58 / 0.53 / 0.55 | 0.63 / 0.56 / 0.56 | 0.536 / 0.554 / 0.584 (paired s.e. 0.03) |
+| C | 0.50 / 0.48 / 0.49 | 0.48 / 0.50 / 0.52 | 0.51 / 0.48 / 0.47 | 0.491 / 0.500 / 0.485 |
+
+Paired episode bootstrap on B (222 decided pairs, 78 episodes): COV - r1
++0.048 +- 0.039 (z 1.2), COV - R +0.030 +- 0.035, R - r1 +0.018 +- 0.026;
+pick gains +0.012 / +0.007 / +0.007 (COV), +0.010 / 0 / +0.009 (R),
++0.013 / 0 / +0.005 (r1).  Pre-registered line (above r1 and R by 2 s.e.)
+NOT met -> Case 4: neither arm materially improves B; the fresh untouched
+action set was not run.  What is established: repeated outcomes do not
+help (B z 0.7; A even slightly lower, 0.68 vs 0.73), so target variance
+at the training keys is not the limiting factor; broader torque coverage
+lowers the familiar-key fit (0.64 vs 0.73, a quarter of the mass per
+torque) and raises B by a few points at most, directionally consistent
+across seeds but inconclusive at this validation resolution; C at chance
+for every arm.  Per the task: no further enlargement of the replay, no
+16 / 32 / 64 torques, no longer training, no loss / architecture / route /
+macro / subgoal change from this result.  Nothing committed (user to
+decide); no actor trained.
