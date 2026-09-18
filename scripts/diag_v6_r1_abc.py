@@ -531,7 +531,7 @@ def analyze(args):
   bundle = R.policy_bundle(args.cont_ckpt)
   nets = bundle['nets']
   # the goal marginal of the replay the critics trained on (weighted when that replay carries anchor weights)
-  frames = R.marginal_goal_frames(B.OUT / (args.marginal_replay or args.replay), per_path=4, seed=0, weighted=True)
+  frames = R.marginal_goal_frames(B.OUT / (args.marginal_replay or args.replay), per_path=4, seed=0, weighted=True, law=args.marginal_law)
   a_cands = tuple(args.a_cands.split(','))
   ks = list(keys)
   o_all = np.stack([keys[k]['obs0'] for k in ks]); a_all = np.stack([keys[k]['act0'] for k in ks])
@@ -558,7 +558,7 @@ def analyze(args):
   res['orig_vs_fresh']['A'] = original_vs_fresh(keys, info, 'A', tuple(c for c in a_cands if f'A|{c}' in man['anchors'][0]['original_outcomes']), strata, scores)
   res['orig_vs_fresh']['C'] = original_vs_fresh(keys, info, 'C', C_CANDS, strata, scores)
   res['coverage'] = {'A': coverage(keys, man, 'A', a_cands), 'B': coverage(keys, man, 'B', ('new0', 'new1', 'new2')), 'C': coverage(keys, man, 'C', C_CANDS)}
-  res['critic_hashes'] = critic_hashes; res['a_cands'] = list(a_cands); res['marginal_replay'] = str(args.marginal_replay or args.replay)
+  res['critic_hashes'] = critic_hashes; res['a_cands'] = list(a_cands); res['marginal_replay'] = str(args.marginal_replay or args.replay); res['marginal_law'] = args.marginal_law
   # outcome summary per layer / candidate
   res['outcomes'] = {}
   for (ly, aid, c), e in keys.items():
@@ -687,6 +687,7 @@ def main(argv=None):
   ap.add_argument('--tag', default='', help='analyze: suffix for REPORT_/metrics_ (keeps the r1 files)')
   ap.add_argument('--allow-unsealed-critics', action='store_true', help='analyze: critics not in the sealed manifest (their hashes are recorded in the metrics)')
   ap.add_argument('--marginal-replay', default='', help='analyze: replay for the goal marginal (default --replay); weighted if it carries audit_weight')
+  ap.add_argument('--marginal-law', default='row0', choices=('row0', 'vanilla_draw'), help='analyze: row0 = branch critics (row0_prepare); vanilla_draw = the vanilla critic (episode uniform, row uniform within it)')
   ap.add_argument('--a-cands', default='recorded,sample0,sample1', help='analyze: the layer-A candidate labels (training torques of the critics under test)')
   ap.add_argument('--extra-outcomes', nargs='*', default=[], help='analyze: extra outcome tables under V6_BRANCH_OUT to merge')
   args = ap.parse_args(argv)

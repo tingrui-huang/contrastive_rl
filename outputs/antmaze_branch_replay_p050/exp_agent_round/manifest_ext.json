@@ -1,0 +1,23 @@
+{
+ "addendum": "query extension (user direction after the first-step check), sealed before any extended replay was generated",
+ "sealed_at": "2026-09-18 17:51:53",
+ "git": "b8816b8e4810708ff6b76a54bef468bb45c48b88 + uncommitted scripts (build_v6_policy_replay --extra-query-ckpt, exp_v6_agent_round verify_ext, diag_v6_first_step_replay)",
+ "motivation": "diag_first_step: the fixed agent reproduces its own detours exactly through the generator path (60/60, xy 1e-9), but any recorded / BC first torque at the same reset state sends it down the shortcut (around 0.00-0.10 vs 1.00) and a teacher detour torque sends it around (0.83) even where it went straight; the old query set never contains the agent's north-turning first torque at shortcut anchors, so round-1 futures equal the control's.  Reading 1 of the user's three: extend the candidates.",
+ "design": {
+  "candidates": "kept: recorded + 2 BC-walker samples (dense), recorded + 1 BC sample (general); ADDED at every anchor: the fixed agent's mode + 2 samples (dense), mode + 1 sample (general); labels ag_mode / ag_sample<k>; agent-sample seed base 123_000_011 (stride-separated from every other stream)",
+  "draws": "the control's hazard-draw seeds per anchor and draw -- every candidate of an anchor, old or new, paired; successes and failures kept",
+  "anchors": "the control replay's anchors verbatim (dataset d20, selection seed 0)",
+  "weights": "uniform anchors over paths; every anchor gains the same number of candidates (dense 3 -> 6, general 2 -> 4), so the per-stratum and per-anchor masses equal the control's (verify_ext asserts stratum masses equal to 1e-9); within an anchor the candidate mixture is half old / half new",
+  "arms": {
+   "ext_ag": "extended queries, continuation = the fixed agent (node4 CPU generation; GPU stages on node3)",
+   "ext_bc": "extended queries, continuation = the d20 BC walker (node2)",
+   "existing": "control (old queries, BC continuation) and round1 (old queries, agent continuation) -- a 2 x 2 of {old, extended queries} x {BC, agent continuation}"
+  },
+  "training": "per arm critics x3 (30k, uniform anchors) -> actors x3 from the fixed agent (frozen critic, bc 0.05, d20 BC rows, 30k) -> 300 draws seed 2909 (the same draw as the round-1 evaluations)"
+ },
+ "decision_rules": {
+  "attribution": "ext_bc - control = the candidate coverage alone; ext_ag - round1 = coverage under the agent continuation; ext_ag - ext_bc = the continuation policy given the extended coverage; same 2 x pooled seed s.e. / 3-of-3 rule, success primary, detour explanatory, walking kept (timeout <= 0.25, no-hazard success >= 0.70)",
+  "critic": "Cdev pick gain (labels under the agent continuation for every set; the BC-continuation labels for the BC-continuation sets), paired episode bootstrap vs control and vs round1",
+  "caveat": "this addendum answers why the round-1 futures did not change; whether the critic generalises the new signal to new states, and whether the actor improves, are the two open checks and are read from the Cdev and the 2909 evaluations exactly as for round 1"
+ }
+}

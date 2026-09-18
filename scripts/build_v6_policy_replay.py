@@ -553,23 +553,41 @@ def knn_scorer(replay_path, k=10, w_act=1.0):
   return score
 
 
-def marginal_goal_frames(replay_path, per_path=4, gamma=GAMMA, seed=0, weighted=False):
-  """The goal marginal the NCE negatives are drawn from: the buffer takes an
-  anchor (row 0 of a path, uniform over paths) and a future row j with
-  P(j) proportional to gamma^j over the path's rows 1..len-1 (the geometric
-  relabeling law, truncated at the path's end); the goal is that row's XY.
-  Sampled ``per_path`` times per path.  Returns XY frames [N, 2]."""
+def marginal_goal_frames(replay_path, per_path=4, gamma=GAMMA, seed=0, weighted=False, law='row0'):
+  """The goal marginal the NCE negatives are drawn from.  ``law='row0'`` (the
+  branch critics, row0_prepare): the buffer takes an anchor at row 0 of a path
+  (uniform over paths, or the audit weights) and a future row j with P(j)
+  proportional to gamma^j over the path's rows 1..len-1 (the geometric relabeling
+  law, truncated at the path's end); the goal is that row's XY.  ``law=
+  'vanilla_draw'`` (the vanilla critic, crl.train without buffer_prepare, i.e.
+  TrajectoryBuffer._draw_indices without strata): the EPISODE is drawn
+  uniformly, then the anchor row uniformly within that episode's valid rows
+  [0, len-1), then the future row geometrically from THAT row, truncated at the
+  episode's end -- long episodes are NOT up-weighted.  Sampled ``per_path``
+  times per path.  Returns XY frames [N, 2]."""
   rng = np.random.default_rng(seed)
   with np.load(replay_path, allow_pickle=False) as d:
     xy = d['obs'][:, :, :2].astype(np.float32); lengths = d['lengths']
     pw = d['audit_weight'].astype(np.float64) if (weighted and 'audit_weight' in d.files) else None
   n = len(lengths)
+  out = []
+  if law == 'vanilla_draw':
+    for i in rng.integers(0, n, size=per_path * n):     # episode uniform (the buffer's traj draw)
+      L = int(lengths[i])
+      if L < 2:
+        continue
+      t = int(np.floor(rng.random() * (L - 1)))         # anchor row uniform within the episode
+      j = np.arange(t + 1, L)
+      w = gamma ** (j - t); w /= w.sum()
+      out.append(xy[i, rng.choice(j, p=w)][None])
+    return np.concatenate(out)
+  if law != 'row0':
+    raise ValueError(f'unknown marginal law {law!r}')
   if pw is None:
     paths = np.repeat(np.arange(n), per_path)
   else:
     # the weighted replay: paths drawn with the anchor weights the critic trained under
     paths = rng.choice(n, size=per_path * n, replace=True, p=pw / pw.sum())
-  out = []
   for i in paths:
     L = int(lengths[i])
     if L < 2:

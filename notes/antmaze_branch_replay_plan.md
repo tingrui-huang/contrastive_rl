@@ -1744,3 +1744,25 @@ sets at chance, no pair 2 s.e. apart.  Verdict: round 1 not met, no
 second round.  Infrastructure: node 30049's 3090 power-capped (~270 MHz,
 CPU only); node 30021 died mid-run; ext_bc actors OOM on node 30108,
 moved to 30043.  Not committed.
+
+### Corrected vanilla readout, true t = 0 diagnostic, identical-batch actors (2026-09-18, user's two points)
+
+`outputs/antmaze_branch_replay_p050/exp_same_batch/SUMMARY.md`.  (1) The
+vanilla goal marginal is now `marginal_goal_frames(law='vanilla_draw')`
+(episode uniform, row uniform within it, geometric future -- the buffer's
+draw); readout `vanilla_u`, old `vanilla` kept: no change (Cdev +0.013 vs
++0.013; t0 +0.052 vs +0.046).  True t = 0 diagnostic (64 reset rows of the
+old held-out episodes, both label sets): the critics SEPARATE there --
+vanilla_u pick gain +0.052 (agent labels) / +0.053 (BC labels), ext_ag
++0.033 / +0.062, ext_bc +0.023 / +0.060, round1 +0.002 / +0.021, control
+-0.017 / -0.019 (z vs control 2.0-4.1); the t <= 5 Cdev stays at chance
+for all.  (2) train_joint anchors the actor's critic term at row 0 of
+V6_BRANCH_REPLAY, so the reference actors trained at the RESET rows while
+the branch actors trained at replay anchors.  Same-batch actors (audit:
+identical hashes across critic tags), start 0.507: S1 (dataset row 0)
+vanilla 0.661, ext_bc 0.501 (0.59/0.61/0.31), control 0.363, round1 0.353,
+ext_ag 0.317; S2 (control replay anchors) ext_bc 0.404, ext_ag 0.364,
+round1 0.313, control 0.300, vanilla 0.246 (2% detours).  vanilla S1 - S2
++0.416 (3/3): the reference's advantage was largely the batch arrangement;
+on S2 ext_bc beats vanilla / control / round1 (3/3, > 2 s.e.); no cell but
+vanilla@S1 beats the start.  Not committed.

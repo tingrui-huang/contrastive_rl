@@ -69,11 +69,16 @@ CAND_SEED_AG = 122_000_009      # agent samples
 DRAW_SEED = 121_500_000         # Cdev draws: base + 100 * index + draw
 AID0 = 4_000_000
 EVAL_SEED = 2909
-CRITIC_SETS = (('round1', 'critics_round1', f'replay_policy_{ROUND_TAG}.npz'),
-               ('control', 'critics_br_d20', 'replay_policy_d20.npz'),
-               ('vanilla', 'critics_van_d20', 'critic_stub_d20.npz'),
-               ('ext_ag', 'critics_ext_ag', 'replay_policy_ext_ag.npz'),
-               ('ext_bc', 'critics_ext_bc', 'replay_policy_ext_bc.npz'))
+CRITIC_SETS = (('round1', 'critics_round1', f'replay_policy_{ROUND_TAG}.npz', 'row0'),
+               ('control', 'critics_br_d20', 'replay_policy_d20.npz', 'row0'),
+               ('vanilla', 'critics_van_d20', 'critic_stub_d20.npz', 'row0'),          # the first readout (row-0 marginal): kept for comparison
+               ('vanilla_u', 'critics_van_d20', 'critic_stub_d20.npz', 'vanilla_draw'),  # corrected: the vanilla critic's own goal marginal (episode uniform, row uniform within it)
+               ('ext_ag', 'critics_ext_ag', 'replay_policy_ext_ag.npz', 'row0'),
+               ('ext_bc', 'critics_ext_bc', 'replay_policy_ext_bc.npz', 'row0'))
+DIAG_T0, DIAG_T0_BC = 'diag_t0', 'diag_t0_bc'   # the true t = 0 anchors (reset rows of the old held-out episodes)
+N_T0 = 64
+DRAW_SEED_T0 = 124_500_000     # t0 draws: base + 100 * index + draw
+AID0_T0 = 5_000_000
 ACTOR_SETS = (('start (fixed agent)', 'joint_van_d20', (0,)),
               ('round1 (old queries, agent continuation)', 'joint_round1', (0, 1, 2)),
               ('control (old queries, BC continuation)', 'joint_ctrl_round1', (0, 1, 2)),
@@ -118,13 +123,19 @@ def seal(args):
     rows.setdefault(int(e), []).append(int(t))
   anchors = [(e, t, 'start_early') for e, t in EC.R_select_round_robin(rows, N_EVAL_PER_STRATUM, rng)]
   anchors += [(int(a['episode']), int(a['t']), str(a['stratum'])) for a in cnew_man['anchors']]
+  recs = _anchor_records(args, obs, act, anchors, AID0, DRAW_SEED)
+  _seal_write(args, out, recs, 'manifest.json', DIAG, DIAG_BC, {'start_early': 'old held-out episodes: development set of every earlier diagnostic (start strata)',
+                                                              'turn': 'Cnew episodes: development set since the episode-coverage experiment', 'north_leg': 'Cnew episodes: development set since the episode-coverage experiment'})
+
+
+def _anchor_records(args, obs, act, anchors, aid0, draw_seed):
   # --- candidates: recorded, the agent's mode, two BC-walker samples (the replay's query distribution), one agent sample
   b_bc = R.policy_bundle(args.bc_ckpt); b_ag = R.policy_bundle(args.agent_ckpt)
   o0 = np.stack([obs[e, t] for e, t, _ in anchors])
   loc_b, sc_b = b_bc['params_fn'](o0); loc_a, sc_a = b_ag['params_fn'](o0)
   recs = []
   for idx, (e, t, s) in enumerate(anchors):
-    aid = AID0 + idx
+    aid = aid0 + idx
     c_bc = dict(R.candidates_for(loc_b[idx], sc_b[idx], act[e, t], aid, ['recorded', 'sample0', 'sample1'], CAND_SEED_BC))
     c_ag = dict(R.candidates_for(loc_a[idx], sc_a[idx], act[e, t], aid, ['mode', 'sample0'], CAND_SEED_AG))
     cands = {'C|recorded': c_bc['recorded'], 'C|mode': c_ag['mode'], 'C|sample0': c_bc['sample0'], 'C|sample1': c_bc['sample1'], 'C|sample2': c_ag['sample0']}
@@ -134,9 +145,13 @@ def seal(args):
                  'bc_loc': loc_b[idx].astype(float).tolist(), 'bc_scale': sc_b[idx].astype(float).tolist(),
                  'candidates': {k: v.astype(float).tolist() for k, v in cands.items()}, 'original_outcomes': {},
                  'candidate_labels': {'recorded': 'the dataset torque', 'mode': "the fixed agent's mode", 'sample0': 'BC-walker sample', 'sample1': 'BC-walker sample', 'sample2': 'fixed-agent sample'},
-                 'previously_examined': ('old held-out episodes: development set of every earlier diagnostic (start strata)' if s == 'start_early'
-                                         else 'Cnew episodes: development set since the episode-coverage experiment'),
-                 'draw_seeds': [DRAW_SEED + 100 * idx + r for r in range(N_DRAWS)]})
+                 'previously_examined': s, 'draw_seeds': [draw_seed + 100 * idx + r for r in range(N_DRAWS)]})
+  return recs
+
+
+def _seal_write(args, out, recs, man_name, diag, diag_bc, examined):
+  for r in recs:
+    r['previously_examined'] = examined.get(r['stratum'], r['stratum'])
   # seed-stream separation (candidate bases mod the anchor stride; draw ranges disjoint by construction)
   bases = {'r1': R.R1_SEED + 11, 'abc': 909_707_000 + 17, 'cov': 515_000_003, 'fresh': 616_000_005, 'broad': 818_000_003, 'cnew': 919_000_005, 'round_bc': CAND_SEED_BC, 'round_ag': CAND_SEED_AG}
   for a in bases:
@@ -160,12 +175,13 @@ def seal(args):
          'training': {'critics': f'critics_{ROUND_TAG}: run_v6_branch_replay critics on the round-1 replay, 30k, seeds 0-2, uniform anchors (row 0) -- identical to critics_br_d20\'s recipe',
                       'actors': 'joint_round1 / joint_ctrl_round1 / joint_vanref_round1: actor initialised from the fixed agent (V6_JOINT_ACTOR_INIT), frozen critic, original actor loss, bc 0.05, '
                                 'balanced BC rows from the d20 dataset, 30k, seeds 0-2; critic batches from the critic\'s own training data (round-1 replay / control replay / dataset)'},
-         'cdev': {'anchors': len(recs), 'strata': {s: sum(r['stratum'] == s for r in recs) for s in ('start_early', 'turn', 'north_leg')},
-                  'episodes': {s: len({r['episode'] for r in recs if r['stratum'] == s}) for s in ('start_early', 'turn', 'north_leg')},
+         'cdev': {'anchors': len(recs), 'strata': {s: sum(r['stratum'] == s for r in recs) for s in sorted({r['stratum'] for r in recs})},
+                  'episodes': {s: len({r['episode'] for r in recs if r['stratum'] == s}) for s in sorted({r['stratum'] for r in recs})},
+                  'anchor_times': sorted({int(r['t']) for r in recs})[:8],
                   'candidates': 'recorded, agent mode, 2 BC samples, 1 agent sample; 16 paired draws; labels = P_goal (gamma 0.999, radius 0.5) under the continuation of the diag dir',
                   'status': 'DEVELOPMENT set (the old held-out episodes and Cnew have been analysed before); a positive result is confirmed on the reserved seeds afterwards, not here',
-                  'label_sets': {DIAG: 'continuation = the fixed agent (every critic set is read against it: who guides the current agent better)',
-                                 DIAG_BC: 'continuation = the d20 BC walker (the control critic\'s own law; the vanilla critics\' law is neither)'}},
+                  'label_sets': {diag: 'continuation = the fixed agent (every critic set is read against it: who guides the current agent better)',
+                                 diag_bc: 'continuation = the d20 BC walker (the control critic\'s own law; the vanilla critics\' law is neither)'}},
          'evaluation': {'draw': f'300 natural episodes, seed {EVAL_SEED}, mean policy, p_active 0.5 -- the fixed agent and every actor on the same draw (V6_EVAL_SEED)',
                         'primary': 'success rate', 'explanatory': 'detour rate, hazard / no-hazard success, timeouts, zone deaths', 'walking': 'timeout rate <= 0.25 and no-hazard success >= 0.70 (the fixed agent: 0.197 / 0.740 on the 909 draw)'},
          'decision_rules': {'effect': 'mean over 3 seeds differs by > 2 x pooled seed s.e. with 3 / 3 seeds in the same direction; for the fixed agent (one policy) the paired comparison uses its value on the same draw',
@@ -177,12 +193,28 @@ def seal(args):
          'diag_manifest': {'diagnostic': 'Cdev: start states of the old held-out episodes + the Cnew turning / north-leg anchors; labels under a stated continuation',
                            'sealed_at': time.strftime('%Y-%m-%d %H:%M:%S'), 'continuation': {'mode': 'frozen policy, tanh(loc) mode, closed-loop from step 2', 'horizon': B.HORIZON},
                            'law': {'discount': R.GAMMA, 'radius': 0.5}, 'anchors': recs}}
-  (out / 'manifest.json').write_text(json.dumps(man, indent=1, default=float), encoding='utf-8')
-  for diag, ck, sh in ((DIAG, args.agent_ckpt, assets['agent_sha256']), (DIAG_BC, args.bc_ckpt, assets['bc_sha256'])):
+  (out / man_name).write_text(json.dumps(man, indent=1, default=float), encoding='utf-8')
+  for dg, ck, sh in ((diag, args.agent_ckpt, assets['agent_sha256']), (diag_bc, args.bc_ckpt, assets['bc_sha256'])):
     d = dict(man['diag_manifest']); d['provenance'] = {'reference_commit': man['git'].get('head', ''), 'continuation_ckpt': str(ck), 'continuation_sha256': sh, 'critics': {}}
-    (B.OUT / diag).mkdir(parents=True, exist_ok=True)
-    (B.OUT / diag / 'manifest.json').write_text(json.dumps(d, indent=1, default=float), encoding='utf-8')
+    (B.OUT / dg).mkdir(parents=True, exist_ok=True)
+    (B.OUT / dg / 'manifest.json').write_text(json.dumps(d, indent=1, default=float), encoding='utf-8')
   print(json.dumps({'cdev': man['cdev'], 'assets': {k: v for k, v in assets.items() if 'sha' in k and isinstance(v, str)}}, indent=1), flush=True)
+
+
+def seal_t0(args):
+  """The true t = 0 diagnostic: reset rows of the old held-out episodes (one anchor per episode), the same
+  candidate types, draws and label sets as Cdev.  The earlier Cdev (start rows t <= 5, momentum-committed) is kept."""
+  out = exp_dir()
+  if (out / 'manifest_t0.json').exists() and not args.force:
+    raise SystemExit('manifest_t0 exists (sealed)')
+  assert 'plus5k' in str(B.DATASET), f'V6_DATASET_STEM must be the merged pool, got {B.DATASET}'
+  obs, act, lengths, meta, route = R.load_dataset()
+  old_held = sorted(json.loads(str(np.load(B.OUT / 'holdout_policy_r1.npz', allow_pickle=False)['meta']))['held_out_episode_ids'])
+  rng = np.random.default_rng(args.seed + 1)
+  eps = sorted(rng.choice(old_held, size=min(N_T0, len(old_held)), replace=False).tolist())
+  anchors = [(int(e), 0, 'start_early') for e in eps]
+  recs = _anchor_records(args, obs, act, anchors, AID0_T0, DRAW_SEED_T0)
+  _seal_write(args, out, recs, 'manifest_t0.json', DIAG_T0, DIAG_T0_BC, {'start_early': 'old held-out episodes, reset row (t = 0) -- not examined at t = 0 before; the Cdev start anchors were t <= 5'})
 
 
 # ----------------------------------------------------------- verify_replay
@@ -270,15 +302,18 @@ def verify_ext(args):
 def analyze(args):
   env = {**os.environ, 'JAX_PLATFORMS': os.environ.get('JAX_PLATFORMS', 'cpu')}
   sets = [c for c in CRITIC_SETS if (B.OUT / c[1] / 'seed_0' / 'final.pkl').exists() and (B.OUT / c[2]).exists()]
+  if args.sets:
+    sets = [c for c in sets if c[0] in args.sets.split(',')]
   print('critic sets present:', [c[0] for c in sets], flush=True)
-  for diag in (DIAG, DIAG_BC):
-    for name, cdir, marg in sets:
+  diags = {'round1': (DIAG, DIAG_BC), 't0': (DIAG_T0, DIAG_T0_BC)}[args.diag]
+  for diag in diags:
+    for name, cdir, marg, law in sets:
       critics = [str(B.OUT / cdir / f'seed_{s}' / 'final.pkl') for s in (0, 1, 2)]
       cmd = [sys.executable, str(ROOT / 'scripts' / 'diag_v6_r1_abc.py'), 'analyze', '--cont-ckpt', str(args.agent_ckpt), '--critics', *critics, '--allow-unsealed-critics',
-             '--marginal-replay', marg, '--tag', name, '--out', diag]
+             '--marginal-replay', marg, '--marginal-law', law, '--tag', name, '--out', diag]
       print(' '.join(cmd), flush=True); subprocess.run(cmd, check=True, cwd=str(ROOT), env=env)
     cmd = [sys.executable, str(ROOT / 'scripts' / 'probe_v6_coverage_paired_boot.py'), '--cont-ckpt', str(args.agent_ckpt),
-           '--runs', *[f'{n}={d}' for n, d, _ in sets], '--marginals', *[f'{n}={m}' for n, _, m in sets],
+           '--runs', *[f'{n}={d}' for n, d, _, _ in sets], '--marginals', *[f'{n}={m}@{law}' for n, _, m, law in sets],
            '--layer', 'C', '--diag-dir', diag, '--out', f'{diag}/paired_boot_C.json']
     print(' '.join(cmd), flush=True); subprocess.run(cmd, check=True, cwd=str(ROOT), env=env)
 
@@ -313,10 +348,13 @@ def report(args):
                  f'{v["control"]["reach"]:.2f} / {v["control"]["death"]:.2f} / {v["control"]["p_goal"]:.3f} / {v["control"]["around"]:.2f} |')
     L.append('')
   # --- critic check
-  for diag, title in ((DIAG, 'labels under the FIXED AGENT continuation (who guides the current agent better)'), (DIAG_BC, 'labels under the BC continuation (the control critic\'s own target)')):
-    L += [f'## Critic check on Cdev -- {title}', '']
+  for diag, title in ((DIAG, 'Cdev (start rows t <= 5 + Cnew turn / north-leg), labels under the FIXED AGENT continuation'), (DIAG_BC, 'Cdev, labels under the BC continuation (the control critic\'s own target)'),
+                      (DIAG_T0, 'true t = 0 reset rows of the old held-out episodes, labels under the FIXED AGENT continuation'), (DIAG_T0_BC, 't = 0 rows, labels under the BC continuation')):
+    if not (B.OUT / diag).exists():
+      continue
+    L += [f'## Critic check -- {title}', '']
     rows = []
-    for name, cdir, _ in CRITIC_SETS:
+    for name, cdir, _, _ in CRITIC_SETS:
       p = B.OUT / diag / f'metrics_{name}.json'
       if not p.exists():
         continue
@@ -331,7 +369,7 @@ def report(args):
       for name, s, r, st in rows:
         cell = lambda x: f'{f_(x["agreement_decided"], ".2f")} / {f_(x["pick_gain"], "+.3f")}'
         L.append(f'| {name} | {s} | {r["n_decided"]} | {f_(r["agreement_decided"])} ({f_(r["se_decided"])}) | {f_(r["pick_gain"], "+.3f")} ({f_(r["pick_gain_se"])}) | {cell(st["start_early"])} | {cell(st["turn"])} | {cell(st["north_leg"])} |')
-      rnd = json.loads((B.OUT / diag / f'metrics_{CRITIC_SETS[0][0]}.json').read_text(encoding='utf-8'))['layers']['C']['random']['pooled']
+      rnd = json.loads((B.OUT / diag / f'metrics_{rows[0][0]}.json').read_text(encoding='utf-8'))['layers']['C']['random']['pooled']
       L.append(f'| random | - | {rnd["n_decided"]} | {f_(rnd["agreement_decided"])} | {f_(rnd["pick_gain"], "+.3f")} | | | |')
       L.append(f'\nCross-fitted selector gain (signal in the outcomes themselves): {f_(rows[0][2].get("cross_fit_selector_gain"), "+.3f")}')
     pb = B.OUT / diag / 'paired_boot_C.json'
@@ -386,13 +424,15 @@ def report(args):
 
 def main(argv=None):
   ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-  ap.add_argument('mode', choices=('seal', 'verify_replay', 'verify_ext', 'analyze', 'report'))
+  ap.add_argument('mode', choices=('seal', 'seal_t0', 'verify_replay', 'verify_ext', 'analyze', 'report'))
+  ap.add_argument('--diag', default='round1', choices=('round1', 't0'), help='analyze: which diagnostic family (Cdev t <= 5 anchors, or the true t = 0 anchors)')
+  ap.add_argument('--sets', default='', help='analyze: comma list of critic sets to (re)analyse (default all present)')
   ap.add_argument('--agent-ckpt', default=str(B.OUT / 'joint_van_d20' / 'seed_0' / 'final.pkl'))
   ap.add_argument('--bc-ckpt', default=str(B.OUT / 'joint_purebc_d20' / 'seed_0' / 'final.pkl'))
   ap.add_argument('--seed', type=int, default=2029)
   ap.add_argument('--force', action='store_true')
   args = ap.parse_args(argv)
-  {'seal': seal, 'verify_replay': verify_replay, 'verify_ext': verify_ext, 'analyze': analyze, 'report': report}[args.mode](args)
+  {'seal': seal, 'seal_t0': seal_t0, 'verify_replay': verify_replay, 'verify_ext': verify_ext, 'analyze': analyze, 'report': report}[args.mode](args)
   return 0
 
 

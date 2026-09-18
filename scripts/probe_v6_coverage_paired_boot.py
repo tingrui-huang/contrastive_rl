@@ -37,7 +37,7 @@ def main():
   out = B.OUT / args.diag_dir
   man, keys, info = ABC.load_keys(out)
   bundle = R.policy_bundle(args.cont_ckpt); nets = bundle['nets']
-  marg = dict(m.split('=') for m in args.marginals)
+  marg = dict(m.split('=') for m in args.marginals)   # name=replay or name=replay@law (law: row0 | vanilla_draw)
   ks = [k for k in keys if k[0] == args.layer]
   o = np.stack([keys[k]['obs0'] for k in ks]); a = np.stack([keys[k]['act0'] for k in ks])
   # decided pairs (scorer-independent)
@@ -59,7 +59,7 @@ def main():
   anchors_ep = {aid: keys[(args.layer, aid, cands[0])]['episode'] for aid, cands in anchors.items()}
   for spec in args.runs:
     name, d = spec.split('=')
-    frames = R.marginal_goal_frames(B.OUT / marg[name], per_path=4, seed=0, weighted=True) if name in marg else None
+    frames = R.marginal_goal_frames(B.OUT / marg[name].split('@')[0], per_path=4, seed=0, weighted=True, law=(marg[name].split('@') + ['row0'])[1]) if name in marg else None
     for s in (0, 1, 2):
       st = checkpoint.load_checkpoint(B.OUT / d / f'seed_{s}' / 'final.pkl')[1]
       sc = R.region_scorers(nets, st.q_params, frames, ABC.RADIUS, max_goals=512)(o, a)['min'] if frames is not None else R.exact_scorers(nets, st.q_params)(o, a)['min']
