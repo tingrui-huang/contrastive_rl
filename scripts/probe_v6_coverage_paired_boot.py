@@ -32,8 +32,9 @@ def main():
   ap.add_argument('--marginals', nargs='*', default=[], help='name=replay (under V6_BRANCH_OUT) for the goal marginal; weighted if audit_weight')
   ap.add_argument('--layer', default='B')
   ap.add_argument('--out', default='diag_r1_abc/paired_boot_B.json')
+  ap.add_argument('--diag-dir', default='diag_r1_abc')
   args = ap.parse_args()
-  out = B.OUT / 'diag_r1_abc'
+  out = B.OUT / args.diag_dir
   man, keys, info = ABC.load_keys(out)
   bundle = R.policy_bundle(args.cont_ckpt); nets = bundle['nets']
   marg = dict(m.split('=') for m in args.marginals)
@@ -54,7 +55,8 @@ def main():
         if cls == 'decided':
           pairs.append((aid, cands[i], cands[j], np.sign(d), keys[(args.layer, aid, cands[i])]['episode']))
   print(f'{len(pairs)} decided pairs in layer {args.layer}', flush=True)
-  correct = {}
+  correct = {}; gains = {}
+  anchors_ep = {aid: keys[(args.layer, aid, cands[0])]['episode'] for aid, cands in anchors.items()}
   for spec in args.runs:
     name, d = spec.split('=')
     frames = R.marginal_goal_frames(B.OUT / marg[name], per_path=4, seed=0, weighted=True) if name in marg else None
@@ -63,12 +65,17 @@ def main():
       sc = R.region_scorers(nets, st.q_params, frames, ABC.RADIUS, max_goals=512)(o, a)['min'] if frames is not None else R.exact_scorers(nets, st.q_params)(o, a)['min']
       idx = {k: i for i, k in enumerate(ks)}
       correct[(name, s)] = np.array([float(np.sign(sc[idx[(args.layer, aid, ci)]] - sc[idx[(args.layer, aid, cj)]]) == sg) for (aid, ci, cj, sg, ep) in pairs])
+      g = {}
+      for aid, cands in anchors.items():
+        Pm = np.array([np.mean(list(keys[(args.layer, aid, c)]['p'].values())) for c in cands]); F = np.array([sc[idx[(args.layer, aid, c)]] for c in cands])
+        g[aid] = float(Pm[int(np.argmax(F))] - Pm.mean())
+      gains[(name, s)] = g
   eps = np.array([p[4] for p in pairs]); ueps = np.unique(eps)
   runs = [r.split('=')[0] for r in args.runs]
   run_mean = {r: np.mean([correct[(r, s)] for s in (0, 1, 2)], axis=0) for r in runs}
   brng = np.random.default_rng(5)
   boots = {r: [] for r in runs}; boots_seed = {(r, s): [] for r in runs for s in (0, 1, 2)}
-  for _ in range(2000):
+  for _ in range(2000 if len(ueps) else 0):
     pick = brng.choice(ueps, size=len(ueps), replace=True)
     m = np.concatenate([np.flatnonzero(eps == e) for e in pick])
     for r in runs:
@@ -78,11 +85,25 @@ def main():
   res = {'layer': args.layer, 'n_decided_pairs': len(pairs), 'n_episodes': int(len(ueps)), 'runs': {}}
   for r in runs:
     b = np.array(boots[r])
-    res['runs'][r] = {'agreement_seed_mean': float(run_mean[r].mean()), 'se': float(b.std()),
+    res['runs'][r] = {'agreement_seed_mean': float(run_mean[r].mean()) if len(run_mean[r]) else None, 'se': float(b.std()) if len(b) else None,
                       'per_seed': {s: {'agreement': float(correct[(r, s)].mean()), 'se': float(np.std(boots_seed[(r, s)]))} for s in (0, 1, 2)}}
+  aids = sorted(anchors); a_eps = np.array([anchors_ep[a] for a in aids]); ua = np.unique(a_eps)
+  gmean = {r: np.array([np.mean([gains[(r, s)][a] for s in (0, 1, 2)]) for a in aids]) for r in runs}
+  gb = {r: [] for r in runs}; grng = np.random.default_rng(6)
+  for _ in range(2000):
+    pick = grng.choice(ua, size=len(ua), replace=True); m = np.concatenate([np.flatnonzero(a_eps == e) for e in pick])
+    for r in runs: gb[r].append(gmean[r][m].mean())
+  res['pick_gain'] = {r: {'seed_mean': float(gmean[r].mean()), 'se': float(np.std(gb[r])), 'per_seed': {s: float(np.mean(list(gains[(r, s)].values()))) for s in (0, 1, 2)}} for r in runs}
+  res['pick_gain_differences'] = {f'{a} - {b}': {'mean': float(gmean[a].mean() - gmean[b].mean()), 'se': float(np.std(np.array(gb[a]) - np.array(gb[b]))),
+                                                  'z': float((gmean[a].mean() - gmean[b].mean()) / max(np.std(np.array(gb[a]) - np.array(gb[b])), 1e-9)),
+                                                  'per_seed': {s: float(np.mean(list(gains[(a, s)].values())) - np.mean(list(gains[(b, s)].values()))) for s in (0, 1, 2)}}
+                                  for a in runs for b in runs if a != b}
+  res['n_anchors'] = len(aids)
   res['differences'] = {}
   for r1_, r2_ in [(x, y) for x in runs for y in runs if x != y]:
     d = np.array(boots[r1_]) - np.array(boots[r2_])
+    if not len(d):
+      continue
     res['differences'][f'{r1_} - {r2_}'] = {'mean': float(run_mean[r1_].mean() - run_mean[r2_].mean()), 'se': float(d.std()),
                                           'z': float((run_mean[r1_].mean() - run_mean[r2_].mean()) / max(d.std(), 1e-9)),
                                           'per_seed': {s: {'diff': float(correct[(r1_, s)].mean() - correct[(r2_, s)].mean()),

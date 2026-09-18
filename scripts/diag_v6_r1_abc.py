@@ -434,6 +434,8 @@ def original_vs_fresh(keys, info, layer, cands, strata, scores):
     for aid, cs in anchors.items():
       if not (stratum == 'pooled' or next(iter(cs.values()))['set'] == stratum):
         continue
+      if any(f'{layer}|{c}' not in info[aid]['original_outcomes'] for c in cs):
+        continue                                  # anchors without original records (e.g. reserved evaluation episodes)
       orig = {c: {int(d): p for d, p in info[aid]['original_outcomes'][f'{layer}|{c}'].items()} for c in cs}
       for c in cs:
         per_key_orig.append(np.mean(list(orig[c].values()))); per_key_fresh.append(np.mean(list(cs[c]['p'].values())))
@@ -579,9 +581,9 @@ def _f(v, fmt='.2f'):
 def report(res, man, args):
   critics = sorted({s.split(' ')[0] for s in next(iter(res['layers'].values())) if s != 'random'})
   L = ['# Round-1 critic diagnostic: memorisation (A) vs new torques (B) vs new-episode states (C)', '',
-       f'Sealed manifest: {man["sealed_at"]}; reference commit {man["provenance"]["reference_commit"]}.  Frozen: continuation '
+       f'Sealed manifest: {man["sealed_at"]}; reference commit {man["provenance"].get("reference_commit", "see git")}.  Frozen: continuation '
        f'{Path(man["provenance"]["continuation_ckpt"]).parent.name} ({man["provenance"]["continuation_sha256"][:12]}), critics '
-       + ', '.join(f'{Path(k).parent.name} ({v[:12]})' for k, v in man['provenance']['critics'].items())
+       + ', '.join(f'{Path(k).parent.name} ({v[:12]})' for k, v in (man['provenance'].get('critics') or res.get('critic_hashes', {})).items())
        + f'.  {N_DRAWS} fresh paired draws per anchor (seeds ABC_SEED + 100 i + r), one query torque then the frozen policy mode '
        f'closed-loop; P_goal = gamma {R.GAMMA}, radius {RADIUS}.  Primary readout = region-integrated exp(f) over the training NCE goal '
        f'marginal (radius 0.5, per head and deployed min); secondary = exact recorded-goal logit.  Pair classes on the 16-draw log ratio: '

@@ -1583,3 +1583,58 @@ mis-launch (no result reused); C2's region readout uses the dataset's
 goal marginal.  Not committed.  Details `exp_pretrain_branch/SUMMARY.md`,
 `REPORT.md`, `diag_r1_abc/{REPORT,metrics}_{armT,pre100k}.*`,
 `paired_boot_pretrain_{B,C}.json`.
+
+### Episode / state coverage (NARROW vs BROAD): feasibility audit, stopped before generation (2026-09-18)
+
+User task after 1966335: does spreading the counterfactual supervision
+over more independent original episodes improve held-out generalisation
+(turning / north-leg states first)?  Audit
+(`outputs/antmaze_branch_replay_p050/exp_episode_coverage/FEASIBILITY.md`):
+the p050 dataset has 54 detour episodes; the round-1 split leaves 49 in
+the training pool and 5 held out; the R replay's turning and north-leg
+anchors (300 each) already come from all 49 (median 5-6 anchors per
+episode), so no BROAD arm exists for those strata at p050; the start-type
+strata are not exhausted (335 / 172 / 252 of 851-900 episodes used) but
+their held-out labels are mostly undecidable (88-104 decided pairs of 600)
+and their states sit near the reset pose, so a contrast there neither
+addresses the primary endpoint nor has power.  far10-far30 are p040 and
+were not substituted.  STOPPED: no manifest, no rollouts, no training.
+Proposed (not executed): Plan A = 5,000 more p050 episodes with the
+identical collector settings (detour prob 0.05, seeds 607-611, ~270 new
+detour episodes, ~30 reserved for evaluation), then NARROW (current 49
+episodes) vs BROAD (~245 episodes, same 600 turn / north-leg anchors,
+same R protocol and weights), 30k NCE x 3 seeds, one GPU, evaluation on
+>= 30 held-out detour episodes with 16 paired draws; Plan B (1,000
+episodes at detour prob 0.30) is cheaper but changes the behaviour-mode
+mixture.  Awaiting approval; nothing committed from this step.
+
+### Episode coverage NARROW vs BROAD, run (2026-09-18, Plan A approved)
+
+Data: five new p050 shards (seeds 607-611, the original collector
+settings; 1,000 episodes each, composition audits passed, detour 0.040-
+0.051) -> 227 new detour episodes; merged `antmaze_rockfall_clock_v6_p050_plus5k`
+(6,000 episodes); 30 new detour episodes reserved for evaluation (Cnew),
+197 + 49 = 246 in the BROAD pool.  Sealed manifest
+`exp_episode_coverage/manifest.json` (before any rollout).  Arms: NARROW =
+the R replay verbatim (turning / north-leg anchors from 49 episodes,
+median 5-6 per episode); BROAD = the same replay with only those 600
+anchors redrawn over 246 episodes (max 2 per episode), same candidates /
+draws / weights (effective masses identical to four decimals), same
+continuation and law; 30k NCE, random init, seeds 0-2, both arms on the
+same 4090.  `scripts/exp_v6_episode_coverage.py`; Cnew = 64 anchors x 5
+candidates x 16 paired draws on the reserved episodes (`diag_cnew/`).
+
+Primary (Cnew, 437 decided pairs, 30 episodes): agreement NARROW 0.46 /
+0.51 / 0.45 (0.473 +- 0.026), BROAD 0.46 / 0.48 / 0.46 (0.465 +- 0.027);
+pick gain NARROW +0.007 / +0.017 / -0.001, BROAD -0.011 / +0.003 / -0.008;
+BROAD - NARROW pick gain -0.013 +- 0.011 (z -1.2, all seeds negative);
+the outcomes' own cross-fitted selector gain is +0.164.  Pre-registered
+criterion NOT met; actor stage not triggered.  Development: old C pooled
+0.47-0.51 vs 0.49-0.52 (its 5-episode turning cell leans BROAD, 0.54-0.61
+vs 0.44-0.47, the north-leg cell the other way); A / B reclassified
+(turning / north-leg A anchors are NARROW keys only); NARROW's fresh
+retrain differs from critics_armR by up to 0.09 on one seed (training
+randomness).  Reading: 5x more independent detour episodes at equal
+budget did not move held-out generalisation for this recipe; both arms
+at chance on new episodes despite +0.16 of usable signal.  Not
+committed.  Details `exp_episode_coverage/SUMMARY.md`.
