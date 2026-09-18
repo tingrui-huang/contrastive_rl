@@ -1196,9 +1196,13 @@ perturbations of the mode (torque distance ~0.3-0.5).  Three 30k critics
 (7.6 min each), two matched 30k vanilla critics on the recorded futures.
 
 **1. What the replay contains (held-out anchors, 60 per set, 5 candidates
-x 4 paired draws).**  Between-candidate differences at ONE state are
-reproducible across hazard draws only in the turning process and on the
-north leg; at the start they are noise:
+x 4 paired draws).**  [The "split-half sign agreement" column of this
+table and the paragraph after it are WRONG -- the statistic counted a
+second-half tie (both candidates' P identical, typically both died) as a
+reversal; see the correction section below for the tie / same / opposite
+breakdown.  Kept as the record of what was reported.]  Between-candidate
+differences at ONE state are reproducible across hazard draws only in
+the turning process and on the north leg; at the start they are noise:
 
 | set | candidates' reach (recorded / mode / 3 samples) | pairs with abs log ratio > 0.3 | split-half sign agreement | validated pairs |
 |---|---|---:|---:|---:|
@@ -1209,11 +1213,9 @@ north leg; at the start they are noise:
 | north leg | 0.83 / 0.80 / 0.70 / 0.88 / 0.72 | 0.74 | **0.82** | 314 |
 | whole maze (every k-th row) | 0.73 / 0.71 / 0.71 / 0.69 / 0.69 | 0.32 | **0.89** | 143 |
 
-A split-half agreement below 0.5 is regression to the mean: a pair
-selected for a large difference on draws {0,1} reverses on draws {2,3}
-more often than not, i.e. at the start region the single torque's effect
-on the outcome is smaller than the hazard-draw noise even at the same
-state.  Where the differences are real (turning, north leg) they are
+[WRONG, corrected below: the values below 0.5 at the start-type sets are
+ties, not reversals -- 0 of 77 / 94 / 61 pairs reversed.]  Where the
+differences are real (turning, north leg) they are
 about completing the walk -- the reach spread across a state's five
 candidates is 0.63 / 0.61 -- and not about the route: within-anchor
 correlation of a candidate's P_goal with its going-around is 0.10
@@ -1270,8 +1272,10 @@ function of the state from this data -- they neither transfer through
 an NCE critic nor through nearest neighbours -- and they are about
 finishing the walk, not about the route.  At the start region, the only
 place where the route is decided, the single torque's consequences are
-not reproducible even at the same state under this continuation, so
-there is nothing for any value estimator to carry there in round 1, and
+[withdrawn -- see the correction: mostly unverifiable with four draws,
+not shown to be noise] not reproducible even at the same state under
+this continuation, so there is nothing for any value estimator to carry
+there in round 1, and
 the iteration the plan relies on (improve the turn first, then the
 front torques' values change) cannot start: the mid-turn signal the
 critic would improve from does not generalise to the states the
@@ -1285,3 +1289,97 @@ detours multiplies that) and a coarser action variable at which the
 consequences are smooth across states -- the second is the macro-action
 / subgoal change the user has kept off the table, the first cannot touch
 the start region.  Both are the user's call; the actor stage was not run.
+
+### Correction after the user's review of d2583f8 (2026-09-18): ties are not reversals; the gate compared a point score with a region probability
+
+Two errors in the round-1 report, both found by the user from the saved
+`holdout_policy_r1.npz` and the code.
+
+**(a) The split-half statistic.**  `np.sign(a) == np.sign(b)` counts a
+second-half ratio of exactly zero -- both candidates with identical P,
+in practice both died under both second-half draws -- as a disagreement.
+The corrected breakdown (`gate_policy_r1_v2.md`; pairs whose first-half
+|log ratio| > 0.3, classified by the second half):
+
+| held-out set | episodes | first-half > 0.3 | tie | weak (0 < abs <= 0.3) | same sign | opposite sign | agreement among decided (episode-bootstrap s.e.) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| start (t <= 5) | 44 | 77 | 48 | 1 | 28 | 0 | 1.00 |
+| start late (shortcut eps) | 48 | 94 | 55 | 0 | 39 | 0 | 1.00 |
+| shortcut early | 46 | 61 | 45 | 0 | 16 | 0 | 1.00 |
+| turning | 5 | 404 | 28 | 35 | 287 | 54 | 0.84 (0.025) |
+| north leg | 5 | 423 | 1 | 54 | 314 | 54 | 0.85 (0.029) |
+| whole maze | 45 | 166 | 15 | 5 | 143 | 3 | 0.98 (0.019) |
+
+(fit set, draw 0 vs draw 1: start 126 pairs -> 85 tie / 36 same / 4
+opposite; turning 434 -> 31 / 319 / 46, 0.87; north leg 621 -> 16 / 410 /
+78, 0.84.)  So at the start-type sets the reported 0.38 / 0.41 / 0.26 were
+not "reversal more often than agreement"; 0 of 232 pairs reversed.  What
+is true there is weaker and different: with reach 0.21-0.27 and death
+0.70-0.78 under this continuation, most (candidate, draw) pairs end at
+P = 0 for both candidates, so with four draws only 28 / 39 / 16 pairs per
+600 can be decided at all, and those are all same-sign.  The
+"regression to the mean" sentence, "the single torque's consequences are
+not reproducible even at the same state" and "nothing for any value
+estimator to carry there" are withdrawn: the labels at the start are
+mostly UNVERIFIABLE at this number of draws, which is not the same as
+noise, and the decided ones agree.  (Nor can the reverse be claimed: the
+decided pairs are few and selected.)  The split-half agreement was also
+mis-described as "the ceiling any critic can reach"; it is the
+reproducibility of the labels, not an upper bound on a critic.
+
+Uncertainty is now clustered by episode (the turning and north-leg
+held-out anchors come from 5 detour episodes, not 60 independent states);
+the pooled dense-set validated pairs come from 19 episodes.  The gate
+decision is unchanged by either correction: the validated pairs (same
+sign, both halves beyond 0.3) are the same 684, and no critic was above
+chance on them.
+
+**(b) The readout.**  The rollouts' answer is the probability that the
+future lands within radius 0.5 of the goal (the success region); the gate
+scored f(s, a, g) at the exact recorded goal point.  The NCE optimum
+gives exp f(s, a, g) proportional to p(g | s, a) / p(g) with p(g) the
+negatives' goal marginal, so the region probability is
+E_{g ~ p}[1[g in R] exp f(s, a, g)] -- an expectation of exp(f) over
+marginal frames in the region, not an average of logits.  Added to the
+gate (`region_scorers`): the marginal sampled from the fit replay the
+critics trained on (anchor uniform over paths, future row geometric at
+0.999, 4 per path, 71,024 XY frames), per anchor the frames within
+radius 0.5 (and 1.0) of THAT anchor's goal (the goals differ per
+episode: x 24.1-25.4, y 0.1-1.5), up to 512 of them, log of the mean
+exp(f) plus log of the in-region fraction; per twin head and for the
+deployment min over heads (applied to the logits before the exponential,
+as the actor applies it).  The exact-point logits per head are kept.
+
+| readout (pooled dense sets, 684 validated pairs, 19 episodes) | r1 critic seed 0 / 1 / 2 | vanilla 30k seed 0 / 1 |
+|---|---|---|
+| held-out, exact point, min (the gate as before) | 0.51 / 0.52 / 0.50 | 0.46 / 0.46 |
+| held-out, exact point, head 0 ; head 1 | 0.47, 0.50 / 0.49, 0.50 / 0.48, 0.51 | 0.45, 0.47 / 0.45, 0.49 |
+| held-out, region r 0.5, min | 0.49 / 0.48 / 0.49 | 0.47 / 0.45 |
+| held-out, region r 0.5, head 0 ; head 1 | 0.48, 0.49 / 0.48, 0.48 / 0.50, 0.49 | 0.45, 0.47 / 0.44, 0.49 |
+| held-out, region r 1.0, min | 0.48 / 0.47 / 0.48 | 0.46 / 0.43 |
+| FIT keys (795 validated pairs, 70 episodes), exact point, min | 0.87 / 0.88 / 0.88 | 0.49 / 0.49 |
+| FIT keys, region r 0.5, min ; head 0 ; head 1 (seed 0) | 0.90 ; 0.89 ; 0.91 | 0.49 ; 0.49 ; 0.49 |
+
+Per set on held-out keys the region readouts sit at 0.44-0.55 on
+turning and north leg like the exact ones (`gate_policy_r1_v2.md`);
+pick gain -0.19..+0.03.  On the critics' own fit keys the region readout
+is slightly higher than the exact point (0.90-0.91 against 0.87) and
+the two heads agree with each other and with the min throughout.
+
+**Corrected reading.**  The region / point mismatch was real but is not
+what separates the fit keys from the held-out keys: every readout is at
+0.87-0.91 on the training keys and at chance on states from other
+episodes, with vanilla critics at chance on both.  This is the user's
+second branch -- train good, validation poor under both readouts -- so
+the next budget, if any, goes to a controlled comparison of data
+coverage with the action, the loss and BC 0.05 unchanged, not to the
+goal-distribution correspondence.  What the training-key figure means
+remains open: two draws per key cannot separate "fitted the expected
+difference" from "memorised both realised futures", and the held-out
+turning / north-leg states come from 5 episodes, so "does not transfer"
+is measured on few independent poses.  At the start-type sets the third
+branch applies as well: the labels themselves are mostly undecidable at
+four draws, and deciding them needs more consequences per key before
+any network is asked to fit them.  What stands from round 1: the
+pre-registered gate failed for all three critics, and the actor stage
+stays unrun.

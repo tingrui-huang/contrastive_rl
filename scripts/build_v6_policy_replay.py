@@ -273,17 +273,24 @@ def _cand_order(c):
 
 
 def pair_stats(res, sets, halves=((0, 1), (2, 3)), thr=0.3):
-  """Within-anchor candidate pairs: mean |log ratio|, and (when there are >= 2
-  draws per key) the split-half sign agreement of the log ratio -- how much of
-  the between-candidate difference is reproducible across consequences."""
+  """Within-anchor candidate pairs: mean |log ratio| and, when there are >= 2
+  draws per key, the split-half reproducibility of the log ratio: among pairs
+  whose first-half |ratio| exceeds thr, how the second half falls -- TIE
+  (identical P for both candidates, typically both died), weak (0 < |ratio|
+  <= thr), same sign, opposite sign.  Agreement = same / (same + opposite),
+  i.e. among decided pairs; a tie is not a reversal (the first release of
+  this table counted it as one).  s.e. by episode bootstrap."""
   out = {}
   for sset in sets:
-    by = {}
+    by, ep_of = {}, {}
     for r in res:
       if r['set'] != sset:
         continue
       by.setdefault(r['anchor_id'], {}).setdefault(r['cand'], {})[r['draw']] = r['p_goal']
-    d_full, agree, n_pairs, n_valid = [], [], 0, 0
+      ep_of[r['anchor_id']] = r.get('episode', r['anchor_id'])
+    d_full, n_pairs = [], 0
+    cls = {'tie': 0, 'weak': 0, 'same': 0, 'opposite': 0}
+    per_ep = {}
     for aid, cands in by.items():
       names = sorted(cands, key=_cand_order)
       for i in range(len(names)):
@@ -300,13 +307,27 @@ def pair_stats(res, sets, halves=((0, 1), (2, 3)), thr=0.3):
             a = np.log((np.mean([pi[d] for d in h1]) + EPS_P) / (np.mean([pj[d] for d in h1]) + EPS_P))
             b = np.log((np.mean([pi[d] for d in h2]) + EPS_P) / (np.mean([pj[d] for d in h2]) + EPS_P))
             if abs(a) > thr:
-              agree.append(float(np.sign(a) == np.sign(b)))
-              n_valid += int(abs(b) > thr and np.sign(a) == np.sign(b))
+              c = 'tie' if b == 0 else ('weak' if abs(b) <= thr else ('same' if np.sign(a) == np.sign(b) else 'opposite'))
+              cls[c] += 1
+              e = per_ep.setdefault(ep_of[aid], {'same': 0, 'opposite': 0})
+              if c in e:
+                e[c] += 1
     d_full = np.array(d_full)
-    out[sset] = {'n_pairs': n_pairs, 'mean_abs_log_ratio': float(np.abs(d_full).mean()) if len(d_full) else None,
+    dec = cls['same'] + cls['opposite']
+    se = None
+    if len(per_ep) > 1 and dec:
+      brng = np.random.default_rng(0); eps_ = list(per_ep); boots = []
+      for _ in range(1000):
+        pick = brng.choice(len(eps_), size=len(eps_), replace=True)
+        sm = sum(per_ep[eps_[k]]['same'] for k in pick); op = sum(per_ep[eps_[k]]['opposite'] for k in pick)
+        boots.append(sm / (sm + op) if sm + op else np.nan)
+      se = float(np.nanstd(boots))
+    out[sset] = {'n_pairs': n_pairs, 'n_episodes': len({ep_of[a] for a in by}), 'n_anchors': len(by),
+                 'mean_abs_log_ratio': float(np.abs(d_full).mean()) if len(d_full) else None,
                  'frac_abs_gt_thr': float((np.abs(d_full) > thr).mean()) if len(d_full) else None,
-                 'split_half_sign_agreement': float(np.mean(agree)) if agree else None,
-                 'n_half_pairs': len(agree), 'n_validated_pairs': n_valid}
+                 'n_half_pairs': int(sum(cls.values())), **{f'second_half_{k}': v for k, v in cls.items()},
+                 'split_half_sign_agreement': (cls['same'] / dec) if dec else None, 'split_half_se_episode': se,
+                 'n_validated_pairs': cls['same']}
   return out
 
 
@@ -441,15 +462,18 @@ def build_report(s, args):
   for r in s['holdout_by_set_cand']:
     L.append(f'| {r["set"]} | {r["cand"]} | {r["n"]} | {r["reach"]:.2f} | {r["death"]:.2f} | {r["p_goal"]:.3f} | {r["around"]:.2f} |')
   L += ['', '## Between-candidate differences within an anchor (log P_goal ratio, floor 1e-3)', '',
-        'split-half = sign agreement of the ratio between the first and the second half of the draws, over pairs whose '
-        f'first-half |ratio| > 0.3: the ceiling any critic can reach on these keys (fit set: draw 0 vs draw 1).', '',
-        '| split | set | pairs | mean abs log ratio | frac abs > 0.3 | split-half sign agreement | half pairs | validated pairs |',
-        '|---|---|---:|---:|---:|---:|---:|---:|']
+        'Pairs whose first-half |ratio| > 0.3 (fit set: draw 0 vs draw 1), classified by the second half: tie = identical '
+        'P for both candidates (typically both died), weak = 0 < |ratio| <= 0.3, same / opposite sign.  Agreement = same / '
+        '(same + opposite), among decided pairs; s.e. by episode bootstrap.  Validated pairs (same sign, both beyond 0.3) '
+        'are what the gate scores; ties are neither validated nor reversals.', '',
+        '| split | set | episodes | anchors | pairs | mean abs log ratio | frac abs > 0.3 | first-half > 0.3 | tie | weak | same | opposite | agreement (s.e.) |',
+        '|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|']
   for split in ('fit', 'holdout'):
     for sset, r in s[f'{split}_pairs'].items():
       f_ = lambda v, fmt='.2f': (format(v, fmt) if isinstance(v, (int, float)) and v is not None else '-')
-      L.append(f'| {split} | {sset} | {r["n_pairs"]} | {f_(r["mean_abs_log_ratio"])} | {f_(r["frac_abs_gt_thr"])} | '
-               f'{f_(r["split_half_sign_agreement"])} | {r["n_half_pairs"]} | {r["n_validated_pairs"]} |')
+      L.append(f'| {split} | {sset} | {r["n_episodes"]} | {r["n_anchors"]} | {r["n_pairs"]} | {f_(r["mean_abs_log_ratio"])} | {f_(r["frac_abs_gt_thr"])} | '
+               f'{r["n_half_pairs"]} | {r["second_half_tie"]} | {r["second_half_weak"]} | {r["second_half_same"]} | {r["second_half_opposite"]} | '
+               f'{f_(r["split_half_sign_agreement"])} ({f_(r["split_half_se_episode"], ".3f")}) |')
   return '\n'.join(L)
 
 
@@ -490,10 +514,120 @@ def knn_scorer(replay_path, k=10, w_act=1.0):
     out = np.zeros(len(Q))
     for i in range(0, len(Q), 256):
       d2 = ((Q[i:i + 256, None, :] - X[None, :, :]) ** 2).sum(-1)
-      nn = np.argpartition(d2, k, axis=1)[:, :k]
+      kk = min(k, d2.shape[1] - 1)
+      nn = np.argpartition(d2, kk, axis=1)[:, :kk]
       out[i:i + 256] = y[nn].mean(1)
     return out
   return score
+
+
+def marginal_goal_frames(replay_path, per_path=4, gamma=GAMMA, seed=0):
+  """The goal marginal the NCE negatives are drawn from: the buffer takes an
+  anchor (row 0 of a path, uniform over paths) and a future row j with
+  P(j) proportional to gamma^j over the path's rows 1..len-1 (the geometric
+  relabeling law, truncated at the path's end); the goal is that row's XY.
+  Sampled ``per_path`` times per path.  Returns XY frames [N, 2]."""
+  rng = np.random.default_rng(seed)
+  with np.load(replay_path, allow_pickle=False) as d:
+    xy = d['obs'][:, :, :2].astype(np.float32); lengths = d['lengths']
+  out = []
+  for i in range(len(lengths)):
+    L = int(lengths[i])
+    if L < 2:
+      continue
+    j = np.arange(1, L)
+    w = gamma ** j; w /= w.sum()
+    pick = rng.choice(j, size=per_path, replace=True, p=w)
+    out.append(xy[i, pick])
+  return np.concatenate(out)
+
+
+def region_scorers(nets, q_params, frames, radius, max_goals=512, seed=0):
+  """Region-integrated readout of an NCE critic.  At the optimum of the binary
+  NCE, exp(f(s, a, g)) is proportional to p(g | s, a) / p(g) with p(g) the
+  negatives' goal marginal, so the probability that the future lands within
+  ``radius`` of the anchor's goal is E_{g ~ p}[ 1[g in R] exp f(s, a, g) ],
+  estimated by the mean of exp(f) over the sampled marginal frames that lie in
+  R times the fraction of frames in R.  Returned as log scores, per twin head
+  and for the deployment ``min`` over heads (applied to the logits before the
+  exponential, as the actor applies it).  psi depends on the goal only, so the
+  frames' psi is computed once; phi once per (s, a) row."""
+  import jax
+  import jax.numpy as jnp
+
+  @jax.jit
+  def _repr(qp, oo, aa):
+    return nets.representation_network.apply(qp, oo, aa)      # phi [B, repr, heads], psi [B, repr, heads]
+
+  N = len(frames)
+  fake = np.zeros((N, B.STATE_DIM + 2), np.float32); fake[:, B.STATE_DIM:] = frames
+  psi = []
+  for k in range(0, N, 4096):
+    psi.append(np.asarray(_repr(q_params, jnp.asarray(fake[k:k + 4096]), jnp.zeros((min(4096, N - k), B.ACTION_DIM), jnp.float32))[1]))
+  psi = np.concatenate(psi).astype(np.float64)                 # [N, repr, heads]
+  rng = np.random.default_rng(seed)
+  cache = {}
+
+  def goal_set(goal_xy):
+    key = tuple(np.round(goal_xy, 4))
+    if key not in cache:
+      inside = np.flatnonzero(np.linalg.norm(frames - goal_xy[None], axis=1) <= radius)
+      frac = len(inside) / N
+      if len(inside) > max_goals:
+        inside = rng.choice(inside, size=max_goals, replace=False)
+      cache[key] = (inside, frac)
+    return cache[key]
+
+  def scores(o, a):
+    out = {h: np.zeros(len(o)) for h in ('h0', 'h1', 'min')}
+    for k in range(0, len(o), 1024):
+      phi = np.asarray(_repr(q_params, jnp.asarray(o[k:k + 1024, :B.STATE_DIM + 2], jnp.float32), jnp.asarray(a[k:k + 1024], jnp.float32))[0]).astype(np.float64)
+      for i in range(len(phi)):
+        inside, frac = goal_set(np.asarray(o[k + i, B.STATE_DIM:B.STATE_DIM + 2], np.float64))
+        if len(inside) == 0:
+          for h in out:
+            out[h][k + i] = -np.inf
+          continue
+        f = np.einsum('rh,krh->kh', phi[i], psi[inside])          # [K, heads]
+        out['h0'][k + i] = np.log(np.mean(np.exp(f[:, 0]))) + np.log(frac)
+        out['h1'][k + i] = np.log(np.mean(np.exp(f[:, 1]))) + np.log(frac) if f.shape[1] > 1 else out['h0'][k + i]
+        out['min'][k + i] = np.log(np.mean(np.exp(f.min(axis=1)))) + np.log(frac)
+    return out
+
+  return scores
+
+
+def exact_scorers(nets, q_params):
+  """The exact-goal logits per head (the deployment actor optimises the min)."""
+  import jax
+  import jax.numpy as jnp
+
+  @jax.jit
+  def f(qp, oo, aa):
+    phi, psi = nets.representation_network.apply(qp, oo, aa)
+    return jnp.sum(phi * psi, axis=1)                 # [B, heads]
+
+  def scores(o, a):
+    out = []
+    for k in range(0, len(o), 2048):
+      out.append(np.asarray(f(q_params, jnp.asarray(o[k:k + 2048, :B.STATE_DIM + 2], jnp.float32), jnp.asarray(a[k:k + 2048], jnp.float32))))
+    q = np.concatenate(out)
+    return {'h0': q[:, 0], 'h1': (q[:, 1] if q.shape[1] > 1 else q[:, 0]), 'min': q.min(axis=1)}
+  return scores
+
+
+def keys_from_replay(replay_path):
+  """The fit keys (anchor row 0 of every path), with the same fields as the held-out table."""
+  with np.load(replay_path, allow_pickle=False) as d:
+    o0 = d['obs'][:, 0]; a0 = d['act'][:, 0]
+    aid = d['audit_anchor_id']; cand = d['audit_cand'].astype(str); draw = d['audit_draw']
+    sset = d['audit_kind'].astype(str); pg = d['audit_p_goal']; ep = d['audit_episode']
+  keys = {}
+  for i in range(len(pg)):
+    k = (int(aid[i]), cand[i])
+    e = keys.setdefault(k, {'obs0': o0[i], 'act0': a0[i], 'set': sset[i], 'episode': int(ep[i]), 'p': {}})
+    e['p'][int(draw[i])] = float(pg[i])
+  return keys
 
 
 def keyed(T):
@@ -501,7 +635,8 @@ def keyed(T):
   keys = {}
   for i in range(len(T['p_goal'])):
     k = (int(T['anchor_id'][i]), str(T['cand'][i]))
-    d = keys.setdefault(k, {'obs0': T['obs0'][i], 'act0': T['act0'][i], 'set': str(T['set'][i]), 'p': {}})
+    d = keys.setdefault(k, {'obs0': T['obs0'][i], 'act0': T['act0'][i], 'set': str(T['set'][i]),
+                            'episode': int(T['episode'][i]), 'p': {}})
     d['p'][int(T['draw'][i])] = float(T['p_goal'][i])
   return keys
 
@@ -562,10 +697,12 @@ def gate_metrics(keys, ks, scores, sets, thr=0.3, halves=((0, 1), (2, 3))):
         if pv.max() - pv.mean() > 1e-6:
           gains.append((pv[k_star] - pv.mean()) / (pv.max() - pv.mean()))
       n_v = len(agree_v)
-      # anchor-level bootstrap: the validated pairs of one anchor share its candidates and draws
+      # episode-level bootstrap: the validated pairs of one anchor share its candidates and
+      # draws, and the anchors of one held-out episode share its poses and its goal
       cl_se, n_cl = None, 0
       if n_v:
-        av, aa = np.array(agree_v), np.array(agree_by_anchor)
+        av = np.array(agree_v)
+        aa = np.array([keys[(a, by_anchor[a][0])].get('episode', a) for a in agree_by_anchor])
         anchors_u = np.unique(aa); n_cl = len(anchors_u)
         if n_cl > 1:
           brng = np.random.default_rng(0)
@@ -576,7 +713,7 @@ def gate_metrics(keys, ks, scores, sets, thr=0.3, halves=((0, 1), (2, 3))):
             num = sum(sums[u][0] for u in pick); den = sum(sums[u][1] for u in pick)
             boots.append(num / den)
           cl_se = float(np.std(boots))
-      m = {'n_validated_pairs': n_v, 'n_anchors_validated': int(n_cl),
+      m = {'n_validated_pairs': n_v, 'n_episodes_validated': int(n_cl),
            'validated_agreement': float(np.mean(agree_v)) if n_v else None,
            'validated_se': cl_se,
            'validated_agreement_samples_only': float(np.mean(agree_samples)) if agree_samples else None,
@@ -592,8 +729,16 @@ def gate_metrics(keys, ks, scores, sets, thr=0.3, halves=((0, 1), (2, 3))):
 def gate(args):
   import jax.numpy as jnp
   from crl import checkpoint, networks
-  T = load_table(B.OUT / args.holdout)
-  keys = keyed(T)
+  if args.on_fit:
+    # the critics' own training keys (3 candidates x 2 draws): validated = draw 0 vs draw 1
+    keys = keys_from_replay(B.OUT / args.fit_replay)
+    halves = ((0,), (1,))
+    meta = {'held_out_episodes': 'n/a (fit keys)', 'candidates': 'recorded + 2 samples (dense), recorded + 1 sample (general)', 'draws': '2 (dense) / 1 (general)'}
+  else:
+    T = load_table(B.OUT / args.holdout)
+    keys = keyed(T)
+    halves = ((0, 1), (2, 3))
+    meta = T['meta']
   bundle = policy_bundle(args.cont_ckpt)
   nets = bundle['nets']
   scorers = {}
@@ -604,7 +749,7 @@ def gate(args):
     l_, s_ = bundle['params_fn'](o)
     return np.asarray(networks.tanh_normal_log_prob(networks.TanhNormalParams(jnp.asarray(l_), jnp.asarray(s_)), jnp.asarray(a)))
   scorers['policy_logprob'] = bc_logprob
-  if args.fit_replay:
+  if args.fit_replay and not args.on_fit:
     # non-parametric control: the fit keys' own mean P_goal, averaged over the
     # k nearest fit keys in standardised (state, torque) space, with the
     # torque columns up-weighted by w -- if this cannot order held-out
@@ -613,45 +758,64 @@ def gate(args):
     for w in (1.0, 4.0):
       scorers[f'knn_fit_w{w:g}'] = knn_scorer(B.OUT / args.fit_replay, k=args.knn_k, w_act=w)
   labels = {}
+  frames = marginal_goal_frames(B.OUT / args.fit_replay, per_path=args.marginal_per_path) if (args.fit_replay and args.region_radii) else None
+  if frames is not None:
+    print(f'goal marginal: {len(frames)} frames sampled from the fit replay', flush=True)
+  ks = list(keys)
+  o_all = np.stack([keys[k]['obs0'] for k in ks]); a_all = np.stack([keys[k]['act0'] for k in ks])
+  scores = {name: fn(o_all, a_all) for name, fn in scorers.items()}
   for ck in args.critics:
     p = Path(ck)
     label = f'{p.parent.parent.name}/{p.parent.name}/{p.stem}'
     _, st = checkpoint.load_checkpoint(p)
-    scorers[label] = critic_fn(nets, st.q_params)
     labels[label] = str(p)
-  ks, scores = score_table(keys, scorers)
+    ex = exact_scorers(nets, st.q_params)(o_all, a_all)
+    scores[f'{label} | exact min'] = ex['min']
+    if args.heads:
+      scores[f'{label} | exact h0'] = ex['h0']; scores[f'{label} | exact h1'] = ex['h1']
+    if frames is not None:
+      for radius in args.region_radii:
+        rg = region_scorers(nets, st.q_params, frames, radius, max_goals=args.max_goals)(o_all, a_all)
+        scores[f'{label} | region r{radius:g} min'] = rg['min']
+        if args.heads:
+          scores[f'{label} | region r{radius:g} h0'] = rg['h0']; scores[f'{label} | region r{radius:g} h1'] = rg['h1']
   sets = list(DENSE_SETS) + ['general']
-  metrics = gate_metrics(keys, ks, scores, sets, thr=args.thr)
-  ceiling = pair_stats([{'set': keys[k]['set'], 'anchor_id': k[0], 'cand': k[1], 'draw': d, 'p_goal': p}
-                        for k in keys for d, p in keys[k]['p'].items()], sets, thr=args.thr)
+  metrics = gate_metrics(keys, ks, scores, sets, thr=args.thr, halves=halves)
+  ceiling = pair_stats([{'set': keys[k]['set'], 'anchor_id': k[0], 'cand': k[1], 'draw': d, 'p_goal': p, 'episode': keys[k]['episode']}
+                        for k in keys for d, p in keys[k]['p'].items()], sets, halves=halves, thr=args.thr)
   # pass rule: pooled dense sets, validated agreement above chance by > 2 clustered s.e. and >= the line
-  res = {'holdout': str(B.OUT / args.holdout), 'thr': args.thr, 'ceiling': ceiling, 'metrics': metrics, 'critics': labels, 'pass': {}}
-  for name in scorers:
+  res = {'holdout': ('fit keys of ' + args.fit_replay) if args.on_fit else str(B.OUT / args.holdout), 'thr': args.thr, 'ceiling': ceiling,
+         'metrics': metrics, 'critics': labels, 'pass': {}}
+  for name in scores:
     m = metrics[name]['dense_all']
     ok = (m['validated_agreement'] is not None and m['validated_agreement'] >= args.gate
           and m['validated_agreement'] - 2 * (m['validated_se'] or 1) > 0.5)
     res['pass'][name] = bool(ok)
-  L = [f'# Gate (round 1): does f(s, a, g) order the candidate torques the way their validated single-step outcomes do?', '',
-       f'Held-out anchors ({T["meta"]["held_out_episodes"]} held-out episodes), candidates {T["meta"]["candidates"]}, '
-       f'{T["meta"]["draws"]} paired draws per key; the continuation is the frozen policy mode.  A pair (a_i, a_j) at one state '
-       f'is VALIDATED when the log P_goal ratio has the same sign on draws {{0,1}} and {{2,3}} and |ratio| > {args.thr} on both.  '
+  L = [f'# Gate (round 1{", FIT keys" if args.on_fit else ""}): does f(s, a, g) order the candidate torques the way their validated single-step outcomes do?', '',
+       f'{"Fit" if args.on_fit else "Held-out"} anchors ({meta["held_out_episodes"]} held-out episodes), candidates {meta["candidates"]}, '
+       f'{meta["draws"]} paired draws per key; the continuation is the frozen policy mode.  A pair (a_i, a_j) at one state '
+       f'is VALIDATED when the log P_goal ratio has the same sign on the two halves of the draws ({halves[0]} vs {halves[1]}) and |ratio| > {args.thr} on both.  '
        f'Agreement = share of validated pairs whose critic ordering matches (chance 0.50); samples-only = pairs of two policy '
        f'samples (excludes recorded and mode); weighted = |ratio|-weighted sign agreement over all pairs; pick gain = '
        f'(P[argmax f] - mean P) / (max P - mean P) over anchors with spread (1 = oracle, 0 = random).  '
-       f'PASS = pooled dense-set validated agreement >= {args.gate:.2f} and > 0.5 by 2 s.e. (s.e. = anchor-level bootstrap: the pairs of one anchor share its candidates and draws).', '',
+       f'PASS = pooled dense-set validated agreement >= {args.gate:.2f} and > 0.5 by 2 s.e. (s.e. = episode-level bootstrap: the pairs of one anchor share its candidates and draws, the anchors of one episode its poses and goal).  '
+       f'Readouts per critic: exact = the logit at the recorded goal point (min over the twin heads = what the actor optimises; h0 / h1 = the heads); '
+       f'region rX = log of the region-integrated exp(f) over the NCE goal marginal within radius X of the goal (the quantity P_goal measures; diagnostic only, the actor does not optimise it).', '',
        '## Ceiling: split-half sign agreement of the differences themselves', '',
-       '| set | pairs | mean abs log ratio | frac > thr | split-half agreement | validated pairs |', '|---|---:|---:|---:|---:|---:|']
+       '| set | episodes | anchors | pairs | mean abs log ratio | frac > thr | first-half > thr | tie | weak | same | opposite | agreement among decided (s.e.) |',
+       '|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|']
   f_ = lambda v, fmt='.2f': (format(v, fmt) if isinstance(v, (int, float)) and v is not None else '-')
   for sset, c in ceiling.items():
-    L.append(f'| {sset} | {c["n_pairs"]} | {f_(c["mean_abs_log_ratio"])} | {f_(c["frac_abs_gt_thr"])} | '
-             f'{f_(c["split_half_sign_agreement"])} | {c["n_validated_pairs"]} |')
+    L.append(f'| {sset} | {c["n_episodes"]} | {c["n_anchors"]} | {c["n_pairs"]} | {f_(c["mean_abs_log_ratio"])} | {f_(c["frac_abs_gt_thr"])} | '
+             f'{c["n_half_pairs"]} | {c["second_half_tie"]} | {c["second_half_weak"]} | {c["second_half_same"]} | {c["second_half_opposite"]} | '
+             f'{f_(c["split_half_sign_agreement"])} ({f_(c["split_half_se_episode"], ".3f")}) |')
   L += ['', '## Critics', '',
-        '| scorer | set | validated pairs (anchors) | agreement | s.e. | samples-only agreement (n) | weighted agreement | pick gain (anchors) | P pick / mean / best |',
+        '| scorer | set | validated pairs (episodes) | agreement | s.e. | samples-only agreement (n) | weighted agreement | pick gain (anchors) | P pick / mean / best |',
         '|---|---|---:|---:|---:|---:|---:|---:|---|']
-  for name in scorers:
+  for name in scores:
     for sset in sets + ['dense_all']:
       m = metrics[name][sset]
-      L.append(f'| {name} | {sset} | {m["n_validated_pairs"]} ({m["n_anchors_validated"]}) | **{f_(m["validated_agreement"])}** | {f_(m["validated_se"], ".3f")} | '
+      L.append(f'| {name} | {sset} | {m["n_validated_pairs"]} ({m["n_episodes_validated"]}) | **{f_(m["validated_agreement"])}** | {f_(m["validated_se"], ".3f")} | '
                f'{f_(m["validated_agreement_samples_only"])} ({m["n_validated_samples_only"]}) | {f_(m["weighted_agreement"])} | '
                f'{f_(m["pick_gain"])} ({m["n_anchors_with_spread"]}) | {f_(m["pick_p_goal"], ".3f")} / {f_(m["mean_p_goal"], ".3f")} / {f_(m["best_p_goal"], ".3f")} |')
   L += ['', '## Pass', ''] + [f'- {name}: {"PASS" if ok else "fail"}' for name, ok in res['pass'].items()]
@@ -779,6 +943,11 @@ def main(argv=None):
   ap.add_argument('--critics', nargs='*', default=[], help='gate: critic checkpoints')
   ap.add_argument('--fit-replay', default='', help='gate: the fit replay (under V6_BRANCH_OUT) for the kNN control')
   ap.add_argument('--knn-k', type=int, default=10)
+  ap.add_argument('--region-radii', type=float, nargs='*', default=[0.5, 1.0], help='gate: region readout radii (needs --fit-replay)')
+  ap.add_argument('--marginal-per-path', type=int, default=4, help='gate: goal-marginal samples per fit path')
+  ap.add_argument('--max-goals', type=int, default=512, help='gate: region frames per anchor (subsampled)')
+  ap.add_argument('--heads', action='store_true', help='gate: also report the twin heads separately')
+  ap.add_argument('--on-fit', action='store_true', help='gate: score the critics on their own fit keys instead of the held-out table')
   ap.add_argument('--thr', type=float, default=0.3, help='gate: |log ratio| line for a validated pair')
   ap.add_argument('--gate', type=float, default=0.65, help='gate: pooled validated agreement pass line')
   ap.add_argument('--actors', nargs='*', default=[], help='validate: updated actor checkpoints')
