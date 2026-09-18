@@ -1,0 +1,96 @@
+{
+ "smoke": true,
+ "dataset_sha_matches": true,
+ "sidecar_sha_matches": true,
+ "no_held_out_or_cnew_episode_in_training": true,
+ "anchors_valid_rows": true,
+ "anchor_weight_sum": 0.9999999999999999,
+ "anchor_roots_match_dataset": true,
+ "anchor_law": {
+  "draws_per_episode_mean_sd": [
+   0.048,
+   0.2137662274541982
+  ],
+  "expected_sd_if_uniform": 0.21908902300206645,
+  "relative_row_position_mean (0.5 if uniform)": 0.4845535772282033,
+  "share_t0": 0.0,
+  "expected_share_t0": 0.003806691489056454
+ },
+ "branches_available": true,
+ "critic_stream_recorded_first_batches": [
+  {
+   "anchor_ids": "885e20833e25f2d8",
+   "roots": "94b616905d73e18e",
+   "goals": "1eae3f2a8bfe658f",
+   "futures_within_path": true
+  },
+  {
+   "anchor_ids": "c4445b270bb149fe",
+   "roots": "62b3c922705bce74",
+   "goals": "e1c559086c996956",
+   "futures_within_path": true
+  }
+ ],
+ "critic_anchor_sequence_identical_across_arms": true,
+ "critic_goals_differ_across_arms": true,
+ "branch_roots_keep_timestep": true,
+ "query_executed_exactly_once": true,
+ "branch_first_action_is_logged": true,
+ "branch_lengths_within_horizon": true,
+ "branch_restore_maxdiff_max": 0.0,
+ "branch_outcomes": {
+  "death": 3,
+  "success": 2,
+  "timeout": 43
+ },
+ "branch_all_outcomes_kept": true,
+ "actor_streams": {
+  "seed_0": {
+   "identical_across_instances": true,
+   "reset_row_share": 0.001953125,
+   "non_reset_row_share": 0.998046875,
+   "future_crosses_episode_boundary": false,
+   "sampler": "TrajectoryBuffer variable-length law",
+   "law_check": true
+  }
+ },
+ "offline_static_audit": {
+  "all_pass": true,
+  "gates": {
+   "G1_FINGERPRINT": true,
+   "G2_KEY_SEPARATION": true,
+   "G3_SHAPES_DIMS": true,
+   "G4_DTYPES_FINITE": true,
+   "G5_EP_LENGTHS": true,
+   "G6_NO_AUDIT_LEAK": true,
+   "G7_RELABEL_BOUNDS": true,
+   "G8_FROZEN_BUFFER": true
+  }
+ },
+ "start_checkpoint": {
+  "path": "D:\\Users\\trhua\\Research\\contrastive_rl\\outputs\\antmaze_branch_replay_p050\\joint_van_d05\\seed_0\\final.pkl",
+  "available": false,
+  "sha256": "UNAVAILABLE"
+ },
+ "post_training": {
+  "O/seed_0": {
+   "critic_changed": true,
+   "actor_changed": true,
+   "optimizer_updates": 8,
+   "actor_init_is_start_agent": false,
+   "first_critic_anchor_hash": "212a99c02db189c5",
+   "first_actor_hash": "9344aad72b933833"
+  },
+  "CF/seed_0": {
+   "critic_changed": true,
+   "actor_changed": true,
+   "optimizer_updates": 8,
+   "actor_init_is_start_agent": false,
+   "first_critic_anchor_hash": "212a99c02db189c5",
+   "first_actor_hash": "9344aad72b933833"
+  }
+ },
+ "paired_streams_identical_across_arms": {
+  "seed_0": true
+ }
+}

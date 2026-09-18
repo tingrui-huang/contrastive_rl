@@ -1,5 +1,7 @@
 # Identical batches, frozen critics only differ (point 2), with the true-t = 0 critic diagnostic and the corrected vanilla readout (point 1)
 
+> **Status under `notes/MAINLINE_CONTRACT.md` (2026-09-19): historical diagnostic configuration.**  S1 (dataset reset rows) and S2 (control-replay anchors) are both diagnostic batch sources for the actor's critic term, with FROZEN critics and balanced BC; neither is the mainline actor stream (the recipe buffer's own law over the whole dataset, random_goals 0, BC 0.05 on the same rows, joint training).  What stands: the earlier actor-level ordering was confounded by the batch source, and the critic-level t = 0 ordering.  'vanilla@S1 beats the start' and 'ext_bc is best on S2' are statements about those configurations, superseded as statements about the method (contract section 1c).  The point-1 readout correction (`vanilla_draw`) is unaffected.  Nothing below was edited.
+
 Follows `exp_agent_round/SUMMARY.md`.  Script `scripts/exp_v6_same_batch.py`
 (`batch_audit.json`, `REPORT.md`); point 1 in `scripts/exp_v6_agent_round.py`
 (`seal_t0`, `analyze --diag t0`, `vanilla_u`) and

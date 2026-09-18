@@ -39,7 +39,7 @@ class TrainingState(NamedTuple):
 
 
 def build_learner(networks, config, obs_to_goal, policy_optimizer,
-                  q_optimizer, fail_bank=None):
+                  q_optimizer, fail_bank=None, separate_actor_batch=False):
   """Returns ``(init_state, update_step)`` closures for the given config.
 
   ``obs_to_goal`` maps a batch of states [B, obs_dim] -> goal coords
@@ -49,8 +49,20 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
   coordinates for failure-aware negative sampling. Used only when
   ``config.fail_neg_alpha > 0`` (see critic_loss); ``None`` or alpha 0 leaves
   every loss byte-identical to the baseline.
+
+  ``separate_actor_batch`` (sampling-interface change, notes/MAINLINE_CONTRACT.md):
+  ``update_step`` takes ``(critic_transitions, actor_transitions)``.  The
+  critic loss is taken on the first batch; the actor loss -- its critic term
+  AND its BC term, on the same rows, exactly the ``bc_transitions is None``
+  pairing -- on the second.  The loss bodies are the ones above, unchanged;
+  what changes is only WHICH rows each loss is evaluated on.  With both
+  batches drawn from the same stream this reduces to the shared-batch
+  learner up to the RNG stream.  Requires ``bc_sampling == 'shared'``.
   """
   adaptive_entropy_coefficient = config.entropy_coefficient is None
+  if separate_actor_batch and (getattr(config, 'bc_sampling', 'shared') or 'shared') != 'shared':
+    raise ValueError('separate_actor_batch keeps the shared-row actor pairing; '
+                     'bc_sampling must be "shared"')
   obs_dim = config.obs_dim
   bc_sampling = getattr(config, 'bc_sampling', 'shared') or 'shared'
   if bc_sampling not in ('shared', 'independent', 'balanced'):
@@ -356,15 +368,21 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
   # ------------------------------------------------------------- update step
   def update_step(state, transitions):
     # ``transitions`` is a Transition, or a (Transition, Transition-or-None)
-    # pair whose second element holds the BC term's own rows.
-    if isinstance(transitions, Transition):
+    # pair whose second element holds the BC term's own rows; with
+    # ``separate_actor_batch`` it is the (critic rows, actor rows) pair.
+    if separate_actor_batch:
+      transitions, actor_transitions = transitions
       bc_transitions = None
+    elif isinstance(transitions, Transition):
+      bc_transitions = None
+      actor_transitions = transitions
     else:
       transitions, bc_transitions = transitions
+      actor_transitions = transitions
     key, key_alpha, key_critic, key_actor = jax.random.split(state.key, 4)
     if adaptive_entropy_coefficient:
       alpha_loss_value, alpha_grads = alpha_grad(
-          state.alpha_params, state.policy_params, transitions, key_alpha)
+          state.alpha_params, state.policy_params, actor_transitions, key_alpha)
       alpha = jnp.exp(state.alpha_params)
     else:
       alpha = config.entropy_coefficient
@@ -375,7 +393,7 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
           transitions, key_critic)
 
     (actor_loss_value, actor_aux), actor_grads = actor_grad(
-        state.policy_params, state.q_params, alpha, transitions, key_actor,
+        state.policy_params, state.q_params, alpha, actor_transitions, key_actor,
         bc_transitions)
 
     actor_update, policy_optimizer_state = policy_optimizer.update(

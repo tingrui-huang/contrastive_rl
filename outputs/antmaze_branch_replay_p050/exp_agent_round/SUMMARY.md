@@ -1,5 +1,7 @@
 # Agent-update round 1 (policy-continuation futures) and the query extension: summary
 
+> **Status under `notes/MAINLINE_CONTRACT.md` (2026-09-19): historical diagnostic configuration.**  The fixed agent is the d20 agent; every actor here was trained with a FROZEN critic from that agent's initialisation, with balanced BC rows, and (as `exp_same_batch` later showed) the reference actors' critic-term batches were anchored at the dataset's reset rows while the branch actors' were anchored at replay row 0.  'Every branch arm below the fixed agent; the recorded-data critic +0.15' is superseded as a statement about the method (contract section 1c).  The first-step sensitivity finding (the fixed agent's own first torque reproduces its natural trajectories; a BC / recorded first torque flips the route) and the query-extension mass audit stand as diagnostic facts.  Nothing below was edited.
+
 Sealed `manifest.json` (2026-09-18 14:27, before any generation) and the
 addendum `manifest_ext.json` (16:05, before any extended replay).  Tables:
 `REPORT.md` (`scripts/exp_v6_agent_round.py report`), `replay_check.json`,

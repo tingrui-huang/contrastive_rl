@@ -1,0 +1,65 @@
+{
+ "meta": {
+  "anchors": 48,
+  "arm": "CF-oracle",
+  "continuation": "checkpoint actor mode tanh(loc), closed-loop",
+  "continuation_ckpt": "STAND-IN zero torque (smoke only)",
+  "continuation_ckpt_sha256": null,
+  "draws_per_anchor": 1,
+  "filtering": "none: every outcome kept",
+  "hidden_draws": "hazard latents, clocks and rock jitter redrawn from the priors at restore, seed HAZARD_SEED0 + anchor_id",
+  "max_steps_cap": 12,
+  "outcome_counts": {
+   "death": 3,
+   "success": 2,
+   "timeout": 43
+  },
+  "query": "the logged torque a_t executed exactly once from the restored logged state at absolute time t",
+  "restore": "build_v6_branch_replay.restore (reset, then qpos/qvel from the logged state, goal from the logged row, env time = t)",
+  "termination": "first reach frame (reward > 0) / death (env done) / absolute horizon 800; no goal hold",
+  "wall_seconds": 4.630897045135498
+ },
+ "n": 48,
+ "rows_total": 590,
+ "outcome_share": {
+  "success": 0.041666666666666664,
+  "death": 0.0625,
+  "timeout": 0.8958333333333334
+ },
+ "mean_steps": 11.291666666666666,
+ "mean_rows": 12.291666666666666,
+ "hazard_share_u1": 0.5625,
+ "hazard_share_u2": 0.5416666666666666,
+ "restore_maxdiff_max": 0.0,
+ "n_query_steps_all_one": true,
+ "by_anchor_time": {
+  "t in [1, 6)": {
+   "n": 1,
+   "success": 0.0,
+   "death": 0.0,
+   "timeout": 1.0,
+   "mean_rows": 13.0
+  },
+  "t in [6, 50)": {
+   "n": 6,
+   "success": 0.0,
+   "death": 0.0,
+   "timeout": 1.0,
+   "mean_rows": 13.0
+  },
+  "t in [50, 150)": {
+   "n": 21,
+   "success": 0.0,
+   "death": 0.14285714285714285,
+   "timeout": 0.8571428571428571,
+   "mean_rows": 12.380952380952381
+  },
+  "t in [150, 400)": {
+   "n": 20,
+   "success": 0.1,
+   "death": 0.0,
+   "timeout": 0.9,
+   "mean_rows": 11.95
+  }
+ }
+}
