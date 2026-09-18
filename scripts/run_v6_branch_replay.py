@@ -65,6 +65,7 @@ MILESTONES = tuple(range(10_000, JOINT_STEPS, 10_000))
 SEEDS = (0, 1, 2, 3, 4)
 VANILLA_SEEDS = (0, 1, 2)
 EVAL = {'n': 300, 'seed': 909, 'action_seed': 9909}
+EVAL_POLICIES = tuple(os.environ.get('V6_EVAL_POLICIES', 'mean,sample').split(','))   # V6_EVAL_POLICIES=mean: the deployment policy only
 STATE_DIM = 29
 START = dict(x_max=2.0, y_max=2.0, t_max=5)
 BC_CELL, BC_CAP = 4.0, 0.25          # maze scaling 4 -> one cell per group
@@ -173,10 +174,23 @@ def train_critic(seed, steps):
     return
   cfg = base_config(seed, REPLAY, steps, d)
   cfg.ckpt_milestone_steps = tuple(m for m in MILESTONES if m < steps)   # the critic's own trajectory, for the probes
+  init = os.environ.get('V6_CRITIC_INIT', '')
+  if init:
+    # pretrain -> branch data: the critic (q, target, its Adam state, the unused actor) starts from
+    # the given checkpoint's full state, step counter reset so the run trains exactly ``steps`` updates
+    from crl import checkpoint
+    init = init.format(seed=seed)
+    if not (d / 'latest.pkl').exists():
+      _, st = checkpoint.load_checkpoint(init)
+      d.mkdir(parents=True, exist_ok=True)
+      checkpoint.save_named(str(d), 'latest', 0, st)
+      write_json(d / 'prep.json', {'seed': seed, 'critic_init': init, 'critic_init_sha256': sha256(init), 'step_reset': 0})
+    cfg.resume = True
   t0 = time.time()
   train(cfg, buffer_prepare=row0_prepare)
   manifest(d, cfg, 'branch_critic', {'wall_seconds': time.time() - t0, 'milestones': list(cfg.ckpt_milestone_steps),
-                                     'anchor_weights': os.environ.get('V6_ANCHOR_WEIGHTS', 'uniform')})
+                                     'anchor_weights': os.environ.get('V6_ANCHOR_WEIGHTS', 'uniform'),
+                                     'critic_init': (init or None)})
 
 
 def vanilla_dir(seed):
@@ -458,14 +472,14 @@ def stage_joint(seeds, steps, parallel, all_critics):
       _wait(procs)
   _wait(procs)
   for s in chosen:
-    for pol in ('mean', 'sample'):
+    for pol in EVAL_POLICIES:
       evaluate_ckpt(joint_dir(s) / 'final.pkl', joint_dir(s), pol)
 
 
 def stage_vanilla_eval(seeds):
   for s in seeds:
     if (vanilla_dir(s) / 'final.pkl').exists():
-      for pol in ('mean', 'sample'):
+      for pol in EVAL_POLICIES:
         evaluate_ckpt(vanilla_dir(s) / 'final.pkl', vanilla_dir(s), pol)
 
 

@@ -1502,3 +1502,84 @@ for every arm.  Per the task: no further enlargement of the replay, no
 16 / 32 / 64 torques, no longer training, no loss / architecture / route /
 macro / subgoal change from this result.  Nothing committed (user to
 decide); no actor trained.
+
+### Diagnostic control (2026-09-18, after 355d273): direct supervised prediction of P_goal on the R-arm replay
+
+User task: can a scalar predictor of the rollout target P_goal(s, a, g),
+fitted by squared error to the existing R-arm outcomes, generalise where
+the NCE critic does not?  Not a method change; no actor, no new rollouts;
+NCE checkpoints untouched.  `scripts/diag_v6_supervised_pgoal.py` (seal /
+train / analyze), outputs `outputs/antmaze_branch_replay_p050/diag_supervised_pgoal/`
+(sealed manifest, training keys, six runs, metrics.json, REPORT.md,
+SUMMARY.md).  Training keys = the R replay's 13,256 exact (anchor,
+candidate) keys with summed weights and weight-averaged targets (state
+mass / mixture exactly round 1); S h(s, a, g) on the critic's inputs, N
+h0(s, g) without the torque; (1024, 1024) relu, sigmoid output, Adam 3e-4,
+batch 1024, 30k updates, seeds 0-2, identical key draws for S and N;
+evaluation on the sealed A / B / C fresh outcomes with the diagnostic's
+decided pairs, tie-aware (N ties every pair by construction), pick gain
+with uniform tie-breaking, episode-bootstrap paired differences.  Caveat:
+the six runs ran on CPU (one device type).
+
+| | training fit (weighted R^2) | A agreement / gain (s.e. 0.03 / 0.009) | B | C |
+|---|---|---|---|---|
+| S seeds 0/1/2 | 0.95 / 0.95 / 0.95 | 0.87 / 0.87 / 0.85; +.056 / +.054 / +.056 | 0.54 / 0.61 / 0.54; +.005 / +.020 / +.002 | 0.52 / 0.53 / 0.52; +.002 / +.013 / +.008 |
+| R NCE seeds 0/1/2 | -- | 0.67 / 0.67 / 0.70; +.029 / +.030 / +.036 | 0.58 / 0.53 / 0.55; +.010 / .000 / +.009 | 0.48 / 0.50 / 0.52; -.009 / +.001 / +.004 |
+| N seeds 0/1/2 | 0.79 / 0.79 / 0.79 | all ties; gain ~0 | all ties; ~0 | all ties; ~0 |
+
+Paired S - NCE: A +0.18 +- 0.03 (z 7; every seed +0.16..+0.20); B +0.008 +-
+0.036 (z 0.2; per seed -0.045 / +0.081 / -0.014); C +0.022 +- 0.024 (z 0.9);
+C matched +0.076 +- 0.037 (z 2.1, the only cell above two s.e., not backed
+by the full set).  Level error against the 16-draw means: S at A
+0.012-0.013 (constant 0.0175, noise floor 0.003), at B 0.032-0.039 and at
+C 0.048-0.063 -- worse than a constant; N 0.014-0.015 / 0.020-0.021 /
+0.023-0.026.  Reading: S fits its keys and predicts fresh consequences at
+them (better than the 30k critic), and transfers to neither unseen torques
+at the same states nor held-out episodes; the predeclared transfer
+condition is not met.  Ruled out: a failure specific to the NCE objective
+or readout; a lack of learnable single-torque signal at the training
+keys; outcome noise at the keys as the limit.  Open: coverage, input
+representation, missing conditioning (absolute time / remaining horizon,
+absent for every learner), and whether A's success rests on recurring
+near-duplicate poses.  Not committed; user to decide.
+
+### Pretrain on the recorded data -> continue NCE on the branch replay (user proposal, 2026-09-18)
+
+Proposal: a from-scratch critic must learn the Ant's pose / torque
+relations and the counterfactual value at once from ~13k branch keys;
+pretrain the NCE critic on the full recorded data (268k transitions,
+the V6 vanilla recipe, 100k), continue the SAME NCE on the branch replay
+(R arm: counterfactual futures only, no recorded futures mixed back, no
+ordering constraint), and test the pipeline with actors from the pure-BC
+walker (frozen critic, bc 0.05, 30k) -- controls with the same actor init:
+C1 = random init -> branch (critics_armR), C2 = pretrain only.
+Pre-registered (`exp_pretrain_branch/manifest.json`, sidecar 355d273):
+critic rule = improvement over C1 on B or C by 2 paired s.e. with
+consistent seed direction and positive pick gain; policy rule = T's mean
+success above C1 and C2 by 2 pooled seed s.e. and detour > 0.05 on >= 2
+seeds.  Driver additions: V6_CRITIC_INIT (critic warm start, step reset)
+and V6_EVAL_POLICIES; orchestration `scripts/exp_v6_pretrain_branch.py`.
+Cost: pretraining 810 s per seed (4090) on top of the branch stage's 360.
+
+| | A | B | C | actor success (seeds) | detour |
+|---|---|---|---|---|---|
+| T pretrain -> branch | 0.72 / 0.70 / 0.74 | 0.53 / 0.50 / 0.52 | 0.50 / 0.49 / 0.51 | 0.213 / 0.233 / 0.103 | 0 / 0.007 / 0 |
+| C1 random -> branch | 0.67 / 0.67 / 0.70 | 0.58 / 0.53 / 0.55 | 0.48 / 0.50 / 0.52 | 0.303 / 0.000 / 0.000 | 0.007 / 0 / 0 |
+| C2 pretrain only | 0.44 / 0.42 / 0.46 | 0.45 / 0.44 / 0.45 | 0.50 / 0.49 / 0.50 | 0.287 / 0.007 / 0.000 | 0 / 0 / 0 |
+
+Paired (seed-averaged, episode bootstrap): B: T - C1 -0.036 +- 0.027 (z
+-1.4, all seeds negative), T - C2 +0.069 +- 0.037; C: all differences
+within 0.02.  Policy: T - C1 +0.082 (pooled seed s.e. 0.109), T - C2
++0.086 (0.103); detour > 0.05 on 0 / 3 seeds.  Both rules NOT met.
+Readings: pretraining adds nothing at B or C (T at chance like C1; the
+branch stage still fits its keys, A 0.72); the pretrain-only critic is
+below chance at A and B (0.42-0.46), the expert-confounded ordering the
+branch stage then undoes; at bc 0.05 with a frozen critic the actor
+degrades from its BC init in every arm (T keeps walking at 0.10-0.23
+success, C1 / C2 stop walking on two seeds each, the C2 survivor is a
+slow after-burst shortcut) and no arm detours.  Caveats: T and C1 / C2
+actors on different GPUs; the T chain relaunched once after a CPU
+mis-launch (no result reused); C2's region readout uses the dataset's
+goal marginal.  Not committed.  Details `exp_pretrain_branch/SUMMARY.md`,
+`REPORT.md`, `diag_r1_abc/{REPORT,metrics}_{armT,pre100k}.*`,
+`paired_boot_pretrain_{B,C}.json`.

@@ -1,0 +1,105 @@
+{
+ "experiment": "pretrain on the recorded data -> continue NCE on the branch replay; actor from BC; controls C1 (random -> branch) and C2 (pretrain only)",
+ "sealed_at": "2026-09-18 08:37:31",
+ "git": {
+  "error": "Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128."
+ },
+ "provenance": {
+  "dataset": "/root/contrastive_rl/artifacts/rockfall_clock_v6/dataset/antmaze_rockfall_clock_v6_p050_gxy.npz",
+  "dataset_sha256": "89fbae7a311ed586d72d901a685ac3e4d54df556e675275f7b2c0bb4dc4c9840",
+  "r_replay": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_r1_coverage/replay_armR.npz",
+  "r_replay_sha256": "193d3dde5ee2f0cb40a406b7cf06633166c3ac1caf056f95f8b71eeed7cebed2",
+  "actor_init": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/joint_purebc/seed_0/final.pkl",
+  "actor_init_sha256": "820cb7e229ed0a163c8d6861028717f243493b9eb889a5e0429a20823bd764f2",
+  "c1_critics": {
+   "0": "661bafd7a3e10246791db47124fd50c2b52b8bc817418b4436c12a3b3f28b524",
+   "1": "58e67bd5154e6b0705d23418cf1bb411cd2bfcb93f1ca82a9a2c77ea81a36900",
+   "2": "c850ff3202bb8aa0c7aad28c2fe6c2b2b58682294325660131a18de0904b66ad"
+  },
+  "abc_outcomes_sha256": "2e1c81bffbc78a5e715ff02418b43868b90d480cc1e11631b135228a19a6e39f",
+  "abc_manifest_sha256": "6617a414213fccb903df6bf1e6b6e64c61f6984b782f28ba6664017c27c9100c",
+  "existing_c1_metrics": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/diag_r1_abc/metrics_armR.json",
+  "scripts": {
+   "scripts/exp_v6_pretrain_branch.py": "45c64c936a401b572114cc4584c0f2e8cb7888fcec6cc9084cab2c64be1dd818",
+   "scripts/run_v6_branch_replay.py": "01e8cc7c34ab09d9d66fd765e82b4130c0e4253ba8de3e2f6caa99c135333258",
+   "scripts/diag_v6_r1_abc.py": "ed6ca5ad78753d020ddc354146d12470eaa148776cb8fac9dc63e73427328d2d",
+   "scripts/probe_v6_coverage_paired_boot.py": "ec68bca93f79d0e92db9267e8340db4be925dc9880b7116e4fa0474558d5f6b5"
+  }
+ },
+ "stages": {
+  "1_pretrain": {
+   "data": "recorded p050 dataset (1000 episodes, 268,112 transitions), recorded futures",
+   "recipe": "run_v6_branch_replay.train_vanilla: V6 vanilla at gamma 0.999",
+   "updates": 100000,
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "tag": "_pre100k",
+   "note": "a representation; its values are not trusted (expert confounding)"
+  },
+  "2_branch": {
+   "data": "R replay (35,756 paths, anchor weights 1 / 0.25, every future a counterfactual continuation)",
+   "recipe": "the same NCE, critic warm-started from stage 1 (V6_CRITIC_INIT, step counter reset), 30,000 updates, V6_ANCHOR_WEIGHTS=audit",
+   "no_recorded_futures": true,
+   "no_ordering_constraint": true,
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "tag": "_armT"
+  },
+  "3_actor": {
+   "init": "pure-BC walker joint_purebc/seed_0 (lambda 1.0, 100k) for every arm",
+   "critic": "frozen (lr 0)",
+   "loss": "original actor loss + bc 0.05 (balanced BC rows from the recorded data, as in round 1)",
+   "critic_batches": "the R replay with its anchor weights for every arm (only the critic differs)",
+   "updates": 30000,
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "evaluation": "300 natural draws, seed 909, deployment (mean) policy: success, failure, timeout, detour, discounted, mouth timing"
+  }
+ },
+ "arms": {
+  "T": {
+   "critic_dir": "critics_armT",
+   "joint_dir": "joint_T",
+   "critic": "vanilla 100k on the recorded data -> 30k NCE on the R replay (V6_CRITIC_INIT)"
+  },
+  "C1": {
+   "critic_dir": "critics_armR",
+   "joint_dir": "joint_C1",
+   "critic": "random init -> 30k NCE on the R replay (existing)"
+  },
+  "C2": {
+   "critic_dir": "critics_pre100k_only",
+   "joint_dir": "joint_C2",
+   "critic": "vanilla 100k on the recorded data only"
+  }
+ },
+ "critic_evaluation": "diag_v6_r1_abc analyze on the sealed A/B/C outcomes (development sets) for T and C2; C1 = metrics_armR.json; paired episode bootstrap (probe_v6_coverage_paired_boot) T vs C1 vs C2 on B and C",
+ "decision_rules": {
+  "critic_level": "T counts as an improvement over C1 on B (resp. C) if the seed-mean agreement difference exceeds 2 paired s.e. with all three seeds in the same direction and a positive pick gain",
+  "policy_level": "T counts as a pipeline improvement if its mean success over 3 seeds exceeds both C1 and C2 by more than 2 x the pooled seed s.e. AND its detour rate exceeds 0.05 on at least 2 of 3 seeds; the reference walker (pure BC) has success 0.253, detour 0.000",
+  "attribution": "a gain present in C2 as well is attributed to pretraining, not to the branch data; a gain in T but not C2 is attributed to the schedule pretrain -> branch",
+  "nonsignificant": "inconclusive, not equivalence"
+ },
+ "budget": {
+  "critic_updates": {
+   "T": 130000,
+   "C1": 30000,
+   "C2": 100000
+  },
+  "actor_updates": 30000,
+  "evaluation_episodes": 300,
+  "no_extension": true,
+  "no_seed_dropping": true,
+  "no_sweeps": true
+ },
+ "cost_accounting": "wall seconds per stage from the runs' branch_manifest.json, reported in REPORT.md"
+}
