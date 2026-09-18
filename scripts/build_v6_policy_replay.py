@@ -81,6 +81,7 @@ import diag_v6_first_step_crossover as DG  # noqa: E402
 
 GAMMA, RADIUS = 0.999, 0.5
 R1_SEED = 707_000
+EXTRA_CAND_SEED = 123_000_011   # the query extension's agent samples: base + 7919 * anchor_id (distinct mod 7919 from every other stream)
 HOLDOUT_ID0 = 1_000_000
 DENSE_SETS = ('start_early', 'turn', 'start_late', 'north_leg', 'shortcut_early')
 SET_LABEL = {'start_early': 'start (x<2, y<2, t<=5)', 'turn': 'turning (detour eps, x<2, y<2, t>5)',
@@ -244,13 +245,22 @@ def run_parallel(jobs, workers, seed0, cont_ckpt):
 
 
 # ------------------------------------------------------------------- build
-def make_jobs(anchors, bundle, obs, act, kinds, draws, seed_base, cand_seed, keep_path):
-  """anchors: list of (anchor_id, e, t, set)."""
+def make_jobs(anchors, bundle, obs, act, kinds, draws, seed_base, cand_seed, keep_path, extra=None):
+  """anchors: list of (anchor_id, e, t, set).  ``extra`` = (bundle, kinds, cand_seed, prefix)
+  adds candidates from a second policy at the same anchors (the query extension:
+  the current agent's mode / samples next to the recorded and BC-walker torques);
+  the hazard-draw seeds are per anchor and draw, so every candidate of an anchor
+  stays paired."""
   o0 = np.stack([obs[e, t] for (_, e, t, _) in anchors])
   loc, scale = bundle['params_fn'](o0)
+  if extra is not None:
+    loc_x, scale_x = extra[0]['params_fn'](o0)
   jobs = []
   for i, (aid, e, t, sset) in enumerate(anchors):
-    for kind, a in candidates_for(loc[i], scale[i], act[e, t], aid, kinds, cand_seed):
+    cands = candidates_for(loc[i], scale[i], act[e, t], aid, kinds, cand_seed)
+    if extra is not None:
+      cands += [(extra[3] + k, a) for k, a in candidates_for(loc_x[i], scale_x[i], act[e, t], aid, extra[1], extra[2])]
+    for kind, a in cands:
       for r in range(draws):
         jobs.append((aid, e, t, sset, kind, a, r, seed_base + 1000 * aid + r, keep_path))
   return jobs, {'scale_mean': float(scale.mean()), 'scale_median': float(np.median(scale))}
@@ -271,6 +281,8 @@ def stats_table(res, key_sets):
 
 
 def _cand_order(c):
+  if c.startswith('ag_'):
+    return 20 + _cand_order(c[3:])
   return {'recorded': 0, 'mode': 1}.get(c, 2 + int(c[6:]) if c.startswith('sample') else 9)
 
 
@@ -339,7 +351,11 @@ def build(args):
   n_eps, L = obs.shape[:2]
   held = split_episodes(route_rec, args.holdout_frac, rng)
   fit = ~held
-  bundle = policy_bundle(args.cont_ckpt)
+  # the candidate sampler (query torques) and the continuation are the same frozen
+  # policy unless --query-ckpt separates them (the agent-update round: queries from the
+  # BC walker as in the control replay, continuation by the current agent)
+  query_ckpt = args.query_ckpt or args.cont_ckpt
+  bundle = policy_bundle(query_ckpt)
   # --- fit anchors
   masks = dense_masks(obs, lengths, route_rec, fit)
   anchors, aid = [], 0
@@ -352,8 +368,17 @@ def build(args):
     anchors.append((aid, e, t, 'general')); aid += 1
   dense_kinds = ['recorded'] + [f'sample{k}' for k in range(args.n_samples)]
   gen_kinds = ['recorded', 'sample0']
-  jobs_d, sc_d = make_jobs(anchors[:n_dense], bundle, obs, act, dense_kinds, args.draws, R1_SEED, R1_SEED + 11, True)
-  jobs_g, _ = make_jobs(anchors[n_dense:], bundle, obs, act, gen_kinds, args.draws_general, R1_SEED, R1_SEED + 11, True)
+  extra_d = extra_g = None
+  if args.extra_query_ckpt:
+    # the query extension: the current agent's mode + samples at EVERY anchor (dense:
+    # mode + 2 samples, general: mode + 1 sample), same paired draws; every anchor gains
+    # the same number of candidates, so uniform anchors keep the state masses of the
+    # unextended replay (verified by exp_v6_agent_round verify_ext)
+    bundle_x = policy_bundle(args.extra_query_ckpt)
+    extra_d = (bundle_x, ['mode'] + [f'sample{k}' for k in range(args.n_samples)], EXTRA_CAND_SEED, 'ag_')
+    extra_g = (bundle_x, ['mode', 'sample0'], EXTRA_CAND_SEED, 'ag_')
+  jobs_d, sc_d = make_jobs(anchors[:n_dense], bundle, obs, act, dense_kinds, args.draws, R1_SEED, R1_SEED + 11, True, extra_d)
+  jobs_g, _ = make_jobs(anchors[n_dense:], bundle, obs, act, gen_kinds, args.draws_general, R1_SEED, R1_SEED + 11, True, extra_g)
   # --- held-out anchors
   masks_h = dense_masks(obs, lengths, route_rec, held)
   anchors_h, hid = [], HOLDOUT_ID0
@@ -367,7 +392,7 @@ def build(args):
   jobs = jobs_d + jobs_g + jobs_h
   if args.limit:
     jobs = jobs_d[:args.limit] + jobs_g[:args.limit] + jobs_h[:args.limit]
-  print(f'build: {n_dense} dense anchors x {len(dense_kinds)} candidates x {args.draws} draws = {len(jobs_d)} paths; '
+  print(f'build: {n_dense} dense anchors x {len(dense_kinds)}{"+" + str(len(extra_d[1])) + " agent" if extra_d else ""} candidates x {args.draws} draws = {len(jobs_d)} paths; '
         f'{len(anchors) - n_dense} general anchors x 2 x {args.draws_general} = {len(jobs_g)}; '
         f'{len(anchors_h)} held-out anchors x {len(hold_kinds)} x {args.draws_holdout} = {len(jobs_h)}; '
         f'policy scale mean {sc_d["scale_mean"]:.3f}; {args.workers} workers', flush=True)
@@ -390,6 +415,8 @@ def build(args):
   m = json.loads(meta)
   m.update({'arm': 'policy_continuation_replay_oracle_r1', 'source_dataset': str(B.DATASET), 'p_active': B.P_ACTIVE,
             'continuation_ckpt': str(args.cont_ckpt), 'continuation': 'frozen deployment policy mode, closed-loop from step 2',
+            'query_ckpt': str(query_ckpt), 'query_policy': ('the continuation policy' if query_ckpt == args.cont_ckpt else 'separate (--query-ckpt): candidate torques sampled from this policy, continuation by --cont-ckpt'),
+            'extra_query_ckpt': str(args.extra_query_ckpt or ''), 'extra_candidates': ('ag_mode + ag_sample<k> from --extra-query-ckpt at every anchor (dense: mode + 2 samples, general: mode + 1 sample), seed base %d' % EXTRA_CAND_SEED) if args.extra_query_ckpt else '',
             'candidates_dense': dense_kinds, 'candidates_general': gen_kinds, 'draws_dense': args.draws,
             'draws_general': args.draws_general, 'every_general': args.every, 'gen_seed': R1_SEED,
             'anchor_rule': 'row 0 of every path (set_anchor_strata in the driver)',
@@ -936,6 +963,8 @@ def main(argv=None):
   ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
   ap.add_argument('mode', choices=('build', 'gate', 'validate'))
   ap.add_argument('--cont-ckpt', required=True, help='the frozen deployment policy (continuation + candidate sampler)')
+  ap.add_argument('--query-ckpt', default='', help='build: sample the candidate torques from this policy instead of --cont-ckpt (continuation stays --cont-ckpt)')
+  ap.add_argument('--extra-query-ckpt', default='', help="build: ADD this policy's mode + samples as candidates at every anchor (labels ag_*), keeping the recorded / query-policy candidates")
   ap.add_argument('--workers', type=int, default=max(1, (os.cpu_count() or 2) - 2))
   ap.add_argument('--seed', type=int, default=0)
   ap.add_argument('--tag', default='r1')

@@ -492,7 +492,7 @@ def coverage(keys, man, layer, cands):
       if len(A) > 1:
         spread.append(np.mean([np.linalg.norm(A[i] - A[j]) for i in range(len(A)) for j in range(i + 1, len(A))]))
       for c in cands:
-        st = info[a]['candidate_stats'].get(f'{layer}|{c}')
+        st = info[a].get('candidate_stats', {}).get(f'{layer}|{c}')   # manifests without the candidate statistics (the agent-round Cdev) skip them
         if st:
           dmode.append(st['dist_to_mode']); lp.append(st['log_prob_policy']); sat.append(st['frac_saturated'])
     out[stratum] = {'n_anchors': len(aids), 'n_episodes': len({info[a]['episode'] for a in aids}),

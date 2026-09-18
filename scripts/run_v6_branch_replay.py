@@ -58,13 +58,13 @@ JOINT_MODE = os.environ.get('V6_JOINT_MODE', 'joint')   # 'joint' (critic keeps 
 DATASET = ROOT / 'artifacts' / 'rockfall_clock_v6' / 'dataset' / f'{STEM}_gxy.npz'
 ENV_XY = 'offline_antmaze_rockfall_clock_v6_gxy'
 HORIZON = 800
-DISCOUNT = 0.999
+DISCOUNT = float(os.environ.get('V6_DISCOUNT', '0.999'))   # V6_DISCOUNT=0.99 restores the frozen recipe's discount (the 2026-09-18 discount check)
 CRITIC_STEPS = 100_000
 JOINT_STEPS = 100_000
 MILESTONES = tuple(range(10_000, JOINT_STEPS, 10_000))
 SEEDS = (0, 1, 2, 3, 4)
 VANILLA_SEEDS = (0, 1, 2)
-EVAL = {'n': 300, 'seed': 909, 'action_seed': 9909}
+EVAL = {'n': 300, 'seed': int(os.environ.get('V6_EVAL_SEED', '909')), 'action_seed': 9909}   # V6_EVAL_SEED: a fresh development draw for a paired comparison (the agent-update round uses 2909)
 EVAL_POLICIES = tuple(os.environ.get('V6_EVAL_POLICIES', 'mean,sample').split(','))   # V6_EVAL_POLICIES=mean: the deployment policy only
 STATE_DIM = 29
 START = dict(x_max=2.0, y_max=2.0, t_max=5)
@@ -154,7 +154,8 @@ def manifest(run_dir, cfg, arm, extra=None):
       'bc_balance_region': getattr(cfg, 'bc_balance_region', 'action'),
       'horizon': HORIZON, 'p_active': [cfg.rockfall_p_active_1, cfg.rockfall_p_active_2],
       't0_ranges': [[cfg.rockfall_t0_min_1, cfg.rockfall_t0_max_1], [cfg.rockfall_t0_min_2, cfg.rockfall_t0_max_2]],
-      'note': 'discount 0.999 deviates from the frozen V6 recipe (0.99) on purpose: plan section 0',
+      'note': ('discount 0.999 deviates from the frozen V6 recipe (0.99) on purpose: plan section 0' if DISCOUNT == 0.999
+               else f'discount {DISCOUNT:g} via V6_DISCOUNT (the frozen V6 recipe uses 0.99)'),
       'dataset_stem': STEM, 'p_active_env': P_ACTIVE,
       **(extra or {})})
 
@@ -194,7 +195,7 @@ def train_critic(seed, steps):
 
 
 def vanilla_dir(seed):
-  return OUT / ('vanilla_g0999' + CRITIC_TAG) / f'seed_{seed}'   # the tag names a matched-budget vanilla set too
+  return OUT / ('vanilla_g' + f'{DISCOUNT:g}'.replace('0.', '0') + CRITIC_TAG) / f'seed_{seed}'   # vanilla_g0999 at the default discount; the tag names a matched-budget vanilla set too
 
 
 def train_vanilla(seed, steps):
@@ -441,7 +442,7 @@ def evaluate_ckpt(ckpt, out_dir, policy):
   recipe's discount); this driver's manifest records the deviation."""
   import eval_rockfall_clock_v6_baseline as EV
   from crl import rockfall_clock_v6 as V6
-  out = Path(out_dir) / f'eval_{policy}.json'
+  out = Path(out_dir) / (f'eval_{policy}.json' if EVAL['seed'] == 909 else f'eval_{policy}_s{EVAL["seed"]}.json')
   if out.exists():
     return json.loads(out.read_text(encoding='utf-8'))['summary']
   args = EV.parse_args(['--ckpt', str(ckpt), '--n', str(EVAL['n']), '--seed', str(EVAL['seed']),

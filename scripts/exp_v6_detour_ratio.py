@@ -54,7 +54,7 @@ sys.path.insert(0, str(ROOT / 'scripts'))
 import build_v6_branch_replay as B  # noqa: E402
 
 EXP = 'exp_detour_ratio'
-RATIOS = {'d05': (50, 950), 'd20': (200, 800)}
+RATIOS = {'d05': (50, 950), 'd10': (100, 900), 'd20': (200, 800)}   # d10 added 2026-09-18 (follow-up C); the shared permutation keeps the draws nested
 DDIR = ROOT / 'artifacts' / 'rockfall_clock_v6' / 'dataset'
 STEM = 'antmaze_rockfall_clock_v6_p050_{ratio}'
 
@@ -94,7 +94,13 @@ def datasets(args):
   det_order = rng.permutation(det).tolist(); sc_order = rng.permutation(sc_).tolist()
   out = exp_dir(); out.mkdir(parents=True, exist_ok=True)
   info = {'pool': {'detour': len(det), 'shortcut': len(sc_), 'excluded_old_held_out': len(old_held), 'excluded_cnew': len(cnew)}, 'selection_seed': args.seed, 'nested': True, 'ratios': {}}
+  if args.only and (out / 'datasets.json').exists():
+    prev = json.loads((out / 'datasets.json').read_text(encoding='utf-8'))
+    assert prev['selection_seed'] == args.seed and prev['pool'] == info['pool'], 'pool or seed changed: the new draw would not be nested with the sealed ones'
+    info['ratios'] = prev['ratios']   # existing ratios are kept as sealed (their files are not rewritten)
   for ratio, (n_d, n_s) in RATIOS.items():
+    if args.only and ratio not in args.only:
+      continue
     eps = sorted(det_order[:n_d] + sc_order[:n_s])
     stem = STEM.format(ratio=ratio)
     m = dict(meta); m.update({'n_episodes': len(eps), 'n_transitions': int((lengths[eps] - 1).sum()), 'composition': f'{n_d} detour + {n_s} shortcut episodes drawn by route label from the p050 pool (nested across ratios)',
@@ -206,7 +212,7 @@ def report(args):
     h = _headline(p); wk = O / f'diag_walker_{r}' / 'summary.json'
     w = json.loads(wk.read_text(encoding='utf-8')) if wk.exists() else {}
     def cell(leg):
-      b = w.get(leg, {}).get('bc') or w.get(f'{leg}|bc') or {}; g = w.get(leg, {}).get('generation') or w.get(f'{leg}|generation') or {}
+      b = w.get(f'{leg}/bc') or w.get(leg, {}).get('bc') or {}; g = w.get(f'{leg}/driver') or w.get(leg, {}).get('driver') or {}
       return f'{f_(b.get("reach"))} ({f_(g.get("reach"))})'
     L.append(f'| {r} | {f_(h["success_rate"])} | {f_(h["failure_rate"])} | {f_(h["timeout_rate"])} | {f_(h["detour_rate"])} | {f_(h["shortcut_rate"])} | {cell("north")} | {cell("east")} |')
   L += ['', '## Actors (300 natural draws, mean policy; pure-BC init, frozen critic, bc 0.05, 30k)', '',
@@ -241,14 +247,62 @@ def report(args):
   print('\n'.join(L), flush=True)
 
 
+# ------------------------------------------------------------------ follow-up report (density / discount arms)
+FOLLOWUP = (('d20 vanilla (reference: p050, gamma 0.999)', 'joint_van_d20', 'joint_purebc_d20'),
+            ('A: p040 far20, gamma 0.999', 'joint_van_p040far20', 'joint_purebc_p040far20'),
+            ('B: d20 (p050), gamma 0.99', 'joint_van_d20_g099', 'joint_purebc_d20'),
+            ('C: d10 (p050), gamma 0.999', 'joint_van_d10', 'joint_purebc_d10'),
+            ('d05 vanilla (p050, gamma 0.999)', 'joint_van_d05', 'joint_purebc_d05'))
+
+
+def report_followup(args):
+  out = exp_dir(); O = B.OUT
+  man = json.loads((out / 'manifest_followup.json').read_text(encoding='utf-8'))
+  f_ = lambda v, fmt='.3f': (format(v, fmt) if isinstance(v, (int, float)) and v is not None else '-')
+  L = ['# Detour-share follow-up: hazard density (A) and discount (B) against the d20 vanilla chain', '',
+       f'Sealed {man["sealed_at"]}.  Recorded-futures chain only; reading rule: mean over 3 seeds differs from the reference by '
+       '> 2 x pooled seed s.e. with 3 / 3 seeds in the same direction.  Ladder baseline reference (frozen V6 recipe, 0.30 rung): detour 0.000.', '',
+       '| arm | BC walker: success / detour | seed | actor success | failure | timeout | detour | shortcut |', '|---|---|---|---:|---:|---:|---:|---:|']
+  agg = {}
+  for label, jdir, bdir in FOLLOWUP:
+    bp = O / bdir / 'seed_0' / 'eval_mean.json'
+    bc = f'{f_(_headline(bp)["success_rate"])} / {f_(_headline(bp)["detour_rate"])}' if bp.exists() else '-'
+    hs = []
+    for sd in (0, 1, 2):
+      pth = O / jdir / f'seed_{sd}' / 'eval_mean.json'
+      if not pth.exists():
+        continue
+      h = _headline(pth); hs.append(h)
+      L.append(f'| {label} | {bc} | {sd} | {f_(h["success_rate"])} | {f_(h["failure_rate"])} | {f_(h["timeout_rate"])} | {f_(h["detour_rate"])} | {f_(h["shortcut_rate"])} |')
+    if hs:
+      agg[label] = (np.array([h['success_rate'] for h in hs]), np.array([h['detour_rate'] for h in hs]))
+  if agg:
+    L += ['', '| arm | mean success (seed s.e.) | mean detour (seed s.e.) |', '|---|---|---|']
+    se = lambda v: (v.std(ddof=1) / np.sqrt(len(v))) if len(v) > 1 else 0.0
+    for label, (su, de) in agg.items():
+      L.append(f'| {label} | {su.mean():.3f} ({se(su):.3f}) | {de.mean():.3f} ({se(de):.3f}) |')
+    L += ['', '## Pre-registered comparisons against the d20 vanilla reference', '']
+    ref = FOLLOWUP[0][0]
+    for label in list(agg)[1:]:
+      if ref in agg:
+        for qi, qn in ((0, 'success'), (1, 'detour')):
+          x, y = agg[label][qi], agg[ref][qi]
+          if len(x) > 1 and len(y) > 1:
+            pse = np.sqrt((x.var(ddof=1) + y.var(ddof=1)) / len(x)); d = x.mean() - y.mean(); same = int(np.sum(np.sign(x - y) == np.sign(d))) if d != 0 else 0
+            L.append(f'- {label} minus reference, {qn}: {d:+.3f} (pooled seed s.e. {pse:.3f}; {"> 2 s.e." if abs(d) > 2 * pse else "not > 2 s.e."}; same-direction seeds {same}/3)')
+  (out / 'REPORT_followup.md').write_text('\n'.join(L) + '\n', encoding='utf-8')
+  print('\n'.join(L), flush=True)
+
+
 def main(argv=None):
   ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-  ap.add_argument('mode', choices=('datasets', 'seal', 'audit', 'report'))
+  ap.add_argument('mode', choices=('datasets', 'seal', 'audit', 'report', 'report_followup'))
   ap.add_argument('--ratio', choices=tuple(RATIOS), default='d05')
   ap.add_argument('--seed', type=int, default=2028)
   ap.add_argument('--force', action='store_true')
+  ap.add_argument('--only', nargs='*', default=None, help='datasets: write only these ratios, keeping the sealed entries of datasets.json')
   args = ap.parse_args(argv)
-  {'datasets': datasets, 'seal': seal, 'audit': audit, 'report': report}[args.mode](args)
+  {'datasets': datasets, 'seal': seal, 'audit': audit, 'report': report, 'report_followup': report_followup}[args.mode](args)
   return 0
 
 

@@ -1656,3 +1656,91 @@ difference) 0.34-0.40 on A / B / old C, 0.03 on Cnew.  Reading: the
 second branch -- physics and one-step representation are fine; learning
 the long-continuation value is the problem; adding samples of the same
 kind is not the lever.  Not committed.
+
+### Detour-demonstration share 5% vs 20% (2026-09-18, user's proposal; sealed at b8816b8)
+
+`scripts/exp_v6_detour_ratio.py`, `outputs/antmaze_branch_replay_p050/exp_detour_ratio/`.
+Nested 1,000-episode datasets from the merged p050 pool (old held-out and
+Cnew excluded; seed 2028): d05 = 50 detour + 950 shortcut (rows 267k,
+detour row share 0.070), d20 = 200 + 800 (286k, 0.269).  Per ratio, the
+same recipe: pure BC 100k (seed 0) -> BC controls (300 natural draws;
+placed completion on Cnew rows) -> vanilla critics x 3 (30k) -> branch
+replay (r1 protocol, continuation = this ratio's BC mode; 18.7k / 19.4k
+paths) -> branch critics x 3 (30k, uniform anchors) -> six actors (BC
+init, frozen critic, bc 0.05, 30k) -> 300-draw evaluations; effective
+share audited at every level (dataset 0.05 / 0.20 episodes, BC sampler
+draws 0.051 / 0.201, vanilla anchor law 0.05 / 0.20, replay general
+anchors 0.069 / 0.268).  d05 on node 30021 (4090), d20 on 30043 (4090L).
+
+BC controls: route choice at the fork is zero for both (0 / 300 and
+2 / 300 detours; success 0.257 / 0.260 = the no-hazard episodes); placed
+completion of the detour 0.80-0.84 (d05) vs 0.91-0.92 (d20), driver
+0.99.  Replay start-state counterfactuals go around 0.04 (d05) vs 0.16
+(d20).  Actors (success; detour rate): d05 vanilla 0.263 / 0.263 / 0.260
+(0.07 / 0.01 / 0.01), d05 branch 0.240 / 0.240 / 0.250 (0.14 / 0.02 /
+0.07); d20 vanilla 0.543 / 0.723 / 0.647 (0.51 / 0.74 / 0.63; hazard
+success 0.48-0.67), d20 branch 0.243 / 0.290 / 0.347 (0.16 / 0.16 /
+0.30; hazard success 0.06-0.19).  Pre-registered comparisons (> 2 pooled
+seed s.e., 3/3): vanilla d20 - d05 success +0.376 (s.e. 0.052) and
+detour +0.596 -- met; branch d20 - d05 success +0.050 (0.030, not met),
+detour +0.130 (0.058, met); branch - vanilla at d05 -0.019 (0.004, met,
+negative), at d20 -0.344 (0.060, met, negative).  Reading: at 20% share
+the NCE critic on recorded futures plus the BC-initialised actor learns
+the route choice at the fork -- under THIS recipe (p_active 0.50, gamma
+0.999, frozen 30k critic, BC-initialised actor with balanced rows); the
+ladder's frozen V6 baseline (p_active 0.40, gamma 0.99, joint 100k from
+scratch; notes/v6_detour_ladder.md section 5) never detoured even at
+0.30, so which difference unlocks the demonstrations is not isolated
+(discount is the a-priori candidate, untested); the counterfactual branch
+futures as built give a critic that is worse for the actor at both
+shares (no-hazard success drops to 0.78-0.90, 9-24% timeouts), and the
+"branch adds a gain" reading is refuted at d20.  Why the branch critic
+is worse is not established (candidates, untested: 15x fewer (s, a)
+keys and every-60th general anchors; BC-mode continuation as the
+futures' source instead of the teacher's recorded futures; replay-only
+training).  Datasets pulled locally (hashes match the manifest); replays
+and checkpoints on the nodes.  Not committed.  Details
+`exp_detour_ratio/SUMMARY.md`.
+
+### Detour-share follow-up: density, discount, 10% (2026-09-18)
+
+User's questions after the 5% / 20% result: the ladder's frozen V6
+baseline never detoured even at the 0.30 rung (p040, gamma 0.99, joint
+100k), so which difference lets the recorded-futures chain detour?  Arms
+(`exp_detour_ratio/manifest_followup.json`, `REPORT_followup.md`,
+recorded-futures chain only, 3 seeds): A = p040 far20 at gamma 0.999:
+success 0.593 / 0.357 / 0.590, detour 0.54 / 0.08 / 0.49 (vs the ladder
+baseline 0.357 / 0.000 on that data; vs d20 -0.12, not > 2 s.e.) -> the
+hazard density is not the separator; B = d20 at gamma 0.99: 0.353 /
+0.367 / 0.330, detour 0.18-0.25 (-0.29 vs d20, 3/3) -> the discount is
+the largest factor but does not bring the chain back to zero detours;
+C = d10 at gamma 0.999: 0.393 / 0.460 / 0.330, detour 0.15-0.46 ->
+monotone in the share (5 / 10 / 20 % = 0.26 / 0.39 / 0.64).  Driver:
+V6_DISCOUNT override.  Not committed.
+
+### Agent-update round 1 and the query extension (2026-09-18, user's plan with four corrections)
+
+`scripts/exp_v6_agent_round.py`, `scripts/diag_v6_first_step_replay.py`,
+`outputs/antmaze_branch_replay_p050/exp_agent_round/SUMMARY.md`.  Fixed
+agent = joint_van_d20/seed_0 (seed-0 rule; 0.543 on the 909 draw).  Round 1
+= the control replay's anchors / queries / draw seeds with the agent's mode
+as continuation (`--query-ckpt`); critics x3, actors x3 from the fixed
+agent; control = critics_br_d20 (BC continuation); reference =
+critics_van_d20.  Everything re-evaluated on one fresh draw (seed 2909,
+V6_EVAL_SEED).  The round-1 futures equal the control's (start stratum
+around 0.15 vs 0.16): first-step check -- own first torque reproduces the
+natural trajectories exactly (60/60, xy 1e-9), but a BC / recorded first
+torque at the same reset sends the agent east (around 0.00-0.10 vs 1.00),
+the teacher's detour torque sends it around even where it went straight
+(0.83) -> the query set lacked the agent's own first torques.  Extension
+(`--extra-query-ckpt`): agent mode + samples added at every anchor, masses
+unchanged (verify_ext), both continuations.  Results, 2909 draw: start
+0.507; control 0.300; round1 0.384; ext_bc 0.413; ext_ag 0.356; reference
+(recorded-data critics) 0.661.  ext_bc - control +0.113 (3/3, met);
+ext_ag - round1 -0.03 and ext_ag - ext_bc -0.06 (not met); every branch
+arm below the start (3/3), the reference +0.154 above it (3/3).  Cdev
+(96 anchors, 5 candidates, 16 draws, both label sets): all five critic
+sets at chance, no pair 2 s.e. apart.  Verdict: round 1 not met, no
+second round.  Infrastructure: node 30049's 3090 power-capped (~270 MHz,
+CPU only); node 30021 died mid-run; ext_bc actors OOM on node 30108,
+moved to 30043.  Not committed.

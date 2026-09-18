@@ -1,0 +1,37 @@
+{
+  "arm": "branch_joint_warm",
+  "env_name": "offline_antmaze_rockfall_clock_v6_gxy",
+  "dataset": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/critic_stub_d10.npz",
+  "dataset_sha256": "fb0adff82055172a876f0628b43cc892fc37b7178443c46a334ee58edbecb5db",
+  "discount": 0.999,
+  "steps": 30000,
+  "batch_size": 1024,
+  "twin_q": true,
+  "bc_coef": 0.05,
+  "bc_sampling": "balanced",
+  "bc_dataset": "/root/contrastive_rl/artifacts/rockfall_clock_v6/dataset/antmaze_rockfall_clock_v6_p050_d10_gxy.npz",
+  "bc_balance_region": "displacement",
+  "horizon": 800,
+  "p_active": [
+    0.5,
+    0.5
+  ],
+  "t0_ranges": [
+    [
+      10,
+      45
+    ],
+    [
+      90,
+      125
+    ]
+  ],
+  "note": "discount 0.999 deviates from the frozen V6 recipe (0.99) on purpose: plan section 0",
+  "dataset_stem": "antmaze_rockfall_clock_v6_p050_d10",
+  "p_active_env": 0.5,
+  "wall_seconds": 754.4794583320618,
+  "milestones": [
+    10000,
+    20000
+  ]
+}
