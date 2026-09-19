@@ -18,6 +18,7 @@ withdrawn as default fix proposals.
 | bc0.02 | BC 0.05 -> 0.02 | **0.000 / 0.000 / 0.000** | 0.12 / 0.40 / 0.02 (turns, never arrives) | 1.00 / 1.00 / 1.00 | 0.203 / 0.240 / 0.223 | 0 / 0 / 0 | -0.356, NOT MET | -- (no walking) |
 | bc0 | BC 0 | **0.000 / 0.000 / 0.000** | 0.00 / 0.00 / 0.01 | 1.00 / 1.00 / 1.00 | **0.000 / 0.000 / 0.000** | 0 / 0 / 0 | -0.356, NOT MET | -- (no walking, either arm) |
 | anchor_start0.5 | + 0.5 * \|\|tanh(loc) - tanh(loc_start)\|\|^2 (bc 0.05 kept) | 0.247 / 0.290 / 0.257 | 0.00 / 0.09 / 0.03 | 0.00 / 0.04 / 0.01 | 0.260 / 0.273 / 0.257 | 0.75 / 0.67 / 0.62 (recovered) | -0.091, NOT MET | +0.00 (1/3): gone |
+| **critic_clip0.1** | clip_by_global_norm(0.1) on the critic gradient before Adam, both arms | **0.457 / 0.513 / 0.440** | 0.57 / 0.52 / 0.36 | 0.35 / 0.18 / 0.16 | 0.257 / 0.247 / 0.260 | 0.75 / 0.75 / 0.67 (>= start) | +0.114 (2/3) | **+0.216 (0.026, 3/3): MET** |
 
 Readings (against the readings fixed in each manifest):
 
@@ -43,3 +44,11 @@ majority rows): the four variants move along one axis -- how far the actor
 is allowed to leave the start policy -- and on that axis the route gain and
 the walking loss come together.  None separates them, and none of them is
 proposed as a fix.  Checkpoints stay on the nodes.
+
+**critic_clip0.1 (2026-09-19, later; `critic_clip0.1/SUMMARY.md`)** is not
+a one-axis variant of the actor: it removes the critic runaways
+(`../diag_replay/spike/SUMMARY.md`) in both arms.  No spike in any of the
+six runs; O unchanged (= start); CF - O success +0.216 (seed s.e. 0.026,
+3/3), the mainline rule met; detour 0.36-0.57, deaths 0.19-0.40, hazard
+success 0.31-0.43; timeouts 0.16-0.35 remain (the detour is completed
+40-70 % of the time).  Disclosed as an optimizer-stabilisation change.

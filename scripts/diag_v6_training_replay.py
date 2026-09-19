@@ -51,7 +51,7 @@ MAX_ENTRIES = 60          # walking probe: cap on the recorded CF detour entranc
 
 
 # ------------------------------------------------------------- learner
-def build(seed, arm, branch_path, cfg_dir):
+def build(seed, arm, branch_path, cfg_dir, critic_clip=None):
   import jax.numpy as jnp
   import optax
   from crl import losses as losses_mod
@@ -60,7 +60,7 @@ def build(seed, arm, branch_path, cfg_dir):
   MP.fill_dims(cfg)
   nets = MP.make_nets(cfg)
   pol_opt = optax.adam(cfg.actor_learning_rate, eps=1e-7)
-  q_opt = optax.adam(cfg.learning_rate, eps=1e-7)
+  q_opt = MP.critic_optimizer(cfg, critic_clip)      # plain Adam, or clip_by_global_norm -> Adam (the critic_clip variant)
   gidx = np.asarray(cfg.goal_indices)
 
   def obs_to_goal(states):
@@ -71,7 +71,19 @@ def build(seed, arm, branch_path, cfg_dir):
   futures = MP.RecordedFutures(anchors, obs, act) if arm == 'O' else MP.BranchFutures(anchors, branch_path)
   critic_stream = MP.CriticStream(anchors, futures, cfg.batch_size, cfg.discount, MP.CRITIC_STREAM_SEED0 + seed)
   actor_stream = MP.ActorStream(cfg, MP.ACTOR_STREAM_SEED0 + seed)
+  build.optimizers = (pol_opt, q_opt)
   return cfg, nets, update_step, critic_stream, actor_stream
+
+
+def wrap_q_opt_state(q_opt, q_params, loaded_state, critic_clip):
+  """A checkpoint saved with plain Adam resumed under clip -> Adam: keep the Adam moments (count, mu, nu), add the clip's empty state."""
+  import jax
+  if critic_clip is None:
+    return loaded_state
+  fresh = q_opt.init(q_params)                       # (clip state, adam state)
+  wrapped = (fresh[0], loaded_state)
+  assert jax.tree_util.tree_structure(wrapped) == jax.tree_util.tree_structure(fresh), 'optimizer state layout differs'
+  return wrapped
 
 
 def fast_forward(critic_stream, actor_stream, n_batches):

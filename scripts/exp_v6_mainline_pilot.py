@@ -109,7 +109,8 @@ LOG_EVERY = 500
 VARIANTS = {'actor_lr1e-4': {'actor_learning_rate': 1e-4},
             'bc0.02': {'bc_coef': 0.02},                    # user's request 2026-09-19: is BC the anchor?  lower BC
             'bc0': {'bc_coef': 0.0},                        # ... and no BC at all (actor = critic term only)
-            'anchor_start0.5': {'anchor_coef': 0.5}}         # non-BC handle: trust region to the start policy's mode (crl.losses anchor penalty), bc 0.05 kept
+            'anchor_start0.5': {'anchor_coef': 0.5},         # non-BC handle: trust region to the start policy's mode (crl.losses anchor penalty), bc 0.05 kept
+            'critic_clip0.1': {'critic_clip': 0.1}}          # optimizer stabilisation (user, after the spike trace): global-norm clipping of the CRITIC gradient before Adam
 # Round 2 (user request 2026-09-19): policy iteration -- the round-1 CF agent of each seed becomes the continuation
 # policy of ITS OWN lineage (no selection of a best seed), the branches are regenerated at the same anchors with the
 # same hazard seeds (so that CF2 and CFold differ only by the continuation agent), and three arms are trained from
@@ -119,7 +120,10 @@ R2_ARMS = ('O', 'CF', 'CFold')
 VARIANT_NOTES = {
     'bc0.02': 'BC weight 0.05 -> 0.02; tests whether the BC pull on the 95 % shortcut teacher torques is what keeps the reset mode in the shortcut basin, and whether BC is what protects mid-route walking',
     'bc0': 'BC weight 0; the actor follows the critic term alone (historically the actor left the data manifold within 10k updates with a frozen critic; here the critic trains jointly)',
-    'anchor_start0.5': 'adds 0.5 * ||tanh(loc) - tanh(loc_start)||^2 at the actor rows (reference = the start agent, fixed); expected to hold torques where the critic is flat (mid-route) and yield where it pushes (reset), with bc 0.05 unchanged'}
+    'anchor_start0.5': 'adds 0.5 * ||tanh(loc) - tanh(loc_start)||^2 at the actor rows (reference = the start agent, fixed); expected to hold torques where the critic is flat (mid-route) and yield where it pushes (reset), with bc 0.05 unchanged',
+    'critic_clip0.1': ('optax.clip_by_global_norm(0.1) on the critic gradient before Adam (optax.chain), both arms identically; NCE, actor loss, bc 0.05, '
+                       'learning rates, Adam and everything else unchanged.  Threshold from the spike trace: pre-spike critic gradient norms median 0.017 / 0.033, '
+                       'p99 ~0.055 / 0.096; the triggering impulses 0.92 / 2.53.  An optimizer-stabilisation change, disclosed as such -- not the original learner')}
 
 
 # ------------------------------------------------------------------ helpers
@@ -932,6 +936,14 @@ def _tree_hash(tree):
   return arr_hash(*[np.asarray(x) for x in jax.tree_util.tree_leaves(tree)])
 
 
+def critic_optimizer(cfg, critic_clip=None):
+  """The critic's Adam; with ``critic_clip`` the raw gradient is scaled down to that global norm before Adam sees it
+  (optax.clip_by_global_norm: direction kept, no effect below the threshold).  Adam itself is unchanged."""
+  import optax
+  adam = optax.adam(cfg.learning_rate, eps=1e-7)
+  return adam if critic_clip is None else optax.chain(optax.clip_by_global_norm(float(critic_clip)), adam)
+
+
 def train_arm(arm, seed, updates=UPDATES, base=None, batch=BATCH, start_ckpt=START_CKPT, branch_path=None, log_every=LOG_EVERY, overrides=None, inputs=None):
   import jax
   import optax
@@ -949,15 +961,18 @@ def train_arm(arm, seed, updates=UPDATES, base=None, batch=BATCH, start_ckpt=STA
   cfg = recipe_config(seed, d, steps=updates)
   cfg.batch_size = int(batch)
   anchor_coef = 0.0
+  critic_clip = None
   for k, v in (overrides or {}).items():
     if k == 'anchor_coef':
       anchor_coef = float(v); continue
+    if k == 'critic_clip':
+      critic_clip = float(v); continue
     assert hasattr(cfg, k), k
     setattr(cfg, k, v)
   fill_dims(cfg)
   nets = make_nets(cfg)
   policy_optimizer = optax.adam(cfg.actor_learning_rate, eps=1e-7)
-  q_optimizer = optax.adam(cfg.learning_rate, eps=1e-7)
+  q_optimizer = critic_optimizer(cfg, critic_clip)
   gidx = None if cfg.goal_indices is None else np.asarray(cfg.goal_indices)
 
   def obs_to_goal(states):
@@ -1020,6 +1035,7 @@ def train_arm(arm, seed, updates=UPDATES, base=None, batch=BATCH, start_ckpt=STA
       'arm': arm, 'seed': seed, 'optimizer_updates': n_updates, 'scan_group': G, 'batch_size': cfg.batch_size, 'wall_seconds': time.time() - t0,
       'futures': futures.name, 'branch_file': (None if arm == 'O' else str(branch_path or (inputs / 'branches_cf.npz'))), 'overrides': (overrides or {}),
       'start_ckpt': (str(start_ckpt) if start_ckpt else None), 'start_ckpt_sha256': (sha256(start_ckpt) if start_ckpt else None),
+      'critic_clip': critic_clip, 'anchor_coef': anchor_coef,
       'anchors_sha256': sha256(inputs / 'anchors.npz'), 'critic_stream_seed': CRITIC_STREAM_SEED0 + seed, 'actor_stream_seed': ACTOR_STREAM_SEED0 + seed,
       'jax_key_seed': seed, 'config': config_dump(cfg), 'first_batches': first,
       'params': {'q_init': h_q0, 'q_final': _tree_hash(state.q_params), 'policy_init': h_p0, 'policy_final': _tree_hash(state.policy_params),
@@ -1059,18 +1075,32 @@ def mode_seal_variant(args):
          'held_fixed': 'dataset, anchors and weights, CF branches, critic and actor streams and seeds, losses (NCE + actor loss, bc 0.05, random_goals 0), '
                        'critic learning rate 3e-4, twin-Q architecture, initialisation (fresh paired critics, actor from the start agent), 30,000 optimizer '
                        'updates, gamma 0.999, evaluation (300 natural draws, seed 3909, mode); both arms O and CF, seeds 0-2',
-         'motivation': ('diag_traj sections 3 and 7: the CF update lost local walking competence on states the pre-update policy still completes '
+         'motivation': ('diag_replay/spike/SUMMARY.md: the walking collapses are critic runaways -- one critic gradient impulse on an ordinary batch, '
+                        'Adam keeps x10-15 steps, all logits shift down on fixed data, the actor is dragged 12-20 updates later; with the critic frozen '
+                        'the actor does not collapse.  Both arms have the events.  First remedy: clip the critic gradient (global norm 0.1) before Adam, '
+                        'identically in O and CF; not a proven fix, disclosed as an optimizer-stabilisation change.' if name == 'critic_clip0.1' else
+                        'diag_traj sections 3 and 7: the CF update lost local walking competence on states the pre-update policy still completes '
                         '(19 O-finishes-CF-not handover pairs, start policy finishes 13); a slower actor update is the direct candidate that leaves '
                         'the CRL objective unchanged.  Not a proven fix; cannot repair critic blind spots.' if name == 'actor_lr1e-4' else
                         'after the actor_lr1e-4 trial (route change and walking loss scale together with the update size) and the stall-critic check '
                         '(the CF critic is nearly flat among the CF / O / start torques at the mid-route states, P 0.56, +0.04 nats): which term anchors '
                         'the reset mode and which protects mid-route walking?  bc0.02 / bc0 remove the BC pull; anchor_start0.5 adds a label-free '
                         'trust region to the start policy that should hold torques where the critic is flat and yield where it pushes.'),
-         'criteria': {'1_native_success': 'CF(variant) - CF(base) success on the 300 common episodes, per paired seed; rule: mean > 2 x seed s.e. and 3/3 (also reported vs O(variant) and vs start)',
+         'criteria': ({'0_training_stability': 'no logged spike in any of the 6 runs: every 500-update log row has critic loss < 0.02 and mean positive logit > -20 '
+                                                '(the base runs: CF 0.133 / 0.120 / 0.362 at 4.5k / 2.5k / 6.5k, O s1 0.21 at 8k); and the critic still learns '
+                                                '(critic loss at 30k at the base level ~0.007, categorical accuracy comparable)',
+                       '1_primary': 'CF(variant) - O(variant) success on the 300 common episodes, per paired seed; rule: mean > 2 x seed s.e. and 3/3',
+                       '2_detour': 'CF(variant) - O(variant) detour rate 3/3 positive; death / timeout / hazard success reported',
+                       '3_vs_base': 'CF(variant) - CF(base) and O(variant) - O(base) success and timeout (does the stabilisation remove the walking loss?)',
+                       '4_continuation': 'from the SAME detour-entrance handover states of diag_traj (cont.json enter_detour): reach rate of CF(variant) vs CF(base) and the start policy',
+                       'readings': 'no spikes + walking kept + detour and success up = the runaway was the limit; no spikes + walking kept + no detour = a route-learning '
+                                   'question, to be examined without training collapses; spikes remain = the clip does not bound the Adam step, next candidate is a bound '
+                                   'on the actual update'} if name == 'critic_clip0.1' else
+                      {'1_native_success': 'CF(variant) - CF(base) success on the 300 common episodes, per paired seed; rule: mean > 2 x seed s.e. and 3/3 (also reported vs O(variant) and vs start)',
                       '2_detour_gain_kept': 'CF(variant) detour rate not below CF(base) by more than 2 x seed s.e. (and CF(variant) - O(variant) detour still 3/3 positive)',
                       '3_continuation_recovered': 'from the SAME detour-entrance handover states of diag_traj (cont.json enter_detour, 42 + 12 + 4 states): reach rate of CF(variant) vs CF(base) '
                                                   'and vs the start policy, per seed; recovered = CF(variant) >= start on those states and > CF(base)',
-                      'failure_readings': 'walks well but no detours = not a fix; continuation recovered and detour kept = an actionable handle; still stalls = not the update speed'},
+                      'failure_readings': 'walks well but no detours = not a fix; continuation recovered and detour kept = an actionable handle; still stalls = not the update speed'}),
          'no_selection': 'the variant is evaluated once with its final checkpoint; no tuning of the rate after seeing the result'}
   write_json(base / 'manifest.json', man)
   print(json.dumps(man, indent=1), flush=True)

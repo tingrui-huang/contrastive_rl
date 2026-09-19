@@ -2027,3 +2027,32 @@ first branch: the critic update and its signal to the actor.  Shared
 learner property (both arms; O s1 / O s2 too), not the futures; the pilot's
 30k actors went through different numbers of such events.  No remedy run
 (would be a stability safeguard applied to both arms; user's call).
+
+### Critic gradient clip (2026-09-19, night): first remedy, both arms -- the mainline rule met
+
+User's decision after the spike trace: stabilise the critic update first,
+one change only -- `optax.clip_by_global_norm(0.1)` on the critic gradient
+before Adam (Optax chain; Adam state kept), NCE / actor objective / bc 0.05
+unchanged; threshold from the traced gradient norms (median 0.017 / 0.033,
+p99 ~0.06 / 0.10, impulses 0.92 / 2.53).  Implemented as the pre-registered
+variant `critic_clip0.1` (`exp_v6_mainline_pilot.critic_optimizer`;
+`diag_v6_training_replay.build(critic_clip)`, `diag_v6_spike_trace.py trace
+--critic-clip` with the checkpoint's Adam moments carried).  Short windows
+first (seed 0 from 4,000, seed 1 from 2,000; same batches / RNG): no
+runaway (fixed logits min -7 vs -929 / -2,422), the actual Adam step at the
+normal maximum (0.077 / 0.049), clip active in 1-3 % of updates, critic
+still learning, actor scale <= 0.11, walking kept (seed 0 0.42-0.76; seed 1
+no collapse but the slower pre-spike drift 0.65 -> 0.13-0.33 remains and
+recovers by 2,750).  Full paired pilot with the clip in both arms
+(`variants/critic_clip0.1/`): no spike in any of the six runs; O clip =
+O base = start (0.257 / 0.247 / 0.260); CF clip 0.457 / 0.513 / 0.440,
+detour 0.57 / 0.52 / 0.36, death 0.19 / 0.31 / 0.40, timeout 0.35 / 0.18 /
+0.16, hazard success 0.39 / 0.43 / 0.31; CF - O success +0.216 (seed s.e.
+0.026, boot 0.023, 3/3) -- MET; detour +0.46, death -0.43, timeout +0.21
+(3/3); CF clip - CF base +0.19 / +0.19 / -0.04; continuation from the same
+entrance handover states 0.75 / 0.75 / 0.67 (>= start).  Contract
+amendment written (section 8).  Remaining limit: the detour is completed
+40-70 % of the time (the slower walking loss driven by ordinary critic
+updates + the start policy's own detour walking) -- the next question,
+examinable now without collapses.  Status: oracle evidence under a
+disclosed optimizer change.

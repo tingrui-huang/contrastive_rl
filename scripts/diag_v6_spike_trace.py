@@ -65,12 +65,15 @@ def mode_trace(args):
   from crl import checkpoint
   s = args.seed
   src = Path(args.ckpt) if args.ckpt else (TR.REPLAY / f'CF_s{s}' / f'upd_{DEFAULT_FROM[s]}.pkl')
-  out = SPIKE / f'CF_s{s}' / ('frozen_critic' if args.freeze_critic else 'normal')
+  out = SPIKE / f'CF_s{s}' / ('frozen_critic' if args.freeze_critic else (f'clip{args.critic_clip:g}' if args.critic_clip else 'normal'))
   if (out / 'trace.json').exists() and not args.force:
     print(f'{out} exists', flush=True); return
   out.mkdir(parents=True, exist_ok=True)
-  cfg, nets, update_step, critic_stream, actor_stream = TR.build(s, 'CF', MP.OUT / 'branches_cf.npz', out / '_cfg')
+  cfg, nets, update_step, critic_stream, actor_stream = TR.build(s, 'CF', MP.OUT / 'branches_cf.npz', out / '_cfg', critic_clip=args.critic_clip)
   step0, state = checkpoint.load_checkpoint(src)
+  if args.critic_clip:
+    # the saved Adam moments are carried; only the clip's (empty) state is added in front of them
+    state = state._replace(q_optimizer_state=TR.wrap_q_opt_state(TR.build.optimizers[1], state.q_params, state.q_optimizer_state, args.critic_clip))
   ff = TR.fast_forward(critic_stream, actor_stream, int(step0))
   print(f'loaded {src} @ step {step0}; fast-forwarded {step0} batches in {ff:.0f} s', flush=True)
   anchors = critic_stream.a
@@ -166,7 +169,7 @@ def mode_trace(args):
             f'agn {r["actor_grad_norm"]:.2f} dpi {r["actor_param_update_norm"]:.3f} q_term {r["actor_q_term"]:.1f} scale {r["act_scale_median"]:.3f} sat {r["act_saturation"]:.2f} '
             f'reset f_mode {r["reset_f_mode"]:+.1f} f_logged {r["reset_f_logged"]:+.1f} | batch |s| {r["batch"]["state_abs_max"]:.0f} |g| {r["batch"]["goal_abs_max"]:.0f}', flush=True)
   checkpoint.save_named(str(out), 'final', int(step0) + args.updates, state)
-  MP.write_json(out / 'trace.json', {'seed': s, 'source_ckpt': str(src), 'source_step': int(step0), 'updates': args.updates, 'freeze_critic': bool(args.freeze_critic),
+  MP.write_json(out / 'trace.json', {'seed': s, 'source_ckpt': str(src), 'source_step': int(step0), 'updates': args.updates, 'freeze_critic': bool(args.freeze_critic), 'critic_clip': args.critic_clip,
                                      'fixed_batch_seed': FIXED_SEED + s, 'ckpt_every': args.ckpt_every, 'wall_seconds': time.time() - t_start, 'rows': rows})
   print(f'done: {len(rows)} updates traced in {time.time() - t_start:.0f} s -> {out}', flush=True)
 
@@ -239,11 +242,14 @@ def mode_rows(args):
 def mode_report(args):
   s = args.seed
   L = [f'# Spike trace, seed {s}: one update at a time from the replay checkpoint before the first logged spike', '']
-  for arm in ('normal', 'frozen_critic'):
+  for arm in sorted(d.name for d in (SPIKE / f'CF_s{s}').iterdir() if (d / 'trace.json').exists()):
     p = SPIKE / f'CF_s{s}' / arm / 'trace.json'
-    if not p.exists():
-      continue
     T = MP.read_json(p); R = T['rows']
+    if T.get('critic_clip'):
+      share = float(np.mean([r['critic_grad_norm'] > T['critic_clip'] for r in R]))
+      L += [f'Clip {T["critic_clip"]}: raw critic gradient above the threshold in {share:.1%} of the updates; max raw gradient {max(r["critic_grad_norm"] for r in R):.3f}; '
+            f'max critic parameter update {max(r["critic_param_update_norm"] for r in R):.3f}; fixed-batch positive logit min {min(r["fixed_logits_pos"] for r in R):.1f}, '
+            f'fixed critic loss first / last {R[0]["fixed_critic_loss"]:.4f} / {R[-1]["fixed_critic_loss"]:.4f}; actor scale median max {max(r["act_scale_median"] for r in R):.3f}', '']
     jumps = [r for r in R if r['critic_loss'] > 0.02 or r['fixed_logits_pos'] < T['rows'][0]['fixed_logits_pos'] - 10]
     first = jumps[0]['update'] if jumps else None
     L += [f'## {arm}: from update {T["source_step"]}, {T["updates"]} updates', '', f'First jump (training critic loss > 0.02 or fixed-batch positive logit down by > 10): update {first}', '']
@@ -281,6 +287,7 @@ def main():
   ap.add_argument('--updates', type=int, default=1000)
   ap.add_argument('--ckpt-every', type=int, default=50)
   ap.add_argument('--freeze-critic', action='store_true')
+  ap.add_argument('--critic-clip', type=float, default=None, help='trace: clip_by_global_norm on the critic gradient before Adam (the Adam moments of the checkpoint are carried)')
   ap.add_argument('--force', action='store_true')
   args = ap.parse_args()
   {'trace': mode_trace, 'rows': mode_rows, 'report': mode_report}[args.mode](args)

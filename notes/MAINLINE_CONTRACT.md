@@ -225,3 +225,27 @@ design and name the replacement of the oracle by an offline-learned ETT as the
 remaining methodological step.  If the required d05 checkpoint is
 unavailable, finish the code and configuration audit, report that blocker,
 and substitute nothing.
+
+## 8. Amendment (2026-09-19): optimizer stabilisation applied to both arms
+
+The pilot under sections 2-7 (`exp_mainline_pilot/REPORT.md`) did not meet
+the rule (CF - O success +0.101, seed s.e. 0.065).  The training logs of
+every run then showed isolated critic runaways (a gradient impulse on an
+ordinary batch, Adam momentum, all logits collapsing on fixed data, the
+actor dragged 12-20 updates later, walking lost for thousands of updates;
+`diag_replay/spike/SUMMARY.md`; with the critic frozen the actor does not
+collapse).  The events are a property of the shared learner (binary NCE
+without representation normalisation, Adam 3e-4 / eps 1e-7), present in the
+O arm as well.  One optimizer-stabilisation change was pre-registered and
+applied identically to both arms: `optax.clip_by_global_norm(0.1)` on the
+critic gradient before Adam (`variants/critic_clip0.1/manifest.json`);
+NCE, the actor objective, bc 0.05, the sampling contract, the
+initialisation, the budget and the evaluation are unchanged.  Validated
+first on the two reproducible spike windows (no runaway, the Adam step
+bounded, the critic still learning, walking kept), then the full paired
+pilot: no spike in any of the six runs; CF - O success +0.216 (seed s.e.
+0.026, 3/3) -- the rule of section 6 met; detour +0.46, death -0.43,
+timeout +0.21 (3/3).  This result is reported as oracle evidence under a
+disclosed optimizer change, not as the original learner; the remaining
+methodological step (section 1a) is unchanged, and the remaining
+empirical limit is the detour walking (timeouts 0.16-0.35).
