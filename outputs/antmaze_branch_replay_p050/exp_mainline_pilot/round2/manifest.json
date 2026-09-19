@@ -1,0 +1,36 @@
+{
+ "round": 2,
+ "sealed_at": "2026-09-19 12:08:50",
+ "git_head": "unavailable (Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128.)",
+ "design": "policy iteration: per lineage s in 0-2, the round-1 CF agent CF/seed_s is the continuation policy (mode) and the actor initialisation of all three arms; critics fresh, paired by seed; same anchors and weights, same hazard seeds as round 1 (HAZARD_SEED0 + anchor_id), same actor stream, losses (bc 0.05), lr, 30,000 updates, evaluation",
+ "no_selection": "lineages, not the best seed: CF/seed_s -> round2/*/seed_s for every s; nothing chosen after the evaluation",
+ "arms": {
+  "O": "recorded futures",
+  "CF": "futures regenerated with the lineage agent after the logged torque (one branch per anchor)",
+  "CFold": "the round-1 futures (branches_cf.npz, generated with the start agent) -- separates regeneration from re-initialisation"
+ },
+ "lineage_agents": {
+  "seed_0": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/CF/seed_0/final.pkl",
+   "sha256": "fe86a5ffcc74b1568b9096aeb6ce60b9f0cbe15650c35b01bc318c2beddfede9"
+  },
+  "seed_1": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/CF/seed_1/final.pkl",
+   "sha256": "aa2ce2133cbd11c5a70eaef10346fef4c526657d9758a449ebea6b48e416f4a3"
+  },
+  "seed_2": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/CF/seed_2/final.pkl",
+   "sha256": "d6eaaa0ab81f87d783e15cd9405ff15160c36ff855d9a0803f8a7b779d602aa7"
+  }
+ },
+ "anchors_sha256": "d6672a7dd70d9596944c9522d7d1cf887204847d34e3348d6e041c8d29d68367",
+ "round1_branches_sha256": "503051d35287645b37cca39f43ec2ffb0f026148d10229219496cd06a58b53a4",
+ "base_manifest_sha256": "d7092bb5401db400e4b24dfe4c617b266324935005441f9dd0aeb4de59e364a6",
+ "comparisons": {
+  "primary": "CF - O per lineage (paired on the common episodes), then over the 3 lineages",
+  "regeneration": "CF - CFold (same agent, same init, futures from the improved vs the start agent)",
+  "practical": "CF - CF1 (the lineage agent itself) and CF - start (the pilot start agent)",
+  "rule": "mean over the 3 paired lineages > 2 x seed s.e. and 3/3; secondary metrics detour / death / timeout / hazard success"
+ },
+ "held_fixed": "everything in notes/MAINLINE_CONTRACT.md sections 2-4 except the continuation agent and the actor initialisation"
+}

@@ -1916,3 +1916,43 @@ intervention does its part at the critic level; the tie and the
 interference are properties of the actor objective and the row composition
 (outside the boundary as written); the untested in-boundary lever is the
 next policy-iteration round (the improved agent as the continuation).
+
+### Round 2 (policy iteration) -- negative, below the round-1 futures (2026-09-19, evening)
+
+User's request: use the round-1 CF agent ("already learned a bit of detour")
+as the new continuation policy, regenerate the branch replay, retrain critic
+and actor.  Sealed `round2/manifest.json`: per lineage s the round-1 CF agent
+CF/seed_s continues the branches at the same anchors with the same hazard
+seeds and initialises three arms with fresh paired critics -- O (recorded),
+CF (regenerated), CFold (round-1 futures); no seed selection; same streams,
+losses, bc 0.05, 30,000 updates, same 300 evaluation episodes; three nodes
+(30043 / 30125 / 30016), ~55 min.  Result (`round2/REPORT.md`, `SUMMARY.md`):
+CF2 success 0.240 / 0.240 / 0.250, detour 0.00 / 0.00 / 0.10 (from 0.11 /
+0.17 / 0.50); O2 0.25, detour 0.01; CFold2 0.263 / 0.283 / 0.260, detour
+0.16 / 0.12 / 0.21.  CF2 - O2 success -0.008 (seed s.e. 0.002, 3/3
+negative) NOT MET; CF2 - CFold2 success -0.026, detour -0.13, 3/3 negative;
+every round-2 arm below the lineage agent it started from (CF2 - CF1 -0.11
+success, -0.22 detour, 3/3).  Two read-only checks explain it: (i) branch
+profiles by logged route (`scripts/diag_v6_round2_branch_profile.py`): after
+the logged shortcut first torque the lineage agents go around in 0.1-0.4 %
+of the start-region branches (start agent 0.0 %), even the seed-2 agent that
+detours natively in 50 % -- the route content of the futures is unchanged
+(only the 5 % logged-detour anchors carry detour futures); the lineage
+agents walk the top corridor better but are not better from the detour
+start rows (more timeouts, longer) and die more on the shortcut anchors
+(fewer freezes); (ii) critic readout at the 192 logged-shortcut reset states
+(`scripts/diag_v6_round2_critic_readout.py`): the round-1 CF critics prefer
+the teacher detour torques by +2.9 / +2.2 / +1.9 nats (top-1 detour share
+0.96 / 0.94 / 0.52), the CF2 critics by +0.8 / +1.9 / +1.5 (0.28 / 0.96 /
+0.71) -- lineage 0 lost the preference at the critic level (its regenerated
+detour-start futures are the slowest), lineages 1 / 2 kept it and the ACTOR
+still went to 0.00 / 0.10 detour.  Recorded futures return the actor to the
+start level within 30k updates (O2), the round-1 futures hold it at
+0.12-0.21 (the 0.50 of round-1 seed 2 was a transient), and a +1.5-1.9 nat
+margin at the reset rows does not hold it against bc 0.05 at all.  Critic
+replication noise (CFold2 / O2 retrain the round-1 critics on the same data,
+seed and stream; lineage 1 bit-identical, 0 / 2 differ by GPU kernels):
+~0.5-0.9 nats at the reset rows.  Assessment: policy iteration in this form
+(same anchors, logged query torque, one branch per anchor) neither adds
+route coverage nor strengthens the critic margin; it is not the in-boundary
+lever it was proposed as.  Nothing selected after the evaluation.

@@ -1,0 +1,342 @@
+{
+ "branches_cf.npz": {
+  "meta": {
+   "continuation_ckpt": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/joint_van_d05/seed_0/final.pkl",
+   "continuation_ckpt_sha256": "6a67dbbdffe817eb0d0ed4984be325c0dabc4d4158578026e9b3bb00bee5f0a9",
+   "anchors": 53747,
+   "wall_seconds": 1083.079072713852
+  },
+  "groups": {
+   "logged shortcut | anchor in start": {
+    "n": 4071,
+    "weight": 0.07575000000000003,
+    "success": 0.22618261826182612,
+    "death": 0.7606160616061605,
+    "timeout": 0.013201320132013196,
+    "reach_top_corridor": 0.0,
+    "reach_hazard_corridor": 0.49086908690869085,
+    "mean_steps": 120.12277227722768
+   },
+   "logged shortcut | anchor in shortcut_corridor": {
+    "n": 42828,
+    "weight": 0.7992666666666668,
+    "success": 0.6127700392026024,
+    "death": 0.2915380765701893,
+    "timeout": 0.09569188422720826,
+    "reach_top_corridor": 0.0,
+    "reach_hazard_corridor": 0.6085369922428893,
+    "mean_steps": 146.25319042455584
+   },
+   "logged shortcut | anchor in goal_area": {
+    "n": 4084,
+    "weight": 0.0753166666666667,
+    "success": 0.976764770967028,
+    "death": 0.0,
+    "timeout": 0.02323522903297189,
+    "reach_top_corridor": 0.0,
+    "reach_hazard_corridor": 0.0,
+    "mean_steps": 21.552113299402514
+   },
+   "logged shortcut | reset row (t = 0)": {
+    "n": 192,
+    "weight": 0.003716666666666667,
+    "success": 0.2825112107623318,
+    "death": 0.6816143497757847,
+    "timeout": 0.03587443946188341,
+    "reach_top_corridor": 0.0,
+    "reach_hazard_corridor": 0.547085201793722,
+    "mean_steps": 153.8609865470852
+   },
+   "logged shortcut | t in [1, 30)": {
+    "n": 5671,
+    "weight": 0.10528333333333335,
+    "success": 0.22605667247110967,
+    "death": 0.7625455121101788,
+    "timeout": 0.011397815418711413,
+    "reach_top_corridor": 0.0,
+    "reach_hazard_corridor": 0.4950134557543137,
+    "mean_steps": 114.18141522874782
+   },
+   "logged shortcut | all": {
+    "n": 50983,
+    "weight": 0.9503333333333336,
+    "success": 0.6108032269379164,
+    "death": 0.30582251841459135,
+    "timeout": 0.08337425464749211,
+    "reach_top_corridor": 0.0,
+    "reach_hazard_corridor": 0.5509294984216064,
+    "mean_steps": 134.28744300245526
+   },
+   "logged detour | anchor in start": {
+    "n": 205,
+    "weight": 0.0036833333333333336,
+    "success": 0.592760180995475,
+    "death": 0.06334841628959276,
+    "timeout": 0.3438914027149321,
+    "reach_top_corridor": 0.6877828054298643,
+    "reach_hazard_corridor": 0.07692307692307693,
+    "mean_steps": 489.4389140271492
+   },
+   "logged detour | anchor in west_column": {
+    "n": 299,
+    "weight": 0.005483333333333334,
+    "success": 0.78419452887538,
+    "death": 0.0,
+    "timeout": 0.21580547112462006,
+    "reach_top_corridor": 1.0,
+    "reach_hazard_corridor": 0.0,
+    "mean_steps": 444.90577507598783
+   },
+   "logged detour | anchor in top_west_corner": {
+    "n": 264,
+    "weight": 0.0046833333333333345,
+    "success": 0.8434163701067614,
+    "death": 0.0,
+    "timeout": 0.1565836298932384,
+    "reach_top_corridor": 1.0,
+    "reach_hazard_corridor": 0.0,
+    "mean_steps": 388.61565836298934
+   },
+   "logged detour | anchor in top_corridor": {
+    "n": 1337,
+    "weight": 0.02403333333333334,
+    "success": 0.8127600554785019,
+    "death": 0.0,
+    "timeout": 0.1872399445214979,
+    "reach_top_corridor": 1.0,
+    "reach_hazard_corridor": 0.0,
+    "mean_steps": 297.20388349514553
+   },
+   "logged detour | anchor in east_column": {
+    "n": 603,
+    "weight": 0.01071666666666667,
+    "success": 0.9237947122861585,
+    "death": 0.0,
+    "timeout": 0.07620528771384136,
+    "reach_top_corridor": 0.556765163297045,
+    "reach_hazard_corridor": 0.0,
+    "mean_steps": 94.38724727838255
+   },
+   "logged detour | anchor in goal_area": {
+    "n": 56,
+    "weight": 0.0010666666666666667,
+    "success": 1.0,
+    "death": 0.0,
+    "timeout": 0.0,
+    "reach_top_corridor": 0.0,
+    "reach_hazard_corridor": 0.0,
+    "mean_steps": 16.03125
+   },
+   "logged detour | reset row (t = 0)": {
+    "n": 4,
+    "weight": 6.666666666666667e-05,
+    "success": 0.5,
+    "death": 0.25,
+    "timeout": 0.25,
+    "reach_top_corridor": 0.75,
+    "reach_hazard_corridor": 0.0,
+    "mean_steps": 448.5
+   },
+   "logged detour | t in [1, 30)": {
+    "n": 212,
+    "weight": 0.0038166666666666674,
+    "success": 0.7205240174672487,
+    "death": 0.05676855895196506,
+    "timeout": 0.222707423580786,
+    "reach_top_corridor": 0.8733624454148471,
+    "reach_hazard_corridor": 0.034934497816593885,
+    "mean_steps": 452.7816593886462
+   },
+   "logged detour | all": {
+    "n": 2764,
+    "weight": 0.04966666666666668,
+    "success": 0.8241610738255033,
+    "death": 0.004697986577181208,
+    "timeout": 0.1711409395973154,
+    "reach_top_corridor": 0.859731543624161,
+    "reach_hazard_corridor": 0.00570469798657718,
+    "mean_steps": 286.5859060402684
+   },
+   "all": {
+    "n": 53747,
+    "weight": 1.0000000000000002,
+    "success": 0.6214000000000001,
+    "death": 0.29086666666666666,
+    "timeout": 0.08773333333333333,
+    "reach_top_corridor": 0.0427,
+    "reach_hazard_corridor": 0.52385,
+    "mean_steps": 141.8516
+   }
+  }
+ },
+ "branches_cf_r2_s0.npz": {
+  "meta": {
+   "continuation_ckpt": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/CF/seed_0/final.pkl",
+   "continuation_ckpt_sha256": "fe86a5ffcc74b1568b9096aeb6ce60b9f0cbe15650c35b01bc318c2beddfede9",
+   "anchors": 53747,
+   "wall_seconds": 992.9990682601929
+  },
+  "groups": {
+   "logged shortcut | anchor in start": {
+    "n": 4071,
+    "weight": 0.07575000000000003,
+    "success": 0.21232123212321222,
+    "death": 0.7518151815181517,
+    "timeout": 0.03586358635863586,
+    "reach_top_corridor": 0.0013201320132013197,
+    "reach_hazard_corridor": 0.48910891089108893,
+    "mean_steps": 137.40440044004396
+   },
+   "logged shortcut | anchor in shortcut_corridor": {
+    "n": 42828,
+    "weight": 0.7992666666666668,
+    "success": 0.603824338977396,
+    "death": 0.32556927183251305,
+    "timeout": 0.0706063891900909,
+    "reach_top_corridor": 0.00022937692885144717,
+    "reach_hazard_corridor": 0.6357911418800567,
+    "mean_steps": 128.72430978396864
+   },
+   "logged shortcut | anchor in goal_area": {
+    "n": 4084,
+    "weight": 0.0753166666666667,
+    "success": 0.9904846204912588,
+    "death": 0.0,
+    "timeout": 0.00951537950874087,
+    "reach_top_corridor": 0.0,
+    "reach_hazard_corridor": 0.0,
+    "mean_steps": 16.070148262890015
+   },
+   "logged shortcut | reset row (t = 0)": {
+    "n": 192,
+    "weight": 0.003716666666666667,
+    "success": 0.273542600896861,
+    "death": 0.6591928251121076,
+    "timeout": 0.06726457399103138,
+    "reach_top_corridor": 0.008968609865470852,
+    "reach_hazard_corridor": 0.5426008968609864,
+    "mean_steps": 181.69955156950672
+   },
+   "logged shortcut | t in [1, 30)": {
+    "n": 5671,
+    "weight": 0.10528333333333335,
+    "success": 0.20832673737533638,
+    "death": 0.7543137565299983,
+    "timeout": 0.037359506094665186,
+    "reach_top_corridor": 0.0006332119677061895,
+    "reach_hazard_corridor": 0.4932721228431218,
+    "mean_steps": 132.99271806237135
+   },
+   "logged shortcut | all": {
+    "n": 50983,
+    "weight": 0.9503333333333336,
+    "success": 0.6032620133286566,
+    "death": 0.333742546474921,
+    "timeout": 0.0629954401964223,
+    "reach_top_corridor": 0.00029814100315678704,
+    "reach_hazard_corridor": 0.5737109786039984,
+    "mean_steps": 120.4880217467555
+   },
+   "logged detour | anchor in start": {
+    "n": 205,
+    "weight": 0.0036833333333333336,
+    "success": 0.5158371040723981,
+    "death": 0.049773755656108594,
+    "timeout": 0.4343891402714933,
+    "reach_top_corridor": 0.665158371040724,
+    "reach_hazard_corridor": 0.10859728506787332,
+    "mean_steps": 570.8506787330316
+   },
+   "logged detour | anchor in west_column": {
+    "n": 299,
+    "weight": 0.005483333333333334,
+    "success": 0.8419452887537994,
+    "death": 0.0,
+    "timeout": 0.1580547112462006,
+    "reach_top_corridor": 0.9969604863221885,
+    "reach_hazard_corridor": 0.0,
+    "mean_steps": 481.46808510638294
+   },
+   "logged detour | anchor in top_west_corner": {
+    "n": 264,
+    "weight": 0.0046833333333333345,
+    "success": 0.9181494661921707,
+    "death": 0.0,
+    "timeout": 0.08185053380782918,
+    "reach_top_corridor": 1.0,
+    "reach_hazard_corridor": 0.0,
+    "mean_steps": 417.1067615658362
+   },
+   "logged detour | anchor in top_corridor": {
+    "n": 1337,
+    "weight": 0.02403333333333334,
+    "success": 0.9264909847434118,
+    "death": 0.0,
+    "timeout": 0.07350901525658805,
+    "reach_top_corridor": 1.0,
+    "reach_hazard_corridor": 0.0,
+    "mean_steps": 312.4466019417475
+   },
+   "logged detour | anchor in east_column": {
+    "n": 603,
+    "weight": 0.01071666666666667,
+    "success": 0.9766718506998444,
+    "death": 0.0,
+    "timeout": 0.023328149300155514,
+    "reach_top_corridor": 0.556765163297045,
+    "reach_hazard_corridor": 0.0,
+    "mean_steps": 102.6734059097978
+   },
+   "logged detour | anchor in goal_area": {
+    "n": 56,
+    "weight": 0.0010666666666666667,
+    "success": 1.0,
+    "death": 0.0,
+    "timeout": 0.0,
+    "reach_top_corridor": 0.0,
+    "reach_hazard_corridor": 0.0,
+    "mean_steps": 11.078125
+   },
+   "logged detour | reset row (t = 0)": {
+    "n": 4,
+    "weight": 6.666666666666667e-05,
+    "success": 0.5,
+    "death": 0.0,
+    "timeout": 0.5,
+    "reach_top_corridor": 0.5,
+    "reach_hazard_corridor": 0.25,
+    "mean_steps": 570.25
+   },
+   "logged detour | t in [1, 30)": {
+    "n": 212,
+    "weight": 0.0038166666666666674,
+    "success": 0.6026200873362444,
+    "death": 0.04803493449781659,
+    "timeout": 0.34934497816593885,
+    "reach_top_corridor": 0.799126637554585,
+    "reach_hazard_corridor": 0.06550218340611352,
+    "mean_steps": 546.6943231441047
+   },
+   "logged detour | all": {
+    "n": 2764,
+    "weight": 0.04966666666666668,
+    "success": 0.8983221476510067,
+    "death": 0.003691275167785234,
+    "timeout": 0.09798657718120803,
+    "reach_top_corridor": 0.8577181208053691,
+    "reach_hazard_corridor": 0.008053691275167784,
+    "mean_steps": 308.40402684563753
+   },
+   "all": {
+    "n": 53747,
+    "weight": 1.0000000000000002,
+    "success": 0.6179166666666668,
+    "death": 0.31734999999999997,
+    "timeout": 0.06473333333333332,
+    "reach_top_corridor": 0.042883333333333336,
+    "reach_hazard_corridor": 0.5456166666666665,
+    "mean_steps": 129.82118333333332
+   }
+  }
+ }
+}
