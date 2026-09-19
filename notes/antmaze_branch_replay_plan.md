@@ -1887,3 +1887,32 @@ base CF 0.75 / 0.42 / 0.48; timeouts 0.01-0.03); criterion 1 NOT met
 the start, 3/3); detour gain shrinks to a third (0.26 -> 0.07, 3/3).  The
 route change and the walking loss scale together with the update size; the
 actor learning rate is not the lever.  No further variant launched.
+
+### Reference variants and the two boundary checks (2026-09-19, later the same day)
+
+User's request: try lower BC (0.02) and BC 0 as references while keeping
+the recipe; my addition: a label-free trust region to the start policy
+(anchor 0.5).  All pre-registered (`--variant`), O and CF, 3 paired seeds,
+3 nodes.  bc0.02: CF success 0.000 on every seed (300 / 300 timeouts, no
+deaths -- the actor leaves the walkable manifold; it still turns north in
+12-40 % of episodes); bc0: both arms 0.000.  anchor_start0.5: walking and
+entrance continuation recovered (0.75 / 0.67 / 0.62) but the detour rate
+back at the O level.  With actor_lr1e-4 these four lie on one axis (how far
+the actor may leave the start policy) on which route gain and walking loss
+come together.  Two read-only checks (`scripts/diag_v6_objective_checks.py`,
+diag_traj section 9): (b) at real start-region rows the full actor
+objective at bc 0.05 is at an exact tie between staying and moving (with a
+widened policy) to the critic-preferred torque -- E_f +0.5 to +0.8 nats
+cancelled by 0.05 x NLL +11 to +14; no barrier; the O actors' objective
+gets worse; (c) at the pre-stall mid-route states the critic's action
+gradient is orthogonal to walk-vs-stall (P 0.51-0.52) and one real actor
+step moves those outputs by ~0.01 per step, 87-88 % of it from the
+shortcut-corridor rows of the batch, 4 % from detour-leg rows -- parameter
+interference, not a critic error.  User's framing: these decide whether a
+sampling-layer repair has evidence or the problem is outside the contract's
+boundary; "rebalance BC / protect walking by region" withdrawn as default
+proposals.  Assessment in diag_traj/SUMMARY.md section 9: the futures
+intervention does its part at the critic level; the tie and the
+interference are properties of the actor objective and the row composition
+(outside the boundary as written); the untested in-boundary lever is the
+next policy-iteration round (the improved agent as the continuation).

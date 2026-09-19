@@ -39,7 +39,8 @@ class TrainingState(NamedTuple):
 
 
 def build_learner(networks, config, obs_to_goal, policy_optimizer,
-                  q_optimizer, fail_bank=None, separate_actor_batch=False):
+                  q_optimizer, fail_bank=None, separate_actor_batch=False,
+                  anchor_params=None, anchor_coef=0.0):
   """Returns ``(init_state, update_step)`` closures for the given config.
 
   ``obs_to_goal`` maps a batch of states [B, obs_dim] -> goal coords
@@ -58,6 +59,13 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
   what changes is only WHICH rows each loss is evaluated on.  With both
   batches drawn from the same stream this reduces to the shared-batch
   learner up to the RNG stream.  Requires ``bc_sampling == 'shared'``.
+
+  ``anchor_params`` / ``anchor_coef`` (diagnostic variant, AntMaze V6 pilot):
+  adds ``anchor_coef * mean_i ||tanh(loc_i) - tanh(loc_ref_i)||^2`` to the
+  actor loss, where ``loc_ref`` is the mode of a FIXED reference policy
+  (``anchor_params``, e.g. the policy the actor was initialised from) at the
+  same (state, goal) rows -- a trust region to the previous iterate that uses
+  no labels and leaves the BC and critic terms untouched.  Inactive at 0.
   """
   adaptive_entropy_coefficient = config.entropy_coefficient is None
   if separate_actor_batch and (getattr(config, 'bc_sampling', 'shared') or 'shared') != 'shared':
@@ -358,6 +366,12 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
       q_term_mean = jnp.mean(q_term)
       aux = {'critic_actor_term_raw': q_term_mean,
              'critic_actor_term_weighted': q_term_mean}
+    if anchor_params is not None and anchor_coef > 0.0:
+      ref = networks.policy_network.apply(anchor_params, new_obs)
+      pen = jnp.sum((mode_action - jax.lax.stop_gradient(jnp.tanh(ref.loc))) ** 2, axis=1)
+      loss = loss + anchor_coef * pen
+      aux['anchor_penalty_raw'] = jnp.mean(pen)
+      aux['anchor_penalty_weighted'] = anchor_coef * jnp.mean(pen)
     aux.update(diag)
     return jnp.mean(loss), aux
 

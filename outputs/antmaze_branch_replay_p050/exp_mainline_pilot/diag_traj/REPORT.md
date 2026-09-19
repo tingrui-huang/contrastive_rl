@@ -494,3 +494,108 @@ Both continuations rerun with full capture from the same handover state; the ear
 | 2 | prestall | CF_s2@actor_lr1e-4 | 73 | 0.42 | 0.56 |
 | 2 | prestall | O_s2@actor_lr1e-4 | 73 | 0.47 | 0.52 |
 
+## 8. Variant anchor_start0.5: continuation from the same handover states (criterion 3)
+
+| seed | start point | continuation | n | reach | timeout |
+|---|---|---|---|---|---|
+| 0 | enter_detour | CF_s0 | 4 | 0.75 | 0.25 |
+| 0 | enter_detour | start | 4 | 0.50 | 0.50 |
+| 0 | enter_detour | O_s0 | 4 | 0.50 | 0.50 |
+| 0 | enter_detour | CF_s0@anchor_start0.5 | 4 | 0.75 | 0.25 |
+| 0 | enter_detour | O_s0@anchor_start0.5 | 4 | 0.75 | 0.25 |
+| 0 | prestall | CF_s0 | 28 | 0.50 | 0.46 |
+| 0 | prestall | start | 28 | 0.32 | 0.64 |
+| 0 | prestall | O_s0 | 28 | 0.46 | 0.50 |
+| 0 | prestall | CF_s0@anchor_start0.5 | 28 | 0.39 | 0.57 |
+| 0 | prestall | O_s0@anchor_start0.5 | 28 | 0.46 | 0.50 |
+| 1 | enter_detour | CF_s1 | 12 | 0.42 | 0.58 |
+| 1 | enter_detour | start | 12 | 0.58 | 0.42 |
+| 1 | enter_detour | O_s1 | 12 | 0.58 | 0.42 |
+| 1 | enter_detour | CF_s1@anchor_start0.5 | 12 | 0.67 | 0.33 |
+| 1 | enter_detour | O_s1@anchor_start0.5 | 12 | 0.67 | 0.33 |
+| 1 | prestall | CF_s1 | 33 | 0.24 | 0.76 |
+| 1 | prestall | start | 33 | 0.21 | 0.73 |
+| 1 | prestall | O_s1 | 33 | 0.27 | 0.73 |
+| 1 | prestall | CF_s1@anchor_start0.5 | 33 | 0.33 | 0.61 |
+| 1 | prestall | O_s1@anchor_start0.5 | 33 | 0.30 | 0.64 |
+| 2 | enter_detour | CF_s2 | 42 | 0.48 | 0.52 |
+| 2 | enter_detour | start | 42 | 0.52 | 0.48 |
+| 2 | enter_detour | O_s2 | 42 | 0.71 | 0.29 |
+| 2 | enter_detour | CF_s2@anchor_start0.5 | 42 | 0.62 | 0.38 |
+| 2 | enter_detour | O_s2@anchor_start0.5 | 42 | 0.60 | 0.40 |
+| 2 | prestall | CF_s2 | 73 | 0.45 | 0.55 |
+| 2 | prestall | start | 73 | 0.42 | 0.56 |
+| 2 | prestall | O_s2 | 73 | 0.42 | 0.56 |
+| 2 | prestall | CF_s2@anchor_start0.5 | 73 | 0.41 | 0.58 |
+| 2 | prestall | O_s2@anchor_start0.5 | 73 | 0.47 | 0.52 |
+
+## 8. Variant bc0.02: continuation from the same handover states (criterion 3)
+
+| seed | start point | continuation | n | reach | timeout |
+|---|---|---|---|---|---|
+| 0 | enter_detour | CF_s0 | 4 | 0.75 | 0.25 |
+| 0 | enter_detour | start | 4 | 0.50 | 0.50 |
+| 0 | enter_detour | O_s0 | 4 | 0.50 | 0.50 |
+| 0 | enter_detour | CF_s0@bc0.02 | 4 | 0.00 | 1.00 |
+| 0 | enter_detour | O_s0@bc0.02 | 4 | 0.00 | 1.00 |
+| 0 | prestall | CF_s0 | 28 | 0.50 | 0.46 |
+| 0 | prestall | start | 28 | 0.32 | 0.64 |
+| 0 | prestall | O_s0 | 28 | 0.46 | 0.50 |
+| 0 | prestall | CF_s0@bc0.02 | 28 | 0.00 | 1.00 |
+| 0 | prestall | O_s0@bc0.02 | 28 | 0.36 | 0.61 |
+| 1 | enter_detour | CF_s1 | 12 | 0.42 | 0.58 |
+| 1 | enter_detour | start | 12 | 0.58 | 0.42 |
+| 1 | enter_detour | O_s1 | 12 | 0.58 | 0.42 |
+| 1 | enter_detour | CF_s1@bc0.02 | 12 | 0.00 | 1.00 |
+| 1 | enter_detour | O_s1@bc0.02 | 12 | 0.17 | 0.83 |
+| 1 | prestall | CF_s1 | 33 | 0.24 | 0.76 |
+| 1 | prestall | start | 33 | 0.21 | 0.73 |
+| 1 | prestall | O_s1 | 33 | 0.27 | 0.73 |
+| 1 | prestall | CF_s1@bc0.02 | 33 | 0.06 | 0.94 |
+| 1 | prestall | O_s1@bc0.02 | 33 | 0.27 | 0.67 |
+| 2 | enter_detour | CF_s2 | 42 | 0.48 | 0.52 |
+| 2 | enter_detour | start | 42 | 0.52 | 0.48 |
+| 2 | enter_detour | O_s2 | 42 | 0.71 | 0.29 |
+| 2 | enter_detour | CF_s2@bc0.02 | 42 | 0.00 | 1.00 |
+| 2 | enter_detour | O_s2@bc0.02 | 42 | 0.07 | 0.93 |
+| 2 | prestall | CF_s2 | 73 | 0.45 | 0.55 |
+| 2 | prestall | start | 73 | 0.42 | 0.56 |
+| 2 | prestall | O_s2 | 73 | 0.42 | 0.56 |
+| 2 | prestall | CF_s2@bc0.02 | 73 | 0.29 | 0.71 |
+| 2 | prestall | O_s2@bc0.02 | 73 | 0.36 | 0.63 |
+
+## 8. Variant bc0: continuation from the same handover states (criterion 3)
+
+| seed | start point | continuation | n | reach | timeout |
+|---|---|---|---|---|---|
+| 0 | enter_detour | CF_s0 | 4 | 0.75 | 0.25 |
+| 0 | enter_detour | start | 4 | 0.50 | 0.50 |
+| 0 | enter_detour | O_s0 | 4 | 0.50 | 0.50 |
+| 0 | enter_detour | CF_s0@bc0 | 4 | 0.00 | 1.00 |
+| 0 | enter_detour | O_s0@bc0 | 4 | 0.00 | 1.00 |
+| 0 | prestall | CF_s0 | 28 | 0.50 | 0.46 |
+| 0 | prestall | start | 28 | 0.32 | 0.64 |
+| 0 | prestall | O_s0 | 28 | 0.46 | 0.50 |
+| 0 | prestall | CF_s0@bc0 | 28 | 0.00 | 1.00 |
+| 0 | prestall | O_s0@bc0 | 28 | 0.00 | 1.00 |
+| 1 | enter_detour | CF_s1 | 12 | 0.42 | 0.58 |
+| 1 | enter_detour | start | 12 | 0.58 | 0.42 |
+| 1 | enter_detour | O_s1 | 12 | 0.58 | 0.42 |
+| 1 | enter_detour | CF_s1@bc0 | 12 | 0.00 | 1.00 |
+| 1 | enter_detour | O_s1@bc0 | 12 | 0.00 | 1.00 |
+| 1 | prestall | CF_s1 | 33 | 0.24 | 0.76 |
+| 1 | prestall | start | 33 | 0.21 | 0.73 |
+| 1 | prestall | O_s1 | 33 | 0.27 | 0.73 |
+| 1 | prestall | CF_s1@bc0 | 33 | 0.06 | 0.94 |
+| 1 | prestall | O_s1@bc0 | 33 | 0.06 | 0.94 |
+| 2 | enter_detour | CF_s2 | 42 | 0.48 | 0.52 |
+| 2 | enter_detour | start | 42 | 0.52 | 0.48 |
+| 2 | enter_detour | O_s2 | 42 | 0.71 | 0.29 |
+| 2 | enter_detour | CF_s2@bc0 | 42 | 0.00 | 1.00 |
+| 2 | enter_detour | O_s2@bc0 | 42 | 0.00 | 1.00 |
+| 2 | prestall | CF_s2 | 73 | 0.45 | 0.55 |
+| 2 | prestall | start | 73 | 0.42 | 0.56 |
+| 2 | prestall | O_s2 | 73 | 0.42 | 0.56 |
+| 2 | prestall | CF_s2@bc0 | 73 | 0.27 | 0.73 |
+| 2 | prestall | O_s2@bc0 | 73 | 0.27 | 0.73 |
+

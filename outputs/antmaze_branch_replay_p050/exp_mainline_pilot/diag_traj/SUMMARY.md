@@ -281,7 +281,18 @@ others** -- two opposite needs (change the reset torque; keep the mid-route
 torques) that a single BC coefficient cannot serve, which is why no global
 BC change or longer training is proposed from this data.
 
-## 8. Pre-registered fix trial: actor learning rate 3e-4 -> 1e-4, everything else fixed
+## 8. Pre-registered single-change variants (reference points; `../variants/SUMMARY.md`)
+
+Four variants were run after this diagnostic, one change each against the
+pilot: actor lr 1e-4 (walking recovered, route gain to a third), bc 0.02
+and bc 0 (no walking at all: 300 / 300 timeouts, bc 0 in both arms),
+anchor-to-start 0.5 (walking recovered, route gain gone).  They move along
+one axis -- how far the actor may leave the start policy -- on which the
+route gain and the walking loss come together; none separates them and
+none is a fix.  The first of them is described below as written before
+the others ran.
+
+### 8a. Actor learning rate 3e-4 -> 1e-4, everything else fixed
 
 Motivated by section 7 (an update that lost local competence the pre-update
 policy still has); not a proven fix and no cure for critic blind spots.
@@ -302,3 +313,92 @@ gain shrinks to a third (0.26 -> 0.07 mean, 3/3; still +0.044 over O and
 +0.066 over the start, 3/3).  Reading: "walks well, few detours" -- the
 route change and the walking loss scale together with the size of the
 update; the actor learning rate does not separate them.  Not a fix.
+
+## 9. Two checks that decide the fix direction (frozen models; `scripts/diag_v6_stall_critic_check.py`, `scripts/diag_v6_objective_checks.py`)
+
+**9a. Does the CF critic reward the stalling torques?** (`stall_critic_check.json`)
+Along the CF continuation's own states before the stall in the 19
+O-finishes-CF-not pairs (673 states, every 5th step), the CF critic scores
+the CF torque vs the O torque at the same state +0.04 nats (P 0.56) and vs
+the start torque +0.08 (P 0.58), although the torques differ by 0.76-0.80
+(L2); after the stall +0.10 / +0.39.  The O critic is indifferent (-0.007,
+P 0.49).  The critic is nearly flat among these torques: it neither rewards
+the stall nor points back to walking.  (In the 8 reverse pairs the stalled O
+torques are 1.65 away and both critics score them 1.7-2.5 nats lower -- far
+off-distribution stalls are recognised, the CF policy's own are not.)
+
+**9b. Start: the full actor objective, not the action score.**
+(`start_objective.json`; 1,024 real start-region rows with their own logged
+actions; the critic-preferred candidate at each row -- teacher detour reset
+torques in ~47 % of rows, the actor's own samples in ~40 % -- and the
+objective along the straight loc path toward it, lambda 0..1.)
+- Scale held: E_pi[f] improves monotonically (+0.5 to +1.0 nats for the CF
+  actors, P 0.95-0.98) but the BC NLL of the logged action explodes (-10 ->
+  +400) and the total is worse at the target in 77 % of rows, monotonically
+  -- no barrier, the objective simply does not want the move.
+- Scale widened as the mode moves (sd = max(current, half the shift) -- the
+  compromise the base CF actors actually made): the CF actors' total is
+  FLAT along the path (CF s0 9.34 -> 9.44 -> 9.32 -> 9.23 -> 9.24; end
+  -0.10 / +0.05 / +0.05; P(better) 0.43-0.51): the E_f gain (+0.5 to +0.8)
+  is cancelled by 0.05 x (NLL +11 to +14).  For the O actors the total gets
+  worse (+0.4 to +0.55; their E_f gain is only +0.3 to +0.4).
+Reading: at bc 0.05 the full objective at the reset rows is a near-tie
+between staying in the shortcut basin and moving (with a wider policy) to
+the critic-preferred detour torque -- an objective trade-off at exact
+balance, not an optimisation barrier and not a missing signal.  Where the
+mode ends up on that flat ridge is set by the update budget and noise, which
+is consistent with the seed spread of the detour rate (0.11 / 0.17 / 0.50).
+
+**9c. Mid-route: where does the real actor update push the outputs?**
+(`midroute_update.json`; the pre-stall CF states of the pairs: seed 2 642
+states, seed 1 31.)
+- The critic term's action gradient at the CF mode: |grad_a f| 0.7-0.9 (1.5-
+  1.9 at reset rows); its projection toward the O torque +0.001 / +0.008
+  (P > 0: 0.51 / 0.52), toward the start torque +0.015 / -0.031 -- orthogonal
+  to the walk-vs-stall direction.  The critic term does not push toward the
+  stall (and not back either).
+- One REAL actor step on real actor-stream batches (the training seed's
+  stream, the same actor loss; SGD probe of size lr): the induced change of
+  the mode at these mid-route states is |delta| ~ 0.009-0.010 per step, of
+  which 87-88 % comes from the batch's shortcut-corridor rows (their batch
+  share 0.87-0.88), 8 % from start rows and 4 % from detour-leg rows
+  (|delta| 0.0003-0.0004); its projection on the drift direction and toward
+  O is ~0 (+-0.0008) -- isotropic interference, no directed push.
+Reading: the mid-route regression is parameter interference (case 2 of the
+user's split), not a critic that rewards the wrong action (case 1): the
+detour-leg outputs are moved every step by gradients from elsewhere and the
+rows that could hold them are 4 % of the actor batch.  A slower update
+shrinks the interference and the reset-row movement alike (the lr trial).
+
+What the two checks are for (user, 2026-09-19): not to pick a fix but to
+decide whether there is evidence that the problem can be repaired at the
+sampling layer, or whether it lies outside the boundary the contract draws
+around the method (single-step torques, offline data, the original NCE and
+actor objectives with bc 0.05, the recipe's actor stream, counterfactual
+futures as the only intervention).  "Rebalance the BC rows" and "protect
+walking by region" are withdrawn as default proposals; the running bc0.02 /
+bc0 / anchor_start0.5 variants stay as reference points only.
+
+Assessment against that question:
+- The intervention itself is doing its part at the critic level: the CF
+  critics prefer the turning torques at the reset rows (sections 2a, 6);
+  nothing in 9a-9c points at a missing or wrong critic signal at the start.
+- What stops the signal from becoming behaviour is the actor objective at
+  bc 0.05 on the recipe's rows: an exact tie at the reset rows (9b) between
+  staying and moving.  The tie is a joint property of the objective and the
+  row composition (95 % shortcut logged torques at the reset); tipping it
+  means either changing the objective (BC weight, an added term) or the row
+  composition -- both outside the boundary as written.  bc 0.02 shows the
+  objective side has no slack: below 0.05 the actor leaves the walkable
+  manifold entirely (success 0.000, timeout 1.000 on all seeds).
+- The mid-route regression is interference from the majority rows (9c), not
+  a critic error; within the boundary the only lever that touches it is the
+  counterfactual futures at mid-route anchors (a better continuation agent
+  would sharpen f there; untested), and even a sharper f cannot hold the
+  outputs against interference unless the actor rows or the objective do.
+- So: on this evidence the actor-side limits (the tie, the interference)
+  are not addressable by the futures intervention alone; repairing them at
+  the sampling or objective layer is a boundary decision, not something
+  these diagnostics can settle.  What remains inside the boundary and
+  untested is the next policy-iteration round (the improved agent as the
+  continuation).

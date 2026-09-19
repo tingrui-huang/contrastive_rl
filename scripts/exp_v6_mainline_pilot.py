@@ -106,7 +106,14 @@ LOG_EVERY = 500
 # Pre-registered single-change variants of the pilot (notes/MAINLINE_CONTRACT.md is unchanged: same data, anchors, branches,
 # losses, bc 0.05, critic lr, initialisation, update count; O and CF both, three paired seeds).  A variant trains under
 # OUT/variants/<name>/ and is compared with the base arms on the same evaluation episodes.
-VARIANTS = {'actor_lr1e-4': {'actor_learning_rate': 1e-4}}
+VARIANTS = {'actor_lr1e-4': {'actor_learning_rate': 1e-4},
+            'bc0.02': {'bc_coef': 0.02},                    # user's request 2026-09-19: is BC the anchor?  lower BC
+            'bc0': {'bc_coef': 0.0},                        # ... and no BC at all (actor = critic term only)
+            'anchor_start0.5': {'anchor_coef': 0.5}}         # non-BC handle: trust region to the start policy's mode (crl.losses anchor penalty), bc 0.05 kept
+VARIANT_NOTES = {
+    'bc0.02': 'BC weight 0.05 -> 0.02; tests whether the BC pull on the 95 % shortcut teacher torques is what keeps the reset mode in the shortcut basin, and whether BC is what protects mid-route walking',
+    'bc0': 'BC weight 0; the actor follows the critic term alone (historically the actor left the data manifold within 10k updates with a frozen critic; here the critic trains jointly)',
+    'anchor_start0.5': 'adds 0.5 * ||tanh(loc) - tanh(loc_start)||^2 at the actor rows (reference = the start agent, fixed); expected to hold torques where the critic is flat (mid-route) and yield where it pushes (reset), with bc 0.05 unchanged'}
 
 
 # ------------------------------------------------------------------ helpers
@@ -821,7 +828,10 @@ def train_arm(arm, seed, updates=UPDATES, base=None, batch=BATCH, start_ckpt=STA
   obs, act, lengths, _ = load_dataset()
   cfg = recipe_config(seed, d, steps=updates)
   cfg.batch_size = int(batch)
+  anchor_coef = 0.0
   for k, v in (overrides or {}).items():
+    if k == 'anchor_coef':
+      anchor_coef = float(v); continue
     assert hasattr(cfg, k), k
     setattr(cfg, k, v)
   fill_dims(cfg)
@@ -833,7 +843,12 @@ def train_arm(arm, seed, updates=UPDATES, base=None, batch=BATCH, start_ckpt=STA
   def obs_to_goal(states):
     import jax.numpy as jnp
     return states[:, jnp.asarray(gidx)] if gidx is not None else states[:, cfg.start_index:cfg.end_index]
-  init_state, update_step = losses_mod.build_learner(nets, cfg, obs_to_goal, policy_optimizer, q_optimizer, separate_actor_batch=True)
+  anchor_params = None
+  if anchor_coef > 0:
+    assert start_ckpt is not None
+    anchor_params = checkpoint.load_checkpoint(start_ckpt)[1].policy_params      # the reference = the start agent, fixed
+  init_state, update_step = losses_mod.build_learner(nets, cfg, obs_to_goal, policy_optimizer, q_optimizer, separate_actor_batch=True,
+                                                     anchor_params=anchor_params, anchor_coef=anchor_coef)
   key = jax.random.PRNGKey(int(seed))
   key, key_init = jax.random.split(key)
   state = init_state(key_init)                     # fresh critic (and a fresh actor that is replaced next), paired by the seed
@@ -872,7 +887,8 @@ def train_arm(arm, seed, updates=UPDATES, base=None, batch=BATCH, start_ckpt=STA
       m = {k: float(v) for k, v in metrics.items()}
       hist.append({'update': n_updates, **m})
       print(f'[{arm} s{seed} upd {n_updates:>6}] critic {m.get("critic_loss", 0):.4f} cat_acc {m.get("categorical_accuracy", 0):.3f} '
-            f'actor {m.get("actor_loss", 0):.4f} bc_nll {m.get("bc_nll", 0):.3f} q_term {m.get("actor_q_term", 0):.3f} '
+            f'actor {m.get("actor_loss", 0):.4f} bc_nll {m.get("bc_nll", 0):.3f} q_term {m.get("actor_q_term", m.get("critic_actor_term_raw", 0)):.3f} '
+            f'{("anchor " + format(m.get("anchor_penalty_raw", 0), ".3f") + " ") if "anchor_penalty_raw" in m else ""}'
             f'{n_updates / (time.time() - t0):.1f} upd/s', flush=True)
     for ms in MILESTONES:
       if n_updates == ms:
@@ -917,15 +933,19 @@ def mode_seal_variant(args):
   base.mkdir(parents=True, exist_ok=True)
   if (base / 'manifest.json').exists() and not args.force:
     print(f'{base / "manifest.json"} exists', flush=True); return
-  man = {'variant': name, 'change': VARIANTS[name], 'sealed_at': time.strftime('%Y-%m-%d %H:%M:%S'), 'git_head': git_head(),
+  man = {'variant': name, 'change': VARIANTS[name], 'note': VARIANT_NOTES.get(name, ''), 'sealed_at': time.strftime('%Y-%m-%d %H:%M:%S'), 'git_head': git_head(),
          'base_pilot_manifest_sha256': sha256(OUT / 'manifest.json'), 'anchors_sha256': sha256(OUT / 'anchors.npz'), 'branches_sha256': sha256(OUT / 'branches_cf.npz'),
          'start_ckpt_sha256': sha256(START_CKPT),
          'held_fixed': 'dataset, anchors and weights, CF branches, critic and actor streams and seeds, losses (NCE + actor loss, bc 0.05, random_goals 0), '
                        'critic learning rate 3e-4, twin-Q architecture, initialisation (fresh paired critics, actor from the start agent), 30,000 optimizer '
                        'updates, gamma 0.999, evaluation (300 natural draws, seed 3909, mode); both arms O and CF, seeds 0-2',
-         'motivation': 'diag_traj sections 3 and 7: the CF update lost local walking competence on states the pre-update policy still completes '
-                       '(19 O-finishes-CF-not handover pairs, start policy finishes 13); a slower actor update is the direct candidate that leaves '
-                       'the CRL objective unchanged.  Not a proven fix; cannot repair critic blind spots.',
+         'motivation': ('diag_traj sections 3 and 7: the CF update lost local walking competence on states the pre-update policy still completes '
+                        '(19 O-finishes-CF-not handover pairs, start policy finishes 13); a slower actor update is the direct candidate that leaves '
+                        'the CRL objective unchanged.  Not a proven fix; cannot repair critic blind spots.' if name == 'actor_lr1e-4' else
+                        'after the actor_lr1e-4 trial (route change and walking loss scale together with the update size) and the stall-critic check '
+                        '(the CF critic is nearly flat among the CF / O / start torques at the mid-route states, P 0.56, +0.04 nats): which term anchors '
+                        'the reset mode and which protects mid-route walking?  bc0.02 / bc0 remove the BC pull; anchor_start0.5 adds a label-free '
+                        'trust region to the start policy that should hold torques where the critic is flat and yield where it pushes.'),
          'criteria': {'1_native_success': 'CF(variant) - CF(base) success on the 300 common episodes, per paired seed; rule: mean > 2 x seed s.e. and 3/3 (also reported vs O(variant) and vs start)',
                       '2_detour_gain_kept': 'CF(variant) detour rate not below CF(base) by more than 2 x seed s.e. (and CF(variant) - O(variant) detour still 3/3 positive)',
                       '3_continuation_recovered': 'from the SAME detour-entrance handover states of diag_traj (cont.json enter_detour, 42 + 12 + 4 states): reach rate of CF(variant) vs CF(base) '
