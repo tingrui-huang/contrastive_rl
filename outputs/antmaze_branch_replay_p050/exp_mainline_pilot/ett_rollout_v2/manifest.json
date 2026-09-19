@@ -1,0 +1,47 @@
+{
+ "experiment": "AntMaze V6 one-step ETT, Step 3a: full-length rollout diagnostic vs the held-out simulator branches (distributional), advice C (simulator teacher) vs A (memoryless nominal)",
+ "sealed_at": "2026-09-19 20:41:46",
+ "git_head": "unavailable (Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128.)",
+ "status": "oracle-supervised engineering stage; nothing downstream generated",
+ "models": {
+  "fold0": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/ett_one_step_v2/model_fold0.pkl",
+   "json_sha256": "bace3eb34f324293c09e41f1bc1df636303762f09821c887b996b5575e2f7384"
+  },
+  "fold1": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/ett_one_step_v2/model_fold1.pkl",
+   "json_sha256": "8a406e0e885af6ef994d542fa9120c2ea39d5f81b952313241909d4f8e19556f"
+  },
+  "fold2": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/ett_one_step_v2/model_fold2.pkl",
+   "json_sha256": "92ad72f1691862791a455824df21abd9228ccd52816fa58da98182891e4d6842"
+  }
+ },
+ "model_version": "v2",
+ "one_step_check_sha256": "54c8355d51d07bb71409d1fe314decc84394b86e83fe2face23b0c9931c105dc",
+ "supervision_sha256": "98b18772d9a1bf68e5c8b1928d33b67a6c3fd2d4e6b95e4d1ae695206c8598eb",
+ "anchors": "2000 held-out anchors per fold, uniform over anchors, seed 201000000; strata = anchor region",
+ "continuation": "start agent mode (the reference branches' continuation); first query = the logged torque",
+ "termination": "reach (|xy - goal| <= 0.5), horizon 800 - t, onset (exact hazard integration along the path; no recovery)",
+ "advice": {
+  "C": "simulator teacher along the model path under the branch's redrawn timetable (Step 0 / 1 construction)",
+  "A": "memoryless nominal a_b ~ MDN(s) fitted on the d05 log (k 5, (256, 256), 20000 steps, seed 0; fixed final iterate), K = 4 sampled advice paths per anchor, seed 202000000"
+ },
+ "comparison": {
+  "rates": "death / reach / timeout / entered-far: model mean of exact per-anchor probabilities vs the branches' realised rates",
+  "distributions": "death time (steps after the anchor), death x, time to reach: weighted two-sample KS vs the branches' realised values",
+  "discrimination": "AUROC of the per-anchor P(death) against the realised branch death (reported, not gated)"
+ },
+ "thresholds": {
+  "rate_gap": 0.05,
+  "far_gap": 0.03,
+  "ks": 0.15,
+  "min_stratum_anchors": 200
+ },
+ "gate_rule": "every rate gap and KS within threshold on the pooled sample and in every stratum with >= min_stratum_anchors anchors; evaluated separately for C and A",
+ "reading": {
+  "C_fails": "fix the motion / onset model first",
+  "C_passes_A_fails": "the advice process is the bottleneck; a latched nominal from the visible history is the next candidate",
+  "both_pass": "the protocol nominal suffices for the futures"
+ }
+}

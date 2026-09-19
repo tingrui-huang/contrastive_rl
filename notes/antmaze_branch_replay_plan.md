@@ -2238,3 +2238,87 @@ along a rollout -- memoryless nominal P(a_b|s) cannot produce "hold"
 inside a band, a latched nominal (mouth decision + visible hold
 durations) can, the simulator teacher can (oracle); the deaths in the
 generated futures follow from that choice.  Nothing downstream run.
+
+### One-step ETT, Step 3a (2026-09-20): full-length rollouts vs held-out branches -- C fails on stalls and death timing
+
+`diag_v6_ett_rollout.py`, `ett_rollout/SUMMARY.md`.  User's design:
+distributional comparison (rates, KS of death time / death x / reach
+time), exact hazard integration, C (simulator teacher along the model
+path) vs A (memoryless nominal MDN on the log).  C: death 0.294 / 0.308,
+far equal, KS pooled fine, AUROC 0.99, but timeout 0.091 -> 0.021 and
+reach +0.056 (the sim's stalled ants -- exactly stationary, 39 % of rows
+-- drift in the model (0.54 in 100 steps open loop) until the policy
+re-engages; 89 % of sim timeouts reach the goal in the model) and in-band
+death timing front-loaded (zone 2: 65 % of death mass in steps 1-5 vs sim
+none; zone 1 median 53 steps) -- a memoryless hazard cannot express the
+delay.  A: death 0.294 -> 0.023 (memoryless advice never holds in a
+band).  Revision v2 (disclosed): exact zero-displacement atom with a
+stationary gate; onset head + visible-history features (steps since the
+advice turned hold, steps since band entry).
+
+### Review of the A / B / C round (user, 2026-09-20): corrections and the real-update check
+
+Corrections written into clip_round/SUMMARY.md and diag_traj/SUMMARY.md
+section 12: (A) the omitted positive -- logged-detour start rows complete
+the far route 0.529 -> 0.54 / 0.69 / 0.67 (0.4 % of the weight): the
+improvement depends on the handed state and first action; generation at
+the logged torques does not cover it; B not run, so no claim that those
+futures train worse.  (C) C1's BC term is a proxy, C2's candidates are
+transplants, "5 / 23" was the endpoint only (9 / 23 improve somewhere on
+the path); a training row's shortcut goal is a different task from the
+task-goal decision; NOT shown that the actor optimised its objective
+correctly or that extraction has no room.  CFL archived (not the ETT; no
+more diagnostics).  Mainline: the real ETT continues (v2 rollout check
+running); the oracle futures / checkpoints stay the reference; A's files
+do not enter the main comparison.  Added actor check = the REAL-UPDATE
+check (real batches, real Adam state, on a checkpoint copy): does the
+actual update move the verified states' actions toward the verified
+candidates; critic-term vs BC-term decomposition; scale watched.  Query
+extension stays a candidate to be justified by that evidence (a next
+sampling design: the current policy's one-step torque queries, state
+weights / actor data / loss / BC 0.05 unchanged).
+
+### One-step ETT, Step 3a v2 result and the v3 revision (2026-09-20)
+
+v2 (atom + stationary gate + visible-history features; preflight G1-G7
+all passed): pooled C passes every sealed gate (death 0.294 sim / 0.311
+model; KS death time 0.027, death x 0.072), but strata do not: pre_zone1
+timeouts 0.178 -> 0.049, post_zone2 timeouts 0.042 -> 0.089, zone2 death
+time KS 0.22, death-x KS 0.157-0.167.  Per fold: folds 0 / 2 produce
+almost no pre-mouth stalls (timeouts 0.006 / 0.021 vs 0.197 / 0.193),
+fold 1 (early-stopped at 4k on the stationary BCE) over-stalls (0.153;
+post_zone2 0.236).  Settling probe on the sim's stalled tails: after the
+torque becomes small the sim decelerates slowly (|delta s| 0.08 -> 0.02
+at 10 steps -> 0.006 at 40), the v2 regression keeps |delta s| ~0.15, the
+gate never fires, and the policy re-accelerates after ~40 steps.  Cause:
+the standardised MSE is dominated by large-displacement rows.  v3
+(disclosed revision; `fit_v6_ett_one_step_v2.py --v3`, outputs
+`ett_one_step_v3/`, `ett_rollout_v3/`): regression on all rows plus a
+relative error term ||pred - d||^2 / (||d||^2 + 0.05^2); selection score
+without the stationary BCE; everything else unchanged.  v3 preflight: all
+gates passed on all three folds (one-step xy median 0.0022, 50-step 0.48,
+onset AUROC 0.997, gate AUROC 0.997; folds stop at 39-40k, no early
+stop).  Full-length C / A rollouts with the v3 models running (node6 went
+down at launch -- likely memory; re-queued on node3 behind the v2 A
+rollouts).  Judgement rule unchanged (user): C bad -> fix motion / onset
+first; C good and A bad -> the advice process is the bottleneck.
+
+### Real-update check result (2026-09-20; diag_traj/SUMMARY.md section 13)
+
+Default bc 0.05, 2,000 real updates from each clipped CF checkpoint with
+the real batches and Adam state, 11 / 11 / 9 verified stable-shortcut
+contexts: the critic term's direction points toward the verified
+candidates in every probe (cosine +0.05 to +0.08), the BC term away
+(-0.01 to -0.02), the realised Adam step is orthogonal (0.000); the modes
+end where they started (2.20 -> 2.18, 2.25 -> 2.27, 3.10 -> 3.03), scale
+0.5-0.7 at these states vs 0.077 on the training rows.  Counterfactuals:
+critic only (bc 0) collapses the scale to ~0 within 2,000 updates and
+moves the mode to other critic maxima (seed 0 away, seeds 1 / 2 closer
+but the critic's preference for the candidate over the mode falls 0.45 ->
+0.18, 0.78 -> 0.22); BC only (bc 1) moves the modes away toward the
+logged torques (Adam-mismatch artefact in the first ~100 updates,
+disclosed).  Reading: "critic supports, BC cancels" only weakly; the
+closest branch is that the critic's landscape at these state / task-goal
+pairs does not make the verified far-route torques an attractor -> query
+coverage in the training contexts comes before any BC change (user's
+rule).  Limits listed in the summary.

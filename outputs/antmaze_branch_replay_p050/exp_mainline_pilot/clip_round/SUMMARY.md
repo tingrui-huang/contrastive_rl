@@ -55,9 +55,17 @@ statement.
    0.09 -> 0.25.  This is same-route, same-state evidence of a
    mid-corridor walking regression of the clipped CF agents relative to
    the start agent (the far-route audit found none from the corner; the
-   shortcut corridor is a different place).  Switching the critic to
-   these futures would remove positive support for the goal, not add
-   route information.
+   shortcut corridor is a different place).  A positive result that the
+   first version of this summary omitted (user's review): at the
+   start-region anchors of the logged DETOUR episodes the current agents
+   complete the far route 0.529 -> 0.538 / 0.692 / 0.665 (entered 0.69 ->
+   0.82-0.89) -- the continuation ability did improve, but those rows are
+   0.4 % of the anchor weight.  So the accurate statement is: the current
+   agents' improvement depends on the state and the first action they are
+   handed; generating at the logged first torques does not cover the
+   contexts where the improvement occurs.  B was not run, so nothing here
+   says that training on these futures would be worse; a lower goal-area
+   mass does not by itself decide the relative ranking of actions.
 3. Implication (not a result): the route information after the agent's
    OWN first step can enter the critic's data only through the query
    action -- counterfactual queries a != a_logged at the logged states

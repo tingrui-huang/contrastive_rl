@@ -453,17 +453,107 @@ the O critics; under the task goal on the same rows +1.08 / +0.76 / +0.47
 best candidate: held scale P(better) 0.00-0.02 (the BC NLL explodes at
 scale 0.1); widened scale P(better) 0.13 / 0.08 / 0.09 (O: 0.00-0.01).
 
-**Reading (local statements; shared parameters, other directions not
-excluded).**  At the decision states the clipped CF critics do prefer the
-verified candidates' neighbourhoods under the task goal, and the local
-gradient mostly points at them; the actor does not adopt them because the
-objective it actually trains on -- start-region rows paired with relabeled
-goals that lie on the logged (95 % shortcut) paths, plus BC to the teacher's
-reset torques at a narrow scale -- does not support the move: the real-goal
-critic term prefers the current behaviour at the nearest rows, and the BC
-term outweighs the task-goal gain for most candidates.  This is the
-objective at the training distribution, not an optimiser failure; it does
-not prove that no other direction exists.  Policy extraction is therefore
-not the lever on its own: the route signal has to reach the rows the actor
-trains on (goals / anchors / query actions), which the sampling contract
-fixes.
+**Reading, corrected after the user's review (2026-09-20).**  At the
+decision states the clipped CF critics do prefer the verified candidates'
+neighbourhoods under the task goal, and the local gradient mostly points
+at them.  What C1 / C2 show about why they are not adopted is limited:
+C1's BC term is a PROXY (the logged torques of the 8 nearest reset rows,
+not the real training batches acting through the shared parameters);
+C2's candidates are transplants whose effect at other rows is
+unverified; and "5 / 23 objective better" counted only the endpoint of
+the loc path -- at some intermediate position of the path 9 / 23 improve
+(sampling error applies to both counts).  Also, a training row whose
+relabeled goal lies in the shortcut corridor asks for the shortcut: that
+row's preferred action and the task-goal decision are two different
+tasks and cannot be equated.  What can be said: BC and the real relabeled
+goals MAY weaken the gain of moving toward these detour torques; it is
+NOT shown that the actor has correctly optimised its full objective, nor
+that policy extraction has no room.  The decisive check is a REAL-UPDATE
+one (next): from a checkpoint copy with the real actor batches and the
+real Adam state, does the actual update move the actions at the verified
+states toward or away from the verified candidates, with the critic-term
+and BC-term contributions separated and the scale watched.
+
+## 13. The real-update check (2026-09-20; `scripts/diag_v6_actor_real_update.py`, `real_update/real_update_seed{s}[_bc{0,1}].json`)
+
+**Design (user's specification).**  Contexts = the user's diagnostic
+contexts where the clipped CF actor stably takes the shortcut and at least
+one far-route candidate torque is simulator-verified (11 / 11 / 9 for
+seeds 0 / 1 / 2); the target c_v = the verified candidate with the highest
+critic score under the TASK goal at the ORIGINAL state (no transplants).
+The learner is rebuilt exactly as `train_arm` (clip 0.1) from the seed's
+CF checkpoint (30,000 updates; Adam state included), the actor / critic
+streams are fast-forwarded to the checkpoint's batch counter, and 2,000
+REAL updates are applied to a copy.  Every 30 updates the verified
+states are probed: the mode's L2 distance to c_v (8-dim torque space),
+the scale, f(c_v) vs f(mode) under the critic, and the actor gradient
+decomposed into its critic term and its BC term (loss = bc * BC_NLL +
+(1 - bc) * critic term), each projected on the parameter direction that
+moves the modes toward the candidates (cosine); the realised Adam step is
+projected on the same direction.  Counterfactual replays: bc 0 (critic
+term only) and bc 1 (BC term only), same batches, same Adam state.
+
+| bc | seed | n | mode-candidate distance start -> end (max) | contexts closer at end | scale (verified states) start -> end | f(c) > f(mode) start -> end | critic-term cos (share > 0) | BC-term cos (share > 0) | realised-step cos (share > 0) | training-row scale first -> last |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 0.05 | 0 | 11 | 2.20 -> 2.18 (2.75) | 5 / 11 | 0.65 -> 0.68 | 0.36 -> 0.27 | +0.058 (100 %) | -0.009 (35 %) | 0.000 (49 %) | 0.077 -> 0.076 |
+| 0.05 | 1 | 11 | 2.25 -> 2.27 (2.32) | 6 / 11 | 0.60 -> 0.52 | 0.45 -> 0.45 | +0.080 (100 %) | -0.019 (19 %) | 0.000 (49 %) | 0.077 -> 0.075 |
+| 0.05 | 2 | 9 | 3.10 -> 3.03 (3.34) | 7 / 9 | 0.53 -> 0.54 | 0.78 -> 0.78 | +0.053 (99 %) | -0.010 (18 %) | 0.000 (57 %) | 0.080 -> 0.078 |
+| 0 | 0 | 11 | 2.20 -> 3.17 (3.25) | 0 / 11 | 0.65 -> 0.0001 | 0.36 -> 0.36 | -0.020 (43 %) | -- | -0.002 (28 %) | 0.076 -> 0.001 |
+| 0 | 1 | 11 | 2.25 -> 2.14 (2.34) | 5 / 11 | 0.60 -> 0.0006 | 0.45 -> 0.18 | -0.013 (46 %) | -- | +0.002 (78 %) | 0.076 -> 0.001 |
+| 0 | 2 | 9 | 3.10 -> 2.10 (3.12) | 8 / 9 | 0.53 -> 0.0002 | 0.78 -> 0.22 | +0.015 (60 %) | -- | +0.002 (60 %) | 0.079 -> 0.000 |
+| 1 | 0 | 11 | 2.20 -> 2.73 (2.76) | 6 / 11 | 0.65 -> 0.46 (1.29 after 4 updates) | 0.36 -> 0.82 | -- | +0.015 (60 %) | 0.000 (54 %) | 0.249 -> 0.064 |
+| 1 | 1 | 11 | 2.25 -> 2.59 (2.75) | 2 / 11 | 0.60 -> 0.30 (1.18 after 4) | 0.45 -> 0.73 | -- | +0.001 (51 %) | 0.000 (51 %) | 0.253 -> 0.076 |
+| 1 | 2 | 9 | 3.10 -> 3.15 (3.48) | 4 / 9 | 0.53 -> 0.45 (1.18 after 4) | 0.78 -> 0.89 | -- | +0.015 (66 %) | 0.000 (57 %) | 0.271 -> 0.067 |
+
+(cosines are means over the logged probes; realised-step norms 0.19-0.22
+per update for bc 0.05 / 0, 1.8 falling to 0.22 for bc 1.)
+
+**What the default replay shows.**  The critic term's descent direction
+points toward the verified candidates in every probe of every seed
+(cosine +0.05 to +0.08: small, but consistent); the BC term's direction
+points away in most probes (-0.01 to -0.02; positive in 18-35 %); the
+realised parameter step is orthogonal to the candidate direction (cosine
+0.000; positive in 49-57 % of probes).  After 2,000 real updates the
+modes are where they started (distance 2.20 -> 2.18, 2.25 -> 2.27,
+3.10 -> 3.03; seed 0 drifted to 2.75 in between and came back), the
+scale at these states stays 0.5-0.7 (0.077 on the actor's own training
+rows), and the critic's own ranking prefers the candidate over the mode
+in only 27-45 % of the seed-0 / seed-1 contexts (78 % for seed 2).  So
+the real training neither adopts nor fights these choices: its updates
+are driven by batches that hardly touch these state-goal pairs, and the
+weak critic pull and the weak BC push leave the mode drifting.
+
+**What the counterfactual replays show.**  Critic term only (bc 0): the
+policy scale collapses within 2,000 updates (training rows 0.077 ->
+0.001, verified states 0.6 -> 0.0001) -- the actor-saturation failure
+that BC 0.05 prevents; the mode moves AWAY from the candidates for seed
+0 (2.20 -> 3.17, 0 / 11 closer) and toward them for seeds 1 / 2 (2.25 ->
+2.14, 3.10 -> 2.10) while the share of contexts where the critic scores
+the candidate above the mode FALLS (0.45 -> 0.18, 0.78 -> 0.22): the
+critic-driven mode goes to other maxima of the critic, not to the
+verified far-route torques (whether those maxima are far-route actions
+is not checked here).  Once the scale is ~0 the cosine diagnostics lose
+meaning (the expected score is f(mode)).  BC term only (bc 1): the Adam
+moments were calibrated for the 0.05-weighted BC gradient, so the first
+~100 updates take 8x larger steps (scale 0.65 -> 1.2 after 4 updates,
+decaying to 0.3-0.46; a replay artefact, disclosed); the mode moves away
+from the candidates (2.20 -> 2.73, 2.25 -> 2.59, 3.10 -> 3.15) toward
+the logged (shortcut) torques, and f(c) > f(mode) rises to 0.73-0.89
+because the mode leaves the critic's preferred region.
+
+**Reading under the user's decision tree.**  "Critic supports, BC
+cancels" is only weakly supported: the BC term does oppose (cosine -0.01
+to -0.02), but removing it does not bring the mode to the candidates --
+the critic's own dynamics collapse the scale and settle at other critic
+maxima.  The closest branch is "the real critic update itself does not
+support these choices": the critic's landscape at these state / task-goal
+pairs, as shaped by the current futures and queries, has the verified
+far-route torques as a direction of weak improvement, not as an
+attractor.  Per the user's rule this puts query coverage in the training
+contexts (the current policy's one-step torque queries under the sampling
+contract) ahead of any change to BC.  Limits: 2,000 updates of a
+30,000-update run; 9-11 contexts per seed, one verified candidate each;
+the distance is torque-space L2 to that one candidate (other far-route
+torques may exist); bc 1 carries the Adam mismatch above; nothing here
+says the actor optimised its objective wrongly -- the objective at these
+states simply has little to gain along this direction.

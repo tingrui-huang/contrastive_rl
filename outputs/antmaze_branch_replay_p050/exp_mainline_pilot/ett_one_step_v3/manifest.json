@@ -1,0 +1,40 @@
+{
+ "experiment": "one-step ETT revision v2: stationary gate + zero-displacement atom; onset head with visible-history features (steps in hold, steps in band)",
+ "sealed_at": "2026-09-19 21:01:23",
+ "git_head": "unavailable (Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128.)",
+ "status": "oracle-supervised engineering stage; disclosed revision after the Step 3a diagnosis (ett_rollout/SUMMARY.md)",
+ "v1_manifest_sha256": "e679bccf4a61b57810e565c36e3a34c7a747e592d61fc585d88dbcd9dd6bc56d",
+ "v1_check_sha256": "4ee83ea8476c92ab426b9df2538316e646e9cc60348fa8f7d859aca5540ad135",
+ "step3a_report_sha256": "a5589452b455dfa1653b74cf53336cad09bd65c9b469ed899b5c265d7bc80c44",
+ "supervision_sha256": "1d51cfda15d97dd6b89c3e5a0d44bcbc8b1a466539d26665aa4dd78638ba873f",
+ "changes": {
+  "stationary_gate": "P(stationary | s, a_b, a_q), label max |delta s| < 0.001; MLP (256, 256); BCE on all rows; at prediction delta = 0 when P > 0.5; motion regression trained on moving rows only",
+  "onset_history": "two features on the onset head: consecutive hold steps (advice max |a_b| < 0.05) and steps since band entry, each min(k, 100) / 100; computed from the path itself"
+ },
+ "v3": {
+  "regression_rows": "all rows (stationary included)",
+  "loss": "standardised MSE + 1.0 * relative error ||pred - d||^2 / (||d||^2 + 0.05^2)",
+  "selection": "mse_diag + mse_off + 0.25 * onset_bce (no stationary BCE)",
+  "why": "v2 did not decelerate after the torque became small (settling probe); fold 1 early-stopped at 4k on the stationary BCE"
+ },
+ "unchanged": "inputs, motion MLP, onset MLP, optimiser, budget, batches, cross-fitting, selection (+ 0.25 * stationary BCE)",
+ "gates": {
+  "G1_xy_median": 0.01,
+  "G1_xy_p99": 0.1,
+  "G1_delta_rmse": 0.3,
+  "G2_xy50_median": 1.0,
+  "G2_xy10_median": 0.2,
+  "G3_auroc": 0.85,
+  "G4_ratio": 5.0,
+  "G5_calibration": [
+   0.5,
+   2.0
+  ],
+  "G6_advice_ratio": 2.0,
+  "param_delta_min": 0.0001,
+  "G7_stat_auroc": 0.95,
+  "G7_stat_accuracy": 0.95,
+  "G7_atom_xy_median": 0.001
+ },
+ "gate_rule": "G1 / G2 on moving held-out rows; G3-G6 as v1; G7 stationary gate AUROC and accuracy on held-out rows, and the atom's one-step xy error on stationary rows; any failure stops"
+}
