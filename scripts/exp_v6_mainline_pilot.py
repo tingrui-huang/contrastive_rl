@@ -110,6 +110,12 @@ VARIANTS = {'actor_lr1e-4': {'actor_learning_rate': 1e-4},
             'bc0.02': {'bc_coef': 0.02},                    # user's request 2026-09-19: is BC the anchor?  lower BC
             'bc0': {'bc_coef': 0.0},                        # ... and no BC at all (actor = critic term only)
             'anchor_start0.5': {'anchor_coef': 0.5}}         # non-BC handle: trust region to the start policy's mode (crl.losses anchor penalty), bc 0.05 kept
+# Round 2 (user request 2026-09-19): policy iteration -- the round-1 CF agent of each seed becomes the continuation
+# policy of ITS OWN lineage (no selection of a best seed), the branches are regenerated at the same anchors with the
+# same hazard seeds (so that CF2 and CFold differ only by the continuation agent), and three arms are trained from
+# that agent with fresh paired critics: O (recorded futures), CF (regenerated futures), CFold (the round-1 futures).
+R2 = OUT / 'round2'
+R2_ARMS = ('O', 'CF', 'CFold')
 VARIANT_NOTES = {
     'bc0.02': 'BC weight 0.05 -> 0.02; tests whether the BC pull on the 95 % shortcut teacher torques is what keeps the reset mode in the shortcut basin, and whether BC is what protects mid-route walking',
     'bc0': 'BC weight 0; the actor follows the critic term alone (historically the actor left the data manifold within 10k updates with a frozen critic; here the critic trains jointly)',
@@ -795,6 +801,120 @@ def run_dir(arm, seed, base=None):
   return (base or OUT) / arm / f'seed_{seed}'
 
 
+def r2_lineage_ckpt(seed):
+  return run_dir('CF', seed) / 'final.pkl'          # the round-1 CF agent of this seed = the current agent of lineage `seed`
+
+
+def r2_branch_path(seed):
+  return R2 / f'branches_cf_r2_s{seed}.npz'
+
+
+def mode_seal_round2(args):
+  R2.mkdir(parents=True, exist_ok=True)
+  if (R2 / 'manifest.json').exists() and not args.force:
+    print(f'{R2 / "manifest.json"} exists', flush=True); return
+  man = {'round': 2, 'sealed_at': time.strftime('%Y-%m-%d %H:%M:%S'), 'git_head': git_head(),
+         'design': 'policy iteration: per lineage s in 0-2, the round-1 CF agent CF/seed_s is the continuation policy (mode) and the actor '
+                   'initialisation of all three arms; critics fresh, paired by seed; same anchors and weights, same hazard seeds as round 1 '
+                   '(HAZARD_SEED0 + anchor_id), same actor stream, losses (bc 0.05), lr, 30,000 updates, evaluation',
+         'no_selection': 'lineages, not the best seed: CF/seed_s -> round2/*/seed_s for every s; nothing chosen after the evaluation',
+         'arms': {'O': 'recorded futures', 'CF': 'futures regenerated with the lineage agent after the logged torque (one branch per anchor)',
+                  'CFold': 'the round-1 futures (branches_cf.npz, generated with the start agent) -- separates regeneration from re-initialisation'},
+         'lineage_agents': {f'seed_{s}': {'path': str(r2_lineage_ckpt(s)), 'sha256': (sha256(r2_lineage_ckpt(s)) if r2_lineage_ckpt(s).exists() else 'missing')} for s in SEEDS},
+         'anchors_sha256': sha256(OUT / 'anchors.npz'), 'round1_branches_sha256': sha256(OUT / 'branches_cf.npz'), 'base_manifest_sha256': sha256(OUT / 'manifest.json'),
+         'comparisons': {'primary': 'CF - O per lineage (paired on the common episodes), then over the 3 lineages',
+                         'regeneration': 'CF - CFold (same agent, same init, futures from the improved vs the start agent)',
+                         'practical': 'CF - CF1 (the lineage agent itself) and CF - start (the pilot start agent)',
+                         'rule': 'mean over the 3 paired lineages > 2 x seed s.e. and 3/3; secondary metrics detour / death / timeout / hazard success'},
+         'held_fixed': 'everything in notes/MAINLINE_CONTRACT.md sections 2-4 except the continuation agent and the actor initialisation'}
+  write_json(R2 / 'manifest.json', man)
+  print(json.dumps(man, indent=1), flush=True)
+
+
+def mode_generate_round2(args):
+  anchors, _ = AnchorSet.load(OUT / 'anchors.npz')
+  s = args.lineage
+  ck = r2_lineage_ckpt(s)
+  if not ck.exists():
+    raise SystemExit(f'lineage agent missing: {ck}')
+  out_path = r2_branch_path(s)
+  if out_path.exists() and not args.force:
+    print(f'{out_path} exists', flush=True); return
+  R2.mkdir(parents=True, exist_ok=True)
+  meta, _ = generate_branches(anchors, ck, args.workers, out_path, limit=args.limit)
+  write_json(R2 / f'generation_cf_r2_s{s}.json', generation_summary(out_path, anchors))
+  print(json.dumps(meta, indent=1), flush=True)
+
+
+def mode_train_round2(args):
+  if not (R2 / 'manifest.json').exists():
+    raise SystemExit('seal round 2 first: seal --round 2')
+  for s in args.seeds:
+    ck = r2_lineage_ckpt(s)
+    if not ck.exists():
+      raise SystemExit(f'lineage agent missing: {ck}')
+    bp = {'O': None, 'CF': r2_branch_path(s), 'CFold': OUT / 'branches_cf.npz'}[args.arm]
+    if bp is not None and not bp.exists():
+      raise SystemExit(f'branches missing: {bp}')
+    train_arm(args.arm, s, base=R2, start_ckpt=ck, branch_path=bp, inputs=OUT)
+
+
+def r2_eval_paths():
+  paths = {}
+  for arm in R2_ARMS:
+    for s in SEEDS:
+      paths[f'{arm}/seed_{s}'] = run_dir(arm, s, R2) / f'eval_mean_s{EVAL["seed"]}.json'
+  return paths
+
+
+def mode_evaluate_round2(args):
+  D.EVAL['seed'], D.EVAL['n'] = EVAL['seed'], EVAL['n']
+  for arm in R2_ARMS:
+    for s in SEEDS:
+      ck = run_dir(arm, s, R2) / 'final.pkl'
+      name = f'{arm}/seed_{s}'
+      if ck.exists() and (not args.only or name in args.only):
+        print(f'== evaluate round2 {name}', flush=True)
+        D.evaluate_ckpt(ck, run_dir(arm, s, R2), EVAL['policy'])
+
+
+def mode_report_round2(args):
+  man = read_json(R2 / 'manifest.json')
+  E1 = {n: _episodes(p) for n, p in eval_paths().items() if p.exists()}        # round 1: start, O, CF
+  E2 = {n: _episodes(p) for n, p in r2_eval_paths().items() if p.exists()}
+  L = ['# Round 2: the round-1 CF agent of each lineage as the continuation policy; futures regenerated; O / CF / CFold retrained from that agent', '',
+       f'Sealed {man["sealed_at"]}.  Same 300 evaluation episodes (seed {EVAL["seed"]}, mode).  Rule: mean over the 3 paired lineages > 2 x seed s.e. and 3/3.', '',
+       '## Per policy', '', '| policy | success | detour | death | timeout | success no hazard | success hazard | mean steps |', '|---|---:|---:|---:|---:|---:|---:|---:|']
+  for lab, EE in (('round1', E1), ('round2', E2)):
+    for n, e in EE.items():
+      h = _headline(e)
+      L.append(f'| {lab} {n} | {h["success"]:.3f} | {h["detour"]:.3f} | {h["death"]:.3f} | {h["timeout"]:.3f} | {h["success_no_hazard"]:.3f} | {h["success_hazard"]:.3f} | {h["mean_steps"]:.0f} |')
+  by2 = {arm: {s: E2[f'{arm}/seed_{s}'] for s in SEEDS if f'{arm}/seed_{s}' in E2} for arm in R2_ARMS}
+  by1 = {arm: {s: E1[f'{arm}/seed_{s}'] for s in SEEDS if f'{arm}/seed_{s}' in E1} for arm in ARMS}
+  res = {}
+  if all(len(by2[a]) == len(SEEDS) for a in R2_ARMS) and len(by1['CF']) == len(SEEDS):
+    L += ['', '## Paired differences on the common episodes (per lineage; mean, seed s.e., episode-bootstrap s.e.)', '']
+    comps = [('CF2 - O2 (primary)', by2['CF'], by2['O']), ('CF2 - CFold2 (regeneration)', by2['CF'], by2['CFold']), ('CFold2 - O2', by2['CFold'], by2['O']),
+             ('CF2 - CF1 (practical: the lineage agent)', by2['CF'], by1['CF']), ('O2 - CF1', by2['O'], by1['CF']), ('CFold2 - CF1', by2['CFold'], by1['CF'])]
+    if 'start' in E1:
+      comps.append(('CF2 - start (pilot start agent)', by2['CF'], E1['start']))
+    for key in ('success', 'detour', 'failure', 'timeout'):
+      L += [f'### {key}', '', '| comparison | per lineage | mean | seed s.e. | boot s.e. | same direction | rule |', '|---|---|---:|---:|---:|---|---|']
+      for cname, a, b in comps:
+        r = paired_block(a, b, key=key); res[f'{cname}:{key}'] = r
+        per = ' / '.join(f'{v["mean"]:+.3f}' for v in r['per_seed'].values())
+        L.append(f'| {cname} | {per} | {r["mean"]:+.3f} | {r["seed_se"]:.3f} | {r["episode_bootstrap_se_of_mean"]:.3f} | {r["seeds_same_direction"]} | {"met" if r["improvement_rule_met"] else "not met"} |')
+      L.append('')
+    p1, p2, p3 = res['CF2 - O2 (primary):success'], res['CF2 - CFold2 (regeneration):success'], res['CF2 - CF1 (practical: the lineage agent):success']
+    L += ['## Reading', '', f'Primary CF2 - O2 success {p1["mean"]:+.3f} (seed s.e. {p1["seed_se"]:.3f}, {p1["seeds_same_direction"]}): {"MET" if p1["improvement_rule_met"] else "NOT MET"}.',
+          f'Regeneration CF2 - CFold2 success {p2["mean"]:+.3f} (seed s.e. {p2["seed_se"]:.3f}, {p2["seeds_same_direction"]}): {"MET" if p2["improvement_rule_met"] else "NOT MET"}.',
+          f'Practical CF2 - CF1 success {p3["mean"]:+.3f} (seed s.e. {p3["seed_se"]:.3f}, {p3["seeds_same_direction"]}): {"MET" if p3["improvement_rule_met"] else "NOT MET"}.', '',
+          'Oracle evidence (the simulator generated the futures); not a learned-ETT result.']
+  write_json(R2 / 'results.json', {'headlines': {**{f'round1 {n}': _headline(e) for n, e in E1.items()}, **{f'round2 {n}': _headline(e) for n, e in E2.items()}}, 'paired': res})
+  (R2 / 'REPORT.md').write_text('\n'.join(L) + '\n', encoding='utf-8')
+  print('\n'.join(L), flush=True)
+
+
 def variant_base(name):
   if name not in VARIANTS:
     raise SystemExit(f'unknown variant {name!r}; known: {list(VARIANTS)}')
@@ -1156,7 +1276,9 @@ def main(argv=None):
   ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
   ap.add_argument('mode', choices=('anchors', 'generate', 'seal', 'audit', 'train', 'evaluate', 'report', 'smoke'))
   ap.add_argument('--variant', choices=list(VARIANTS), default=None, help='pre-registered single-change variant (seal / train / evaluate / report)')
-  ap.add_argument('--arm', choices=ARMS)
+  ap.add_argument('--round', type=int, choices=(1, 2), default=1, help='2 = policy-iteration round 2 (seal / generate --lineage / train / evaluate / report)')
+  ap.add_argument('--lineage', type=int, default=None, help='round 2 generate: which lineage (seed) agent continues')
+  ap.add_argument('--arm', choices=ARMS + ('CFold',))
   ap.add_argument('--seeds', type=int, nargs='+', default=list(SEEDS))
   ap.add_argument('--workers', type=int, default=8)
   ap.add_argument('--limit', type=int, default=None, help='generate: first N anchors only (smoke-scale check, never for training)')
@@ -1169,6 +1291,12 @@ def main(argv=None):
     ap.error('train needs --arm')
   if args.mode == 'seal' and args.variant:
     return mode_seal_variant(args) or 0
+  if args.round == 2:
+    if args.mode == 'train' and args.arm not in R2_ARMS:
+      ap.error(f'round 2 train needs --arm in {R2_ARMS}')
+    if args.mode == 'generate' and args.lineage is None:
+      ap.error('round 2 generate needs --lineage')
+    return {'seal': mode_seal_round2, 'generate': mode_generate_round2, 'train': mode_train_round2, 'evaluate': mode_evaluate_round2, 'report': mode_report_round2}[args.mode](args) or 0
   r = {'anchors': mode_anchors, 'generate': mode_generate, 'seal': mode_seal, 'audit': mode_audit, 'train': mode_train,
        'evaluate': mode_evaluate, 'report': mode_report, 'smoke': mode_smoke}[args.mode](args)
   return r if isinstance(r, int) else 0
