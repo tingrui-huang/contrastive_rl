@@ -1829,3 +1829,23 @@ actor onto the detour in every seed, with a seed-dependent size that the
 pre-registered rule does not certify; oracle evidence for the sampling
 design, not a learned-ETT result; no follow-ups launched (stopping rule).
 `exp_mainline_pilot/{SUMMARY,REPORT,AUDIT}.md`.
+
+### Frozen-model trajectory diagnostic of the pilot (2026-09-19, user's single next step; no retraining)
+
+`scripts/diag_v6_pilot_trajectories.py`, `exp_mainline_pilot/diag_traj/`.
+Replay is chaotic at the episode level (1e-7 action differences flip some
+outcomes; aggregates stable), so the CPU replay is the reference.  CF s2's
+73 timeouts: freezes with saturated torques (9 standing 1.5-2.7 from the
+goal, 14 near the start; the start agent has the same mode), 15 falls, ~30
+slow / oscillating detour walks (first y >= 6 at median step 394; the
+west-column turn is the slowest part); no wrong-direction, wall-stuck 0-4.
+Route signal: the CF critics prefer the CF torque at the reset states
+(P 0.86-1.00) and the actors follow it only partly (mode below the best own
+sample by ~1 nat; pre-tanh scale widened to 0.75-1.3 vs O's 0.5); a single
+CF s2 first torque sends the start agent around 14 %; the O and CF paths
+separate at median step 7 (s2), the decision is the first ~7-30 torques as
+a sequence.  Reset-row branches carry no "around" support (3 / 196).
+Continuation from the detour entrance: driver 0.98, O s2 0.71, start 0.52,
+CF s2 0.48 (n 42); from pre-stall states CF = start = O ~0.42-0.45 --
+detour-walking competence is the shared limit, at most a weak CF-specific
+deficit on seed 2.
