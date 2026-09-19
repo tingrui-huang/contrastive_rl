@@ -2303,22 +2303,78 @@ down at launch -- likely memory; re-queued on node3 behind the v2 A
 rollouts).  Judgement rule unchanged (user): C bad -> fix motion / onset
 first; C good and A bad -> the advice process is the bottleneck.
 
-### Real-update check result (2026-09-20; diag_traj/SUMMARY.md section 13)
+### Real-update check result, corrected after the user's review (2026-09-20; diag_traj/SUMMARY.md section 13)
 
 Default bc 0.05, 2,000 real updates from each clipped CF checkpoint with
 the real batches and Adam state, 11 / 11 / 9 verified stable-shortcut
-contexts: the critic term's direction points toward the verified
-candidates in every probe (cosine +0.05 to +0.08), the BC term away
-(-0.01 to -0.02), the realised Adam step is orthogonal (0.000); the modes
-end where they started (2.20 -> 2.18, 2.25 -> 2.27, 3.10 -> 3.03), scale
-0.5-0.7 at these states vs 0.077 on the training rows.  Counterfactuals:
-critic only (bc 0) collapses the scale to ~0 within 2,000 updates and
-moves the mode to other critic maxima (seed 0 away, seeds 1 / 2 closer
-but the critic's preference for the candidate over the mode falls 0.45 ->
-0.18, 0.78 -> 0.22); BC only (bc 1) moves the modes away toward the
-logged torques (Adam-mismatch artefact in the first ~100 updates,
-disclosed).  Reading: "critic supports, BC cancels" only weakly; the
-closest branch is that the critic's landscape at these state / task-goal
-pairs does not make the verified far-route torques an attractor -> query
-coverage in the training contexts comes before any BC change (user's
-rule).  Limits listed in the summary.
+contexts.  Weighted projections on the candidate direction (means over
+68 probes): critic term +0.128 / +0.189 / +0.138 (positive in ~100 % of
+probes), BC term -0.105 / -0.180 / -0.160 -- BC cancels 82 / 95 / 116 %
+of the critic component; total +0.024 / +0.009 / -0.022; realised Adam
+step ~0; the modes end where they started.  The first reading ("BC
+cosine -0.01, so weak cancellation; the critic landscape is not an
+attractor -> query coverage first") was WRONG and is withdrawn: cosines
+compare directions, the weighted projections show a local
+critic-toward / BC-against cancellation under the original recipe.  The
+bc 0 / bc 1 replays (scale collapse; mode to other critic maxima; BC-only
+moves away) are ablations of a changed objective and cannot overturn
+this: the critic keeps updating, a near-zero scale is not saturation
+evidence, the candidates were verified once for entry only.  BC stays
+0.05.  Separately, the AntMaze generation gives the critic no
+supervision at the policy's alternative actions (one path per anchor,
+first torque = the logged one; PointMaze kept ~7,700 extra query
+branches) -- a real coverage difference, not yet shown to be the cause.
+Next (user's plan): (1) a small generation comparison, logged-query vs
+extended-query futures (queries = logged torque + current policy mode +
+a fixed number of policy samples; same training start / early-decision
+states, same continuation policy, goal and paired hazard draws; all
+outcomes kept; judged on far-route COMPLETION and task-goal future
+quality, not entry); (2) only with a reliable contrast, a training
+comparison where the new (s, a_query) pairs become critic anchors
+(per-state total weight, budget, actor / BC data, loss, BC 0.05
+unchanged; same continuation policy in both arms).  No more BC
+ablations or gradient checks.  The one-step ETT continues separately;
+first check that it preserves the oracle gain.
+
+### Query coverage, stage 1 (generation comparison), sealed 2026-09-20 before generation (`scripts/exp_v6_query_coverage.py`, `query_coverage/`)
+
+User's plan after the real-update review.  States: every pilot anchor in
+the start region (4,276 anchors, weight 0.079, t median 10, 99 % t <= 30)
+-- the starts and early decision states; nothing chosen from evaluation.
+Current policy = the lineage agent of seed s (clipped CF final).  Queries
+per anchor: q0 the logged torque, q1 the agent mode, q2..q5 four pinned
+samples tanh(loc + scale * eps).  Every query executed once from the
+restored logged state and continued by the SAME agent (mode) to reach /
+death / horizon, logged task goal, two PAIRED hazard draws per anchor
+(draw 0 = the mainline seed HAZARD_SEED0 + anchor_id, draw 1 = a fresh
+offset); nothing filtered.  Read-out: anchor-weighted far-route entry /
+COMPLETION, success / death / timeout, length, critic goal-marginal mass
+(far / goal / zones) for logged (q0) vs extended union (q0..q5, weight
+split equally) vs added (q1..q5), paired-by-anchor bootstrap; draw-to-draw
+agreement; strata (reset rows, t in [1, 30), logged shortcut / detour).
+Pre-registered gate for stage 2 (every lineage): G1 completed-far gain
+extended - logged >= +0.03 with bootstrap 95 % CI lower bound > 0; G2
+goal-area mass extended >= 0.8 x logged; G3 >= 100 distinct start anchors
+with an added far-complete future in BOTH draws.  Stage 2 (only if the
+gate passes, on the user's go): the new (s, a_query) pairs become critic
+anchors -- per-state total weight, budget, actor / BC data, losses, clip
+0.1, BC 0.05 unchanged -- logged-query vs extended-query futures under
+the SAME continuation policy.  Running on node5 (3 lineages x 4,276 x 6
+x 2 = 51,312 branches each).
+
+Lineage 0 result (interim, lineages 1 / 2 generating): pooled over the
+start anchors completed-far logged 0.026 -> extended 0.041 (mode 0.046,
+samples 0.044), paired delta +0.0154 CI [+0.012, +0.019] -> G1 (>= +0.03)
+NOT met; G2 (goal mass 0.017 / 0.016) and G3 (377 / 378 distinct anchors)
+pass.  Strata: the whole effect sits at the RESET rows (t = 0; 196
+anchors, weight 0.0038 = 0.4 % of the anchor weight): 0.037 -> 0.330
+(mode 0.423), delta +0.29 CI [+0.25, +0.33]; t in [1, 30): 0.020 ->
+0.022 (CI spans 0); logged detour episodes unchanged (0.53).  Draw-to-
+draw agreement of the far-complete indicator 0.995 (Jaccard 0.88).
+Reading: the agent's own first torque changes the route only at the
+reset step (its 42 % matches the agent's evaluation far-route share); one
+step into a shortcut episode neither the logged nor the agent's action
+leads to the far route.  The missing critic supervision therefore has a
+precise locus -- the reset rows -- with 0.4 % of the anchor weight; the
+pre-registered pooled gate fails on that weight.  No stage 2 without the
+user's call.

@@ -1,0 +1,121 @@
+{
+ "experiment": "AntMaze V6 mainline, query coverage stage 1: logged-query vs extended-query futures at the start / early-decision anchors (generation only; no training)",
+ "sealed_at": "2026-09-19 21:47:51",
+ "git_head": "unavailable (Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128.)",
+ "anchors_sha256": "d6672a7dd70d9596944c9522d7d1cf887204847d34e3348d6e041c8d29d68367",
+ "states": {
+  "rule": "every pilot anchor whose xy is in the start region (exp_v6_learned_ett.region_of)",
+  "n": 4276,
+  "weight": 0.07943333333333336,
+  "t_median": 10.0,
+  "share_t_le_30": 0.990177736202058,
+  "selection_from_evaluation": "none"
+ },
+ "current_policy": {
+  "seed_0": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/variants/critic_clip0.1/CF/seed_0/final.pkl",
+   "sha256": "8265785d577365376bba7ba473728c14f0efdfbd04172a938423b81d68535414"
+  },
+  "seed_1": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/variants/critic_clip0.1/CF/seed_1/final.pkl",
+   "sha256": "f09886a7a4c389cbacae29887a6bf3b23c0ffd7b48d68f3928b771404227c6c3"
+  },
+  "seed_2": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/variants/critic_clip0.1/CF/seed_2/final.pkl",
+   "sha256": "06362f533243c395ac7b48a3d8cc67cf436955490c5b4689fd5240ba1f5f2861"
+  }
+ },
+ "queries": {
+  "q0": "the logged torque",
+  "q1": "the lineage agent mode tanh(loc) at the logged obs31",
+  "q2..q5": "K = 4 samples tanh(loc + scale * eps), eps ~ N(0, 1) from default_rng(143000000 + lineage), shape (n_start_anchors, K, 8), pinned",
+  "executed": "once, from the restored logged state at absolute time t (build_v6_branch_replay.restore)"
+ },
+ "continuation": "the SAME lineage agent, mode tanh(loc), closed-loop to the first reach frame / death / absolute horizon 800; the logged task goal; no goal hold (exp_v6_mainline_pilot._branch_one)",
+ "hazard_draws": {
+  "per_anchor": 2,
+  "paired": "identical across the six queries of an anchor",
+  "draw_0": "132000000 + anchor_id (the mainline / clip-round-A pairing)",
+  "draw_1": "142000000 + anchor_id"
+ },
+ "filtering": "none: every outcome kept",
+ "weights": "anchor weight (the critic anchor law); the extended union spreads it equally over the six queries",
+ "quantities": [
+  "entered_far",
+  "completed_far",
+  "entered_zone",
+  "success",
+  "death",
+  "timeout",
+  "length",
+  "mass_far",
+  "mass_goal",
+  "mass_zone"
+ ],
+ "sets": {
+  "logged": [
+   0
+  ],
+  "mode": [
+   1
+  ],
+  "samples": [
+   2,
+   3,
+   4,
+   5
+  ],
+  "added": [
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "extended": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5
+  ]
+ },
+ "query_names": [
+  "logged",
+  "mode",
+  "sample0",
+  "sample1",
+  "sample2",
+  "sample3"
+ ],
+ "strata": [
+  "all start anchors",
+  "reset rows (t = 0)",
+  "t in [1, 30)",
+  "logged shortcut episodes",
+  "logged detour episodes"
+ ],
+ "reliability": "draw-to-draw agreement of far-route completion per (anchor, query); distinct anchors with an added far-complete future per draw",
+ "bootstrap": {
+  "paired_by": "anchor",
+  "resamples": 2000,
+  "seed": 145000001
+ },
+ "gates": {
+  "G1_completed_far_gain": {
+   "quantity": "far-route completion share, extended union (q0..q5, equal weights) minus logged (q0), anchor-weighted over the start-region anchors, both draws",
+   "rule": ">= +0.03 absolute AND paired-by-anchor bootstrap 95 % CI lower bound > 0, in every lineage"
+  },
+  "G2_goal_mass_kept": {
+   "quantity": "goal-area mass of the critic goal marginal (truncated geometric, gamma 0.999), extended union vs logged",
+   "rule": "extended >= 0.8 x logged, in every lineage"
+  },
+  "G3_spread": {
+   "quantity": "distinct start anchors with >= 1 far-route-complete future among the ADDED queries (q1..q5)",
+   "rule": ">= 100 in draw 0 AND >= 100 in draw 1, in every lineage"
+  }
+ },
+ "stage_2_if_gates_pass": "training comparison logged-query vs extended-query futures under the SAME continuation policy: the new (s, a_query) pairs become critic anchors; per-state total weight, budget, actor / BC data, losses, clip 0.1, BC 0.05 unchanged; on the user's go",
+ "status": "oracle (simulator) futures; engineering stage, not offline identification"
+}

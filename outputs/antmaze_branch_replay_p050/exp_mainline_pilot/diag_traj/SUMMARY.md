@@ -508,52 +508,82 @@ term only) and bc 1 (BC term only), same batches, same Adam state.
 (cosines are means over the logged probes; realised-step norms 0.19-0.22
 per update for bc 0.05 / 0, 1.8 falling to 0.22 for bc 1.)
 
-**What the default replay shows.**  The critic term's descent direction
-points toward the verified candidates in every probe of every seed
-(cosine +0.05 to +0.08: small, but consistent); the BC term's direction
-points away in most probes (-0.01 to -0.02; positive in 18-35 %); the
-realised parameter step is orthogonal to the candidate direction (cosine
-0.000; positive in 49-57 % of probes).  After 2,000 real updates the
-modes are where they started (distance 2.20 -> 2.18, 2.25 -> 2.27,
-3.10 -> 3.03; seed 0 drifted to 2.75 in between and came back), the
-scale at these states stays 0.5-0.7 (0.077 on the actor's own training
-rows), and the critic's own ranking prefers the candidate over the mode
-in only 27-45 % of the seed-0 / seed-1 contexts (78 % for seed 2).  So
-the real training neither adopts nor fights these choices: its updates
-are driven by batches that hardly touch these state-goal pairs, and the
-weak critic pull and the weak BC push leave the mode drifting.
+**Weighted projections (the quantity that matters; user's review).**
+The cosines above compare DIRECTIONS; the push is the projection of each
+weighted gradient ((1 - bc) * critic term, bc * BC term) on the
+candidate direction.  Means over the 68 probes per seed:
 
-**What the counterfactual replays show.**  Critic term only (bc 0): the
-policy scale collapses within 2,000 updates (training rows 0.077 ->
-0.001, verified states 0.6 -> 0.0001) -- the actor-saturation failure
-that BC 0.05 prevents; the mode moves AWAY from the candidates for seed
-0 (2.20 -> 3.17, 0 / 11 closer) and toward them for seeds 1 / 2 (2.25 ->
-2.14, 3.10 -> 2.10) while the share of contexts where the critic scores
-the candidate above the mode FALLS (0.45 -> 0.18, 0.78 -> 0.22): the
-critic-driven mode goes to other maxima of the critic, not to the
-verified far-route torques (whether those maxima are far-route actions
-is not checked here).  Once the scale is ~0 the cosine diagnostics lose
-meaning (the expected score is f(mode)).  BC term only (bc 1): the Adam
-moments were calibrated for the 0.05-weighted BC gradient, so the first
-~100 updates take 8x larger steps (scale 0.65 -> 1.2 after 4 updates,
-decaying to 0.3-0.46; a replay artefact, disclosed); the mode moves away
-from the candidates (2.20 -> 2.73, 2.25 -> 2.59, 3.10 -> 3.15) toward
-the logged (shortcut) torques, and f(c) > f(mode) rises to 0.73-0.89
-because the mode leaves the critic's preferred region.
+| seed | critic-term projection (share > 0) | BC-term projection (share < 0) | total gradient projection (share > 0) | BC cancels | realised Adam step projection |
+|---|---|---|---|---|---|
+| 0 | +0.128 (100 %) | -0.105 (65 %) | +0.024 (62 %) | 82 % | -0.0001 |
+| 1 | +0.189 (100 %) | -0.180 (81 %) | +0.009 (57 %) | 95 % | +0.0000 |
+| 2 | +0.138 (99 %) | -0.160 (82 %) | -0.022 (46 %) | 116 % | +0.0001 |
 
-**Reading under the user's decision tree.**  "Critic supports, BC
-cancels" is only weakly supported: the BC term does oppose (cosine -0.01
-to -0.02), but removing it does not bring the mode to the candidates --
-the critic's own dynamics collapse the scale and settle at other critic
-maxima.  The closest branch is "the real critic update itself does not
-support these choices": the critic's landscape at these state / task-goal
-pairs, as shaped by the current futures and queries, has the verified
-far-route torques as a direction of weak improvement, not as an
-attractor.  Per the user's rule this puts query coverage in the training
-contexts (the current policy's one-step torque queries under the sampling
-contract) ahead of any change to BC.  Limits: 2,000 updates of a
-30,000-update run; 9-11 contexts per seed, one verified candidate each;
-the distance is torque-space L2 to that one candidate (other far-route
-torques may exist); bc 1 carries the Adam mismatch above; nothing here
-says the actor optimised its objective wrongly -- the objective at these
-states simply has little to gain along this direction.
+(In 75-82 % of the probes the BC projection is at least half the critic
+projection in magnitude.)  The BC cosine is small only because the BC
+gradient's overall norm is large; along the candidate direction its
+weighted component is as large as the critic's.
+
+**What the default replay shows (corrected after the user's review,
+2026-09-20).**  Under the training objective (bc 0.05) there IS a critic
+signal toward the verified candidates -- positive in every probe of
+every seed -- and the BC term cancels most or all of it along that
+direction (82 / 95 / 116 %), leaving a net push near zero; the realised
+Adam step is orthogonal and the modes end where they started (distance
+2.20 -> 2.18, 2.25 -> 2.27, 3.10 -> 3.03; scale 0.5-0.7 at these states,
+0.077 on the actor's own training rows).  The first version of this
+section read the small BC cosine as "weak cancellation"; that was wrong.
+The evidence is local (9-11 contexts per seed, 68 probes, direction
+statistics, not an exact decomposition of the Adam step), but it
+supports: the current training carries a critic signal toward these
+candidates whose net effect is small because BC opposes it.
+
+**What the counterfactual replays show, and what they cannot.**  bc 0
+(critic term only): the policy scale collapses within 2,000 updates
+(training rows 0.077 -> 0.001, verified states 0.6 -> 0.0001), the mode
+moves away for seed 0 (2.20 -> 3.17) and closer for seeds 1 / 2 (2.25 ->
+2.14, 3.10 -> 2.10), and the share of contexts where the critic scores
+the candidate above the mode falls (0.45 -> 0.18, 0.78 -> 0.22).  bc 1
+(BC term only): the modes move away toward the logged torques (2.20 ->
+2.73, 2.25 -> 2.59, 3.10 -> 3.15; the Adam moments were calibrated for the
+0.05-weighted BC gradient, so the first ~100 updates take 8x larger
+steps -- a replay artefact, disclosed).  These are ablations of a CHANGED
+objective, not a decomposition of the 0.95 / 0.05 terms, and three things
+keep them from overturning the default replay (user's review): the
+critic keeps updating during the replay, so the changed candidate-vs-mode
+ranking need not mean the actor climbed to another peak of the ORIGINAL
+critic; a scale near zero only says the distribution concentrated -- it
+does not by itself mean a saturated mean or a policy that cannot detour,
+and the resulting actions' outcomes were not measured; and each
+candidate was verified once for far-route ENTRY only (not completion,
+not a higher critic score than the mode), so a larger distance to it does
+not mean a worse route choice.  Consequently there is no basis here for
+lowering BC; BC stays 0.05.
+
+**Reading (corrected).**  The first version concluded "the critic's
+landscape does not make the candidates an attractor -> query coverage
+first"; that conclusion is WITHDRAWN.  What stands: (i) under the
+original recipe there is a local, direction-level cancellation -- the
+critic pushes toward the verified candidates, BC pushes back with a
+comparable weighted component; (ii) separately, the current AntMaze
+generation gives the critic no supervision at the policy's alternative
+actions: futures are generated along one path per anchor whose first
+torque is the LOGGED one (`action = self.a.action[k]`), so "several
+different actions at the same state, each with its own future" and
+"those (s, a_query) pairs entering the NCE" do not occur -- PointMaze's
+successful branch replay additionally kept ~7,700 extra query branches
+(C / D / E) that the AntMaze mainline deliberately dropped to isolate
+the future source.  (i) and (ii) are related but not the same fact: (ii)
+is a real difference in action coverage between the two pipelines, not
+yet shown to be the cause of the performance gap.  Next (user): no
+further BC ablations, no repeat of this gradient check; a small
+generation comparison of logged-query vs extended-query futures (same
+training start / early-decision states, queries = logged torque + the
+current policy's mode + a fixed number of policy samples, same
+continuation policy / goal / paired hazard draws, all outcomes kept,
+judged on far-route COMPLETION and task-goal future quality), and only
+if that produces a reliable contrast, a training comparison in which the
+new (s, a_query) pairs become critic anchors with the per-state weight,
+budget, actor / BC data, loss and BC 0.05 unchanged, under the SAME
+continuation policy for both arms.  The one-step ETT continues
+separately (first: does it preserve the oracle gain).
