@@ -68,3 +68,21 @@ Sealed 2026-09-19 15:16:30.  Same 300 evaluation episodes (seed 3909, mode).  Cr
 2. detour gain kept: CF(critic_clip0.1) - CF(base) detour +0.223 (seed s.e. 0.184); CF(critic_clip0.1) - O(critic_clip0.1) detour +0.463 (3/3) -> KEPT
 3. continuation from the same handover states: see diag_traj/cont_variant_<name>.json / the diag REPORT section 8.
 
+## Route ledger (far route = the env's detour label, the top-west corner reached; completion = successes / far-route episodes)
+
+| policy | far route: n (share) | completed | far-route timeouts / deaths | completion | shortcut: n / success / deaths / timeouts | no route: n / deaths / timeouts | success | success if far-route timeouts rescued |
+|---|---:|---:|---|---:|---|---|---:|---:|
+| base start | 1 (0.00) | 0 | 1 / 0 | 0.000 | 291 / 73 / 217 / 1 | 8 / 5 / 3 | 0.243 | 0.247 |
+| base O/seed_0 | 7 (0.02) | 4 | 3 / 0 | 0.571 | 277 / 71 / 205 / 1 | 16 / 8 / 8 | 0.250 | 0.260 |
+| base O/seed_1 | 9 (0.03) | 7 | 2 / 0 | 0.778 | 283 / 72 / 211 / 0 | 8 / 6 / 2 | 0.263 | 0.270 |
+| base O/seed_2 | 1 (0.00) | 1 | 0 / 0 | 1.000 | 285 / 74 / 211 / 0 | 14 / 11 / 3 | 0.250 | 0.250 |
+| base CF/seed_0 | 32 (0.11) | 20 | 12 / 0 | 0.625 | 252 / 60 / 182 / 10 | 16 / 6 / 10 | 0.267 | 0.307 |
+| base CF/seed_1 | 50 (0.17) | 38 | 12 / 0 | 0.760 | 217 / 58 / 156 / 3 | 33 / 14 / 19 | 0.320 | 0.360 |
+| base CF/seed_2 | 150 (0.50) | 112 | 38 / 0 | 0.747 | 111 / 32 / 75 / 4 | 39 / 3 / 36 | 0.480 | 0.607 |
+| critic_clip0.1 O/seed_0 | 8 (0.03) | 5 | 3 / 0 | 0.625 | 286 / 72 / 214 / 0 | 6 / 3 / 3 | 0.257 | 0.267 |
+| critic_clip0.1 O/seed_1 | 1 (0.00) | 1 | 0 / 0 | 1.000 | 290 / 73 / 217 / 0 | 9 / 6 / 3 | 0.247 | 0.247 |
+| critic_clip0.1 O/seed_2 | 7 (0.02) | 5 | 2 / 0 | 0.714 | 284 / 73 / 211 / 0 | 9 / 5 / 4 | 0.260 | 0.267 |
+| critic_clip0.1 CF/seed_0 | 170 (0.57) | 111 | 59 / 0 | 0.653 | 86 / 26 / 52 / 8 | 44 / 6 / 38 | 0.457 | 0.653 |
+| critic_clip0.1 CF/seed_1 | 155 (0.52) | 122 | 33 / 0 | 0.787 | 123 / 32 / 89 / 2 | 22 / 3 / 19 | 0.513 | 0.623 |
+| critic_clip0.1 CF/seed_2 | 108 (0.36) | 87 | 21 / 0 | 0.806 | 166 / 45 / 113 / 8 | 26 / 8 / 18 | 0.440 | 0.510 |
+

@@ -82,14 +82,75 @@ the start level, mixed against the base.
   the clip lifts the two seeds whose base runs had the early runaways
   (+0.19 / +0.19) and leaves seed 2 where its base already was (-0.04;
   its base run's runaway at 6.5k was followed by the 0.50-detour actor).
-* What remains: the detour is completed about 40-70 % of the time --
-  timeouts 0.16-0.35 scale with the detour share (0.36-0.57), success
-  without a hazard 0.68-0.84 (start 0.99).  This is the slower walking
-  loss that the clipped seed-1 window also showed (driven by ordinary
-  critic updates, not by spikes) plus the start policy's own detour
-  walking (~0.5-0.7 from the entrance).  Not addressed by the clip; it is
-  the next question, now examinable without training collapses.
+* What remains (corrected 2026-09-19 after the user's per-episode recount;
+  the sentence "the detour is completed about 40-70 % of the time" that
+  stood here was wrong).  Route ledger of the clipped CF (REPORT.md, the
+  env's labels): the far route (top-west corner reached) is taken in
+  170 / 155 / 108 of the 300 episodes and completed in 111 / 122 / 87 of
+  those -- completion 0.653 / 0.787 / 0.806, pooled 0.739; no far-route
+  episode dies, every far-route loss is a timeout (59 / 33 / 21).  The
+  other losses are shortcut deaths (52 / 89 / 113) and no-route timeouts
+  (38 / 19 / 18).  So two things remain open: fewer than half of the
+  episodes take the far route (0.57 / 0.52 / 0.36), and a quarter of those
+  that do run out of time.  Rescuing every far-route timeout with nothing
+  else changed would give 0.653 / 0.623 / 0.510 (bookkeeping, not a
+  prediction), so the far-route walking alone cannot carry the success
+  rate to 0.70 -- more episodes have to take the far route reliably.
+  "Success without a hazard 0.68-0.84 vs start 0.99" is not a same-route
+  comparison (the start walks the shortcut, the clipped CF mostly the
+  longer far route) and does not show a walking loss from 0.99 to 0.70.
+  The far-route timeouts of THESE policies are audited separately (late
+  entrance / stall / entrance state, and the continuation from the same
+  entrance with the same remaining time: `../../diag_traj/
+  DETOUR_AUDIT_critic_clip0.1.md`); the recipe is confirmed once on a
+  fresh evaluation draw (`confirm_s4909/REPORT.md`).
 * Status of the claim: oracle evidence (the simulator generated the
   futures), under an optimizer-stabilisation change applied to both arms
   and disclosed as such; not the original learner, not a learned-ETT
   result.  No selection: one variant, one threshold, evaluated once.
+
+## Confirmation on a fresh evaluation draw (seed 4909): REPRODUCED
+
+The development draw (seed 3909; 909 / 2909 before it) had been re-used
+throughout the development of the pilot and its variants, so the sealed
+recipe was re-evaluated ONCE, with the same final checkpoints (hashes sealed
+in `confirm_s4909/manifest.json` before any evaluation on the draw), on 300
+previously unused episodes.  `confirm_s4909/REPORT.md`: O clip 0.260 /
+0.260 / 0.260 (= start 0.260); CF clip 0.480 / 0.447 / 0.430, detour 0.60 /
+0.51 / 0.33, death 0.20 / 0.35 / 0.43, timeout 0.32 / 0.20 / 0.14; CF - O
+success +0.192 (seed s.e. 0.015, boot 0.024, 3/3) MET, CF - start +0.192
+(0.015, 3/3) MET; detour +0.46, death -0.40, timeout +0.20 (3/3).  Route
+ledger on the new draw: far route taken 0.60 / 0.51 / 0.33, completed
+0.657 / 0.704 / 0.859 (every far-route loss a timeout, none a death).  The
+current recipe is therefore the fixed oracle reference for the learned-ETT
+work; the confirmation draw is not re-used for development.
+
+## Far-route timeouts of THESE policies (`../../diag_traj/DETOUR_AUDIT_critic_clip0.1.md`)
+
+Audited on the clipped CF policies' own trajectories (not the base CF's
+entrances): (a) entered too late (steps left at the corner below the p10 of
+the successful completions, 308) -- 1 / 3 / 4 episodes only; (c) entrance
+state at the corner (torso height, uprightness, speed, heading, joint
+speed) -- AUC 0.38-0.67, no signature; (b) time enough -- seed 0: 33 of
+56 stop AT the top-west corner about 46 steps after reaching it and stand
+for ~630 steps, 11 fall in the east column; seed 1: 19 fall in the east
+column (arc 32, ~280 steps after the corner), 12 stop; seed 2: 16 timeouts,
+mixed.  The continuation test from the SAME corner state with the SAME
+remaining time (pooled 121 timeout entrances / 319 success entrances):
+the clipped CF itself reaches 0.66 from its own timeout entrances (the
+recorded timeout is reproduced in only 82 / 242 re-runs: with the policy and
+the state fixed, the outcome flips on numerical differences), the start
+policy 0.63, O clip 0.65, base CF 0.64, the blind driver 0.76; from the
+success entrances: start 0.71, O clip 0.75, base CF 0.75, driver 0.93.
+Reading under the pre-stated rules: R2 (an update-caused execution
+regression) is NOT supported -- the clipped CF is at the start / O-clip
+level from the same states; R3 partly -- every policy, the driver
+included, is ~0.1-0.17 lower from the timeout entrances; R1 rarely (the
+driver still completes 0.76).  The far-route walking from the corner is
+~0.65-0.75 for every learned policy, including the start agent it was
+initialised from: the completion limit is the inherited far-route walking
+(5 % detour data), not a loss caused by the update.  Caveat on every
+per-episode figure: the CPU replays reproduce the GPU evaluation episode by
+episode in only 48-112 of 300 (`rollout_check*.json`; the per-policy rates
+agree within 0.05), so episode-level outcomes are numerically chaotic and
+only rates are comparable.

@@ -2051,8 +2051,45 @@ detour 0.57 / 0.52 / 0.36, death 0.19 / 0.31 / 0.40, timeout 0.35 / 0.18 /
 0.026, boot 0.023, 3/3) -- MET; detour +0.46, death -0.43, timeout +0.21
 (3/3); CF clip - CF base +0.19 / +0.19 / -0.04; continuation from the same
 entrance handover states 0.75 / 0.75 / 0.67 (>= start).  Contract
-amendment written (section 8).  Remaining limit: the detour is completed
-40-70 % of the time (the slower walking loss driven by ordinary critic
-updates + the start policy's own detour walking) -- the next question,
-examinable now without collapses.  Status: oracle evidence under a
-disclosed optimizer change.
+amendment written (section 8).  Remaining limit -- CORRECTED 2026-09-19
+(user's per-episode recount; "completed 40-70 % of the time" was wrong):
+far route taken in 170 / 155 / 108 episodes, completed in 111 / 122 / 87
+(0.653 / 0.787 / 0.806, pooled 0.739; no far-route deaths, every loss a
+timeout); the other losses are shortcut deaths (52 / 89 / 113) and
+no-route timeouts (38 / 19 / 18).  Rescuing every far-route timeout would
+give 0.653 / 0.623 / 0.510 (bookkeeping), so the route share (0.57 /
+0.52 / 0.36) matters as much as the far-route walking; "no-hazard success
+0.68-0.84 vs start 0.99" is not a same-route comparison.  Status: oracle
+evidence under a disclosed optimizer change.
+
+### Confirmation draw, far-route audit, learned ETT launched (2026-09-19, evening)
+
+User's plan after the clip result: (1) seal and confirm the current recipe
+on unused evaluation seeds; (2) turn to the learned ETT -- data / interface
+first, a model trained on the simulator branches allowed as an engineering
+intermediate experiment if labelled as oracle-label-trained; (3) one small
+audit of the clipped policies' far-route timeouts.  Done: (1) `confirm`
+mode of exp_v6_mainline_pilot.py (sealed hashes, seed 4909, once):
+REPRODUCED -- CF - O +0.192 (seed s.e. 0.015, 3/3), CF - start +0.192,
+O = start (`variants/critic_clip0.1/confirm_s4909/`); the route ledger
+(`route_ledger`) now in every report.  (3) `diag_v6_detour_audit.py`: too
+late 1 / 3 / 4; no entrance-state signature; stalls at the corner (seed 0)
+and falls in the east column (seed 1); same-state same-time continuation:
+clipped CF 0.66 = start 0.63 = O clip 0.65 from the timeout entrances,
+0.71-0.75 from the success entrances, driver 0.76 / 0.93 -> no
+update-caused execution regression; the far-route walking limit is the
+inherited one; CPU replays reproduce only 48-112 / 300 eval episodes
+(rates agree), so per-episode outcomes are chaotic.  (2)
+`exp_v6_learned_ett.py`: an ORACLE-LABEL-TRAINED learned ETT -- the
+discounted-future-goal marginal p_gamma(g | s, a) of the blind
+continuation as a categorical over 0.5-cells (1,508), heads for the
+absorbing position at m = 10 / 50 / 200 and the branch outcome, MLP
+1024-1024, cross-fitted over 3 episode folds (seed 161000001; the model
+that writes an anchor's future never saw its episode), a position-only
+reference model, checks (held-out NLL, region-mass L1, death AUC, zone /
+far-route masses, horizon heads) -> `futures_learned.npz`; arm CFL =
+`LearnedFutures` in the sealed clip recipe (the stream's future uniform
+selects the cell; anchor sequence unchanged), 3 seeds, evaluated on the
+development draw against O clip / CF clip; rules sealed in
+`learned_ett/manifest.json` (primary CFL - O; kept = CFL - CF).  Launched
+on node 30016 (fits) with the arm chain queued from 30043.

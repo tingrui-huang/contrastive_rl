@@ -50,5 +50,8 @@ a one-axis variant of the actor: it removes the critic runaways
 (`../diag_replay/spike/SUMMARY.md`) in both arms.  No spike in any of the
 six runs; O unchanged (= start); CF - O success +0.216 (seed s.e. 0.026,
 3/3), the mainline rule met; detour 0.36-0.57, deaths 0.19-0.40, hazard
-success 0.31-0.43; timeouts 0.16-0.35 remain (the detour is completed
-40-70 % of the time).  Disclosed as an optimizer-stabilisation change.
+success 0.31-0.43; timeouts 0.16-0.35 remain.  Route ledger (corrected
+2026-09-19): the far route is taken in 0.57 / 0.52 / 0.36 of the episodes
+and completed in 0.65 / 0.79 / 0.81 of those (pooled 0.74; every
+far-route loss a timeout, none a death); the rest are shortcut deaths and
+no-route timeouts.  Disclosed as an optimizer-stabilisation change.

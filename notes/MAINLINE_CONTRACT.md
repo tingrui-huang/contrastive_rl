@@ -247,5 +247,10 @@ pilot: no spike in any of the six runs; CF - O success +0.216 (seed s.e.
 0.026, 3/3) -- the rule of section 6 met; detour +0.46, death -0.43,
 timeout +0.21 (3/3).  This result is reported as oracle evidence under a
 disclosed optimizer change, not as the original learner; the remaining
-methodological step (section 1a) is unchanged, and the remaining
-empirical limit is the detour walking (timeouts 0.16-0.35).
+methodological step (section 1a) is unchanged.  Remaining empirical
+limits (route ledger, corrected 2026-09-19): the far route is taken in
+0.57 / 0.52 / 0.36 of the episodes and completed in 0.65 / 0.79 / 0.81
+of those (every far-route loss a timeout); both the route share and the
+far-route completion have room.  The recipe is confirmed once on a
+fresh evaluation draw (seed 4909, `variants/critic_clip0.1/confirm_s4909/`)
+before it serves as the fixed oracle reference for the learned-ETT work.

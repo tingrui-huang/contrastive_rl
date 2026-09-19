@@ -35,6 +35,8 @@ Modes
   report     REPORT.md
   smoke      end-to-end code-path test at toy scale with a stand-in
              continuation (no checkpoint); writes only under _smoke/
+  confirm    --variant v: the sealed recipe re-evaluated ONCE, same final
+             checkpoints, on a fresh evaluation draw (seed 4909) -> confirm_s4909/
 
 Environment: the pilot pins its own V6_* variables (d05, p_active 0.5,
 gamma 0.999); do not override them.
@@ -91,6 +93,11 @@ CRITIC_STREAM_SEED0 = 10_000      # + training seed
 ACTOR_STREAM_SEED0 = 20_000       # + training seed
 EVAL = {'n': 300, 'seed': 3909, 'policy': 'mean'}
 RESERVED_SEEDS = {'FRESH_TORQUE_SEED': 616_000_005, 'FRESH_DRAW_SEED': 616_500_000}   # untouched
+# Confirmation draw (user, 2026-09-19): the 300 episodes of seed 3909 (and 909 / 2909 before them) were used throughout the
+# development of the pilot and its variants; the sealed recipe is re-evaluated ONCE, with the same final checkpoints, on a
+# previously unused evaluation seed.  No checkpoint selection, no re-tuning on the result, the draw not re-used afterwards.
+CONFIRM = {'n': 300, 'seed': 4909, 'policy': 'mean'}
+DEVELOPMENT_EVAL_SEEDS = (909, 2909, 3909)
 D.EVAL['seed'] = EVAL['seed']
 D.EVAL['n'] = EVAL['n']
 # the current agent: the d05 vanilla actor of exp_detour_ratio (table row "d05 vanilla seed 0");
@@ -297,6 +304,47 @@ class BranchFutures:
     return self.obs_rows[o:o + n], self.act_rows[o:o + n]
 
 
+class LearnedFutures:
+  """Arm CF-learned: the positive future goal of anchor k is drawn from a
+  LEARNED categorical over maze cells (0.5 x 0.5), the learned-ETT model's
+  discounted-future-goal marginal p_gamma(g | s_k, a_k) under the blind
+  continuation agent (`exp_v6_learned_ett.py`; cross-fitted, so the model
+  that wrote anchor k's row never saw k's oracle branch).  The geometric
+  law is inside the marginal, so `lengths` = 2 (one future row) and the
+  stream's future uniform selects the cell by inverse CDF; a uniform jitter
+  inside the cell comes from the source's own RNG (the stream's RNG, and
+  with it the anchor sequence, stays identical to the other arms).  The
+  next rows (unused by the Monte-Carlo NCE loss; kept for the Transition
+  layout) are the RECORDED next rows, as in arm O."""
+  name = 'learned'
+
+  def __init__(self, anchors, path, obs, act, seed):
+    with np.load(path, allow_pickle=False) as d:
+      assert np.array_equal(d['episode'], anchors.episode) and np.array_equal(d['t'], anchors.t), 'learned futures do not cover the anchor set'
+      probs = d['probs'].astype(np.float32)
+      self.cells_xy = d['cells_xy'].astype(np.float32)
+      self.cell = float(d['cell'])
+      self.meta = json.loads(str(d['meta']))
+    self.a, self.obs, self.act = anchors, obs, act
+    probs /= probs.sum(axis=1, keepdims=True)
+    self.cdf = np.cumsum(probs, axis=1); self.cdf[:, -1] = 1.0
+    self.lengths = np.full(anchors.n, 2, np.int64)
+    self.rng = np.random.default_rng(int(seed) + 7)
+
+  def sample_goal(self, k, u):
+    c = np.array([np.searchsorted(self.cdf[kk], uu, side='right') for kk, uu in zip(k, u)])
+    c = np.minimum(c, self.cdf.shape[1] - 1)
+    jitter = (self.rng.random((len(k), 2)) - 0.5) * self.cell
+    return (self.cells_xy[c] + jitter).astype(np.float32)
+
+  def goal_at(self, k, m):
+    raise NotImplementedError('LearnedFutures draws through sample_goal')
+
+  def next_rows(self, k):
+    e, t = self.a.episode[k], self.a.t[k]
+    return self.obs[e, t + 1, :STATE_DIM], self.act[e, t + 1]
+
+
 class CriticStream:
   """Critic batches: anchor by weight, future row by the geometric law.
 
@@ -321,12 +369,16 @@ class CriticStream:
     n = self.n_fut[k]
     m = np.ceil(np.log1p(-u * (1.0 - self.gamma ** n)) / self.log_gamma).astype(np.int64)
     m = np.clip(m, 1, n)
+    self._u = u                                   # the future uniform (a learned source draws its cell from it)
     return k, m
 
   def sample(self):
     from crl.losses import Transition
     k, m = self.draw()
-    goals = np.stack([self.f.goal_at(int(kk), int(mm)) for kk, mm in zip(k, m)]).astype(np.float32)
+    if hasattr(self.f, 'sample_goal'):
+      goals = self.f.sample_goal(k, self._u)
+    else:
+      goals = np.stack([self.f.goal_at(int(kk), int(mm)) for kk, mm in zip(k, m)]).astype(np.float32)
     nxt = [self.f.next_rows(int(kk)) for kk in k]
     next_state = np.stack([x[0] for x in nxt]).astype(np.float32)
     next_action = np.stack([x[1] for x in nxt]).astype(np.float32)
@@ -998,7 +1050,13 @@ def train_arm(arm, seed, updates=UPDATES, base=None, batch=BATCH, start_ckpt=STA
   h_q0, h_p0 = _tree_hash(state.q_params), _tree_hash(state.policy_params)
   checkpoint.save_named(str(d), 'init', 0, state)
   # the two streams
-  futures = RecordedFutures(anchors, obs, act) if arm == 'O' else BranchFutures(anchors, branch_path or (inputs / 'branches_cf.npz'))
+  if arm == 'O':
+    futures = RecordedFutures(anchors, obs, act)
+  elif arm == 'CFL':
+    assert branch_path is not None, 'arm CFL needs the learned futures file'
+    futures = LearnedFutures(anchors, branch_path, obs, act, CRITIC_STREAM_SEED0 + seed)
+  else:
+    futures = BranchFutures(anchors, branch_path or (inputs / 'branches_cf.npz'))
   critic_stream = CriticStream(anchors, futures, cfg.batch_size, cfg.discount, CRITIC_STREAM_SEED0 + seed)
   actor_stream = ActorStream(cfg, ACTOR_STREAM_SEED0 + seed)
 
@@ -1033,7 +1091,8 @@ def train_arm(arm, seed, updates=UPDATES, base=None, batch=BATCH, start_ckpt=STA
   import jax as _jax
   write_json(d / 'train_manifest.json', {
       'arm': arm, 'seed': seed, 'optimizer_updates': n_updates, 'scan_group': G, 'batch_size': cfg.batch_size, 'wall_seconds': time.time() - t0,
-      'futures': futures.name, 'branch_file': (None if arm == 'O' else str(branch_path or (inputs / 'branches_cf.npz'))), 'overrides': (overrides or {}),
+      'futures': futures.name, 'branch_file': (None if arm == 'O' else str(branch_path or (inputs / 'branches_cf.npz'))),
+      'branch_file_sha256': (None if arm == 'O' else sha256(branch_path or (inputs / 'branches_cf.npz'))), 'overrides': (overrides or {}),
       'start_ckpt': (str(start_ckpt) if start_ckpt else None), 'start_ckpt_sha256': (sha256(start_ckpt) if start_ckpt else None),
       'critic_clip': critic_clip, 'anchor_coef': anchor_coef,
       'anchors_sha256': sha256(inputs / 'anchors.npz'), 'critic_stream_seed': CRITIC_STREAM_SEED0 + seed, 'actor_stream_seed': ACTOR_STREAM_SEED0 + seed,
@@ -1134,6 +1193,181 @@ def mode_evaluate(args):
     D.evaluate_ckpt(ck, od, EVAL['policy'])
 
 
+# ------------------------------------------------------------- route ledger
+def route_ledger(rows):
+  """Per-episode route accounting of one evaluation (the env's labels): the
+  episodes that reached the far route ('detour' = the top-west corner, y >= 6
+  at x < 2), those on the shortcut (a hazard zone entered) and those with no
+  route label (neither reached within the horizon); the outcomes within each;
+  the far-route completion rate (successes / far-route episodes); and a pure
+  bookkeeping figure -- the success rate if every far-route timeout were
+  rescued with everything else unchanged (an upper bound for fixing the
+  far-route walking alone, not a prediction)."""
+  N = len(rows)
+  out = {'n': N}
+  for lab, key in (('far_route', 'detour'), ('shortcut', 'shortcut'), ('no_route', None)):
+    R = [r for r in rows if r['route'] == key]
+    n = len(R)
+    out[lab] = {'n': n, 'share': n / N, 'success': sum(bool(r['success']) for r in R), 'death': sum(bool(r['failure']) for r in R),
+                'timeout': sum(bool(r['timeout']) for r in R)}
+  far = out['far_route']
+  far['completion'] = (far['success'] / far['n']) if far['n'] else float('nan')
+  succ = sum(bool(r['success']) for r in rows)
+  out['success'] = succ / N
+  out['success_if_far_route_timeouts_rescued'] = (succ + far['timeout']) / N
+  return out
+
+
+def ledger_table(named_rows):
+  """Markdown rows of the route ledger for {label: episode rows}."""
+  L = ['| policy | far route: n (share) | completed | far-route timeouts / deaths | completion | shortcut: n / success / deaths / timeouts | no route: n / deaths / timeouts | success | success if far-route timeouts rescued |',
+       '|---|---:|---:|---|---:|---|---|---:|---:|']
+  for lab, rows in named_rows.items():
+    g = route_ledger(rows); f, c, z = g['far_route'], g['shortcut'], g['no_route']
+    L.append(f'| {lab} | {f["n"]} ({f["share"]:.2f}) | {f["success"]} | {f["timeout"]} / {f["death"]} | {f["completion"]:.3f} | {c["n"]} / {c["success"]} / {c["death"]} / {c["timeout"]} | '
+             f'{z["n"]} / {z["death"]} / {z["timeout"]} | {g["success"]:.3f} | {g["success_if_far_route_timeouts_rescued"]:.3f} |')
+  return L
+
+
+# ------------------------------------------------------------ confirmation
+def confirm_dir(name):
+  return variant_base(name) / f'confirm_s{CONFIRM["seed"]}'
+
+
+def confirm_targets(name):
+  """(label, checkpoint, output dir) of every policy evaluated on the
+  confirmation draw: the start agent, the variant's six sealed finals (the
+  comparison), the base pilot's six finals (reference only)."""
+  base = variant_base(name)
+  T = [('start', START_CKPT, OUT / 'start_agent')]
+  for arm in ARMS:
+    for s in SEEDS:
+      T.append((f'{arm}/seed_{s}', run_dir(arm, s, base) / 'final.pkl', run_dir(arm, s, base)))
+  for arm in ARMS:
+    for s in SEEDS:
+      T.append((f'base:{arm}/seed_{s}', run_dir(arm, s) / 'final.pkl', run_dir(arm, s)))
+  return T
+
+
+def mode_confirm(args):
+  """Seal (checkpoint hashes, the draw, the comparisons and the rule -- before
+  any evaluation on the draw), evaluate the listed checkpoints on the fresh
+  draw, and report when every evaluation exists."""
+  name = args.variant
+  if not name:
+    raise SystemExit('confirm needs --variant')
+  cd = confirm_dir(name); cd.mkdir(parents=True, exist_ok=True)
+  man_p = cd / 'manifest.json'
+  T = confirm_targets(name)
+  if not man_p.exists():
+    missing = [lab for lab, ck, _ in T if not ck.exists()]
+    if missing:
+      raise SystemExit(f'confirm seal needs every checkpoint present; missing {missing}')
+    from crl import checkpoint
+    cks = {}
+    for lab, ck, _ in T:
+      step, _ = checkpoint.load_checkpoint(ck)
+      cks[lab] = {'path': str(ck), 'sha256': sha256(ck), 'ckpt_step': int(step)}
+    man = {'sealed_at': time.strftime('%Y-%m-%d %H:%M:%S'), 'variant': name,
+           'why': ('the development evaluation draw (seed 3909; 909 and 2909 before it) was re-used throughout the development of the pilot and its '
+                   'variants; the sealed recipe is re-evaluated once on a previously unused draw with the same final checkpoints'),
+           'evaluation': {**CONFIRM, 'p_active': [0.5, 0.5], 'horizon': HORIZON, 'development_draws_never_re_used_here': list(DEVELOPMENT_EVAL_SEEDS),
+                          'reserved_seeds_untouched': RESERVED_SEEDS},
+           'checkpoints': cks,
+           'comparisons': {'primary': f'CF({name}) - O({name}) success, paired per episode; rule: mean over the 3 paired seeds > 2 x seed s.e. and 3/3',
+                           'practical': f'CF({name}) - start success (required separately)',
+                           'reference_only': 'the base pilot arms on the same draw (base CF - base O; variant - base); no rule attached',
+                           'reported': 'success, detour, death, timeout, success with / without an active hazard, the route ledger (far-route entrance and completion, '
+                                       'far-route timeouts, shortcut deaths, no-route episodes), and the same figures on the development draw side by side'},
+           'no_selection': ('the sealed final checkpoints, evaluated once on this draw; no checkpoint, seed, threshold or evaluation choice after the result; '
+                            'this draw is not re-used for development'),
+           'reading': {'reproduced': 'the primary rule met on the confirmation draw -> the current recipe becomes the fixed oracle reference for the learned-ETT work',
+                       'not_reproduced': 'the primary rule not met -> reported as such; the development-draw result stands as a development-draw result only'}}
+    write_json(man_p, man)
+    print(json.dumps(man, indent=1), flush=True)
+  man = read_json(man_p)
+  D.EVAL['seed'], D.EVAL['n'] = CONFIRM['seed'], CONFIRM['n']
+  for lab, ck, od in T:
+    if args.only and lab not in args.only:
+      continue
+    if not ck.exists():
+      print(f'skip {lab}: checkpoint not on this machine', flush=True); continue
+    if (od / f'eval_{CONFIRM["policy"]}_s{CONFIRM["seed"]}.json').exists() and not args.force:
+      continue
+    if sha256(ck) != man['checkpoints'][lab]['sha256']:
+      raise SystemExit(f'{lab}: the checkpoint differs from the sealed hash')
+    print(f'== confirm evaluate {lab}', flush=True)
+    D.evaluate_ckpt(ck, od, CONFIRM['policy'])
+  D.EVAL['seed'], D.EVAL['n'] = EVAL['seed'], EVAL['n']
+  if all((od / f'eval_{CONFIRM["policy"]}_s{CONFIRM["seed"]}.json').exists() for _, _, od in T):
+    report_confirm(name)
+  else:
+    print('confirm: evaluations still missing on this machine; report skipped', flush=True)
+
+
+def report_confirm(name):
+  cd = confirm_dir(name); man = read_json(cd / 'manifest.json')
+  T = confirm_targets(name)
+  cs, ds = CONFIRM['seed'], EVAL['seed']
+  raw = {lab: read_json(od / f'eval_mean_s{cs}.json')['episodes'] for lab, _, od in T}
+  raw_dev = {lab: read_json(od / f'eval_mean_s{ds}.json')['episodes'] for lab, _, od in T if (od / f'eval_mean_s{ds}.json').exists()}
+  E = {lab: _episodes(od / f'eval_mean_s{cs}.json') for lab, _, od in T}
+  Ed = {lab: _episodes(od / f'eval_mean_s{ds}.json') for lab, _, od in T if (od / f'eval_mean_s{ds}.json').exists()}
+  L = [f'# Confirmation of the sealed recipe ({name}) on a fresh evaluation draw (seed {cs})', '',
+       f'Sealed {man["sealed_at"]} (`manifest.json`: checkpoint hashes, draw, comparisons, rule) before any evaluation on this draw.  '
+       f'{CONFIRM["n"]} natural episodes, env seed {cs}, p_active 0.5 / 0.5, horizon {HORIZON}, mode policy; the SAME final checkpoints as the development '
+       f'result (seed {ds}); no checkpoint selection.  Rule: mean over the 3 paired seeds > 2 x seed s.e. and 3/3.', '',
+       '## Per policy', '', '| policy | success | detour | death | timeout | success no hazard (n) | success hazard (n) | mean steps |', '|---|---:|---:|---:|---:|---:|---:|---:|']
+  for lab, e in E.items():
+    h = _headline(e)
+    L.append(f'| {lab} | {h["success"]:.3f} | {h["detour"]:.3f} | {h["death"]:.3f} | {h["timeout"]:.3f} | {h["success_no_hazard"]:.3f} ({h["n_no_hazard"]}) | {h["success_hazard"]:.3f} ({h["n_hazard"]}) | {h["mean_steps"]:.0f} |')
+  L += ['', '## Route ledger (far route = the env\'s detour label, the top-west corner reached)', '', *ledger_table(raw), '']
+  byv = {arm: {s: E[f'{arm}/seed_{s}'] for s in SEEDS} for arm in ARMS}
+  byb = {arm: {s: E[f'base:{arm}/seed_{s}'] for s in SEEDS} for arm in ARMS}
+  comps = [(f'CF({name}) - O({name}) [primary]', byv['CF'], byv['O']), (f'CF({name}) - start [practical]', byv['CF'], E['start']),
+           (f'O({name}) - start', byv['O'], E['start']), ('base CF - base O [reference]', byb['CF'], byb['O']),
+           (f'CF({name}) - CF(base) [reference]', byv['CF'], byb['CF']), (f'O({name}) - O(base) [reference]', byv['O'], byb['O'])]
+  res = {}
+  L += ['## Paired differences on the common episodes (per seed; seed mean, seed s.e., episode-bootstrap s.e.)', '']
+  for key in ('success', 'detour', 'failure', 'timeout'):
+    L += [f'### {key}', '', '| comparison | per seed (episode s.e.) | mean | seed s.e. | boot s.e. | same direction | rule |', '|---|---|---:|---:|---:|---|---|']
+    for cname, a, b in comps:
+      r = paired_block(a, b, key=key); res[f'{cname}:{key}'] = r
+      per = ' / '.join(f'{v["mean"]:+.3f} ({v["episode_se"]:.3f})' for v in r['per_seed'].values())
+      rule = ('met' if r['improvement_rule_met'] else 'not met') if (key == 'success' and ('primary' in cname or 'practical' in cname)) else '-'
+      L.append(f'| {cname} | {per} | {r["mean"]:+.3f} | {r["seed_se"]:.3f} | {r["episode_bootstrap_se_of_mean"]:.3f} | {r["seeds_same_direction"]} | {rule} |')
+    L.append('')
+  # side by side with the development draw
+  dev = {}
+  if all(f'{arm}/seed_{s}' in Ed for arm in ARMS for s in SEEDS) and 'start' in Ed:
+    bd = {arm: {s: Ed[f'{arm}/seed_{s}'] for s in SEEDS} for arm in ARMS}
+    for key in ('success', 'detour', 'failure', 'timeout'):
+      dev[f'CF({name}) - O({name}) [primary]:{key}'] = paired_block(bd['CF'], bd['O'], key=key)
+      dev[f'CF({name}) - start [practical]:{key}'] = paired_block(bd['CF'], Ed['start'], key=key)
+    L += [f'## Development draw (seed {ds}) vs confirmation draw (seed {cs})', '',
+          '| quantity | development | confirmation |', '|---|---|---|']
+    for arm in ARMS:
+      for k, lab in (('success', 'success'), ('detour', 'detour'), ('death', 'death'), ('timeout', 'timeout')):
+        L.append(f'| {arm}({name}) {lab} per seed | ' + ' / '.join(f'{_headline(bd[arm][s])[k]:.3f}' for s in SEEDS) + ' | ' + ' / '.join(f'{_headline(byv[arm][s])[k]:.3f}' for s in SEEDS) + ' |')
+    L.append(f'| start success / detour | {_headline(Ed["start"])["success"]:.3f} / {_headline(Ed["start"])["detour"]:.3f} | {_headline(E["start"])["success"]:.3f} / {_headline(E["start"])["detour"]:.3f} |')
+    for cname in (f'CF({name}) - O({name}) [primary]', f'CF({name}) - start [practical]'):
+      for key in ('success', 'detour', 'failure', 'timeout'):
+        a, b = dev[f'{cname}:{key}'], res[f'{cname}:{key}']
+        L.append(f'| {cname} {key} | {a["mean"]:+.3f} (seed s.e. {a["seed_se"]:.3f}, {a["seeds_same_direction"]}){", MET" if key == "success" and a["improvement_rule_met"] else (", not met" if key == "success" else "")} | '
+                 f'{b["mean"]:+.3f} (seed s.e. {b["seed_se"]:.3f}, {b["seeds_same_direction"]}){", MET" if key == "success" and b["improvement_rule_met"] else (", not met" if key == "success" else "")} |')
+    L += ['', f'Far-route ledger on the development draw: ', '', *ledger_table({lab: raw_dev[lab] for lab in raw_dev if not lab.startswith('base:')}), '']
+  p, q = res[f'CF({name}) - O({name}) [primary]:success'], res[f'CF({name}) - start [practical]:success']
+  verdict = 'REPRODUCED' if (p['improvement_rule_met'] and q['improvement_rule_met']) else 'NOT REPRODUCED'
+  L += ['## Verdict', '', f'Primary CF({name}) - O({name}) success on the confirmation draw: {p["mean"]:+.3f} (seed s.e. {p["seed_se"]:.3f}, boot {p["episode_bootstrap_se_of_mean"]:.3f}, {p["seeds_same_direction"]}) -> '
+        f'{"MET" if p["improvement_rule_met"] else "NOT MET"}; practical CF({name}) - start: {q["mean"]:+.3f} (seed s.e. {q["seed_se"]:.3f}, {q["seeds_same_direction"]}) -> {"MET" if q["improvement_rule_met"] else "NOT MET"}.  '
+        f'**{verdict}** on a draw never used for development; the same final checkpoints, evaluated once.  Oracle evidence (simulator futures) under the disclosed '
+        'optimizer-stabilisation change; not a learned-ETT result.']
+  write_json(cd / 'results.json', {'headlines': {lab: _headline(e) for lab, e in E.items()}, 'ledger': {lab: route_ledger(r) for lab, r in raw.items()}, 'paired': res,
+                                   'development_paired': dev, 'verdict': verdict})
+  (cd / 'REPORT.md').write_text('\n'.join(L) + '\n', encoding='utf-8')
+  print('\n'.join(L), flush=True)
+
+
 # ------------------------------------------------------------------ report
 def _episodes(path):
   ev = read_json(path)
@@ -1216,7 +1450,12 @@ def report_variant(args):
     L += ['## Criteria', '', f'1. native success CF({name}) - CF(base): {c1["mean"]:+.3f} (seed s.e. {c1["seed_se"]:.3f}, {c1["seeds_same_direction"]}) -> {"MET" if c1["improvement_rule_met"] else "NOT MET"}',
           f'2. detour gain kept: CF({name}) - CF(base) detour {c2["mean"]:+.3f} (seed s.e. {c2["seed_se"]:.3f}); CF({name}) - O({name}) detour {c2b["mean"]:+.3f} ({c2b["seeds_same_direction"]}) -> {"KEPT" if kept else "NOT KEPT"}',
           '3. continuation from the same handover states: see diag_traj/cont_variant_<name>.json / the diag REPORT section 8.', '']
-  write_json(base / 'results.json', {'headlines': {**{f'base {n}': _headline(e) for n, e in E.items()}, **{f'{name} {n}': _headline(e) for n, e in Ev.items()}}, 'paired': res})
+  L += ['## Route ledger (far route = the env\'s detour label, the top-west corner reached; completion = successes / far-route episodes)', '',
+        *ledger_table({**{f'base {n}': read_json(p)['episodes'] for n, p in eval_paths().items() if p.exists()},
+                       **{f'{name} {n}': read_json(p)['episodes'] for n, p in eval_paths(base).items() if p.exists() and n != 'start'}}), '']
+  write_json(base / 'results.json', {'headlines': {**{f'base {n}': _headline(e) for n, e in E.items()}, **{f'{name} {n}': _headline(e) for n, e in Ev.items()}}, 'paired': res,
+                                     'ledger': {**{f'base {n}': route_ledger(read_json(p)['episodes']) for n, p in eval_paths().items() if p.exists()},
+                                                **{f'{name} {n}': route_ledger(read_json(p)['episodes']) for n, p in eval_paths(base).items() if p.exists() and n != 'start'}}})
   (base / 'REPORT.md').write_text('\n'.join(L) + '\n', encoding='utf-8')
   print('\n'.join(L), flush=True)
 
@@ -1271,7 +1510,9 @@ def mode_report(args):
       L.append(f'Practical (CF - start, success): {q["mean"]:+.3f}, seed s.e. {q["seed_se"]:.3f}, {q["seeds_same_direction"]}; rule {"MET" if q["improvement_rule_met"] else "NOT MET"}.  '
                'Beating a degraded control alone is insufficient; the practical check is required separately.')
     L += ['', 'This is oracle evidence for the sampling design (the simulator generated the counterfactual futures); it is not an offline learned-ETT result.']
-  write_json(OUT / 'results.json', {'headlines': {n: _headline(e) for n, e in E.items()}, 'paired': res})
+  L += ['## Route ledger (far route = the env\'s detour label, the top-west corner reached; completion = successes / far-route episodes)', '',
+        *ledger_table({n: read_json(p)['episodes'] for n, p in have.items()}), '']
+  write_json(OUT / 'results.json', {'headlines': {n: _headline(e) for n, e in E.items()}, 'paired': res, 'ledger': {n: route_ledger(read_json(p)['episodes']) for n, p in have.items()}})
   (OUT / 'REPORT.md').write_text('\n'.join(L) + '\n', encoding='utf-8')
   print('\n'.join(L), flush=True)
 
@@ -1304,11 +1545,11 @@ def mode_smoke(args):
 # -------------------------------------------------------------------- main
 def main(argv=None):
   ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-  ap.add_argument('mode', choices=('anchors', 'generate', 'seal', 'audit', 'train', 'evaluate', 'report', 'smoke'))
+  ap.add_argument('mode', choices=('anchors', 'generate', 'seal', 'audit', 'train', 'evaluate', 'report', 'smoke', 'confirm'))
   ap.add_argument('--variant', choices=list(VARIANTS), default=None, help='pre-registered single-change variant (seal / train / evaluate / report)')
   ap.add_argument('--round', type=int, choices=(1, 2), default=1, help='2 = policy-iteration round 2 (seal / generate --lineage / train / evaluate / report)')
   ap.add_argument('--lineage', type=int, default=None, help='round 2 generate: which lineage (seed) agent continues')
-  ap.add_argument('--arm', choices=ARMS + ('CFold',))
+  ap.add_argument('--arm', choices=ARMS + ('CFold', 'CFL'))   # CFL = the learned-ETT arm (trained through exp_v6_learned_ett.py)
   ap.add_argument('--seeds', type=int, nargs='+', default=list(SEEDS))
   ap.add_argument('--workers', type=int, default=8)
   ap.add_argument('--limit', type=int, default=None, help='generate: first N anchors only (smoke-scale check, never for training)')
@@ -1328,7 +1569,7 @@ def main(argv=None):
       ap.error('round 2 generate needs --lineage')
     return {'seal': mode_seal_round2, 'generate': mode_generate_round2, 'train': mode_train_round2, 'evaluate': mode_evaluate_round2, 'report': mode_report_round2}[args.mode](args) or 0
   r = {'anchors': mode_anchors, 'generate': mode_generate, 'seal': mode_seal, 'audit': mode_audit, 'train': mode_train,
-       'evaluate': mode_evaluate, 'report': mode_report, 'smoke': mode_smoke}[args.mode](args)
+       'evaluate': mode_evaluate, 'report': mode_report, 'smoke': mode_smoke, 'confirm': mode_confirm}[args.mode](args)
   return r if isinstance(r, int) else 0
 
 

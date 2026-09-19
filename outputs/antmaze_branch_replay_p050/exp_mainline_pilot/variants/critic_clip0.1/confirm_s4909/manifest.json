@@ -1,0 +1,102 @@
+{
+ "sealed_at": "2026-09-19 16:41:14",
+ "variant": "critic_clip0.1",
+ "why": "the development evaluation draw (seed 3909; 909 and 2909 before it) was re-used throughout the development of the pilot and its variants; the sealed recipe is re-evaluated once on a previously unused draw with the same final checkpoints",
+ "evaluation": {
+  "n": 300,
+  "seed": 4909,
+  "policy": "mean",
+  "p_active": [
+   0.5,
+   0.5
+  ],
+  "horizon": 800,
+  "development_draws_never_re_used_here": [
+   909,
+   2909,
+   3909
+  ],
+  "reserved_seeds_untouched": {
+   "FRESH_TORQUE_SEED": 616000005,
+   "FRESH_DRAW_SEED": 616500000
+  }
+ },
+ "checkpoints": {
+  "start": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/joint_van_d05/seed_0/final.pkl",
+   "sha256": "6a67dbbdffe817eb0d0ed4984be325c0dabc4d4158578026e9b3bb00bee5f0a9",
+   "ckpt_step": 30400
+  },
+  "O/seed_0": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/variants/critic_clip0.1/O/seed_0/final.pkl",
+   "sha256": "3245141a80a0a21a0be8a4ebbed6411f15d699a43e0c4b4669bdee2ca7107ef1",
+   "ckpt_step": 30000
+  },
+  "O/seed_1": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/variants/critic_clip0.1/O/seed_1/final.pkl",
+   "sha256": "ebac1e5829e7f098af721d6778ea2f34de64e647e72d22eef7a8870b9f30425f",
+   "ckpt_step": 30000
+  },
+  "O/seed_2": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/variants/critic_clip0.1/O/seed_2/final.pkl",
+   "sha256": "8d8f389fc8743fc360f83c4453b40244e0b7bf4ec13f65833fda701f56a19ab3",
+   "ckpt_step": 30000
+  },
+  "CF/seed_0": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/variants/critic_clip0.1/CF/seed_0/final.pkl",
+   "sha256": "8265785d577365376bba7ba473728c14f0efdfbd04172a938423b81d68535414",
+   "ckpt_step": 30000
+  },
+  "CF/seed_1": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/variants/critic_clip0.1/CF/seed_1/final.pkl",
+   "sha256": "f09886a7a4c389cbacae29887a6bf3b23c0ffd7b48d68f3928b771404227c6c3",
+   "ckpt_step": 30000
+  },
+  "CF/seed_2": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/variants/critic_clip0.1/CF/seed_2/final.pkl",
+   "sha256": "06362f533243c395ac7b48a3d8cc67cf436955490c5b4689fd5240ba1f5f2861",
+   "ckpt_step": 30000
+  },
+  "base:O/seed_0": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/O/seed_0/final.pkl",
+   "sha256": "eba55486204483427770f1e4483b1901b7bdfd1493b7a7bd8aaa81cbc12efa58",
+   "ckpt_step": 30000
+  },
+  "base:O/seed_1": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/O/seed_1/final.pkl",
+   "sha256": "afc8d8e1bbc879bf0c9b017119073bfb84673b4ec040b7c130560091b65c0521",
+   "ckpt_step": 30000
+  },
+  "base:O/seed_2": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/O/seed_2/final.pkl",
+   "sha256": "3f4a578c79ee1fcfda00cc556b2adeddf759fd0edaec2dd1f2951ec3b221c120",
+   "ckpt_step": 30000
+  },
+  "base:CF/seed_0": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/CF/seed_0/final.pkl",
+   "sha256": "fe86a5ffcc74b1568b9096aeb6ce60b9f0cbe15650c35b01bc318c2beddfede9",
+   "ckpt_step": 30000
+  },
+  "base:CF/seed_1": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/CF/seed_1/final.pkl",
+   "sha256": "aa2ce2133cbd11c5a70eaef10346fef4c526657d9758a449ebea6b48e416f4a3",
+   "ckpt_step": 30000
+  },
+  "base:CF/seed_2": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/CF/seed_2/final.pkl",
+   "sha256": "d6eaaa0ab81f87d783e15cd9405ff15160c36ff855d9a0803f8a7b779d602aa7",
+   "ckpt_step": 30000
+  }
+ },
+ "comparisons": {
+  "primary": "CF(critic_clip0.1) - O(critic_clip0.1) success, paired per episode; rule: mean over the 3 paired seeds > 2 x seed s.e. and 3/3",
+  "practical": "CF(critic_clip0.1) - start success (required separately)",
+  "reference_only": "the base pilot arms on the same draw (base CF - base O; variant - base); no rule attached",
+  "reported": "success, detour, death, timeout, success with / without an active hazard, the route ledger (far-route entrance and completion, far-route timeouts, shortcut deaths, no-route episodes), and the same figures on the development draw side by side"
+ },
+ "no_selection": "the sealed final checkpoints, evaluated once on this draw; no checkpoint, seed, threshold or evaluation choice after the result; this draw is not re-used for development",
+ "reading": {
+  "reproduced": "the primary rule met on the confirmation draw -> the current recipe becomes the fixed oracle reference for the learned-ETT work",
+  "not_reproduced": "the primary rule not met -> reported as such; the development-draw result stands as a development-draw result only"
+ }
+}
