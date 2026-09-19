@@ -404,11 +404,11 @@ prestall = 20 steps before the last progress maximum; enter_detour = the step th
 
 Candidates: the CF mode (control), 12 own samples, the other CF seeds' modes, the O and start modes, 4 detour / 2 shortcut logged teacher reset torques; one rollout each, the episode's own hidden draw, the same CF policy continues.  "above mode" = the CF critic scores it above the mode torque at that state.
 
-| CF seed | states (CF went straight) | mode detours on rerun | no candidate detours | a detour candidate exists AND critic ranks one above the mode | detour candidates exist, all ranked below the mode | critic top-1 candidate detours | critic top-1 succeeds | mode succeeds | best candidate succeeds | Spearman f vs outcome (within state) |
+| CF seed | states (CF went straight) | mode detours on rerun | no candidate detours | a detour candidate exists AND critic ranks one above the mode | detour candidates exist, all ranked below the mode | critic top-1 candidate detours | critic top-1 succeeds | mode succeeds | best candidate succeeds | Spearman f vs outcome (within state; average ranks) |
 |---|---|---|---|---|---|---|---|---|---|---|
-| CF_s0 | 275 | 7 | 72 | 188 | 15 | 96 | 109 | 62 | 210 | +0.07 (n 222) |
-| CF_s1 | 252 | 9 | 45 | 179 | 28 | 124 | 122 | 62 | 211 | -0.03 (n 216) |
-| CF_s2 | 140 | 14 | 6 | 76 | 58 | 51 | 54 | 40 | 129 | -0.27 (n 135) |
+| CF_s0 | 275 | 7 | 72 | 188 | 15 | 96 | 109 | 62 | 210 | +0.22 (n 222); success-only +0.15 |
+| CF_s1 | 252 | 9 | 45 | 179 | 28 | 124 | 122 | 62 | 211 | +0.14 (n 216); success-only +0.08 |
+| CF_s2 | 140 | 14 | 6 | 76 | 58 | 51 | 54 | 40 | 129 | +0.04 (n 135); success-only +0.02 |
 
 Detour rate by candidate family (share of rollouts that realised the detour):
 
@@ -458,4 +458,39 @@ Both continuations rerun with full capture from the same handover state; the ear
 | 2 | 151 | CF_finishes_O_not | 33 | stall | 92 | {"slowdown": 258, "stall": 92} | 20.7 | 13.6 | 0.055 / 0.123 | 0.38 | 0.84 | timeout | 341 | True |
 | 2 | 178 | O_finishes_CF_not | 22 | stall | 18 | {"stall": 18} | 5.5 | 24.0 | 0.071 / 0.108 | 0.41 | 0.89 | timeout | 435 | True |
 | 2 | 98 | O_finishes_CF_not | 24 | None | None | {} | 39.5 | 1.4 | 0.077 / 0.108 | 0.37 | 0.87 | timeout | 457 | False |
+
+## 8. Variant actor_lr1e-4: continuation from the same handover states (criterion 3)
+
+| seed | start point | continuation | n | reach | timeout |
+|---|---|---|---|---|---|
+| 0 | enter_detour | CF_s0 | 4 | 0.75 | 0.25 |
+| 0 | enter_detour | start | 4 | 0.50 | 0.50 |
+| 0 | enter_detour | O_s0 | 4 | 0.50 | 0.50 |
+| 0 | enter_detour | CF_s0@actor_lr1e-4 | 4 | 0.75 | 0.25 |
+| 0 | enter_detour | O_s0@actor_lr1e-4 | 4 | 0.00 | 1.00 |
+| 0 | prestall | CF_s0 | 28 | 0.50 | 0.46 |
+| 0 | prestall | start | 28 | 0.32 | 0.64 |
+| 0 | prestall | O_s0 | 28 | 0.46 | 0.50 |
+| 0 | prestall | CF_s0@actor_lr1e-4 | 28 | 0.46 | 0.50 |
+| 0 | prestall | O_s0@actor_lr1e-4 | 28 | 0.50 | 0.46 |
+| 1 | enter_detour | CF_s1 | 12 | 0.42 | 0.58 |
+| 1 | enter_detour | start | 12 | 0.58 | 0.42 |
+| 1 | enter_detour | O_s1 | 12 | 0.58 | 0.42 |
+| 1 | enter_detour | CF_s1@actor_lr1e-4 | 12 | 0.67 | 0.33 |
+| 1 | enter_detour | O_s1@actor_lr1e-4 | 12 | 0.58 | 0.42 |
+| 1 | prestall | CF_s1 | 33 | 0.24 | 0.76 |
+| 1 | prestall | start | 33 | 0.21 | 0.73 |
+| 1 | prestall | O_s1 | 33 | 0.27 | 0.73 |
+| 1 | prestall | CF_s1@actor_lr1e-4 | 33 | 0.33 | 0.67 |
+| 1 | prestall | O_s1@actor_lr1e-4 | 33 | 0.21 | 0.79 |
+| 2 | enter_detour | CF_s2 | 42 | 0.48 | 0.52 |
+| 2 | enter_detour | start | 42 | 0.52 | 0.48 |
+| 2 | enter_detour | O_s2 | 42 | 0.71 | 0.29 |
+| 2 | enter_detour | CF_s2@actor_lr1e-4 | 42 | 0.71 | 0.29 |
+| 2 | enter_detour | O_s2@actor_lr1e-4 | 42 | 0.67 | 0.33 |
+| 2 | prestall | CF_s2 | 73 | 0.45 | 0.55 |
+| 2 | prestall | start | 73 | 0.42 | 0.56 |
+| 2 | prestall | O_s2 | 73 | 0.42 | 0.56 |
+| 2 | prestall | CF_s2@actor_lr1e-4 | 73 | 0.42 | 0.56 |
+| 2 | prestall | O_s2@actor_lr1e-4 | 73 | 0.47 | 0.52 |
 

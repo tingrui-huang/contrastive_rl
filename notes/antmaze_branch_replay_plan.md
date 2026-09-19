@@ -1862,3 +1862,28 @@ states where O finishes and CF does not: the first anomaly is an early
 stall (16 / 19, median 63 steps after handover, half O's speed, west
 column / top corridor), posture only later; the start policy finishes 13 /
 19 of them -> a local execution regression on this subset.
+
+### Corrections and the pre-registered actor-lr variant (2026-09-19, user's review of 52f0bf1)
+
+Two statistical corrections (banner in diag_traj/SUMMARY.md section 6): the
+share of straight-going starts with a detour-realising candidate is 74 / 82 /
+96 % per seed (not "97 %"); the Spearman used two argsorts and mis-ranked
+the tied outcome labels -- with average ranks it is +0.22 / +0.14 / +0.04
+(success-only +0.15 / +0.08 / +0.02), so seed 2 reads as "weak ordering",
+not "reversed".  Reframed conclusions: seeds 0 / 1 -- choosing by the
+critic's score improves the realised outcome (top-1 success 109 / 122 vs
+the mode's 62 / 62), so the policy does not fully use the scoring
+information it has (why is not established; nothing licenses lowering BC);
+seed 2 -- the scores are biased by candidate source (off-policy candidates
+pressed down), co-adaptation vs poor generalisation undecided; the 19
+O-finishes-CF-not pairs (start finishes 13) plus the 8 reverse pairs = an
+uneven change in walking competence, not a broken walker.  User's
+decision: keep bc 0.05 and the recipe; one pre-registered single-change
+trial, actor lr 3e-4 -> 1e-4 (`exp_v6_mainline_pilot.py --variant
+actor_lr1e-4`, manifest sealed before training, criteria 1-3 fixed).
+RESULT: criterion 3 recovered (entrance-state reach 0.75 / 0.67 / 0.71 vs
+base CF 0.75 / 0.42 / 0.48; timeouts 0.01-0.03); criterion 1 NOT met
+(success -0.068 vs base CF, 2/3 negative; still +0.04 over O(variant) and
+the start, 3/3); detour gain shrinks to a third (0.26 -> 0.07, 3/3).  The
+route change and the walking loss scale together with the update size; the
+actor learning rate is not the lever.  No further variant launched.

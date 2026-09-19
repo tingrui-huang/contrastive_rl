@@ -73,12 +73,19 @@ WALL_CLEAR = 0.6           # clearance below which a stalled ant counts as again
 TORSO_FALLEN = 0.30        # torso height below which the ant counts as fallen
 
 
-def policies():
+def policies(variant=None):
   P = {'start': MP.START_CKPT}
   for arm in MP.ARMS:
     for s in SEEDS:
       P[f'{arm}_s{s}'] = MP.run_dir(arm, s) / 'final.pkl'
+  if variant:
+    for arm in MP.ARMS:
+      for s in SEEDS:
+        P[f'{arm}_s{s}@{variant}'] = MP.run_dir(arm, s, MP.variant_base(variant)) / 'final.pkl'
   return P
+
+
+_VARIANT = None   # set by --variant so that _policy_bundle can resolve '<arm>_s<k>@<variant>' names in the workers
 
 
 # --------------------------------------------------------------- geometry
@@ -314,7 +321,7 @@ def _policy_bundle(name):
   cfg = MP.recipe_config(0, OUT / '_cfg')
   MP.fill_dims(cfg)
   nets = MP.make_nets(cfg)
-  _, st = checkpoint.load_checkpoint(policies()[name])
+  _, st = checkpoint.load_checkpoint(policies(name.split('@')[1] if '@' in name else None)[name])
   pp, qp = st.policy_params, st.q_params
 
   @jax.jit
@@ -680,9 +687,50 @@ def _teacher_reset_torques(n_detour=4, n_shortcut=2, seed=DIAG_SEED + 21):
   return {f'teacher_detour{j}': act[e, 0].astype(np.float32) for j, e in enumerate(det)} | {f'teacher_shortcut{j}': act[e, 0].astype(np.float32) for j, e in enumerate(sc_)}
 
 
+def _avg_rank(x):
+  x = np.asarray(x, float)
+  order = np.argsort(x, kind='mergesort'); r = np.empty(len(x)); sx = x[order]
+  i = 0
+  while i < len(x):
+    j = i
+    while j + 1 < len(x) and sx[j + 1] == sx[i]:
+      j += 1
+    r[order[i:j + 1]] = 0.5 * (i + j)
+    i = j + 1
+  return r
+
+
 def _spearman(a, b):
-  ra = np.argsort(np.argsort(a)).astype(float); rb = np.argsort(np.argsort(b)).astype(float)
+  """Spearman with AVERAGE ranks for ties (the first release used two argsorts,
+  which mis-ranks the many tied outcome labels; corrected 2026-09-19)."""
+  ra, rb = _avg_rank(a), _avg_rank(b)
+  if ra.std() == 0 or rb.std() == 0:
+    return float('nan')
   return float(np.corrcoef(ra, rb)[0, 1])
+
+
+def candidates_restat(args):
+  """Recompute the candidate-set summary from candidates.json (no rollouts):
+  the corrected Spearman (average ranks) against the combined label
+  2 * success + detour and against success alone, and the per-seed share of
+  states with a detour-realising candidate."""
+  C = MP.read_json(OUT / 'candidates.json')
+  for s in SEEDS:
+    rows = [r for r in C['per_state'] if r['seed'] == s]
+    st = C['summary'][f'CF_s{s}']
+    sp_comb, sp_suc = [], []
+    for r in rows:
+      names = list(r['f_CF']); f = np.array([r['f_CF'][c] for c in names])
+      comb = np.array([2 * r['success'][c] + r['detour'][c] for c in names], float); suc = np.array([r['success'][c] for c in names], float)
+      v = _spearman(f, comb); w = _spearman(f, suc)
+      if v == v: sp_comb.append(v)
+      if w == w: sp_suc.append(w)
+    st['spearman_mean'] = float(np.mean(sp_comb)) if sp_comb else None; st['spearman_n'] = len(sp_comb)
+    st['spearman_success_only_mean'] = float(np.mean(sp_suc)) if sp_suc else None; st['spearman_success_only_n'] = len(sp_suc)
+    st['share_states_with_detour_candidate'] = 1.0 - st['no_detour_candidate'] / st['n_states']
+    st['spearman_note'] = 'average ranks (corrected 2026-09-19); labels are the diagnostic combination 2*success + detour and success alone, not the critic\'s discounted target'
+    print(f'CF_s{s}: detour-candidate share {st["share_states_with_detour_candidate"]:.2f}; Spearman comb {st["spearman_mean"]:+.2f} (n {st["spearman_n"]}), success-only {st["spearman_success_only_mean"]:+.2f} (n {st["spearman_success_only_n"]})', flush=True)
+  MP.write_json(OUT / 'candidates.json', C)
 
 
 def mode_candidates(args):
@@ -873,6 +921,40 @@ def mode_pairs(args):
   print(json.dumps(summ, indent=1), flush=True)
 
 
+# ---------------------------------------------------------- cont_variant
+def mode_cont_variant(args):
+  """Criterion 3 of a pre-registered variant: from the SAME detour-entrance
+  (and pre-stall) handover states of cont.json -- the base CF policy's own
+  prefix up to tau -- hand the continuation to the variant's CF and O
+  policies of the same seed; compare with the base CF / O / start rows."""
+  name = args.variant
+  C = MP.read_json(OUT / 'cont.json')['results']
+  T = {n: Traj(n) for n in policies()}
+  jobs = []
+  for r in C:
+    parts = r['tag'].split('|')
+    if len(parts) != 4 or parts[2] not in ('enter_detour', 'prestall') or not parts[3].startswith('CF_s'):
+      continue
+    s = int(parts[1][1:]); k = r['episode']; base_name = f'CF_s{s}'
+    for cont in (f'CF_s{s}@{name}', f'O_s{s}@{name}'):
+      jobs.append((f'contv|s{s}|{parts[2]}|{cont}', k, T[base_name].obs(k)[0], T[base_name].hidden(k), base_name, int(r['tau']), None, cont))
+  print(f'cont_variant {name}: {len(jobs)} rollouts', flush=True)
+  res = run_branches(jobs, args.workers, seed0=DIAG_SEED + 800_000)
+  rows = []
+  for s in SEEDS:
+    for tag in ('enter_detour', 'prestall'):
+      for cont in (f'CF_s{s}', 'start', f'O_s{s}'):
+        rs = [r for r in C if r['tag'] == f'cont|s{s}|{tag}|{cont}']
+        if rs:
+          rows.append({'seed': s, 'start_point': tag, 'continuation': cont, 'n': len(rs), 'reach': float(np.mean([r['success'] for r in rs])), 'timeout': float(np.mean([r['timeout'] for r in rs]))})
+      for cont in (f'CF_s{s}@{name}', f'O_s{s}@{name}'):
+        rs = [r for r in res if r['tag'] == f'contv|s{s}|{tag}|{cont}']
+        if rs:
+          rows.append({'seed': s, 'start_point': tag, 'continuation': cont, 'n': len(rs), 'reach': float(np.mean([r['success'] for r in rs])), 'timeout': float(np.mean([r['timeout'] for r in rs]))})
+  MP.write_json(OUT / f'cont_variant_{name}.json', {'variant': name, 'rows': rows, 'results': res})
+  print(json.dumps(rows, indent=1), flush=True)
+
+
 # ----------------------------------------------------------------- report
 def _tab(rows, cols):
   L = ['| ' + ' | '.join(cols) + ' |', '|' + '---|' * len(cols)]
@@ -1020,10 +1102,10 @@ def mode_report(args):
           'Candidates: the CF mode (control), 12 own samples, the other CF seeds\' modes, the O and start modes, 4 detour / 2 shortcut logged teacher reset torques; one rollout each, '
           'the episode\'s own hidden draw, the same CF policy continues.  "above mode" = the CF critic scores it above the mode torque at that state.', '',
           *_tab([[n, v['n_states'], v['mode_detours'], v['no_detour_candidate'], v['detour_candidate_ranked_above_mode_by_CF_critic'], v['detour_candidate_only_below_mode'],
-                  v['critic_top1_detours'], v['critic_top1_success'], v['mode_success'], v['best_candidate_success'], (f"{v['spearman_mean']:+.2f} (n {v['spearman_n']})" if v['spearman_mean'] is not None else '-')]
+                  v['critic_top1_detours'], v['critic_top1_success'], v['mode_success'], v['best_candidate_success'], (f"{v['spearman_mean']:+.2f} (n {v['spearman_n']}); success-only {v.get('spearman_success_only_mean', float('nan')):+.2f}" if v['spearman_mean'] is not None else '-')]
                  for n, v in Cd['summary'].items()],
                 ['CF seed', 'states (CF went straight)', 'mode detours on rerun', 'no candidate detours', 'a detour candidate exists AND critic ranks one above the mode', 'detour candidates exist, all ranked below the mode',
-                 'critic top-1 candidate detours', 'critic top-1 succeeds', 'mode succeeds', 'best candidate succeeds', 'Spearman f vs outcome (within state)']), '',
+                 'critic top-1 candidate detours', 'critic top-1 succeeds', 'mode succeeds', 'best candidate succeeds', 'Spearman f vs outcome (within state; average ranks)']), '',
           'Detour rate by candidate family (share of rollouts that realised the detour):', '',
           *_tab([[n] + [f"{v['detour_rate_by_family'].get(f, float('nan')):.2f}" for f in ('mode', 'sample', 'mode_CF_s0', 'mode_CF_s1', 'mode_CF_s2', 'O', 'start', 'teacher_detour', 'teacher_shortcut')] for n, v in Cd['summary'].items()],
                 ['CF seed', 'mode', 'own samples', 'mode CF_s0', 'mode CF_s1', 'mode CF_s2', 'O', 'start', 'teacher detour', 'teacher shortcut']), '']
@@ -1040,19 +1122,24 @@ def mode_report(args):
                   f"{r['anomaly']['mean_speed']:.3f} / {r['anomaly']['ref_mean_speed']:.3f}", f"{r['anomaly']['min_z']:.2f}", f"{r['anomaly']['min_upz']:.2f}", r['fail_outcome'], r['ref_steps'], r['rerun_start_success']]
                  for r in Pj['pairs'] if r['reproduced']],
                 ['seed', 'ep', 'kind', 'handover step', 'first anomaly', 'step after handover', 'all events', 'arc reached', 'final dist to goal', 'mean speed fail / ref', 'min torso z', 'min up z', 'failing outcome', 'finisher steps', 'start finishes']), '']
+  for cv in sorted(OUT.glob('cont_variant_*.json')):
+    V = MP.read_json(cv)
+    L += [f"## 8. Variant {V['variant']}: continuation from the same handover states (criterion 3)", '',
+          *_tab([[r['seed'], r['start_point'], r['continuation'], r['n'], f"{r['reach']:.2f}", f"{r['timeout']:.2f}"] for r in V['rows']], ['seed', 'start point', 'continuation', 'n', 'reach', 'timeout']), '']
   (OUT / 'REPORT.md').write_text('\n'.join(L) + '\n', encoding='utf-8')
   print('\n'.join(L), flush=True)
 
 
 def main(argv=None):
   ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-  ap.add_argument('mode', choices=('rollout', 'timeouts', 'fork', 'cont', 'entries', 'objective', 'candidates', 'pairs', 'report'))
+  ap.add_argument('mode', choices=('rollout', 'timeouts', 'fork', 'cont', 'entries', 'objective', 'candidates', 'candidates_restat', 'pairs', 'cont_variant', 'report'))
+  ap.add_argument('--variant', default=None)
   ap.add_argument('--workers', type=int, default=8)
   ap.add_argument('--limit', type=int, default=None)
   ap.add_argument('--force', action='store_true')
   args = ap.parse_args(argv)
   OUT.mkdir(parents=True, exist_ok=True)
-  {'rollout': mode_rollout, 'timeouts': mode_timeouts, 'fork': mode_fork, 'cont': mode_cont, 'entries': mode_entries, 'objective': mode_objective, 'candidates': mode_candidates, 'pairs': mode_pairs, 'report': mode_report}[args.mode](args)
+  {'rollout': mode_rollout, 'timeouts': mode_timeouts, 'fork': mode_fork, 'cont': mode_cont, 'entries': mode_entries, 'objective': mode_objective, 'candidates': mode_candidates, 'candidates_restat': candidates_restat, 'pairs': mode_pairs, 'cont_variant': mode_cont_variant, 'report': mode_report}[args.mode](args)
   return 0
 
 

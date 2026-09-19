@@ -197,6 +197,16 @@ untested.
 
 ## 6. Route choice at the starts where CF still went straight (`candidates.json`, REPORT section 6)
 
+> Corrected 2026-09-19 after the user's review of 52f0bf1: (i) the share of
+> states with a detour-realising candidate is 74 % / 82 % / 96 % per seed
+> (203 / 275, 207 / 252, 134 / 140), not "97 %"; (ii) the first Spearman
+> used two argsorts and mis-ranked the many tied outcome labels -- with
+> average ranks (`candidates_restat`) it is +0.22 / +0.14 / +0.04 (success-
+> only label +0.15 / +0.08 / +0.02), so seed 2 reads as "weak overall
+> ordering on this candidate set", not as a reversed ranking.  The label
+> (2 x success + detour) is a diagnostic combination, not the critic's
+> discounted target.
+
 At every reset state where the CF policy's replay went straight (275 / 252 /
 140 states for seeds 0 / 1 / 2), 23 candidate first torques -- the CF mode
 (control), 12 samples of its own tanh-normal, the other two CF seeds' modes,
@@ -205,33 +215,38 @@ teacher reset torques -- each executed once under the episode's own hidden
 draw with the SAME CF policy continuing; every candidate scored by the CF
 critic at that state.
 
-- A detour-realising candidate exists at almost every such state (203 / 207
-  / 134 of 275 / 252 / 140).  The most reliable ones are the teacher's
-  detour reset torques (detour 0.25 / 0.35 / 0.44 vs the mode 0.03 / 0.04 /
-  0.10), then CF s2's mode transplanted (0.27 / 0.21) and CF's own samples
-  (0.09 / 0.10 / 0.26); O's mode 0.02-0.06, the teacher's shortcut torques
-  0.00-0.02.
-- Seeds 0 / 1: the CF critic ranks a teacher detour torque above the actor's
-  mode in 267 / 275 and 241 / 252 states (mean +0.60 / +0.24 nats), its
-  top-1 candidate is a teacher detour torque in 241 / 227 states, and that
-  top-1 realises the detour in 96 / 124 states against the mode's 7 / 9 and
-  succeeds in 109 / 122 against 62 / 62.  The critic already prefers the
-  better torque; the actor's mode is not there -- case "critic prefers it,
-  actor did not adopt it", with the BC term on the 95 % shortcut teacher
-  torques as the plausible reason (section 5: BC / q gradient ratio ~0.7-0.9
-  at these rows).
+- A detour-realising candidate exists at 74 % / 82 % / 96 % of these states.
+  The most reliable ones are the teacher's detour reset torques (detour
+  0.25 / 0.35 / 0.44 vs the mode 0.03 / 0.04 / 0.10), then CF s2's mode
+  transplanted (0.27 / 0.21) and CF's own samples (0.09 / 0.10 / 0.26); O's
+  mode 0.02-0.06, the teacher's shortcut torques 0.00-0.02.
+- Seeds 0 / 1: the decisive fact is not that the teacher torques score
+  high but that **choosing by the critic's score improves the realised
+  outcome**: the critic's top-1 candidate succeeds in 109 / 122 states
+  against the mode's 62 / 62 and realises the detour in 96 / 124 against 7 /
+  9 (the top-1 is a teacher detour torque in 241 / 227 states; a teacher
+  detour torque is scored above the mode in 267 / 275 and 241 / 252 states,
+  +0.60 / +0.24 nats).  So "no usable action" and "the critic cannot
+  recognise it" are not the main explanation for these seeds: **the policy
+  does not fully use the scoring information it has.**  Why is NOT
+  established: the actor optimises the mean critic score of its sampled
+  actions plus BC, not the single best action; comparable gradient norms
+  (section 5) do not show that the two terms oppose each other; "BC holds
+  the mode in the middle" remains a conjecture, and nothing here licenses
+  lowering BC.
 - Seed 2: the critic's top-1 is one of the actor's own samples in 88 / 140
   states and the mode in 12; the teacher detour torques -- the candidates
-  that realise the detour most often (0.44) -- are scored 2.4 nats BELOW the
-  mode (above it in only 48 / 140 states), as is every other off-policy
-  candidate (O -2.2, start -2.4, other CF modes -1.8 / -1.9).  The critic's
-  top-1 still detours in 51 states vs the mode's 14 (success 54 vs 40),
-  because among its own samples it leans the right way, but the within-state
-  rank correlation with the realised outcome is -0.27 (seeds 0 / 1: +0.07 /
-  -0.03).  Seed 2's critic has a blind spot for actions outside its actor's
-  current distribution -- the co-adapted critic scores its actor's
-  neighbourhood high and everything else low -- case "scoring still has a
-  blind spot", specifically off the actor's manifold.
+  that realise the detour most often (0.44) -- are scored 2.4 nats below
+  the mode (above it in only 48 / 140 states), as is every other off-policy
+  candidate (O -2.2, start -2.4, other CF modes -1.8 / -1.9).  Its top-1
+  still detours in 51 states vs the mode's 14 (success 54 vs 40).  So seed
+  2's scores are **biased by candidate source** (off-policy candidates
+  pressed down) while the within-state ordering is weak (+0.04).  Whether
+  this is critic-actor co-adaptation or simply poor critic generalisation
+  outside the region the actor moved into is not decided by this data (the
+  NCE critic trains on a fixed stream; the actor adapts to it) -- and it
+  means the seed-0 / 1 reading ("use the scores harder") cannot be carried
+  over to seed 2 without also amplifying its scoring error.
 - Caveat: one chaotic rollout per candidate; the "best candidate succeeds"
   column (210 / 211 / 129) is an optimistic oracle over 23 draws, not a
   policy result.
@@ -258,4 +273,32 @@ The start d05 policy finishes 13 of these 19 states.  So on this subset the
 CF update did regress local execution relative to the pre-update policy
 (the aggregate completion from the entrance, start 0.52 vs CF 0.48, hid
 it): the deficit is a stall / slow-progress mode in the detour legs, not a
-fall and not a wrong turn.
+fall and not a wrong turn.  The 8 reverse pairs show the same update also
+improved other states: the change in walking competence is uneven, not a
+broken walker.  Together with section 6: **the update learned a safer
+route choice at some states and lost a continuing-forward behaviour at
+others** -- two opposite needs (change the reset torque; keep the mid-route
+torques) that a single BC coefficient cannot serve, which is why no global
+BC change or longer training is proposed from this data.
+
+## 8. Pre-registered fix trial: actor learning rate 3e-4 -> 1e-4, everything else fixed
+
+Motivated by section 7 (an update that lost local competence the pre-update
+policy still has); not a proven fix and no cure for critic blind spots.
+Sealed in `../variants/actor_lr1e-4/manifest.json` before training: O and
+CF both, three paired seeds, same data / anchors / branches / streams /
+losses (bc 0.05) / critic lr / initialisation / 30,000 updates / evaluation.
+Criteria: (1) native success CF(variant) - CF(base) on the common episodes;
+(2) the detour gain kept; (3) reach rate from the SAME handover states of
+section 3 (`cont_variant_actor_lr1e-4.json`).  Readings fixed in advance:
+walks well but no detours = not a fix; continuation recovered and detour
+kept = an actionable handle; still stalls = not the update speed (then
+check whether the critic rewards the wrong action before the stall).
+Result (`../variants/actor_lr1e-4/SUMMARY.md`): criterion 3 recovered (from
+the entrance states CF(lr1e-4) reaches 0.75 / 0.67 / 0.71 vs base CF 0.75 /
+0.42 / 0.48, start 0.50 / 0.58 / 0.52; native timeouts 0.01-0.03), but
+criterion 1 not met (success -0.068 vs base CF, 2/3 negative) and the detour
+gain shrinks to a third (0.26 -> 0.07 mean, 3/3; still +0.044 over O and
++0.066 over the start, 3/3).  Reading: "walks well, few detours" -- the
+route change and the walking loss scale together with the size of the
+update; the actor learning rate does not separate them.  Not a fix.

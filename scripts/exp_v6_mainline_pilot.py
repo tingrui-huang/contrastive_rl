@@ -103,6 +103,10 @@ D05_EXPECTED = {'gxy_sha256': '4533c70278a96e09b9d79ba8ed6c2144792abbab5085d405a
                 'sidecar_sha256': '8b17a572356216ec3484d33525faafed6103ef666b6b01d14e6962dc9cd40afe'}
 MILESTONES = (10_000, 20_000)
 LOG_EVERY = 500
+# Pre-registered single-change variants of the pilot (notes/MAINLINE_CONTRACT.md is unchanged: same data, anchors, branches,
+# losses, bc 0.05, critic lr, initialisation, update count; O and CF both, three paired seeds).  A variant trains under
+# OUT/variants/<name>/ and is compared with the base arms on the same evaluation episodes.
+VARIANTS = {'actor_lr1e-4': {'actor_learning_rate': 1e-4}}
 
 
 # ------------------------------------------------------------------ helpers
@@ -784,6 +788,12 @@ def run_dir(arm, seed, base=None):
   return (base or OUT) / arm / f'seed_{seed}'
 
 
+def variant_base(name):
+  if name not in VARIANTS:
+    raise SystemExit(f'unknown variant {name!r}; known: {list(VARIANTS)}')
+  return OUT / 'variants' / name
+
+
 def _stack(batches):
   import jax.numpy as jnp
   from crl.losses import Transition
@@ -795,21 +805,25 @@ def _tree_hash(tree):
   return arr_hash(*[np.asarray(x) for x in jax.tree_util.tree_leaves(tree)])
 
 
-def train_arm(arm, seed, updates=UPDATES, base=None, batch=BATCH, start_ckpt=START_CKPT, branch_path=None, log_every=LOG_EVERY):
+def train_arm(arm, seed, updates=UPDATES, base=None, batch=BATCH, start_ckpt=START_CKPT, branch_path=None, log_every=LOG_EVERY, overrides=None, inputs=None):
   import jax
   import optax
   from crl import checkpoint
   from crl import losses as losses_mod
   base = base or OUT
+  inputs = inputs or base                          # where anchors.npz / branches_cf.npz live (a variant reads the base pilot's)
   d = run_dir(arm, seed, base)
   if (d / 'final.pkl').exists():
     print(f'{d} exists', flush=True)
     return
   d.mkdir(parents=True, exist_ok=True)
-  anchors, _ = AnchorSet.load(base / 'anchors.npz')
+  anchors, _ = AnchorSet.load(inputs / 'anchors.npz')
   obs, act, lengths, _ = load_dataset()
   cfg = recipe_config(seed, d, steps=updates)
   cfg.batch_size = int(batch)
+  for k, v in (overrides or {}).items():
+    assert hasattr(cfg, k), k
+    setattr(cfg, k, v)
   fill_dims(cfg)
   nets = make_nets(cfg)
   policy_optimizer = optax.adam(cfg.actor_learning_rate, eps=1e-7)
@@ -834,7 +848,7 @@ def train_arm(arm, seed, updates=UPDATES, base=None, batch=BATCH, start_ckpt=STA
   h_q0, h_p0 = _tree_hash(state.q_params), _tree_hash(state.policy_params)
   checkpoint.save_named(str(d), 'init', 0, state)
   # the two streams
-  futures = RecordedFutures(anchors, obs, act) if arm == 'O' else BranchFutures(anchors, branch_path or (base / 'branches_cf.npz'))
+  futures = RecordedFutures(anchors, obs, act) if arm == 'O' else BranchFutures(anchors, branch_path or (inputs / 'branches_cf.npz'))
   critic_stream = CriticStream(anchors, futures, cfg.batch_size, cfg.discount, CRITIC_STREAM_SEED0 + seed)
   actor_stream = ActorStream(cfg, ACTOR_STREAM_SEED0 + seed)
 
@@ -868,9 +882,9 @@ def train_arm(arm, seed, updates=UPDATES, base=None, batch=BATCH, start_ckpt=STA
   import jax as _jax
   write_json(d / 'train_manifest.json', {
       'arm': arm, 'seed': seed, 'optimizer_updates': n_updates, 'scan_group': G, 'batch_size': cfg.batch_size, 'wall_seconds': time.time() - t0,
-      'futures': futures.name, 'branch_file': (None if arm == 'O' else str(branch_path or (base / 'branches_cf.npz'))),
+      'futures': futures.name, 'branch_file': (None if arm == 'O' else str(branch_path or (inputs / 'branches_cf.npz'))), 'overrides': (overrides or {}),
       'start_ckpt': (str(start_ckpt) if start_ckpt else None), 'start_ckpt_sha256': (sha256(start_ckpt) if start_ckpt else None),
-      'anchors_sha256': sha256(base / 'anchors.npz'), 'critic_stream_seed': CRITIC_STREAM_SEED0 + seed, 'actor_stream_seed': ACTOR_STREAM_SEED0 + seed,
+      'anchors_sha256': sha256(inputs / 'anchors.npz'), 'critic_stream_seed': CRITIC_STREAM_SEED0 + seed, 'actor_stream_seed': ACTOR_STREAM_SEED0 + seed,
       'jax_key_seed': seed, 'config': config_dump(cfg), 'first_batches': first,
       'params': {'q_init': h_q0, 'q_final': _tree_hash(state.q_params), 'policy_init': h_p0, 'policy_final': _tree_hash(state.policy_params),
                  'policy_init_is_start': policy_init_is_start},
@@ -883,8 +897,43 @@ def mode_train(args):
     raise SystemExit(f'BLOCKED: the start checkpoint {START_CKPT} is not available on this machine')
   if args.arm == 'CF' and not (OUT / 'branches_cf.npz').exists():
     raise SystemExit('arm CF needs branches_cf.npz (mode generate)')
+  if args.variant:
+    base = variant_base(args.variant)
+    if not (base / 'manifest.json').exists():
+      raise SystemExit(f'seal the variant first: seal --variant {args.variant}')
+    for s in args.seeds:
+      train_arm(args.arm, s, base=base, overrides=VARIANTS[args.variant], inputs=OUT)
+    return
   for s in args.seeds:
     train_arm(args.arm, s)
+
+
+def mode_seal_variant(args):
+  """Pre-registration of one single-change variant: the change, everything
+  held fixed, the comparisons and the decision rules -- written before any
+  variant training."""
+  name = args.variant
+  base = variant_base(name)
+  base.mkdir(parents=True, exist_ok=True)
+  if (base / 'manifest.json').exists() and not args.force:
+    print(f'{base / "manifest.json"} exists', flush=True); return
+  man = {'variant': name, 'change': VARIANTS[name], 'sealed_at': time.strftime('%Y-%m-%d %H:%M:%S'), 'git_head': git_head(),
+         'base_pilot_manifest_sha256': sha256(OUT / 'manifest.json'), 'anchors_sha256': sha256(OUT / 'anchors.npz'), 'branches_sha256': sha256(OUT / 'branches_cf.npz'),
+         'start_ckpt_sha256': sha256(START_CKPT),
+         'held_fixed': 'dataset, anchors and weights, CF branches, critic and actor streams and seeds, losses (NCE + actor loss, bc 0.05, random_goals 0), '
+                       'critic learning rate 3e-4, twin-Q architecture, initialisation (fresh paired critics, actor from the start agent), 30,000 optimizer '
+                       'updates, gamma 0.999, evaluation (300 natural draws, seed 3909, mode); both arms O and CF, seeds 0-2',
+         'motivation': 'diag_traj sections 3 and 7: the CF update lost local walking competence on states the pre-update policy still completes '
+                       '(19 O-finishes-CF-not handover pairs, start policy finishes 13); a slower actor update is the direct candidate that leaves '
+                       'the CRL objective unchanged.  Not a proven fix; cannot repair critic blind spots.',
+         'criteria': {'1_native_success': 'CF(variant) - CF(base) success on the 300 common episodes, per paired seed; rule: mean > 2 x seed s.e. and 3/3 (also reported vs O(variant) and vs start)',
+                      '2_detour_gain_kept': 'CF(variant) detour rate not below CF(base) by more than 2 x seed s.e. (and CF(variant) - O(variant) detour still 3/3 positive)',
+                      '3_continuation_recovered': 'from the SAME detour-entrance handover states of diag_traj (cont.json enter_detour, 42 + 12 + 4 states): reach rate of CF(variant) vs CF(base) '
+                                                  'and vs the start policy, per seed; recovered = CF(variant) >= start on those states and > CF(base)',
+                      'failure_readings': 'walks well but no detours = not a fix; continuation recovered and detour kept = an actionable handle; still stalls = not the update speed'},
+         'no_selection': 'the variant is evaluated once with its final checkpoint; no tuning of the rate after seeing the result'}
+  write_json(base / 'manifest.json', man)
+  print(json.dumps(man, indent=1), flush=True)
 
 
 # ---------------------------------------------------------------- evaluate
@@ -901,12 +950,13 @@ def mode_evaluate(args):
   if not START_CKPT.exists():
     raise SystemExit(f'BLOCKED: the start checkpoint {START_CKPT} is not available on this machine')
   D.EVAL['seed'], D.EVAL['n'] = EVAL['seed'], EVAL['n']
-  todo = [('start', START_CKPT, OUT / 'start_agent')]
+  base = variant_base(args.variant) if args.variant else OUT
+  todo = [] if args.variant else [('start', START_CKPT, OUT / 'start_agent')]
   for arm in ARMS:
     for s in SEEDS:
-      ck = run_dir(arm, s) / 'final.pkl'
+      ck = run_dir(arm, s, base) / 'final.pkl'
       if ck.exists():
-        todo.append((f'{arm}/seed_{s}', ck, run_dir(arm, s)))
+        todo.append((f'{arm}/seed_{s}', ck, run_dir(arm, s, base)))
   for name, ck, od in todo:
     if args.only and name not in args.only:
       continue
@@ -960,7 +1010,50 @@ def paired_block(a_by_seed, b_by_seed, key='success', n_boot=2000, seed=0):
           'episode_bootstrap_se_of_mean': float(np.std(boots)), 'improvement_rule_met': met}
 
 
+def report_variant(args):
+  """The variant against the base pilot on the same evaluation episodes:
+  per-policy headline, paired differences per seed, and the pre-registered
+  criteria 1 and 2 (criterion 3 comes from diag_v6_pilot_trajectories cont
+  --variant)."""
+  name = args.variant
+  base = variant_base(name)
+  man = read_json(base / 'manifest.json')
+  E = {n: _episodes(p) for n, p in eval_paths().items() if p.exists()}
+  Ev = {n: _episodes(p) for n, p in eval_paths(base).items() if p.exists() and n != 'start'}
+  L = [f'# Variant {name}: {man["change"]} (everything else as the pilot)', '',
+       f'Sealed {man["sealed_at"]}.  Same 300 evaluation episodes (seed {EVAL["seed"]}, mode).  Criteria and rules: `manifest.json`.', '',
+       '## Per policy', '', '| policy | success | detour | death | timeout | success no hazard | success hazard | mean steps |', '|---|---:|---:|---:|---:|---:|---:|---:|']
+  for lab, EE in (('base', E), (name, Ev)):
+    for n, e in EE.items():
+      h = _headline(e)
+      L.append(f'| {lab} {n} | {h["success"]:.3f} | {h["detour"]:.3f} | {h["death"]:.3f} | {h["timeout"]:.3f} | {h["success_no_hazard"]:.3f} | {h["success_hazard"]:.3f} | {h["mean_steps"]:.0f} |')
+  res = {}
+  byv = {arm: {s: Ev[f'{arm}/seed_{s}'] for s in SEEDS if f'{arm}/seed_{s}' in Ev} for arm in ARMS}
+  byb = {arm: {s: E[f'{arm}/seed_{s}'] for s in SEEDS if f'{arm}/seed_{s}' in E} for arm in ARMS}
+  if all(len(byv[a]) == len(SEEDS) for a in ARMS):
+    L += ['', '## Paired differences (per seed; seed mean, seed s.e., episode-bootstrap s.e.; rule > 2 seed s.e. and 3/3)', '']
+    comps = [(f'CF({name}) - CF(base)', byv['CF'], byb['CF']), (f'O({name}) - O(base)', byv['O'], byb['O']), (f'CF({name}) - O({name})', byv['CF'], byv['O']),
+             (f'CF({name}) - start', byv['CF'], E['start']), (f'CF(base) - start', byb['CF'], E['start'])]
+    for key in ('success', 'detour', 'failure', 'timeout'):
+      L += [f'### {key}', '', '| comparison | per seed | mean | seed s.e. | boot s.e. | same direction | rule |', '|---|---|---:|---:|---:|---|---|']
+      for cname, a, b in comps:
+        r = paired_block(a, b, key=key); res[f'{cname}:{key}'] = r
+        per = ' / '.join(f'{v["mean"]:+.3f}' for v in r['per_seed'].values())
+        L.append(f'| {cname} | {per} | {r["mean"]:+.3f} | {r["seed_se"]:.3f} | {r["episode_bootstrap_se_of_mean"]:.3f} | {r["seeds_same_direction"]} | {"met" if r["improvement_rule_met"] else "not met"} |')
+      L.append('')
+    c1 = res[f'CF({name}) - CF(base):success']; c2 = res[f'CF({name}) - CF(base):detour']; c2b = res[f'CF({name}) - O({name}):detour']
+    kept = bool(c2['mean'] >= -2 * c2['seed_se'] and c2b['mean'] > 0 and c2b['seeds_same_direction'].startswith('3'))
+    L += ['## Criteria', '', f'1. native success CF({name}) - CF(base): {c1["mean"]:+.3f} (seed s.e. {c1["seed_se"]:.3f}, {c1["seeds_same_direction"]}) -> {"MET" if c1["improvement_rule_met"] else "NOT MET"}',
+          f'2. detour gain kept: CF({name}) - CF(base) detour {c2["mean"]:+.3f} (seed s.e. {c2["seed_se"]:.3f}); CF({name}) - O({name}) detour {c2b["mean"]:+.3f} ({c2b["seeds_same_direction"]}) -> {"KEPT" if kept else "NOT KEPT"}',
+          '3. continuation from the same handover states: see diag_traj/cont_variant_<name>.json / the diag REPORT section 8.', '']
+  write_json(base / 'results.json', {'headlines': {**{f'base {n}': _headline(e) for n, e in E.items()}, **{f'{name} {n}': _headline(e) for n, e in Ev.items()}}, 'paired': res})
+  (base / 'REPORT.md').write_text('\n'.join(L) + '\n', encoding='utf-8')
+  print('\n'.join(L), flush=True)
+
+
 def mode_report(args):
+  if args.variant:
+    return report_variant(args)
   paths = eval_paths()
   have = {n: p for n, p in paths.items() if p.exists()}
   man = read_json(OUT / 'manifest.json') if (OUT / 'manifest.json').exists() else {}
@@ -1042,6 +1135,7 @@ def mode_smoke(args):
 def main(argv=None):
   ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
   ap.add_argument('mode', choices=('anchors', 'generate', 'seal', 'audit', 'train', 'evaluate', 'report', 'smoke'))
+  ap.add_argument('--variant', choices=list(VARIANTS), default=None, help='pre-registered single-change variant (seal / train / evaluate / report)')
   ap.add_argument('--arm', choices=ARMS)
   ap.add_argument('--seeds', type=int, nargs='+', default=list(SEEDS))
   ap.add_argument('--workers', type=int, default=8)
@@ -1053,6 +1147,8 @@ def main(argv=None):
   OUT.mkdir(parents=True, exist_ok=True)
   if args.mode == 'train' and not args.arm:
     ap.error('train needs --arm')
+  if args.mode == 'seal' and args.variant:
+    return mode_seal_variant(args) or 0
   r = {'anchors': mode_anchors, 'generate': mode_generate, 'seal': mode_seal, 'audit': mode_audit, 'train': mode_train,
        'evaluate': mode_evaluate, 'report': mode_report, 'smoke': mode_smoke}[args.mode](args)
   return r if isinstance(r, int) else 0
