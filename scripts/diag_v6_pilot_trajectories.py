@@ -34,6 +34,8 @@ every variant of an episode shares its environment exactly.
   python scripts/diag_v6_pilot_trajectories.py cont --workers 18
   python scripts/diag_v6_pilot_trajectories.py entries      # hazard / leg entry times from the xy records
   python scripts/diag_v6_pilot_trajectories.py objective    # q-term vs BC term of the actor loss at start-region rows
+  python scripts/diag_v6_pilot_trajectories.py candidates --workers 18   # better first torques at the straight-going starts? does the critic rank them?
+  python scripts/diag_v6_pilot_trajectories.py pairs --workers 18        # O finishes / CF does not from the same handover: earliest anomaly
   python scripts/diag_v6_pilot_trajectories.py report
 """
 from __future__ import annotations
@@ -397,7 +399,9 @@ def _branch_worker(args):
   import build_v6_branch_replay as B
   env, teacher = B._worker_env(worker_seed)
   out = []
-  for (tag, k, obs0, hidden, prefix, tau, first, cont) in jobs:
+  for job in jobs:
+    (tag, k, obs0, hidden, prefix, tau, first, cont) = job[:8]
+    capture = bool(job[8]) if len(job) > 8 else False
     o = restore_episode(env, obs0, hidden)
     t, done, reward = 0, False, 0.0
     if prefix is not None and tau > 0:
@@ -410,16 +414,20 @@ def _branch_worker(args):
       continue
     swap_xy = o[:2].tolist()
     if first is not None:
-      a1 = _policy_bundle(first)['mode'](o)
+      # a policy name, or ('torque', array) for a literal candidate torque
+      a1 = np.asarray(first[1], np.float32) if isinstance(first, tuple) else _policy_bundle(first)['mode'](o)
       o, reward, done, info = env.step(a1); t += 1
       if done or reward > 0:
         out.append({'tag': tag, 'episode': k, 'prefix_ended': False, 'success': bool(reward > 0), 'failure': bool(done and not reward > 0),
                     'timeout': False, 'steps': t, 'route': env._route, 'max_y': float(o[1]), 'final_xy': o[:2].tolist(), 'tau': tau, 'swap_xy': swap_xy})
         continue
     cf = 'driver' if cont == 'driver' else _policy_bundle(cont)['mode']
-    r = run_from(env, teacher, o, t, cf, HORIZON - t)
-    r.pop('obs', None)
-    out.append({'tag': tag, 'episode': k, 'prefix_ended': False, 'tau': tau, 'swap_xy': swap_xy, **r, 'steps': r['steps'] + t})
+    r = run_from(env, teacher, o, t, cf, HORIZON - t, capture=capture)
+    obs_c = r.pop('obs', None)
+    rec = {'tag': tag, 'episode': k, 'prefix_ended': False, 'tau': tau, 'swap_xy': swap_xy, **r, 'steps': r['steps'] + t}
+    if capture and obs_c is not None:
+      rec['obs'] = np.asarray(obs_c, np.float32)
+    out.append(rec)
   return out
 
 
@@ -657,6 +665,214 @@ def mode_objective(args):
   MP.write_json(OUT / 'objective.json', res)
 
 
+# ------------------------------------------------------------- candidates
+N_CAND_SAMPLES = 12
+
+
+def _teacher_reset_torques(n_detour=4, n_shortcut=2, seed=DIAG_SEED + 21):
+  """Logged t = 0 torques of detour and shortcut episodes (transplant candidates)."""
+  obs, act, lengths, _ = MP.load_dataset()
+  with np.load(MP.SIDECAR, allow_pickle=True) as sc:
+    route = sc['route_realized'].astype(str)
+  rng = np.random.default_rng(seed)
+  det = rng.choice(np.flatnonzero(route == 'detour'), size=n_detour, replace=False)
+  sc_ = rng.choice(np.flatnonzero(route == 'shortcut'), size=n_shortcut, replace=False)
+  return {f'teacher_detour{j}': act[e, 0].astype(np.float32) for j, e in enumerate(det)} | {f'teacher_shortcut{j}': act[e, 0].astype(np.float32) for j, e in enumerate(sc_)}
+
+
+def _spearman(a, b):
+  ra = np.argsort(np.argsort(a)).astype(float); rb = np.argsort(np.argsort(b)).astype(float)
+  return float(np.corrcoef(ra, rb)[0, 1])
+
+
+def mode_candidates(args):
+  """At the reset states where the CF policy still went straight (replay
+  route != detour): candidate first torques -- the CF mode (control), 12
+  samples of its own tanh-normal, the other two CF seeds' modes, the O and
+  start modes, and 4 detour / 2 shortcut logged teacher reset torques -- each
+  executed once, then the SAME CF policy continues under the episode's own
+  hidden draw.  Realised route / outcome per candidate, and every candidate's
+  score under the CF critic (and the O / start critics)."""
+  P = policies()
+  T = {n: Traj(n) for n in P}
+  teach = _teacher_reset_torques()
+  rng = np.random.default_rng(DIAG_SEED + 23)
+  jobs, cand_of = [], {}
+  for s in SEEDS:
+    name = f'CF_s{s}'
+    others = [f'CF_s{q}' for q in SEEDS if q != s]
+    eps = [k for k in range(len(T[name].d['steps'])) if str(T[name].d['route'][k]) != 'detour']
+    if args.limit:
+      eps = eps[:args.limit]
+    obs0 = np.stack([T[name].obs(k)[0] for k in eps])
+    b = _policy_bundle(name)
+    loc, scale = b['dist'](obs0)
+    mode = np.tanh(loc).astype(np.float32)
+    smp = np.tanh(loc[None] + scale[None] * rng.standard_normal((N_CAND_SAMPLES, *loc.shape))).astype(np.float32)
+    om = {q: _policy_bundle(q)['mode_batch'](obs0) for q in others + [f'O_s{s}', 'start']}
+    for j, k in enumerate(eps):
+      cands = {'mode': mode[j]} | {f'sample{i}': smp[i, j] for i in range(N_CAND_SAMPLES)} | {f'mode_{q}': om[q][j] for q in others} | {'O': om[f'O_s{s}'][j], 'start': om['start'][j]} | teach
+      cand_of[(s, k)] = cands
+      for cn, a in cands.items():
+        jobs.append((f'cand|s{s}|{cn}', k, obs0[j], T[name].hidden(k), None, 0, ('torque', a), name))
+  print(f'candidates: {len(jobs)} rollouts on {args.workers} workers', flush=True)
+  t0 = time.time()
+  res = run_branches(jobs, args.workers, seed0=DIAG_SEED + 900_000)
+  print(f'done in {time.time() - t0:.0f} s', flush=True)
+  by = {}
+  for r in res:
+    _, ss, cn = r['tag'].split('|')
+    by.setdefault((int(ss[1:]), r['episode']), {})[cn] = r
+  # critic scores of every candidate at its state
+  out = {'per_state': [], 'summary': {}}
+  for s in SEEDS:
+    name = f'CF_s{s}'
+    crit = {'CF': _policy_bundle(name)['f'], 'O': _policy_bundle(f'O_s{s}')['f'], 'van': _policy_bundle('start')['f']}
+    states = sorted(k for (ss, k) in by if ss == s)
+    stats = {'n_states': len(states), 'no_detour_candidate': 0, 'detour_candidate_ranked_above_mode_by_CF_critic': 0, 'detour_candidate_only_below_mode': 0,
+             'critic_top1_detours': 0, 'mode_detours': 0, 'any_success_candidate': 0, 'critic_top1_success': 0, 'mode_success': 0, 'best_candidate_success': 0,
+             'spearman_f_vs_outcome': [], 'detour_by_candidate_family': {}, 'n_by_family': {}}
+    for k in states:
+      cands = cand_of[(s, k)]
+      names_ = list(cands)
+      A = np.stack([cands[c] for c in names_])
+      O0 = np.repeat(T[name].obs(k)[0][None], len(A), 0)
+      f = {c: crit[c](O0, A) for c in crit}
+      outc = {c: by[(s, k)][c] for c in names_ if c in by[(s, k)]}
+      det = {c: bool(outc[c]['route'] == 'detour') for c in outc}
+      suc = {c: bool(outc[c]['success']) for c in outc}
+      score = np.array([2 * suc[c] + det[c] for c in names_], float)
+      fCF = f['CF']
+      rank = {c: int((fCF > fCF[i]).sum()) for i, c in enumerate(names_)}       # 0 = highest
+      det_c = [c for c in names_ if det[c] and c != 'mode']
+      best = max(names_, key=lambda c: (suc[c], det[c], fCF[names_.index(c)]))
+      top1 = names_[int(np.argmax(fCF))]
+      rec = {'seed': s, 'episode': k, 'mode_detour': det['mode'], 'mode_success': suc['mode'], 'n_detour_candidates': len(det_c),
+             'detour_candidates_above_mode': int(sum(rank[c] < rank['mode'] for c in det_c)), 'critic_top1': top1, 'top1_detour': det[top1], 'top1_success': suc[top1],
+             'best': best, 'best_success': suc[best], 'best_detour': det[best], 'rank_of_best': rank[best], 'rank_of_mode': rank['mode'], 'n_candidates': len(names_),
+             'f_CF': {c: float(fCF[i]) for i, c in enumerate(names_)}, 'f_O': {c: float(f['O'][i]) for i, c in enumerate(names_)}, 'f_van': {c: float(f['van'][i]) for i, c in enumerate(names_)},
+             'detour': det, 'success': suc}
+      out['per_state'].append(rec)
+      st = stats
+      st['mode_detours'] += int(det['mode']); st['mode_success'] += int(suc['mode'])
+      if not det_c:
+        st['no_detour_candidate'] += 1
+      elif rec['detour_candidates_above_mode'] > 0:
+        st['detour_candidate_ranked_above_mode_by_CF_critic'] += 1
+      else:
+        st['detour_candidate_only_below_mode'] += 1
+      st['critic_top1_detours'] += int(det[top1]); st['critic_top1_success'] += int(suc[top1])
+      st['any_success_candidate'] += int(any(suc.values())); st['best_candidate_success'] += int(suc[best])
+      if score.std() > 0 and fCF.std() > 0:
+        st['spearman_f_vs_outcome'].append(_spearman(fCF, score))
+      for c in names_:
+        fam = c.rstrip('0123456789') if c.startswith(('sample', 'teacher_detour', 'teacher_shortcut')) else c
+        st['n_by_family'][fam] = st['n_by_family'].get(fam, 0) + 1
+        st['detour_by_candidate_family'][fam] = st['detour_by_candidate_family'].get(fam, 0) + int(det[c])
+    st['spearman_mean'] = float(np.mean(st['spearman_f_vs_outcome'])) if st['spearman_f_vs_outcome'] else None
+    st['spearman_n'] = len(st['spearman_f_vs_outcome']); st.pop('spearman_f_vs_outcome')
+    st['detour_rate_by_family'] = {fam: st['detour_by_candidate_family'][fam] / st['n_by_family'][fam] for fam in st['n_by_family']}
+    out['summary'][f'CF_s{s}'] = st
+    print(name, json.dumps({k: v for k, v in st.items() if k not in ('detour_by_candidate_family', 'n_by_family')}), flush=True)
+  MP.write_json(OUT / 'candidates.json', out)
+
+
+# ------------------------------------------------------------------ pairs
+def _series(obs):
+  xy = obs[:, :2]
+  sp = np.concatenate([[0.0], np.linalg.norm(np.diff(xy, axis=0), axis=1)])
+  arc = np.array([route_arc(float(p[0]), float(p[1]))[1] for p in xy])
+  arc = np.where(np.isfinite(arc), arc, np.nan)
+  return {'speed': sp, 'z': obs[:, 2], 'upz': np.array([up_z(q) for q in obs[:, 3:7]]), 'arc': arc, 'dist_goal': np.linalg.norm(xy - obs[:, STATE_DIM:OBS_W], axis=1)}
+
+
+def first_anomaly(obs, ref_obs, win=30):
+  """Earliest anomaly after the handover in a continuation, judged against the
+  reference continuation from the same state: posture (torso z < 0.35 or
+  up_z < 0.5 over 5 steps), slowdown (30-step mean speed below half the
+  reference's at the same offset and below 0.03), stall (no progress gain for
+  60 steps while the reference progresses), goal-freeze (within 3.0 of the
+  goal and 30-step speed < 0.01)."""
+  S, R = _series(obs), _series(ref_obs)
+  n = len(S['speed'])
+  events = {}
+  post = np.flatnonzero((S['z'] < TORSO_FALLEN + 0.05) | (S['upz'] < 0.5))
+  for i in post:
+    if i + 5 <= n and np.all((S['z'][i:i + 5] < TORSO_FALLEN + 0.05) | (S['upz'][i:i + 5] < 0.5)):
+      events['posture'] = int(i); break
+  for i in range(win, n):
+    ms = S['speed'][i - win:i].mean(); mr = R['speed'][i - win:i].mean() if i <= len(R['speed']) else R['speed'][-win:].mean()
+    if ms < 0.03 and ms < 0.5 * max(mr, 1e-6):
+      events['slowdown'] = int(i - win); break
+  a = S['arc']
+  for i in range(60, n):
+    if np.isfinite(a[i]) and np.nanmax(a[max(0, i - 60):i + 1]) <= np.nanmax(a[:max(1, i - 60)]) + 0.3 and (i < len(R['arc']) and np.nanmax(R['arc'][:i + 1]) > np.nanmax(a[:i + 1]) + 1.0):
+      events['stall'] = int(i - 60); break
+  for i in range(win, n):
+    if S['dist_goal'][i] < 3.0 and S['speed'][i - win:i].mean() < 0.01:
+      events['goal_freeze'] = int(i - win); break
+  first = min(events.items(), key=lambda kv: kv[1]) if events else (None, None)
+  return {'events': events, 'first': first[0], 'first_step': first[1], 'final_arc': float(np.nanmax(a)) if np.isfinite(a).any() else None,
+          'final_dist_goal': float(S['dist_goal'][-1]), 'mean_speed': float(S['speed'].mean()), 'ref_mean_speed': float(R['speed'].mean()),
+          'min_z': float(S['z'].min()), 'min_upz': float(S['upz'].min()), 'steps': int(n - 1)}
+
+
+def mode_pairs(args):
+  """The detour-entrance continuations where one policy finishes and the other
+  does not (from cont.json): rerun both with full capture from the same
+  handover state and locate the earliest anomaly in the failing one."""
+  C = MP.read_json(OUT / 'cont.json')['results']
+  T = {n: Traj(n) for n in policies()}
+  jobs, pairs = [], []
+  for s in SEEDS:
+    name, oname = f'CF_s{s}', f'O_s{s}'
+    got = {}
+    for r in C:
+      parts = r['tag'].split('|')
+      if len(parts) == 4 and parts[2] == 'enter_detour' and parts[3] in (name, oname, 'start'):
+        got.setdefault(r['episode'], {})[parts[3]] = r
+    for k, d in got.items():
+      if name in d and oname in d and (bool(d[name]['success']) != bool(d[oname]['success'])):
+        kind = 'O_finishes_CF_not' if d[oname]['success'] else 'CF_finishes_O_not'
+        tau = int(d[name]['tau'])
+        pairs.append({'seed': s, 'episode': k, 'kind': kind, 'tau': tau})
+        for cont in (name, oname, 'start'):
+          jobs.append((f'pair|s{s}|{kind}|{cont}', k, T[name].obs(k)[0], T[name].hidden(k), name, tau, None, cont, True))
+  print(f'pairs: {len(pairs)} pairs, {len(jobs)} captured rollouts', flush=True)
+  res = run_branches(jobs, args.workers, seed0=DIAG_SEED + 700_000)
+  by = {}
+  for r in res:
+    _, ss, kind, cont = r['tag'].split('|')
+    by[(int(ss[1:]), r['episode'], cont)] = r
+  rows, store = [], {}
+  for pr in pairs:
+    s, k = pr['seed'], pr['episode']
+    cf, o, st = by.get((s, k, f'CF_s{s}')), by.get((s, k, f'O_s{s}')), by.get((s, k, 'start'))
+    if cf is None or o is None or 'obs' not in cf or 'obs' not in o:
+      continue
+    fail, ref = (cf, o) if pr['kind'] == 'O_finishes_CF_not' else (o, cf)
+    an = first_anomaly(fail['obs'], ref['obs'])
+    rows.append({**pr, 'rerun_CF_success': bool(cf['success']), 'rerun_O_success': bool(o['success']), 'rerun_start_success': (bool(st['success']) if st else None),
+                 'reproduced': bool(cf['success']) != bool(o['success']) and (bool(o['success']) == (pr['kind'] == 'O_finishes_CF_not')),
+                 'anomaly': an, 'ref_steps': int(ref['steps']), 'fail_steps': int(fail['steps']), 'fail_route': fail['route'], 'fail_outcome': ('death' if fail['failure'] else ('timeout' if fail['timeout'] else 'success'))})
+    for cont, r in ((f'CF_s{s}', cf), (f'O_s{s}', o)):
+      store[f's{s}_e{k}_{cont}'] = r['obs']
+  np.savez_compressed(OUT / 'pairs_traj.npz', **store)
+  summ = {}
+  for kind in ('O_finishes_CF_not', 'CF_finishes_O_not'):
+    rr = [r for r in rows if r['kind'] == kind]
+    rep = [r for r in rr if r['reproduced']]
+    summ[kind] = {'n_pairs': len(rr), 'reproduced_on_rerun': len(rep),
+                  'first_anomaly_counts': {a: sum(1 for r in rep if r['anomaly']['first'] == a) for a in ('posture', 'slowdown', 'stall', 'goal_freeze', None)},
+                  'median_first_anomaly_step_after_handover': (float(np.median([r['anomaly']['first_step'] for r in rep if r['anomaly']['first_step'] is not None])) if any(r['anomaly']['first_step'] is not None for r in rep) else None),
+                  'fail_final_arc_median': (float(np.median([r['anomaly']['final_arc'] for r in rep if r['anomaly']['final_arc'] is not None])) if rep else None),
+                  'fail_outcomes': {o: sum(1 for r in rep if r['fail_outcome'] == o) for o in ('timeout', 'death', 'success')},
+                  'mean_speed_fail_vs_ref': ([float(np.mean([r['anomaly']['mean_speed'] for r in rep])), float(np.mean([r['anomaly']['ref_mean_speed'] for r in rep]))] if rep else None),
+                  'start_policy_success_on_these': (float(np.mean([r['rerun_start_success'] for r in rep if r['rerun_start_success'] is not None])) if rep else None)}
+  MP.write_json(OUT / 'pairs.json', {'summary': summ, 'pairs': rows})
+  print(json.dumps(summ, indent=1), flush=True)
+
+
 # ----------------------------------------------------------------- report
 def _tab(rows, cols):
   L = ['| ' + ' | '.join(cols) + ' |', '|' + '---|' * len(cols)]
@@ -798,19 +1014,45 @@ def mode_report(args):
                      f"{d['weighted_q_term']:+.2f}", f"{d['weighted_bc_term']:+.2f}", f"{d['grad_norm_weighted_q_term']:.2f}", f"{d['grad_norm_weighted_bc_term']:.2f}", f"{d['grad_ratio_bc_over_q']:.2f}"]
                     + ([f"{d['f_logged_north']:+.2f}", f"{d['f_logged_east']:+.2f}", f"{d['f_logged_north_minus_east']:+.2f}"] if 'f_logged_north' in d else []))
       L += [f'### {label}', '', *_tab(rows, ['actor', 'f(mode)', 'f(own sample)', 'f(logged)', 'P(f mode > f logged)', 'BC NLL logged (mean)', 'median', 'scale', '|mode - logged|', '0.95 q-term', '0.05 BC', '|grad| q', '|grad| BC', 'BC / q grad ratio'] + (['f logged north', 'f logged east', 'north - east'] if label.startswith('start') else [])), '']
+  if (OUT / 'candidates.json').exists():
+    Cd = MP.read_json(OUT / 'candidates.json')
+    L += ['## 6. Route choice at the starts where CF still went straight: candidate first torques under the same CF continuation', '',
+          'Candidates: the CF mode (control), 12 own samples, the other CF seeds\' modes, the O and start modes, 4 detour / 2 shortcut logged teacher reset torques; one rollout each, '
+          'the episode\'s own hidden draw, the same CF policy continues.  "above mode" = the CF critic scores it above the mode torque at that state.', '',
+          *_tab([[n, v['n_states'], v['mode_detours'], v['no_detour_candidate'], v['detour_candidate_ranked_above_mode_by_CF_critic'], v['detour_candidate_only_below_mode'],
+                  v['critic_top1_detours'], v['critic_top1_success'], v['mode_success'], v['best_candidate_success'], (f"{v['spearman_mean']:+.2f} (n {v['spearman_n']})" if v['spearman_mean'] is not None else '-')]
+                 for n, v in Cd['summary'].items()],
+                ['CF seed', 'states (CF went straight)', 'mode detours on rerun', 'no candidate detours', 'a detour candidate exists AND critic ranks one above the mode', 'detour candidates exist, all ranked below the mode',
+                 'critic top-1 candidate detours', 'critic top-1 succeeds', 'mode succeeds', 'best candidate succeeds', 'Spearman f vs outcome (within state)']), '',
+          'Detour rate by candidate family (share of rollouts that realised the detour):', '',
+          *_tab([[n] + [f"{v['detour_rate_by_family'].get(f, float('nan')):.2f}" for f in ('mode', 'sample', 'mode_CF_s0', 'mode_CF_s1', 'mode_CF_s2', 'O', 'start', 'teacher_detour', 'teacher_shortcut')] for n, v in Cd['summary'].items()],
+                ['CF seed', 'mode', 'own samples', 'mode CF_s0', 'mode CF_s1', 'mode CF_s2', 'O', 'start', 'teacher detour', 'teacher shortcut']), '']
+  if (OUT / 'pairs.json').exists():
+    Pj = MP.read_json(OUT / 'pairs.json')
+    L += ['## 7. Paired continuations from the detour entrance where one policy finishes and the other does not', '',
+          'Both continuations rerun with full capture from the same handover state; the earliest anomaly in the failing one, judged against the finishing one: posture (torso down / tilted), '
+          'slowdown (30-step speed < 0.03 and < half the reference), stall (no progress for 60 steps while the reference progresses), goal-freeze (within 3.0 of the goal, speed < 0.01).', '',
+          *_tab([[k, v['n_pairs'], v['reproduced_on_rerun'], v['first_anomaly_counts'].get('posture', 0), v['first_anomaly_counts'].get('slowdown', 0), v['first_anomaly_counts'].get('stall', 0), v['first_anomaly_counts'].get('goal_freeze', 0), v['first_anomaly_counts'].get('null', v['first_anomaly_counts'].get('None', 0)),
+                  v['median_first_anomaly_step_after_handover'], v['fail_final_arc_median'], v['fail_outcomes'], v['mean_speed_fail_vs_ref'], v['start_policy_success_on_these']] for k, v in Pj['summary'].items()],
+                ['pair kind', 'pairs', 'reproduced on rerun', 'posture first', 'slowdown first', 'stall first', 'goal-freeze first', 'no anomaly found', 'median first-anomaly step after handover', 'failing arc reached (median)', 'failing outcomes', 'mean speed fail / ref', 'start policy finishes these']), '',
+          '### Every reproduced pair', '',
+          *_tab([[r['seed'], r['episode'], r['kind'], r['tau'], r['anomaly']['first'], r['anomaly']['first_step'], json.dumps(r['anomaly']['events']), f"{r['anomaly']['final_arc']:.1f}" if r['anomaly']['final_arc'] is not None else '-', f"{r['anomaly']['final_dist_goal']:.1f}",
+                  f"{r['anomaly']['mean_speed']:.3f} / {r['anomaly']['ref_mean_speed']:.3f}", f"{r['anomaly']['min_z']:.2f}", f"{r['anomaly']['min_upz']:.2f}", r['fail_outcome'], r['ref_steps'], r['rerun_start_success']]
+                 for r in Pj['pairs'] if r['reproduced']],
+                ['seed', 'ep', 'kind', 'handover step', 'first anomaly', 'step after handover', 'all events', 'arc reached', 'final dist to goal', 'mean speed fail / ref', 'min torso z', 'min up z', 'failing outcome', 'finisher steps', 'start finishes']), '']
   (OUT / 'REPORT.md').write_text('\n'.join(L) + '\n', encoding='utf-8')
   print('\n'.join(L), flush=True)
 
 
 def main(argv=None):
   ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-  ap.add_argument('mode', choices=('rollout', 'timeouts', 'fork', 'cont', 'entries', 'objective', 'report'))
+  ap.add_argument('mode', choices=('rollout', 'timeouts', 'fork', 'cont', 'entries', 'objective', 'candidates', 'pairs', 'report'))
   ap.add_argument('--workers', type=int, default=8)
   ap.add_argument('--limit', type=int, default=None)
   ap.add_argument('--force', action='store_true')
   args = ap.parse_args(argv)
   OUT.mkdir(parents=True, exist_ok=True)
-  {'rollout': mode_rollout, 'timeouts': mode_timeouts, 'fork': mode_fork, 'cont': mode_cont, 'entries': mode_entries, 'objective': mode_objective, 'report': mode_report}[args.mode](args)
+  {'rollout': mode_rollout, 'timeouts': mode_timeouts, 'fork': mode_fork, 'cont': mode_cont, 'entries': mode_entries, 'objective': mode_objective, 'candidates': mode_candidates, 'pairs': mode_pairs, 'report': mode_report}[args.mode](args)
   return 0
 
 

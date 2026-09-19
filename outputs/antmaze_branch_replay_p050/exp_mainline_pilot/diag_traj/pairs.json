@@ -1,0 +1,822 @@
+{
+ "summary": {
+  "O_finishes_CF_not": {
+   "n_pairs": 19,
+   "reproduced_on_rerun": 19,
+   "first_anomaly_counts": {
+    "posture": 1,
+    "slowdown": 0,
+    "stall": 16,
+    "goal_freeze": 0,
+    "null": 2
+   },
+   "median_first_anomaly_step_after_handover": 63.0,
+   "fail_final_arc_median": 12.23268461227417,
+   "fail_outcomes": {
+    "timeout": 19,
+    "death": 0,
+    "success": 0
+   },
+   "mean_speed_fail_vs_ref": [
+    0.06183275104589343,
+    0.11440811360510686
+   ],
+   "start_policy_success_on_these": 0.6842105263157895
+  },
+  "CF_finishes_O_not": {
+   "n_pairs": 8,
+   "reproduced_on_rerun": 8,
+   "first_anomaly_counts": {
+    "posture": 1,
+    "slowdown": 2,
+    "stall": 5,
+    "goal_freeze": 0,
+    "null": 0
+   },
+   "median_first_anomaly_step_after_handover": 137.5,
+   "fail_final_arc_median": 21.076412200927734,
+   "fail_outcomes": {
+    "timeout": 8,
+    "death": 0,
+    "success": 0
+   },
+   "mean_speed_fail_vs_ref": [
+    0.0645366986432665,
+    0.10950956301595388
+   ],
+   "start_policy_success_on_these": 0.5
+  }
+ },
+ "pairs": [
+  {
+   "seed": 0,
+   "episode": 197,
+   "kind": "CF_finishes_O_not",
+   "tau": 26,
+   "rerun_CF_success": true,
+   "rerun_O_success": false,
+   "rerun_start_success": true,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "slowdown": 344,
+     "goal_freeze": 348
+    },
+    "first": "slowdown",
+    "first_step": 344,
+    "final_arc": 40.0,
+    "final_dist_goal": 1.4629566669464111,
+    "mean_speed": 0.05609157250575076,
+    "ref_mean_speed": 0.10737910169136652,
+    "min_z": 0.3697300851345062,
+    "min_upz": 0.9160448908805847,
+    "steps": 774
+   },
+   "ref_steps": 443,
+   "fail_steps": 800,
+   "fail_route": "detour",
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 1,
+   "episode": 293,
+   "kind": "O_finishes_CF_not",
+   "tau": 31,
+   "rerun_CF_success": false,
+   "rerun_O_success": true,
+   "rerun_start_success": false,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "slowdown": 270,
+     "stall": 19
+    },
+    "first": "stall",
+    "first_step": 19,
+    "final_arc": 3.403313159942627,
+    "final_dist_goal": 22.34615135192871,
+    "mean_speed": 0.03291273096612536,
+    "ref_mean_speed": 0.11190478080415754,
+    "min_z": 0.36225518584251404,
+    "min_upz": 0.9337931275367737,
+    "steps": 769
+   },
+   "ref_steps": 452,
+   "fail_steps": 800,
+   "fail_route": null,
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 1,
+   "episode": 56,
+   "kind": "CF_finishes_O_not",
+   "tau": 43,
+   "rerun_CF_success": true,
+   "rerun_O_success": false,
+   "rerun_start_success": true,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "slowdown": 334,
+     "stall": 183
+    },
+    "first": "stall",
+    "first_step": 183,
+    "final_arc": 4.617058753967285,
+    "final_dist_goal": 26.099536895751953,
+    "mean_speed": 0.036855522399054284,
+    "ref_mean_speed": 0.09682166458948681,
+    "min_z": 0.3497759997844696,
+    "min_upz": 0.7263944745063782,
+    "steps": 757
+   },
+   "ref_steps": 703,
+   "fail_steps": 800,
+   "fail_route": null,
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 1,
+   "episode": 253,
+   "kind": "O_finishes_CF_not",
+   "tau": 21,
+   "rerun_CF_success": false,
+   "rerun_O_success": true,
+   "rerun_start_success": true,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "stall": 43
+    },
+    "first": "stall",
+    "first_step": 43,
+    "final_arc": 5.673515796661377,
+    "final_dist_goal": 23.13558578491211,
+    "mean_speed": 0.08019485724239181,
+    "ref_mean_speed": 0.12278809861034067,
+    "min_z": 0.40462926030158997,
+    "min_upz": 0.8759255409240723,
+    "steps": 779
+   },
+   "ref_steps": 357,
+   "fail_steps": 800,
+   "fail_route": null,
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 1,
+   "episode": 100,
+   "kind": "O_finishes_CF_not",
+   "tau": 34,
+   "rerun_CF_success": false,
+   "rerun_O_success": true,
+   "rerun_start_success": true,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "stall": 29
+    },
+    "first": "stall",
+    "first_step": 29,
+    "final_arc": 4.4119791984558105,
+    "final_dist_goal": 23.224292755126953,
+    "mean_speed": 0.08722375610520312,
+    "ref_mean_speed": 0.1249844747356006,
+    "min_z": 0.3910500407218933,
+    "min_upz": 0.901557207107544,
+    "steps": 766
+   },
+   "ref_steps": 383,
+   "fail_steps": 800,
+   "fail_route": null,
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 1,
+   "episode": 180,
+   "kind": "O_finishes_CF_not",
+   "tau": 49,
+   "rerun_CF_success": false,
+   "rerun_O_success": true,
+   "rerun_start_success": false,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "slowdown": 414,
+     "stall": 57
+    },
+    "first": "stall",
+    "first_step": 57,
+    "final_arc": 8.0,
+    "final_dist_goal": 26.50826072692871,
+    "mean_speed": 0.04585306337022992,
+    "ref_mean_speed": 0.12192624713096654,
+    "min_z": 0.35129275918006897,
+    "min_upz": 0.917287290096283,
+    "steps": 751
+   },
+   "ref_steps": 378,
+   "fail_steps": 800,
+   "fail_route": "detour",
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 1,
+   "episode": 24,
+   "kind": "CF_finishes_O_not",
+   "tau": 42,
+   "rerun_CF_success": true,
+   "rerun_O_success": false,
+   "rerun_start_success": true,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "slowdown": 321,
+     "stall": 352
+    },
+    "first": "slowdown",
+    "first_step": 321,
+    "final_arc": 34.739935874938965,
+    "final_dist_goal": 5.161029815673828,
+    "mean_speed": 0.06726561371716812,
+    "ref_mean_speed": 0.10618179639009857,
+    "min_z": 0.35948750376701355,
+    "min_upz": 0.956933319568634,
+    "steps": 758
+   },
+   "ref_steps": 514,
+   "fail_steps": 800,
+   "fail_route": "detour",
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 2,
+   "episode": 65,
+   "kind": "O_finishes_CF_not",
+   "tau": 27,
+   "rerun_CF_success": false,
+   "rerun_O_success": true,
+   "rerun_start_success": true,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "stall": 30
+    },
+    "first": "stall",
+    "first_step": 30,
+    "final_arc": 18.44229793548584,
+    "final_dist_goal": 15.300856590270996,
+    "mean_speed": 0.07408672988412358,
+    "ref_mean_speed": 0.1190206235067712,
+    "min_z": 0.3446209728717804,
+    "min_upz": 0.8929029107093811,
+    "steps": 773
+   },
+   "ref_steps": 386,
+   "fail_steps": 800,
+   "fail_route": "detour",
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 2,
+   "episode": 108,
+   "kind": "CF_finishes_O_not",
+   "tau": 31,
+   "rerun_CF_success": true,
+   "rerun_O_success": false,
+   "rerun_start_success": false,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "stall": 91
+    },
+    "first": "stall",
+    "first_step": 91,
+    "final_arc": 10.718360185623169,
+    "final_dist_goal": 23.490642547607422,
+    "mean_speed": 0.06360892949704468,
+    "ref_mean_speed": 0.12007799912731401,
+    "min_z": 0.3817606270313263,
+    "min_upz": 0.8720669150352478,
+    "steps": 769
+   },
+   "ref_steps": 374,
+   "fail_steps": 800,
+   "fail_route": "detour",
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 2,
+   "episode": 159,
+   "kind": "O_finishes_CF_not",
+   "tau": 39,
+   "rerun_CF_success": false,
+   "rerun_O_success": true,
+   "rerun_start_success": true,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "stall": 69
+    },
+    "first": "stall",
+    "first_step": 69,
+    "final_arc": 21.333271026611328,
+    "final_dist_goal": 12.53709602355957,
+    "mean_speed": 0.056414744514071205,
+    "ref_mean_speed": 0.116572002051556,
+    "min_z": 0.4102254807949066,
+    "min_upz": 0.8617732524871826,
+    "steps": 761
+   },
+   "ref_steps": 392,
+   "fail_steps": 800,
+   "fail_route": "detour",
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 2,
+   "episode": 225,
+   "kind": "O_finishes_CF_not",
+   "tau": 26,
+   "rerun_CF_success": false,
+   "rerun_O_success": true,
+   "rerun_start_success": true,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "stall": 261
+    },
+    "first": "stall",
+    "first_step": 261,
+    "final_arc": 34.39534044265747,
+    "final_dist_goal": 5.163427352905273,
+    "mean_speed": 0.07695719270035624,
+    "ref_mean_speed": 0.11450103708346815,
+    "min_z": 0.3727327883243561,
+    "min_upz": 0.9500116109848022,
+    "steps": 774
+   },
+   "ref_steps": 405,
+   "fail_steps": 800,
+   "fail_route": "detour",
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 2,
+   "episode": 132,
+   "kind": "O_finishes_CF_not",
+   "tau": 21,
+   "rerun_CF_success": false,
+   "rerun_O_success": true,
+   "rerun_start_success": false,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "slowdown": 585,
+     "stall": 267
+    },
+    "first": "stall",
+    "first_step": 267,
+    "final_arc": 34.243908405303955,
+    "final_dist_goal": 4.938696384429932,
+    "mean_speed": 0.06451021727499466,
+    "ref_mean_speed": 0.11532076277917416,
+    "min_z": 0.3667197823524475,
+    "min_upz": 0.9203514456748962,
+    "steps": 779
+   },
+   "ref_steps": 393,
+   "fail_steps": 800,
+   "fail_route": "detour",
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 2,
+   "episode": 265,
+   "kind": "CF_finishes_O_not",
+   "tau": 39,
+   "rerun_CF_success": true,
+   "rerun_O_success": false,
+   "rerun_start_success": false,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "posture": 664,
+     "slowdown": 675,
+     "goal_freeze": 689
+    },
+    "first": "posture",
+    "first_step": 664,
+    "final_arc": 38.533154129981995,
+    "final_dist_goal": 1.6125861406326294,
+    "mean_speed": 0.08495051569763275,
+    "ref_mean_speed": 0.11383283660794141,
+    "min_z": 0.24269118905067444,
+    "min_upz": -0.9975244998931885,
+    "steps": 761
+   },
+   "ref_steps": 439,
+   "fail_steps": 800,
+   "fail_route": "detour",
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 2,
+   "episode": 17,
+   "kind": "O_finishes_CF_not",
+   "tau": 20,
+   "rerun_CF_success": false,
+   "rerun_O_success": true,
+   "rerun_start_success": true,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "stall": 28
+    },
+    "first": "stall",
+    "first_step": 28,
+    "final_arc": 4.472786903381348,
+    "final_dist_goal": 23.62238311767578,
+    "mean_speed": 0.07512791645319634,
+    "ref_mean_speed": 0.11521628803956478,
+    "min_z": 0.3885831832885742,
+    "min_upz": 0.910851240158081,
+    "steps": 780
+   },
+   "ref_steps": 413,
+   "fail_steps": 800,
+   "fail_route": null,
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 2,
+   "episode": 192,
+   "kind": "CF_finishes_O_not",
+   "tau": 54,
+   "rerun_CF_success": true,
+   "rerun_O_success": false,
+   "rerun_start_success": false,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "slowdown": 589,
+     "stall": 2
+    },
+    "first": "stall",
+    "first_step": 2,
+    "final_arc": 2.562396287918091,
+    "final_dist_goal": 22.730945587158203,
+    "mean_speed": 0.06712884304845167,
+    "ref_mean_speed": 0.11573337218978189,
+    "min_z": 0.37082570791244507,
+    "min_upz": 0.8909298777580261,
+    "steps": 746
+   },
+   "ref_steps": 328,
+   "fail_steps": 800,
+   "fail_route": null,
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 2,
+   "episode": 74,
+   "kind": "O_finishes_CF_not",
+   "tau": 30,
+   "rerun_CF_success": false,
+   "rerun_O_success": true,
+   "rerun_start_success": false,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "slowdown": 311,
+     "stall": 55
+    },
+    "first": "stall",
+    "first_step": 55,
+    "final_arc": 4.825020790100098,
+    "final_dist_goal": 25.847558975219727,
+    "mean_speed": 0.044853618785057364,
+    "ref_mean_speed": 0.11929385548595477,
+    "min_z": 0.3503749370574951,
+    "min_upz": 0.8487224578857422,
+    "steps": 770
+   },
+   "ref_steps": 380,
+   "fail_steps": 800,
+   "fail_route": null,
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 2,
+   "episode": 235,
+   "kind": "O_finishes_CF_not",
+   "tau": 29,
+   "rerun_CF_success": false,
+   "rerun_O_success": true,
+   "rerun_start_success": true,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "posture": 331,
+     "slowdown": 344,
+     "stall": 63
+    },
+    "first": "stall",
+    "first_step": 63,
+    "final_arc": 12.23268461227417,
+    "final_dist_goal": 22.08902931213379,
+    "mean_speed": 0.03216577001793963,
+    "ref_mean_speed": 0.11418346094400608,
+    "min_z": 0.25477585196495056,
+    "min_upz": -0.9990589618682861,
+    "steps": 771
+   },
+   "ref_steps": 385,
+   "fail_steps": 800,
+   "fail_route": "detour",
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 2,
+   "episode": 78,
+   "kind": "O_finishes_CF_not",
+   "tau": 27,
+   "rerun_CF_success": false,
+   "rerun_O_success": true,
+   "rerun_start_success": true,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "posture": 358,
+     "slowdown": 353,
+     "stall": 101
+    },
+    "first": "stall",
+    "first_step": 101,
+    "final_arc": 10.787890195846558,
+    "final_dist_goal": 23.540489196777344,
+    "mean_speed": 0.0315171745183357,
+    "ref_mean_speed": 0.10033641396938392,
+    "min_z": 0.3795630931854248,
+    "min_upz": -0.7473742961883545,
+    "steps": 773
+   },
+   "ref_steps": 529,
+   "fail_steps": 800,
+   "fail_route": "detour",
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 2,
+   "episode": 242,
+   "kind": "O_finishes_CF_not",
+   "tau": 25,
+   "rerun_CF_success": false,
+   "rerun_O_success": true,
+   "rerun_start_success": true,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "posture": 377,
+     "slowdown": 388,
+     "goal_freeze": 401
+    },
+    "first": "posture",
+    "first_step": 377,
+    "final_arc": 40.0,
+    "final_dist_goal": 1.8268711566925049,
+    "mean_speed": 0.05815716966403096,
+    "ref_mean_speed": 0.12471685398297457,
+    "min_z": 0.24894846975803375,
+    "min_upz": -0.997726559638977,
+    "steps": 775
+   },
+   "ref_steps": 332,
+   "fail_steps": 800,
+   "fail_route": "detour",
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 2,
+   "episode": 281,
+   "kind": "O_finishes_CF_not",
+   "tau": 33,
+   "rerun_CF_success": false,
+   "rerun_O_success": true,
+   "rerun_start_success": true,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "slowdown": 668,
+     "stall": 80
+    },
+    "first": "stall",
+    "first_step": 80,
+    "final_arc": 22.090646743774414,
+    "final_dist_goal": 12.375391006469727,
+    "mean_speed": 0.05667481552730654,
+    "ref_mean_speed": 0.11118781493298145,
+    "min_z": 0.3881770670413971,
+    "min_upz": 0.8502048254013062,
+    "steps": 767
+   },
+   "ref_steps": 441,
+   "fail_steps": 800,
+   "fail_route": "detour",
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 2,
+   "episode": 53,
+   "kind": "O_finishes_CF_not",
+   "tau": 22,
+   "rerun_CF_success": false,
+   "rerun_O_success": true,
+   "rerun_start_success": true,
+   "reproduced": true,
+   "anomaly": {
+    "events": {},
+    "first": null,
+    "first_step": null,
+    "final_arc": 30.457138061523438,
+    "final_dist_goal": 6.2655816078186035,
+    "mean_speed": 0.06689461113183265,
+    "ref_mean_speed": 0.11068858746576178,
+    "min_z": 0.411479115486145,
+    "min_upz": 0.7350963354110718,
+    "steps": 778
+   },
+   "ref_steps": 429,
+   "fail_steps": 800,
+   "fail_route": "detour",
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 2,
+   "episode": 244,
+   "kind": "O_finishes_CF_not",
+   "tau": 33,
+   "rerun_CF_success": false,
+   "rerun_O_success": true,
+   "rerun_start_success": false,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "stall": 98
+    },
+    "first": "stall",
+    "first_step": 98,
+    "final_arc": 10.251345872879028,
+    "final_dist_goal": 24.355838775634766,
+    "mean_speed": 0.06043431900707219,
+    "ref_mean_speed": 0.10353263574294173,
+    "min_z": 0.34822535514831543,
+    "min_upz": 0.9077832698822021,
+    "steps": 767
+   },
+   "ref_steps": 487,
+   "fail_steps": 800,
+   "fail_route": "detour",
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 2,
+   "episode": 149,
+   "kind": "CF_finishes_O_not",
+   "tau": 119,
+   "rerun_CF_success": true,
+   "rerun_O_success": false,
+   "rerun_start_success": false,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "stall": 31
+    },
+    "first": "stall",
+    "first_step": 31,
+    "final_arc": 21.462050437927246,
+    "final_dist_goal": 13.006172180175781,
+    "mean_speed": 0.08514868171477302,
+    "ref_mean_speed": 0.09342890012088988,
+    "min_z": 0.35053741931915283,
+    "min_upz": 0.7079548835754395,
+    "steps": 681
+   },
+   "ref_steps": 753,
+   "fail_steps": 800,
+   "fail_route": "detour",
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 2,
+   "episode": 173,
+   "kind": "O_finishes_CF_not",
+   "tau": 19,
+   "rerun_CF_success": false,
+   "rerun_O_success": true,
+   "rerun_start_success": true,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "stall": 176
+    },
+    "first": "stall",
+    "first_step": 176,
+    "final_arc": 36.32615041732788,
+    "final_dist_goal": 2.790393352508545,
+    "mean_speed": 0.08295080260194414,
+    "ref_mean_speed": 0.11191435323306481,
+    "min_z": 0.38620704412460327,
+    "min_upz": 0.9010583758354187,
+    "steps": 781
+   },
+   "ref_steps": 400,
+   "fail_steps": 800,
+   "fail_route": "detour",
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 2,
+   "episode": 151,
+   "kind": "CF_finishes_O_not",
+   "tau": 33,
+   "rerun_CF_success": true,
+   "rerun_O_success": false,
+   "rerun_start_success": true,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "slowdown": 258,
+     "stall": 92
+    },
+    "first": "stall",
+    "first_step": 92,
+    "final_arc": 20.690773963928223,
+    "final_dist_goal": 13.629400253295898,
+    "mean_speed": 0.055243910566256695,
+    "ref_mean_speed": 0.12262083341075186,
+    "min_z": 0.3811710476875305,
+    "min_upz": 0.8355849981307983,
+    "steps": 767
+   },
+   "ref_steps": 341,
+   "fail_steps": 800,
+   "fail_route": "detour",
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 2,
+   "episode": 178,
+   "kind": "O_finishes_CF_not",
+   "tau": 22,
+   "rerun_CF_success": false,
+   "rerun_O_success": true,
+   "rerun_start_success": true,
+   "reproduced": true,
+   "anomaly": {
+    "events": {
+     "stall": 18
+    },
+    "first": "stall",
+    "first_step": 18,
+    "final_arc": 5.488590240478516,
+    "final_dist_goal": 23.95749855041504,
+    "mean_speed": 0.07095209563112745,
+    "ref_mean_speed": 0.10751798412209188,
+    "min_z": 0.4120813012123108,
+    "min_upz": 0.893738865852356,
+    "steps": 778
+   },
+   "ref_steps": 435,
+   "fail_steps": 800,
+   "fail_route": null,
+   "fail_outcome": "timeout"
+  },
+  {
+   "seed": 2,
+   "episode": 98,
+   "kind": "O_finishes_CF_not",
+   "tau": 24,
+   "rerun_CF_success": false,
+   "rerun_O_success": true,
+   "rerun_start_success": false,
+   "reproduced": true,
+   "anomaly": {
+    "events": {},
+    "first": null,
+    "first_step": null,
+    "final_arc": 39.51995795965195,
+    "final_dist_goal": 1.383121132850647,
+    "mean_speed": 0.07694068447663646,
+    "ref_mean_speed": 0.10814788387626977,
+    "min_z": 0.37471115589141846,
+    "min_upz": 0.8713438510894775,
+    "steps": 776
+   },
+   "ref_steps": 457,
+   "fail_steps": 800,
+   "fail_route": "detour",
+   "fail_outcome": "timeout"
+  }
+ ]
+}

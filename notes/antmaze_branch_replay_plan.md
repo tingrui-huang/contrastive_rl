@@ -1849,3 +1849,16 @@ Continuation from the detour entrance: driver 0.98, O s2 0.71, start 0.52,
 CF s2 0.48 (n 42); from pre-stall states CF = start = O ~0.42-0.45 --
 detour-walking competence is the shared limit, at most a weak CF-specific
 deficit on seed 2.
+
+Follow-up (same day, `candidates` / `pairs` modes): at the straight-going
+starts a detour-realising first torque exists in 97 % of states (the
+teacher's detour reset torques 0.25-0.44 detour vs the mode 0.03-0.10);
+seeds 0 / 1's CF critics rank a teacher detour torque above the mode in 96 %
+of states (+0.24 / +0.60 nats) and their top-1 realises the detour in
+35-49 % vs the mode's 3 % -> "actor did not adopt"; seed 2's critic scores
+every off-policy candidate 1.8-2.4 nats below its mode (within-state
+Spearman -0.27) -> a blind spot off the actor's manifold.  19 handover
+states where O finishes and CF does not: the first anomaly is an early
+stall (16 / 19, median 63 steps after handover, half O's speed, west
+column / top corridor), posture only later; the start policy finishes 13 /
+19 of them -> a local execution regression on this subset.

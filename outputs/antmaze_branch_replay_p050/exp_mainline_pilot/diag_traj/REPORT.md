@@ -400,3 +400,62 @@ prestall = 20 steps before the last progress maximum; enter_detour = the step th
 | CF_s1 | -9.65 | -9.70 | -10.39 | 0.89 | -4.8 | -4.4 | 0.72 | 1.43 | +9.22 | -0.24 | 28.59 | 17.98 | 0.63 |
 | CF_s2 | -7.90 | -8.35 | -10.01 | 0.99 | 2.0 | 3.3 | 1.27 | 2.86 | +7.93 | +0.10 | 20.79 | 14.64 | 0.70 |
 
+## 6. Route choice at the starts where CF still went straight: candidate first torques under the same CF continuation
+
+Candidates: the CF mode (control), 12 own samples, the other CF seeds' modes, the O and start modes, 4 detour / 2 shortcut logged teacher reset torques; one rollout each, the episode's own hidden draw, the same CF policy continues.  "above mode" = the CF critic scores it above the mode torque at that state.
+
+| CF seed | states (CF went straight) | mode detours on rerun | no candidate detours | a detour candidate exists AND critic ranks one above the mode | detour candidates exist, all ranked below the mode | critic top-1 candidate detours | critic top-1 succeeds | mode succeeds | best candidate succeeds | Spearman f vs outcome (within state) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| CF_s0 | 275 | 7 | 72 | 188 | 15 | 96 | 109 | 62 | 210 | +0.07 (n 222) |
+| CF_s1 | 252 | 9 | 45 | 179 | 28 | 124 | 122 | 62 | 211 | -0.03 (n 216) |
+| CF_s2 | 140 | 14 | 6 | 76 | 58 | 51 | 54 | 40 | 129 | -0.27 (n 135) |
+
+Detour rate by candidate family (share of rollouts that realised the detour):
+
+| CF seed | mode | own samples | mode CF_s0 | mode CF_s1 | mode CF_s2 | O | start | teacher detour | teacher shortcut |
+|---|---|---|---|---|---|---|---|---|---|
+| CF_s0 | 0.03 | 0.09 | nan | 0.11 | 0.27 | 0.02 | 0.10 | 0.25 | 0.00 |
+| CF_s1 | 0.04 | 0.10 | 0.08 | nan | 0.21 | 0.02 | 0.10 | 0.35 | 0.00 |
+| CF_s2 | 0.10 | 0.26 | 0.16 | 0.20 | nan | 0.06 | 0.24 | 0.44 | 0.02 |
+
+## 7. Paired continuations from the detour entrance where one policy finishes and the other does not
+
+Both continuations rerun with full capture from the same handover state; the earliest anomaly in the failing one, judged against the finishing one: posture (torso down / tilted), slowdown (30-step speed < 0.03 and < half the reference), stall (no progress for 60 steps while the reference progresses), goal-freeze (within 3.0 of the goal, speed < 0.01).
+
+| pair kind | pairs | reproduced on rerun | posture first | slowdown first | stall first | goal-freeze first | no anomaly found | median first-anomaly step after handover | failing arc reached (median) | failing outcomes | mean speed fail / ref | start policy finishes these |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| O_finishes_CF_not | 19 | 19 | 1 | 0 | 16 | 0 | 2 | 63.0 | 12.23268461227417 | {'timeout': 19, 'death': 0, 'success': 0} | [0.06183275104589343, 0.11440811360510686] | 0.6842105263157895 |
+| CF_finishes_O_not | 8 | 8 | 1 | 2 | 5 | 0 | 0 | 137.5 | 21.076412200927734 | {'timeout': 8, 'death': 0, 'success': 0} | [0.0645366986432665, 0.10950956301595388] | 0.5 |
+
+### Every reproduced pair
+
+| seed | ep | kind | handover step | first anomaly | step after handover | all events | arc reached | final dist to goal | mean speed fail / ref | min torso z | min up z | failing outcome | finisher steps | start finishes |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 0 | 197 | CF_finishes_O_not | 26 | slowdown | 344 | {"slowdown": 344, "goal_freeze": 348} | 40.0 | 1.5 | 0.056 / 0.107 | 0.37 | 0.92 | timeout | 443 | True |
+| 1 | 293 | O_finishes_CF_not | 31 | stall | 19 | {"slowdown": 270, "stall": 19} | 3.4 | 22.3 | 0.033 / 0.112 | 0.36 | 0.93 | timeout | 452 | False |
+| 1 | 56 | CF_finishes_O_not | 43 | stall | 183 | {"slowdown": 334, "stall": 183} | 4.6 | 26.1 | 0.037 / 0.097 | 0.35 | 0.73 | timeout | 703 | True |
+| 1 | 253 | O_finishes_CF_not | 21 | stall | 43 | {"stall": 43} | 5.7 | 23.1 | 0.080 / 0.123 | 0.40 | 0.88 | timeout | 357 | True |
+| 1 | 100 | O_finishes_CF_not | 34 | stall | 29 | {"stall": 29} | 4.4 | 23.2 | 0.087 / 0.125 | 0.39 | 0.90 | timeout | 383 | True |
+| 1 | 180 | O_finishes_CF_not | 49 | stall | 57 | {"slowdown": 414, "stall": 57} | 8.0 | 26.5 | 0.046 / 0.122 | 0.35 | 0.92 | timeout | 378 | False |
+| 1 | 24 | CF_finishes_O_not | 42 | slowdown | 321 | {"slowdown": 321, "stall": 352} | 34.7 | 5.2 | 0.067 / 0.106 | 0.36 | 0.96 | timeout | 514 | True |
+| 2 | 65 | O_finishes_CF_not | 27 | stall | 30 | {"stall": 30} | 18.4 | 15.3 | 0.074 / 0.119 | 0.34 | 0.89 | timeout | 386 | True |
+| 2 | 108 | CF_finishes_O_not | 31 | stall | 91 | {"stall": 91} | 10.7 | 23.5 | 0.064 / 0.120 | 0.38 | 0.87 | timeout | 374 | False |
+| 2 | 159 | O_finishes_CF_not | 39 | stall | 69 | {"stall": 69} | 21.3 | 12.5 | 0.056 / 0.117 | 0.41 | 0.86 | timeout | 392 | True |
+| 2 | 225 | O_finishes_CF_not | 26 | stall | 261 | {"stall": 261} | 34.4 | 5.2 | 0.077 / 0.115 | 0.37 | 0.95 | timeout | 405 | True |
+| 2 | 132 | O_finishes_CF_not | 21 | stall | 267 | {"slowdown": 585, "stall": 267} | 34.2 | 4.9 | 0.065 / 0.115 | 0.37 | 0.92 | timeout | 393 | False |
+| 2 | 265 | CF_finishes_O_not | 39 | posture | 664 | {"posture": 664, "slowdown": 675, "goal_freeze": 689} | 38.5 | 1.6 | 0.085 / 0.114 | 0.24 | -1.00 | timeout | 439 | False |
+| 2 | 17 | O_finishes_CF_not | 20 | stall | 28 | {"stall": 28} | 4.5 | 23.6 | 0.075 / 0.115 | 0.39 | 0.91 | timeout | 413 | True |
+| 2 | 192 | CF_finishes_O_not | 54 | stall | 2 | {"slowdown": 589, "stall": 2} | 2.6 | 22.7 | 0.067 / 0.116 | 0.37 | 0.89 | timeout | 328 | False |
+| 2 | 74 | O_finishes_CF_not | 30 | stall | 55 | {"slowdown": 311, "stall": 55} | 4.8 | 25.8 | 0.045 / 0.119 | 0.35 | 0.85 | timeout | 380 | False |
+| 2 | 235 | O_finishes_CF_not | 29 | stall | 63 | {"posture": 331, "slowdown": 344, "stall": 63} | 12.2 | 22.1 | 0.032 / 0.114 | 0.25 | -1.00 | timeout | 385 | True |
+| 2 | 78 | O_finishes_CF_not | 27 | stall | 101 | {"posture": 358, "slowdown": 353, "stall": 101} | 10.8 | 23.5 | 0.032 / 0.100 | 0.38 | -0.75 | timeout | 529 | True |
+| 2 | 242 | O_finishes_CF_not | 25 | posture | 377 | {"posture": 377, "slowdown": 388, "goal_freeze": 401} | 40.0 | 1.8 | 0.058 / 0.125 | 0.25 | -1.00 | timeout | 332 | True |
+| 2 | 281 | O_finishes_CF_not | 33 | stall | 80 | {"slowdown": 668, "stall": 80} | 22.1 | 12.4 | 0.057 / 0.111 | 0.39 | 0.85 | timeout | 441 | True |
+| 2 | 53 | O_finishes_CF_not | 22 | None | None | {} | 30.5 | 6.3 | 0.067 / 0.111 | 0.41 | 0.74 | timeout | 429 | True |
+| 2 | 244 | O_finishes_CF_not | 33 | stall | 98 | {"stall": 98} | 10.3 | 24.4 | 0.060 / 0.104 | 0.35 | 0.91 | timeout | 487 | False |
+| 2 | 149 | CF_finishes_O_not | 119 | stall | 31 | {"stall": 31} | 21.5 | 13.0 | 0.085 / 0.093 | 0.35 | 0.71 | timeout | 753 | False |
+| 2 | 173 | O_finishes_CF_not | 19 | stall | 176 | {"stall": 176} | 36.3 | 2.8 | 0.083 / 0.112 | 0.39 | 0.90 | timeout | 400 | True |
+| 2 | 151 | CF_finishes_O_not | 33 | stall | 92 | {"slowdown": 258, "stall": 92} | 20.7 | 13.6 | 0.055 / 0.123 | 0.38 | 0.84 | timeout | 341 | True |
+| 2 | 178 | O_finishes_CF_not | 22 | stall | 18 | {"stall": 18} | 5.5 | 24.0 | 0.071 / 0.108 | 0.41 | 0.89 | timeout | 435 | True |
+| 2 | 98 | O_finishes_CF_not | 24 | None | None | {} | 39.5 | 1.4 | 0.077 / 0.108 | 0.37 | 0.87 | timeout | 457 | False |
+

@@ -194,3 +194,68 @@ than a mode pulled back to the teacher's torque.  The residual "not fully
 climbed" gap (best own sample ~1 nat above the mode) is what a longer or
 lower-BC update would chase; whether that would change the route rate is
 untested.
+
+## 6. Route choice at the starts where CF still went straight (`candidates.json`, REPORT section 6)
+
+At every reset state where the CF policy's replay went straight (275 / 252 /
+140 states for seeds 0 / 1 / 2), 23 candidate first torques -- the CF mode
+(control), 12 samples of its own tanh-normal, the other two CF seeds' modes,
+the O and start modes, 4 detour-episode and 2 shortcut-episode logged
+teacher reset torques -- each executed once under the episode's own hidden
+draw with the SAME CF policy continuing; every candidate scored by the CF
+critic at that state.
+
+- A detour-realising candidate exists at almost every such state (203 / 207
+  / 134 of 275 / 252 / 140).  The most reliable ones are the teacher's
+  detour reset torques (detour 0.25 / 0.35 / 0.44 vs the mode 0.03 / 0.04 /
+  0.10), then CF s2's mode transplanted (0.27 / 0.21) and CF's own samples
+  (0.09 / 0.10 / 0.26); O's mode 0.02-0.06, the teacher's shortcut torques
+  0.00-0.02.
+- Seeds 0 / 1: the CF critic ranks a teacher detour torque above the actor's
+  mode in 267 / 275 and 241 / 252 states (mean +0.60 / +0.24 nats), its
+  top-1 candidate is a teacher detour torque in 241 / 227 states, and that
+  top-1 realises the detour in 96 / 124 states against the mode's 7 / 9 and
+  succeeds in 109 / 122 against 62 / 62.  The critic already prefers the
+  better torque; the actor's mode is not there -- case "critic prefers it,
+  actor did not adopt it", with the BC term on the 95 % shortcut teacher
+  torques as the plausible reason (section 5: BC / q gradient ratio ~0.7-0.9
+  at these rows).
+- Seed 2: the critic's top-1 is one of the actor's own samples in 88 / 140
+  states and the mode in 12; the teacher detour torques -- the candidates
+  that realise the detour most often (0.44) -- are scored 2.4 nats BELOW the
+  mode (above it in only 48 / 140 states), as is every other off-policy
+  candidate (O -2.2, start -2.4, other CF modes -1.8 / -1.9).  The critic's
+  top-1 still detours in 51 states vs the mode's 14 (success 54 vs 40),
+  because among its own samples it leans the right way, but the within-state
+  rank correlation with the realised outcome is -0.27 (seeds 0 / 1: +0.07 /
+  -0.03).  Seed 2's critic has a blind spot for actions outside its actor's
+  current distribution -- the co-adapted critic scores its actor's
+  neighbourhood high and everything else low -- case "scoring still has a
+  blind spot", specifically off the actor's manifold.
+- Caveat: one chaotic rollout per candidate; the "best candidate succeeds"
+  column (210 / 211 / 129) is an optimistic oracle over 23 draws, not a
+  policy result.
+
+## 7. Paired continuations where O finishes and CF does not (`pairs.json`, `pairs_traj.npz` on node3, REPORT section 7)
+
+From the 42 + 12 + 4 detour-entrance handover states of section 3, the 19
+pairs where the O policy finished and CF did not (all 19 reproduced on the
+captured rerun), and the 8 reverse pairs.  Earliest anomaly in the failing
+continuation, judged against the finishing one from the same state:
+
+| | pairs | first anomaly: stall / posture / slowdown / none | median step after handover | failing arc reached | failing outcome | mean speed fail / ref | start policy finishes these |
+|---|---|---|---|---|---|---|---|
+| O finishes, CF not | 19 | **16** / 1 / 0 / 2 | 63 | west column 6, top corridor 8, east column or goal 5 (median 12) | timeout 19 / 19 | 0.062 / 0.114 | **13 / 19** |
+| CF finishes, O not | 8 | 5 / 1 / 2 / 0 | 138 | 2 / 3 / 3 (median 21) | timeout 8 / 8 | 0.065 / 0.110 | 4 / 8 |
+
+Reading: when CF fails from a state O completes, the first thing that goes
+wrong is an early **stall** -- progress stops within ~20-100 steps of the
+handover while the O continuation keeps moving, at half O's speed, mostly
+in the west column or the first half of the top corridor; posture
+instability appears only later (3 of the 19, at 330-380 steps) and never
+first except once; two failures are goal freezes after a complete detour.
+The start d05 policy finishes 13 of these 19 states.  So on this subset the
+CF update did regress local execution relative to the pre-update policy
+(the aggregate completion from the entrance, start 0.52 vs CF 0.48, hid
+it): the deficit is a stall / slow-progress mode in the detour legs, not a
+fall and not a wrong turn.
