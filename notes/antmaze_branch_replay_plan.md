@@ -1806,3 +1806,26 @@ contract's start agent `joint_van_d05/seed_0/final.pkl` existed only on node
 30021, which died on 2026-09-18; not local, not on the other nodes.  Nothing
 substituted; the user decides between a recovered copy, an authorised
 re-derivation of the d05 chain (recorded as such), or another course.
+
+### Mainline pilot result (2026-09-19): start agent re-derived, CF above O in 3/3 seeds, pre-registered rule not met
+
+The user chose option (b): the lost d05 seed-0 chain was re-derived with
+the exp_detour_ratio recipe and seed (`joint_van_d05/seed_0/REDERIVED.json`;
+909-draw 0.247 success / 1/300 detours vs the lost record 0.263 / 20/300 --
+the lost seed 0 was the most detour-prone of its siblings 20 / 2 / 4).  Then
+the sealed pilot: 53,747 anchors, 53,747 CF branches (success 0.62 / death
+0.29 / timeout 0.09; t = 0 anchors 0.30 / 0.66), six 30,000-update runs on
+three nodes (both arms of a seed on one GPU), 300-draw evaluation (seed
+3909, mode).  Start 0.243 success / 0.003 detour; O 0.250 / 0.263 / 0.250
+(detour 0.02); CF 0.267 / 0.320 / 0.480 (detour 0.107 / 0.167 / 0.500, death
+0.63 / 0.57 / 0.26, hazard-active success 0.08 / 0.13 / 0.41 vs O 0.00-0.03,
+timeout 0.11 / 0.11 / 0.26).  Paired CF - O success +0.017 / +0.057 / +0.230,
+mean +0.101, seed s.e. 0.065, episode-bootstrap s.e. 0.017, 3/3 -> rule NOT
+met (needs > 0.130); CF - start +0.112 (0.064), 3/3, not met; O - start
++0.011 (0.004).  Detour +0.239, death -0.240, timeout +0.139, all 3/3.
+Reading: under the matched procedure the recorded (sighted-teacher) futures
+teach nothing at the fork while the oracle counterfactual futures move the
+actor onto the detour in every seed, with a seed-dependent size that the
+pre-registered rule does not certify; oracle evidence for the sampling
+design, not a learned-ETT result; no follow-ups launched (stopping rule).
+`exp_mainline_pilot/{SUMMARY,REPORT,AUDIT}.md`.

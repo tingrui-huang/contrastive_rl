@@ -1,125 +1,141 @@
-# Mainline pilot (O vs CF-oracle futures, matched offline CRL): code and configuration audit complete; execution BLOCKED on the d05 start checkpoint
+# Mainline pilot (O vs CF-oracle positive futures, matched offline CRL): run complete -- CF above O in 3/3 seeds on every metric, pre-registered success rule NOT met (seed variability)
 
-Contract: `notes/MAINLINE_CONTRACT.md`.  Script: `scripts/exp_v6_mainline_pilot.py`.
-Sealed manifest: `manifest.json`.  Checks: `AUDIT.md` / `audit.json` (real anchor
-set, no checkpoint) and `_smoke/AUDIT.md` (toy-scale end-to-end code-path test).
-Report: `REPORT.md` (no evaluation exists).
+Contract `notes/MAINLINE_CONTRACT.md`.  Script `scripts/exp_v6_mainline_pilot.py`.
+Sealed manifest `manifest.json` (2026-09-18 23:54 node time, before generation and
+training; `manifest_blocked_20260919.json` is the earlier seal made while the
+start checkpoint was unavailable).  Checks `AUDIT.md` / `audit.json` (pre- and
+post-training, all PASS).  Machine-readable result `REPORT.md` / `results.json`.
+Toy code-path test `_smoke/`.
 
-## Blocker (specific)
+## Start agent: re-derived (user decision, option b)
 
-The contract's continuation agent and actor initialisation is the existing
-d05 vanilla agent, training seed 0:
-`outputs/antmaze_branch_replay_p050/joint_van_d05/seed_0/final.pkl`.  That
-checkpoint (with the rest of the d05 chain: `joint_purebc_d05`,
-`critics_van_d05` = `vanilla_g0999_d05`) was trained and stored only on node
-30021 (35.199.51.171), which died on 2026-09-18 and now refuses connections.
-It is not on node 30043, 30049 or 30108, not in this checkout (`.pkl` files
-are never committed; only the d05 evaluation JSONs, manifests and logs were
-pulled), and not in the session's transfer bundles (`rt_d05.tgz` holds 107
-KB of JSON / Markdown).  The d05 dataset and sidecar ARE local and hash-match
-the sealed `exp_detour_ratio/datasets.json` (4533c702... / 8b17a572...).
+The contract's start agent `joint_van_d05/seed_0/final.pkl` existed only on
+node 30021, which died on 2026-09-18 (no copy anywhere; see
+`manifest_blocked_20260919.json`).  The user chose to re-derive it: the
+exp_detour_ratio recipe and seed 0, unchanged (pure BC 100k -> vanilla critic
+30k -> frozen-critic actor 30k, all on d05; `node_rederive_d05.sh`, 43 min on
+the 4090L).  Record: `joint_van_d05/seed_0/REDERIVED.json` (in the manifest
+under `start_agent.rederivation`); the lost run's pulled JSONs are kept under
+`*/seed_0/_lost_20260918/`.  Not byte-identical to the lost file (GPU
+nondeterminism).  Sanity: pure-BC walker 909-draw success 0.253 / detour 0
+(lost record 0.257 / 0); the agent 0.247 / detour 1/300 / timeout 0.013 (lost
+record 0.263 / 20/300 / 0.063) -- the lost seed 0 was the most detour-prone of
+its three siblings (20 / 2 / 4 per 300); the re-derived one sits with the
+other two.  The demonstration share in the data is unchanged (50 / 1,000
+episodes; anchor mass on detour episodes 0.0497).
 
-Per the contract, nothing was substituted: not the pure-BC d05 walker, not
-the d20 agent, not a re-trained d05 agent (the same recipe and seed would
-give a checkpoint that is not byte-identical to the lost one and has no
-recorded hash to check against).  The manifest records the start agent's
-identity, role and d05-only provenance chain (from the pulled
-`prep.json` / `branch_manifest.json` / `bc_sampling_audit.json`) with
-`sha256 = UNAVAILABLE`.
+## What ran
 
-What the user can decide: (a) supply a copy of node 30021's
-`joint_van_d05/seed_0/final.pkl` if one exists elsewhere -- drop it at the
-path above and the pipeline runs unchanged (the seal then pins its hash);
-(b) authorise a re-derivation of the d05 chain with the exp_detour_ratio
-recipe and seed 0 on node 30043 (~25 min GPU), to be recorded in the
-manifest as "re-derived 2026-09-xx, not the 2026-09-18 file"; (c) something
-else.  None of these was taken.
+- Anchors: 60,000 draws of the offline law -> 53,747 unique logged rows (196
+  at t = 0), weights = multiplicity / 60,000; one file for both arms.
+- CF branches: 53,747 (one per anchor; logged torque once, then the start
+  agent's mode to the first reach frame / death / horizon; hazards redrawn;
+  no goal hold; nothing filtered): success 0.621 / death 0.290 / timeout
+  0.088; by anchor time: t = 0 success 0.30 / death 0.66; t in [6, 50)
+  0.25 / 0.73; t in [50, 150) 0.48 / 0.37; t >= 150 0.91 / 0.03.  7.70 M
+  rows, 18 min on 18 workers.  (Arm O's recorded futures are the sighted
+  teacher's: every episode a success.)
+- Training: 30,000 optimizer updates per run (counted), joint critic +
+  actor, V6 recipe at gamma 0.999, batch 1024, fresh paired critics, actors
+  from the start agent, actor batches = the buffer's own law over the whole
+  d05 file (random_goals 0, bc 0.05 on the same rows).  Seed 0 on node 30043
+  (4090L), seed 1 on 30125 (4080S), seed 2 on 30016 (5090L); both arms of a
+  seed on the same GPU, 390-550 s each.  First-batch hashes identical across
+  arms for every seed; critic and actor parameters moved in every run.
+- Evaluation: 300 natural draws, env seed 3909, mode policy; episode
+  identities verified identical across the seven policies.
 
-## What was delivered and verified
+## Result (`REPORT.md`)
 
-1. **Method boundary** -- `notes/MAINLINE_CONTRACT.md`: (a) the intended
-   offline learned-ETT method, (b) this simulator-oracle pilot, (c) the
-   historical diagnostic configurations, with the three sampling interfaces,
-   the two arms, matched training, the checks, the rules and the stopping
-   rule.  Historical reports are untouched except for a "status under
-   MAINLINE_CONTRACT" note at the top of `exp_detour_ratio/SUMMARY.md`,
-   `exp_agent_round/SUMMARY.md` and `exp_same_batch/SUMMARY.md`, and a new
-   section at the end of `notes/antmaze_branch_replay_plan.md`.
+| policy | success | detour | death | timeout | success no hazard (74) | success hazard (226) | zone-1 / 2 deaths |
+|---|---:|---:|---:|---:|---:|---:|---|
+| start (re-derived d05 agent) | 0.243 | 0.003 | 0.740 | 0.017 | 0.986 | 0.000 | 152 / 70 |
+| O seed 0 / 1 / 2 | 0.250 / 0.263 / 0.250 | 0.023 / 0.030 / 0.003 | 0.710 / 0.723 / 0.740 | 0.040 / 0.013 / 0.010 | 0.973 / 0.986 / 1.000 | 0.013 / 0.027 / 0.004 | ~150 / ~68 |
+| CF seed 0 / 1 / 2 | 0.267 / 0.320 / **0.480** | 0.107 / 0.167 / **0.500** | 0.627 / 0.567 / **0.260** | 0.107 / 0.113 / 0.260 | 0.838 / 0.892 / 0.689 | 0.080 / 0.133 / **0.412** | 134/54, 118/52, 53/25 |
 
-2. **Sampling contract in code** (`scripts/exp_v6_mainline_pilot.py`):
-   `AnchorSet` (critic anchors with episode / timestep / state / action /
-   task goal / source episode / weight; the recipe buffer's own law, K =
-   60,000 draws, 53,747 unique anchors, weight = multiplicity / K),
-   `RecordedFutures` / `BranchFutures` + `CriticStream` (positive futures by
-   the geometric law truncated at the path end; identical anchor sequences
-   across arms for a seed), `ActorStream` (the recipe's `TrajectoryBuffer`
-   over the whole d05 file, default law; random_goals 0; BC 0.05 on the same
-   rows).  `crl/losses.py`: `build_learner(separate_actor_batch=True)` --
-   the critic loss on the critic rows, the unchanged actor loss (critic term
-   + BC on the same rows) on the actor rows; the shared-batch and
-   `bc_transitions` paths are byte-identical to before.  Documented as a
-   sampling-interface change, not a byte-for-byte reproduction of the
-   shared-batch implementation.
+Seed means (seed s.e.): O success 0.254 (0.004), detour 0.019, death 0.724,
+hazard success 0.015; CF success 0.356 (0.064), detour 0.258 (0.122), death
+0.484 (0.114), timeout 0.160 (0.050), hazard success 0.208 (0.103).
 
-3. **Sealed manifest** (`manifest.json`, before any generation or training):
-   dataset / sidecar hashes, training episode identities (the whole d05 file;
-   source ids disjoint from the old 100 held-out and 30 Cnew episodes --
-   checked), anchor law / seed / weights / file hash, continuation policy and
-   action mode (start agent, mode), generation and evaluation seeds
-   (hazards 132000000 + anchor id; eval 3909; reserved 616000005 / 616500000
-   untouched), horizon 800, terminal handling (first reach frame / death /
-   horizon), goal hold (none; a deliberate departure from the historical
-   replays' parking), future law, training configuration (V6 recipe at
-   gamma 0.999, 30,000 optimizer updates counted in groups of 4, fresh
-   paired critics, actor from the start agent, fresh Adam), comparisons and
-   decision rules, script hashes.
+Paired on the common episodes (per seed, episode s.e. in brackets; then the
+seed mean, seed s.e., episode-paired bootstrap s.e. with seeds fixed):
 
-4. **Checks run** (`AUDIT.md`): dataset and sidecar hashes match the
-   sealed d05 files; no held-out / Cnew episode in training; anchors
-   deterministic in the seed, on valid rows, roots equal to the logged rows,
-   weights sum to 1; the anchor law's marginals match the declared law
-   (draws per episode 60.0 +- 7.87 vs 7.75 expected; relative row position
-   0.498; t = 0 share 0.0038 vs 0.0038 expected); critic futures always
-   inside the path; actor streams identical across instances for every
-   seed, 99.6 % non-reset rows, no future goal across an episode boundary,
-   the buffer's own law; the static offline gates G1-G8 pass; no d20
-   artefact among the pilot's inputs.  Not checkable without the checkpoint
-   / branches: query executed exactly once, branch roots keep the timestep,
-   parameters move, evaluation-episode identity -- these are implemented and
-   PASS in the toy-scale smoke (`_smoke/AUDIT.md`: 48 anchors, stand-in
-   zero-torque continuation capped at 12 steps, 8 updates per arm on the CPU
-   from a fresh actor: query once, root timestep and logged first action
-   kept, restore max |diff| 0.0, anchor sequences identical across arms while
-   the goals differ, critic and actor parameters both change, first batches
-   identical across arms).  The smoke is a code test, not a result.
+| comparison | success | detour | death | timeout |
+|---|---|---|---|---|
+| CF - O (primary) | +0.017 (0.017) / +0.057 (0.020) / +0.230 (0.034); **+0.101, seed s.e. 0.065, boot 0.017, 3/3** | +0.083 / +0.137 / +0.497; +0.239 (0.130), 3/3 | -0.083 / -0.157 / -0.480; -0.240 (0.122), 3/3 | +0.067 / +0.100 / +0.250; +0.139 (0.056), 3/3 |
+| CF - start (practical) | +0.023 / +0.077 / +0.237; +0.112 (0.064), 3/3 | +0.254 (0.122), 3/3 | -0.256 (0.114), 3/3 | +0.143 (0.050), 3/3 |
+| O - start | +0.007 / +0.020 / +0.007; +0.011 (0.004), 3/3 | +0.016 (0.008), 2/3 | -0.016 (0.009), 2/3 | +0.004, 1/3 |
 
-5. **Compute plan (staged, not launched)**: generation of 53,747 branches
-   with the d05 agent (~9 M env steps; ~20 min on 20 CPU workers), six
-   training runs of 30,000 updates (~5 min each on the 4090L), seven
-   evaluations of 300 episodes.  Node 30043 has the code and the d05 files
-   staged; `node_mainline.sh` in the session scratchpad runs anchors ->
-   seal -> generate -> audit -> train -> evaluate -> audit -> report once the
-   checkpoint is in place.
+Pre-registered rule (mean over the 3 paired seeds > 2 x seed s.e. AND 3/3):
+**primary CF - O success: NOT met** (+0.101 vs the 0.130 the rule needs; 3/3
+positive); **practical CF - start: NOT met** (+0.112 vs 0.128; 3/3).  Within
+each seed the paired episode difference is > 2 episode s.e. for seeds 1 and
+2 and not for seed 0 (+0.017 +- 0.017).
 
-## How this comparison differs from the historical runs
+By realised route (evaluation episodes): CF actors take the detour in
+32 / 50 / 150 of 300 episodes (O: 7 / 9 / 1; start: 1) and complete it
+0.62 / 0.76 / 0.75 of the time (the rest time out); on the shortcut they die
+at the O rate (0.68-0.72).  Under an active hazard CF succeeds 0.08 / 0.13 /
+0.41 (O 0.00-0.03) because it is on the detour; without a hazard CF loses
+0.10-0.30 of the near-perfect O success to detour timeouts (median successful
+episode 234 / 236 / 380 steps vs 224).
 
-- The critic's anchors are the logged rows under the recipe's own law with
-  equal weights in both arms -- not dense strata plus every-60th rows, not
-  row 0 of a replay whose row 0 is an arbitrary timestep, not the dataset's
-  reset rows.
-- The intervention is exactly one thing: the positive futures (recorded vs
-  generated by the fixed agent after the logged torque).  No candidate
-  queries, no repeated draws, no goal hold, no filtering.
-- The actor is trained on the whole dataset under the standard pairing
-  (random_goals 0, BC 0.05 on the same rows), in both arms, jointly with a
-  fresh paired critic -- not a frozen critic, not reset-only anchors, not
-  balanced BC, not a pure-BC or d20 initialisation.
-- The start agent is the d05 agent; d20 enters nowhere.
-- The primary comparison is CF vs O on common episodes with the practical
-  check against the start agent kept separate; evaluation uncertainty and
-  seed variability are reported separately.
+## Reading under the contract
 
-What the pilot would establish if run: whether counterfactual (oracle)
-future supervision helps under this matched procedure.  What it would not
-establish: anything about a learned ETT (the oracle is the simulator), and
-anything about the historical configurations.
+- Primary: not established.  CF - O success is +0.10 with a seed s.e. of
+  0.065 -- three seeds, one of them (+0.23) far larger than the other two
+  (+0.02, +0.06).  The rule was written for exactly this case and it says
+  "not met"; this is not a negative-effect finding either (3/3 positive,
+  episode-level uncertainty 0.017).
+- Direction and mechanism, consistent 3/3 on every metric: with the
+  counterfactual futures the same procedure moves the agent onto the detour
+  (detour rate 0.3 % -> 11-50 %), roughly halves the deaths in the strongest
+  seed, and raises hazard-active success from ~0 to 0.08-0.41, at the price
+  of slower walking and detour timeouts (timeout 0.02 -> 0.11-0.26).  With
+  the recorded futures the identical procedure changes almost nothing
+  (O - start +0.011): the sighted teacher's futures say every anchor
+  succeeds, so the critic has no reason to prefer one first torque over
+  another at the fork.
+- Practical check: CF above the start in 3/3 (+0.02 / +0.08 / +0.24), not
+  established by the rule for the same reason.
+- What this establishes: under a matched offline CRL procedure (same
+  anchors and weights, same actor stream, same losses, same initialisation,
+  same update count), the source of the critic's positive futures is what
+  decides whether the actor learns the route: oracle counterfactual futures
+  do, observational ones do not, in this data.  What it does not establish:
+  the size of the success gain (three seeds; the pre-registered rule is
+  not met), why seed 2 responds three times more than seeds 0-1 (not
+  investigated -- stopping rule), and anything about a learned ETT (the
+  simulator produced the futures).  It is oracle evidence for the sampling
+  design; the remaining methodological step is to replace the oracle with
+  an offline-learned ETT.  No further diagnostics or configurations were
+  launched.
+
+## How this differs from the historical diagnostic runs
+
+- Anchors: logged rows under the recipe's own law with equal weights in
+  both arms (not dense strata + every-60th rows, not replay row 0, not the
+  dataset's reset rows).
+- Intervention: only the positive futures (recorded vs generated after the
+  logged torque by the fixed agent); no candidate queries, repeated draws,
+  goal hold or filtering.
+- Actor: whole dataset, standard pairing, joint training with a fresh
+  paired critic (not a frozen critic, reset-only anchors, balanced BC, or a
+  pure-BC / d20 initialisation).  d20 enters nowhere.
+- Comparison: CF vs O paired on common episodes with the practical check
+  separate; evaluation uncertainty and seed variability reported separately.
+- Under those historical configurations the branch replays made the actor
+  worse; under this matched procedure the counterfactual arm is the one
+  that moves.
+
+## Infrastructure notes
+
+Helper nodes 30125 / 30016 were bootstrapped with the pinned environment
+(`node_setup_30108.sh`); the orchestrator (`node_mainline.sh` in the session
+scratchpad) had two timing bugs -- the launch ssh blocked until the remote
+job finished (missing stdin redirect), and the completion poll used a
+relative path -- which delayed node 30043's own seed by ~15 min and needed a
+manual marker; neither touched any computation.  Checkpoints (`O/*/`,
+`CF/*/`, the re-derived d05 chain), `branches_cf.npz` (984 MB) and
+`anchors.npz` stay on node 30043 (`anchors.npz` is deterministic in the seed;
+its hash is in the manifest).

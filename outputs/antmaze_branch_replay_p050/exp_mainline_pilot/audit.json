@@ -17,7 +17,7 @@
   "share_t0": 0.003783333333333334,
   "expected_share_t0": 0.003806691489056454
  },
- "branches_available": false,
+ "branches_available": true,
  "critic_stream_recorded_first_batches": [
   {
    "anchor_ids": "8a2cde22818624b9",
@@ -50,6 +50,19 @@
    "futures_within_path": true
   }
  ],
+ "critic_anchor_sequence_identical_across_arms": true,
+ "critic_goals_differ_across_arms": true,
+ "branch_roots_keep_timestep": true,
+ "query_executed_exactly_once": true,
+ "branch_first_action_is_logged": true,
+ "branch_lengths_within_horizon": true,
+ "branch_restore_maxdiff_max": 0.0,
+ "branch_outcomes": {
+  "death": 15612,
+  "success": 33402,
+  "timeout": 4733
+ },
+ "branch_all_outcomes_kept": true,
  "actor_streams": {
   "seed_0": {
    "identical_across_instances": true,
@@ -90,9 +103,65 @@
   }
  },
  "start_checkpoint": {
-  "path": "D:\\Users\\trhua\\Research\\contrastive_rl\\outputs\\antmaze_branch_replay_p050\\joint_van_d05\\seed_0\\final.pkl",
-  "available": false,
-  "sha256": "UNAVAILABLE"
+  "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/joint_van_d05/seed_0/final.pkl",
+  "available": true,
+  "sha256": "6a67dbbdffe817eb0d0ed4984be325c0dabc4d4158578026e9b3bb00bee5f0a9"
  },
- "manifest_mentions_no_d20_artifact": true
+ "manifest_mentions_no_d20_artifact": true,
+ "post_training": {
+  "O/seed_0": {
+   "critic_changed": true,
+   "actor_changed": true,
+   "optimizer_updates": 30000,
+   "actor_init_is_start_agent": true,
+   "first_critic_anchor_hash": "78b312ff751778dc",
+   "first_actor_hash": "fb44f42269f0b085"
+  },
+  "O/seed_1": {
+   "critic_changed": true,
+   "actor_changed": true,
+   "optimizer_updates": 30000,
+   "actor_init_is_start_agent": true,
+   "first_critic_anchor_hash": "34d44c114447a0e3",
+   "first_actor_hash": "14b9523b695a976a"
+  },
+  "O/seed_2": {
+   "critic_changed": true,
+   "actor_changed": true,
+   "optimizer_updates": 30000,
+   "actor_init_is_start_agent": true,
+   "first_critic_anchor_hash": "257250c2acbac1c1",
+   "first_actor_hash": "1cefc85b8d3814cc"
+  },
+  "CF/seed_0": {
+   "critic_changed": true,
+   "actor_changed": true,
+   "optimizer_updates": 30000,
+   "actor_init_is_start_agent": true,
+   "first_critic_anchor_hash": "78b312ff751778dc",
+   "first_actor_hash": "fb44f42269f0b085"
+  },
+  "CF/seed_1": {
+   "critic_changed": true,
+   "actor_changed": true,
+   "optimizer_updates": 30000,
+   "actor_init_is_start_agent": true,
+   "first_critic_anchor_hash": "34d44c114447a0e3",
+   "first_actor_hash": "14b9523b695a976a"
+  },
+  "CF/seed_2": {
+   "critic_changed": true,
+   "actor_changed": true,
+   "optimizer_updates": 30000,
+   "actor_init_is_start_agent": true,
+   "first_critic_anchor_hash": "257250c2acbac1c1",
+   "first_actor_hash": "1cefc85b8d3814cc"
+  }
+ },
+ "paired_streams_identical_across_arms": {
+  "seed_0": true,
+  "seed_1": true,
+  "seed_2": true
+ },
+ "evaluation_episodes_identical_across_policies": true
 }

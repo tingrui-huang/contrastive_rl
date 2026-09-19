@@ -532,6 +532,12 @@ def start_agent_record():
       'joint_purebc_d05 bc_dataset is d05': str((chain.get('joint_purebc_d05/seed_0/branch_manifest.json') or {}).get('bc_dataset', '')).endswith(f'{STEM}_gxy.npz'),
       'observation contract': '29-dim Ant state + goal xy (31 columns); the env privileged channel never enters _flatten',
       'no d20 reference in the chain': not any('d20' in json.dumps(v) for v in chain.values())}
+  rederived = START_CKPT.parent / 'REDERIVED.json'
+  if rederived.exists():
+    # the 2026-09-18 file was lost with node 30021; the user authorised a re-derivation with the same
+    # recipe and seed (not byte-identical: GPU nondeterminism); its record travels with the checkpoint
+    rec['rederivation'] = read_json(rederived)
+    rec['identity'] += ' -- RE-DERIVED with the same recipe and seed (see rederivation); the original file was lost'
   rec['historical_training_note'] = ('the start agent itself was produced by the exp_detour_ratio chain (pure-BC 100k init, frozen '
                                      'vanilla critic 30k, displacement-balanced BC rows, 30k): diagnostic components of ITS history, '
                                      'not of this pilot\'s training procedure (contract section 1c)')
