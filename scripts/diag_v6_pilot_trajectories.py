@@ -321,7 +321,9 @@ def _policy_bundle(name):
   cfg = MP.recipe_config(0, OUT / '_cfg')
   MP.fill_dims(cfg)
   nets = MP.make_nets(cfg)
-  _, st = checkpoint.load_checkpoint(policies(name.split('@')[1] if '@' in name else None)[name])
+  # 'ckpt:<path>' names any checkpoint file (the training-replay probes); other names resolve through policies()
+  ck = Path(name[5:]) if name.startswith('ckpt:') else policies(name.split('@')[1] if '@' in name else None)[name]
+  _, st = checkpoint.load_checkpoint(ck)
   pp, qp = st.policy_params, st.q_params
 
   @jax.jit
@@ -409,6 +411,7 @@ def _branch_worker(args):
   for job in jobs:
     (tag, k, obs0, hidden, prefix, tau, first, cont) = job[:8]
     capture = bool(job[8]) if len(job) > 8 else False
+    max_steps = int(job[9]) if len(job) > 9 and job[9] is not None else None    # optional step budget (route probes)
     o = restore_episode(env, obs0, hidden)
     t, done, reward = 0, False, 0.0
     if prefix is not None and tau > 0:
@@ -429,7 +432,7 @@ def _branch_worker(args):
                     'timeout': False, 'steps': t, 'route': env._route, 'max_y': float(o[1]), 'final_xy': o[:2].tolist(), 'tau': tau, 'swap_xy': swap_xy})
         continue
     cf = 'driver' if cont == 'driver' else _policy_bundle(cont)['mode']
-    r = run_from(env, teacher, o, t, cf, HORIZON - t, capture=capture)
+    r = run_from(env, teacher, o, t, cf, (HORIZON - t) if max_steps is None else min(max_steps, HORIZON - t), capture=capture)
     obs_c = r.pop('obs', None)
     rec = {'tag': tag, 'episode': k, 'prefix_ended': False, 'tau': tau, 'swap_xy': swap_xy, **r, 'steps': r['steps'] + t}
     if capture and obs_c is not None:

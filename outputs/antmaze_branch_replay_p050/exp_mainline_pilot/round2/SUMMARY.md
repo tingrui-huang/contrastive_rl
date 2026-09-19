@@ -120,6 +120,21 @@ agent's mode, mean nats):
 
 ## Reading
 
+**Correction (2026-09-19, after the user's review; see `../diag_replay/SUMMARY.md`).**
+Round 2 restarted the critic and the actor's Adam state by design, so the
+practical loss CF2 - CF1 is the restart plus the continuation, not the
+regenerated futures; the within-round comparison CF2 - CFold2 (same restart
+in both arms) stands.  The full-state resumption control (same futures,
+everything carried, +30k updates) does not return to the CF1 level either:
+deaths -> 0.00-0.03, timeouts 0.48-0.86, success 0.163 / 0.500 / 0.140 --
+the process was still moving at 30k.  The statements below that "the actor's
+detour rate has an equilibrium at 0.12-0.21" and that "the 0.50 of round-1
+seed 2 was a transient" are withdrawn: continued training raises the route
+share where walking survives (seed 1: 0.78) and removes walking where it
+does not (seeds 0 / 2: 68-71 % no route).  The training replay shows the
+30k evaluations are single draws from an unconverged process whose
+replicate-to-replicate spread equals the seed spread.
+
 - The improved agent as the continuation policy does not create the missing
   futures: the query is the logged torque, and one logged shortcut torque is
   enough to keep every continuation agent on the shortcut.  The only detour

@@ -1,0 +1,4825 @@
+{
+ "n_mc": 64,
+ "lambdas": [
+  0.0,
+  0.25,
+  0.5,
+  0.75,
+  1.0
+ ],
+ "bc": 0.05,
+ "per_actor": {
+  "CF_s0": {
+   "composition": {
+    "rows_drawn": 49152,
+    "region_share": {
+     "detour_legs": 0.0443115234375,
+     "shortcut_corridor": 0.87738037109375,
+     "start": 0.07830810546875
+    },
+    "route_share": {
+     "detour": 0.049235026041666664,
+     "shortcut": 0.9507649739583334
+    },
+    "goal_region_share_all_rows": {
+     "corridor_after_hazard_2": 0.2768758138020833,
+     "corridor_before_hazard_1": 0.06315104166666667,
+     "detour_legs": 0.041056315104166664,
+     "goal_area": 0.27593994140625,
+     "hazard_corridor": 0.3391316731770833,
+     "start": 0.00384521484375
+    },
+    "start_rows_analysed": 3849,
+    "start_rows_goal_region_share": {
+     "corridor_after_hazard_2": 0.1452325279293323,
+     "corridor_before_hazard_1": 0.26396466614705116,
+     "detour_legs": 0.041049623278773706,
+     "goal_area": 0.0753442452585087,
+     "hazard_corridor": 0.4253052740971681,
+     "start": 0.049103663289166016
+    },
+    "start_rows_goal_offset_quantiles": {
+     "0.1": 22.0,
+     "0.25": 56.0,
+     "0.5": 118.0,
+     "0.75": 182.0,
+     "0.9": 226.20000000000027
+    },
+    "start_rows_route_share": {
+     "detour": 0.04650558586645882,
+     "shortcut": 0.9534944141335412
+    }
+   },
+   "pairing": {
+    "real_relabeled_goal": {
+     "all_start_rows": {
+      "n": 3849,
+      "E_f": -7.418717384338379,
+      "f_mode": -7.393566131591797,
+      "f_logged": -7.597733020782471,
+      "f_best_detour": -7.680828094482422,
+      "signal_mean (best detour - E_f)": -0.2621113359928131,
+      "P_signal_positive": 0.4232268121590023,
+      "P_best_detour_above_logged": 0.45700181865419587,
+      "grad_proj_toward_detour_mean": 0.07061652094125748,
+      "P_grad_proj_positive": 0.5726162639646661,
+      "delta_total_at_target_held_mean": 234.31716918945312,
+      "P_total_better_held": 0.0028578851649779164,
+      "delta_total_at_target_widen_mean": 1.6609530448913574,
+      "P_total_better_widen": 0.043907508443751624,
+      "total_path_held_mean": [
+       6.263498783111572,
+       20.840335845947266,
+       64.74508666992188,
+       137.99459838867188,
+       240.580810546875
+      ],
+      "total_path_widen_mean": [
+       6.263498783111572,
+       7.1009674072265625,
+       7.437526226043701,
+       7.6907453536987305,
+       7.9244608879089355
+      ],
+      "nll_logged_mean": -15.676555633544922
+     },
+     "shortcut_episode_rows": {
+      "n": 3670,
+      "E_f": -7.559534549713135,
+      "f_mode": -7.5457963943481445,
+      "f_logged": -7.64924955368042,
+      "f_best_detour": -7.83002233505249,
+      "signal_mean (best detour - E_f)": -0.27048778533935547,
+      "P_signal_positive": 0.41907356948228885,
+      "P_best_detour_above_logged": 0.4435967302452316,
+      "grad_proj_toward_detour_mean": 0.0811261534690857,
+      "P_grad_proj_positive": 0.5795640326975476,
+      "delta_total_at_target_held_mean": 245.6356201171875,
+      "P_total_better_held": 0.00027247956403269756,
+      "delta_total_at_target_widen_mean": 1.6763842105865479,
+      "P_total_better_widen": 0.041961852861035424,
+      "total_path_held_mean": [
+       6.377922058105469,
+       21.662107467651367,
+       67.68814086914062,
+       144.473388671875,
+       252.01376342773438
+      ],
+      "total_path_widen_mean": [
+       6.377922058105469,
+       7.253281116485596,
+       7.592726707458496,
+       7.8362579345703125,
+       8.054314613342285
+      ],
+      "nll_logged_mean": -16.065715789794922
+     },
+     "detour_episode_rows": {
+      "n": 179,
+      "E_f": -4.531563758850098,
+      "f_mode": -4.272421360015869,
+      "f_logged": -6.541489601135254,
+      "f_best_detour": -4.621934413909912,
+      "signal_mean (best detour - E_f)": -0.09037081897258759,
+      "P_signal_positive": 0.5083798882681564,
+      "P_best_detour_above_logged": 0.7318435754189944,
+      "grad_proj_toward_detour_mean": -0.14486035704612732,
+      "P_grad_proj_positive": 0.4301675977653631,
+      "delta_total_at_target_held_mean": 2.2573750019073486,
+      "P_total_better_held": 0.055865921787709494,
+      "delta_total_at_target_widen_mean": 1.3445724248886108,
+      "P_total_better_widen": 0.08379888268156424,
+      "total_path_held_mean": [
+       3.9174439907073975,
+       3.9916739463806152,
+       4.404150485992432,
+       5.160034656524658,
+       6.174818992614746
+      ],
+      "total_path_widen_mean": [
+       3.9174439907073975,
+       3.9780995845794678,
+       4.2554779052734375,
+       4.707388877868652,
+       5.262018203735352
+      ],
+      "nll_logged_mean": -7.697679042816162
+     },
+     "by_goal_region": {
+      "corridor_after_hazard_2": {
+       "n": 559,
+       "E_f": -9.240553855895996,
+       "f_mode": -9.215475082397461,
+       "f_logged": -9.452614784240723,
+       "f_best_detour": -9.526650428771973,
+       "signal_mean (best detour - E_f)": -0.2860962748527527,
+       "P_signal_positive": 0.4347048300536673,
+       "P_best_detour_above_logged": 0.4937388193202147,
+       "grad_proj_toward_detour_mean": 0.04661037027835846,
+       "P_grad_proj_positive": 0.5116279069767442,
+       "delta_total_at_target_held_mean": 230.71432495117188,
+       "P_total_better_held": 0.0017889087656529517,
+       "delta_total_at_target_widen_mean": 1.6725481748580933,
+       "P_total_better_widen": 0.1001788908765653,
+       "total_path_held_mean": [
+        8.00146770477295,
+        22.40159034729004,
+        65.61307525634766,
+        137.75575256347656,
+        238.7156982421875
+       ],
+       "total_path_widen_mean": [
+        8.00146770477295,
+        8.828540802001953,
+        9.165655136108398,
+        9.43190860748291,
+        9.674010276794434
+       ],
+       "nll_logged_mean": -15.539369583129883
+      },
+      "corridor_before_hazard_1": {
+       "n": 1016,
+       "E_f": -6.31015682220459,
+       "f_mode": -6.3057990074157715,
+       "f_logged": -6.307248115539551,
+       "f_best_detour": -6.258398532867432,
+       "signal_mean (best detour - E_f)": 0.0517585352063179,
+       "P_signal_positive": 0.5246062992125984,
+       "P_best_detour_above_logged": 0.5246062992125984,
+       "grad_proj_toward_detour_mean": 0.20965206623077393,
+       "P_grad_proj_positive": 0.6968503937007874,
+       "delta_total_at_target_held_mean": 281.8529052734375,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.423577904701233,
+       "P_total_better_widen": 0.0344488188976378,
+       "total_path_held_mean": [
+        5.181774616241455,
+        22.702417373657227,
+        75.50220489501953,
+        163.58323669433594,
+        287.0348205566406
+       ],
+       "total_path_widen_mean": [
+        5.181774616241455,
+        6.030922889709473,
+        6.275834560394287,
+        6.438421249389648,
+        6.605353355407715
+       ],
+       "nll_logged_mean": -16.270681381225586
+      },
+      "detour_legs": null,
+      "goal_area": {
+       "n": 285,
+       "E_f": -10.210925102233887,
+       "f_mode": -10.181957244873047,
+       "f_logged": -10.414896011352539,
+       "f_best_detour": -10.266207695007324,
+       "signal_mean (best detour - E_f)": -0.055281709879636765,
+       "P_signal_positive": 0.5087719298245614,
+       "P_best_detour_above_logged": 0.5508771929824562,
+       "grad_proj_toward_detour_mean": 0.05143393948674202,
+       "P_grad_proj_positive": 0.5368421052631579,
+       "delta_total_at_target_held_mean": 206.8488006591797,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.5528444051742554,
+       "P_total_better_widen": 0.11228070175438597,
+       "total_path_held_mean": [
+        8.95602035522461,
+        21.89490509033203,
+        60.6165657043457,
+        125.2496566772461,
+        215.80474853515625
+       ],
+       "total_path_widen_mean": [
+        8.95602035522461,
+        9.838945388793945,
+        10.131454467773438,
+        10.321229934692383,
+        10.508861541748047
+       ],
+       "nll_logged_mean": -14.832829475402832
+      },
+      "hazard_corridor": {
+       "n": 1637,
+       "E_f": -7.628232002258301,
+       "f_mode": -7.615187644958496,
+       "f_logged": -7.719024181365967,
+       "f_best_detour": -8.134172439575195,
+       "signal_mean (best detour - E_f)": -0.5059404969215393,
+       "P_signal_positive": 0.3323152107513745,
+       "P_best_detour_above_logged": 0.35858277336591327,
+       "grad_proj_toward_detour_mean": 0.016127316281199455,
+       "P_grad_proj_positive": 0.535125229077581,
+       "delta_total_at_target_held_mean": 246.5309295654297,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.8645380735397339,
+       "P_total_better_widen": 0.015271838729383017,
+       "total_path_held_mean": [
+        6.425302028656006,
+        21.738508224487305,
+        67.94252014160156,
+        145.03128051757812,
+        252.9563751220703
+       ],
+       "total_path_widen_mean": [
+        6.425302028656006,
+        7.33952522277832,
+        7.745934009552002,
+        8.043254852294922,
+        8.28984260559082
+       ],
+       "nll_logged_mean": -16.42606544494629
+      },
+      "start": {
+       "n": 173,
+       "E_f": -4.447245121002197,
+       "f_mode": -4.43358039855957,
+       "f_logged": -4.487185955047607,
+       "f_best_detour": -4.686373233795166,
+       "signal_mean (best detour - E_f)": -0.2391280233860016,
+       "P_signal_positive": 0.42196531791907516,
+       "P_best_detour_above_logged": 0.43352601156069365,
+       "grad_proj_toward_detour_mean": 0.10180455446243286,
+       "P_grad_proj_positive": 0.6011560693641619,
+       "delta_total_at_target_held_mean": 136.57716369628906,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.5965954065322876,
+       "P_total_better_widen": 0.03468208092485549,
+       "total_path_held_mean": [
+        3.461148500442505,
+        12.057140350341797,
+        37.74400329589844,
+        80.34051513671875,
+        140.03829956054688
+       ],
+       "total_path_widen_mean": [
+        3.461148500442505,
+        4.266423225402832,
+        4.612074851989746,
+        4.837334156036377,
+        5.057741641998291
+       ],
+       "nll_logged_mean": -15.183982849121094
+      }
+     },
+     "by_goal_offset": {
+      "m in [1, 10)": {
+       "n": 153,
+       "E_f": -4.5451860427856445,
+       "f_mode": -4.528390884399414,
+       "f_logged": -4.582566738128662,
+       "f_best_detour": -4.796630859375,
+       "signal_mean (best detour - E_f)": -0.2514449656009674,
+       "P_signal_positive": 0.41830065359477125,
+       "P_best_detour_above_logged": 0.40522875816993464,
+       "grad_proj_toward_detour_mean": 0.08110591024160385,
+       "P_grad_proj_positive": 0.5686274509803921,
+       "delta_total_at_target_held_mean": 199.3592529296875,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.6381444931030273,
+       "P_total_better_widen": 0.032679738562091505,
+       "total_path_held_mean": [
+        3.5388569831848145,
+        16.050457000732422,
+        53.48495101928711,
+        115.7151107788086,
+        202.89810180664062
+       ],
+       "total_path_widen_mean": [
+        3.5388569831848145,
+        4.404188632965088,
+        4.740363597869873,
+        4.967754364013672,
+        5.177000522613525
+       ],
+       "nll_logged_mean": -15.476600646972656
+      },
+      "m in [10, 50)": {
+       "n": 678,
+       "E_f": -5.7976861000061035,
+       "f_mode": -5.793541431427002,
+       "f_logged": -5.799431324005127,
+       "f_best_detour": -5.787668228149414,
+       "signal_mean (best detour - E_f)": 0.010017674416303635,
+       "P_signal_positive": 0.49852507374631266,
+       "P_best_detour_above_logged": 0.504424778761062,
+       "grad_proj_toward_detour_mean": 0.20078246295452118,
+       "P_grad_proj_positive": 0.6769911504424779,
+       "delta_total_at_target_held_mean": 296.1494140625,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.4803332090377808,
+       "P_total_better_widen": 0.030973451327433628,
+       "total_path_held_mean": [
+        4.679099082946777,
+        23.112689971923828,
+        78.60801696777344,
+        171.14892578125,
+        300.8285217285156
+       ],
+       "total_path_widen_mean": [
+        4.679099082946777,
+        5.565749645233154,
+        5.824789524078369,
+        5.989749908447266,
+        6.159433364868164
+       ],
+       "nll_logged_mean": -16.58705711364746
+      },
+      "m in [50, 150)": {
+       "n": 1480,
+       "E_f": -7.303104400634766,
+       "f_mode": -7.295280933380127,
+       "f_logged": -7.349438667297363,
+       "f_best_detour": -7.629726886749268,
+       "signal_mean (best detour - E_f)": -0.3266223073005676,
+       "P_signal_positive": 0.3918918918918919,
+       "P_best_detour_above_logged": 0.40405405405405403,
+       "grad_proj_toward_detour_mean": 0.06917642802000046,
+       "P_grad_proj_positive": 0.5918918918918918,
+       "delta_total_at_target_held_mean": 255.69564819335938,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.7244820594787598,
+       "P_total_better_widen": 0.014864864864864866,
+       "total_path_held_mean": [
+        6.112034797668457,
+        21.988765716552734,
+        69.903076171875,
+        149.84605407714844,
+        261.8077392578125
+       ],
+       "total_path_widen_mean": [
+        6.112034797668457,
+        6.995656490325928,
+        7.349596977233887,
+        7.609498977661133,
+        7.836520195007324
+       ],
+       "nll_logged_mean": -16.531097412109375
+      },
+      "m in [150, 100000)": {
+       "n": 1359,
+       "E_f": -9.057140350341797,
+       "f_mode": -9.032519340515137,
+       "f_logged": -9.243878364562988,
+       "f_best_detour": -9.408581733703613,
+       "signal_mean (best detour - E_f)": -0.3514423072338104,
+       "P_signal_positive": 0.4091243561442237,
+       "P_best_detour_above_logged": 0.4606328182487123,
+       "grad_proj_toward_detour_mean": 0.034446027129888535,
+       "P_grad_proj_positive": 0.5187637969094923,
+       "delta_total_at_target_held_mean": 214.6886749267578,
+       "P_total_better_held": 0.0007358351729212656,
+       "delta_total_at_target_widen_mean": 1.7261184453964233,
+       "P_total_better_widen": 0.07799852832965416,
+       "total_path_held_mean": [
+        7.83464241027832,
+        21.214496612548828,
+        61.42698669433594,
+        128.55160522460938,
+        222.5234832763672
+       ],
+       "total_path_widen_mean": [
+        7.83464241027832,
+        8.696526527404785,
+        9.060648918151855,
+        9.327375411987305,
+        9.560765266418457
+       ],
+       "nll_logged_mean": -15.365126609802246
+      }
+     }
+    },
+    "task_goal_same_rows": {
+     "all_start_rows": {
+      "n": 3849,
+      "E_f": -10.470246315002441,
+      "f_mode": -10.431692123413086,
+      "f_logged": -10.719289779663086,
+      "f_best_detour": -10.300089836120605,
+      "signal_mean (best detour - E_f)": 0.17015613615512848,
+      "P_signal_positive": 0.5466354897375941,
+      "P_best_detour_above_logged": 0.5902831904390751,
+      "grad_proj_toward_detour_mean": 0.06427156925201416,
+      "P_grad_proj_positive": 0.5546895297479865,
+      "delta_total_at_target_held_mean": 165.12603759765625,
+      "P_total_better_held": 0.009353078721745909,
+      "delta_total_at_target_widen_mean": 1.2898913621902466,
+      "P_total_better_widen": 0.15250714471291243,
+      "total_path_held_mean": [
+       9.255593299865723,
+       19.535621643066406,
+       50.405494689941406,
+       101.98928833007812,
+       174.38160705566406
+      ],
+      "total_path_widen_mean": [
+       9.255593299865723,
+       10.017569541931152,
+       10.240086555480957,
+       10.380752563476562,
+       10.545479774475098
+      ],
+      "nll_logged_mean": -13.788963317871094
+     },
+     "shortcut_episode_rows": {
+      "n": 3670,
+      "E_f": -10.48961353302002,
+      "f_mode": -10.459269523620605,
+      "f_logged": -10.682722091674805,
+      "f_best_detour": -10.29730224609375,
+      "signal_mean (best detour - E_f)": 0.19231128692626953,
+      "P_signal_positive": 0.553133514986376,
+      "P_best_detour_above_logged": 0.5926430517711172,
+      "grad_proj_toward_detour_mean": 0.06695565581321716,
+      "P_grad_proj_positive": 0.5561307901907357,
+      "delta_total_at_target_held_mean": 173.08229064941406,
+      "P_total_better_held": 0.004632152588555858,
+      "delta_total_at_target_widen_mean": 1.3093136548995972,
+      "P_total_better_widen": 0.15231607629427793,
+      "total_path_held_mean": [
+       9.255220413208008,
+       20.029762268066406,
+       52.385711669921875,
+       106.45565032958984,
+       182.3374481201172
+      ],
+      "total_path_widen_mean": [
+       9.255220413208008,
+       10.049311637878418,
+       10.270432472229004,
+       10.404909133911133,
+       10.564537048339844
+      ],
+      "nll_logged_mean": -14.17302417755127
+     },
+     "detour_episode_rows": {
+      "n": 179,
+      "E_f": -10.073177337646484,
+      "f_mode": -9.866257667541504,
+      "f_logged": -11.469038963317871,
+      "f_best_detour": -10.357263565063477,
+      "signal_mean (best detour - E_f)": -0.28408634662628174,
+      "P_signal_positive": 0.4134078212290503,
+      "P_best_detour_above_logged": 0.5418994413407822,
+      "grad_proj_toward_detour_mean": 0.009240158833563328,
+      "P_grad_proj_positive": 0.5251396648044693,
+      "delta_total_at_target_held_mean": 2.0006165504455566,
+      "P_total_better_held": 0.10614525139664804,
+      "delta_total_at_target_widen_mean": 0.8916823863983154,
+      "P_total_better_widen": 0.1564245810055866,
+      "total_path_held_mean": [
+       9.263047218322754,
+       9.40455150604248,
+       9.805469512939453,
+       10.417390823364258,
+       11.263667106628418
+      ],
+      "total_path_widen_mean": [
+       9.263047218322754,
+       9.366660118103027,
+       9.618059158325195,
+       9.885446548461914,
+       10.154735565185547
+      ],
+      "nll_logged_mean": -5.914644718170166
+     },
+     "by_goal_region": {
+      "corridor_after_hazard_2": {
+       "n": 559,
+       "E_f": -10.521286964416504,
+       "f_mode": -10.494853019714355,
+       "f_logged": -10.735796928405762,
+       "f_best_detour": -10.3157320022583,
+       "signal_mean (best detour - E_f)": 0.20555542409420013,
+       "P_signal_positive": 0.5617173524150268,
+       "P_best_detour_above_logged": 0.592128801431127,
+       "grad_proj_toward_detour_mean": 0.1300179809331894,
+       "P_grad_proj_positive": 0.5992844364937389,
+       "delta_total_at_target_held_mean": 185.44078063964844,
+       "P_total_better_held": 0.0035778175313059034,
+       "delta_total_at_target_widen_mean": 1.2866970300674438,
+       "P_total_better_widen": 0.16100178890876565,
+       "total_path_held_mean": [
+        9.287971496582031,
+        20.888917922973633,
+        55.57646560668945,
+        113.4987564086914,
+        194.72874450683594
+       ],
+       "total_path_widen_mean": [
+        9.287971496582031,
+        10.065605163574219,
+        10.27448844909668,
+        10.415562629699707,
+        10.57466983795166
+       ],
+       "nll_logged_mean": -14.118391036987305
+      },
+      "corridor_before_hazard_1": {
+       "n": 1016,
+       "E_f": -10.436873435974121,
+       "f_mode": -10.405899047851562,
+       "f_logged": -10.616415023803711,
+       "f_best_detour": -10.283482551574707,
+       "signal_mean (best detour - E_f)": 0.1533902883529663,
+       "P_signal_positive": 0.5374015748031497,
+       "P_best_detour_above_logged": 0.577755905511811,
+       "grad_proj_toward_detour_mean": 0.06307248026132584,
+       "P_grad_proj_positive": 0.5561023622047244,
+       "delta_total_at_target_held_mean": 171.17926025390625,
+       "P_total_better_held": 0.004921259842519685,
+       "delta_total_at_target_widen_mean": 1.3496187925338745,
+       "P_total_better_widen": 0.14763779527559054,
+       "total_path_held_mean": [
+        9.214134216308594,
+        19.89832305908203,
+        51.914581298828125,
+        105.37464904785156,
+        180.39341735839844
+       ],
+       "total_path_widen_mean": [
+        9.214134216308594,
+        10.032448768615723,
+        10.275188446044922,
+        10.409100532531738,
+        10.56375503540039
+       ],
+       "nll_logged_mean": -13.98997688293457
+      },
+      "detour_legs": null,
+      "goal_area": {
+       "n": 285,
+       "E_f": -10.493998527526855,
+       "f_mode": -10.462926864624023,
+       "f_logged": -10.703812599182129,
+       "f_best_detour": -10.376953125,
+       "signal_mean (best detour - E_f)": 0.11704430729150772,
+       "P_signal_positive": 0.5543859649122806,
+       "P_best_detour_above_logged": 0.6035087719298246,
+       "grad_proj_toward_detour_mean": 0.05852235481142998,
+       "P_grad_proj_positive": 0.5578947368421052,
+       "delta_total_at_target_held_mean": 173.2611846923828,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.3933807611465454,
+       "P_total_better_widen": 0.12982456140350876,
+       "total_path_held_mean": [
+        9.257272720336914,
+        20.10878562927246,
+        52.510066986083984,
+        106.61698150634766,
+        182.51841735839844
+       ],
+       "total_path_widen_mean": [
+        9.257272720336914,
+        10.104622840881348,
+        10.35053539276123,
+        10.493935585021973,
+        10.650653839111328
+       ],
+       "nll_logged_mean": -14.200709342956543
+      },
+      "hazard_corridor": {
+       "n": 1637,
+       "E_f": -10.511034965515137,
+       "f_mode": -10.481769561767578,
+       "f_logged": -10.693374633789062,
+       "f_best_detour": -10.279097557067871,
+       "signal_mean (best detour - E_f)": 0.2319372147321701,
+       "P_signal_positive": 0.5620036652412951,
+       "P_best_detour_above_logged": 0.6004886988393403,
+       "grad_proj_toward_detour_mean": 0.05254000797867775,
+       "P_grad_proj_positive": 0.5455100794135614,
+       "delta_total_at_target_held_mean": 177.7112274169922,
+       "P_total_better_held": 0.005497861942577886,
+       "delta_total_at_target_widen_mean": 1.2808645963668823,
+       "P_total_better_widen": 0.15516188149053145,
+       "total_path_held_mean": [
+        9.264016151428223,
+        20.27014923095703,
+        53.47042465209961,
+        109.00945281982422,
+        186.97523498535156
+       ],
+       "total_path_widen_mean": [
+        9.264016151428223,
+        10.049827575683594,
+        10.25534725189209,
+        10.384410858154297,
+        10.54488468170166
+       ],
+       "nll_logged_mean": -14.402297019958496
+      },
+      "start": {
+       "n": 173,
+       "E_f": -10.48706340789795,
+       "f_mode": -10.43880558013916,
+       "f_logged": -10.76508617401123,
+       "f_best_detour": -10.359932899475098,
+       "signal_mean (best detour - E_f)": 0.12713047862052917,
+       "P_signal_positive": 0.5317919075144508,
+       "P_best_detour_above_logged": 0.5895953757225434,
+       "grad_proj_toward_detour_mean": 0.036293186247348785,
+       "P_grad_proj_positive": 0.5144508670520231,
+       "delta_total_at_target_held_mean": 100.22947692871094,
+       "P_total_better_held": 0.005780346820809248,
+       "delta_total_at_target_widen_mean": 1.2763913869857788,
+       "P_total_better_widen": 0.16184971098265896,
+       "total_path_held_mean": [
+        9.304057121276855,
+        15.619791030883789,
+        34.37430953979492,
+        65.61864471435547,
+        109.53355407714844
+       ],
+       "total_path_widen_mean": [
+        9.304057121276855,
+        9.999238967895508,
+        10.23978042602539,
+        10.3932466506958,
+        10.580448150634766
+       ],
+       "nll_logged_mean": -13.209478378295898
+      }
+     },
+     "by_goal_offset": {
+      "m in [1, 10)": {
+       "n": 153,
+       "E_f": -10.52054500579834,
+       "f_mode": -10.48677921295166,
+       "f_logged": -10.733932495117188,
+       "f_best_detour": -10.415755271911621,
+       "signal_mean (best detour - E_f)": 0.10479006916284561,
+       "P_signal_positive": 0.5228758169934641,
+       "P_best_detour_above_logged": 0.5620915032679739,
+       "grad_proj_toward_detour_mean": 0.009839379228651524,
+       "P_grad_proj_positive": 0.5032679738562091,
+       "delta_total_at_target_held_mean": 154.2880096435547,
+       "P_total_better_held": 0.006535947712418301,
+       "delta_total_at_target_widen_mean": 1.3641023635864258,
+       "P_total_better_widen": 0.1503267973856209,
+       "total_path_held_mean": [
+        9.301762580871582,
+        18.996198654174805,
+        47.88569259643555,
+        96.02935028076172,
+        163.58978271484375
+       ],
+       "total_path_widen_mean": [
+        9.301762580871582,
+        10.088250160217285,
+        10.34699821472168,
+        10.497296333312988,
+        10.665867805480957
+       ],
+       "nll_logged_mean": -13.838101387023926
+      },
+      "m in [10, 50)": {
+       "n": 678,
+       "E_f": -10.437285423278809,
+       "f_mode": -10.408026695251465,
+       "f_logged": -10.611656188964844,
+       "f_best_detour": -10.368290901184082,
+       "signal_mean (best detour - E_f)": 0.06899452209472656,
+       "P_signal_positive": 0.528023598820059,
+       "P_best_detour_above_logged": 0.5678466076696165,
+       "grad_proj_toward_detour_mean": 0.06085008755326271,
+       "P_grad_proj_positive": 0.56047197640118,
+       "delta_total_at_target_held_mean": 182.0079345703125,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.434880018234253,
+       "P_total_better_widen": 0.12389380530973451,
+       "total_path_held_mean": [
+        9.192496299743652,
+        20.572492599487305,
+        54.63563537597656,
+        111.48519134521484,
+        191.2003936767578
+       ],
+       "total_path_widen_mean": [
+        9.192496299743652,
+        10.041105270385742,
+        10.305107116699219,
+        10.462577819824219,
+        10.62736988067627
+       ],
+       "nll_logged_mean": -14.444819450378418
+      },
+      "m in [50, 150)": {
+       "n": 1480,
+       "E_f": -10.479209899902344,
+       "f_mode": -10.45037841796875,
+       "f_logged": -10.656439781188965,
+       "f_best_detour": -10.247030258178711,
+       "signal_mean (best detour - E_f)": 0.23217971622943878,
+       "P_signal_positive": 0.5560810810810811,
+       "P_best_detour_above_logged": 0.5993243243243244,
+       "grad_proj_toward_detour_mean": 0.055729515850543976,
+       "P_grad_proj_positive": 0.552027027027027,
+       "delta_total_at_target_held_mean": 178.55380249023438,
+       "P_total_better_held": 0.008108108108108109,
+       "delta_total_at_target_widen_mean": 1.27995765209198,
+       "P_total_better_widen": 0.15608108108108107,
+       "total_path_held_mean": [
+        9.238420486450195,
+        20.293554306030273,
+        53.65599060058594,
+        109.46027374267578,
+        187.79214477539062
+       ],
+       "total_path_widen_mean": [
+        9.238420486450195,
+        10.018669128417969,
+        10.228621482849121,
+        10.357266426086426,
+        10.518377304077148
+       ],
+       "nll_logged_mean": -14.311145782470703
+      },
+      "m in [150, 100000)": {
+       "n": 1359,
+       "E_f": -10.523566246032715,
+       "f_mode": -10.491422653198242,
+       "f_logged": -10.741031646728516,
+       "f_best_detour": -10.30329704284668,
+       "signal_mean (best detour - E_f)": 0.22026878595352173,
+       "P_signal_positive": 0.5658572479764533,
+       "P_best_detour_above_logged": 0.601177336276674,
+       "grad_proj_toward_detour_mean": 0.08865769952535629,
+       "P_grad_proj_positive": 0.5643855776306107,
+       "delta_total_at_target_held_mean": 164.7865447998047,
+       "P_total_better_held": 0.0029433406916850625,
+       "delta_total_at_target_widen_mean": 1.272470474243164,
+       "P_total_better_widen": 0.1626195732155997,
+       "total_path_held_mean": [
+        9.299562454223633,
+        19.587970733642578,
+        50.38656234741211,
+        101.84844970703125,
+        174.086181640625
+       ],
+       "total_path_widen_mean": [
+        9.299562454223633,
+        10.082344055175781,
+        10.289999961853027,
+        10.41762638092041,
+        10.572044372558594
+       ],
+       "nll_logged_mean": -13.924715042114258
+      }
+     }
+    }
+   }
+  },
+  "O_s0": {
+   "composition": {
+    "rows_drawn": 49152,
+    "region_share": {
+     "detour_legs": 0.0443115234375,
+     "shortcut_corridor": 0.87738037109375,
+     "start": 0.07830810546875
+    },
+    "route_share": {
+     "detour": 0.049235026041666664,
+     "shortcut": 0.9507649739583334
+    },
+    "goal_region_share_all_rows": {
+     "corridor_after_hazard_2": 0.2768758138020833,
+     "corridor_before_hazard_1": 0.06315104166666667,
+     "detour_legs": 0.041056315104166664,
+     "goal_area": 0.27593994140625,
+     "hazard_corridor": 0.3391316731770833,
+     "start": 0.00384521484375
+    },
+    "start_rows_analysed": 3849,
+    "start_rows_goal_region_share": {
+     "corridor_after_hazard_2": 0.1452325279293323,
+     "corridor_before_hazard_1": 0.26396466614705116,
+     "detour_legs": 0.041049623278773706,
+     "goal_area": 0.0753442452585087,
+     "hazard_corridor": 0.4253052740971681,
+     "start": 0.049103663289166016
+    },
+    "start_rows_goal_offset_quantiles": {
+     "0.1": 22.0,
+     "0.25": 56.0,
+     "0.5": 118.0,
+     "0.75": 182.0,
+     "0.9": 226.20000000000027
+    },
+    "start_rows_route_share": {
+     "detour": 0.04650558586645882,
+     "shortcut": 0.9534944141335412
+    }
+   },
+   "pairing": {
+    "real_relabeled_goal": {
+     "all_start_rows": {
+      "n": 3849,
+      "E_f": -6.377854824066162,
+      "f_mode": -6.364630699157715,
+      "f_logged": -6.419321060180664,
+      "f_best_detour": -7.022268772125244,
+      "signal_mean (best detour - E_f)": -0.6444136500358582,
+      "P_signal_positive": 0.1561444531047025,
+      "P_best_detour_above_logged": 0.17277214861002857,
+      "grad_proj_toward_detour_mean": 0.007569120731204748,
+      "P_grad_proj_positive": 0.513380098726942,
+      "delta_total_at_target_held_mean": 325.0449523925781,
+      "P_total_better_held": 0.0005196154845414394,
+      "delta_total_at_target_widen_mean": 1.9596177339553833,
+      "P_total_better_widen": 0.005455962587685113,
+      "total_path_held_mean": [
+       5.176084041595459,
+       25.489368438720703,
+       86.51748657226562,
+       188.10342407226562,
+       330.2208251953125
+      ],
+      "total_path_widen_mean": [
+       5.176084041595459,
+       6.106498718261719,
+       6.547048091888428,
+       6.876504898071289,
+       7.135711193084717
+      ],
+      "nll_logged_mean": -17.67204475402832
+     },
+     "shortcut_episode_rows": {
+      "n": 3670,
+      "E_f": -6.537670135498047,
+      "f_mode": -6.535861968994141,
+      "f_logged": -6.5410542488098145,
+      "f_best_detour": -7.2064290046691895,
+      "signal_mean (best detour - E_f)": -0.6687586903572083,
+      "P_signal_positive": 0.1425068119891008,
+      "P_best_detour_above_logged": 0.1427792915531335,
+      "grad_proj_toward_detour_mean": 0.01517430692911148,
+      "P_grad_proj_positive": 0.5215258855585831,
+      "delta_total_at_target_held_mean": 340.77996826171875,
+      "P_total_better_held": 0.0,
+      "delta_total_at_target_widen_mean": 2.009019374847412,
+      "P_total_better_widen": 0.003542234332425068,
+      "total_path_held_mean": [
+       5.318202972412109,
+       26.61590003967285,
+       90.59935760498047,
+       197.102783203125,
+       346.09796142578125
+      ],
+      "total_path_widen_mean": [
+       5.318202972412109,
+       6.2892560958862305,
+       6.741199970245361,
+       7.072324275970459,
+       7.327229022979736
+      ],
+      "nll_logged_mean": -17.854833602905273
+     },
+     "detour_episode_rows": {
+      "n": 179,
+      "E_f": -3.101203680038452,
+      "f_mode": -2.8539178371429443,
+      "f_logged": -3.923447608947754,
+      "f_best_detour": -3.2464771270751953,
+      "signal_mean (best detour - E_f)": -0.1452731341123581,
+      "P_signal_positive": 0.43575418994413406,
+      "P_best_detour_above_logged": 0.7877094972067039,
+      "grad_proj_toward_detour_mean": -0.14835841953754425,
+      "P_grad_proj_positive": 0.3463687150837989,
+      "delta_total_at_target_held_mean": 2.432892322540283,
+      "P_total_better_held": 0.0111731843575419,
+      "delta_total_at_target_widen_mean": 0.9467460513114929,
+      "P_total_better_widen": 0.0446927374301676,
+      "total_path_held_mean": [
+       2.2622666358947754,
+       2.392167806625366,
+       2.8279731273651123,
+       3.5906879901885986,
+       4.695159912109375
+      ],
+      "total_path_widen_mean": [
+       2.2622666358947754,
+       2.3594894409179688,
+       2.5664145946502686,
+       2.861671209335327,
+       3.2090115547180176
+      ],
+      "nll_logged_mean": -13.924347877502441
+     },
+     "by_goal_region": {
+      "corridor_after_hazard_2": {
+       "n": 559,
+       "E_f": -7.6075029373168945,
+       "f_mode": -7.605528354644775,
+       "f_logged": -7.608882427215576,
+       "f_best_detour": -8.400190353393555,
+       "signal_mean (best detour - E_f)": -0.7926865220069885,
+       "P_signal_positive": 0.01967799642218247,
+       "P_best_detour_above_logged": 0.01967799642218247,
+       "grad_proj_toward_detour_mean": -0.00029326387448236346,
+       "P_grad_proj_positive": 0.4543828264758497,
+       "delta_total_at_target_held_mean": 338.7853698730469,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 2.1262972354888916,
+       "P_total_better_widen": 0.0,
+       "total_path_held_mean": [
+        6.326791763305664,
+        27.546924591064453,
+        91.18545532226562,
+        197.0563507080078,
+        345.11212158203125
+       ],
+       "total_path_widen_mean": [
+        6.326791763305664,
+        7.306716442108154,
+        7.798221111297607,
+        8.167051315307617,
+        8.453081130981445
+       ],
+       "nll_logged_mean": -18.010032653808594
+      },
+      "corridor_before_hazard_1": {
+       "n": 1016,
+       "E_f": -5.543601989746094,
+       "f_mode": -5.5422844886779785,
+       "f_logged": -5.545402526855469,
+       "f_best_detour": -6.365908145904541,
+       "signal_mean (best detour - E_f)": -0.8223061561584473,
+       "P_signal_positive": 0.11909448818897637,
+       "P_best_detour_above_logged": 0.11811023622047244,
+       "grad_proj_toward_detour_mean": 0.01585979387164116,
+       "P_grad_proj_positive": 0.5374015748031497,
+       "delta_total_at_target_held_mean": 368.8539733886719,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 2.122091054916382,
+       "P_total_better_widen": 0.0,
+       "total_path_held_mean": [
+        4.381840705871582,
+        27.49774932861328,
+        96.76482391357422,
+        212.02304077148438,
+        373.23565673828125
+       ],
+       "total_path_widen_mean": [
+        4.381840705871582,
+        5.394542694091797,
+        5.871103286743164,
+        6.2302656173706055,
+        6.503933906555176
+       ],
+       "nll_logged_mean": -17.692970275878906
+      },
+      "detour_legs": null,
+      "goal_area": {
+       "n": 285,
+       "E_f": -8.301969528198242,
+       "f_mode": -8.301559448242188,
+       "f_logged": -8.307908058166504,
+       "f_best_detour": -8.410605430603027,
+       "signal_mean (best detour - E_f)": -0.10863564163446426,
+       "P_signal_positive": 0.4,
+       "P_best_detour_above_logged": 0.3929824561403509,
+       "grad_proj_toward_detour_mean": 0.03957008197903633,
+       "P_grad_proj_positive": 0.6666666666666666,
+       "delta_total_at_target_held_mean": 318.16851806640625,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.5419833660125732,
+       "P_total_better_widen": 0.0,
+       "total_path_held_mean": [
+        7.007894992828369,
+        26.823225021362305,
+        86.46144104003906,
+        185.91371154785156,
+        325.17645263671875
+       ],
+       "total_path_widen_mean": [
+        7.007894992828369,
+        7.884322643280029,
+        8.176718711853027,
+        8.379754066467285,
+        8.549880027770996
+       ],
+       "nll_logged_mean": -17.593591690063477
+      },
+      "hazard_corridor": {
+       "n": 1637,
+       "E_f": -6.693723678588867,
+       "f_mode": -6.6919264793396,
+       "f_logged": -6.694929599761963,
+       "f_best_detour": -7.4017839431762695,
+       "signal_mean (best detour - E_f)": -0.7080597281455994,
+       "P_signal_positive": 0.1178985949908369,
+       "P_best_detour_above_logged": 0.11850946854001222,
+       "grad_proj_toward_detour_mean": 0.0038853040896356106,
+       "P_grad_proj_positive": 0.4954184483811851,
+       "delta_total_at_target_held_mean": 342.6026306152344,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 2.0536949634552,
+       "P_total_better_widen": 0.0,
+       "total_path_held_mean": [
+        5.457277774810791,
+        26.82023811340332,
+        91.15107727050781,
+        198.24095153808594,
+        348.05975341796875
+       ],
+       "total_path_widen_mean": [
+        5.457277774810791,
+        6.440367221832275,
+        6.914249420166016,
+        7.254575729370117,
+        7.510970592498779
+       ],
+       "nll_logged_mean": -18.039169311523438
+      },
+      "start": {
+       "n": 173,
+       "E_f": -4.535650253295898,
+       "f_mode": -4.5290913581848145,
+       "f_logged": -4.571228981018066,
+       "f_best_detour": -4.453075408935547,
+       "signal_mean (best detour - E_f)": 0.08257447183132172,
+       "P_signal_positive": 0.48554913294797686,
+       "P_best_detour_above_logged": 0.5028901734104047,
+       "grad_proj_toward_detour_mean": 0.12775936722755432,
+       "P_grad_proj_positive": 0.653179190751445,
+       "delta_total_at_target_held_mean": 202.3540496826172,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.3126747608184814,
+       "P_total_better_widen": 0.07514450867052024,
+       "total_path_held_mean": [
+        3.458908796310425,
+        16.15447235107422,
+        54.094417572021484,
+        117.29226684570312,
+        205.8129119873047
+       ],
+       "total_path_widen_mean": [
+        3.458908796310425,
+        4.198520183563232,
+        4.433365821838379,
+        4.601715564727783,
+        4.771581649780273
+       ],
+       "nll_logged_mean": -16.990053176879883
+      }
+     },
+     "by_goal_offset": {
+      "m in [1, 10)": {
+       "n": 153,
+       "E_f": -4.732769966125488,
+       "f_mode": -4.727010250091553,
+       "f_logged": -4.769799709320068,
+       "f_best_detour": -4.489230632781982,
+       "signal_mean (best detour - E_f)": 0.24353909492492676,
+       "P_signal_positive": 0.5163398692810458,
+       "P_best_detour_above_logged": 0.5228758169934641,
+       "grad_proj_toward_detour_mean": 0.1395023614168167,
+       "P_grad_proj_positive": 0.6797385620915033,
+       "delta_total_at_target_held_mean": 268.7798156738281,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.2258809804916382,
+       "P_total_better_widen": 0.0784313725490196,
+       "total_path_held_mean": [
+        3.655308961868286,
+        20.571630477905273,
+        70.97303009033203,
+        154.89744567871094,
+        272.43505859375
+       ],
+       "total_path_widen_mean": [
+        3.655308961868286,
+        4.425957679748535,
+        4.609714984893799,
+        4.737714767456055,
+        4.881187915802002
+       ],
+       "nll_logged_mean": -16.795618057250977
+      },
+      "m in [10, 50)": {
+       "n": 678,
+       "E_f": -5.2784318923950195,
+       "f_mode": -5.2770256996154785,
+       "f_logged": -5.282642841339111,
+       "f_best_detour": -5.998424530029297,
+       "signal_mean (best detour - E_f)": -0.7199930548667908,
+       "P_signal_positive": 0.13421828908554573,
+       "P_best_detour_above_logged": 0.13569321533923304,
+       "grad_proj_toward_detour_mean": 0.018944915384054184,
+       "P_grad_proj_positive": 0.5294985250737463,
+       "delta_total_at_target_held_mean": 390.89178466796875,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 2.0566859245300293,
+       "P_total_better_widen": 0.0014749262536873156,
+       "total_path_held_mean": [
+        4.112007141113281,
+        28.584871292114258,
+        101.95414733886719,
+        224.10794067382812,
+        395.00390625
+       ],
+       "total_path_widen_mean": [
+        4.112007141113281,
+        5.135462760925293,
+        5.577024936676025,
+        5.911166191101074,
+        6.168698310852051
+       ],
+       "nll_logged_mean": -18.052682876586914
+      },
+      "m in [50, 150)": {
+       "n": 1480,
+       "E_f": -6.391541004180908,
+       "f_mode": -6.390347003936768,
+       "f_logged": -6.391687870025635,
+       "f_best_detour": -7.124473571777344,
+       "signal_mean (best detour - E_f)": -0.7329325675964355,
+       "P_signal_positive": 0.13175675675675674,
+       "P_best_detour_above_logged": 0.13175675675675674,
+       "grad_proj_toward_detour_mean": 0.0020737757440656424,
+       "P_grad_proj_positive": 0.504054054054054,
+       "delta_total_at_target_held_mean": 346.77801513671875,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 2.057154417037964,
+       "P_total_better_widen": 0.0,
+       "total_path_held_mean": [
+        5.172001838684082,
+        26.85057258605957,
+        91.97297668457031,
+        200.34832763671875,
+        351.9497985839844
+       ],
+       "total_path_widen_mean": [
+        5.172001838684082,
+        6.158913612365723,
+        6.627980709075928,
+        6.970332145690918,
+        7.229152202606201
+       ],
+       "nll_logged_mean": -18.005083084106445
+      },
+      "m in [150, 100000)": {
+       "n": 1359,
+       "E_f": -7.5282392501831055,
+       "f_mode": -7.526005744934082,
+       "f_logged": -7.530949592590332,
+       "f_best_detour": -8.204258918762207,
+       "signal_mean (best detour - E_f)": -0.6760193705558777,
+       "P_signal_positive": 0.11626195732155997,
+       "P_best_detour_above_logged": 0.11552612214863871,
+       "grad_proj_toward_detour_mean": 0.013562915846705437,
+       "P_grad_proj_positive": 0.5187637969094923,
+       "delta_total_at_target_held_mean": 317.35321044921875,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 2.0209858417510986,
+       "P_total_better_widen": 0.0,
+       "total_path_held_mean": [
+        6.266421318054199,
+        26.0585994720459,
+        85.64833068847656,
+        184.8470916748047,
+        323.61956787109375
+       ],
+       "total_path_widen_mean": [
+        6.266421318054199,
+        7.216592311859131,
+        7.68527889251709,
+        8.025490760803223,
+        8.287405967712402
+       ],
+       "nll_logged_mean": -17.711750030517578
+      }
+     }
+    },
+    "task_goal_same_rows": {
+     "all_start_rows": {
+      "n": 3849,
+      "E_f": -8.923932075500488,
+      "f_mode": -8.92509937286377,
+      "f_logged": -8.940083503723145,
+      "f_best_detour": -8.749275207519531,
+      "signal_mean (best detour - E_f)": 0.17465603351593018,
+      "P_signal_positive": 0.6058716549753183,
+      "P_best_detour_above_logged": 0.6089893478825669,
+      "grad_proj_toward_detour_mean": 0.07646331936120987,
+      "P_grad_proj_positive": 0.7422707196674461,
+      "delta_total_at_target_held_mean": 313.9993896484375,
+      "P_total_better_held": 0.005715770329955833,
+      "delta_total_at_target_widen_mean": 1.2513645887374878,
+      "P_total_better_widen": 0.03351519875292284,
+      "total_path_held_mean": [
+       7.656774520874023,
+       27.19638442993164,
+       86.01012420654297,
+       184.14398193359375,
+       321.6556396484375
+      ],
+      "total_path_widen_mean": [
+       7.656774520874023,
+       8.469200134277344,
+       8.671480178833008,
+       8.793802261352539,
+       8.908147811889648
+      ],
+      "nll_logged_mean": -16.43191909790039
+     },
+     "shortcut_episode_rows": {
+      "n": 3670,
+      "E_f": -8.711682319641113,
+      "f_mode": -8.710806846618652,
+      "f_logged": -8.722667694091797,
+      "f_best_detour": -8.512957572937012,
+      "signal_mean (best detour - E_f)": 0.19872404634952545,
+      "P_signal_positive": 0.615258855585831,
+      "P_best_detour_above_logged": 0.6179836512261581,
+      "grad_proj_toward_detour_mean": 0.06228738650679588,
+      "P_grad_proj_positive": 0.746866485013624,
+      "delta_total_at_target_held_mean": 329.1802062988281,
+      "P_total_better_held": 0.0,
+      "delta_total_at_target_widen_mean": 1.2946105003356934,
+      "P_total_better_widen": 0.0220708446866485,
+      "total_path_held_mean": [
+       7.409142971038818,
+       27.883880615234375,
+       89.53095245361328,
+       192.41668701171875,
+       336.58880615234375
+      ],
+      "total_path_widen_mean": [
+       7.409142971038818,
+       8.258844375610352,
+       8.457500457763672,
+       8.585293769836426,
+       8.703763008117676
+      ],
+      "nll_logged_mean": -17.342924118041992
+     },
+     "detour_episode_rows": {
+      "n": 179,
+      "E_f": -13.275635719299316,
+      "f_mode": -13.318683624267578,
+      "f_logged": -13.397717475891113,
+      "f_best_detour": -13.594441413879395,
+      "signal_mean (best detour - E_f)": -0.3188052177429199,
+      "P_signal_positive": 0.4134078212290503,
+      "P_best_detour_above_logged": 0.4245810055865922,
+      "grad_proj_toward_detour_mean": 0.36710962653160095,
+      "P_grad_proj_positive": 0.6480446927374302,
+      "delta_total_at_target_held_mean": 2.74942946434021,
+      "P_total_better_held": 0.12290502793296089,
+      "delta_total_at_target_widen_mean": 0.3646981716156006,
+      "P_total_better_widen": 0.2681564245810056,
+      "total_path_held_mean": [
+       12.733969688415527,
+       13.100773811340332,
+       13.823235511779785,
+       14.530377388000488,
+       15.483392715454102
+      ],
+      "total_path_widen_mean": [
+       12.733969688415527,
+       12.781994819641113,
+       13.058568954467773,
+       13.068856239318848,
+       13.098664283752441
+      ],
+      "nll_logged_mean": 2.246218204498291
+     },
+     "by_goal_region": {
+      "corridor_after_hazard_2": {
+       "n": 559,
+       "E_f": -8.719461441040039,
+       "f_mode": -8.718854904174805,
+       "f_logged": -8.73132610321045,
+       "f_best_detour": -8.522746086120605,
+       "signal_mean (best detour - E_f)": 0.19671493768692017,
+       "P_signal_positive": 0.6064400715563506,
+       "P_best_detour_above_logged": 0.6100178890876565,
+       "grad_proj_toward_detour_mean": 0.07217224687337875,
+       "P_grad_proj_positive": 0.7549194991055456,
+       "delta_total_at_target_held_mean": 333.955810546875,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.3034127950668335,
+       "P_total_better_widen": 0.01967799642218247,
+       "total_path_held_mean": [
+        7.406434535980225,
+        28.252397537231445,
+        90.82086944580078,
+        195.17892456054688,
+        341.36212158203125
+       ],
+       "total_path_widen_mean": [
+        7.406434535980225,
+        8.251754760742188,
+        8.453665733337402,
+        8.58677864074707,
+        8.709842681884766
+       ],
+       "nll_logged_mean": -17.544204711914062
+      },
+      "corridor_before_hazard_1": {
+       "n": 1016,
+       "E_f": -8.698636054992676,
+       "f_mode": -8.697104454040527,
+       "f_logged": -8.711026191711426,
+       "f_best_detour": -8.481796264648438,
+       "signal_mean (best detour - E_f)": 0.2168407440185547,
+       "P_signal_positive": 0.6437007874015748,
+       "P_best_detour_above_logged": 0.6486220472440944,
+       "grad_proj_toward_detour_mean": 0.06226281821727753,
+       "P_grad_proj_positive": 0.7716535433070866,
+       "delta_total_at_target_held_mean": 335.9173889160156,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.2795171737670898,
+       "P_total_better_widen": 0.022637795275590553,
+       "total_path_held_mean": [
+        7.408787250518799,
+        28.31901741027832,
+        91.23172760009766,
+        196.21812438964844,
+        343.3261413574219
+       ],
+       "total_path_widen_mean": [
+        7.408787250518799,
+        8.25744915008545,
+        8.449289321899414,
+        8.5729341506958,
+        8.688304901123047
+       ],
+       "nll_logged_mean": -17.098709106445312
+      },
+      "detour_legs": null,
+      "goal_area": {
+       "n": 285,
+       "E_f": -8.738800048828125,
+       "f_mode": -8.739007949829102,
+       "f_logged": -8.747029304504395,
+       "f_best_detour": -8.504179954528809,
+       "signal_mean (best detour - E_f)": 0.23461921513080597,
+       "P_signal_positive": 0.6210526315789474,
+       "P_best_detour_above_logged": 0.6140350877192983,
+       "grad_proj_toward_detour_mean": 0.058650098741054535,
+       "P_grad_proj_positive": 0.7087719298245614,
+       "delta_total_at_target_held_mean": 327.1045837402344,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.2725285291671753,
+       "P_total_better_widen": 0.021052631578947368,
+       "total_path_held_mean": [
+        7.432956218719482,
+        27.732746124267578,
+        88.96589660644531,
+        191.22036743164062,
+        334.5375671386719
+       ],
+       "total_path_widen_mean": [
+        7.432956218719482,
+        8.280051231384277,
+        8.469694137573242,
+        8.589612007141113,
+        8.705485343933105
+       ],
+       "nll_logged_mean": -17.39388656616211
+      },
+      "hazard_corridor": {
+       "n": 1637,
+       "E_f": -8.707451820373535,
+       "f_mode": -8.706857681274414,
+       "f_logged": -8.717333793640137,
+       "f_best_detour": -8.514226913452148,
+       "signal_mean (best detour - E_f)": 0.19322526454925537,
+       "P_signal_positive": 0.6084300549786195,
+       "P_best_detour_above_logged": 0.6108735491753207,
+       "grad_proj_toward_detour_mean": 0.059712834656238556,
+       "P_grad_proj_positive": 0.7434331093463653,
+       "delta_total_at_target_held_mean": 337.387451171875,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.3044053316116333,
+       "P_total_better_widen": 0.021380574221136223,
+       "total_path_held_mean": [
+        7.400142669677734,
+        28.358675003051758,
+        91.53694915771484,
+        196.99383544921875,
+        344.7877197265625
+       ],
+       "total_path_widen_mean": [
+        7.400142669677734,
+        8.260104179382324,
+        8.460285186767578,
+        8.587493896484375,
+        8.70453929901123
+       ],
+       "nll_logged_mean": -17.442981719970703
+      },
+      "start": {
+       "n": 173,
+       "E_f": -8.758516311645508,
+       "f_mode": -8.756186485290527,
+       "f_logged": -8.773408889770508,
+       "f_best_detour": -8.66679859161377,
+       "signal_mean (best detour - E_f)": 0.09171775728464127,
+       "P_signal_positive": 0.5317919075144508,
+       "P_best_detour_above_logged": 0.5375722543352601,
+       "grad_proj_toward_detour_mean": 0.06084519252181053,
+       "P_grad_proj_positive": 0.6705202312138728,
+       "delta_total_at_target_held_mean": 199.94210815429688,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.2985097169876099,
+       "P_total_better_widen": 0.03468208092485549,
+       "total_path_held_mean": [
+        7.466010093688965,
+        19.892606735229492,
+        57.32575225830078,
+        119.82331848144531,
+        207.40814208984375
+       ],
+       "total_path_widen_mean": [
+        7.466010093688965,
+        8.243111610412598,
+        8.471887588500977,
+        8.625242233276367,
+        8.764519691467285
+       ],
+       "nll_logged_mean": -17.096031188964844
+      }
+     },
+     "by_goal_offset": {
+      "m in [1, 10)": {
+       "n": 153,
+       "E_f": -8.72644329071045,
+       "f_mode": -8.723198890686035,
+       "f_logged": -8.736603736877441,
+       "f_best_detour": -8.583937644958496,
+       "signal_mean (best detour - E_f)": 0.14250542223453522,
+       "P_signal_positive": 0.5620915032679739,
+       "P_best_detour_above_logged": 0.5751633986928104,
+       "grad_proj_toward_detour_mean": 0.05807887762784958,
+       "P_grad_proj_positive": 0.7058823529411765,
+       "delta_total_at_target_held_mean": 276.5169982910156,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.3022140264511108,
+       "P_total_better_widen": 0.032679738562091505,
+       "total_path_held_mean": [
+        7.43861198425293,
+        24.716567993164062,
+        76.52318572998047,
+        162.92727661132812,
+        283.9556884765625
+       ],
+       "total_path_widen_mean": [
+        7.43861198425293,
+        8.249473571777344,
+        8.468660354614258,
+        8.610682487487793,
+        8.740823745727539
+       ],
+       "nll_logged_mean": -17.039337158203125
+      },
+      "m in [10, 50)": {
+       "n": 678,
+       "E_f": -8.705724716186523,
+       "f_mode": -8.70433521270752,
+       "f_logged": -8.716498374938965,
+       "f_best_detour": -8.473013877868652,
+       "signal_mean (best detour - E_f)": 0.2327110767364502,
+       "P_signal_positive": 0.6415929203539823,
+       "P_best_detour_above_logged": 0.6415929203539823,
+       "grad_proj_toward_detour_mean": 0.05856366083025932,
+       "P_grad_proj_positive": 0.7581120943952803,
+       "delta_total_at_target_held_mean": 352.4928894042969,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.3029603958129883,
+       "P_total_better_widen": 0.016224188790560472,
+       "total_path_held_mean": [
+        7.390377044677734,
+        29.337352752685547,
+        95.35789489746094,
+        205.52139282226562,
+        359.8835144042969
+       ],
+       "total_path_widen_mean": [
+        7.390377044677734,
+        8.281037330627441,
+        8.467984199523926,
+        8.583520889282227,
+        8.693338394165039
+       ],
+       "nll_logged_mean": -17.6032772064209
+      },
+      "m in [50, 150)": {
+       "n": 1480,
+       "E_f": -8.706254959106445,
+       "f_mode": -8.705459594726562,
+       "f_logged": -8.717979431152344,
+       "f_best_detour": -8.505592346191406,
+       "signal_mean (best detour - E_f)": 0.20066264271736145,
+       "P_signal_positive": 0.6222972972972973,
+       "P_best_detour_above_logged": 0.6256756756756757,
+       "grad_proj_toward_detour_mean": 0.05997489392757416,
+       "P_grad_proj_positive": 0.7418918918918919,
+       "delta_total_at_target_held_mean": 337.114013671875,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.2884539365768433,
+       "P_total_better_widen": 0.024324324324324326,
+       "total_path_held_mean": [
+        7.402009963989258,
+        28.37158203125,
+        91.50619506835938,
+        196.86752319335938,
+        344.5157165527344
+       ],
+       "total_path_widen_mean": [
+        7.402009963989258,
+        8.251981735229492,
+        8.448747634887695,
+        8.574016571044922,
+        8.690457344055176
+       ],
+       "nll_logged_mean": -17.380870819091797
+      },
+      "m in [150, 100000)": {
+       "n": 1359,
+       "E_f": -8.718902587890625,
+       "f_mode": -8.718463897705078,
+       "f_logged": -8.729284286499023,
+       "f_best_detour": -8.532916069030762,
+       "signal_mean (best detour - E_f)": 0.18598607182502747,
+       "P_signal_positive": 0.6004415011037527,
+       "P_best_detour_above_logged": 0.6026490066225165,
+       "grad_proj_toward_detour_mean": 0.06713733822107315,
+       "P_grad_proj_positive": 0.7512877115526122,
+       "delta_total_at_target_held_mean": 314.8383483886719,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.29629385471344,
+       "P_total_better_widen": 0.021339220014716703,
+       "total_path_held_mean": [
+        7.422968864440918,
+        26.98401641845703,
+        85.93739318847656,
+        184.35142517089844,
+        322.2615661621094
+       ],
+       "total_path_widen_mean": [
+        7.422968864440918,
+        8.256300926208496,
+        8.46057415008545,
+        8.595617294311523,
+        8.719255447387695
+       ],
+       "nll_logged_mean": -17.205886840820312
+      }
+     }
+    }
+   }
+  },
+  "CF_s1": {
+   "composition": {
+    "rows_drawn": 49152,
+    "region_share": {
+     "detour_legs": 0.044514973958333336,
+     "shortcut_corridor": 0.8721110026041666,
+     "start": 0.0833740234375
+    },
+    "route_share": {
+     "detour": 0.0499267578125,
+     "shortcut": 0.9500732421875
+    },
+    "goal_region_share_all_rows": {
+     "corridor_after_hazard_2": 0.2762858072916667,
+     "corridor_before_hazard_1": 0.06278483072916667,
+     "detour_legs": 0.041829427083333336,
+     "goal_area": 0.2749837239583333,
+     "hazard_corridor": 0.3402913411458333,
+     "start": 0.0038248697916666665
+    },
+    "start_rows_analysed": 4098,
+    "start_rows_goal_region_share": {
+     "corridor_after_hazard_2": 0.15031722791605662,
+     "corridor_before_hazard_1": 0.2537823328452904,
+     "detour_legs": 0.0422157149829185,
+     "goal_area": 0.07955100048804295,
+     "hazard_corridor": 0.42825768667642755,
+     "start": 0.04587603709126403
+    },
+    "start_rows_goal_offset_quantiles": {
+     "0.1": 24.0,
+     "0.25": 61.0,
+     "0.5": 119.0,
+     "0.75": 183.0,
+     "0.9": 228.0
+    },
+    "start_rows_route_share": {
+     "detour": 0.04856027330405076,
+     "shortcut": 0.9514397266959492
+    }
+   },
+   "pairing": {
+    "real_relabeled_goal": {
+     "all_start_rows": {
+      "n": 4098,
+      "E_f": -7.457801342010498,
+      "f_mode": -7.424263954162598,
+      "f_logged": -7.583800315856934,
+      "f_best_detour": -7.710229396820068,
+      "signal_mean (best detour - E_f)": -0.2524283528327942,
+      "P_signal_positive": 0.36700829673011226,
+      "P_best_detour_above_logged": 0.3965348950707662,
+      "grad_proj_toward_detour_mean": 0.03787362575531006,
+      "P_grad_proj_positive": 0.5448999511957052,
+      "delta_total_at_target_held_mean": 280.51446533203125,
+      "P_total_better_held": 0.006588579795021962,
+      "delta_total_at_target_widen_mean": 1.6457370519638062,
+      "P_total_better_widen": 0.030258662762323085,
+      "total_path_held_mean": [
+       6.286900043487549,
+       23.68648910522461,
+       76.26927947998047,
+       163.97708129882812,
+       286.8011779785156
+      ],
+      "total_path_widen_mean": [
+       6.286900043487549,
+       7.1200947761535645,
+       7.473504543304443,
+       7.723639965057373,
+       7.9326348304748535
+      ],
+      "nll_logged_mean": -15.971334457397461
+     },
+     "shortcut_episode_rows": {
+      "n": 3899,
+      "E_f": -7.541910648345947,
+      "f_mode": -7.531243324279785,
+      "f_logged": -7.6098527908325195,
+      "f_best_detour": -7.811254501342773,
+      "signal_mean (best detour - E_f)": -0.2693442404270172,
+      "P_signal_positive": 0.35239805078225184,
+      "P_best_detour_above_logged": 0.3803539369068992,
+      "grad_proj_toward_detour_mean": 0.038514573127031326,
+      "P_grad_proj_positive": 0.5457809694793537,
+      "delta_total_at_target_held_mean": 294.7453308105469,
+      "P_total_better_held": 0.0010259040779687098,
+      "delta_total_at_target_widen_mean": 1.6623557806015015,
+      "P_total_better_widen": 0.023852269812772504,
+      "total_path_held_mean": [
+       6.346978187561035,
+       24.629182815551758,
+       79.87873840332031,
+       172.0352020263672,
+       301.0921630859375
+      ],
+      "total_path_widen_mean": [
+       6.346978187561035,
+       7.217509746551514,
+       7.573906898498535,
+       7.814507961273193,
+       8.009329795837402
+      ],
+      "nll_logged_mean": -16.342967987060547
+     },
+     "detour_episode_rows": {
+      "n": 199,
+      "E_f": -5.809848785400391,
+      "f_mode": -5.32820987701416,
+      "f_logged": -7.073353290557861,
+      "f_best_detour": -5.730844020843506,
+      "signal_mean (best detour - E_f)": 0.07900365442037582,
+      "P_signal_positive": 0.6532663316582915,
+      "P_best_detour_above_logged": 0.7135678391959799,
+      "grad_proj_toward_detour_mean": 0.02531554363667965,
+      "P_grad_proj_positive": 0.5276381909547738,
+      "delta_total_at_target_held_mean": 1.6899088621139526,
+      "P_total_better_held": 0.11557788944723618,
+      "delta_total_at_target_widen_mean": 1.3201287984848022,
+      "P_total_better_widen": 0.15577889447236182,
+      "total_path_held_mean": [
+       5.1097941398620605,
+       5.2160115242004395,
+       5.549007892608643,
+       6.095483303070068,
+       6.7997002601623535
+      ],
+      "total_path_widen_mean": [
+       5.1097941398620605,
+       5.211434841156006,
+       5.506438255310059,
+       5.943240165710449,
+       6.429923057556152
+      ],
+      "nll_logged_mean": -8.68990421295166
+     },
+     "by_goal_region": {
+      "corridor_after_hazard_2": {
+       "n": 616,
+       "E_f": -9.111981391906738,
+       "f_mode": -9.090265274047852,
+       "f_logged": -9.262083053588867,
+       "f_best_detour": -9.530848503112793,
+       "signal_mean (best detour - E_f)": -0.4188673198223114,
+       "P_signal_positive": 0.3344155844155844,
+       "P_best_detour_above_logged": 0.3961038961038961,
+       "grad_proj_toward_detour_mean": 0.05001360550522804,
+       "P_grad_proj_positive": 0.564935064935065,
+       "delta_total_at_target_held_mean": 262.4751892089844,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.7337538003921509,
+       "P_total_better_widen": 0.05032467532467533,
+       "total_path_held_mean": [
+        7.862218856811523,
+        24.13418197631836,
+        73.32769012451172,
+        155.43190002441406,
+        270.3372802734375
+       ],
+       "total_path_widen_mean": [
+        7.862218856811523,
+        8.646045684814453,
+        9.010337829589844,
+        9.325313568115234,
+        9.595976829528809
+       ],
+       "nll_logged_mean": -15.894225120544434
+      },
+      "corridor_before_hazard_1": {
+       "n": 1040,
+       "E_f": -6.2506937980651855,
+       "f_mode": -6.2468085289001465,
+       "f_logged": -6.257080554962158,
+       "f_best_detour": -6.353508472442627,
+       "signal_mean (best detour - E_f)": -0.10281519591808319,
+       "P_signal_positive": 0.4201923076923077,
+       "P_best_detour_above_logged": 0.425,
+       "grad_proj_toward_detour_mean": 0.10988129675388336,
+       "P_grad_proj_positive": 0.6019230769230769,
+       "delta_total_at_target_held_mean": 342.69989013671875,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.5914219617843628,
+       "P_total_better_widen": 0.0125,
+       "total_path_held_mean": [
+        5.102401256561279,
+        26.414796829223633,
+        90.70362854003906,
+        197.79368591308594,
+        347.8019104003906
+       ],
+       "total_path_widen_mean": [
+        5.102401256561279,
+        6.082553386688232,
+        6.422488212585449,
+        6.5781402587890625,
+        6.69381856918335
+       ],
+       "nll_logged_mean": -16.711843490600586
+      },
+      "detour_legs": null,
+      "goal_area": {
+       "n": 322,
+       "E_f": -10.042570114135742,
+       "f_mode": -10.02569580078125,
+       "f_logged": -10.16479206085205,
+       "f_best_detour": -9.965725898742676,
+       "signal_mean (best detour - E_f)": 0.07684462517499924,
+       "P_signal_positive": 0.5341614906832298,
+       "P_best_detour_above_logged": 0.5683229813664596,
+       "grad_proj_toward_detour_mean": 0.14654842019081116,
+       "P_grad_proj_positive": 0.6583850931677019,
+       "delta_total_at_target_held_mean": 282.7750244140625,
+       "P_total_better_held": 0.012422360248447204,
+       "delta_total_at_target_widen_mean": 1.4467346668243408,
+       "P_total_better_widen": 0.08074534161490683,
+       "total_path_held_mean": [
+        8.758817672729492,
+        26.280628204345703,
+        79.26618194580078,
+        167.6669158935547,
+        291.5336608886719
+       ],
+       "total_path_widen_mean": [
+        8.758817672729492,
+        9.547468185424805,
+        9.82788372039795,
+        10.02617073059082,
+        10.205548286437988
+       ],
+       "nll_logged_mean": -15.598990440368652
+      },
+      "hazard_corridor": {
+       "n": 1755,
+       "E_f": -7.594666004180908,
+       "f_mode": -7.585660457611084,
+       "f_logged": -7.663566589355469,
+       "f_best_detour": -8.00053882598877,
+       "signal_mean (best detour - E_f)": -0.40587303042411804,
+       "P_signal_positive": 0.27464387464387463,
+       "P_best_detour_above_logged": 0.3054131054131054,
+       "grad_proj_toward_detour_mean": -0.03133520483970642,
+       "P_grad_proj_positive": 0.48148148148148145,
+       "delta_total_at_target_held_mean": 292.7620849609375,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.7403008937835693,
+       "P_total_better_widen": 0.010256410256410256,
+       "total_path_held_mean": [
+        6.384993553161621,
+        24.514850616455078,
+        79.36945343017578,
+        170.93370056152344,
+        299.1470947265625
+       ],
+       "total_path_widen_mean": [
+        6.384993553161621,
+        7.2450337409973145,
+        7.627169132232666,
+        7.906189441680908,
+        8.125286102294922
+       ],
+       "nll_logged_mean": -16.577409744262695
+      },
+      "start": {
+       "n": 166,
+       "E_f": -4.396753311157227,
+       "f_mode": -4.379072666168213,
+       "f_logged": -4.430042743682861,
+       "f_best_detour": -4.382656574249268,
+       "signal_mean (best detour - E_f)": 0.014096691273152828,
+       "P_signal_positive": 0.463855421686747,
+       "P_best_detour_above_logged": 0.46987951807228917,
+       "grad_proj_toward_detour_mean": 0.07763907313346863,
+       "P_grad_proj_positive": 0.5843373493975904,
+       "delta_total_at_target_held_mean": 158.24322509765625,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.4360086917877197,
+       "P_total_better_widen": 0.030120481927710843,
+       "total_path_held_mean": [
+        3.441291093826294,
+        13.284317970275879,
+        42.94545364379883,
+        92.38580322265625,
+        161.68450927734375
+       ],
+       "total_path_widen_mean": [
+        3.441291093826294,
+        4.216461658477783,
+        4.521792888641357,
+        4.695092678070068,
+        4.8772993087768555
+       ],
+       "nll_logged_mean": -14.661728858947754
+      }
+     },
+     "by_goal_offset": {
+      "m in [1, 10)": {
+       "n": 160,
+       "E_f": -4.515928745269775,
+       "f_mode": -4.507563591003418,
+       "f_logged": -4.542611122131348,
+       "f_best_detour": -4.538878440856934,
+       "signal_mean (best detour - E_f)": -0.02295011095702648,
+       "P_signal_positive": 0.39375,
+       "P_best_detour_above_logged": 0.40625,
+       "grad_proj_toward_detour_mean": 0.15701830387115479,
+       "P_grad_proj_positive": 0.66875,
+       "delta_total_at_target_held_mean": 226.9250946044922,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.494694471359253,
+       "P_total_better_widen": 0.03125,
+       "total_path_held_mean": [
+        3.4897854328155518,
+        17.60077667236328,
+        60.17723846435547,
+        131.1043243408203,
+        230.41488647460938
+       ],
+       "total_path_widen_mean": [
+        3.4897854328155518,
+        4.295625686645508,
+        4.617193698883057,
+        4.810164451599121,
+        4.984478950500488
+       ],
+       "nll_logged_mean": -16.002941131591797
+      },
+      "m in [10, 50)": {
+       "n": 651,
+       "E_f": -5.667623519897461,
+       "f_mode": -5.662034034729004,
+       "f_logged": -5.675549507141113,
+       "f_best_detour": -5.696022033691406,
+       "signal_mean (best detour - E_f)": -0.02839786931872368,
+       "P_signal_positive": 0.4838709677419355,
+       "P_best_detour_above_logged": 0.4869431643625192,
+       "grad_proj_toward_detour_mean": 0.10464244335889816,
+       "P_grad_proj_positive": 0.5898617511520737,
+       "delta_total_at_target_held_mean": 344.35968017578125,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.5370829105377197,
+       "P_total_better_widen": 0.01228878648233487,
+       "total_path_held_mean": [
+        4.546264171600342,
+        25.949642181396484,
+        90.53385925292969,
+        198.14710998535156,
+        348.9059143066406
+       ],
+       "total_path_widen_mean": [
+        4.546264171600342,
+        5.4907026290893555,
+        5.808605194091797,
+        5.958735942840576,
+        6.083346366882324
+       ],
+       "nll_logged_mean": -16.7571964263916
+      },
+      "m in [50, 150)": {
+       "n": 1619,
+       "E_f": -7.293524265289307,
+       "f_mode": -7.28657865524292,
+       "f_logged": -7.335122108459473,
+       "f_best_detour": -7.671351432800293,
+       "signal_mean (best detour - E_f)": -0.3778277337551117,
+       "P_signal_positive": 0.2680667078443484,
+       "P_best_detour_above_logged": 0.288449660284126,
+       "grad_proj_toward_detour_mean": -0.02345837838947773,
+       "P_grad_proj_positive": 0.48548486720197653,
+       "delta_total_at_target_held_mean": 304.2725830078125,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.7582178115844727,
+       "P_total_better_widen": 0.008647313156269302,
+       "total_path_held_mean": [
+        6.097378730773926,
+        24.99434471130371,
+        82.02812957763672,
+        177.14971923828125,
+        310.3697814941406
+       ],
+       "total_path_widen_mean": [
+        6.097378730773926,
+        7.0445756912231445,
+        7.430129528045654,
+        7.6723737716674805,
+        7.855594635009766
+       ],
+       "nll_logged_mean": -16.60917091369629
+      },
+      "m in [150, 100000)": {
+       "n": 1469,
+       "E_f": -8.975848197937012,
+       "f_mode": -8.958579063415527,
+       "f_logged": -9.10391616821289,
+       "f_best_detour": -9.259245872497559,
+       "signal_mean (best detour - E_f)": -0.2833976149559021,
+       "P_signal_positive": 0.382573179033356,
+       "P_best_detour_above_logged": 0.4315861130020422,
+       "grad_proj_toward_detour_mean": 0.06460331380367279,
+       "P_grad_proj_positive": 0.5793056501021103,
+       "delta_total_at_target_held_mean": 269.6449890136719,
+       "P_total_better_held": 0.002722940776038121,
+       "delta_total_at_target_widen_mean": 1.6304820775985718,
+       "P_total_better_widen": 0.044928522804629,
+       "total_path_held_mean": [
+        7.731264591217041,
+        24.407073974609375,
+        74.93411254882812,
+        159.28443908691406,
+        277.376708984375
+       ],
+       "total_path_widen_mean": [
+        7.731264591217041,
+        8.491596221923828,
+        8.836695671081543,
+        9.12083625793457,
+        9.361745834350586
+       ],
+       "nll_logged_mean": -15.903051376342773
+      }
+     }
+    },
+    "task_goal_same_rows": {
+     "all_start_rows": {
+      "n": 4098,
+      "E_f": -10.707803726196289,
+      "f_mode": -10.668739318847656,
+      "f_logged": -10.888054847717285,
+      "f_best_detour": -10.539692878723145,
+      "signal_mean (best detour - E_f)": 0.1681102216243744,
+      "P_signal_positive": 0.570522205954124,
+      "P_best_detour_above_logged": 0.5951683748169839,
+      "grad_proj_toward_detour_mean": 0.24862435460090637,
+      "P_grad_proj_positive": 0.7420693020985847,
+      "delta_total_at_target_held_mean": 284.92144775390625,
+      "P_total_better_held": 0.014641288433382138,
+      "delta_total_at_target_widen_mean": 1.3547896146774292,
+      "P_total_better_widen": 0.11224987798926306,
+      "total_path_held_mean": [
+       9.436577796936035,
+       27.18807029724121,
+       80.56244659423828,
+       169.58645629882812,
+       294.35791015625
+      ],
+      "total_path_widen_mean": [
+       9.436577796936035,
+       10.232258796691895,
+       10.477638244628906,
+       10.637982368469238,
+       10.791367530822754
+      ],
+      "nll_logged_mean": -14.698284149169922
+     },
+     "shortcut_episode_rows": {
+      "n": 3899,
+      "E_f": -10.683687210083008,
+      "f_mode": -10.664307594299316,
+      "f_logged": -10.786149024963379,
+      "f_best_detour": -10.480813980102539,
+      "signal_mean (best detour - E_f)": 0.20287221670150757,
+      "P_signal_positive": 0.5796358040523211,
+      "P_best_detour_above_logged": 0.5991279815337266,
+      "grad_proj_toward_detour_mean": 0.2524038851261139,
+      "P_grad_proj_positive": 0.7491664529366504,
+      "delta_total_at_target_held_mean": 299.3622131347656,
+      "P_total_better_held": 0.011797896896640164,
+      "delta_total_at_target_widen_mean": 1.3613139390945435,
+      "P_total_better_widen": 0.11259297255706592,
+      "total_path_held_mean": [
+       9.395888328552246,
+       28.043561935424805,
+       84.11819458007812,
+       177.65426635742188,
+       308.7580261230469
+      ],
+      "total_path_widen_mean": [
+       9.395888328552246,
+       10.222922325134277,
+       10.462029457092285,
+       10.612123489379883,
+       10.757204055786133
+      ],
+      "nll_logged_mean": -15.079044342041016
+     },
+     "detour_episode_rows": {
+      "n": 199,
+      "E_f": -11.180317878723145,
+      "f_mode": -10.755562782287598,
+      "f_logged": -12.884688377380371,
+      "f_best_detour": -11.693299293518066,
+      "signal_mean (best detour - E_f)": -0.5129801034927368,
+      "P_signal_positive": 0.39195979899497485,
+      "P_best_detour_above_logged": 0.5175879396984925,
+      "grad_proj_toward_detour_mean": 0.17457178235054016,
+      "P_grad_proj_positive": 0.6030150753768844,
+      "delta_total_at_target_held_mean": 1.9843103885650635,
+      "P_total_better_held": 0.07035175879396985,
+      "delta_total_at_target_widen_mean": 1.2269564867019653,
+      "P_total_better_widen": 0.10552763819095477,
+      "total_path_held_mean": [
+       10.233699798583984,
+       10.426337242126465,
+       10.895197868347168,
+       11.515226364135742,
+       12.218009948730469
+      ],
+      "total_path_widen_mean": [
+       10.233699798583984,
+       10.415159225463867,
+       10.783604621887207,
+       11.14462947845459,
+       11.460654258728027
+      ],
+      "nll_logged_mean": -7.238082408905029
+     },
+     "by_goal_region": {
+      "corridor_after_hazard_2": {
+       "n": 616,
+       "E_f": -10.711362838745117,
+       "f_mode": -10.692164421081543,
+       "f_logged": -10.807229995727539,
+       "f_best_detour": -10.526012420654297,
+       "signal_mean (best detour - E_f)": 0.18534958362579346,
+       "P_signal_positive": 0.5909090909090909,
+       "P_best_detour_above_logged": 0.6038961038961039,
+       "grad_proj_toward_detour_mean": 0.24280458688735962,
+       "P_grad_proj_positive": 0.7467532467532467,
+       "delta_total_at_target_held_mean": 283.9892883300781,
+       "P_total_better_held": 0.012987012987012988,
+       "delta_total_at_target_widen_mean": 1.3588391542434692,
+       "P_total_better_widen": 0.11038961038961038,
+       "total_path_held_mean": [
+        9.430733680725098,
+        27.161428451538086,
+        80.36913299560547,
+        169.09487915039062,
+        293.4198913574219
+       ],
+       "total_path_widen_mean": [
+        9.430733680725098,
+        10.255393028259277,
+        10.492591857910156,
+        10.643156051635742,
+        10.789575576782227
+       ],
+       "nll_logged_mean": -14.895756721496582
+      },
+      "corridor_before_hazard_1": {
+       "n": 1040,
+       "E_f": -10.663013458251953,
+       "f_mode": -10.642176628112793,
+       "f_logged": -10.760663986206055,
+       "f_best_detour": -10.440573692321777,
+       "signal_mean (best detour - E_f)": 0.22243988513946533,
+       "P_signal_positive": 0.5798076923076924,
+       "P_best_detour_above_logged": 0.5980769230769231,
+       "grad_proj_toward_detour_mean": 0.2534765303134918,
+       "P_grad_proj_positive": 0.7557692307692307,
+       "delta_total_at_target_held_mean": 316.0631103515625,
+       "P_total_better_held": 0.014423076923076924,
+       "delta_total_at_target_widen_mean": 1.3564776182174683,
+       "P_total_better_widen": 0.1125,
+       "total_path_held_mean": [
+        9.371190071105957,
+        29.090797424316406,
+        88.29994201660156,
+        187.04656982421875,
+        325.43426513671875
+       ],
+       "total_path_widen_mean": [
+        9.371190071105957,
+        10.204598426818848,
+        10.442427635192871,
+        10.586524963378906,
+        10.727677345275879
+       ],
+       "nll_logged_mean": -15.196484565734863
+      },
+      "detour_legs": null,
+      "goal_area": {
+       "n": 322,
+       "E_f": -10.54173755645752,
+       "f_mode": -10.525325775146484,
+       "f_logged": -10.658293724060059,
+       "f_best_detour": -10.237972259521484,
+       "signal_mean (best detour - E_f)": 0.3037649989128113,
+       "P_signal_positive": 0.6304347826086957,
+       "P_best_detour_above_logged": 0.6521739130434783,
+       "grad_proj_toward_detour_mean": 0.24261365830898285,
+       "P_grad_proj_positive": 0.7422360248447205,
+       "delta_total_at_target_held_mean": 278.89129638671875,
+       "P_total_better_held": 0.018633540372670808,
+       "delta_total_at_target_widen_mean": 1.2959810495376587,
+       "P_total_better_widen": 0.11180124223602485,
+       "total_path_held_mean": [
+        9.258749961853027,
+        26.665260314941406,
+        78.90262603759766,
+        166.0241241455078,
+        288.15008544921875
+       ],
+       "total_path_widen_mean": [
+        9.258749961853027,
+        10.07111644744873,
+        10.281035423278809,
+        10.417418479919434,
+        10.554729461669922
+       ],
+       "nll_logged_mean": -15.123725891113281
+      },
+      "hazard_corridor": {
+       "n": 1755,
+       "E_f": -10.698159217834473,
+       "f_mode": -10.680967330932617,
+       "f_logged": -10.79832649230957,
+       "f_best_detour": -10.492776870727539,
+       "signal_mean (best detour - E_f)": 0.20538321137428284,
+       "P_signal_positive": 0.5749287749287749,
+       "P_best_detour_above_logged": 0.5965811965811966,
+       "grad_proj_toward_detour_mean": 0.2575455904006958,
+       "P_grad_proj_positive": 0.750997150997151,
+       "delta_total_at_target_held_mean": 310.7557678222656,
+       "P_total_better_held": 0.008547008547008548,
+       "delta_total_at_target_widen_mean": 1.3659825325012207,
+       "P_total_better_widen": 0.11225071225071225,
+       "total_path_held_mean": [
+        9.404559135437012,
+        28.715595245361328,
+        86.91761779785156,
+        184.02651977539062,
+        320.16021728515625
+       ],
+       "total_path_widen_mean": [
+        9.404559135437012,
+        10.236655235290527,
+        10.478071212768555,
+        10.627538681030273,
+        10.770535469055176
+       ],
+       "nll_logged_mean": -15.176281929016113
+      },
+      "start": {
+       "n": 166,
+       "E_f": -10.832836151123047,
+       "f_mode": -10.79304027557373,
+       "f_logged": -10.986862182617188,
+       "f_best_detour": -10.909785270690918,
+       "signal_mean (best detour - E_f)": -0.0769515261054039,
+       "P_signal_positive": 0.4879518072289157,
+       "P_best_detour_above_logged": 0.5120481927710844,
+       "grad_proj_toward_detour_mean": 0.24593688547611237,
+       "P_grad_proj_positive": 0.7108433734939759,
+       "delta_total_at_target_held_mean": 171.02926635742188,
+       "P_total_better_held": 0.012048192771084338,
+       "delta_total_at_target_widen_mean": 1.4781694412231445,
+       "P_total_better_widen": 0.12650602409638553,
+       "total_path_held_mean": [
+        9.595816612243652,
+        20.325313568115234,
+        52.3499870300293,
+        105.75995635986328,
+        180.6250762939453
+       ],
+       "total_path_widen_mean": [
+        9.595816612243652,
+        10.366658210754395,
+        10.65308952331543,
+        10.872079849243164,
+        11.073990821838379
+       ],
+       "nll_logged_mean": -13.908735275268555
+      }
+     },
+     "by_goal_offset": {
+      "m in [1, 10)": {
+       "n": 160,
+       "E_f": -10.773199081420898,
+       "f_mode": -10.748796463012695,
+       "f_logged": -10.877416610717773,
+       "f_best_detour": -10.775794982910156,
+       "signal_mean (best detour - E_f)": -0.0025952220894396305,
+       "P_signal_positive": 0.50625,
+       "P_best_detour_above_logged": 0.51875,
+       "grad_proj_toward_detour_mean": 0.24065928161144257,
+       "P_grad_proj_positive": 0.7375,
+       "delta_total_at_target_held_mean": 252.3940887451172,
+       "P_total_better_held": 0.00625,
+       "delta_total_at_target_widen_mean": 1.5009225606918335,
+       "P_total_better_widen": 0.10625,
+       "total_path_held_mean": [
+        9.452277183532715,
+        25.329978942871094,
+        72.61002349853516,
+        151.43063354492188,
+        261.8464050292969
+       ],
+       "total_path_widen_mean": [
+        9.452277183532715,
+        10.303391456604004,
+        10.56916332244873,
+        10.77048397064209,
+        10.953204154968262
+       ],
+       "nll_logged_mean": -15.59577751159668
+      },
+      "m in [10, 50)": {
+       "n": 651,
+       "E_f": -10.706351280212402,
+       "f_mode": -10.687898635864258,
+       "f_logged": -10.795754432678223,
+       "f_best_detour": -10.526354789733887,
+       "signal_mean (best detour - E_f)": 0.17999738454818726,
+       "P_signal_positive": 0.5576036866359447,
+       "P_best_detour_above_logged": 0.5806451612903226,
+       "grad_proj_toward_detour_mean": 0.23900525271892548,
+       "P_grad_proj_positive": 0.7526881720430108,
+       "delta_total_at_target_held_mean": 322.7651672363281,
+       "P_total_better_held": 0.007680491551459293,
+       "delta_total_at_target_widen_mean": 1.41122567653656,
+       "P_total_better_widen": 0.09831029185867896,
+       "total_path_held_mean": [
+        9.397770881652832,
+        29.552095413208008,
+        90.0420150756836,
+        190.8712158203125,
+        332.16278076171875
+       ],
+       "total_path_widen_mean": [
+        9.397770881652832,
+        10.260153770446777,
+        10.516219139099121,
+        10.665772438049316,
+        10.808982849121094
+       ],
+       "nll_logged_mean": -15.492541313171387
+      },
+      "m in [50, 150)": {
+       "n": 1619,
+       "E_f": -10.685142517089844,
+       "f_mode": -10.665797233581543,
+       "f_logged": -10.792616844177246,
+       "f_best_detour": -10.478965759277344,
+       "signal_mean (best detour - E_f)": 0.20617754757404327,
+       "P_signal_positive": 0.5688696726374305,
+       "P_best_detour_above_logged": 0.5898702903026559,
+       "grad_proj_toward_detour_mean": 0.2620508670806885,
+       "P_grad_proj_positive": 0.7504632489190859,
+       "delta_total_at_target_held_mean": 309.6330871582031,
+       "P_total_better_held": 0.014823965410747375,
+       "delta_total_at_target_widen_mean": 1.3614747524261475,
+       "P_total_better_widen": 0.11982705373687462,
+       "total_path_held_mean": [
+        9.39898681640625,
+        28.666866302490234,
+        86.6646957397461,
+        183.41091918945312,
+        319.0320739746094
+       ],
+       "total_path_widen_mean": [
+        9.39898681640625,
+        10.229598999023438,
+        10.46962833404541,
+        10.617238998413086,
+        10.760457038879395
+       ],
+       "nll_logged_mean": -15.046217918395996
+      },
+      "m in [150, 100000)": {
+       "n": 1469,
+       "E_f": -10.662287712097168,
+       "f_mode": -10.643009185791016,
+       "f_logged": -10.764827728271484,
+       "f_best_detour": -10.4305419921875,
+       "signal_mean (best detour - E_f)": 0.23174554109573364,
+       "P_signal_positive": 0.6092579986385296,
+       "P_best_detour_above_logged": 0.6262763784887678,
+       "grad_proj_toward_detour_mean": 0.2489888072013855,
+       "P_grad_proj_positive": 0.7474472430224642,
+       "delta_total_at_target_held_mean": 282.7869873046875,
+       "P_total_better_held": 0.010891763104152484,
+       "delta_total_at_target_widen_mean": 1.3238121271133423,
+       "P_total_better_widen": 0.11164057181756297,
+       "total_path_held_mean": [
+        9.385523796081543,
+        26.983722686767578,
+        79.9397201538086,
+        168.3084716796875,
+        292.1726989746094
+       ],
+       "total_path_widen_mean": [
+        9.385523796081543,
+        10.190311431884766,
+        10.417978286743164,
+        10.565458297729492,
+        10.709328651428223
+       ],
+       "nll_logged_mean": -14.875697135925293
+      }
+     }
+    }
+   }
+  },
+  "O_s1": {
+   "composition": {
+    "rows_drawn": 49152,
+    "region_share": {
+     "detour_legs": 0.044514973958333336,
+     "shortcut_corridor": 0.8721110026041666,
+     "start": 0.0833740234375
+    },
+    "route_share": {
+     "detour": 0.0499267578125,
+     "shortcut": 0.9500732421875
+    },
+    "goal_region_share_all_rows": {
+     "corridor_after_hazard_2": 0.2762858072916667,
+     "corridor_before_hazard_1": 0.06278483072916667,
+     "detour_legs": 0.041829427083333336,
+     "goal_area": 0.2749837239583333,
+     "hazard_corridor": 0.3402913411458333,
+     "start": 0.0038248697916666665
+    },
+    "start_rows_analysed": 4098,
+    "start_rows_goal_region_share": {
+     "corridor_after_hazard_2": 0.15031722791605662,
+     "corridor_before_hazard_1": 0.2537823328452904,
+     "detour_legs": 0.0422157149829185,
+     "goal_area": 0.07955100048804295,
+     "hazard_corridor": 0.42825768667642755,
+     "start": 0.04587603709126403
+    },
+    "start_rows_goal_offset_quantiles": {
+     "0.1": 24.0,
+     "0.25": 61.0,
+     "0.5": 119.0,
+     "0.75": 183.0,
+     "0.9": 228.0
+    },
+    "start_rows_route_share": {
+     "detour": 0.04856027330405076,
+     "shortcut": 0.9514397266959492
+    }
+   },
+   "pairing": {
+    "real_relabeled_goal": {
+     "all_start_rows": {
+      "n": 4098,
+      "E_f": -6.481102466583252,
+      "f_mode": -6.472968101501465,
+      "f_logged": -6.509304046630859,
+      "f_best_detour": -7.31326150894165,
+      "signal_mean (best detour - E_f)": -0.8321587443351746,
+      "P_signal_positive": 0.17496339677891654,
+      "P_best_detour_above_logged": 0.18692044899951196,
+      "grad_proj_toward_detour_mean": 0.01451495848596096,
+      "P_grad_proj_positive": 0.5580771107857492,
+      "delta_total_at_target_held_mean": 255.9550323486328,
+      "P_total_better_held": 0.0021961932650073207,
+      "delta_total_at_target_widen_mean": 2.0040578842163086,
+      "P_total_better_widen": 0.011469009272816008,
+      "total_path_held_mean": [
+       5.3268609046936035,
+       21.345415115356445,
+       69.40332794189453,
+       149.42129516601562,
+       261.28216552734375
+      ],
+      "total_path_widen_mean": [
+       5.3268609046936035,
+       6.175350189208984,
+       6.624317169189453,
+       7.014187335968018,
+       7.330922603607178
+      ],
+      "nll_logged_mean": -16.602752685546875
+     },
+     "shortcut_episode_rows": {
+      "n": 3899,
+      "E_f": -6.622714996337891,
+      "f_mode": -6.620810508728027,
+      "f_logged": -6.627556324005127,
+      "f_best_detour": -7.498613357543945,
+      "signal_mean (best detour - E_f)": -0.8758989572525024,
+      "P_signal_positive": 0.15209027955886126,
+      "P_best_detour_above_logged": 0.15183380353936907,
+      "grad_proj_toward_detour_mean": 0.016669368371367455,
+      "P_grad_proj_positive": 0.5601436265709157,
+      "delta_total_at_target_held_mean": 268.9091796875,
+      "P_total_better_held": 0.00025647601949217746,
+      "delta_total_at_target_widen_mean": 2.067093849182129,
+      "P_total_better_widen": 0.007950756604257501,
+      "total_path_held_mean": [
+       5.454277038574219,
+       22.28350067138672,
+       72.77392578125,
+       156.842041015625,
+       274.36376953125
+      ],
+      "total_path_widen_mean": [
+       5.454277038574219,
+       6.341319561004639,
+       6.803947925567627,
+       7.202467918395996,
+       7.521376132965088
+      ],
+      "nll_logged_mean": -16.749061584472656
+     },
+     "detour_episode_rows": {
+      "n": 199,
+      "E_f": -3.706507921218872,
+      "f_mode": -3.576282024383545,
+      "f_logged": -4.19240665435791,
+      "f_best_detour": -3.6816656589508057,
+      "signal_mean (best detour - E_f)": 0.024842001497745514,
+      "P_signal_positive": 0.6231155778894473,
+      "P_best_detour_above_logged": 0.8743718592964824,
+      "grad_proj_toward_detour_mean": -0.027696333825588226,
+      "P_grad_proj_positive": 0.5175879396984925,
+      "delta_total_at_target_held_mean": 2.145101308822632,
+      "P_total_better_held": 0.04020100502512563,
+      "delta_total_at_target_widen_mean": 0.7689948081970215,
+      "P_total_better_widen": 0.08040201005025126,
+      "total_path_held_mean": [
+       2.8304548263549805,
+       2.9657061100006104,
+       3.3629775047302246,
+       4.02609920501709,
+       4.975557804107666
+      ],
+      "total_path_widen_mean": [
+       2.8304548263549805,
+       2.923506736755371,
+       3.1048035621643066,
+       3.325288772583008,
+       3.5994486808776855
+      ],
+      "nll_logged_mean": -13.736135482788086
+     },
+     "by_goal_region": {
+      "corridor_after_hazard_2": {
+       "n": 616,
+       "E_f": -7.686051845550537,
+       "f_mode": -7.683073997497559,
+       "f_logged": -7.6888017654418945,
+       "f_best_detour": -8.829324722290039,
+       "signal_mean (best detour - E_f)": -1.1432732343673706,
+       "P_signal_positive": 0.00974025974025974,
+       "P_best_detour_above_logged": 0.00974025974025974,
+       "grad_proj_toward_detour_mean": -0.005517017561942339,
+       "P_grad_proj_positive": 0.4675324675324675,
+       "delta_total_at_target_held_mean": 242.81884765625,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 2.2714343070983887,
+       "P_total_better_widen": 0.0,
+       "total_path_held_mean": [
+        6.4758992195129395,
+        21.67070198059082,
+        67.28960418701172,
+        143.21337890625,
+        249.29476928710938
+       ],
+       "total_path_widen_mean": [
+        6.4758992195129395,
+        7.3915252685546875,
+        7.9220733642578125,
+        8.381993293762207,
+        8.747336387634277
+       ],
+       "nll_logged_mean": -16.521018981933594
+      },
+      "corridor_before_hazard_1": {
+       "n": 1040,
+       "E_f": -5.597207546234131,
+       "f_mode": -5.5941267013549805,
+       "f_logged": -5.5998640060424805,
+       "f_best_detour": -6.924247741699219,
+       "signal_mean (best detour - E_f)": -1.327040672302246,
+       "P_signal_positive": 0.0673076923076923,
+       "P_best_detour_above_logged": 0.06923076923076923,
+       "grad_proj_toward_detour_mean": 0.023831726983189583,
+       "P_grad_proj_positive": 0.6057692307692307,
+       "delta_total_at_target_held_mean": 294.9300537109375,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 2.455688238143921,
+       "P_total_better_widen": 0.0,
+       "total_path_held_mean": [
+        4.46892786026001,
+        23.003253936767578,
+        78.45613098144531,
+        170.6340789794922,
+        299.39898681640625
+       ],
+       "total_path_widen_mean": [
+        4.46892786026001,
+        5.444241523742676,
+        6.028736591339111,
+        6.528731822967529,
+        6.924617767333984
+       ],
+       "nll_logged_mean": -16.970102310180664
+      },
+      "detour_legs": null,
+      "goal_area": {
+       "n": 322,
+       "E_f": -8.417377471923828,
+       "f_mode": -8.415961265563965,
+       "f_logged": -8.424388885498047,
+       "f_best_detour": -8.787736892700195,
+       "signal_mean (best detour - E_f)": -0.3703594207763672,
+       "P_signal_positive": 0.3385093167701863,
+       "P_best_detour_above_logged": 0.3416149068322981,
+       "grad_proj_toward_detour_mean": 0.016156170517206192,
+       "P_grad_proj_positive": 0.5590062111801242,
+       "delta_total_at_target_held_mean": 257.0483703613281,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.691649079322815,
+       "P_total_better_widen": 0.006211180124223602,
+       "total_path_held_mean": [
+        7.179829120635986,
+        23.289302825927734,
+        71.5022201538086,
+        151.83541870117188,
+        264.22821044921875
+       ],
+       "total_path_widen_mean": [
+        7.179829120635986,
+        8.052742004394531,
+        8.380191802978516,
+        8.646209716796875,
+        8.871479034423828
+       ],
+       "nll_logged_mean": -16.341157913208008
+      },
+      "hazard_corridor": {
+       "n": 1755,
+       "E_f": -6.737070560455322,
+       "f_mode": -6.736215114593506,
+       "f_logged": -6.7374420166015625,
+       "f_best_detour": -7.478779315948486,
+       "signal_mean (best detour - E_f)": -0.7417095303535461,
+       "P_signal_positive": 0.16125356125356125,
+       "P_best_detour_above_logged": 0.15954415954415954,
+       "grad_proj_toward_detour_mean": 0.012165706604719162,
+       "P_grad_proj_positive": 0.554985754985755,
+       "delta_total_at_target_held_mean": 275.1148376464844,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.949995517730713,
+       "P_total_better_widen": 0.0005698005698005698,
+       "total_path_held_mean": [
+        5.55466365814209,
+        22.735660552978516,
+        74.36214447021484,
+        160.38758850097656,
+        280.66949462890625
+       ],
+       "total_path_widen_mean": [
+        5.55466365814209,
+        6.415483474731445,
+        6.844352722167969,
+        7.215011119842529,
+        7.504666328430176
+       ],
+       "nll_logged_mean": -16.91246795654297
+      },
+      "start": {
+       "n": 166,
+       "E_f": -4.411487102508545,
+       "f_mode": -4.408913612365723,
+       "f_logged": -4.480822563171387,
+       "f_best_detour": -3.868086099624634,
+       "signal_mean (best detour - E_f)": 0.5434013605117798,
+       "P_signal_positive": 0.7530120481927711,
+       "P_best_detour_above_logged": 0.7469879518072289,
+       "grad_proj_toward_detour_mean": 0.1027364581823349,
+       "P_grad_proj_positive": 0.6746987951807228,
+       "delta_total_at_target_held_mean": 160.10263061523438,
+       "P_total_better_held": 0.006024096385542169,
+       "delta_total_at_target_widen_mean": 0.8405190706253052,
+       "P_total_better_widen": 0.1686746987951807,
+       "total_path_held_mean": [
+        3.427980422973633,
+        13.317569732666016,
+        43.202598571777344,
+        93.23613739013672,
+        163.53065490722656
+       ],
+       "total_path_widen_mean": [
+        3.427980422973633,
+        3.9604809284210205,
+        4.026844024658203,
+        4.113768577575684,
+        4.268499374389648
+       ],
+       "nll_logged_mean": -15.274105072021484
+      }
+     },
+     "by_goal_offset": {
+      "m in [1, 10)": {
+       "n": 160,
+       "E_f": -4.579310417175293,
+       "f_mode": -4.576987266540527,
+       "f_logged": -4.649674892425537,
+       "f_best_detour": -3.855992078781128,
+       "signal_mean (best detour - E_f)": 0.7233183979988098,
+       "P_signal_positive": 0.79375,
+       "P_best_detour_above_logged": 0.79375,
+       "grad_proj_toward_detour_mean": 0.10222743451595306,
+       "P_grad_proj_positive": 0.66875,
+       "delta_total_at_target_held_mean": 248.2831268310547,
+       "P_total_better_held": 0.00625,
+       "delta_total_at_target_widen_mean": 0.8074739575386047,
+       "P_total_better_widen": 0.16875,
+       "total_path_held_mean": [
+        3.531041383743286,
+        19.049152374267578,
+        65.50817108154297,
+        143.05349731445312,
+        251.8141632080078
+       ],
+       "total_path_widen_mean": [
+        3.531041383743286,
+        4.162667751312256,
+        4.191919803619385,
+        4.228630065917969,
+        4.338515281677246
+       ],
+       "nll_logged_mean": -16.393281936645508
+      },
+      "m in [10, 50)": {
+       "n": 651,
+       "E_f": -5.28152322769165,
+       "f_mode": -5.278711318969727,
+       "f_logged": -5.282378673553467,
+       "f_best_detour": -6.360207557678223,
+       "signal_mean (best detour - E_f)": -1.078684687614441,
+       "P_signal_positive": 0.09831029185867896,
+       "P_best_detour_above_logged": 0.09984639016897082,
+       "grad_proj_toward_detour_mean": 0.028768837451934814,
+       "P_grad_proj_positive": 0.6359447004608295,
+       "delta_total_at_target_held_mean": 296.5664367675781,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 2.260371208190918,
+       "P_total_better_widen": 0.0015360983102918587,
+       "total_path_held_mean": [
+        4.166326522827148,
+        22.81219482421875,
+        78.54129791259766,
+        171.2156982421875,
+        300.7330322265625
+       ],
+       "total_path_widen_mean": [
+        4.166326522827148,
+        5.104949951171875,
+        5.621575355529785,
+        6.064061641693115,
+        6.426693916320801
+       ],
+       "nll_logged_mean": -17.02157974243164
+      },
+      "m in [50, 150)": {
+       "n": 1619,
+       "E_f": -6.481502532958984,
+       "f_mode": -6.479826927185059,
+       "f_logged": -6.483264923095703,
+       "f_best_detour": -7.499102592468262,
+       "signal_mean (best detour - E_f)": -1.01759934425354,
+       "P_signal_positive": 0.10623841877702285,
+       "P_best_detour_above_logged": 0.10500308832612724,
+       "grad_proj_toward_detour_mean": 0.00951460748910904,
+       "P_grad_proj_positive": 0.5472513897467572,
+       "delta_total_at_target_held_mean": 278.2730712890625,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 2.1794826984405518,
+       "P_total_better_widen": 0.0006176652254478073,
+       "total_path_held_mean": [
+        5.311797142028809,
+        22.708730697631836,
+        74.97120666503906,
+        161.97828674316406,
+        283.58477783203125
+       ],
+       "total_path_widen_mean": [
+        5.311797142028809,
+        6.219780921936035,
+        6.724114894866943,
+        7.155947685241699,
+        7.491275310516357
+       ],
+       "nll_logged_mean": -16.915407180786133
+      },
+      "m in [150, 100000)": {
+       "n": 1469,
+       "E_f": -7.595268249511719,
+       "f_mode": -7.593562602996826,
+       "f_logged": -7.598133563995361,
+       "f_best_detour": -8.399314880371094,
+       "signal_mean (best detour - E_f)": -0.8040463328361511,
+       "P_signal_positive": 0.15656909462219196,
+       "P_best_detour_above_logged": 0.15656909462219196,
+       "grad_proj_toward_detour_mean": 0.00987393781542778,
+       "P_grad_proj_positive": 0.5289312457454051,
+       "delta_total_at_target_held_mean": 248.57908630371094,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.994771122932434,
+       "P_total_better_widen": 0.0013614703880190605,
+       "total_path_held_mean": [
+        6.391546249389648,
+        21.932886123657227,
+        68.58789825439453,
+        146.3134307861328,
+        254.97076416015625
+       ],
+       "total_path_widen_mean": [
+        6.391546249389648,
+        7.260467529296875,
+        7.700417518615723,
+        8.082197189331055,
+        8.386326789855957
+       ],
+       "nll_logged_mean": -16.483715057373047
+      }
+     }
+    },
+    "task_goal_same_rows": {
+     "all_start_rows": {
+      "n": 4098,
+      "E_f": -9.095614433288574,
+      "f_mode": -9.090644836425781,
+      "f_logged": -9.1190824508667,
+      "f_best_detour": -9.037714004516602,
+      "signal_mean (best detour - E_f)": 0.057901281863451004,
+      "P_signal_positive": 0.5924841386041971,
+      "P_best_detour_above_logged": 0.5998047828208882,
+      "grad_proj_toward_detour_mean": 0.04556082561612129,
+      "P_grad_proj_positive": 0.6063933626159101,
+      "delta_total_at_target_held_mean": 244.5820770263672,
+      "P_total_better_held": 0.0021961932650073207,
+      "delta_total_at_target_widen_mean": 1.2866278886795044,
+      "P_total_better_widen": 0.021961932650073207,
+      "total_path_held_mean": [
+       7.86564826965332,
+       23.212743759155273,
+       69.04634857177734,
+       145.44508361816406,
+       252.44775390625
+      ],
+      "total_path_widen_mean": [
+       7.86564826965332,
+       8.652528762817383,
+       8.86513900756836,
+       9.012598037719727,
+       9.152276992797852
+      ],
+      "nll_logged_mean": -15.49620532989502
+     },
+     "shortcut_episode_rows": {
+      "n": 3899,
+      "E_f": -8.92361068725586,
+      "f_mode": -8.922680854797363,
+      "f_logged": -8.931962966918945,
+      "f_best_detour": -8.805767059326172,
+      "signal_mean (best detour - E_f)": 0.11784388870000839,
+      "P_signal_positive": 0.6101564503718903,
+      "P_best_detour_above_logged": 0.6114388304693511,
+      "grad_proj_toward_detour_mean": 0.03021935187280178,
+      "P_grad_proj_positive": 0.6022056937676328,
+      "delta_total_at_target_held_mean": 256.8902282714844,
+      "P_total_better_held": 0.00025647601949217746,
+      "delta_total_at_target_widen_mean": 1.2906944751739502,
+      "P_total_better_widen": 0.01846627340343678,
+      "total_path_held_mean": [
+       7.681395530700684,
+       23.790325164794922,
+       71.92206573486328,
+       152.17095947265625,
+       264.57159423828125
+      ],
+      "total_path_widen_mean": [
+       7.681395530700684,
+       8.493884086608887,
+       8.695748329162598,
+       8.837377548217773,
+       8.972084045410156
+      ],
+      "nll_logged_mean": -15.92229175567627
+     },
+     "detour_episode_rows": {
+      "n": 199,
+      "E_f": -12.465675354003906,
+      "f_mode": -12.381560325622559,
+      "f_logged": -12.785314559936523,
+      "f_best_detour": -13.58222770690918,
+      "signal_mean (best detour - E_f)": -1.1165521144866943,
+      "P_signal_positive": 0.24623115577889448,
+      "P_best_detour_above_logged": 0.37185929648241206,
+      "grad_proj_toward_detour_mean": 0.34614577889442444,
+      "P_grad_proj_positive": 0.6884422110552764,
+      "delta_total_at_target_held_mean": 3.4288949966430664,
+      "P_total_better_held": 0.04020100502512563,
+      "delta_total_at_target_widen_mean": 1.20695161819458,
+      "P_total_better_widen": 0.09045226130653267,
+      "total_path_held_mean": [
+       11.475748062133789,
+       11.896241188049316,
+       12.702644348144531,
+       13.665488243103027,
+       14.904644012451172
+      ],
+      "total_path_widen_mean": [
+       11.475748062133789,
+       11.760913848876953,
+       12.183964729309082,
+       12.445855140686035,
+       12.682694435119629
+      ],
+      "nll_logged_mean": -7.147923469543457
+     },
+     "by_goal_region": {
+      "corridor_after_hazard_2": {
+       "n": 616,
+       "E_f": -8.909629821777344,
+       "f_mode": -8.908368110656738,
+       "f_logged": -8.915779113769531,
+       "f_best_detour": -8.818187713623047,
+       "signal_mean (best detour - E_f)": 0.09144265949726105,
+       "P_signal_positive": 0.6022727272727273,
+       "P_best_detour_above_logged": 0.6055194805194806,
+       "grad_proj_toward_detour_mean": 0.029012376442551613,
+       "P_grad_proj_positive": 0.6006493506493507,
+       "delta_total_at_target_held_mean": 238.44784545898438,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.3081779479980469,
+       "P_total_better_widen": 0.012987012987012988,
+       "total_path_held_mean": [
+        7.674220561981201,
+        22.67076301574707,
+        67.36046600341797,
+        141.83433532714844,
+        246.12197875976562
+       ],
+       "total_path_widen_mean": [
+        7.674220561981201,
+        8.492366790771484,
+        8.700796127319336,
+        8.845708847045898,
+        8.982404708862305
+       ],
+       "nll_logged_mean": -15.806076049804688
+      },
+      "corridor_before_hazard_1": {
+       "n": 1040,
+       "E_f": -8.932764053344727,
+       "f_mode": -8.931597709655762,
+       "f_logged": -8.941276550292969,
+       "f_best_detour": -8.801911354064941,
+       "signal_mean (best detour - E_f)": 0.1308508962392807,
+       "P_signal_positive": 0.6067307692307692,
+       "P_best_detour_above_logged": 0.6096153846153847,
+       "grad_proj_toward_detour_mean": 0.02759382501244545,
+       "P_grad_proj_positive": 0.5846153846153846,
+       "delta_total_at_target_held_mean": 265.1932678222656,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.2867611646652222,
+       "P_total_better_widen": 0.01826923076923077,
+       "total_path_held_mean": [
+        7.682737827301025,
+        24.329605102539062,
+        74.025146484375,
+        156.85983276367188,
+        272.87579345703125
+       ],
+       "total_path_widen_mean": [
+        7.682737827301025,
+        8.49692440032959,
+        8.697200775146484,
+        8.837410926818848,
+        8.969497680664062
+       ],
+       "nll_logged_mean": -16.06720542907715
+      },
+      "detour_legs": null,
+      "goal_area": {
+       "n": 322,
+       "E_f": -8.942152976989746,
+       "f_mode": -8.941156387329102,
+       "f_logged": -8.95924186706543,
+       "f_best_detour": -8.793425559997559,
+       "signal_mean (best detour - E_f)": 0.1487267017364502,
+       "P_signal_positive": 0.6304347826086957,
+       "P_best_detour_above_logged": 0.6304347826086957,
+       "grad_proj_toward_detour_mean": 0.037607591599226,
+       "P_grad_proj_positive": 0.639751552795031,
+       "delta_total_at_target_held_mean": 260.8478088378906,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.2815239429473877,
+       "P_total_better_widen": 0.027950310559006212,
+       "total_path_held_mean": [
+        7.699145317077637,
+        24.075162887573242,
+        72.95799255371094,
+        154.4400177001953,
+        268.5471496582031
+       ],
+       "total_path_widen_mean": [
+        7.699145317077637,
+        8.528566360473633,
+        8.720844268798828,
+        8.851909637451172,
+        8.980666160583496
+       ],
+       "nll_logged_mean": -15.929204940795898
+      },
+      "hazard_corridor": {
+       "n": 1755,
+       "E_f": -8.919183731079102,
+       "f_mode": -8.91848373413086,
+       "f_logged": -8.926703453063965,
+       "f_best_detour": -8.799695014953613,
+       "signal_mean (best detour - E_f)": 0.11948917806148529,
+       "P_signal_positive": 0.6125356125356125,
+       "P_best_detour_above_logged": 0.6125356125356125,
+       "grad_proj_toward_detour_mean": 0.028921211138367653,
+       "P_grad_proj_positive": 0.6074074074074074,
+       "delta_total_at_target_held_mean": 266.6558837890625,
+       "P_total_better_held": 0.0005698005698005698,
+       "delta_total_at_target_widen_mean": 1.2944658994674683,
+       "P_total_better_widen": 0.017094017094017096,
+       "total_path_held_mean": [
+        7.676228046417236,
+        24.368568420410156,
+        74.32056427001953,
+        157.6303253173828,
+        274.33209228515625
+       ],
+       "total_path_widen_mean": [
+        7.676228046417236,
+        8.491744995117188,
+        8.693208694458008,
+        8.835343360900879,
+        8.97070598602295
+       ],
+       "nll_logged_mean": -15.937257766723633
+      },
+      "start": {
+       "n": 166,
+       "E_f": -8.928985595703125,
+       "f_mode": -8.928439140319824,
+       "f_logged": -8.936344146728516,
+       "f_best_detour": -8.871959686279297,
+       "signal_mean (best detour - E_f)": 0.05702554062008858,
+       "P_signal_positive": 0.5963855421686747,
+       "P_best_detour_above_logged": 0.5963855421686747,
+       "grad_proj_toward_detour_mean": 0.050540246069431305,
+       "P_grad_proj_positive": 0.5903614457831325,
+       "delta_total_at_target_held_mean": 162.3860321044922,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.228376030921936,
+       "P_total_better_widen": 0.03614457831325301,
+       "total_path_held_mean": [
+        7.71965217590332,
+        17.900798797607422,
+        48.308563232421875,
+        99.03275299072266,
+        170.1057586669922
+       ],
+       "total_path_widen_mean": [
+        7.71965217590332,
+        8.435558319091797,
+        8.646303176879883,
+        8.799650192260742,
+        8.948028564453125
+       ],
+       "nll_logged_mean": -15.27402114868164
+      }
+     },
+     "by_goal_offset": {
+      "m in [1, 10)": {
+       "n": 160,
+       "E_f": -8.916406631469727,
+       "f_mode": -8.916193008422852,
+       "f_logged": -8.915472030639648,
+       "f_best_detour": -8.793092727661133,
+       "signal_mean (best detour - E_f)": 0.12331435829401016,
+       "P_signal_positive": 0.61875,
+       "P_best_detour_above_logged": 0.6125,
+       "grad_proj_toward_detour_mean": 0.02937120571732521,
+       "P_grad_proj_positive": 0.55625,
+       "delta_total_at_target_held_mean": 229.18359375,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.2584056854248047,
+       "P_total_better_widen": 0.025,
+       "total_path_held_mean": [
+        7.644547462463379,
+        22.11136245727539,
+        65.07805633544922,
+        136.63302612304688,
+        236.8281707763672
+       ],
+       "total_path_widen_mean": [
+        7.644547462463379,
+        8.450735092163086,
+        8.639586448669434,
+        8.770733833312988,
+        8.902952194213867
+       ],
+       "nll_logged_mean": -16.52082633972168
+      },
+      "m in [10, 50)": {
+       "n": 651,
+       "E_f": -8.939754486083984,
+       "f_mode": -8.938737869262695,
+       "f_logged": -8.945603370666504,
+       "f_best_detour": -8.778571128845215,
+       "signal_mean (best detour - E_f)": 0.16118359565734863,
+       "P_signal_positive": 0.6390168970814132,
+       "P_best_detour_above_logged": 0.6436251920122887,
+       "grad_proj_toward_detour_mean": 0.025677388533949852,
+       "P_grad_proj_positive": 0.5745007680491552,
+       "delta_total_at_target_held_mean": 267.4625244140625,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.2727372646331787,
+       "P_total_better_widen": 0.018433179723502304,
+       "total_path_held_mean": [
+        7.680423259735107,
+        24.477832794189453,
+        74.60059356689453,
+        158.13909912109375,
+        275.14312744140625
+       ],
+       "total_path_widen_mean": [
+        7.680423259735107,
+        8.50022029876709,
+        8.693916320800781,
+        8.826761245727539,
+        8.953163146972656
+       ],
+       "nll_logged_mean": -16.248775482177734
+      },
+      "m in [50, 150)": {
+       "n": 1619,
+       "E_f": -8.921706199645996,
+       "f_mode": -8.92085075378418,
+       "f_logged": -8.931038856506348,
+       "f_best_detour": -8.81527328491211,
+       "signal_mean (best detour - E_f)": 0.10643249750137329,
+       "P_signal_positive": 0.5948116121062385,
+       "P_best_detour_above_logged": 0.5966646077825818,
+       "grad_proj_toward_detour_mean": 0.029015421867370605,
+       "P_grad_proj_positive": 0.5978999382334774,
+       "delta_total_at_target_held_mean": 264.32427978515625,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.2997697591781616,
+       "P_total_better_widen": 0.017912291537986413,
+       "total_path_held_mean": [
+        7.6829328536987305,
+        24.23090934753418,
+        73.74785614013672,
+        156.32778930664062,
+        272.00726318359375
+       ],
+       "total_path_widen_mean": [
+        7.6829328536987305,
+        8.494482040405273,
+        8.697882652282715,
+        8.843754768371582,
+        8.982711791992188
+       ],
+       "nll_logged_mean": -15.855142593383789
+      },
+      "m in [150, 100000)": {
+       "n": 1469,
+       "E_f": -8.919341087341309,
+       "f_mode": -8.918286323547363,
+       "f_logged": -8.928731918334961,
+       "f_best_detour": -8.808722496032715,
+       "signal_mean (best detour - E_f)": 0.11061831563711166,
+       "P_signal_positive": 0.6133424098025868,
+       "P_best_detour_above_logged": 0.6133424098025868,
+       "grad_proj_toward_detour_mean": 0.033651404082775116,
+       "P_grad_proj_positive": 0.6242341729067393,
+       "delta_total_at_target_held_mean": 247.02964782714844,
+       "P_total_better_held": 0.0006807351940095302,
+       "delta_total_at_target_widen_mean": 1.29216730594635,
+       "P_total_better_widen": 0.018379850238257316,
+       "total_path_held_mean": [
+        7.684124946594238,
+        23.182966232299805,
+        69.46858215332031,
+        146.63706970214844,
+        254.71377563476562
+       ],
+       "total_path_widen_mean": [
+        7.684124946594238,
+        8.495089530944824,
+        8.700345993041992,
+        8.842320442199707,
+        8.97629165649414
+       ],
+       "nll_logged_mean": -15.786420822143555
+      }
+     }
+    }
+   }
+  },
+  "CF_s2": {
+   "composition": {
+    "rows_drawn": 49152,
+    "region_share": {
+     "detour_legs": 0.044962565104166664,
+     "shortcut_corridor": 0.8748982747395834,
+     "start": 0.08013916015625
+    },
+    "route_share": {
+     "detour": 0.049702962239583336,
+     "shortcut": 0.9502970377604166
+    },
+    "goal_region_share_all_rows": {
+     "corridor_after_hazard_2": 0.2752888997395833,
+     "corridor_before_hazard_1": 0.060078938802083336,
+     "detour_legs": 0.041605631510416664,
+     "goal_area": 0.2768961588541667,
+     "hazard_corridor": 0.3422037760416667,
+     "start": 0.003926595052083333
+    },
+    "start_rows_analysed": 3939,
+    "start_rows_goal_region_share": {
+     "corridor_after_hazard_2": 0.15181518151815182,
+     "corridor_before_hazard_1": 0.24473216552424473,
+     "detour_legs": 0.040873318101040876,
+     "goal_area": 0.07438436151307438,
+     "hazard_corridor": 0.4391977659304392,
+     "start": 0.048997207413049
+    },
+    "start_rows_goal_offset_quantiles": {
+     "0.1": 22.80000000000001,
+     "0.25": 58.0,
+     "0.5": 121.0,
+     "0.75": 182.0,
+     "0.9": 227.0
+    },
+    "start_rows_route_share": {
+     "detour": 0.0462046204620462,
+     "shortcut": 0.9537953795379538
+    }
+   },
+   "pairing": {
+    "real_relabeled_goal": {
+     "all_start_rows": {
+      "n": 3939,
+      "E_f": -7.406095504760742,
+      "f_mode": -7.3726372718811035,
+      "f_logged": -7.613541126251221,
+      "f_best_detour": -7.909398555755615,
+      "signal_mean (best detour - E_f)": -0.5033027529716492,
+      "P_signal_positive": 0.3505965981213506,
+      "P_best_detour_above_logged": 0.38309215536938307,
+      "grad_proj_toward_detour_mean": -0.008018411695957184,
+      "P_grad_proj_positive": 0.4998730642294999,
+      "delta_total_at_target_held_mean": 248.08123779296875,
+      "P_total_better_held": 0.003554201574003554,
+      "delta_total_at_target_widen_mean": 1.8062671422958374,
+      "P_total_better_widen": 0.03554201574003554,
+      "total_path_held_mean": [
+       6.273738861083984,
+       21.42209243774414,
+       67.85985565185547,
+       145.52403259277344,
+       254.3547821044922
+      ],
+      "total_path_widen_mean": [
+       6.273738861083984,
+       7.117882251739502,
+       7.5342888832092285,
+       7.837629318237305,
+       8.079996109008789
+      ],
+      "nll_logged_mean": -15.249825477600098
+     },
+     "shortcut_episode_rows": {
+      "n": 3757,
+      "E_f": -7.506008625030518,
+      "f_mode": -7.485438823699951,
+      "f_logged": -7.643899917602539,
+      "f_best_detour": -8.04187297821045,
+      "signal_mean (best detour - E_f)": -0.5358642339706421,
+      "P_signal_positive": 0.33537396859196167,
+      "P_best_detour_above_logged": 0.36252328985893,
+      "grad_proj_toward_detour_mean": -0.00708566652610898,
+      "P_grad_proj_positive": 0.49960074527548576,
+      "delta_total_at_target_held_mean": 260.0147705078125,
+      "P_total_better_held": 0.0007985094490284802,
+      "delta_total_at_target_widen_mean": 1.849463701248169,
+      "P_total_better_widen": 0.03167420814479638,
+      "total_path_held_mean": [
+       6.35059928894043,
+       22.229106903076172,
+       70.90084075927734,
+       152.2993621826172,
+       266.3651428222656
+      ],
+      "total_path_widen_mean": [
+       6.35059928894043,
+       7.233017921447754,
+       7.660027027130127,
+       7.963386535644531,
+       8.200052261352539
+      ],
+      "nll_logged_mean": -15.61275577545166
+     },
+     "detour_episode_rows": {
+      "n": 182,
+      "E_f": -5.343604564666748,
+      "f_mode": -5.0440874099731445,
+      "f_logged": -6.986851215362549,
+      "f_best_detour": -5.174745559692383,
+      "signal_mean (best detour - E_f)": 0.16885825991630554,
+      "P_signal_positive": 0.6648351648351648,
+      "P_best_detour_above_logged": 0.8076923076923077,
+      "grad_proj_toward_detour_mean": -0.02727288007736206,
+      "P_grad_proj_positive": 0.5054945054945055,
+      "delta_total_at_target_held_mean": 1.7395360469818115,
+      "P_total_better_held": 0.06043956043956044,
+      "delta_total_at_target_widen_mean": 0.9145678877830505,
+      "P_total_better_widen": 0.11538461538461539,
+      "total_path_held_mean": [
+       4.687116622924805,
+       4.763176441192627,
+       5.0852131843566895,
+       5.662421703338623,
+       6.4266510009765625
+      ],
+      "total_path_widen_mean": [
+       4.687116622924805,
+       4.741218566894531,
+       4.938657283782959,
+       5.2416672706604,
+       5.601682662963867
+      ],
+      "nll_logged_mean": -7.7579169273376465
+     },
+     "by_goal_region": {
+      "corridor_after_hazard_2": {
+       "n": 598,
+       "E_f": -9.136220932006836,
+       "f_mode": -9.087320327758789,
+       "f_logged": -9.493056297302246,
+       "f_best_detour": -10.20873737335205,
+       "signal_mean (best detour - E_f)": -1.072516918182373,
+       "P_signal_positive": 0.2725752508361204,
+       "P_best_detour_above_logged": 0.31438127090301005,
+       "grad_proj_toward_detour_mean": -0.10594692826271057,
+       "P_grad_proj_positive": 0.43645484949832775,
+       "delta_total_at_target_held_mean": 230.41497802734375,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 2.232107400894165,
+       "P_total_better_widen": 0.051839464882943144,
+       "total_path_held_mean": [
+        7.960514545440674,
+        21.97628402709961,
+        65.18231964111328,
+        137.38259887695312,
+        238.3753662109375
+       ],
+       "total_path_widen_mean": [
+        7.960514545440674,
+        8.834564208984375,
+        9.426478385925293,
+        9.870991706848145,
+        10.192618370056152
+       ],
+       "nll_logged_mean": -14.419896125793457
+      },
+      "corridor_before_hazard_1": {
+       "n": 964,
+       "E_f": -6.168680191040039,
+       "f_mode": -6.166656017303467,
+       "f_logged": -6.168120861053467,
+       "f_best_detour": -6.112585067749023,
+       "signal_mean (best detour - E_f)": 0.0560951754450798,
+       "P_signal_positive": 0.504149377593361,
+       "P_best_detour_above_logged": 0.49688796680497926,
+       "grad_proj_toward_detour_mean": 0.1951504498720169,
+       "P_grad_proj_positive": 0.6587136929460581,
+       "delta_total_at_target_held_mean": 289.3691101074219,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.4313433170318604,
+       "P_total_better_widen": 0.022821576763485476,
+       "total_path_held_mean": [
+        5.036673545837402,
+        22.783737182617188,
+        76.9435043334961,
+        167.4480743408203,
+        294.40582275390625
+       ],
+       "total_path_widen_mean": [
+        5.036673545837402,
+        5.912720203399658,
+        6.185268402099609,
+        6.334286689758301,
+        6.468019485473633
+       ],
+       "nll_logged_mean": -16.47698211669922
+      },
+      "detour_legs": null,
+      "goal_area": {
+       "n": 286,
+       "E_f": -9.968460083007812,
+       "f_mode": -9.926206588745117,
+       "f_logged": -10.25924301147461,
+       "f_best_detour": -10.247865676879883,
+       "signal_mean (best detour - E_f)": -0.27940577268600464,
+       "P_signal_positive": 0.46153846153846156,
+       "P_best_detour_above_logged": 0.548951048951049,
+       "grad_proj_toward_detour_mean": 0.030999863520264626,
+       "P_grad_proj_positive": 0.5209790209790209,
+       "delta_total_at_target_held_mean": 228.61776733398438,
+       "P_total_better_held": 0.006993006993006993,
+       "delta_total_at_target_widen_mean": 1.6109943389892578,
+       "P_total_better_widen": 0.07342657342657342,
+       "total_path_held_mean": [
+        8.786667823791504,
+        22.747648239135742,
+        65.59013366699219,
+        137.12193298339844,
+        237.4044952392578
+       ],
+       "total_path_widen_mean": [
+        8.786667823791504,
+        9.545146942138672,
+        9.934694290161133,
+        10.19152545928955,
+        10.397664070129395
+       ],
+       "nll_logged_mean": -13.711600303649902
+      },
+      "hazard_corridor": {
+       "n": 1730,
+       "E_f": -7.578418731689453,
+       "f_mode": -7.560306549072266,
+       "f_logged": -7.700756549835205,
+       "f_best_detour": -8.396163940429688,
+       "signal_mean (best detour - E_f)": -0.8177451491355896,
+       "P_signal_positive": 0.21098265895953758,
+       "P_best_detour_above_logged": 0.24277456647398843,
+       "grad_proj_toward_detour_mean": -0.11102024465799332,
+       "P_grad_proj_positive": 0.41271676300578036,
+       "delta_total_at_target_held_mean": 272.50335693359375,
+       "P_total_better_held": 0.0005780346820809249,
+       "delta_total_at_target_widen_mean": 2.071793794631958,
+       "P_total_better_widen": 0.013294797687861272,
+       "total_path_held_mean": [
+        6.400289058685303,
+        23.01612091064453,
+        73.99944305419922,
+        159.34326171875,
+        278.90374755859375
+       ],
+       "total_path_widen_mean": [
+        6.400289058685303,
+        7.329721927642822,
+        7.817365646362305,
+        8.189573287963867,
+        8.47209644317627
+       ],
+       "nll_logged_mean": -15.985135078430176
+      },
+      "start": {
+       "n": 179,
+       "E_f": -4.627719879150391,
+       "f_mode": -4.612821102142334,
+       "f_logged": -4.685830116271973,
+       "f_best_detour": -4.244162559509277,
+       "signal_mean (best detour - E_f)": 0.3835568428039551,
+       "P_signal_positive": 0.6368715083798883,
+       "P_best_detour_above_logged": 0.659217877094972,
+       "grad_proj_toward_detour_mean": 0.1777062863111496,
+       "P_grad_proj_positive": 0.659217877094972,
+       "delta_total_at_target_held_mean": 130.27879333496094,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.0551515817642212,
+       "P_total_better_widen": 0.12290502793296089,
+       "total_path_held_mean": [
+        3.6757209300994873,
+        11.652352333068848,
+        36.00034713745117,
+        76.72344970703125,
+        133.9545135498047
+       ],
+       "total_path_widen_mean": [
+        3.6757209300994873,
+        4.36435604095459,
+        4.54594612121582,
+        4.617741107940674,
+        4.730872631072998
+       ],
+       "nll_logged_mean": -14.382198333740234
+      }
+     },
+     "by_goal_offset": {
+      "m in [1, 10)": {
+       "n": 167,
+       "E_f": -4.745340824127197,
+       "f_mode": -4.737341403961182,
+       "f_logged": -4.772159099578857,
+       "f_best_detour": -4.303960800170898,
+       "signal_mean (best detour - E_f)": 0.4413807690143585,
+       "P_signal_positive": 0.6706586826347305,
+       "P_best_detour_above_logged": 0.6766467065868264,
+       "grad_proj_toward_detour_mean": 0.18891370296478271,
+       "P_grad_proj_positive": 0.6526946107784432,
+       "delta_total_at_target_held_mean": 226.746826171875,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.1138710975646973,
+       "P_total_better_widen": 0.11976047904191617,
+       "total_path_held_mean": [
+        3.7119929790496826,
+        17.589969635009766,
+        59.9942512512207,
+        130.91648864746094,
+        230.4588623046875
+       ],
+       "total_path_widen_mean": [
+        3.7119929790496826,
+        4.463596820831299,
+        4.6377434730529785,
+        4.712043762207031,
+        4.825864315032959
+       ],
+       "nll_logged_mean": -15.9116849899292
+      },
+      "m in [10, 50)": {
+       "n": 652,
+       "E_f": -5.6762309074401855,
+       "f_mode": -5.671614170074463,
+       "f_logged": -5.6803975105285645,
+       "f_best_detour": -5.639719009399414,
+       "signal_mean (best detour - E_f)": 0.03651239350438118,
+       "P_signal_positive": 0.495398773006135,
+       "P_best_detour_above_logged": 0.49233128834355827,
+       "grad_proj_toward_detour_mean": 0.20054031908512115,
+       "P_grad_proj_positive": 0.6702453987730062,
+       "delta_total_at_target_held_mean": 271.9132995605469,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.450808048248291,
+       "P_total_better_widen": 0.018404907975460124,
+       "total_path_held_mean": [
+        4.566117763519287,
+        21.273067474365234,
+        72.19274139404297,
+        157.2156219482422,
+        276.4794006347656
+       ],
+       "total_path_widen_mean": [
+        4.566117763519287,
+        5.443124771118164,
+        5.729302883148193,
+        5.8786492347717285,
+        6.016922473907471
+       ],
+       "nll_logged_mean": -16.52226448059082
+      },
+      "m in [50, 150)": {
+       "n": 1545,
+       "E_f": -7.255363941192627,
+       "f_mode": -7.244363307952881,
+       "f_logged": -7.328210830688477,
+       "f_best_detour": -7.805200099945068,
+       "signal_mean (best detour - E_f)": -0.549836277961731,
+       "P_signal_positive": 0.2757281553398058,
+       "P_best_detour_above_logged": 0.29902912621359223,
+       "grad_proj_toward_detour_mean": -0.03547030687332153,
+       "P_grad_proj_positive": 0.4666666666666667,
+       "delta_total_at_target_held_mean": 277.5482177734375,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.867782473564148,
+       "P_total_better_widen": 0.012297734627831715,
+       "total_path_held_mean": [
+        6.088760852813721,
+        23.024503707885742,
+        74.93794250488281,
+        161.83172607421875,
+        283.636962890625
+       ],
+       "total_path_widen_mean": [
+        6.088760852813721,
+        7.007328510284424,
+        7.419345378875732,
+        7.721196174621582,
+        7.956553936004639
+       ],
+       "nll_logged_mean": -16.086217880249023
+      },
+      "m in [150, 100000)": {
+       "n": 1393,
+       "E_f": -8.97140121459961,
+       "f_mode": -8.931244850158691,
+       "f_logged": -9.257340431213379,
+       "f_best_detour": -9.876830101013184,
+       "signal_mean (best detour - E_f)": -0.9054282903671265,
+       "P_signal_positive": 0.2864321608040201,
+       "P_best_detour_above_logged": 0.334529791816224,
+       "grad_proj_toward_detour_mean": -0.0962814912199974,
+       "P_grad_proj_positive": 0.4379038047379756,
+       "delta_total_at_target_held_mean": 238.9872283935547,
+       "P_total_better_held": 0.0021536252692031586,
+       "delta_total_at_target_widen_mean": 2.1039252281188965,
+       "P_total_better_widen": 0.048815506101938265,
+       "total_path_held_mean": [
+        7.7925591468811035,
+        22.350635528564453,
+        67.12598419189453,
+        141.98956298828125,
+        246.7798309326172
+       ],
+       "total_path_widen_mean": [
+        7.7925591468811035,
+        8.653143882751465,
+        9.192986488342285,
+        9.5975341796875,
+        9.896489143371582
+       ],
+       "nll_logged_mean": -14.626091957092285
+      }
+     }
+    },
+    "task_goal_same_rows": {
+     "all_start_rows": {
+      "n": 3939,
+      "E_f": -10.286775588989258,
+      "f_mode": -10.239839553833008,
+      "f_logged": -10.62897777557373,
+      "f_best_detour": -10.31367015838623,
+      "signal_mean (best detour - E_f)": -0.02689531445503235,
+      "P_signal_positive": 0.5234831175425235,
+      "P_best_detour_above_logged": 0.5932977913175933,
+      "grad_proj_toward_detour_mean": 0.09448463469743729,
+      "P_grad_proj_positive": 0.5544554455445545,
+      "delta_total_at_target_held_mean": 202.3128662109375,
+      "P_total_better_held": 0.014470677837014471,
+      "delta_total_at_target_widen_mean": 1.392736554145813,
+      "P_total_better_widen": 0.10256410256410256,
+      "total_path_held_mean": [
+       9.125788688659668,
+       21.466127395629883,
+       59.329524993896484,
+       122.6468505859375,
+       211.4385528564453
+      ],
+      "total_path_widen_mean": [
+       9.125788688659668,
+       9.84345531463623,
+       10.155041694641113,
+       10.352252006530762,
+       10.518525123596191
+      ],
+      "nll_logged_mean": -12.931896209716797
+     },
+     "shortcut_episode_rows": {
+      "n": 3757,
+      "E_f": -10.247884750366211,
+      "f_mode": -10.209084510803223,
+      "f_logged": -10.544262886047363,
+      "f_best_detour": -10.281936645507812,
+      "signal_mean (best detour - E_f)": -0.0340510755777359,
+      "P_signal_positive": 0.523822198562683,
+      "P_best_detour_above_logged": 0.593026350811818,
+      "grad_proj_toward_detour_mean": 0.08771450817584991,
+      "P_grad_proj_positive": 0.5507053500133084,
+      "delta_total_at_target_held_mean": 212.02191162109375,
+      "P_total_better_held": 0.004791056694170881,
+      "delta_total_at_target_widen_mean": 1.4349405765533447,
+      "P_total_better_widen": 0.09422411498536067,
+      "total_path_held_mean": [
+       9.078177452087402,
+       22.012588500976562,
+       61.69290542602539,
+       128.0483856201172,
+       221.09994506835938
+      ],
+      "total_path_widen_mean": [
+       9.078177452087402,
+       9.828268051147461,
+       10.148000717163086,
+       10.347090721130371,
+       10.513111114501953
+      ],
+      "nll_logged_mean": -13.152801513671875
+     },
+     "detour_episode_rows": {
+      "n": 182,
+      "E_f": -11.089587211608887,
+      "f_mode": -10.874704360961914,
+      "f_logged": -12.37771224975586,
+      "f_best_detour": -10.968768119812012,
+      "signal_mean (best detour - E_f)": 0.12081994116306305,
+      "P_signal_positive": 0.5164835164835165,
+      "P_best_detour_above_logged": 0.5989010989010989,
+      "grad_proj_toward_detour_mean": 0.23423947393894196,
+      "P_grad_proj_positive": 0.6318681318681318,
+      "delta_total_at_target_held_mean": 1.890429139137268,
+      "P_total_better_held": 0.21428571428571427,
+      "delta_total_at_target_widen_mean": 0.5215239524841309,
+      "P_total_better_widen": 0.27472527472527475,
+      "total_path_held_mean": [
+       10.108648300170898,
+       10.185734748840332,
+       10.542856216430664,
+       11.143298149108887,
+       11.999076843261719
+      ],
+      "total_path_widen_mean": [
+       10.108648300170898,
+       10.15681266784668,
+       10.300420761108398,
+       10.45893383026123,
+       10.630171775817871
+      ],
+      "nll_logged_mean": -8.371786117553711
+     },
+     "by_goal_region": {
+      "corridor_after_hazard_2": {
+       "n": 598,
+       "E_f": -10.289353370666504,
+       "f_mode": -10.249855041503906,
+       "f_logged": -10.60804557800293,
+       "f_best_detour": -10.347021102905273,
+       "signal_mean (best detour - E_f)": -0.05766754969954491,
+       "P_signal_positive": 0.5183946488294314,
+       "P_best_detour_above_logged": 0.5869565217391305,
+       "grad_proj_toward_detour_mean": 0.08638537675142288,
+       "P_grad_proj_positive": 0.5351170568561873,
+       "delta_total_at_target_held_mean": 205.87828063964844,
+       "P_total_better_held": 0.0033444816053511705,
+       "delta_total_at_target_widen_mean": 1.448543667793274,
+       "P_total_better_widen": 0.09866220735785954,
+       "total_path_held_mean": [
+        9.129433631896973,
+        21.667144775390625,
+        60.211585998535156,
+        124.65377044677734,
+        215.00770568847656
+       ],
+       "total_path_widen_mean": [
+        9.129433631896973,
+        9.865917205810547,
+        10.202888488769531,
+        10.410625457763672,
+        10.577980041503906
+       ],
+       "nll_logged_mean": -12.907772064208984
+      },
+      "corridor_before_hazard_1": {
+       "n": 964,
+       "E_f": -10.218818664550781,
+       "f_mode": -10.182991981506348,
+       "f_logged": -10.51008129119873,
+       "f_best_detour": -10.278711318969727,
+       "signal_mean (best detour - E_f)": -0.05989168956875801,
+       "P_signal_positive": 0.5,
+       "P_best_detour_above_logged": 0.5715767634854771,
+       "grad_proj_toward_detour_mean": 0.08194368332624435,
+       "P_grad_proj_positive": 0.5643153526970954,
+       "delta_total_at_target_held_mean": 227.55255126953125,
+       "P_total_better_held": 0.005186721991701245,
+       "delta_total_at_target_widen_mean": 1.4596190452575684,
+       "P_total_better_widen": 0.0912863070539419,
+       "total_path_held_mean": [
+        9.044242858886719,
+        22.87308120727539,
+        65.43977355957031,
+        136.68222045898438,
+        236.59693908691406
+       ],
+       "total_path_widen_mean": [
+        9.044242858886719,
+        9.810564041137695,
+        10.13860034942627,
+        10.339820861816406,
+        10.503868103027344
+       ],
+       "nll_logged_mean": -13.281354904174805
+      },
+      "detour_legs": null,
+      "goal_area": {
+       "n": 286,
+       "E_f": -10.241217613220215,
+       "f_mode": -10.199833869934082,
+       "f_logged": -10.505685806274414,
+       "f_best_detour": -10.264030456542969,
+       "signal_mean (best detour - E_f)": -0.022813105955719948,
+       "P_signal_positive": 0.5034965034965035,
+       "P_best_detour_above_logged": 0.5874125874125874,
+       "grad_proj_toward_detour_mean": 0.138918936252594,
+       "P_grad_proj_positive": 0.5909090909090909,
+       "delta_total_at_target_held_mean": 211.07249450683594,
+       "P_total_better_held": 0.006993006993006993,
+       "delta_total_at_target_widen_mean": 1.396560788154602,
+       "P_total_better_widen": 0.0944055944055944,
+       "total_path_held_mean": [
+        9.07002067565918,
+        21.956029891967773,
+        61.47307205200195,
+        127.52022552490234,
+        220.142578125
+       ],
+       "total_path_widen_mean": [
+        9.07002067565918,
+        9.765029907226562,
+        10.077239036560059,
+        10.286177635192871,
+        10.466584205627441
+       ],
+       "nll_logged_mean": -13.210805892944336
+      },
+      "hazard_corridor": {
+       "n": 1730,
+       "E_f": -10.243582725524902,
+       "f_mode": -10.207432746887207,
+       "f_logged": -10.529157638549805,
+       "f_best_detour": -10.258140563964844,
+       "signal_mean (best detour - E_f)": -0.01455764565616846,
+       "P_signal_positive": 0.5421965317919075,
+       "P_best_detour_above_logged": 0.6040462427745664,
+       "grad_proj_toward_detour_mean": 0.08007284253835678,
+       "P_grad_proj_positive": 0.5387283236994219,
+       "delta_total_at_target_held_mean": 214.86183166503906,
+       "P_total_better_held": 0.002890173410404624,
+       "delta_total_at_target_widen_mean": 1.4336830377578735,
+       "P_total_better_widen": 0.09132947976878612,
+       "total_path_held_mean": [
+        9.065467834472656,
+        22.203126907348633,
+        62.41531753540039,
+        129.64596557617188,
+        223.927490234375
+       ],
+       "total_path_widen_mean": [
+        9.065467834472656,
+        9.833975791931152,
+        10.145408630371094,
+        10.337539672851562,
+        10.49915885925293
+       ],
+       "nll_logged_mean": -13.319777488708496
+      },
+      "start": {
+       "n": 179,
+       "E_f": -10.318099975585938,
+       "f_mode": -10.244146347045898,
+       "f_logged": -10.722898483276367,
+       "f_best_detour": -10.340445518493652,
+       "signal_mean (best detour - E_f)": -0.02234540693461895,
+       "P_signal_positive": 0.5251396648044693,
+       "P_best_detour_above_logged": 0.6312849162011173,
+       "grad_proj_toward_detour_mean": 0.11527600884437561,
+       "P_grad_proj_positive": 0.5810055865921788,
+       "delta_total_at_target_held_mean": 122.9763412475586,
+       "P_total_better_held": 0.0223463687150838,
+       "delta_total_at_target_widen_mean": 1.3300647735595703,
+       "P_total_better_widen": 0.12290502793296089,
+       "total_path_held_mean": [
+        9.22510814666748,
+        16.78120231628418,
+        39.834354400634766,
+        78.29367065429688,
+        132.2014617919922
+       ],
+       "total_path_widen_mean": [
+        9.22510814666748,
+        9.843807220458984,
+        10.15347671508789,
+        10.363459587097168,
+        10.555170059204102
+       ],
+       "nll_logged_mean": -11.572595596313477
+      }
+     },
+     "by_goal_offset": {
+      "m in [1, 10)": {
+       "n": 167,
+       "E_f": -10.295381546020508,
+       "f_mode": -10.253339767456055,
+       "f_logged": -10.553991317749023,
+       "f_best_detour": -10.360368728637695,
+       "signal_mean (best detour - E_f)": -0.06498757004737854,
+       "P_signal_positive": 0.48502994011976047,
+       "P_best_detour_above_logged": 0.5568862275449101,
+       "grad_proj_toward_detour_mean": 0.05308547616004944,
+       "P_grad_proj_positive": 0.5508982035928144,
+       "delta_total_at_target_held_mean": 209.00161743164062,
+       "P_total_better_held": 0.011976047904191617,
+       "delta_total_at_target_widen_mean": 1.4850128889083862,
+       "P_total_better_widen": 0.11976047904191617,
+       "total_path_held_mean": [
+        9.095491409301758,
+        21.85018539428711,
+        60.947669982910156,
+        126.3570327758789,
+        218.09713745117188
+       ],
+       "total_path_widen_mean": [
+        9.095491409301758,
+        9.871718406677246,
+        10.195128440856934,
+        10.397255897521973,
+        10.580506324768066
+       ],
+       "nll_logged_mean": -13.66122055053711
+      },
+      "m in [10, 50)": {
+       "n": 652,
+       "E_f": -10.243074417114258,
+       "f_mode": -10.206324577331543,
+       "f_logged": -10.538999557495117,
+       "f_best_detour": -10.288697242736816,
+       "signal_mean (best detour - E_f)": -0.04562358558177948,
+       "P_signal_positive": 0.495398773006135,
+       "P_best_detour_above_logged": 0.5751533742331288,
+       "grad_proj_toward_detour_mean": 0.08725902438163757,
+       "P_grad_proj_positive": 0.5644171779141104,
+       "delta_total_at_target_held_mean": 219.5226287841797,
+       "P_total_better_held": 0.006134969325153374,
+       "delta_total_at_target_widen_mean": 1.4461941719055176,
+       "P_total_better_widen": 0.08128834355828221,
+       "total_path_held_mean": [
+        9.066258430480957,
+        22.44108772277832,
+        63.5261344909668,
+        132.2369842529297,
+        228.5889129638672
+       ],
+       "total_path_widen_mean": [
+        9.066258430480957,
+        9.830251693725586,
+        10.160174369812012,
+        10.355587005615234,
+        10.512455940246582
+       ],
+       "nll_logged_mean": -13.318078994750977
+      },
+      "m in [50, 150)": {
+       "n": 1545,
+       "E_f": -10.245891571044922,
+       "f_mode": -10.208227157592773,
+       "f_logged": -10.534053802490234,
+       "f_best_detour": -10.261667251586914,
+       "signal_mean (best detour - E_f)": -0.015775978565216064,
+       "P_signal_positive": 0.5533980582524272,
+       "P_best_detour_above_logged": 0.6110032362459547,
+       "grad_proj_toward_detour_mean": 0.07623174786567688,
+       "P_grad_proj_positive": 0.5469255663430421,
+       "delta_total_at_target_held_mean": 214.77230834960938,
+       "P_total_better_held": 0.003883495145631068,
+       "delta_total_at_target_widen_mean": 1.4258469343185425,
+       "P_total_better_widen": 0.09320388349514563,
+       "total_path_held_mean": [
+        9.076915740966797,
+        22.18305206298828,
+        62.357872009277344,
+        129.5746307373047,
+        223.84921264648438
+       ],
+       "total_path_widen_mean": [
+        9.076915740966797,
+        9.844564437866211,
+        10.149182319641113,
+        10.339889526367188,
+        10.502782821655273
+       ],
+       "nll_logged_mean": -13.15129280090332
+      },
+      "m in [150, 100000)": {
+       "n": 1393,
+       "E_f": -10.246652603149414,
+       "f_mode": -10.206023216247559,
+       "f_logged": -10.556884765625,
+       "f_best_detour": -10.291848182678223,
+       "signal_mean (best detour - E_f)": -0.045194901525974274,
+       "P_signal_positive": 0.5089734386216799,
+       "P_best_detour_above_logged": 0.5857860732232592,
+       "grad_proj_toward_detour_mean": 0.10481494665145874,
+       "P_grad_proj_positive": 0.548456568557071,
+       "delta_total_at_target_held_mean": 205.82275390625,
+       "P_total_better_held": 0.004307250538406317,
+       "delta_total_at_target_widen_mean": 1.433755874633789,
+       "P_total_better_widen": 0.09834888729361091,
+       "total_path_held_mean": [
+        9.083027839660645,
+        21.64242935180664,
+        60.18697738647461,
+        124.59776306152344,
+        214.90586853027344
+       ],
+       "total_path_widen_mean": [
+        9.083027839660645,
+        9.804072380065918,
+        10.13536548614502,
+        10.345075607299805,
+        10.516788482666016
+       ],
+       "nll_logged_mean": -13.01616382598877
+      }
+     }
+    }
+   }
+  },
+  "O_s2": {
+   "composition": {
+    "rows_drawn": 49152,
+    "region_share": {
+     "detour_legs": 0.044962565104166664,
+     "shortcut_corridor": 0.8748982747395834,
+     "start": 0.08013916015625
+    },
+    "route_share": {
+     "detour": 0.049702962239583336,
+     "shortcut": 0.9502970377604166
+    },
+    "goal_region_share_all_rows": {
+     "corridor_after_hazard_2": 0.2752888997395833,
+     "corridor_before_hazard_1": 0.060078938802083336,
+     "detour_legs": 0.041605631510416664,
+     "goal_area": 0.2768961588541667,
+     "hazard_corridor": 0.3422037760416667,
+     "start": 0.003926595052083333
+    },
+    "start_rows_analysed": 3939,
+    "start_rows_goal_region_share": {
+     "corridor_after_hazard_2": 0.15181518151815182,
+     "corridor_before_hazard_1": 0.24473216552424473,
+     "detour_legs": 0.040873318101040876,
+     "goal_area": 0.07438436151307438,
+     "hazard_corridor": 0.4391977659304392,
+     "start": 0.048997207413049
+    },
+    "start_rows_goal_offset_quantiles": {
+     "0.1": 22.80000000000001,
+     "0.25": 58.0,
+     "0.5": 121.0,
+     "0.75": 182.0,
+     "0.9": 227.0
+    },
+    "start_rows_route_share": {
+     "detour": 0.0462046204620462,
+     "shortcut": 0.9537953795379538
+    }
+   },
+   "pairing": {
+    "real_relabeled_goal": {
+     "all_start_rows": {
+      "n": 3939,
+      "E_f": -6.361142158508301,
+      "f_mode": -6.352604866027832,
+      "f_logged": -6.387820720672607,
+      "f_best_detour": -6.844497203826904,
+      "signal_mean (best detour - E_f)": -0.4833543002605438,
+      "P_signal_positive": 0.1843107387661843,
+      "P_best_detour_above_logged": 0.19446560040619446,
+      "grad_proj_toward_detour_mean": 0.038065895438194275,
+      "P_grad_proj_positive": 0.6430566133536431,
+      "delta_total_at_target_held_mean": 317.7856140136719,
+      "P_total_better_held": 0.002284843869002285,
+      "delta_total_at_target_widen_mean": 1.786039113998413,
+      "P_total_better_widen": 0.005839045443005839,
+      "total_path_held_mean": [
+       5.165230751037598,
+       25.230836868286133,
+       84.93457794189453,
+       184.1912078857422,
+       322.950439453125
+      ],
+      "total_path_widen_mean": [
+       5.165230751037598,
+       6.046878814697266,
+       6.426799774169922,
+       6.717848777770996,
+       6.951265811920166
+      ],
+      "nll_logged_mean": -17.557518005371094
+     },
+     "shortcut_episode_rows": {
+      "n": 3757,
+      "E_f": -6.486655235290527,
+      "f_mode": -6.484959125518799,
+      "f_logged": -6.490331649780273,
+      "f_best_detour": -6.998115062713623,
+      "signal_mean (best detour - E_f)": -0.5114591717720032,
+      "P_signal_positive": 0.16156507852009583,
+      "P_best_detour_above_logged": 0.16396060686718125,
+      "grad_proj_toward_detour_mean": 0.03798907995223999,
+      "P_grad_proj_positive": 0.6462603140803833,
+      "delta_total_at_target_held_mean": 333.06787109375,
+      "P_total_better_held": 0.00026616981634282674,
+      "delta_total_at_target_widen_mean": 1.8388839960098267,
+      "P_total_better_widen": 0.002661698163428267,
+      "total_path_held_mean": [
+       5.274065017700195,
+       26.30608367919922,
+       88.88192749023438,
+       192.9118194580078,
+       338.341552734375
+      ],
+      "total_path_widen_mean": [
+       5.274065017700195,
+       6.194234371185303,
+       6.584685325622559,
+       6.880354404449463,
+       7.112945556640625
+      ],
+      "nll_logged_mean": -17.764310836791992
+     },
+     "detour_episode_rows": {
+      "n": 182,
+      "E_f": -3.7702009677886963,
+      "f_mode": -3.6204357147216797,
+      "f_logged": -4.271706581115723,
+      "f_best_detour": -3.6733908653259277,
+      "signal_mean (best detour - E_f)": 0.09681011736392975,
+      "P_signal_positive": 0.6538461538461539,
+      "P_best_detour_above_logged": 0.8241758241758241,
+      "grad_proj_toward_detour_mean": 0.0396515391767025,
+      "P_grad_proj_positive": 0.5769230769230769,
+      "delta_total_at_target_held_mean": 2.316124439239502,
+      "P_total_better_held": 0.04395604395604396,
+      "delta_total_at_target_widen_mean": 0.6951698660850525,
+      "P_total_better_widen": 0.07142857142857142,
+      "total_path_held_mean": [
+       2.9185519218444824,
+       3.0346591472625732,
+       3.4505419731140137,
+       4.173431873321533,
+       5.234677791595459
+      ],
+      "total_path_widen_mean": [
+       2.9185519218444824,
+       3.0051186084747314,
+       3.1675679683685303,
+       3.363297939300537,
+       3.613722324371338
+      ],
+      "nll_logged_mean": -13.288772583007812
+     },
+     "by_goal_region": {
+      "corridor_after_hazard_2": {
+       "n": 598,
+       "E_f": -7.616384029388428,
+       "f_mode": -7.614951133728027,
+       "f_logged": -7.6164631843566895,
+       "f_best_detour": -8.267668724060059,
+       "signal_mean (best detour - E_f)": -0.6512856483459473,
+       "P_signal_positive": 0.030100334448160536,
+       "P_best_detour_above_logged": 0.030100334448160536,
+       "grad_proj_toward_detour_mean": 0.019350139424204826,
+       "P_grad_proj_positive": 0.6137123745819398,
+       "delta_total_at_target_held_mean": 330.6546325683594,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.9281822443008423,
+       "P_total_better_widen": 0.0,
+       "total_path_held_mean": [
+        6.346388816833496,
+        27.208843231201172,
+        89.33142852783203,
+        192.6195068359375,
+        337.0010070800781
+       ],
+       "total_path_widen_mean": [
+        6.346388816833496,
+        7.286984443664551,
+        7.705060005187988,
+        8.0308837890625,
+        8.274563789367676
+       ],
+       "nll_logged_mean": -17.77692985534668
+      },
+      "corridor_before_hazard_1": {
+       "n": 964,
+       "E_f": -5.474118232727051,
+       "f_mode": -5.4723286628723145,
+       "f_logged": -5.4754319190979,
+       "f_best_detour": -6.209096908569336,
+       "signal_mean (best detour - E_f)": -0.7349786758422852,
+       "P_signal_positive": 0.12344398340248963,
+       "P_best_detour_above_logged": 0.1275933609958506,
+       "grad_proj_toward_detour_mean": 0.051272887736558914,
+       "P_grad_proj_positive": 0.6514522821576764,
+       "delta_total_at_target_held_mean": 339.97515869140625,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 2.0127358436584473,
+       "P_total_better_widen": 0.0,
+       "total_path_held_mean": [
+        4.308886528015137,
+        25.80171775817871,
+        89.7084732055664,
+        195.88623046875,
+        344.2836608886719
+       ],
+       "total_path_widen_mean": [
+        4.308886528015137,
+        5.257246017456055,
+        5.703150272369385,
+        6.049013137817383,
+        6.321621417999268
+       ],
+       "nll_logged_mean": -17.833126068115234
+      },
+      "detour_legs": null,
+      "goal_area": {
+       "n": 286,
+       "E_f": -8.25792121887207,
+       "f_mode": -8.258241653442383,
+       "f_logged": -8.264318466186523,
+       "f_best_detour": -8.356283187866211,
+       "signal_mean (best detour - E_f)": -0.09836173057556152,
+       "P_signal_positive": 0.4195804195804196,
+       "P_best_detour_above_logged": 0.4230769230769231,
+       "grad_proj_toward_detour_mean": 0.053751152008771896,
+       "P_grad_proj_positive": 0.7272727272727273,
+       "delta_total_at_target_held_mean": 336.32537841796875,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.4807180166244507,
+       "P_total_better_widen": 0.0,
+       "total_path_held_mean": [
+        6.977694511413574,
+        28.164913177490234,
+        91.27725982666016,
+        196.3134307861328,
+        343.30316162109375
+       ],
+       "total_path_widen_mean": [
+        6.977694511413574,
+        7.839532852172852,
+        8.1143217086792,
+        8.299666404724121,
+        8.458416938781738
+       ],
+       "nll_logged_mean": -17.36038589477539
+      },
+      "hazard_corridor": {
+       "n": 1730,
+       "E_f": -6.584643840789795,
+       "f_mode": -6.583755016326904,
+       "f_logged": -6.5858941078186035,
+       "f_best_detour": -7.058129787445068,
+       "signal_mean (best detour - E_f)": -0.4734863340854645,
+       "P_signal_positive": 0.14219653179190753,
+       "P_best_detour_above_logged": 0.14450867052023122,
+       "grad_proj_toward_detour_mean": 0.028492756187915802,
+       "P_grad_proj_positive": 0.6404624277456648,
+       "delta_total_at_target_held_mean": 343.9723205566406,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.8257410526275635,
+       "P_total_better_widen": 0.0,
+       "total_path_held_mean": [
+        5.357646942138672,
+        27.077207565307617,
+        91.7005386352539,
+        199.1439666748047,
+        349.3300476074219
+       ],
+       "total_path_widen_mean": [
+        5.357646942138672,
+        6.281672954559326,
+        6.668944358825684,
+        6.960314750671387,
+        7.183394908905029
+       ],
+       "nll_logged_mean": -17.956087112426758
+      },
+      "start": {
+       "n": 179,
+       "E_f": -4.388373374938965,
+       "f_mode": -4.37526273727417,
+       "f_logged": -4.435873508453369,
+       "f_best_detour": -4.255977153778076,
+       "signal_mean (best detour - E_f)": 0.13239645957946777,
+       "P_signal_positive": 0.5810055865921788,
+       "P_best_detour_above_logged": 0.5810055865921788,
+       "grad_proj_toward_detour_mean": 0.0953141301870346,
+       "P_grad_proj_positive": 0.6536312849162011,
+       "delta_total_at_target_held_mean": 193.33706665039062,
+       "P_total_better_held": 0.00558659217877095,
+       "delta_total_at_target_widen_mean": 1.3035719394683838,
+       "P_total_better_widen": 0.055865921787709494,
+       "total_path_held_mean": [
+        3.3597776889801025,
+        15.583585739135742,
+        51.85955047607422,
+        112.20441436767578,
+        196.69686889648438
+       ],
+       "total_path_widen_mean": [
+        3.3597776889801025,
+        4.115884304046631,
+        4.330895900726318,
+        4.473119735717773,
+        4.663349628448486
+       ],
+       "nll_logged_mean": -16.1434326171875
+      }
+     },
+     "by_goal_offset": {
+      "m in [1, 10)": {
+       "n": 167,
+       "E_f": -4.597680568695068,
+       "f_mode": -4.585388660430908,
+       "f_logged": -4.64261531829834,
+       "f_best_detour": -4.423999786376953,
+       "signal_mean (best detour - E_f)": 0.17368081212043762,
+       "P_signal_positive": 0.562874251497006,
+       "P_best_detour_above_logged": 0.562874251497006,
+       "grad_proj_toward_detour_mean": 0.08049777150154114,
+       "P_grad_proj_positive": 0.6706586826347305,
+       "delta_total_at_target_held_mean": 313.7292785644531,
+       "P_total_better_held": 0.005988023952095809,
+       "delta_total_at_target_widen_mean": 1.351260781288147,
+       "P_total_better_widen": 0.05389221556886228,
+       "total_path_held_mean": [
+        3.5189530849456787,
+        23.347339630126953,
+        82.22278594970703,
+        180.15567016601562,
+        317.2481994628906
+       ],
+       "total_path_widen_mean": [
+        3.5189530849456787,
+        4.368233680725098,
+        4.573355674743652,
+        4.6980977058410645,
+        4.870212554931641
+       ],
+       "nll_logged_mean": -16.944883346557617
+      },
+      "m in [10, 50)": {
+       "n": 652,
+       "E_f": -5.172635555267334,
+       "f_mode": -5.17041015625,
+       "f_logged": -5.176534652709961,
+       "f_best_detour": -5.872503280639648,
+       "signal_mean (best detour - E_f)": -0.6998679637908936,
+       "P_signal_positive": 0.13957055214723926,
+       "P_best_detour_above_logged": 0.1411042944785276,
+       "grad_proj_toward_detour_mean": 0.052400924265384674,
+       "P_grad_proj_positive": 0.647239263803681,
+       "delta_total_at_target_held_mean": 322.59979248046875,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.996956706047058,
+       "P_total_better_widen": 0.0015337423312883436,
+       "total_path_held_mean": [
+        4.010865211486816,
+        24.445219039916992,
+        85.09303283691406,
+        185.8311767578125,
+        326.61077880859375
+       ],
+       "total_path_widen_mean": [
+        4.010865211486816,
+        4.957714080810547,
+        5.396570205688477,
+        5.7346978187561035,
+        6.007827281951904
+       ],
+       "nll_logged_mean": -18.064905166625977
+      },
+      "m in [50, 150)": {
+       "n": 1545,
+       "E_f": -6.337124347686768,
+       "f_mode": -6.336124420166016,
+       "f_logged": -6.337735176086426,
+       "f_best_detour": -6.835494518280029,
+       "signal_mean (best detour - E_f)": -0.4983694851398468,
+       "P_signal_positive": 0.1488673139158576,
+       "P_best_detour_above_logged": 0.15210355987055016,
+       "grad_proj_toward_detour_mean": 0.03262447938323021,
+       "P_grad_proj_positive": 0.6368932038834951,
+       "delta_total_at_target_held_mean": 341.3920593261719,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.8315047025680542,
+       "P_total_better_widen": 0.0,
+       "total_path_held_mean": [
+        5.1313605308532715,
+        26.657625198364258,
+        90.79081726074219,
+        197.4358673095703,
+        346.5233459472656
+       ],
+       "total_path_widen_mean": [
+        5.1313605308532715,
+        6.051455020904541,
+        6.44070291519165,
+        6.736119747161865,
+        6.96286153793335
+       ],
+       "nll_logged_mean": -17.77985954284668
+      },
+      "m in [150, 100000)": {
+       "n": 1393,
+       "E_f": -7.493995666503906,
+       "f_mode": -7.493044853210449,
+       "f_logged": -7.496020317077637,
+       "f_best_detour": -8.013925552368164,
+       "signal_mean (best detour - E_f)": -0.5199297070503235,
+       "P_signal_positive": 0.13783201722900215,
+       "P_best_detour_above_logged": 0.1399856424982053,
+       "grad_proj_toward_detour_mean": 0.03209736570715904,
+       "P_grad_proj_positive": 0.6532663316582915,
+       "delta_total_at_target_held_mean": 331.0533752441406,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.8315407037734985,
+       "P_total_better_widen": 0.0,
+       "total_path_held_mean": [
+        6.2339959144592285,
+        27.141897201538086,
+        89.33641052246094,
+        192.7379913330078,
+        337.28741455078125
+       ],
+       "total_path_widen_mean": [
+        6.2339959144592285,
+        7.150264263153076,
+        7.541598320007324,
+        7.8381500244140625,
+        8.065544128417969
+       ],
+       "nll_logged_mean": -17.704605102539062
+      }
+     }
+    },
+    "task_goal_same_rows": {
+     "all_start_rows": {
+      "n": 3939,
+      "E_f": -8.711935997009277,
+      "f_mode": -8.707534790039062,
+      "f_logged": -8.741153717041016,
+      "f_best_detour": -8.543757438659668,
+      "signal_mean (best detour - E_f)": 0.16817913949489594,
+      "P_signal_positive": 0.6448337141406448,
+      "P_best_detour_above_logged": 0.6544808326986545,
+      "grad_proj_toward_detour_mean": 0.07548175752162933,
+      "P_grad_proj_positive": 0.7644072099517644,
+      "delta_total_at_target_held_mean": 312.7818603515625,
+      "P_total_better_held": 0.003554201574003554,
+      "delta_total_at_target_widen_mean": 1.249752402305603,
+      "P_total_better_widen": 0.020817466362020816,
+      "total_path_held_mean": [
+       7.452803134918213,
+       27.090030670166016,
+       85.7182846069336,
+       183.41026306152344,
+       320.2347106933594
+      ],
+      "total_path_widen_mean": [
+       7.452803134918213,
+       8.271784782409668,
+       8.462708473205566,
+       8.582380294799805,
+       8.702550888061523
+      ],
+      "nll_logged_mean": -16.471879959106445
+     },
+     "shortcut_episode_rows": {
+      "n": 3757,
+      "E_f": -8.584016799926758,
+      "f_mode": -8.583046913146973,
+      "f_logged": -8.590531349182129,
+      "f_best_detour": -8.381162643432617,
+      "signal_mean (best detour - E_f)": 0.202854186296463,
+      "P_signal_positive": 0.660367314346553,
+      "P_best_detour_above_logged": 0.6616981634282673,
+      "grad_proj_toward_detour_mean": 0.06747575104236603,
+      "P_grad_proj_positive": 0.7681660899653979,
+      "delta_total_at_target_held_mean": 327.79888916015625,
+      "P_total_better_held": 0.0,
+      "delta_total_at_target_widen_mean": 1.284738540649414,
+      "P_total_better_widen": 0.014905509715198297,
+      "total_path_held_mean": [
+       7.294062614440918,
+       27.872493743896484,
+       89.31108093261719,
+       191.69549560546875,
+       335.09295654296875
+      ],
+      "total_path_widen_mean": [
+       7.294062614440918,
+       8.150547981262207,
+       8.341129302978516,
+       8.459562301635742,
+       8.578805923461914
+      ],
+      "nll_logged_mean": -17.21310806274414
+     },
+     "detour_episode_rows": {
+      "n": 182,
+      "E_f": -11.352553367614746,
+      "f_mode": -11.277326583862305,
+      "f_logged": -11.850430488586426,
+      "f_best_detour": -11.900165557861328,
+      "signal_mean (best detour - E_f)": -0.5476130247116089,
+      "P_signal_positive": 0.3241758241758242,
+      "P_best_detour_above_logged": 0.5054945054945055,
+      "grad_proj_toward_detour_mean": 0.24074843525886536,
+      "P_grad_proj_positive": 0.6868131868131868,
+      "delta_total_at_target_held_mean": 2.787770986557007,
+      "P_total_better_held": 0.07692307692307693,
+      "delta_total_at_target_widen_mean": 0.5275379419326782,
+      "P_total_better_widen": 0.14285714285714285,
+      "total_path_held_mean": [
+       10.729653358459473,
+       10.937681198120117,
+       11.553028106689453,
+       12.380516052246094,
+       13.517426490783691
+      ],
+      "total_path_widen_mean": [
+       10.729653358459473,
+       10.774399757385254,
+       10.972477912902832,
+       11.117724418640137,
+       11.257194519042969
+      ],
+      "nll_logged_mean": -1.170796513557434
+     },
+     "by_goal_region": {
+      "corridor_after_hazard_2": {
+       "n": 598,
+       "E_f": -8.591706275939941,
+       "f_mode": -8.590003967285156,
+       "f_logged": -8.59740924835205,
+       "f_best_detour": -8.37180233001709,
+       "signal_mean (best detour - E_f)": 0.21990372240543365,
+       "P_signal_positive": 0.6806020066889632,
+       "P_best_detour_above_logged": 0.6806020066889632,
+       "grad_proj_toward_detour_mean": 0.06940039247274399,
+       "P_grad_proj_positive": 0.7575250836120402,
+       "delta_total_at_target_held_mean": 322.896728515625,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.2797244787216187,
+       "P_total_better_widen": 0.005016722408026756,
+       "total_path_held_mean": [
+        7.2970194816589355,
+        27.560482025146484,
+        88.07398223876953,
+        188.92942810058594,
+        330.1937561035156
+       ],
+       "total_path_widen_mean": [
+        7.2970194816589355,
+        8.159507751464844,
+        8.344307899475098,
+        8.460216522216797,
+        8.576743125915527
+       ],
+       "nll_logged_mean": -17.307905197143555
+      },
+      "corridor_before_hazard_1": {
+       "n": 964,
+       "E_f": -8.583779335021973,
+       "f_mode": -8.582427978515625,
+       "f_logged": -8.589462280273438,
+       "f_best_detour": -8.40018367767334,
+       "signal_mean (best detour - E_f)": 0.18359637260437012,
+       "P_signal_positive": 0.6421161825726142,
+       "P_best_detour_above_logged": 0.6441908713692946,
+       "grad_proj_toward_detour_mean": 0.06069842725992203,
+       "P_grad_proj_positive": 0.766597510373444,
+       "delta_total_at_target_held_mean": 335.2998046875,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.2990463972091675,
+       "P_total_better_widen": 0.011410788381742738,
+       "total_path_held_mean": [
+        7.291309833526611,
+        28.341222763061523,
+        91.18721771240234,
+        195.9121856689453,
+        342.59112548828125
+       ],
+       "total_path_widen_mean": [
+        7.291309833526611,
+        8.15116024017334,
+        8.348335266113281,
+        8.47008991241455,
+        8.590353012084961
+       ],
+       "nll_logged_mean": -17.265239715576172
+      },
+      "detour_legs": null,
+      "goal_area": {
+       "n": 286,
+       "E_f": -8.594494819641113,
+       "f_mode": -8.595409393310547,
+       "f_logged": -8.60011100769043,
+       "f_best_detour": -8.367494583129883,
+       "signal_mean (best detour - E_f)": 0.22700068354606628,
+       "P_signal_positive": 0.6818181818181818,
+       "P_best_detour_above_logged": 0.6818181818181818,
+       "grad_proj_toward_detour_mean": 0.06906741857528687,
+       "P_grad_proj_positive": 0.7482517482517482,
+       "delta_total_at_target_held_mean": 334.9596862792969,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.261226773262024,
+       "P_total_better_widen": 0.013986013986013986,
+       "total_path_held_mean": [
+        7.305430889129639,
+        28.3992862701416,
+        91.2016830444336,
+        195.7978057861328,
+        342.26519775390625
+       ],
+       "total_path_widen_mean": [
+        7.305430889129639,
+        8.160909652709961,
+        8.342907905578613,
+        8.450289726257324,
+        8.566662788391113
+       ],
+       "nll_logged_mean": -17.20438003540039
+      },
+      "hazard_corridor": {
+       "n": 1730,
+       "E_f": -8.579303741455078,
+       "f_mode": -8.578363418579102,
+       "f_logged": -8.586291313171387,
+       "f_best_detour": -8.377596855163574,
+       "signal_mean (best detour - E_f)": 0.20170730352401733,
+       "P_signal_positive": 0.6595375722543353,
+       "P_best_detour_above_logged": 0.6606936416184971,
+       "grad_proj_toward_detour_mean": 0.06884043663740158,
+       "P_grad_proj_positive": 0.7739884393063584,
+       "delta_total_at_target_held_mean": 338.2461853027344,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.297749400138855,
+       "P_total_better_widen": 0.017341040462427744,
+       "total_path_held_mean": [
+        7.286696910858154,
+        28.518768310546875,
+        91.91764831542969,
+        197.567626953125,
+        345.5330505371094
+       ],
+       "total_path_widen_mean": [
+        7.286696910858154,
+        8.154348373413086,
+        8.346259117126465,
+        8.465682983398438,
+        8.584450721740723
+       ],
+       "nll_logged_mean": -17.263477325439453
+      },
+      "start": {
+       "n": 179,
+       "E_f": -8.588407516479492,
+       "f_mode": -8.588653564453125,
+       "f_logged": -8.598999977111816,
+       "f_best_detour": -8.36629581451416,
+       "signal_mean (best detour - E_f)": 0.22211183607578278,
+       "P_signal_positive": 0.664804469273743,
+       "P_best_detour_above_logged": 0.6703910614525139,
+       "grad_proj_toward_detour_mean": 0.08181259036064148,
+       "P_grad_proj_positive": 0.7877094972067039,
+       "delta_total_at_target_held_mean": 191.3677978515625,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.136255145072937,
+       "P_total_better_widen": 0.0446927374301676,
+       "total_path_held_mean": [
+        7.352162837982178,
+        19.303348541259766,
+        55.126556396484375,
+        114.91976928710938,
+        198.719970703125
+       ],
+       "total_path_widen_mean": [
+        7.352162837982178,
+        8.063739776611328,
+        8.239256858825684,
+        8.356196403503418,
+        8.488415718078613
+       ],
+       "nll_logged_mean": -16.142807006835938
+      }
+     },
+     "by_goal_offset": {
+      "m in [1, 10)": {
+       "n": 167,
+       "E_f": -8.581850051879883,
+       "f_mode": -8.581156730651855,
+       "f_logged": -8.58519172668457,
+       "f_best_detour": -8.383289337158203,
+       "signal_mean (best detour - E_f)": 0.19856061041355133,
+       "P_signal_positive": 0.6407185628742516,
+       "P_best_detour_above_logged": 0.6467065868263473,
+       "grad_proj_toward_detour_mean": 0.0661655142903328,
+       "P_grad_proj_positive": 0.7664670658682635,
+       "delta_total_at_target_held_mean": 309.7679748535156,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.271112084388733,
+       "P_total_better_widen": 0.029940119760479042,
+       "total_path_held_mean": [
+        7.2941484451293945,
+        26.651399612426758,
+        84.68054962158203,
+        181.46438598632812,
+        317.0621032714844
+       ],
+       "total_path_widen_mean": [
+        7.2941484451293945,
+        8.11978816986084,
+        8.314932823181152,
+        8.435078620910645,
+        8.565258979797363
+       ],
+       "nll_logged_mean": -17.166099548339844
+      },
+      "m in [10, 50)": {
+       "n": 652,
+       "E_f": -8.591923713684082,
+       "f_mode": -8.5912504196167,
+       "f_logged": -8.599260330200195,
+       "f_best_detour": -8.377601623535156,
+       "signal_mean (best detour - E_f)": 0.21432282030582428,
+       "P_signal_positive": 0.6641104294478528,
+       "P_best_detour_above_logged": 0.6656441717791411,
+       "grad_proj_toward_detour_mean": 0.06547864526510239,
+       "P_grad_proj_positive": 0.7760736196319018,
+       "delta_total_at_target_held_mean": 323.8184509277344,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.2747894525527954,
+       "P_total_better_widen": 0.012269938650306749,
+       "total_path_held_mean": [
+        7.2883076667785645,
+        27.6365966796875,
+        88.33023071289062,
+        189.45962524414062,
+        331.10675048828125
+       ],
+       "total_path_widen_mean": [
+        7.2883076667785645,
+        8.140518188476562,
+        8.327893257141113,
+        8.443991661071777,
+        8.563103675842285
+       ],
+       "nll_logged_mean": -17.484895706176758
+      },
+      "m in [50, 150)": {
+       "n": 1545,
+       "E_f": -8.576699256896973,
+       "f_mode": -8.575132369995117,
+       "f_logged": -8.583047866821289,
+       "f_best_detour": -8.386845588684082,
+       "signal_mean (best detour - E_f)": 0.1898532509803772,
+       "P_signal_positive": 0.6563106796116505,
+       "P_best_detour_above_logged": 0.6563106796116505,
+       "grad_proj_toward_detour_mean": 0.0660107359290123,
+       "P_grad_proj_positive": 0.7689320388349514,
+       "delta_total_at_target_held_mean": 332.64385986328125,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.3003431558609009,
+       "P_total_better_widen": 0.017475728155339806,
+       "total_path_held_mean": [
+        7.292969226837158,
+        28.175899505615234,
+        90.52690124511719,
+        194.42462158203125,
+        339.9368896484375
+       ],
+       "total_path_widen_mean": [
+        7.292969226837158,
+        8.160266876220703,
+        8.354784965515137,
+        8.474754333496094,
+        8.593310356140137
+       ],
+       "nll_logged_mean": -17.08890151977539
+      },
+      "m in [150, 100000)": {
+       "n": 1393,
+       "E_f": -8.588692665100098,
+       "f_mode": -8.588212013244629,
+       "f_logged": -8.595386505126953,
+       "f_best_detour": -8.37627124786377,
+       "signal_mean (best detour - E_f)": 0.21242055296897888,
+       "P_signal_positive": 0.665470208183776,
+       "P_best_detour_above_logged": 0.6676238334529792,
+       "grad_proj_toward_detour_mean": 0.07019246369600296,
+       "P_grad_proj_positive": 0.7638190954773869,
+       "delta_total_at_target_held_mean": 326.4499816894531,
+       "P_total_better_held": 0.0,
+       "delta_total_at_target_widen_mean": 1.273721694946289,
+       "P_total_better_widen": 0.01148600143575018,
+       "total_path_held_mean": [
+        7.297974109649658,
+        27.79286766052246,
+        88.97669219970703,
+        190.9414520263672,
+        333.7480773925781
+       ],
+       "total_path_widen_mean": [
+        7.297974109649658,
+        8.14810848236084,
+        8.335311889648438,
+        8.452913284301758,
+        8.571704864501953
+       ],
+       "nll_logged_mean": -17.229291915893555
+      }
+     }
+    }
+   }
+  }
+ }
+}

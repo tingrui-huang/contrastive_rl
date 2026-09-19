@@ -327,6 +327,20 @@ the stall nor points back to walking.  (In the 8 reverse pairs the stalled O
 torques are 1.65 away and both critics score them 1.7-2.5 nats lower -- far
 off-distribution stalls are recognised, the CF policy's own are not.)
 
+**Correction to 9b and 9c (2026-09-19, after the user's review; `../diag_replay/SUMMARY.md`).**
+9b paired the start rows with the episode's TASK goal; the actor trains on
+RELABELED goals.  At real actor-stream start rows (real goals) the critic
+term does not prefer the teacher detour torques over the actor's own samples
+(P 0.34-0.42) nor over the logged torque (P 0.36-0.44), and the full
+objective is worse toward them in 96-98 % of rows (+1.7 to +1.9 nats); under
+the task goal on the same rows the critic term is +0.2 and the total still
++1.3 to +1.4 worse.  The "exact tie" below is a task-goal, own-candidate
+result and is withdrawn as a statement about the training objective.  9c
+used one plain SGD step on the final checkpoint; the training replay (a
+checkpoint every 1,000 updates, saved Adam state) shows walking collapses
+and recoveries before and without any route change -- the single-step
+"interference" reading is withdrawn as the explanation of the history.
+
 **9b. Start: the full actor objective, not the action score.**
 (`start_objective.json`; 1,024 real start-region rows with their own logged
 actions; the critic-preferred candidate at each row -- teacher detour reset

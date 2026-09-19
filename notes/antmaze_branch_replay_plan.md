@@ -1956,3 +1956,41 @@ seed and stream; lineage 1 bit-identical, 0 / 2 differ by GPU kernels):
 (same anchors, logged query torque, one branch per anchor) neither adds
 route coverage nor strengthens the critic margin; it is not the in-boundary
 lever it was proposed as.  Nothing selected after the evaluation.
+
+### Corrected attribution: real training rows, training replay, full-state resumption (2026-09-19, night)
+
+User's review rejected three attributions: 9b used the task goal (the actor
+trains on relabeled goals); 9c used one SGD step on the final checkpoint;
+round 2 restarted the critic and Adam, so "regenerated futures are worse"
+was confounded with the restart (CFold2 lost capability with unchanged
+futures).  Three checks (`scripts/diag_v6_actor_objective_stream.py`,
+`scripts/diag_v6_training_replay.py`; `diag_replay/SUMMARY.md`): (1a) at
+real actor-stream start rows with their relabeled goals the critic term does
+not prefer the teacher detour torques (max_j f - E_pi[f] -0.27 / -0.27 /
+-0.54, P 0.34-0.42; vs logged P 0.36-0.44; hazard-corridor goals, 43 % of
+rows, -0.4 to -0.8) and the full objective is worse toward them in 96-98 %
+of rows (+1.7 to +1.9); task goal, same rows: +0.2 and +1.3 worse.  The
+"exact tie" is withdrawn.  (1b) replay of the round-1 CF runs from init.pkl
+with the saved state and the streams' own sequence (fast-forward
+self-checked), a checkpoint every 1,000 updates, probed by a 100-step route
+probe (calibrated: the original finals give 0.127 / 0.18 / 0.57 vs
+evaluation detour 0.107 / 0.167 / 0.50), an entrance-continuation walking
+probe (45 / 60 / 60 states) and the reset-row critic margin: the reset
+torques leave the start policy within 1,000 updates (|delta| 2.5-3.0) long
+before any route change; walking collapses to 0.00-0.07 at 5k-11k / 3k-7k /
+7k-10k with NO route change and recovers by 12k-20k; the critic margin is
+established at 3k / 11k / 12k and the route turns 0-11k updates later (s2
+at 23k-24k, s0 spikes at 12k-13k then falls back, s1's replay never turns);
+consecutive checkpoints differ by 0.2-0.3 in route share -- the 30k
+evaluations are single draws from an unconverged process whose replicate
+spread (0.05 vs 0.18, 0.30 vs 0.57) equals the seed spread.  (2) full-state
+resumption from CF1 final (actor, critic, target, both Adam states, key;
+same futures; +30k): success 0.163 / 0.500 / 0.140, deaths 0.03 / 0.02 /
+0.00, timeouts 0.80 / 0.48 / 0.86, detour 0.14 / 0.78 / 0.28, no route
+0.71 / 0.12 / 0.68 -- the restart in round 2 froze a still-moving process;
+continuing it drives deaths to zero and either raises the route share
+where walking survives (s1) or removes walking (s0 / s2).  Withdrawn: the
+tie, the interference reading, "equilibrium 0.12-0.21 / seed-2 0.50 a
+transient".  Not established: what drives the walking collapses; whether
+the objective pushes toward the actor's own route-changing torques.
+Mainline unchanged; no BC sweep, no round 3.
