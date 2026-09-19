@@ -1994,3 +1994,36 @@ tie, the interference reading, "equilibrium 0.12-0.21 / seed-2 0.50 a
 transient".  Not established: what drives the walking collapses; whether
 the objective pushes toward the actor's own route-changing torques.
 Mainline unchanged; no BC sweep, no round 3.
+
+### Training spikes: the walking collapses are critic runaways (2026-09-19, night, user's lead)
+
+User found isolated spikes in every training log (CF s0 @4,500: critic
+loss 0.133, mean logit -136; s1 @2,500; s2 @6,500; O s1 @8,000) right
+before the walking probe falls to zero.  Verified: the values are
+bit-identical across runs sharing the critic stream (bc0 variant, CFold2,
+replays) -- a critic-batch-sequence event, actor-independent; 0.133 = 136 /
+1024 means every logit of the batch collapsed to one value.
+`scripts/diag_v6_spike_trace.py` (trace / rows / report;
+`diag_replay/spike/SUMMARY.md`): from the replay checkpoints before the
+spike, the pilot's update_step one update at a time with per-update
+records (training metrics, critic and actor Adam step norms, a FIXED batch's
+logits / |phi| / |psi|, the reset rows, a fixed actor batch, batch content)
+and probes every 50 updates.  Seeds 0 / 1 reproduce (4,407 / 2,381); seed
+2 does not (knife-edge).  Order: one critic gradient impulse (0.9 / 2.5 vs
+median 0.02 / 0.03) on an ORDINARY batch -> Adam keeps x10-15 steps for
+10+ updates -> all logits shift down together on the fixed batch and the
+reset rows, |phi|, |psi| grow x2-4 -> runaway to logits -900 / -2,400 ->
+actor q-term explodes and 12-20 updates later the actor's scale (0.06 ->
+4) and saturation (0.04 -> 0.6-0.8) blow up -> walking probe 0.00 for the
+rest of the window; the critic recovers within ~500 updates with
+representation norms x2, the actor does not (scale 0.36 / 1.54 at the
+window end).  Per-row attribution: the impulse is spread over many rows
+(top-5 share 35-59 %), largest at goal-area anchors with goal-area goals
+(near-duplicate pairs the binary NCE must separate); no outlier input.
+FROZEN-CRITIC CONTROL (same batches, same actor Adam state, critic restored
+after every update): no collapse at all -- walking 0.36-0.73 throughout,
+scale <= 0.10, even seed 1's pre-spike drift is gone.  Decision rule's
+first branch: the critic update and its signal to the actor.  Shared
+learner property (both arms; O s1 / O s2 too), not the futures; the pilot's
+30k actors went through different numbers of such events.  No remedy run
+(would be a stability safeguard applied to both arms; user's call).

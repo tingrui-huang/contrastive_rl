@@ -179,7 +179,10 @@ but the continued process is not the capable one either.
   detour rate has an equilibrium at 0.12-0.21" and "the 0.50 of round-1
   seed 2 was a transient" (the process moves in the other direction when
   continued).
-* Not established: what drives the walking collapses; whether the
+* The walking collapses are critic runaways -- one update at a time, with a
+  frozen-critic control: `spike/SUMMARY.md` (user's lead from the training
+  logs; 2026-09-19, later).
+* Not established: what drives the walking collapses (RESOLVED in `spike/SUMMARY.md`: the critic); whether the
   objective pushes toward the actor's own route-changing torques (1a
   measures teacher transplants only); why the continuation goes to "no
   route" in seeds 0 / 2 and to the detour in seed 1.
