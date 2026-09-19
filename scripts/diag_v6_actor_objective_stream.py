@@ -131,7 +131,7 @@ def analyse(b, S, G, A, teach, key):
   f_mode = np.asarray(b['f'](jnp.asarray(O), jnp.asarray(mode)))
   f_logged = np.asarray(b['f'](jnp.asarray(O), jnp.asarray(A)))
   Ef = np.mean([np.asarray(b['f'](jnp.asarray(O), b['sample_from'](jnp.asarray(loc), jnp.asarray(scale), jax.random.fold_in(key, j)))) for j in range(N_MC)], axis=0)
-  names = [k for k in teach if k.startswith('teacher_detour')]
+  names = [k for k in teach if k.startswith('teacher_detour') or k.startswith('user_detour')]
   F = np.stack([np.asarray(b['f'](jnp.asarray(O), jnp.asarray(np.repeat(teach[k][None], len(O), 0)))) for k in names])   # [4, N]
   best = F.argmax(0); f_best = F.max(0)
   target = np.stack([teach[names[best[r]]] for r in range(len(O))]).astype(np.float32)
@@ -149,6 +149,7 @@ def analyse(b, S, G, A, teach, key):
       tot[tag].append((1 - BC) * (-Efl) + BC * b['nll'](loc_l, sc, A))
   tot = {k: np.stack(v) for k, v in tot.items()}     # [lambda, N]
   return {'f_mode': f_mode, 'f_logged': f_logged, 'E_f': Ef, 'f_best_detour': f_best, 'signal': f_best - Ef, 'signal_vs_mode': f_best - f_mode,
+          'best_name': np.array([names[i] for i in best]),
           'grad_proj_toward_detour': proj, 'grad_norm': np.linalg.norm(g, axis=1), 'nll_logged': nll0,
           'delta_total_held': tot['held'][-1] - tot['held'][0], 'delta_total_widen': tot['widen'][-1] - tot['held'][0],
           'total_held_path': tot['held'], 'total_widen_path': tot['widen'], 'scale_mean': scale.mean(1)}
@@ -166,7 +167,8 @@ def summarise(Q, mask):
           'delta_total_at_target_held_mean': float(Q['delta_total_held'][m].mean()), 'P_total_better_held': float((Q['delta_total_held'][m] < 0).mean()),
           'delta_total_at_target_widen_mean': float(Q['delta_total_widen'][m].mean()), 'P_total_better_widen': float((Q['delta_total_widen'][m] < 0).mean()),
           'total_path_held_mean': [float(x) for x in Q['total_held_path'][:, m].mean(1)], 'total_path_widen_mean': [float(x) for x in Q['total_widen_path'][:, m].mean(1)],
-          'nll_logged_mean': float(Q['nll_logged'][m].mean())}
+          'nll_logged_mean': float(Q['nll_logged'][m].mean()),
+          'best_candidate_share': {k: float((Q['best_name'][m] == k).mean()) for k in np.unique(Q['best_name'][m])}}
 
 
 def main():
@@ -177,11 +179,34 @@ def main():
   ap.add_argument('--n-batches', type=int, default=48)
   ap.add_argument('--max-rows', type=int, default=6000, help='cap on the start-region rows analysed per actor (the path analysis is the costly part)')
   ap.add_argument('--out', required=True)
+  ap.add_argument('--variant', default=None, help='evaluate the checkpoints of this pre-registered variant (e.g. critic_clip0.1) instead of the base pilot')
+  ap.add_argument('--candidates', default=None, help='joined.json of the user\'s frozen-model diagnostic (2026-09-19): adds, per seed, the detour candidates the '
+                                                     'critic scored above the own mode (user_detour<j>) to the detour torque set')
+  ap.add_argument('--max-cands', type=int, default=8)
   args = ap.parse_args()
   with np.load(MP.SIDECAR, allow_pickle=True) as sc:
     route = sc['route_realized'].astype(str)
-  teach = DT._teacher_reset_torques()
-  res = {'n_mc': N_MC, 'lambdas': list(LAMBDAS), 'bc': BC, 'per_actor': {}}
+  teach0 = DT._teacher_reset_torques()
+  user_cands = {}
+  if args.candidates:
+    J = json.loads(Path(args.candidates).read_text(encoding='utf-8'))
+    for c in J:
+      sd = int(c['seed']); names_ = c['candidate_names']; sc_ = c['scores']; im = names_.index('mode')
+      for i, nm in enumerate(names_):
+        oc = c['outcomes'].get(nm, {})
+        if nm != 'mode' and oc.get('route') == 'detour' and sc_[i] > sc_[im]:
+          user_cands.setdefault(sd, []).append({'episode': c['episode'], 'candidate': nm, 'margin': float(sc_[i] - sc_[im]), 'action': [float(x) for x in c['actions'][i]],
+                                                'success': bool(oc.get('success')), 'saved_route': c.get('saved_route')})
+    for sd in user_cands:
+      user_cands[sd] = sorted(user_cands[sd], key=lambda r: -r['margin'])[:args.max_cands]
+  res = {'n_mc': N_MC, 'lambdas': list(LAMBDAS), 'bc': BC, 'variant': args.variant, 'per_actor': {},
+         'user_candidates': {str(k): [{kk: vv for kk, vv in r.items() if kk != 'action'} for r in v] for k, v in user_cands.items()},
+         'candidate_note': ('ALL candidates here are TRANSPLANTS: torques evaluated at training rows other than the state they came from, where their effect is '
+                            'unverified (pose and velocity differ).  teacher_detour<j>: logged t = 0 torques of detour episodes; user_detour<j>: the user\'s '
+                            'candidates that the seed\'s own critic scored above its mode at ONE evaluation reset state and whose realised continuation entered '
+                            'the far route THERE (diag_v6_candidate_at_origin.py checks them at that state).  Primary reading = held scale; widened scale listed '
+                            'separately.  P(total better) high = the objective prefers the moved distribution at these inputs locally (shared parameters: not a '
+                            'proof of an optimisation failure); low = the tested loc path is not supported (other directions not excluded).')}
   for s in args.seeds:
     cfg = MP.recipe_config(s, MP.OUT / 'diag_traj' / '_cfg')
     cfg.batch_size = MP.BATCH
@@ -201,9 +226,12 @@ def main():
     comp['start_rows_goal_region_share'] = {k: float((greg == k).mean()) for k in np.unique(greg)}
     comp['start_rows_goal_offset_quantiles'] = {q: float(np.quantile(mm, float(q))) for q in ('0.1', '0.25', '0.5', '0.75', '0.9')}
     comp['start_rows_route_share'] = {k: float((rt == k).mean()) for k in np.unique(rt)}
+    teach = dict(teach0)
+    for j, r in enumerate(user_cands.get(s, [])):
+      teach[f'user_detour{j}'] = np.asarray(r['action'], np.float32)
     for arm in args.arms:
-      name = f'{arm}_s{s}'
-      b = bundle(MP.run_dir(arm, s) / 'final.pkl')
+      name = f'{arm}_s{s}' + (f'@{args.variant}' if args.variant else '')
+      b = bundle(MP.run_dir(arm, s, MP.variant_base(args.variant) if args.variant else None) / 'final.pkl')
       key = jax.random.PRNGKey(SEED + 10 * s + (0 if arm == 'CF' else 1))
       out = {'composition': comp, 'pairing': {}}
       for pairing, goals in (('real_relabeled_goal', G), ('task_goal_same_rows', TG)):

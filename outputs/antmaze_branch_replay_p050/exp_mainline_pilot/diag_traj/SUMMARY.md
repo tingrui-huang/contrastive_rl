@@ -416,3 +416,54 @@ Assessment against that question:
   these diagnostics can settle.  What remains inside the boundary and
   untested is the next policy-iteration round (the improved agent as the
   continuation).
+
+## 12. C1 / C2 (2026-09-19, night): the user's verified candidates at their original state, and transplants at the real training rows (clipped models)
+
+The user's frozen-model diagnostic (`codex_clip_choice_v1`, 72 contexts on
+the clipped CF checkpoints) found first torques that the seed's own critic
+scores above the policy's mode AND whose realised continuation entered the
+far route.  Two separate checks, as the user specified (a candidate is
+verified only at its own state; elsewhere it is a transplant):
+
+**C1, the original state + task goal** (`diag_v6_candidate_at_origin.py`,
+`candidate_at_origin_critic_clip0.1.json`; 100 verified candidates over the
+72 contexts, 23 of them in the 16 stable-shortcut contexts).  Primary
+reading = the actor's critic term with the distribution moved to the
+candidate at the SAME scale.  Stable-shortcut contexts: the moved
+expectation exceeds the current E_f in 20 / 23 (mean +0.51), the critic's
+action gradient at the mode points toward the candidate in 13 / 23; but the
+BC pull that would resist the move -- the nearest 8 dataset reset rows'
+teacher torques (detour share 0.04-0.16), NLL at the moved loc -- outweighs
+it: the objective proxy 0.95 (-E f) + 0.05 NLL improves in only 5 / 23 (own
+samples 2 / 7, teacher / other-seed torques 3 / 16; those sit 6-9 scale
+units from the current loc, own samples 1.3-1.8).  At the same nearest rows
+with their REAL relabeled goals the critic term prefers the CURRENT policy
+in 84-97 % of rows (mean delta -2.0 to -3.2).  All contexts (100): moved >
+current 81 / 100, proxy better 38 / 100 (own samples 17 / 46).
+
+**C2, transplants at the actor's real start-region training rows**
+(`diag_v6_actor_objective_stream.py --variant critic_clip0.1 --candidates`,
+`actor_objective_stream_critic_clip0.1.json`; 3,670-3,899 shortcut-episode
+rows per seed; candidates = 4 teacher detour reset torques + the user's 8
+top-margin candidates per seed, all transplants).  Under the REAL relabeled
+goals the critic signal (best candidate - E_f) is +0.49 / -0.02 / +0.13
+(P > 0: 0.67 / 0.48 / 0.55) for the clipped CF critics and negative for
+the O critics; under the task goal on the same rows +1.08 / +0.76 / +0.47
+(P 0.88 / 0.77 / 0.67).  The full objective along the loc path toward the
+best candidate: held scale P(better) 0.00-0.02 (the BC NLL explodes at
+scale 0.1); widened scale P(better) 0.13 / 0.08 / 0.09 (O: 0.00-0.01).
+
+**Reading (local statements; shared parameters, other directions not
+excluded).**  At the decision states the clipped CF critics do prefer the
+verified candidates' neighbourhoods under the task goal, and the local
+gradient mostly points at them; the actor does not adopt them because the
+objective it actually trains on -- start-region rows paired with relabeled
+goals that lie on the logged (95 % shortcut) paths, plus BC to the teacher's
+reset torques at a narrow scale -- does not support the move: the real-goal
+critic term prefers the current behaviour at the nearest rows, and the BC
+term outweighs the task-goal gain for most candidates.  This is the
+objective at the training distribution, not an optimiser failure; it does
+not prove that no other direction exists.  Policy extraction is therefore
+not the lever on its own: the route signal has to reach the rows the actor
+trains on (goals / anchors / query actions), which the sampling contract
+fixes.

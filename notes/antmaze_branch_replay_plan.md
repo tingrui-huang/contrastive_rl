@@ -2093,3 +2093,148 @@ selects the cell; anchor sequence unchanged), 3 seeds, evaluated on the
 development draw against O clip / CF clip; rules sealed in
 `learned_ett/manifest.json` (primary CFL - O; kept = CFL - CF).  Launched
 on node 30016 (fits) with the arm chain queued from 30043.
+
+### Clip round, step A (2026-09-19, night): the current agents' futures at the same anchors -- gate for B NOT PASSED
+
+User's lead after their frozen-model diagnostic (own sampled first steps
+continued by the current agent enter the far route 19 / 128 vs 1 / 128 by
+the start agent): do the current agents' futures differ from the start
+agent's at the SAME training anchors?  `exp_v6_clip_round.py`: every
+anchor regenerated per lineage (clipped CF final), same logged torque,
+same hazard seed; paired anchor-weighted profile (`clip_round/PROFILE.md`,
+`SUMMARY.md`).  Entered-far after the logged torque: reset anchors 0.013 ->
+0.035-0.066, start region 0.032 -> 0.040-0.047, logged-shortcut anchors
+0.000 -> 0.001; completed-far at the start region +0.002 / +0.010 /
++0.009 (gate: 3/3 > 0 and mean >= 0.02 -> NOT PASSED; B not run).  What
+entered instead: worse shortcut walking (success 0.62 -> 0.53-0.58,
+timeouts 0.09 -> 0.14-0.18, goal-area mass of the critic marginal 0.273 ->
+0.21; between the zones success 0.64 -> 0.45-0.48).  Reading: the logged
+query torque commits the continuation to the shortcut basin for the
+current agents too; the agent's own-first-step gain can only enter through
+counterfactual queries (a != a_logged), a contract dimension the user
+would have to re-open.  C1 (`diag_v6_candidate_at_origin.py`, the user's
+verified candidates at their original state) and C2
+(`diag_v6_actor_objective_stream.py --variant critic_clip0.1 --candidates`,
+transplants at real training rows) running.
+
+### Arm CF-learned (oracle-label-trained learned ETT) -- NEGATIVE (2026-09-19, night)
+
+`exp_v6_learned_ett.py` (`learned_ett/SUMMARY.md`).  Model checks: the
+state + torque marginal model generalises worse than a position-only
+reference (held-out NLL 3.678 vs 3.630; train / val curves diverge --
+overfitting; mechanism open); aggregate masses and the start-region
+action contrast (far mass 0.49 vs 0.002 for detour vs shortcut torques;
+oracle 0.61 vs 0.00) survive, the reset-row contrast does not (0.09 vs
+oracle 0.57, n = 4).  The arm under the sealed clip recipe: CFL = O =
+start (0.253 / 0.247 / 0.247; far route 3 / 4 / 0 of 300); CFL - O -0.006
+NOT MET; CFL - CF(oracle) -0.221 (3/3): the oracle gain is lost entirely;
+in-batch accuracy under the learned positives 0.008-0.016 (blurrier
+positives).  Causes not separated (blur / reset rows / poorer
+conditional); next diagnostic = the CFL critics' reset-state readout vs
+the oracle-CF critics.  Structural lesson for the learned-ETT line: a
+per-anchor marginal fitted on one branch per anchor loses the effect of
+the first action where it matters; the user's separation (ETT = a fixed
+transition model, continuation agent free) points to one-step dynamics +
+a hazard / death model rolled out with the agent.
+
+### C1 / C2 on the clipped models (2026-09-19, night)
+
+`diag_traj/SUMMARY.md` section 12.  C1 (the user's verified candidates at
+their original state, task goal): the same-scale moved expectation beats
+the current E_f in 20 / 23 stable-shortcut cases and the local gradient
+points at the candidate in 13 / 23, but the BC pull (nearest dataset reset
+rows, teacher torques) outweighs it -- objective proxy better in 5 / 23 --
+and at those nearest rows with their real relabeled goals the critic term
+prefers the current policy in 84-97 %.  C2 (transplants at 3.7-3.9k real
+start-region rows): real-goal signal +0.49 / -0.02 / +0.13, task-goal
+signal +1.08 / +0.76 / +0.47; full objective P(better) 0.00-0.02 held,
+0.08-0.13 widened.  Reading: not adopted because the training objective
+(relabeled goals on logged paths + BC at a narrow scale) does not support
+the move -- the objective at the training distribution, not an optimiser
+failure; policy extraction alone is not the lever.
+
+### Identity correction: the AntMaze "learned ETT" is a future-goal marginal model (2026-09-19, user's review)
+
+The user (with ChatGPT's reading of CHECK.md and the code) pointed out
+that `exp_v6_learned_ett.py` does not implement the project's ETT.  The
+PointMaze pipeline's ETT (`feature/pointmaze-causal-transition`) is a
+one-step model F(s, a_b, a_q) -> s' plus an onset head, fitted on
+same-context tuples (s, a_b, a_q, s') -- diagonal rows from the log,
+off-diagonal rows from same-context interventions -- and rolled out step
+by step with a nominal model of the expert advice (a_b ~ P(a_b | s), an
+MDN on the log) and the current agent choosing a_q, absorbing after
+onset; the replay is 50 % complete model trajectories + 50 % original
+episodes, then the unchanged CRL.  The AntMaze model is a per-anchor
+classifier of the discounted future-goal cell under the fixed start agent
+(no a_b, no diagonal / off-diagonal structure, no next state, no rollout;
+the five heads are summed and only the marginal is used).  Its negative
+arm (CFL) says nothing about the one-step ETT.  I should have read the
+PointMaze implementation before designing it.  Alignment audit for
+AntMaze (next, no training): the d05 log is all-diagonal (the teacher is
+the behaviour policy: a_b = a_q on every row); the oracle branches redraw
+the hidden hazards, so the logged torque is a_q under a NEW context whose
+expert advice a_b is not recorded -- it is computable in the simulator
+(the privileged teacher relay at the restored context: `teacher.fresh(route)`,
+`teacher.act(o, env.schedule, intent)`, as the blind driver does), which
+makes same-context tuples available as an engineering intermediate (the
+PointMaze supervision was also native-simulator paired probes); the
+off-diagonal rows arise where the redrawn schedule makes the teacher wait
+while the logged torque goes (the confounder's footprint) and from query
+coverage at fork contexts (route alternatives), which the sampling
+contract currently excludes.  One-step Ant dynamics are deterministic
+given the 29-dim state and the torque (restore_maxdiff ~ 0); the
+stochastic part is the onset (rock contact), which is where a_b vs a_q
+carries the hidden state.
+
+### Simulator-paired one-step ETT, Step 0 (2026-09-20): same-context advice reconstructable; motion deterministic
+
+User's go (Steps 0-2; fork query coverage closed; mainline replay interface
+kept; BC 0.05 / losses / clip unchanged; oracle-supervised engineering
+stage).  `audit_v6_ett_context.py`, `ett_context/SUMMARY.md`.  Hidden
+context + intent for all d05 episodes (sidecars 606/610/611; 607-609
+regenerated from the collector's fixed-order RNG streams, validated
+exactly on the available seeds).  The teacher replayed along the log
+reproduces 267,481 / 267,481 torques bit-exactly, holding zones and
+decisions too.  a_b at the branch contexts = teacher state reconstructed
+from the logged history + zone latches re-derived by the teacher's rule
+at the recorded consultation steps under the redrawn timetable (never
+from the query or the realised route); original timetable -> a_b == a_q
+at 53,747 / 53,747; redrawn -> diagonal 0.83, off_hold 0.09, off_release
+0.08 (weighted), off-diagonal rows at the mouths / bands with branch
+death 0.65 (off_hold) vs 0.27 (diagonal).  One-step motion: restore +
+logged torque reproduces the logged next state to ~1e-6 (1 outlier of
+2,236); branch first row vs logged next (different hidden) within 1e-5 in
+53,744 / 53,747 (3 angular-velocity outliers 0.04-0.16).  Onset labels
+only in the branches (15,612 deaths).  Next: Step 1 supervision builder,
+Step 2 model + preflight.
+
+### One-step ETT, Step 1 (supervision) and Step 2 launched (2026-09-20)
+
+`build_v6_ett_supervision.py` -> `ett_context/supervision.npz`: 7.65 M
+valid branch transitions with the advice walked along each branch (root
+advice = Step 0's, 53,747 / 53,747 exact), 267k logged diagonal rows;
+onsets 15,612, 15,600 of them on off_hold rows, 0 on diagonal rows;
+folds by source episode.  `fit_v6_ett_one_step.py` (sealed manifest,
+gates G1-G6 pre-registered): motion MLP 1024-1024 -> standardised delta
+(MSE, diagonal / off-diagonal averaged separately), onset MLP 256-256 on
+the features + predicted delta (natural-prevalence BCE, stratified
+batches, no gradient to motion), Adam 3e-4, 40k updates, early stop on
+the ES slice; cross-fitted 3 folds; smoke at 300 steps: val MSE 0.096,
+AUROC 0.94.  Fits running: folds 0 / 1 on node 30125, fold 2 on 30016;
+`check` (held-out fold rows: one-step xy error, 50-step open loop, onset
+AUROC / ratio / calibration / advice sensitivity) runs on 30125 when the
+three models exist.
+
+### One-step ETT, Step 2 result (2026-09-20): all preflight gates passed
+
+`ett_one_step/SUMMARY.md`, `CHECK.md`.  Held-out (cross-fitted) one-step
+xy error median 0.0016 / p99 0.027, delta RMSE 0.157; open loop 10 / 50
+steps 0.060 / 0.47; onset AUROC 0.996, on-onset vs non 139 x,
+calibration 1.05, in-band P(onset) 0.21-0.24 under off_hold vs 0.000
+under a driving advice.  Best steps 39-40k (budget end).  Open before
+Step 3: (a) long-horizon open-loop validation (outcome / route agreement
+of full-length rollouts vs held-out branches); (b) the ADVICE PROCESS
+along a rollout -- memoryless nominal P(a_b|s) cannot produce "hold"
+inside a band, a latched nominal (mouth decision + visible hold
+durations) can, the simulator teacher can (oracle); the deaths in the
+generated futures follow from that choice.  Nothing downstream run.
