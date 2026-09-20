@@ -2862,3 +2862,26 @@ equal-weight multi-future control from the two oracle tables (anchor
 weight unchanged; one complete future chosen uniformly, then the
 geometric goal law within it; all outcomes kept; no splicing, no NCE /
 actor change), five seeds, draw 8909, vs both single-draw arms.
+
+### The equal-weight multi-future control (2026-09-20 night, user's go; multi_futures/SUMMARY.md) -- reading (c)
+
+`exp_v6_mainline_pilot.MultiFutures` (anchor by weight unchanged; one
+of the two oracle tables chosen uniformly; m by the geometric law within
+that path; all outcomes kept; no splicing; losses / recipe / stream RNG
+unchanged, the anchor sequence identical to the single-table arms --
+sampler_check.json) + `scripts/exp_v6_multi_futures.py`.  MF 0.387 /
+0.250 / 0.337 / 0.267 / 0.317, mean 0.311, spread 0.25-0.39 (CF 0.449,
+0.41-0.52; CF2 0.351, 0.23-0.58; O 0.297); MF - O +0.015 (s.e. 0.024,
+3 / 5, NOT met); MF - CF -0.137 (5 / 5); MF - CF2 -0.039 (3 / 5).  Two
+futures per anchor moved every seed toward the start agent's behaviour
+(shortcut 0.67-0.95, detour 0.04-0.26, no stalls, mouth at step 51-53
+as O) -- the spread narrowed around the O level, not around the better
+draw.  Established: under this recipe more futures per anchor do not
+stabilise the gain, and the gain is not the mean-outcome signal that
+two draws estimate better than one.  Not established: the mechanism
+((i) the single-draw preference carried by the idiosyncrasy of one
+future per anchor vs (ii) the mixture law changing P(g | s, a) even at
+equal expected outcomes) and whether the oracle gain is noise.
+Candidates (user): frozen-critic action ranking at the mouth anchors
+under CF / CF2 / MF; or draws 3 / 4 to place 0.449 and 0.351 within the
+draw distribution before any further ETT work.

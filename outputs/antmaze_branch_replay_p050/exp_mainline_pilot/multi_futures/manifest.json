@@ -1,0 +1,79 @@
+{
+ "experiment": "AntMaze V6 mainline: equal-weight multi-future supervision (arm MF: the sealed simulator draw + draw 2, one chosen uniformly per positive) vs the single-draw arms CF / CF2, O, the hybrid and the start agent; five paired seeds",
+ "sealed_at": "2026-09-20 21:31:14",
+ "git_head": "unavailable (Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128.)",
+ "status": "oracle (simulator futures) -- engineering stage",
+ "futures": {
+  "tables": [
+   "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/branches_cf.npz",
+   "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/oracle_draw2/branches_cf_draw2.npz"
+  ],
+  "tables_sha256": [
+   "503051d35287645b37cca39f43ec2ffb0f026148d10229219496cd06a58b53a4",
+   "a0b8a3e16f23369d0403023c0a1188c1c1ad9f4e0484869ace2c3dfeaf8b85ab"
+  ],
+  "law": "anchor by weight (unchanged); table j uniform over the two; m ~ gamma^m over 1..L_j - 1 within table j; every outcome kept; no splicing",
+  "rng": "the one future uniform is split (j = floor(2u), u' = 2u - j): anchor sequence identical to the single-table arms",
+  "sampler_check": {
+   "table_share": [
+    0.49796875,
+    0.50203125
+   ],
+   "m_median_by_table": [
+    31.0,
+    32.0
+   ],
+   "m_mean_by_table": [
+    66.55914653278946,
+    66.81940553999378
+   ],
+   "goals_equal_chosen_table_rows": true,
+   "anchor_sequence_identical_to_single_table_stream": true,
+   "batches": 50
+  }
+ },
+ "arms": {
+  "MF": "critic futures = both tables, equal weight",
+  "CF": "the sealed draw",
+  "CF2": "draw 2",
+  "O": "the recorded continuation",
+  "hybrid": "ett_futures_hybrid (reference)"
+ },
+ "recipe": {
+  "variant": "critic_clip0.1",
+  "overrides": {
+   "critic_clip": 0.1
+  },
+  "unchanged": [
+   "start checkpoint",
+   "anchors",
+   "actor / BC rows (logged buffer)",
+   "bc 0.05",
+   "30000 updates",
+   "stream seeds by seed",
+   "NCE and actor losses"
+  ]
+ },
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4
+ ],
+ "evaluation": {
+  "n": 300,
+  "seed": 8909,
+  "policy": "mean",
+  "targets": "MF seeds 0-4 on the same 300 episodes as CF / CF2 / O / hybrid / start"
+ },
+ "judgement": {
+  "mainline_rule": "MF - O: mean > 2 x seed s.e. and 5 / 5 (reported)",
+  "readings_kept_open": [
+   "(a) MF at or above the better draw's mean (0.449) with a narrower seed spread than either draw: two futures per anchor stabilise the supervision",
+   "(b) MF between the two draws' means (0.351 .. 0.449): averaging without stabilisation",
+   "(c) MF at or below the lower draw (0.351): more futures per anchor do not help under this recipe"
+  ],
+  "no_selection": "every final evaluated once; no tuning after the result"
+ }
+}

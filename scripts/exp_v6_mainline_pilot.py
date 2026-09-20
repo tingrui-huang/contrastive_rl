@@ -366,6 +366,36 @@ class AbsorbingFutures:
     return self.base.next_rows(k)
 
 
+class MultiFutures:
+  """Equal-weight MULTIPLE complete futures per anchor (user's plan after oracle_draw2, 2026-09-20; exp_v6_multi_futures.py):
+  the anchor is drawn by its weight as before; then ONE of the J branch tables is chosen uniformly and the goal row m follows the
+  geometric law within that table's path (P(m) ~ gamma^m over 1..L_j - 1).  Every outcome kept, no splicing, the NCE and actor
+  losses unchanged.  The stream's one future uniform u is split, j = floor(u J), u' = u J - j, so the RNG consumption and the
+  anchor sequence stay identical to the single-table arms.  The next rows come from the first table (unused by the Monte-Carlo
+  NCE loss; kept for the Transition layout)."""
+
+  def __init__(self, bases, gamma):
+    self.bases = list(bases); self.J = len(self.bases); self.gamma = float(gamma); self.log_gamma = np.log(self.gamma)
+    self.n_fut = np.stack([b.lengths.astype(np.int64) - 1 for b in self.bases])          # [J, K]
+    assert self.J >= 2 and np.all(self.n_fut >= 1)
+    self.lengths = self.bases[0].lengths                                                   # the stream's own m draw is unused (sample_goal)
+    self.name = f'multi_branch_x{self.J}'
+    self.last_jm = None
+
+  def sample_goal(self, k, u):
+    j = np.minimum((u * self.J).astype(np.int64), self.J - 1); u2 = u * self.J - j
+    n = self.n_fut[j, k]
+    m = np.clip(np.ceil(np.log1p(-u2 * (1.0 - self.gamma ** n)) / self.log_gamma).astype(np.int64), 1, n)
+    self.last_jm = (j, m)
+    return np.stack([self.bases[int(jj)].goal_at(int(kk), int(mm)) for jj, kk, mm in zip(j, k, m)]).astype(np.float32)
+
+  def goal_at(self, k, m):
+    raise NotImplementedError('MultiFutures draws through sample_goal')
+
+  def next_rows(self, k):
+    return self.bases[0].next_rows(k)
+
+
 class CriticStream:
   """Critic batches: anchor by weight, future row by the geometric law.
 
@@ -1080,6 +1110,8 @@ def train_arm(arm, seed, updates=UPDATES, base=None, batch=BATCH, start_ckpt=STA
   elif arm == 'CFL':
     assert branch_path is not None, 'arm CFL needs the learned futures file'
     futures = LearnedFutures(anchors, branch_path, obs, act, CRITIC_STREAM_SEED0 + seed)
+  elif isinstance(branch_path, (list, tuple)):
+    futures = MultiFutures([BranchFutures(anchors, p) for p in branch_path], cfg.discount)
   else:
     futures = BranchFutures(anchors, branch_path or (inputs / 'branches_cf.npz'))
   if future_law == 'absorbing':
@@ -1118,8 +1150,8 @@ def train_arm(arm, seed, updates=UPDATES, base=None, batch=BATCH, start_ckpt=STA
   import jax as _jax
   write_json(d / 'train_manifest.json', {
       'arm': arm, 'seed': seed, 'optimizer_updates': n_updates, 'scan_group': G, 'batch_size': cfg.batch_size, 'wall_seconds': time.time() - t0,
-      'futures': futures.name, 'branch_file': (None if arm == 'O' else str(branch_path or (inputs / 'branches_cf.npz'))),
-      'branch_file_sha256': (None if arm == 'O' else sha256(branch_path or (inputs / 'branches_cf.npz'))), 'overrides': (overrides or {}),
+      'futures': futures.name, 'branch_file': (None if arm == 'O' else ([str(p) for p in branch_path] if isinstance(branch_path, (list, tuple)) else str(branch_path or (inputs / 'branches_cf.npz')))),
+      'branch_file_sha256': (None if arm == 'O' else ([sha256(p) for p in branch_path] if isinstance(branch_path, (list, tuple)) else sha256(branch_path or (inputs / 'branches_cf.npz')))), 'overrides': (overrides or {}),
       'start_ckpt': (str(start_ckpt) if start_ckpt else None), 'start_ckpt_sha256': (sha256(start_ckpt) if start_ckpt else None),
       'critic_clip': critic_clip, 'anchor_coef': anchor_coef, 'future_law': future_law,
       'absorbing_tail_rows_mean': (float((anchors.weight * futures.tail_rows).sum() / anchors.weight.sum()) if future_law == 'absorbing' else None),
