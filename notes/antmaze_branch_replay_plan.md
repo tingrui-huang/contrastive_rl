@@ -2457,3 +2457,100 @@ accurate critic into a push toward the logged action.  Per the user's
 rule: stop adding queries; the remaining problem is extraction / the
 objective (actor goal distribution, BC), on top of a training process
 that does not hold past 30k.
+
+### Re-ordering after stage 2 (user, 2026-09-21)
+
+What stage 2 negated: "extend the queries and train one more round ->
+keep improving".  NOT negated: the oracle branch-replay gain (~47 % vs
+~25 %).  No longer acceptable: attributing everything to insufficient
+query coverage.  The most useful finding: with the data unchanged,
+continued training destroys capability (continue s1 0.437 -> 0.307,
+timeouts 0.21 -> 0.65; s2 0.433 -> 0.150, timeouts 0.14 -> 0.85), so
+"better training data" and "a better policy after more training" have
+no reliable link right now; but the extended arm's detour share is
+below continue's in all three lineages, so the query result is not only
+"more training".  Two phenomena to keep apart: continued optimisation
+degrades walking; changed query supervision degrades route choice.  The
+query experiment did find real information (a one-step 8-dim torque can
+change the route and the system can find such torques) but did NOT show
+the critic evaluates them reliably on new states (the critic read-out is
+in-sample, limited candidates, "success in >= 1 draw" labels against
+task-goal scores) -- no "critic fixed, actor disobeys"; 0.4 % reset
+weight shows concentration, not proven insufficiency.  Design difference
+found vs the successful PointMaze run (run_f4_joint_warm.py): there the
+ACTOR's critic term also used branch-generated future goals (BC on the
+logs, balanced); the AntMaze contract keeps the actor's critic term and
+BC on the logged relabeled goals -- the critic learns new futures while
+the actor practises reaching the old logs' futures (a shortcut-corridor
+goal row asks for the shortcut).  A sampling-level change worth testing,
+not a found cause; counterfactual futures also contain stall positions.
+Next, in order: (1) FROZEN-CRITIC continuation from the three 30k
+finals -- critic frozen, actor + its Adam + batches + BC 0.05 unchanged,
++30k, vs `continue` (reading: walking kept -> the moving critic drives
+the degradation, handle the training schedule; still degrades ->
+optimising along a fixed critic and the current actor distribution hurts
+deployment, then check the actor's inputs); (2) only then the sampling
+revision: actor critic term on logged vs counterfactual future goals at
+the same states / weights, BC unchanged (query torques are NOT expert
+actions), no reset re-weighting / BC balancing / network changes.  ETT
+(parallel): fix the history-counter offset (training run_length starts
+at 0 at the first hold / band row, the rollout passed 1); the key gap is
+the ADVICE process -- the memoryless nominal gives death 0.036 vs the
+teacher's 0.305 because the model reaches contexts the logs rarely cover
+-- so the focus moves to training / generation history consistency and
+how the nominal handles persistent hidden contexts, not another motion
+regression.  Position: counterfactual sampling has a reproducible oracle
+gain; the gain cannot yet be enlarged by more training; the full learned
+ETT lacks a reliable advice substitute.  "More queries + one more round"
+is no longer the default improvement.  Launched: arm 'frozen' (3
+lineages, node5; report3) and the v3 rollouts with --hist-fix (C then A,
+node3; ett_rollout_v3/hist_fix/).
+
+### Frozen-critic continuation result (2026-09-21; query_coverage/train/SUMMARY.md) and the cheap checks
+
+Frozen (actor only, +30k) vs continue (joint) vs current: success 0.497
+/ 0.517 / 0.520 (s0), 0.500 / 0.307 / 0.437 (s1), 0.140 / 0.150 / 0.433
+(s2).  Common signature of every frozen run: deaths -> 0, timeouts +0.21
+/ +0.28 / +0.72; far share 0.71 / 0.86 / 0.11.  Reading: lineage 1 -> the
+moving critic drove the collapse; lineage 2 -> the fixed-critic actor
+objective stalls the policy by itself; both branches of the user's tree
+are live; next = the actor's inputs (step 2, goal-source comparison,
+running); critic-schedule comparison a later option.  Cheap checks
+(cheap_checks/SUMMARY.md): (a) the critic's positive law puts 0.3-0.4 %
+of a success future within the reach radius, 7 % of a death future on
+the death position, > 50 % of a timeout future on stall rows; logged vs
+own first torque give identical task-goal mass (0.0006) -- "reach more"
+is not "more task-goal positives"; the termination rule is worth a
+later, evidence-gated study.  (b) 'clip' vs 'acme' BC log-prob: 1.6 %
+boundary components, BC-gradient cosine >= 0.9986, relative difference
+0.7-5 % -> not a lever; at bc 0.05 the weighted BC gradient is 4-17x the
+weighted critic-term gradient in norm.
+
+### Actor goal-source comparison result (2026-09-21; actor_goal_source/SUMMARY.md): closed, negative
+
+Frozen critic, anchor-pool actor rows, critic-term goal recorded
+(goal_log) vs the sealed CF branch (goal_cf), BC unchanged, +30k:
+goal_cf 0.277 / 0.257 / 0.267 with far route 0.007 / 0 / 0 and deaths
+0.72-0.73 = the START AGENT's profile; goal_cf - goal_log -0.13 /
+-0.04 / -0.13 (3 / 3).  Mechanism: the CF branches are the start
+agent's shortcut continuations, so their positions become the goals the
+actor is asked to reach.  Hypothesis "changing the actor's goal source
+alone repairs the recipe" CLOSED (user's rule); PointMaze's actor goals
+came from branches whose continuation itself detoured -- not
+transferable.  Disclosed: the anchor pool fits the logged actions more
+tightly (scale 0.07 -> 0.035); goal_log vs frozen differ by the row law.
+
+### ETT history-counter fix (2026-09-21; ett_rollout_v3/hist_fix/)
+
+Confirmed in code: the training rows' run_length gives 0 at the first
+hold / band row of a path, the rollout passed 1 (+1 on every hold / band
+row).  `diag_v6_ett_rollout.py --hist-fix` aligns the rollout and writes
+under hist_fix/.  v3 C per fold, before -> after: death 0.301 / 0.309 /
+0.305 -> 0.299 / 0.304 / 0.301 (sim 0.29-0.30), reach 0.627 / 0.640 /
+0.647 unchanged, pre_zone1 timeouts 0.057 / 0.041 / 0.062 -> 0.050 /
+0.058 / 0.070 (sim 0.15-0.20), death-time KS 0.025 / 0.043 / 0.052 ->
+0.028 / 0.029 / 0.034.  The offset was real but not the driver (as the
+user said); the under-stalling before the mouth and the in-zone death
+timing remain, and the advice-process gap (memoryless nominal death
+0.036 vs the teacher's 0.30) is untouched by it.  A folds running for
+the record.

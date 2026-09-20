@@ -109,3 +109,48 @@ budget; the read-outs are in-sample; the continue reference was added
 after two lineages were seen (its numbers are not part of the pre-fixed
 comparison); nothing here says what a from-scratch training with extended
 queries would do.
+
+## Frozen-critic continuation (user's step 1, 2026-09-21; arm `frozen`)
+
+The `continue` resume with the critic FROZEN: the same joint update step
+on the same batches (actor-row hashes identical to `continue`), the
+critic parameters, target and critic Adam state restored after every
+update (final critic hash = the loaded one in all three lineages); the
+actor, its Adam state, BC 0.05 and the buffer stream unchanged; +30,000
+actor-only updates; evaluated on the same draw (seed 6909).
+
+| lineage | current | continue (joint, +30k) | frozen (actor only, +30k) | frozen: far n / completed / far timeouts; no-route |
+|---|---|---|---|---|
+| 0 | 0.520 / far 0.59 / death 0.19 / timeout 0.29 | 0.517 / 0.54 / 0.01 / 0.48 | 0.497 / 0.71 / 0.01 / 0.49 | 214 / 130 / 84; 62 |
+| 1 | 0.437 / 0.44 / 0.35 / 0.21 | 0.307 / 0.43 / 0.04 / 0.65 | **0.500** / 0.86 / 0.01 / 0.49 | 258 / 144 / 114; 34 |
+| 2 | 0.433 / 0.31 / 0.43 / 0.14 | 0.150 / 0.27 / 0.00 / 0.85 | **0.140** / 0.11 / 0.00 / 0.86 | 32 / 20 / 12; 218 |
+
+Paired success: frozen - continue -0.020 / +0.193 / -0.010; frozen -
+current -0.023 / +0.063 / -0.293.  Deaths -> 0.00-0.01 in all three
+frozen runs; timeouts +0.21 / +0.28 / +0.72 vs current (3 / 3).
+
+**Reading under the user's rule.**  The answer differs by lineage.
+Lineage 1: freezing the critic keeps the success rate (0.50 vs the
+current 0.44; the joint continuation fell to 0.31) -- the moving critic
+was the driver there; the actor went almost entirely to the far route
+(0.86) with zero deaths, at the price of more far-route timeouts
+(completion 56 % vs 71 %).  Lineage 2: freezing does NOT help (0.14 vs
+0.15 joint): the actor-only optimisation along the fixed critic and the
+current training distribution stalls the policy just the same (218 / 300
+episodes never leave the start).  Lineage 0: both hold.  What is common
+to all three frozen runs is the SIGNATURE, not the outcome: deaths
+vanish and timeouts rise -- optimising the actor under the current
+objective (fixed critic, logged relabeled goals, BC 0.05) moves it away
+from crossing the zones and toward waiting / stalling; whether that
+ends as far-route success (lineage 1) or a stall (lineage 2) depends on
+the lineage.  So both branches of the decision tree are live: the
+critic's continued change matters (lineage 1), AND the fixed-critic
+actor objective itself pushes toward worse behaviour (lineage 2).  Per
+the user's plan the next single check is the actor's training inputs
+(step 2, the goal-source comparison, running); the critic-schedule
+comparison ("critic first, actor after", same actor initialisation,
+same schedule in both arms) stays a later option.  Consistent with the
+goal-mass check (`../../cheap_checks/SUMMARY.md`): stall futures put
+> 50 % of their positive mass on the stall position, a success future
+0.3-0.4 % within the reach radius -- the critic's positives make
+stalling "reachable" and reaching nearly invisible.

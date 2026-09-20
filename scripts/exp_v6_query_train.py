@@ -93,7 +93,11 @@ ALLOWED = {'control': [0], 'extended': list(range(QC.N_QUERIES))}
 # 'continue' (reference, added 2026-09-20 after lineages 0 / 1 showed both arms far below the current policy): the SAME resume
 # (+30,000 updates from the lineage final, same streams) on the UNCHANGED sealed futures at every anchor -- no queries file at
 # all.  It separates "30,000 more updates" from "the start-region futures changed"; it is not one of the two pre-fixed arms.
-ARMS_ALL = ('control', 'extended', 'continue')
+# 'frozen' (user's diagnostic, 2026-09-21): the 'continue' resume with the CRITIC FROZEN -- the same joint update step is run on
+# the same batches, and the critic parameters, target and critic Adam state are restored after every update; the actor, its
+# Adam state, the actor / BC batches and BC 0.05 are exactly those of 'continue'.  Separates "the critic keeps changing" from
+# "optimising the actor along a fixed critic and the current training distribution" as the cause of the +30k degradation.
+ARMS_ALL = ('control', 'extended', 'continue', 'frozen')
 UPDATES = 30_000
 EVAL = {'n': 300, 'seed': 6909, 'policy': 'mean'}     # a fresh paired draw for this round (909 / 2909 / 3909 / 4909 used; 5909 pre-registered for B; 616_000_005 / 616_500_000 reserved)
 SELECT_SEED0 = 146_000_000                            # the branch-selection RNG (separate from the stream RNG): + lineage
@@ -249,7 +253,7 @@ def build(s, arm, critic_clip):
     return states[:, jnp.asarray(gidx)]
   _, update_step = losses_mod.build_learner(nets, cfg, obs_to_goal, pol_opt, q_opt, separate_actor_batch=True)
   anchors, _ = MP.AnchorSet.load(MP.OUT / 'anchors.npz')
-  if arm == 'continue':
+  if arm in ('continue', 'frozen'):
     futures = MP.BranchFutures(anchors, SEALED_BRANCHES)
     critic_stream = MP.CriticStream(anchors, futures, cfg.batch_size, cfg.discount, MP.CRITIC_STREAM_SEED0 + s)
   else:
@@ -304,7 +308,7 @@ def mode_train(args):
   man = MP.read_json(OUT / 'manifest.json')
   src = lineage_ckpt(s)
   assert MP.sha256(src) == man['lineage_agents'][f'seed_{s}']['sha256'], 'lineage checkpoint differs from the sealed hash'
-  if arm != 'continue':
+  if arm not in ('continue', 'frozen'):
     assert MP.sha256(QC.branch_path(s)) == man['stage_1']['queries'][f'seed_{s}']['sha256'], 'queries file differs from the sealed hash'
   out = run_dir(arm, s)
   if (out / 'final.pkl').exists() and not args.force:
@@ -317,15 +321,22 @@ def mode_train(args):
     fresh = q_opt.init(state.q_params)
     assert jax.tree_util.tree_structure(state.q_optimizer_state) == jax.tree_util.tree_structure(fresh), 'the checkpoint critic optimizer state is not the clip -> Adam chain'
     ff = DR.fast_forward(critic_stream, actor_stream, int(step0))
-    fsum = futures.summary() if hasattr(futures, 'summary') else {'arm': 'continue', 'futures': 'the sealed mainline branches at every anchor (unchanged)', 'sha256': MP.sha256(SEALED_BRANCHES)}
+    fsum = futures.summary() if hasattr(futures, 'summary') else {'arm': arm, 'futures': 'the sealed mainline branches at every anchor (unchanged)', 'sha256': MP.sha256(SEALED_BRANCHES),
+                                                                   'critic': ('FROZEN: q_params, target_q_params and the critic Adam state restored after every update' if arm == 'frozen' else 'trained')}
     is_start = futures.is_start if hasattr(futures, 'is_start') else np.isin(np.arange(futures.a.n), QC.start_anchor_ids(futures.a))
     b_query = futures.b_query if hasattr(futures, 'b_query') else None
     print(f'loaded {src} @ step {step0} ({arm}); futures {fsum}; streams fast-forwarded by {step0} batches in {ff:.0f} s', flush=True)
     h0 = {'q': MP._tree_hash(state.q_params), 'policy': MP._tree_hash(state.policy_params)}
     checkpoint.save_named(str(out), 'init', int(step0), state)
 
+    def _step(st, tr):
+      new, m = update_step(st, tr)
+      if arm == 'frozen':
+        new = new._replace(q_params=st.q_params, target_q_params=st.target_q_params, q_optimizer_state=st.q_optimizer_state)
+      return new, m
+
     def _multi(state, pair):
-      state, metrics = jax.lax.scan(update_step, state, pair)
+      state, metrics = jax.lax.scan(_step, state, pair)
       return state, jax.tree_util.tree_map(lambda x: x.mean(), metrics)
     multi_update = jax.jit(_multi)
     G = MP.G
@@ -355,11 +366,13 @@ def mode_train(args):
         if n == ms:
           checkpoint.save_named(str(out), str(int(step0) + ms), int(step0) + n, state)
     checkpoint.save_named(str(out), 'final', int(step0) + n, state)
+    if arm == 'frozen':
+      assert MP._tree_hash(state.q_params) == h0['q'], 'the frozen critic changed'
     MP.write_json(out / 'train_manifest.json', {
         'arm': arm, 'lineage': s, 'source_ckpt': str(src), 'source_ckpt_sha256': MP.sha256(src), 'source_step': int(step0), 'updates': n, 'final_step': int(step0) + n,
         'state_carried': ['policy_params', 'q_params', 'target_q_params', 'policy_optimizer_state', 'q_optimizer_state (clip -> Adam chain)', 'key'],
         'streams': {'critic_seed': MP.CRITIC_STREAM_SEED0 + s, 'actor_seed': MP.ACTOR_STREAM_SEED0 + s, 'select_seed': SELECT_SEED0 + s, 'fast_forwarded_batches': int(step0)},
-        'futures': fsum, 'queries_sha256': (MP.sha256(QC.branch_path(s)) if arm != 'continue' else None), 'sealed_branches_sha256': MP.sha256(SEALED_BRANCHES), 'critic_clip': clip, 'config': MP.config_dump(cfg),
+        'futures': fsum, 'queries_sha256': (MP.sha256(QC.branch_path(s)) if arm not in ('continue', 'frozen') else None), 'sealed_branches_sha256': MP.sha256(SEALED_BRANCHES), 'critic_clip': clip, 'config': MP.config_dump(cfg),
         'params_at_load': h0, 'first_batches': first, 'query_rows_per_4_batches': q_share_hist,
         'params_final': {'q': MP._tree_hash(state.q_params), 'policy': MP._tree_hash(state.policy_params)},
         'device': str(jax.devices()[0]), 'jax_version': jax.__version__, 'wall_seconds': time.time() - t0, 'history': hist})
@@ -524,6 +537,10 @@ def mode_report(args):
                             'extended_minus_current': MP.paired_block({s: E[('extended', s)] for s in complete}, {s: E[('current', s)] for s in complete}, key),
                             'control_minus_current': MP.paired_block({s: E[('control', s)] for s in complete}, {s: E[('current', s)] for s in complete}, key)}
       cont = [s for s in complete if ('continue', s) in E]
+      frz = [s for s in cont if ('frozen', s) in E]
+      if len(frz) == len(MP.SEEDS):
+        res['paired'][key]['frozen_minus_continue (diagnostic)'] = MP.paired_block({s: E[('frozen', s)] for s in frz}, {s: E[('continue', s)] for s in frz}, key)
+        res['paired'][key]['frozen_minus_current (diagnostic)'] = MP.paired_block({s: E[('frozen', s)] for s in frz}, {s: E[('current', s)] for s in frz}, key)
       if len(cont) == len(MP.SEEDS):
         res['paired'][key]['continue_minus_current (reference)'] = MP.paired_block({s: E[('continue', s)] for s in cont}, {s: E[('current', s)] for s in cont}, key)
         res['paired'][key]['extended_minus_continue (reference)'] = MP.paired_block({s: E[('extended', s)] for s in cont}, {s: E[('continue', s)] for s in cont}, key)

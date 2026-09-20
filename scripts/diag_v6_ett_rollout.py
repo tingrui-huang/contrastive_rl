@@ -73,6 +73,9 @@ V2 = False                       # set by --v2: the v2 models (stationary atom, 
 OUT_V2 = MP.OUT / 'ett_rollout_v2'
 V3 = False                       # --v3: the v3 models (v2 code path), outputs under ett_rollout_v3/
 OUT_V3 = MP.OUT / 'ett_rollout_v3'
+HIST_FIX = False                 # --hist-fix: the history counters passed to the model equal the training rows' run_length (consecutive
+                                 # flagged rows BEFORE the current one: 0 at the first hold / band row); without it the rollout passed 1
+                                 # at the first row (an offset of +1 on every hold / band row).  Outputs under <OUT>/hist_fix/.
 STATE_DIM, OBS_W = MP.STATE_DIM, MP.OBS_W
 HORIZON = MP.HORIZON
 SUCCESS_DIST = 0.5
@@ -191,9 +194,12 @@ def sample_anchors(fold):
 
 
 def _worker(args):
-  ks, fold, variant, seed, v2, v3 = args
-  global V2, V3, OUT
-  V3 = bool(v3); V2 = bool(v2) or V3; OUT = OUT_V3 if V3 else (OUT_V2 if V2 else MP.OUT / 'ett_rollout')      # spawned workers re-import the module: carry the flags explicitly
+  ks, fold, variant, seed, v2, v3, hist_fix = args
+  global V2, V3, OUT, HIST_FIX
+  V3 = bool(v3); V2 = bool(v2) or V3; HIST_FIX = bool(hist_fix)
+  OUT = OUT_V3 if V3 else (OUT_V2 if V2 else MP.OUT / 'ett_rollout')      # spawned workers re-import the module: carry the flags explicitly
+  if HIST_FIX:
+    OUT = OUT / 'hist_fix'
   import jax
   import jax.numpy as jnp
   import audit_v6_ett_context as AC
@@ -238,7 +244,8 @@ def _worker(args):
         if V2:
           kh = kh + 1 if np.abs(a_b).max() < HOLD_TOL else 0
           kb = kb + 1 if bool(in_band(s[None, :2])[0]) else 0
-          s_next, p, _ = P.step(s[None], a_b[None], a_q[None], np.array([kh]), np.array([kb])); s_next, p = s_next[0], float(p[0])
+          kh_in, kb_in = (max(kh - 1, 0), max(kb - 1, 0)) if HIST_FIX else (kh, kb)
+          s_next, p, _ = P.step(s[None], a_b[None], a_q[None], np.array([kh_in]), np.array([kb_in])); s_next, p = s_next[0], float(p[0])
         else:
           s_next, p = P.step(s[None], a_b[None], a_q[None]); s_next, p = s_next[0], float(p[0])
         p_seq.append(p); x_seq.append(float(s_next[0])); y_seq.append(float(s_next[1]))
@@ -271,10 +278,10 @@ def mode_roll(args):
   n = max(1, args.workers * 3); parts = [ks[i::n] for i in range(n)]; parts = [p for p in parts if len(p)]
   t0 = time.time()
   if args.workers <= 1:
-    res = [_worker((p, f, v, 203_000_000 + i, V2, V3)) for i, p in enumerate(parts)]
+    res = [_worker((p, f, v, 203_000_000 + i, V2, V3, HIST_FIX)) for i, p in enumerate(parts)]
   else:
     with get_context('spawn').Pool(args.workers) as pool:
-      res = pool.map(_worker, [(p, f, v, 203_000_000 + i, V2, V3) for i, p in enumerate(parts)])
+      res = pool.map(_worker, [(p, f, v, 203_000_000 + i, V2, V3, HIST_FIX) for i, p in enumerate(parts)])
   rows = [r for part in res for r in part]
   with out.open('wb') as fh:
     pickle.dump({'fold': f, 'variant': v, 'anchors': ks, 'rows': rows, 'wall_seconds': time.time() - t0}, fh)
@@ -389,12 +396,15 @@ def main(argv=None):
   ap.add_argument('--force', action='store_true')
   ap.add_argument('--v2', action='store_true', help='use the v2 one-step models; outputs under ett_rollout_v2/')
   ap.add_argument('--v3', action='store_true', help='use the v3 one-step models (v2 code path); outputs under ett_rollout_v3/')
+  ap.add_argument('--hist-fix', action='store_true', help='history counters aligned with the training rows (0 at the first hold / band row); outputs under <OUT>/hist_fix/')
   args = ap.parse_args(argv)
-  global V2, V3, OUT
+  global V2, V3, OUT, HIST_FIX
   if args.v3:
     V3 = True; V2 = True; OUT = OUT_V3
   elif args.v2:
     V2 = True; OUT = OUT_V2
+  if args.hist_fix:
+    HIST_FIX = True; OUT = OUT / 'hist_fix'
   OUT.mkdir(parents=True, exist_ok=True)
   {'seal': mode_seal, 'nominal': mode_nominal, 'roll': mode_roll, 'report': mode_report}[args.mode](args)
   return 0
