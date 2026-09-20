@@ -345,6 +345,27 @@ class LearnedFutures:
     return self.obs[e, t + 1, :STATE_DIM], self.act[e, t + 1]
 
 
+class AbsorbingFutures:
+  """A changed future law (user's sparse-supervision hypothesis, 2026-09-20; exp_v6_absorbing_law.py):
+  P(m) ~ gamma^m over m = 1..H with H = HORIZON - t (the path's own remaining horizon); a
+  path that ended before the horizon (reach or death) returns its ACTUAL terminal row for
+  every m >= L - 1; a path that ran to the horizon is unchanged.  No relabelling.  Wraps
+  either arm's futures identically; the stream's RNG consumption is unchanged."""
+
+  def __init__(self, base, anchors):
+    self.base = base
+    self.name = base.name + '_absorbing'
+    self.last = base.lengths.astype(np.int64) - 1                       # index of the terminal row (m)
+    self.lengths = np.maximum(HORIZON - anchors.t.astype(np.int64), self.last) + 1
+    self.tail_rows = self.lengths - 1 - self.last
+
+  def goal_at(self, k, m):
+    return self.base.goal_at(k, min(int(m), int(self.last[k])))
+
+  def next_rows(self, k):
+    return self.base.next_rows(k)
+
+
 class CriticStream:
   """Critic batches: anchor by weight, future row by the geometric law.
 
@@ -1014,11 +1035,15 @@ def train_arm(arm, seed, updates=UPDATES, base=None, batch=BATCH, start_ckpt=STA
   cfg.batch_size = int(batch)
   anchor_coef = 0.0
   critic_clip = None
+  future_law = 'truncated'
   for k, v in (overrides or {}).items():
     if k == 'anchor_coef':
       anchor_coef = float(v); continue
     if k == 'critic_clip':
       critic_clip = float(v); continue
+    if k == 'future_law':
+      assert v in ('truncated', 'absorbing'), v
+      future_law = str(v); continue
     assert hasattr(cfg, k), k
     setattr(cfg, k, v)
   fill_dims(cfg)
@@ -1057,6 +1082,8 @@ def train_arm(arm, seed, updates=UPDATES, base=None, batch=BATCH, start_ckpt=STA
     futures = LearnedFutures(anchors, branch_path, obs, act, CRITIC_STREAM_SEED0 + seed)
   else:
     futures = BranchFutures(anchors, branch_path or (inputs / 'branches_cf.npz'))
+  if future_law == 'absorbing':
+    futures = AbsorbingFutures(futures, anchors)
   critic_stream = CriticStream(anchors, futures, cfg.batch_size, cfg.discount, CRITIC_STREAM_SEED0 + seed)
   actor_stream = ActorStream(cfg, ACTOR_STREAM_SEED0 + seed)
 
@@ -1094,7 +1121,8 @@ def train_arm(arm, seed, updates=UPDATES, base=None, batch=BATCH, start_ckpt=STA
       'futures': futures.name, 'branch_file': (None if arm == 'O' else str(branch_path or (inputs / 'branches_cf.npz'))),
       'branch_file_sha256': (None if arm == 'O' else sha256(branch_path or (inputs / 'branches_cf.npz'))), 'overrides': (overrides or {}),
       'start_ckpt': (str(start_ckpt) if start_ckpt else None), 'start_ckpt_sha256': (sha256(start_ckpt) if start_ckpt else None),
-      'critic_clip': critic_clip, 'anchor_coef': anchor_coef,
+      'critic_clip': critic_clip, 'anchor_coef': anchor_coef, 'future_law': future_law,
+      'absorbing_tail_rows_mean': (float((anchors.weight * futures.tail_rows).sum() / anchors.weight.sum()) if future_law == 'absorbing' else None),
       'anchors_sha256': sha256(inputs / 'anchors.npz'), 'critic_stream_seed': CRITIC_STREAM_SEED0 + seed, 'actor_stream_seed': ACTOR_STREAM_SEED0 + seed,
       'jax_key_seed': seed, 'config': config_dump(cfg), 'first_batches': first,
       'params': {'q_init': h_q0, 'q_final': _tree_hash(state.q_params), 'policy_init': h_p0, 'policy_final': _tree_hash(state.policy_params),

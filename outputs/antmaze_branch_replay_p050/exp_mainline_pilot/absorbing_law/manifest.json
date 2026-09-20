@@ -1,0 +1,67 @@
+{
+ "experiment": "AntMaze V6 mainline: O vs CF under the absorbing future law (sparse-supervision hypothesis); the current mainline (critic_clip0.1) otherwise unchanged",
+ "sealed_at": "2026-09-20 07:45:21",
+ "git_head": "unavailable (Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128.)",
+ "status": "oracle (simulator) futures; engineering stage; a changed learning target, disclosed",
+ "hypothesis": "the target law already orders the good actions correctly (target_support), but under the truncated law a reset row yields a task-goal positive in 0.1 % of its draws; with the absorbing law (~20 %) the same learner on the same budget turns the futures into a larger CF - O gain and a better critic ranking of unseen start candidates",
+ "not_a_rereading": "target_support tested the ORDERING of the target law under its own pre-registered rule and found it correct; that result stands.  This is a new, separately registered hypothesis about supervision sparsity",
+ "change": {
+  "overrides": {
+   "critic_clip": 0.1,
+   "future_law": "absorbing"
+  },
+  "law": "P(m) ~ gamma^m over m = 1..H, H = HORIZON - t; rows m >= L-1 of a path that ended before the horizon return its actual terminal row (reach position or death position); a path that ran to the horizon is unchanged; no relabelling",
+  "applied_to": "both arms identically (AbsorbingFutures wraps RecordedFutures / BranchFutures); NCE in-batch negatives follow from the changed positives",
+  "tail_rows_anchor_weighted_mean": {
+   "O": 532.2849666666666,
+   "CF": 524.8009499999998
+  },
+  "share_of_positive_draws_on_the_terminal_row_anchor_weighted": {
+   "O": 0.7573604272245478,
+   "CF": 0.7586085174017064
+  }
+ },
+ "unchanged": [
+  "start checkpoint (start agent actor; fresh paired critic by seed)",
+  "anchors.npz and branches_cf.npz (no new queries, no regeneration)",
+  "actor / BC rows from the logged buffer (ActorStream)",
+  "bc 0.05",
+  "critic grad clip 0.1",
+  "NCE and actor losses",
+  "learning rates, Adam",
+  "30000 updates, batch 1024, G 4",
+  "seeds 0 / 1 / 2 and the stream seeds (same anchor sequence as the clip arms)",
+  "no continued training: every arm starts from the sealed start checkpoint"
+ ],
+ "base_reference": {
+  "variant": "critic_clip0.1",
+  "finals": {
+   "O/seed_0": "3245141a80a0a21a0be8a4ebbed6411f15d699a43e0c4b4669bdee2ca7107ef1",
+   "O/seed_1": "ebac1e5829e7f098af721d6778ea2f34de64e647e72d22eef7a8870b9f30425f",
+   "O/seed_2": "8d8f389fc8743fc360f83c4453b40244e0b7bf4ec13f65833fda701f56a19ab3",
+   "CF/seed_0": "8265785d577365376bba7ba473728c14f0efdfbd04172a938423b81d68535414",
+   "CF/seed_1": "f09886a7a4c389cbacae29887a6bf3b23c0ffd7b48d68f3928b771404227c6c3",
+   "CF/seed_2": "06362f533243c395ac7b48a3d8cc67cf436955490c5b4689fd5240ba1f5f2861"
+  }
+ },
+ "start_ckpt_sha256": "6a67dbbdffe817eb0d0ed4984be325c0dabc4d4158578026e9b3bb00bee5f0a9",
+ "anchors_sha256": "d6672a7dd70d9596944c9522d7d1cf887204847d34e3348d6e041c8d29d68367",
+ "branches_sha256": "503051d35287645b37cca39f43ec2ffb0f026148d10229219496cd06a58b53a4",
+ "evaluation": {
+  "n": 300,
+  "seed": 7909,
+  "policy": "mean",
+  "targets": "the six new finals, the six clip finals, the start agent; the same 300 episodes"
+ },
+ "critic_readout": "within-anchor AUROC (success label) of the critic score over the stage-1 query candidates q0..q5 at the reset rows, per lineage, new CF critic vs the clip CF critic (the candidates and labels are fixed (state, action) -> outcome pairs from the stage-1 generation)",
+ "judgement": {
+  "primary": "CF_abs - O_abs success on the common episodes, per paired seed: mean > 2 x seed s.e. and 3 / 3 (the mainline rule)",
+  "vs_current": "CF_abs - CF_clip success: mean > 2 x seed s.e. and 3 / 3 (the new law must beat the current arms, not only its own O)",
+  "critic": "reset-row within-anchor AUROC of CF_abs critics above the CF_clip critics in 3 / 3 lineages (reported; supports the mechanism)",
+  "reading": {
+   "primary and vs_current met": "the sparse-supervision hypothesis is supported: a mainline candidate with a disclosed change of the future law (confirmation on a further draw would follow)",
+   "otherwise": "not supported: stop tuning around the sampling rule (user, 2026-09-20)"
+  },
+  "no_selection": "six finals evaluated once; no tuning after the result"
+ }
+}

@@ -2643,3 +2643,104 @@ counter.  A: death 0.036 vs 0.294, AUROC 0.687, unchanged -- the
 nominal's missing in-band holds (ett_advice).  The learned ETT is not
 running end to end; the CRL line's oracle gain is not a learned-ETT
 result.  Nothing running; next = the advice process (user's call).
+
+### User's decision after 0a25130 (2026-09-20): one bounded CRL comparison, the ETT advice generator
+
+CRL: the absorbing termination law as a NEW sparse-supervision
+hypothesis (the target_support ordering result stands; a reset row yields a
+task-goal positive in 0.1 % of its draws); ETT: an advice generator on the
+branch supervision with a persistent per-path hidden context (motion /
+onset frozen), gated on held-out calibration and whole-trajectory
+distributions before any rollout; no BC / actor / query-count / budget
+changes; the two lines kept apart.
+
+### CRL line: absorbing law result (2026-09-20; absorbing_law/SUMMARY.md) -- NOT supported
+
+`scripts/exp_v6_absorbing_law.py` (+ `AbsorbingFutures` / `future_law`
+override in the pilot): the current mainline (critic_clip0.1) with the
+critic's positive law changed in both arms (terminal row held to 800 - t
+after reach / death; timeouts unchanged; 76 % of the positive draws land on
+a terminal row).  Seed 7909, same 300 episodes for the six new finals, the
+six clip finals and the start: CF_abs 0.013 / 0.380 / 0.063 (deaths
+0.00-0.02, timeouts 0.99 / 0.60 / 0.92; BC NLL -16 -> -8 / -11 / -12,
+scale 0.06 -> 0.09-0.14), O_abs = start (0.26-0.27); CF_abs - O_abs
+-0.257 / +0.117 / -0.200 (rule not met); CF_abs - CF_clip -0.50 / -0.09 /
+-0.36 (3 / 3 worse); CF_clip - O_clip on the same draw +0.253 / +0.197 /
++0.140 (met); reset-row critic AUROC over the stage-1 candidates CF_abs
+0.58 / 0.53 / 0.63 vs CF_clip 0.62 / 0.58 / 0.62 (up 1 / 3).  Reading:
+under the absorbing law nearly every O positive is the goal (no contrast
+between actions; the O critic teaches nothing) and the CF actor learns to
+avoid the death spot rather than to reach (stalls); more task-goal
+positives came bundled with death-position positives.  Stop tuning around
+the sampling rule (user's rule).
+
+### ETT line: the advice generator v1 -> v3 (2026-09-20; ett_advice_gen/SUMMARY.md)
+
+v1 (single hold head, Bernoulli): teacher-forced AUROC 0.996 but
+autoregressively the runs fragment (median 2 vs 14) and P(death) 0.14 vs
+0.29; the calibrated p at the rows where a hold STARTS is 0.04.  v2
+(start / continue heads, weighted, calibrated by inversion): starts 0.08.
+v3 (+ per-zone mouth-arrival history: the teacher consults once at the
+first arrival at x in [MOUTH_X, HAZARD_X), |y| < 2; hold iff wait-latch and
+t < t0 + 72): starts 0.55; autoregressive under the true context the
+generated advice agrees with the real advice row for row 0.993-0.996,
+hold structure identical (P(h|h) 0.982-0.984, run median 13-14), and
+through the frozen v3 onset head P(death) 0.165 / 0.189 / 0.187 vs the
+REAL advice's 0.167 / 0.194 / 0.186 along the same censored rows (realised
+0.29; the gap is the censoring, identical for the real advice); death
+AUROC 0.965-0.977, death-time KS 0.06-0.08.  Gate revision disclosed
+(death rate vs the real advice through the same head; persistence like
+for like under the true context; E2b keeps the support gate).  MAP hold
+decision (the teacher's rule is deterministic), sampled torque.  All
+gates 3 / 3 -> variant B rollouts (prior context per path, K = 4) on
+node3; fold 0 pooled death 0.301 / reach 0.615 vs sim 0.292 / 0.611.
+
+### Incident (2026-09-20 09:09 UTC): node5 wiped
+
+The node5 pod's filesystem was reset (home directory emptied, no reboot)
+while 13 processes ran (load 47): the same failure mode as the PointMaze
+pod.  Lost: the repo / venv on node5, queries_s*.npz (regenerable from
+the lineage finals), the absorbing-law and query_train / goal_source /
+frozen checkpoints (results already pulled), the generator v1 / v2 files.
+node3 holds every essential input (lineage finals, branches, anchors,
+ett_context, v3 models, nominal, start, dataset).  Rule from here: at most
+three processes per pod; pull results per stage.
+
+### ETT line: variant B rollouts (2026-09-20 evening; ett_rollout_v3/hist_exact/SUMMARY.md)
+
+The advice generator v3 with a prior-drawn persistent context per path,
+through the frozen v3 motion / onset models, on the same 6,000 held-out
+anchors as C / A: pooled death 0.312 vs sim 0.294 (C 0.303, A 0.036),
+reach 0.627 vs 0.615, timeout 0.061 vs 0.091, death-time KS 0.028 (C
+0.027, A 0.338), death-x KS 0.050 (C 0.064, A 0.513), reach-time KS
+0.035; strata deaths within 0.04 of the simulator everywhere (start 0.722
+vs 0.724); the failing strata are C's (pre_zone1 under-stall: timeout
+0.046 vs 0.178; zone2 death timing KS 0.20); per-anchor AUROC 0.796 (C
+0.995) = what is predictable without the actual context, not gated.
+The advice process is no longer the ETT's bottleneck; the remaining gap
+to the simulator is the long-path motion / onset error shared by C and
+B.  Oracle-supervised engineering revision; no futures for training yet.
+
+### The whole pipeline with learned-ETT futures, five seeds (user's decision 2026-09-20; ett_futures/SUMMARY.md)
+
+`scripts/exp_v6_ett_futures.py`: learned-ETT futures for all 53,747
+anchors (v3 motion / onset + advice generator v3, prior context per path,
+MAP hold, onset sampled; 126 s batched; cross-fitted by fold), then the
+unchanged mainline recipe with those futures (arm ETT) vs the simulator
+futures (CF) vs the recorded (O), seeds 0-4 (CF / O seeds 3-4 trained
+here), one fresh draw (seed 8909).  Futures vs the simulator table:
+pooled success 0.633 / 0.621, death 0.307 / 0.291, timeout 0.060 /
+0.088; the model under-stalls before the mouth (pre_zone1 timeouts 0.047
+vs 0.184) and OVER-times-out on the far-route legs (top corridor 0.29 vs
+0.18).  Policies: CF 0.523 / 0.470 / 0.437 / 0.407 / 0.407, CF - O
++0.152 (s.e. 0.024, 5 / 5, RULE MET at five seeds); ETT 0.283 / 0.450 /
+0.417 / 0.167 / 0.137, ETT - O -0.006 (3 / 5, rule NOT met); seeds 1-2
+keep the oracle gain (0.450 / 0.417), seeds 0 / 3 / 4 stall at the start
+(timeouts 0.57-0.72, 82-97 % never reach the first mouth); training
+metrics normal (no manifold exit).  Hypothesis: with the far route less
+reliable under the model and the shortcut's deaths unchanged, the actor
+has no reliable alternative and stalls.  Next ETT item = the long-path
+motion / onset error (far-route legs, pre-mouth stall); the advice
+process is no longer the bottleneck.  Eval seeds used so far: 909, 2909,
+3909, 4909, 6909, 7909, 8909 (5909 unused; 616_000_005 / 616_500_000
+reserved).

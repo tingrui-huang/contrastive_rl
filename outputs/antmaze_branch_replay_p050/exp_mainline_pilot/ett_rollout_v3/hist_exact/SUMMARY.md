@@ -55,3 +55,38 @@ lost.  The oracle gain of the CRL line is not a learned-ETT result.
 Next (user's order): the advice process (ett_advice/SUMMARY.md gives the
 acceptance metrics and a candidate); the C strata gaps are a separate,
 later motion / onset item.
+
+## Variant B (added 2026-09-20 evening): the learnt advice generator v3 restores the danger
+
+`roll --v3 --hist-exact --variant B`: advice from `fit_v6_ett_advice.py`
+(v3, MAP hold decision, sampled torque, cross-fitted by fold), one hidden
+context per advice path drawn from the prior and kept for the whole path,
+the generator's own history (hold run, first mouth arrival), K = 4 advice
+paths per anchor; the evaluation episode's actual context is never read.
+Same anchors, models, counters, termination as C / A.
+
+| variant | death sim / model | reach | timeout | KS death time | KS death x | KS reach time | AUROC P(death) vs realised |
+|---|---|---|---|---:|---:|---:|---:|
+| C (simulator teacher, true context) | 0.294 / 0.303 | 0.615 / 0.637 | 0.091 / 0.059 | 0.027 | 0.064 | 0.035 | 0.995 |
+| A (memoryless nominal) | 0.294 / 0.036 | 0.615 / 0.852 | 0.091 / 0.112 | 0.338 | 0.513 | 0.157 | 0.687 |
+| **B (advice generator v3, prior context)** | **0.294 / 0.312** | 0.615 / 0.627 | 0.091 / 0.061 | **0.028** | **0.050** | 0.035 | 0.796 |
+
+Strata, death sim / model (C, B): start 0.724 / 0.726, 0.722; pre_zone1
+0.503 / 0.527, 0.543; zone1 0.426 / 0.437, 0.451; between 0.283 / 0.291,
+0.305; zone2 0.105 / 0.107, 0.112.  B's failing strata are C's:
+pre_zone1 (reach 0.411 vs 0.319, timeout 0.046 vs 0.178 -- the
+under-stall) and zone2 (death-time KS 0.199, death-x 0.205 -- the
+in-zone timing); everything else passes.
+
+Reading.  Without reading the hidden context, the generated advice
+reproduces the simulator's death rate (0.312 vs 0.294; A 0.036), its
+timing (KS 0.028) and its position (KS 0.050) pooled and per stratum
+within 0.04, i.e. the advice process is no longer the ETT's bottleneck;
+the per-anchor AUROC (0.796 vs C's 0.995) is what remains predictable
+without the actual context and is not a gate (user).  What stands
+between the learned ETT and the simulator is now the C-side motion /
+onset error on long paths (under-stalling before the mouth, in-zone death
+timing) -- shared by C and B, independent of the advice.  Status:
+oracle-supervised engineering revision (the advice supervision, the
+branch contexts and the context prior come from the simulator / its
+design); no futures generated for training yet.

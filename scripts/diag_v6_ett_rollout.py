@@ -108,6 +108,7 @@ def mode_seal(args):
          'anchors': f'{N_PER_FOLD} held-out anchors per fold, uniform over anchors, seed {SAMPLE_SEED}; strata = anchor region', 'continuation': 'start agent mode (the reference branches\' continuation); first query = the logged torque',
          'termination': 'reach (|xy - goal| <= 0.5), horizon 800 - t, onset (exact hazard integration along the path; no recovery)',
          'advice': {'C': 'simulator teacher along the model path under the branch\'s redrawn timetable (Step 0 / 1 construction)',
+                    'B': f'the learnt advice generator v3 (fit_v6_ett_advice.py; state + own history incl. the first mouth arrival + a persistent hidden context drawn per path from the prior; MAP hold decision, sampled torque; cross-fitted by fold; gates3_map.json all folds pass), K = {K_DRAWS_A} advice paths per anchor, seed {ADVICE_SEED}; the evaluation episode\'s actual context is never read',
                     'A': f'memoryless nominal a_b ~ MDN(s) fitted on the d05 log (k {MDN["k"]}, {MDN["hidden"]}, {MDN["steps"]} steps, seed {MDN["seed"]}; fixed final iterate), K = {K_DRAWS_A} sampled advice paths per anchor, seed {ADVICE_SEED}'},
          'comparison': {'rates': 'death / reach / timeout / entered-far: model mean of exact per-anchor probabilities vs the branches\' realised rates',
                         'distributions': 'death time (steps after the anchor), death x, time to reach: weighted two-sample KS vs the branches\' realised values',
@@ -227,6 +228,10 @@ def _worker(args):
   mode = jax.jit(lambda o: jnp.tanh(nets.policy_network.apply(pp, o).loc))
   env, teacher = AC.make_env_teacher(seed); env.reset()
   nominal = Nominal(pickle.load(((MP.OUT / 'ett_rollout') / 'nominal_mdn.pkl').open('rb'))) if variant == 'A' else None     # the same nominal for v1 and v2
+  if variant == 'B':
+    import fit_v6_ett_advice as FA
+    FA.DECISION = 'map'                                # the generator's MAP hold decision (the teacher's rule is deterministic); torque sampled
+    gen = FA.load_generator(fold)
   out = []
   for k in ks:
     k = int(k); e, t = int(anchors.episode[k]), int(anchors.t[k])
@@ -243,12 +248,31 @@ def _worker(args):
         AC.restore_teacher(teacher, snap0)
       s = s0.copy(); p_seq, x_seq, y_seq = [], [], []
       max_steps = HORIZON - t; reached = False; far = -1
+      if variant == 'B':                                 # one hidden context per advice path, kept for the whole path; the generator's own history
+        z = FA.sample_context(rng, 1)
+        kh_prev = int(FA.zero_run_before(act, np.array([e]), np.array([t]))[0]); prev_ab = (act[e, t - 1] if t >= 1 else np.zeros(8, np.float32)).astype(np.float32)
+        last_b_gen = 0; m_gen = FA.first_mouth_in_prefix(obs[e], t)         # the logged prefix's first mouth arrival per zone (-1 = not yet)
       kh = kb = 0                                        # v2 history features along THIS path: consecutive hold steps, steps since band entry
       last_h = last_b = 0                                # --hist-exact: index of the last reset row of run_length (path start, or the last unflagged row)
       for j in range(max_steps):
         o31 = np.concatenate([s, goal])
         a_q = a_q0 if j == 0 else np.asarray(mode(jnp.asarray(o31[None])), np.float32)[0]
-        a_b = teacher.act(AC.obs58(env, o31), AC.schedule_of(un, tn, t + j)) if variant == 'C' else nominal.sample(o31, rng)
+        if variant == 'C':
+          a_b = teacher.act(AC.obs58(env, o31), AC.schedule_of(un, tn, t + j))
+        elif variant == 'A':
+          a_b = nominal.sample(o31, rng)
+        else:
+          band_now = bool(in_band(s[None, :2])[0])
+          if j == 0 or not band_now:
+            last_b_gen = j
+          kb_gen = (j - last_b_gen) if band_now else 0
+          ctx = FA.context_features(np.array([t + j]), *[np.asarray(v) for v in z])
+          for zi, zz in enumerate((1, 2)):
+            if m_gen[zi] < 0 and bool(FA.at_mouth(s[None, :2].astype(np.float64), zz)[0]):
+              m_gen[zi] = t + j
+          mf = FA.mouth_features(np.array([t + j]), np.array([m_gen[0]]), np.array([m_gen[1]]), np.asarray(z[2]), np.asarray(z[3]))
+          hold_g, ab_g, _ = gen.sample(FA.features(o31[None], ctx, mf, np.array([kh_prev]), np.array([kb_gen]), prev_ab[None], gen.norm), rng)
+          a_b = ab_g[0]; kh_prev = kh_prev + 1 if bool(hold_g[0]) else 0; prev_ab = a_b
         if V2:
           hold = bool(np.abs(a_b).max() < HOLD_TOL); band = bool(in_band(s[None, :2])[0])
           kh = kh + 1 if hold else 0
@@ -288,6 +312,10 @@ def mode_roll(args):
     print(f'{out} exists', flush=True); return
   if v == 'A' and not ((MP.OUT / 'ett_rollout') / 'nominal_mdn.pkl').exists():      # the nominal lives with the v1 diagnostic; shared by v2
     raise SystemExit('fit the nominal first')
+  if v == 'B':
+    import fit_v6_ett_advice as FA
+    if not FA.model_path(f).exists():
+      raise SystemExit('fit the advice generator first')
   ks = sample_anchors(f)
   if args.limit:
     ks = ks[:args.limit]
@@ -333,7 +361,7 @@ def mode_report(args):
     bxy = d['obs_rows'][:, :2]
   reg = region_of(anchors.state[:, :2])
   res = {'variants': {}, 'thresholds': THRESH}
-  for v in ('C', 'A'):
+  for v in ('C', 'A', 'B'):
     rows = []
     for f in range(3):
       p = OUT / f'roll_{v}_fold{f}.pkl'
@@ -405,7 +433,7 @@ def mode_report(args):
 def main(argv=None):
   ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
   ap.add_argument('mode', choices=('seal', 'nominal', 'roll', 'report'))
-  ap.add_argument('--variant', choices=('C', 'A'), default='C')
+  ap.add_argument('--variant', choices=('C', 'A', 'B'), default='C')
   ap.add_argument('--fold', type=int, default=0)
   ap.add_argument('--workers', type=int, default=8)
   ap.add_argument('--limit', type=int, default=None)

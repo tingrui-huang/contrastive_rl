@@ -1,0 +1,98 @@
+{
+ "experiment": "AntMaze V6 mainline, query coverage stage 2: controlled training comparison control (q0 futures) vs extended (q0..q5 futures, query torque = critic action) at the start-region anchors",
+ "sealed_at": "2026-09-19 22:51:39",
+ "git_head": "unavailable (Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128.)",
+ "status": "exploratory training experiment added after stage 1 (its pooled gate G1 stays NOT met); oracle (simulator) futures; not offline identification",
+ "stage_1": {
+  "manifest_sha256": "a8b8582f408b585cb79b29246d24c4f11af9ecd666fcb988abe5a9523ff46570",
+  "report_sha256": "296c24d91f1f497d189a702d6b71e2343a2fe22a2d5062889ec8d323f898ebe7",
+  "queries": {
+   "seed_0": {
+    "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/query_coverage/queries_s0.npz",
+    "sha256": "8fc23e52c5e2fd5e0a5760b085b91ccd14fa34595d8eed848470649ed86f45de"
+   },
+   "seed_1": {
+    "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/query_coverage/queries_s1.npz",
+    "sha256": "359b0cf506d3f34bb7c5169c6cb89844aad78ce07342eda6d0a601fb99024ed7"
+   },
+   "seed_2": {
+    "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/query_coverage/queries_s2.npz",
+    "sha256": "dd1c766fd19a837bcb62326fcf95c2447b4e98394e1effdcfd20acbfb448a611"
+   }
+  }
+ },
+ "anchors_sha256": "d6672a7dd70d9596944c9522d7d1cf887204847d34e3348d6e041c8d29d68367",
+ "sealed_branches": {
+  "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/branches_cf.npz",
+  "sha256": "503051d35287645b37cca39f43ec2ffb0f026148d10229219496cd06a58b53a4",
+  "continuation": "start agent"
+ },
+ "lineage_agents": {
+  "seed_0": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/variants/critic_clip0.1/CF/seed_0/final.pkl",
+   "sha256": "8265785d577365376bba7ba473728c14f0efdfbd04172a938423b81d68535414"
+  },
+  "seed_1": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/variants/critic_clip0.1/CF/seed_1/final.pkl",
+   "sha256": "f09886a7a4c389cbacae29887a6bf3b23c0ffd7b48d68f3928b771404227c6c3"
+  },
+  "seed_2": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/variants/critic_clip0.1/CF/seed_2/final.pkl",
+   "sha256": "06362f533243c395ac7b48a3d8cc67cf436955490c5b4689fd5240ba1f5f2861"
+  }
+ },
+ "recipe": "critic_clip0.1",
+ "recipe_overrides": {
+  "critic_clip": 0.1
+ },
+ "arms": {
+  "control": "start-region anchors: q0 (logged torque) branches of the lineage queries file, both hazard draws (2 per anchor); every other anchor: the sealed branch",
+  "extended": "start-region anchors: q0..q5 branches, both draws (12 per anchor), the branch first torque = the critic action; every other anchor: the sealed branch"
+ },
+ "shared": "continuation policy in the start region (the lineage agent), futures outside it, anchors and weights (equal split over the allowed branches; separate selection RNG), the actor / BC stream, NCE, actor objective, bc 0.05, critic clip 0.1, gamma 0.999, lr, batch 1024, G 4, the start TrainingState and the fast-forwarded streams",
+ "start": "the lineage final (30,000 updates) with policy, critic, target, both Adam states (clip chain) and key; streams fast-forwarded 30,000 batches",
+ "updates": 30000,
+ "identity_check": "first-batch hashes: critic anchor ids and actor rows identical across arms; goals / actions differ",
+ "evaluation": {
+  "n": 300,
+  "seed": 6909,
+  "policy": "mean",
+  "policies": [
+   "control final",
+   "extended final",
+   "the lineage agent (current policy)",
+   "the start agent (reference only)"
+  ],
+  "paired": "same draw for every policy",
+  "comparisons": [
+   "extended - control",
+   "extended - current",
+   "control - current"
+  ],
+  "rule": "mean over the 3 lineages > 2 x seed s.e. and 3 / 3 (the mainline rule)",
+  "quantities": [
+   "success (primary)",
+   "detour",
+   "death",
+   "timeout",
+   "route ledger"
+  ]
+ },
+ "readouts": {
+  "critic": "at the start-region anchors, f(s, a_q, g_task) (min over the twin) of the lineage critic and each final critic vs the realised outcome of the same (anchor, query) branches: within-anchor AUROC of branch success (anchors with both outcomes), share of anchors whose critic-argmax query succeeded in >= 1 draw, f(best) - f(logged); reset rows and all start anchors",
+  "actor": "each final actor's own closed-loop rollout (mode) from the 196 reset anchors with the same two hazard draws: completed far / success; the lineage agent's value = stage 1 \"mode\"",
+  "caveat": "in-sample (the training anchors); the fresh evaluation draw is primary"
+ },
+ "judgement": {
+  "1": "extended > control AND extended > current (rule met on success) -> usable improvement; confirm on a fresh draw",
+  "2": "extended critic learns the candidate differences, actor does not improve -> stop adding queries; extraction / objective conflict",
+  "3": "extended critic does not learn the added actions' consequences -> value learning problem"
+ },
+ "held_fixed_by_decision": [
+  "no re-weighting of the reset rows",
+  "BC 0.05",
+  "the actor and its stream",
+  "no selection: every run evaluated once"
+ ],
+ "stage_1_gate_status": "G1 NOT met at the pooled level (lineage 0); this stage is an added exploratory experiment, not a gate pass"
+}
