@@ -2794,21 +2794,36 @@ split-half noise 0.982); the NCE positive distribution identical to
 0.003.  Result: ETT 0.357 / 0.370 / 0.187 / 0.313 / 0.477, mean 0.341
 (v4 0.347, CF 0.449, O 0.297); ETT - O +0.044 (s.e. 0.044, 4 / 5, NOT
 met); ETT - CF -0.108 (4 / 5 below), retention 0.29.  -> the "still
-clearly behind" branch: the motion error is not what explains the v4
-gap.  The exact motion removed the v4 failures before entering a route
+clearly behind" branch: the exact motion changed the failure mode but
+did not by itself restore the gain (NOT "the motion error is
+unimportant").  The exact motion removed the v4 failures before entering a route
 (no-route timeouts 7-41 per 300 vs 58-185; oracle 16-30) and replaced
 them by shortcut deaths (shortcut share 0.56-0.91 vs oracle 0.29-0.62;
 92-100 % die there when the hazard is active, in every arm) and corridor
 stalls (shortcut timeouts 32-62 in three seeds vs 8-24).  Both user
-checks pass, so what remains is exactly the three measured differences:
-the per-step realisation of the death cut (zone-2 deaths earlier, KS
-0.17; corridor death goals 0.093 vs 0.053; 8-17 % of death frames out
-of the band vs 5-11 %), the death frame without the impact signature,
-the 1.1 % contact-perturbed survivors; which the critic reads is NOT
-established.  Candidate (user's decision): the sealed paths with their
-own death rows and the death frame replaced by the physics-only state
-(table surgery, five seeds) discriminates the cut realisation from the
-impact frame; a frozen-critic readout on the two frame kinds first.
+checks pass, but they compare MARGINALS (user's review of b35b529): the
+critic learns p(g | s, a), and per anchor the tables agree on the
+outcome 78.4 % only (5,714 sim successes -> hybrid deaths, 5,257 the
+other way; the counts balance).  Whether that is the ordinary re-draw
+of one random future per anchor or model bias cannot be told without an
+oracle re-draw reference -- the oracle's "5 / 5 seeds" shared ONE
+hazard draw per anchor (generation randomness never checked).  The
+impact-frame candidate is dropped by code (goals are xy only:
+BranchFutures.goal_at); xy / contact differences not excluded.  NEXT
+(user's go): scripts/exp_v6_oracle_draw2.py -- the simulator table
+regenerated with fresh hazard seeds (232M + anchor_id), same five
+seeds / recipe / draw 8909; a REPLICATION CHECK, no equivalence
+threshold (the 0.024 seed s.e. is not one); report CF2 - CF per seed,
+CF2 - O, hybrid vs both tables; readings kept open: CF2 ~ 0.45 above
+the hybrid -> biased learned risk / conditional futures (not localised
+to the cut); CF2 ~ hybrid -> table-draw sensitivity first, the 0.45
+restated as one table's result; in between -> not separable.  Then:
+table-sensitive -> equal-weight multi-future control from the two
+oracle tables (anchor weight unchanged, one complete future chosen
+first, then the geometric goal law, all outcomes kept, no splicing, no
+loss change); both oracles above the hybrid -> the learned risk at the
+same state / torque / MATCHED hidden context (survival probability,
+death time, realised future sampling).
 Wording corrections adopted (user): the v4 - v3 mean gain +5.6 pp with
 paired s.e. 9.1 pp is not established; "all stall at the start" was
 wrong (v4 seed 3: 139 timeouts = 57 entered the far route, 10 shortcut,
@@ -2819,3 +2834,31 @@ classification, not a cause.  Process: early evaluations of finished
 seeds on the chain's platform (GPU JAX), never with a different
 JAX_PLATFORMS; `pkill -f` on a pattern that appears in the ssh command
 line kills the session.
+
+### The second hazard draw of the simulator table (2026-09-20 night; oracle_draw2/SUMMARY.md) -- the oracle gain does NOT replicate
+
+`scripts/exp_v6_oracle_draw2.py`: the sealed table's construction with
+fresh hazard / clock / jitter seeds (232M + anchor_id), same five seeds
+/ recipe / draw 8909.  The table: every marginal equal to the sealed
+draw (regions within 0.006, death-time KS 0.008, all 3,338 both-inactive
+anchors row-identical), per-anchor outcome agreement 0.786 = the
+hybrid's 0.784 (its flips are re-draw sized; the hybrid's death-TIMING
+deviations, KS 0.085 / 0.054 / 0.171, exceed the re-draw noise 3-5x).
+Policies: CF2 0.280 / 0.233 / 0.350 / 0.310 / 0.580, mean 0.351 (sealed
+CF 0.449, hybrid 0.341, O 0.297); CF2 - O +0.054 (s.e. 0.057, 3 / 5,
+rule NOT met); CF2 - CF -0.098 (s.e. 0.076, 4 / 5 below); hybrid - CF2
+-0.010 (2 / 5).  Reading (ii) of the three: table-draw sensitivity
+first.  RESTATEMENT: the mainline oracle result (CF - O +0.152, 5 / 5;
++0.216 at three seeds; the 4909 confirmation) is the result under ONE
+hazard draw of the future table; its 5 / 5 covered training and
+evaluation randomness only; all "below the oracle" verdicts of the
+learned arms, the hybrid, the absorbing law and the query-coverage
+stages were against one draw.  The hybrid's -0.108 is not evidence
+against the learned risk (-0.010 vs draw 2); the learned futures'
+failure modes (stall before a route: CF2 seed 1 139 / 300; far-route
+incompletion: seed 0 completion 0.41; shortcut deaths) all appear under
+a pure simulator re-draw.  Next (user's plan, needs the go): the
+equal-weight multi-future control from the two oracle tables (anchor
+weight unchanged; one complete future chosen uniformly, then the
+geometric goal law within it; all outcomes kept; no splicing, no NCE /
+actor change), five seeds, draw 8909, vs both single-draw arms.

@@ -1,0 +1,59 @@
+{
+ "experiment": "AntMaze V6 mainline: a second hazard draw of the simulator branch table (arm CF2) vs the sealed draw (CF), the recorded futures (O) and the hybrid control; five paired seeds",
+ "sealed_at": "2026-09-20 20:27:04",
+ "git_head": "unavailable (Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128.)",
+ "status": "oracle (simulator futures) -- engineering stage; a replication check of the oracle reference under a fresh future-table draw (the generation randomness, which the five training seeds of one table did not cover)",
+ "generation": {
+  "construction": "exp_v6_mainline_pilot.generate_branches unchanged: the logged torque once from the restored logged state, then the start agent mode closed-loop in the simulator; fresh hazard / clock / jitter draws per anchor; ends on reach / death / horizon 800 - t; no filtering",
+  "hazard_seed0": 232000000,
+  "worker_seed0": 233000000,
+  "sealed_draw_hazard_seed0": 132000000,
+  "anchors": "all 53,747 pilot anchors (anchors.npz)",
+  "continuation_ckpt_sha256": "6a67dbbdffe817eb0d0ed4984be325c0dabc4d4158578026e9b3bb00bee5f0a9"
+ },
+ "arms": {
+  "CF2": "critic futures = branches_cf_draw2.npz",
+  "CF": "critic futures = the sealed simulator branches (branches_cf.npz)",
+  "O": "critic futures = the recorded continuation",
+  "hybrid": "ett_futures_hybrid (simulator motion + learned risk), for reference"
+ },
+ "recipe": {
+  "variant": "critic_clip0.1",
+  "overrides": {
+   "critic_clip": 0.1
+  },
+  "unchanged": [
+   "start checkpoint",
+   "anchors",
+   "actor / BC rows (logged buffer)",
+   "bc 0.05",
+   "30000 updates",
+   "stream seeds by seed"
+  ]
+ },
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4
+ ],
+ "evaluation": {
+  "n": 300,
+  "seed": 8909,
+  "policy": "mean",
+  "targets": "CF2 seeds 0-4 on the same 300 episodes as CF / O / hybrid / start"
+ },
+ "judgement": {
+  "nature": "a replication check of the oracle reference under a fresh future-table draw; two tables do not estimate the table-draw variance; the seed s.e. of CF - O is not a line for \"the same oracle\"",
+  "oracle_draw2": "CF2 - O under the mainline rule (mean > 2 x seed s.e. and 5 / 5): does the gain survive the re-draw",
+  "draw_check": "CF2 - CF per paired seed with its seed s.e. (reported, no threshold)",
+  "hybrid_reference": "hybrid - CF2 and hybrid - CF reported: where the hybrid sits relative to both oracle tables",
+  "readings_kept_open": [
+   "CF2 near 0.45 and stably above the hybrid: stronger evidence of a biased learned risk / conditional futures, not yet localised to the death cut",
+   "CF2 down near the hybrid: table-draw sensitivity first; the 0.45 restated as the result under one particular oracle table",
+   "in between or too uncertain: not separable"
+  ],
+  "no_selection": "every final evaluated once; no tuning after the result"
+ }
+}

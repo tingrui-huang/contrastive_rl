@@ -56,24 +56,29 @@ shortcut share.  Timeouts 40-83 per 300 (oracle 43-86), split: entered the far r
 8-24; all past hazard 1, mostly stalled in the corridor before mouth 2), no classified route 7-41 (oracle 16-30; v4 futures 58-185).
 Training metrics normal.
 
-## Reading (the user's rule, stated before the run)
+## Reading (the user's rule, stated before the run; wording revised on the user's review of b35b529)
 
 * NOT "recovers to near the oracle": 0.341 vs 0.449, 4 / 5 seeds below their oracle counterpart, the mean equal to the v4 futures' 0.347.
-  So the motion error of the learned model is not what explains the v4 gap -- with the motion exact (row-identical paths) the policy is
-  as far from the oracle as before.
-* What the exact motion DID change: the failures before entering a route that the v4 futures produced (no-route timeouts 58-185 per 300)
+  The exact motion CHANGED THE FAILURE MODE BUT DID NOT BY ITSELF RESTORE THE GAIN -- that is the whole of what this run shows; it does
+  not show that the motion error is unimportant.
+* What the exact motion did change: the failures before entering a route that the v4 futures produced (no-route timeouts 58-185 per 300)
   are at the oracle's level in 4 / 5 seeds (7-41) -- that part was the motion.  In its place the policies take the shortcut more often
   than the oracle's (0.56-0.91 vs 0.29-0.62) and die there, and stall in the corridor between the zones (shortcut timeouts 32-62 in three
   seeds vs 8-24).
-* The user's two checks for this branch are done and both pass: the conditional risk matches the simulator's at the cell level within
-  its own sampling noise, and the actual NCE positive distribution is the same to 0.003.  Therefore what remains is in the three
-  differences listed above and nowhere else: the realisation of the death cut per path (sampled per step: earlier in zone 2, KS 0.17;
-  deaths in the corridor 0.093 vs 0.053 of death goals; 8-17 % of death frames outside the band vs 5-11 %), the death frame without the
-  impact signature, and the 1.1 % contact-perturbed survivors.  Which of these the critic reads is NOT established by this run.
+* The two checks above (cell-level conditional risk, the NCE positive distribution) compare MARGINALS: how much future mass lands where.
+  The critic learns p(g | s, a) -- which state and which executed torque is paired with which future -- and that pairing is not fixed by
+  the marginals: per anchor the two tables agree on the outcome 78.4 % of the time only (5,714 simulator successes are hybrid deaths,
+  5,257 simulator deaths are hybrid successes; the counts balance, so the pooled rates match while the supervision of the individual
+  training keys changed).  How much of that is the ordinary re-draw of one random future per anchor and how much is model bias cannot
+  be told from these two tables: the oracle reference itself was trained on ONE hazard draw per anchor, and its "5 / 5 seeds" checked
+  the training and evaluation randomness, not the generation's.  This inference is therefore NOT available: "everything else matches,
+  so the difference is the death cut".
+* The critic reads a future row only as its xy goal (`BranchFutures.goal_at`), so the impact frame's velocity signature cannot be what it
+  reads -- that candidate is dropped without a run; the xy shift and the contact-perturbed continuations (1.1 %) are not thereby excluded.
 * Not to do (user's rule): more motion-model training, multi-step supervision, BC tuning, the absorbing tail.
-* Candidate for the user's decision: since the hybrid already IS "the sealed paths cut by the learned onset with a physics-only death
-  frame", one table surgery discriminates the two remaining causes -- the sealed simulator paths with their OWN death rows but the death
-  frame replaced by the physics-only state (8,911 frames available from the hybrid rows, 2,071 by one hazard-off step from the penultimate
-  row; no simulation of the risk), trained with the same five-seed recipe: at the oracle's level -> the cut realisation is what the
-  learned risk gets wrong; at the hybrid's level -> the impact frame is what the critic reads.  A frozen-critic readout of the oracle CF
-  critic on impact vs physics-only death frames would come first (minutes, no training).
+* Next (user's decision): a replication of the oracle reference under a fresh future-table draw (`scripts/exp_v6_oracle_draw2.py`,
+  oracle_draw2/; CF2 - CF per seed, CF2 - O, the hybrid against both tables; three readings kept open, no equivalence threshold).  Then,
+  if the result is table-draw sensitive: an equal-weight multi-future control from the two oracle tables (anchor weight unchanged, one
+  complete future of the anchor chosen first, then the geometric goal law; all outcomes kept; no splicing, no NCE / actor change); if
+  both oracle tables stay above the hybrid: the learned risk at the same state, same torque and MATCHED hidden context -- survival
+  probability, death time, and how they change the realised future sampling -- not region-level death rates.

@@ -1,0 +1,305 @@
+{
+ "meta": {
+  "arm": "CF-oracle",
+  "continuation_ckpt": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/joint_van_d05/seed_0/final.pkl",
+  "continuation_ckpt_sha256": "6a67dbbdffe817eb0d0ed4984be325c0dabc4d4158578026e9b3bb00bee5f0a9",
+  "continuation": "checkpoint actor mode tanh(loc), closed-loop",
+  "query": "the logged torque a_t executed exactly once from the restored logged state at absolute time t",
+  "termination": "first reach frame (reward > 0) / death (env done) / absolute horizon 800; no goal hold",
+  "hidden_draws": "hazard latents, clocks and rock jitter redrawn from the priors at restore, seed HAZARD_SEED0 + anchor_id",
+  "restore": "build_v6_branch_replay.restore (reset, then qpos/qvel from the logged state, goal from the logged row, env time = t)",
+  "draws_per_anchor": 1,
+  "filtering": "none: every outcome kept",
+  "anchors": 53747,
+  "wall_seconds": 1075.1512920856476,
+  "max_steps_cap": null,
+  "outcome_counts": {
+   "death": 15625,
+   "success": 33380,
+   "timeout": 4742
+  },
+  "draw": 2,
+  "hazard_seed0": 232000000,
+  "worker_seed0": 233000000
+ },
+ "summary": {
+  "meta": {
+   "anchors": 53747,
+   "arm": "CF-oracle",
+   "continuation": "checkpoint actor mode tanh(loc), closed-loop",
+   "continuation_ckpt": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/joint_van_d05/seed_0/final.pkl",
+   "continuation_ckpt_sha256": "6a67dbbdffe817eb0d0ed4984be325c0dabc4d4158578026e9b3bb00bee5f0a9",
+   "draws_per_anchor": 1,
+   "filtering": "none: every outcome kept",
+   "hidden_draws": "hazard latents, clocks and rock jitter redrawn from the priors at restore, seed HAZARD_SEED0 + anchor_id",
+   "max_steps_cap": null,
+   "outcome_counts": {
+    "death": 15625,
+    "success": 33380,
+    "timeout": 4742
+   },
+   "query": "the logged torque a_t executed exactly once from the restored logged state at absolute time t",
+   "restore": "build_v6_branch_replay.restore (reset, then qpos/qvel from the logged state, goal from the logged row, env time = t)",
+   "termination": "first reach frame (reward > 0) / death (env done) / absolute horizon 800; no goal hold",
+   "wall_seconds": 1075.1512920856476
+  },
+  "n": 53747,
+  "rows_total": 7706055,
+  "outcome_share": {
+   "success": 0.6210579195117867,
+   "death": 0.29071390031071503,
+   "timeout": 0.08822818017749828
+  },
+  "mean_steps": 142.37646752376878,
+  "mean_rows": 143.37646752376878,
+  "hazard_share_u1": 0.49504158371630047,
+  "hazard_share_u2": 0.5003442052579679,
+  "restore_maxdiff_max": 0.0,
+  "n_query_steps_all_one": true,
+  "by_anchor_time": {
+   "t in [0, 1)": {
+    "n": 196,
+    "success": 0.25,
+    "death": 0.7193877551020408,
+    "timeout": 0.030612244897959183,
+    "mean_rows": 150.10204081632654
+   },
+   "t in [1, 6)": {
+    "n": 955,
+    "success": 0.2418848167539267,
+    "death": 0.7371727748691099,
+    "timeout": 0.020942408376963352,
+    "mean_rows": 137.7350785340314
+   },
+   "t in [6, 50)": {
+    "n": 9050,
+    "success": 0.25845303867403313,
+    "death": 0.7229834254143647,
+    "timeout": 0.01856353591160221,
+    "mean_rows": 117.40828729281768
+   },
+   "t in [50, 150)": {
+    "n": 20323,
+    "success": 0.4825075038134134,
+    "death": 0.3680066919254047,
+    "timeout": 0.1494858042611819,
+    "mean_rows": 202.66486247109188
+   },
+   "t in [150, 400)": {
+    "n": 23175,
+    "success": 0.9032146709816613,
+    "death": 0.032707659115426106,
+    "timeout": 0.06407766990291262,
+    "mean_rows": 101.76569579288027
+   },
+   "t in [400, 801)": {
+    "n": 48,
+    "success": 0.4791666666666667,
+    "death": 0.0,
+    "timeout": 0.5208333333333334,
+    "mean_rows": 111.97916666666667
+   }
+  }
+ },
+ "vs_sealed_table": {
+  "pooled_weighted": {
+   "success": {
+    "draw2": 0.6204,
+    "sealed": 0.6214000000000001
+   },
+   "death": {
+    "draw2": 0.29205,
+    "sealed": 0.29086666666666666
+   },
+   "timeout": {
+    "draw2": 0.08755,
+    "sealed": 0.08773333333333333
+   }
+  },
+  "mean_rows": {
+   "draw2": 143.37646752376878,
+   "sealed": 143.30770089493367
+  },
+  "by_region": {
+   "start": {
+    "n": 4276,
+    "success": {
+     "draw2": 0.24789522918615528,
+     "sealed": 0.2432179607109448
+    },
+    "death": {
+     "draw2": 0.7247427502338635,
+     "sealed": 0.7284845650140318
+    },
+    "timeout": {
+     "draw2": 0.02736202057998129,
+     "sealed": 0.028297474275023386
+    },
+    "ks_death_steps": 0.012585119105888776
+   },
+   "pre_zone1": {
+    "n": 12541,
+    "success": {
+     "draw2": 0.31440873933498126,
+     "sealed": 0.3124950163463839
+    },
+    "death": {
+     "draw2": 0.5025117614225341,
+     "sealed": 0.5035483613746911
+    },
+    "timeout": {
+     "draw2": 0.18307949924248465,
+     "sealed": 0.18395662227892512
+    },
+    "ks_death_steps": 0.01008002335846836
+   },
+   "zone1": {
+    "n": 4946,
+    "success": {
+     "draw2": 0.5256773150020219,
+     "sealed": 0.5317428224828143
+    },
+    "death": {
+     "draw2": 0.4492519207440356,
+     "sealed": 0.4448038819247877
+    },
+    "timeout": {
+     "draw2": 0.02507076425394258,
+     "sealed": 0.023453295592397897
+    },
+    "ks_death_steps": 0.022146714671467116
+   },
+   "between": {
+    "n": 12326,
+    "success": {
+     "draw2": 0.6315917572610742,
+     "sealed": 0.6340256368651631
+    },
+    "death": {
+     "draw2": 0.27705662826545513,
+     "sealed": 0.2750283952620477
+    },
+    "timeout": {
+     "draw2": 0.09135161447347072,
+     "sealed": 0.09094596787278923
+    },
+    "ks_death_steps": 0.01518159084725118
+   },
+   "zone2": {
+    "n": 4946,
+    "success": {
+     "draw2": 0.8372422159320663,
+     "sealed": 0.8378487666801455
+    },
+    "death": {
+     "draw2": 0.11868176304084109,
+     "sealed": 0.1196926809543065
+    },
+    "timeout": {
+     "draw2": 0.0440760210270926,
+     "sealed": 0.042458552365547915
+    },
+    "ks_death_steps": 0.03673626778396799
+   },
+   "post_zone2": {
+    "n": 8069,
+    "success": {
+     "draw2": 0.9548890816705912,
+     "sealed": 0.9548890816705912
+    },
+    "death": {
+     "draw2": 0.0,
+     "sealed": 0.0
+    },
+    "timeout": {
+     "draw2": 0.04511091832940885,
+     "sealed": 0.04511091832940885
+    },
+    "ks_death_steps": null
+   },
+   "goal_area": {
+    "n": 4140,
+    "success": {
+     "draw2": 0.976328502415459,
+     "sealed": 0.976328502415459
+    },
+    "death": {
+     "draw2": 0.0,
+     "sealed": 0.0
+    },
+    "timeout": {
+     "draw2": 0.023671497584541065,
+     "sealed": 0.023671497584541065
+    },
+    "ks_death_steps": null
+   },
+   "west_column": {
+    "n": 299,
+    "success": {
+     "draw2": 0.7859531772575251,
+     "sealed": 0.7892976588628763
+    },
+    "death": {
+     "draw2": 0.0,
+     "sealed": 0.0
+    },
+    "timeout": {
+     "draw2": 0.2140468227424749,
+     "sealed": 0.21070234113712374
+    },
+    "ks_death_steps": null
+   },
+   "top_corridor": {
+    "n": 1601,
+    "success": {
+     "draw2": 0.820737039350406,
+     "sealed": 0.8219862585883823
+    },
+    "death": {
+     "draw2": 0.0,
+     "sealed": 0.0
+    },
+    "timeout": {
+     "draw2": 0.17926296064959402,
+     "sealed": 0.17801374141161774
+    },
+    "ks_death_steps": null
+   },
+   "east_column": {
+    "n": 603,
+    "success": {
+     "draw2": 0.9203980099502488,
+     "sealed": 0.9203980099502488
+    },
+    "death": {
+     "draw2": 0.0,
+     "sealed": 0.0
+    },
+    "timeout": {
+     "draw2": 0.07960199004975124,
+     "sealed": 0.07960199004975124
+    },
+    "ks_death_steps": null
+   }
+  },
+  "ks_death_steps_pooled": 0.007777992313604917,
+  "ks_length_pooled": 0.002288499823245957,
+  "outcome_agreement_per_anchor": 0.786332260405232,
+  "hazard_share": {
+   "draw2": [
+    0.49504158371630047,
+    0.5003442052579679
+   ],
+   "sealed": [
+    0.5048095707667405,
+    0.49839060784787986
+   ]
+  },
+  "row_identity": {
+   "anchors_inactive_in_both_draws": 3338,
+   "identical_paths": 3338,
+   "share": 1.0,
+   "first_diff_row_if_any (p10/med/p90)": null
+  }
+ }
+}
