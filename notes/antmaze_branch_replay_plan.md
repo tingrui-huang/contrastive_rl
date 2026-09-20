@@ -2378,3 +2378,82 @@ leads to the far route.  The missing critic supervision therefore has a
 precise locus -- the reset rows -- with 0.4 % of the anchor weight; the
 pre-registered pooled gate fails on that weight.  No stage 2 without the
 user's call.
+
+Three-lineage result (query_coverage/SUMMARY.md): G1 NOT met in all
+three (pooled completed-far +0.015 / +0.016 / +0.010, CIs above 0); G2,
+G3 pass.  Reset rows: 0.037 -> 0.330 / 0.031 -> 0.301 / 0.026 -> 0.211
+(mode 0.42 / 0.39 / 0.30), success 0.20 -> 0.43 / 0.18 -> 0.40 / 0.21 ->
+0.37; t in [1, 30) ~0.  Where the mode's branch fails at a reset state,
+a sample completes the far route in 70 / 67 / 40 of 110 / 122 / 134
+cases (draw 0): the query set offers improvement beyond the mode.
+
+### Query coverage, stage 2 (controlled training), user's decision 2026-09-20 (`scripts/exp_v6_query_train.py`, `query_coverage/train/`)
+
+User's reading of stage 1: the effect is real and sits at the reset
+rows (own first step: far completion 3.7 % -> 42 %, success 20 % -> 43 %
+on the same states, draws and continuation); G1 averaged it away (reset
+rows = 4.8 % of the start-region weight, so +29 points there is the whole
+pooled +1.5); G1 stays "not met" but is not a judgement of training
+value (a reset anchor is still drawn ~117k times in 30k x 1024); the
+open question is whether these consequences, once in the critic,
+improve the CURRENT policy -- so the comparison must keep the current
+policy as a reference.  Design (fixed before training): per lineage,
+control = start-region anchors get the q0 (logged-torque) futures of
+the queries file (both draws), extended = q0..q5 futures with the
+branch's own torque as the critic action; every other anchor = the
+sealed mainline futures in both arms (same continuation policy in the
+start region, same futures elsewhere); anchor weight split equally over
+the allowed branches by a separate selection RNG (main stream RNG
+untouched -> identical anchor sequence and actor batches across arms,
+first-batch hashes); start = the lineage final with its full
+TrainingState, streams fast-forwarded, +30,000 updates; NCE, actor
+objective, BC 0.05, clip 0.1, actor / BC stream unchanged; no reset
+re-weighting.  Evaluation once on a fresh paired draw (seed 6909, 300,
+mode) for control / extended / current (+ start agent as reference);
+paired extended - control, extended - current, control - current under
+the mainline rule.  Read-outs (in-sample, secondary): the critic's
+within-anchor ranking of the (anchor, query) branches by their realised
+success (lineage vs final critics; reset rows and all start anchors),
+and each final actor's own rollout from the 196 reset anchors with the
+two draws.  Judgement fixed in advance: (1) extended > control and >
+current -> usable improvement, confirm; (2) critic learns, actor does
+not -> stop adding queries, extraction / objective conflict; (3) critic
+does not learn the added consequences -> value learning.  Stage-1 report
+gains the user's read-out: among reset anchors where the mode's branch
+fails, how many have another query that completes.  Chain queued on
+node5 behind the stage-1 generation.
+
+### One-step ETT, Step 3a v3 result (2026-09-20; ett_rollout_v3/SUMMARY.md)
+
+C pooled passes (death 0.294 / 0.305, KS death time 0.036, death x
+0.066); start / post_zone2 / goal_area strata pass; pre_zone1 timeouts
+0.178 -> 0.053 (the three folds now agree, 0.04-0.06, vs v2's 0.006 /
+0.117 / 0.021), zone1 / zone2 death-time KS 0.16 / 0.32, between / zone2
+death-x KS 0.17 / 0.21 fail.  A fails as before (death 0.29 -> 0.04).
+Rule: C bad -> motion / onset first; the model still under-stalls ~3x and
+the in-zone death timing is off.  No training with these futures.
+
+### Query coverage, stage 2 result (2026-09-20 night; query_coverage/train/SUMMARY.md)
+
+Judgement 1 NOT met: extended - current -0.25 / -0.20 / -0.25 (3 / 3
+worse); extended - control -0.23 / +0.18 / +0.15.  The reference arm
+`continue` (same resume, unchanged sealed futures; added after two
+lineages were seen) loses 0.00 / 0.13 / 0.28 with the stall signature
+(deaths -> 0, timeouts 0.48-0.85) -- as the round-1 resumption did: the
+process is not stable past 30k even with the clip.  Control (the
+lineage's own q0 continuation at the start anchors) stalls far worse
+(0.05 / 0.03).  Extended does the opposite: shortcut and death (far share
+0.12 / 0.30 / 0.06, deaths 0.48 / 0.14 / 0.32); in-sample, from the 196
+reset anchors its own rollout completes the far route 0.05 / 0.09 / 0.02
+vs the current 0.41 / 0.40 / 0.29, and its mode moved TOWARD the logged
+torque (distance 2.8 -> 1.8, 1.9 -> 1.3, 1.8 -> 1.7).  The extended
+critic ranks the queries by realised success a little better (reset-row
+AUROC 0.62 / 0.67 / 0.65 vs current 0.62 / 0.58 / 0.62) but only to
+~0.65 and with no larger task-goal margin for the best query.  Closest
+pre-fixed branch: judgement 2 -- critic learns (modestly), actor does
+not improve, and it was pushed to the shortcut; consistent (untested)
+mechanism: the actor's relabeled shortcut-corridor goals turn a more
+accurate critic into a push toward the logged action.  Per the user's
+rule: stop adding queries; the remaining problem is extraction / the
+objective (actor goal distribution, BC), on top of a training process
+that does not hold past 30k.

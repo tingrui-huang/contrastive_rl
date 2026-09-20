@@ -308,6 +308,22 @@ def mode_report(args):
     distinct_logged = {f'draw_{d}': int(len(np.unique(keys['anchor_id'][(keys['query_id'] == 0) & (keys['draw'] == d) & (cf > 0)]))) for d in range(DRAWS)}
     L['reliability'] = {'pairs': int(len(common)), 'far_complete_rate_draw0': float(a0.mean()), 'far_complete_rate_draw1': float(a1.mean()), 'agreement': float(np.mean((a0 > 0) == (a1 > 0))),
                         'jaccard_of_far_complete': (both / either if either > 0 else None), 'distinct_anchors_with_added_far_complete': distinct, 'distinct_anchors_with_logged_far_complete': distinct_logged}
+    # user's read-out (2026-09-20): where the current mode does NOT complete the far route, does another query?  (per draw; reset rows and all start anchors)
+    alt = {}
+    for sname, amask in (('reset rows', anchors.t[ids] == 0), ('all start anchors', np.ones(len(ids), bool))):
+      aset = set(int(a) for a in ids[amask]); blk = {}
+      for d in range(DRAWS):
+        sel = (keys['draw'] == d) & np.isin(keys['anchor_id'], list(aset))
+        A, Q, C, S = keys['anchor_id'][sel], keys['query_id'][sel], cf[sel] > 0, F['success'][sel] > 0
+        mode_fail_far = {int(a) for a, q, c in zip(A, Q, C) if q == 1 and not c}
+        mode_fail_succ = {int(a) for a, q, c in zip(A, Q, S) if q == 1 and not c}
+        other_far = {int(a) for a, q, c in zip(A, Q, C) if q != 1 and c}
+        other_far_nonlog = {int(a) for a, q, c in zip(A, Q, C) if q >= 2 and c}
+        other_succ = {int(a) for a, q, c in zip(A, Q, S) if q != 1 and c}
+        blk[f'draw_{d}'] = {'mode_not_far_complete': len(mode_fail_far), 'of_which_another_query_far_complete': len(mode_fail_far & other_far), 'of_which_a_sample_far_complete': len(mode_fail_far & other_far_nonlog),
+                            'mode_not_success': len(mode_fail_succ), 'of_which_another_query_success': len(mode_fail_succ & other_succ)}
+      alt[sname] = blk
+    L['alternative_query_when_mode_fails'] = alt
     g1 = L['deltas']['extended_minus_logged']['completed_far']; g2 = (L['sets']['extended']['mass_goal'], L['sets']['logged']['mass_goal'])
     L['gates'] = {'G1_completed_far_gain': {'delta': g1['delta'], 'ci95': g1['ci95'], 'pass': bool(g1['delta'] >= 0.03 and g1['ci95'][0] > 0)},
                   'G2_goal_mass_kept': {'extended': g2[0], 'logged': g2[1], 'pass': bool(g2[0] >= 0.8 * g2[1])},
@@ -353,6 +369,11 @@ def write_report_md(res, man):
                  f'{d["delta"]:+.4f} [{d["ci95"][0]:+.4f}, {d["ci95"][1]:+.4f}] | {b["logged"]["success"]:.3f} / {b["extended"]["success"]:.3f} | {b["logged"]["mass_goal"]:.3f} / {b["extended"]["mass_goal"]:.3f} |')
       else:
         L.append(f'| {sname} | {b["n"]} | {b["weight"]:.4f} | (fewer than 20 anchors) | | | |')
+    if 'alternative_query_when_mode_fails' in Lg:
+      L += ['', '| stratum | draw | mode not far-complete | of which another query far-complete | of which a sample far-complete | mode not success | of which another query success |', '|---|---|---|---|---|---|---|']
+      for sname, blk in Lg['alternative_query_when_mode_fails'].items():
+        for dn, b in blk.items():
+          L.append(f'| {sname} | {dn[-1]} | {b["mode_not_far_complete"]} | {b["of_which_another_query_far_complete"]} | {b["of_which_a_sample_far_complete"]} | {b["mode_not_success"]} | {b["of_which_another_query_success"]} |')
     R = Lg['reliability']
     L += ['', f'Reliability: far-complete rate per (anchor, query) draw 0 / draw 1 = {R["far_complete_rate_draw0"]:.4f} / {R["far_complete_rate_draw1"]:.4f}; agreement of the far-complete indicator across draws {R["agreement"]:.3f}; '
               f'Jaccard of the far-complete sets {R["jaccard_of_far_complete"] if R["jaccard_of_far_complete"] is None else round(R["jaccard_of_far_complete"], 3)}; '
