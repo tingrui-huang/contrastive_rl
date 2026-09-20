@@ -1,0 +1,60 @@
+{
+ "n": 53747,
+ "identical_up_to_shorter": 0.7746478873239436,
+ "identical_and_same_length": 0.586637393714998,
+ "identical_and_same_outcome": 0.663683554430945,
+ "first_diff_row_if_any": {
+  "p10": 11.0,
+  "med": 37.0,
+  "p90": 107.0,
+  "n": 12112
+ },
+ "maxdiff_med_nonidentical": 1.53944593667984,
+ "outcome_pairs sim->hybrid": {
+  "success->success": 27651,
+  "success->death": 5714,
+  "success->timeout": 37,
+  "death->success": 5257,
+  "death->death": 10062,
+  "death->timeout": 293,
+  "timeout->success": 29,
+  "timeout->death": 284,
+  "timeout->timeout": 4420
+ },
+ "outcome_agreement": 0.7839135207546468,
+ "death_both: hybrid earlier / same / later": [
+  4626,
+  800,
+  4636
+ ],
+ "death_both: hybrid - sim steps med": 0.0,
+ "identical share | sim context inactive (u1=u2=0)": 1.0,
+ "identical share | sim context active": 0.7004056594439497,
+ "identical share | sim inactive, long paths (>= 100 rows both)": 1.0,
+ "n_long_inactive": 5639,
+ "n_nonidentical | sim inactive": 0,
+ "n_sim_inactive": 13319,
+ "identical share | sim u1 only / u2 only / both": [
+  0.7769225130122425,
+  0.7148014440433214,
+  0.6088503446742273
+ ],
+ "first_diff row | sim active & nonidentical & both non-death (p10/med/p90)": [
+  54.7,
+  255.0,
+  345.0
+ ],
+ "n nonidentical & both non-death": 608,
+ "by_region identical share": {
+  "start": 0.4707670720299345,
+  "pre_zone1": 0.6336815245993143,
+  "zone1": 0.6815608572583907,
+  "between": 0.7675644978095083,
+  "zone2": 0.9059846340477153,
+  "post_zone2": 1.0,
+  "goal_area": 1.0,
+  "west_column": 0.5250836120401338,
+  "top_corridor": 0.8700811992504685,
+  "east_column": 1.0
+ }
+}

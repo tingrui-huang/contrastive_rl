@@ -2770,3 +2770,52 @@ shuffled (0 / 3 / 4 up, 1 / 2 down), the stall at the start remains
 (timeouts 0.32-0.65 before the first mouth) while the simulator futures
 never stall.  Remaining deviations: pre-mouth / corridor under-stall,
 shorter paths, far-route shortfall (halved), zone-2 death timing.
+
+### User's decision after 694bc02 (2026-09-20): keep v4, no multi-step v5 yet; ONE control = exact motion + the current learned risk (ett_futures_hybrid/SUMMARY.md)
+
+`scripts/exp_v6_hybrid_futures.py` + `exp_v6_ett_futures.py --ett hybrid`:
+per anchor the learned-ETT construction with the motion replaced by the
+simulator (both rockfalls forced inactive; physics only), the risk still
+the advice generator v3 + the v4 onset head sampled per step, the death
+frame the physics-only next state; same anchors / weights / context prior
+/ future law / continuation / recipe, five seeds, draw 8909.  Reading
+rule fixed in advance: recovers to near the oracle -> invest in the
+motion model (then targeted multi-step supervision); still clearly
+behind -> the motion error does not explain the gap, check the
+conditional risk and the actual NCE future distribution, no blind motion
+training.  The table: outcome shares 0.612 / 0.300 / 0.088 vs the
+simulator's 0.621 / 0.291 / 0.088, every region within 0.03; paths
+row-identical to the sealed branches for all 13,319 inactive-context
+anchors and, for the simulator's deaths, identical up to the rock contact
+(8,911 / 10,986 differ only at the death frame: impact |dvel| 1.3 median;
+2,071 diverge 1-8 rows before the kill; 608 survivors contact-perturbed);
+cell-level conditional death rates corr 0.995 (inside the simulator's
+split-half noise 0.982); the NCE positive distribution identical to
+0.003.  Result: ETT 0.357 / 0.370 / 0.187 / 0.313 / 0.477, mean 0.341
+(v4 0.347, CF 0.449, O 0.297); ETT - O +0.044 (s.e. 0.044, 4 / 5, NOT
+met); ETT - CF -0.108 (4 / 5 below), retention 0.29.  -> the "still
+clearly behind" branch: the motion error is not what explains the v4
+gap.  The exact motion removed the v4 failures before entering a route
+(no-route timeouts 7-41 per 300 vs 58-185; oracle 16-30) and replaced
+them by shortcut deaths (shortcut share 0.56-0.91 vs oracle 0.29-0.62;
+92-100 % die there when the hazard is active, in every arm) and corridor
+stalls (shortcut timeouts 32-62 in three seeds vs 8-24).  Both user
+checks pass, so what remains is exactly the three measured differences:
+the per-step realisation of the death cut (zone-2 deaths earlier, KS
+0.17; corridor death goals 0.093 vs 0.053; 8-17 % of death frames out
+of the band vs 5-11 %), the death frame without the impact signature,
+the 1.1 % contact-perturbed survivors; which the critic reads is NOT
+established.  Candidate (user's decision): the sealed paths with their
+own death rows and the death frame replaced by the physics-only state
+(table surgery, five seeds) discriminates the cut realisation from the
+impact frame; a frozen-critic readout on the two frame kinds first.
+Wording corrections adopted (user): the v4 - v3 mean gain +5.6 pp with
+paired s.e. 9.1 pp is not established; "all stall at the start" was
+wrong (v4 seed 3: 139 timeouts = 57 entered the far route, 10 shortcut,
+72 no classified route) -> "the learned futures increase the failures
+before entering a route; stuck / wandering / other are not
+distinguishable from the event fields"; `drift` is a residual
+classification, not a cause.  Process: early evaluations of finished
+seeds on the chain's platform (GPU JAX), never with a different
+JAX_PLATFORMS; `pkill -f` on a pattern that appears in the ssh command
+line kills the session.

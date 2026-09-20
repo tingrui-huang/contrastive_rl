@@ -44,11 +44,12 @@ BRANCHES = OUT / 'branches_ett.npz'
 
 
 def set_ett(version):
+  """v3 / v4: the learned ETT of that version; 'hybrid': simulator motion + the v4 learned risk (exp_v6_hybrid_futures.py writes its branch table)."""
   global ETT, OUT, BRANCHES
   ETT = version
   OUT = MP.OUT / ('ett_futures' if version == 'v3' else f'ett_futures_{version}')
   BRANCHES = OUT / 'branches_ett.npz'
-  F2.OUT = F2.OUT_V4 if version == 'v4' else F2.OUT_V3
+  F2.OUT = F2.OUT_V4 if version in ('v4', 'hybrid') else F2.OUT_V3
 BASE_VARIANT = 'critic_clip0.1'
 OVERRIDES = dict(MP.VARIANTS[BASE_VARIANT])
 SEEDS = (0, 1, 2, 3, 4)
@@ -75,7 +76,7 @@ def mode_seal(args):
     print(f'{p} exists', flush=True); return
   man = {'experiment': 'AntMaze V6 mainline with learned-ETT futures (arm ETT) vs the sealed simulator futures (CF) and the recorded futures (O); five paired seeds',
          'sealed_at': time.strftime('%Y-%m-%d %H:%M:%S'), 'git_head': MP.git_head(), 'status': 'oracle-supervised engineering stage (the ETT was supervised by the simulator); the training futures of arm ETT are the model\'s',
-         'ett': {'version': ETT, 'motion_onset': {f'fold{f}': MP.sha256(F2.OUT / f'model_fold{f}.json') for f in range(FA.N_FOLDS)}, 'advice_generator': {f'fold{f}': MP.sha256(FA.OUT / f'gen3_fold{f}.json') for f in range(FA.N_FOLDS)},
+         'ett': {'version': ETT, 'motion': ('the SIMULATOR with both rockfalls forced inactive (physics only; an oracle diagnostic control, not a learned method)' if ETT == 'hybrid' else 'learned (v4 motion regression + stationary gate on (s, a_q))' if ETT == 'v4' else 'learned (v3)'), 'motion_onset': {f'fold{f}': MP.sha256(F2.OUT / f'model_fold{f}.json') for f in range(FA.N_FOLDS)}, 'advice_generator': {f'fold{f}': MP.sha256(FA.OUT / f'gen3_fold{f}.json') for f in range(FA.N_FOLDS)},
                  'advice_gates': MP.read_json(FA.OUT / 'gates3_map.json'), 'rollout_check': 'ett_rollout_v3/hist_exact (variant B: pooled death 0.312 vs sim 0.294, KS death time 0.028)',
                  'hold_decision': 'map', 'context_prior': FA.Z_PRIOR, 'history_counters': 'exact (run_length)', 'cross_fitting': 'anchor k uses the models of its source-episode fold (supervision.npz fold_anchor)'},
          'generation': {'construction': 'the logged torque once from the logged row, then the start agent mode (exp_v6_mainline_pilot.mode_policy) closed-loop through the model; one realised path per anchor; onset sampled per step; ends on reach / death / horizon 800 - t; no goal hold',
@@ -151,6 +152,8 @@ def generate_fold(fold, anchors, obs, act, ks, rng, mode):
 
 
 def mode_generate(args):
+  if ETT == 'hybrid':
+    raise SystemExit('the hybrid branch table is written by exp_v6_hybrid_futures.py generate')
   if BRANCHES.exists() and not args.force:
     print(f'{BRANCHES} exists', flush=True); return
   OUT.mkdir(parents=True, exist_ok=True)
@@ -281,7 +284,7 @@ def main(argv=None):
   ap.add_argument('--only', nargs='*', default=None)
   ap.add_argument('--limit', type=int, default=None)
   ap.add_argument('--force', action='store_true')
-  ap.add_argument('--ett', choices=('v3', 'v4'), default='v3')
+  ap.add_argument('--ett', choices=('v3', 'v4', 'hybrid'), default='v3')
   args = ap.parse_args(argv)
   set_ett(args.ett)
   {'seal': mode_seal, 'generate': mode_generate, 'train': mode_train, 'evaluate': mode_evaluate, 'report': mode_report}[args.mode](args)
