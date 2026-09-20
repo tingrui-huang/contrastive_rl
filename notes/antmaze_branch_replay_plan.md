@@ -2885,3 +2885,31 @@ equal expected outcomes) and whether the oracle gain is noise.
 Candidates (user): frozen-critic action ranking at the mouth anchors
 under CF / CF2 / MF; or draws 3 / 4 to place 0.449 and 0.351 within the
 draw distribution before any further ETT work.
+
+### The pairing check (2026-09-21, user's plan after multi_futures; pairing_check/SUMMARY.md; no training)
+
+`scripts/diag_v6_pairing.py`: data / critic / actor layers on the two
+oracle tables with the 15 trained critics and actors, strata on the
+reset and early-fork states.  DATA: per-anchor consequence not
+repeatable across draws at the fork (corr of the success indicator
+T1 vs T2: reset -0.06, start_early +0.11, pre_zone1_early -0.01;
+pre_mouth 0.49); the population detour signal is the same in both
+tables (start_early goal-area mass 0.066/0.073 detour-source vs
+0.035/0.034 shortcut-source; death-frame 0.001 vs 0.011).  CRITIC:
+NCE fit identical across families / sources; the pairing test (logit
+at (s, a, task goal) vs the realised success) at reset / early fork:
+CF own draw 0.24-0.49, other ~0; CF2 the mirror; MF 0.15-0.17 each
+(not separable from half-memorisation without a third draw); where a
+repeatable component exists (pre-mouth on) both draws are tracked.
+ACTOR (same state, same goal, candidates = policy modes at that state,
+the full objective with twin-min + BC 0.05): under the CF critic the
+far-going action is worth +0.9 nats over pi_MF at reset (5x the BC
+cost, 5/5 seeds); under the MF critic +0.04 with a seed-dependent sign
+(above pi_start in 92 % but above pi_MF in 54 %), BC decides.  READING:
+the sealed critic's preference holds only on its own draw -> 0.449 is
+not a reliable oracle benchmark; the key anchors' consequences diverge
+across draws -> the user's remedy: repeated paired hazard draws at the
+pre-selected decision states (e.g. 32 per candidate, frozen
+continuation) to measure the true same-state average advantage; no
+full tables, no five-seed training.  Caveats: 'vs avg' not out-of-
+sample; the cross-anchor detour signal compares different states.
