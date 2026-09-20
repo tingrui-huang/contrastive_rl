@@ -1,0 +1,39 @@
+{
+ "diagnostic": "AntMaze V6 one-step ETT: the advice process -- temporal coherence and support of the memoryless nominal vs the real advice; the onset head's dependence on the hold history (fixed v3 models)",
+ "sealed_at": "2026-09-20 03:33:21",
+ "git_head": "unavailable (Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128.)",
+ "supervision_sha256": "1d51cfda15d97dd6b89c3e5a0d44bcbc8b1a466539d26665aa4dd78638ba873f",
+ "nominal_sha256": "86f82caf8bf8da895df4d311e740d01dab0e5c5ccc0c45e6b18193a13ac321b8",
+ "v3_models": {
+  "fold0": "66a123f32cead79566dd36949c0c663499298439d115536ffefc468dcfc6bbbe",
+  "fold1": "7eac235de01041928fbcf012d4911e4eacf660abdec1123aaecb5dbdea01868d",
+  "fold2": "f6bee4241e7be51fab0f5fb71bc538744c684dfe92425467a51711e79fd74c3b"
+ },
+ "hold_tol": 0.05,
+ "sample_anchors": "the rollout diagnostic's held-out anchors (2000 per fold, seed 201000000); the nominal drawn once per row, seed 204000000",
+ "C": {
+  "rows": "held-out valid branch rows with a real hold inside a hazard band; up to {MAX_ROWS_C} per fold",
+  "forced_counters": [
+   0,
+   1,
+   2,
+   3,
+   5,
+   10,
+   20,
+   50,
+   100
+  ],
+  "kh_bins": [
+   0,
+   1,
+   2,
+   4,
+   8,
+   16,
+   32,
+   64
+  ]
+ },
+ "status": "oracle-supervised engineering stage; nothing downstream generated"
+}

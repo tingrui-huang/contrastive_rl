@@ -2554,3 +2554,92 @@ user said); the under-stalling before the mouth and the in-zone death
 timing remain, and the advice-process gap (memoryless nominal death
 0.036 vs the teacher's 0.30) is untouched by it.  A folds running for
 the record.
+
+### User's review of a408cef (2026-09-20) and the two parallel lines
+
+Corrections adopted: the frozen-critic result rules out "critic fixed =>
+actor stable" (seed 2 stalls with a fixed critic), the failure location
+differs by seed; the goal-source hypothesis is closed but its mechanism
+("start-agent shortcut futures teach the shortcut") is consistent, not
+independently proven, and does not extend to "all generated goals are
+useless"; the acme boundary rule leaves the queue; the larger BC gradient
+norm does not by itself show BC blocks the detour, no basis to lower BC;
+the goal-mass report's inference "many stall positives => the critic
+rewards stalling for the task goal" was too strong (a stall position is
+another goal; small absolute goal mass need not mean a wrong ranking).
+Two independent questions from here on, kept apart: (CRL line) with
+simulator futures, how does CRL learn a better policy reliably; (ETT
+line) can a learned ETT produce those futures accurately enough.  No
+continued training, no goal-mix sweeps, no boundary-rule experiments.
+
+### CRL line: task-goal target support per candidate action (2026-09-20; target_support/SUMMARY.md) -- the termination rule is NOT a found cause
+
+`scripts/diag_v6_target_support.py` on the stage-1 paired query futures
+(no rollouts, no training; judgement sealed in the manifest).  At the
+same state and task goal, per query: success and the probability that
+the critic's positive (P(m) ~ 0.999^m truncated at the path's end) lands
+at the task goal; the same under an ABSORBING alternative (terminal
+position held to the remaining horizon after reach / death, timeouts
+unchanged, no relabelling).  Reset rows: far-going queries succeed 0.71 /
+0.74 / 0.84 vs short-going 0.17 / 0.14 / 0.17 and get 2.1-2.6x their
+expected reach-0.5 mass under the CURRENT law (0.0011 vs 0.0005, CI > 0,
+per-anchor sign agreement 0.86-0.90); rank concordance across the six
+queries 0.94-0.95, top-1 0.88-0.92.  The absorbing law multiplies every
+mass by ~180 (0.001 -> 0.2; marginal 0.019 -> 0.49) and leaves the
+ordering, the ratio and the sign agreement unchanged (+-0.02).  The
+success ratio (4-5x) compresses to 2-2.6x under BOTH laws because a far
+success is ~2x longer (the discount's speed penalty: a far success
+carries half a shortcut success's mass, P(far > short) 0.01-0.05 under
+both).  J1 not met in any lineage -> the user's option 2: the target law
+already ranks the good actions correctly at these states; the problem
+stays in how the learner / policy update uses the target; hypothesis
+closed, no O / CF training with a changed termination law.  Noted
+outside the rule: under the current law a reset row yields one task-goal
+positive per ~250 critic batches (~120 over a 30k run).
+
+### ETT line (2026-09-20): exact history counters; the advice process located (ett_advice/SUMMARY.md)
+
+(1) The user's code check: run_length counts 0 at a flagged path start
+but 1 at a flagged row after an unflagged one; the uniform -1 of
+`--hist-fix` fixes the first case and breaks the second (verified on
+200 random paths: the -1 rule mismatches ~40 % of rows).  `--hist-exact`
+replicates run_length row by row (last reset index = path start or the
+last unflagged row); v3 C and A rerun with the fixed models under
+ett_rollout_v3/hist_exact/ (node3).  (2) The advice process, measured
+before designing anything (`scripts/diag_v6_ett_advice.py`): the real
+advice holds 4.2 % of branch rows (8.8 % in band), P(hold | hold) 0.98,
+runs median 14 / p90 22; 15,600 / 15,612 onsets on hold rows.  The
+memoryless nominal, drawn i.i.d. along the same real states: hold share
+0.27 but 0.000 in band (AUROC vs the real in-band hold 0.494; 0.981 on
+its own logged rows), 0.72 in pre_zone1 -- it holds at the start agent's
+STALLS (the log's holds are stationary poses at the mouths; no logged
+row holds inside an active zone), so its persistence (0.96) is the
+state persisting, not a hidden context; the NLL of the real advice on
+the branch rows is 18.6 (27.7 beyond 50 steps) vs -11.4 for the log.
+The v3 onset head needs a sustained in-band hold (realised onset 0 at
+kh <= 3, 0.09 at 4-7, 0.22 at 8-15, 0.38 at 16-31; the model tracks it,
+AUROC 0.75); drawing the nominal's own counter distribution on real hold
+rows gives the same p_onset as the real counter (0.17-0.23 vs
+0.18-0.22) -> the missing deaths (0.036 vs 0.30) are the absence of
+in-band holds, not the counter.  Acceptance metrics for any advice
+process written down (in-band hold AUROC and NLL on held-out branches;
+P(hold | hold), run lengths and region shares matching the real advice;
+the fixed onset head recovering the death rate and timing).  Candidate
+for the user's decision: a latent-context advice model fitted on the
+branch supervision rows (their redrawn timetables are recorded), z
+sampled per path from its prior at generation; not started.
+
+### ETT line: exact-counter recheck result (2026-09-20; ett_rollout_v3/hist_exact/SUMMARY.md)
+
+C with the exact counters, per fold sim / model: death 0.292 / 0.296 /
+0.293 vs 0.300 / 0.307 / 0.303, reach 0.611 / 0.619 / 0.614 vs 0.625 /
+0.643 / 0.644, pre_zone1 timeouts 0.197 / 0.145 / 0.193 vs 0.052 / 0.046
+/ 0.070, death-time KS 0.018 / 0.037 / 0.039.  Pooled strata: pre_zone1
+timeout 0.056 vs 0.178 (raw 0.053, hist_fix 0.059), zone1 death-time KS
+0.099 (0.156 / 0.104), zone2 death-time KS 0.241 (0.321 / 0.241),
+death-x 0.200, between death-x 0.153.  Pooled gates pass; pre_zone1,
+between, zone2 still fail -> long-path motion / onset errors, not the
+counter.  A: death 0.036 vs 0.294, AUROC 0.687, unchanged -- the
+nominal's missing in-band holds (ett_advice).  The learned ETT is not
+running end to end; the CRL line's oracle gain is not a learned-ETT
+result.  Nothing running; next = the advice process (user's call).

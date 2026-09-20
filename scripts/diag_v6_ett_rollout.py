@@ -76,6 +76,10 @@ OUT_V3 = MP.OUT / 'ett_rollout_v3'
 HIST_FIX = False                 # --hist-fix: the history counters passed to the model equal the training rows' run_length (consecutive
                                  # flagged rows BEFORE the current one: 0 at the first hold / band row); without it the rollout passed 1
                                  # at the first row (an offset of +1 on every hold / band row).  Outputs under <OUT>/hist_fix/.
+                                 # NOT exact (user's review of a408cef): run_length counts 0 at a flagged PATH START but 1 at a flagged row
+                                 # that follows an unflagged one; the uniform -1 fixes the first case and breaks the second.
+HIST_EXACT = False               # --hist-exact: the counters replicate run_length row by row (last reset index = the path start or the last
+                                 # unflagged row; counter = j - last when flagged, else 0).  Outputs under <OUT>/hist_exact/.
 STATE_DIM, OBS_W = MP.STATE_DIM, MP.OBS_W
 HORIZON = MP.HORIZON
 SUCCESS_DIST = 0.5
@@ -99,6 +103,7 @@ def mode_seal(args):
   man = {'experiment': 'AntMaze V6 one-step ETT, Step 3a: full-length rollout diagnostic vs the held-out simulator branches (distributional), advice C (simulator teacher) vs A (memoryless nominal)',
          'sealed_at': time.strftime('%Y-%m-%d %H:%M:%S'), 'git_head': MP.git_head(), 'status': 'oracle-supervised engineering stage; nothing downstream generated',
          'models': {f'fold{f}': {'path': str(model_dir() / f'model_fold{f}.pkl'), 'json_sha256': MP.sha256(model_dir() / f'model_fold{f}.json')} for f in range(3)}, 'model_version': ('v3' if V3 else ('v2' if V2 else 'v1')),
+         'history_counters': ('exact: replicate fit_v6_ett_one_step_v2.run_length row by row' if HIST_EXACT else ('fix: uniform -1 (0 at the first flagged row; not exact after an unflagged row)' if HIST_FIX else 'raw: +1 at every flagged row vs the training rows')),
          'one_step_check_sha256': MP.sha256(model_dir() / 'check.json'), 'supervision_sha256': MP.sha256(EC / 'supervision.json'),
          'anchors': f'{N_PER_FOLD} held-out anchors per fold, uniform over anchors, seed {SAMPLE_SEED}; strata = anchor region', 'continuation': 'start agent mode (the reference branches\' continuation); first query = the logged torque',
          'termination': 'reach (|xy - goal| <= 0.5), horizon 800 - t, onset (exact hazard integration along the path; no recovery)',
@@ -194,11 +199,13 @@ def sample_anchors(fold):
 
 
 def _worker(args):
-  ks, fold, variant, seed, v2, v3, hist_fix = args
-  global V2, V3, OUT, HIST_FIX
-  V3 = bool(v3); V2 = bool(v2) or V3; HIST_FIX = bool(hist_fix)
+  ks, fold, variant, seed, v2, v3, hist_fix, hist_exact = args
+  global V2, V3, OUT, HIST_FIX, HIST_EXACT
+  V3 = bool(v3); V2 = bool(v2) or V3; HIST_FIX = bool(hist_fix); HIST_EXACT = bool(hist_exact)
   OUT = OUT_V3 if V3 else (OUT_V2 if V2 else MP.OUT / 'ett_rollout')      # spawned workers re-import the module: carry the flags explicitly
-  if HIST_FIX:
+  if HIST_EXACT:
+    OUT = OUT / 'hist_exact'
+  elif HIST_FIX:
     OUT = OUT / 'hist_fix'
   import jax
   import jax.numpy as jnp
@@ -237,14 +244,23 @@ def _worker(args):
       s = s0.copy(); p_seq, x_seq, y_seq = [], [], []
       max_steps = HORIZON - t; reached = False; far = -1
       kh = kb = 0                                        # v2 history features along THIS path: consecutive hold steps, steps since band entry
+      last_h = last_b = 0                                # --hist-exact: index of the last reset row of run_length (path start, or the last unflagged row)
       for j in range(max_steps):
         o31 = np.concatenate([s, goal])
         a_q = a_q0 if j == 0 else np.asarray(mode(jnp.asarray(o31[None])), np.float32)[0]
         a_b = teacher.act(AC.obs58(env, o31), AC.schedule_of(un, tn, t + j)) if variant == 'C' else nominal.sample(o31, rng)
         if V2:
-          kh = kh + 1 if np.abs(a_b).max() < HOLD_TOL else 0
-          kb = kb + 1 if bool(in_band(s[None, :2])[0]) else 0
-          kh_in, kb_in = (max(kh - 1, 0), max(kb - 1, 0)) if HIST_FIX else (kh, kb)
+          hold = bool(np.abs(a_b).max() < HOLD_TOL); band = bool(in_band(s[None, :2])[0])
+          kh = kh + 1 if hold else 0
+          kb = kb + 1 if band else 0
+          if HIST_EXACT:                                 # run_length: reset = (~flag) | start; last = the latest reset index; value = j - last if flag else 0
+            if j == 0 or not hold:
+              last_h = j
+            if j == 0 or not band:
+              last_b = j
+            kh_in, kb_in = (j - last_h if hold else 0), (j - last_b if band else 0)
+          else:
+            kh_in, kb_in = (max(kh - 1, 0), max(kb - 1, 0)) if HIST_FIX else (kh, kb)
           s_next, p, _ = P.step(s[None], a_b[None], a_q[None], np.array([kh_in]), np.array([kb_in])); s_next, p = s_next[0], float(p[0])
         else:
           s_next, p = P.step(s[None], a_b[None], a_q[None]); s_next, p = s_next[0], float(p[0])
@@ -278,10 +294,10 @@ def mode_roll(args):
   n = max(1, args.workers * 3); parts = [ks[i::n] for i in range(n)]; parts = [p for p in parts if len(p)]
   t0 = time.time()
   if args.workers <= 1:
-    res = [_worker((p, f, v, 203_000_000 + i, V2, V3, HIST_FIX)) for i, p in enumerate(parts)]
+    res = [_worker((p, f, v, 203_000_000 + i, V2, V3, HIST_FIX, HIST_EXACT)) for i, p in enumerate(parts)]
   else:
     with get_context('spawn').Pool(args.workers) as pool:
-      res = pool.map(_worker, [(p, f, v, 203_000_000 + i, V2, V3, HIST_FIX) for i, p in enumerate(parts)])
+      res = pool.map(_worker, [(p, f, v, 203_000_000 + i, V2, V3, HIST_FIX, HIST_EXACT) for i, p in enumerate(parts)])
   rows = [r for part in res for r in part]
   with out.open('wb') as fh:
     pickle.dump({'fold': f, 'variant': v, 'anchors': ks, 'rows': rows, 'wall_seconds': time.time() - t0}, fh)
@@ -397,13 +413,16 @@ def main(argv=None):
   ap.add_argument('--v2', action='store_true', help='use the v2 one-step models; outputs under ett_rollout_v2/')
   ap.add_argument('--v3', action='store_true', help='use the v3 one-step models (v2 code path); outputs under ett_rollout_v3/')
   ap.add_argument('--hist-fix', action='store_true', help='history counters aligned with the training rows (0 at the first hold / band row); outputs under <OUT>/hist_fix/')
+  ap.add_argument('--hist-exact', action='store_true', help='history counters replicate fit_v6_ett_one_step_v2.run_length row by row; outputs under <OUT>/hist_exact/')
   args = ap.parse_args(argv)
-  global V2, V3, OUT, HIST_FIX
+  global V2, V3, OUT, HIST_FIX, HIST_EXACT
   if args.v3:
     V3 = True; V2 = True; OUT = OUT_V3
   elif args.v2:
     V2 = True; OUT = OUT_V2
-  if args.hist_fix:
+  if args.hist_exact:
+    HIST_EXACT = True; OUT = OUT / 'hist_exact'
+  elif args.hist_fix:
     HIST_FIX = True; OUT = OUT / 'hist_fix'
   OUT.mkdir(parents=True, exist_ok=True)
   {'seal': mode_seal, 'nominal': mode_nominal, 'roll': mode_roll, 'report': mode_report}[args.mode](args)
