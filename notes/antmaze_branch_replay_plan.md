@@ -2744,3 +2744,29 @@ motion / onset error (far-route legs, pre-mouth stall); the advice
 process is no longer the bottleneck.  Eval seeds used so far: 909, 2909,
 3909, 4909, 6909, 7909, 8909 (5909 unused; 616_000_005 / 616_500_000
 reserved).
+
+### User's check after 4de6e8d (2026-09-20): does the motion model turn the advice into motion?  -> v4 and the pipeline rerun
+
+`scripts/diag_v6_ett_motion_ab.py` (ett_motion_ab/SUMMARY.md): with (s,
+a_q) fixed, swapping a_b moves the predicted xy by 2-16 % of what swapping
+the executed torque does (small), but the STATIONARY GATE flips 9-50 % of
+the time under advice swaps at real stalls / pre-mouth / start rows (as
+often as under a_q swaps); closed-loop the advice source moves reach by up
+to 0.12 on pre_zone1 anchors.  Two further facts: the model under-stalls
+where the simulator's start agent gets stuck before the mouth (reach
+0.81-0.89 vs 0.00) and drifts off the simulator's far-route paths by step
+~28 (reach shortfall 0.08-0.18 in two folds, independent of the advice).
+v4 (`fit_v6_ett_one_step_v2.py --v4`): motion regression and stationary
+gate on (s, a_q) only, onset head unchanged; preflight gates pass, one-step
+accuracy unchanged; held-out far-leg reach 0.72 / 0.94 / 0.72 (v3 0.68 /
+0.86 / 0.74), pre-mouth stall anchors walked through 0.83 / 0.74 / 0.71 (v3
+0.87 / 0.89 / 0.81); C / B rollouts under v4 = v3 pooled (B death 0.310,
+KS 0.025); the same strata fail (pre_zone1 under-stall, zone2 timing).
+Pipeline with v4 futures (ett_futures_v4/SUMMARY.md): futures closer to
+the simulator on the far legs (top corridor 0.745 vs 0.822; v3 0.708);
+ETT 0.483 / 0.213 / 0.337 / 0.390 / 0.310 (mean 0.347; v3 futures 0.291;
+CF 0.449); ETT - O +0.050 (s.e. 0.044, 3 / 5, NOT met); the seed pattern
+shuffled (0 / 3 / 4 up, 1 / 2 down), the stall at the start remains
+(timeouts 0.32-0.65 before the first mouth) while the simulator futures
+never stall.  Remaining deviations: pre-mouth / corridor under-stall,
+shorter paths, far-route shortfall (halved), zone-2 death timing.

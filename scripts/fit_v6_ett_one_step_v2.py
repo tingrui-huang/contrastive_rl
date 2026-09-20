@@ -57,6 +57,10 @@ GATES2 = {**GATES, 'G7_stat_auroc': 0.95, 'G7_stat_accuracy': 0.95, 'G7_atom_xy_
 STAT_HIDDEN = (256, 256)
 V3 = False                              # --v3: regression on ALL rows + relative error term; selection without the stationary BCE; outputs under ett_one_step_v3/
 OUT_V3 = MP.OUT / 'ett_one_step_v3'
+V4 = False                              # --v4 (user's revision after ett_motion_ab, 2026-09-20): v3 loss, but the MOTION regression and the STATIONARY gate take
+                                        # (s, a_q) only -- the executed torque decides how the body moves; the advice a_b (the hidden context's carrier) stays an
+                                        # input of the ONSET head only.  Outputs under ett_one_step_v4/.
+OUT_V4 = MP.OUT / 'ett_one_step_v4'
 REL_EPS, REL_W = 0.05, 1.0              # relative term: ||pred - d||^2 / (||d||^2 + REL_EPS^2) in standardised units
 
 
@@ -72,6 +76,11 @@ def run_length(flag, start):
 def in_band(xy):
   x, y = xy[:, 0], xy[:, 1]
   return (np.abs(y) < 2.0) & (((x >= ZONE_X[1][0]) & (x <= ZONE_X[1][1])) | ((x >= ZONE_X[2][0]) & (x <= ZONE_X[2][1])))
+
+
+def features_q(s, aq, norm):
+  """v4 motion / stationary inputs: the standardised state and the executed torque only."""
+  return np.concatenate([(s - norm['s_mean']) / norm['s_std'], aq], axis=1).astype(np.float32)
 
 
 def hist_features(kh, kb):
@@ -134,6 +143,7 @@ class Predictor2:
     mot, ons, stt = build_nets()
     pm = jax.tree_util.tree_map(jnp.asarray, md['motion_params']); po = jax.tree_util.tree_map(jnp.asarray, md['onset_params']); ps = jax.tree_util.tree_map(jnp.asarray, md['stat_params'])
     self.norm = md['norm']
+    self.sq = md.get('motion_inputs') == 'sq'                          # v4: motion / stationary inputs are (s, a_q)
     self._delta = jax.jit(lambda x: mot.apply(pm, x))
     self._logit = jax.jit(lambda x, d, h: ons.apply(po, jnp.concatenate([x, d, h], axis=1)))
     self._stat = jax.jit(lambda x: jax.nn.sigmoid(stt.apply(ps, x)))
@@ -141,7 +151,8 @@ class Predictor2:
   def step(self, s, ab, aq, kh, kb):
     import jax
     x = features(s, ab, aq, self.norm); h = hist_features(np.asarray(kh), np.asarray(kb))
-    d = np.asarray(self._delta(x)); p_stat = np.asarray(self._stat(x))
+    xm = features_q(s, aq, self.norm) if self.sq else x
+    d = np.asarray(self._delta(xm)); p_stat = np.asarray(self._stat(xm))
     stat = p_stat > 0.5
     d_real = d * self.norm['d_std'] + self.norm['d_mean']
     d_real[stat] = 0.0; d_in = d.copy(); d_in[stat] = (0.0 - self.norm['d_mean']) / self.norm['d_std']
@@ -161,6 +172,7 @@ def mode_seal(args):
          'supervision_sha256': MP.sha256(EC / 'supervision.npz'),
          'changes': {'stationary_gate': f'P(stationary | s, a_b, a_q), label max |delta s| < {STAT_TOL}; MLP {STAT_HIDDEN}; BCE on all rows; at prediction delta = 0 when P > 0.5; motion regression trained on moving rows only',
                      'onset_history': f'two features on the onset head: consecutive hold steps (advice max |a_b| < {HOLD_TOL}) and steps since band entry, each min(k, {HIST_CAP:.0f}) / {HIST_CAP:.0f}; computed from the path itself'},
+         'v4': ({'motion_stationary_inputs': '(s, a_q) only: the executed torque decides the motion; the advice a_b stays an input of the onset head only', 'why': 'ett_motion_ab: the stationary gate flipped 9-50 % under advice swaps at stall / pre-mouth / start rows and the advice source moved closed-loop reach by up to 0.12; the physical audit found one-step motion independent of the hidden context'} if V4 else None),
          'v3': ({'regression_rows': 'all rows (stationary included)', 'loss': f'standardised MSE + {REL_W} * relative error ||pred - d||^2 / (||d||^2 + {REL_EPS}^2)', 'selection': 'mse_diag + mse_off + 0.25 * onset_bce (no stationary BCE)', 'why': 'v2 did not decelerate after the torque became small (settling probe); fold 1 early-stopped at 4k on the stationary BCE'} if V3 else None),
          'unchanged': 'inputs, motion MLP, onset MLP, optimiser, budget, batches, cross-fitting, selection (+ 0.25 * stationary BCE)', 'gates': GATES2,
          'gate_rule': 'G1 / G2 on moving held-out rows; G3-G6 as v1; G7 stationary gate AUROC and accuracy on held-out rows, and the atom\'s one-step xy error on stationary rows; any failure stops'}
@@ -200,11 +212,13 @@ def mode_fit(args):
   V = [R.gather_branch(np.concatenate([es_pos, vb])), R.gather_log(vl)]
   Vs, Vab, Vaq, Vs2, Vo, Vkh, Vkb, Vst = (np.concatenate([v[i] for v in V]) for i in range(8))
   VX = features(Vs, Vab, Vaq, norm); VH = hist_features(Vkh, Vkb); VD = ((Vs2 - Vs) - norm['d_mean']) / norm['d_std']; Vdiag = np.abs(Vab - Vaq).max(axis=1) <= FIT['tol_diag']
+  VXm = features_q(Vs, Vaq, norm) if V4 else VX
+  DM = (STATE_DIM + 8) if V4 else 61
   es_prev = len(es_pos) / (len(sp['es_b']) + len(sp['es_l']))
   Vw = np.where(Vo, es_prev / max(Vo.mean(), 1e-9), (1 - es_prev) / max(1 - Vo.mean(), 1e-9)).astype(np.float32)
   mot, ons, stt = build_nets()
   key = jax.random.PRNGKey(200 + f)
-  pm = mot.init(key, jnp.zeros((1, 61), jnp.float32)); po = ons.init(jax.random.fold_in(key, 1), jnp.zeros((1, 61 + STATE_DIM + 2), jnp.float32)); ps = stt.init(jax.random.fold_in(key, 2), jnp.zeros((1, 61), jnp.float32))
+  pm = mot.init(key, jnp.zeros((1, DM), jnp.float32)); po = ons.init(jax.random.fold_in(key, 1), jnp.zeros((1, 61 + STATE_DIM + 2), jnp.float32)); ps = stt.init(jax.random.fold_in(key, 2), jnp.zeros((1, DM), jnp.float32))
   opt_m, opt_o, opt_s = optax.adam(FIT['lr']), optax.adam(FIT['lr']), optax.adam(FIT['lr']); om, oo, os_ = opt_m.init(pm), opt_o.init(po), opt_s.init(ps)
   pm0, po0, ps0 = (jax.tree_util.tree_map(np.asarray, p_) for p_ in (pm, po, ps))
   BD = int(FIT['batch_diag'])
@@ -228,19 +242,19 @@ def mode_fit(args):
     (l, parts), g = jax.value_and_grad(mloss, has_aux=True)(p, x, d); up, o = opt_m.update(g, o, p); return optax.apply_updates(p, up), o, l, parts
 
   @jax.jit
-  def step_o(p, o, pm_, x, h, y, w):
-    d_pred = jax.lax.stop_gradient(mot.apply(pm_, x)); l, g = jax.value_and_grad(oloss)(p, x, d_pred, h, y, w); up, o = opt_o.update(g, o, p); return optax.apply_updates(p, up), o, l
+  def step_o(p, o, pm_, x, xm, h, y, w):
+    d_pred = jax.lax.stop_gradient(mot.apply(pm_, xm)); l, g = jax.value_and_grad(oloss)(p, x, d_pred, h, y, w); up, o = opt_o.update(g, o, p); return optax.apply_updates(p, up), o, l
 
   @jax.jit
   def step_s(p, o, x, y):
     l, g = jax.value_and_grad(sloss)(p, x, y); up, o = opt_s.update(g, o, p); return optax.apply_updates(p, up), o, l
 
   @jax.jit
-  def val_fn(pm_, po_, ps_, x, d, h, diag, mov, y, w, st):
-    pred = mot.apply(pm_, x); se = jnp.mean((pred - d) ** 2, axis=1)
+  def val_fn(pm_, po_, ps_, x, xm, d, h, diag, mov, y, w, st):
+    pred = mot.apply(pm_, xm); se = jnp.mean((pred - d) ** 2, axis=1)
     md = jnp.sum(se * diag * mov) / jnp.maximum(jnp.sum(diag * mov), 1); mo = jnp.sum(se * (1 - diag) * mov) / jnp.maximum(jnp.sum((1 - diag) * mov), 1)
     logit = ons.apply(po_, jnp.concatenate([x, jax.lax.stop_gradient(pred), h], axis=1)); bce = jnp.mean(w * optax.sigmoid_binary_cross_entropy(logit, y))
-    sl = stt.apply(ps_, x); sbce = jnp.mean(optax.sigmoid_binary_cross_entropy(sl, st)); sacc = jnp.mean((sl > 0) == (st > 0.5))
+    sl = stt.apply(ps_, xm); sbce = jnp.mean(optax.sigmoid_binary_cross_entropy(sl, st)); sacc = jnp.mean((sl > 0) == (st > 0.5))
     return md, mo, bce, jax.nn.sigmoid(logit), sbce, sacc
   wpos, wneg = np.float32(prevalence / 0.5), np.float32((1 - prevalence) / 0.5)
   hist, best, best_state, best_step, t0 = [], float('inf'), None, 0, time.time()
@@ -251,19 +265,22 @@ def mode_fit(args):
     g1 = R.gather_branch(i_d); g2 = R.gather_log(i_l); g3 = R.gather_branch(i_o)
     s = np.concatenate([g1[0], g2[0], g3[0]]); ab = np.concatenate([g1[1], g2[1], g3[1]]); aq = np.concatenate([g1[2], g2[2], g3[2]]); s2 = np.concatenate([g1[3], g2[3], g3[3]])
     x = features(s, ab, aq, norm); d = ((s2 - s) - norm['d_mean']) / norm['d_std']
-    pm, om, lm, parts = step_m(pm, om, jnp.asarray(x), jnp.asarray(d, jnp.float32))
+    xm = features_q(s, aq, norm) if V4 else x
+    pm, om, lm, parts = step_m(pm, om, jnp.asarray(xm), jnp.asarray(d, jnp.float32))
     ip = rng.choice(ons_pos, size=bl); ineg = rng.choice(ons_neg, size=bl)
     gp = R.gather_branch(ip); gn = R.gather_branch(ineg)
     xo = features(np.concatenate([gp[0], gn[0]]), np.concatenate([gp[1], gn[1]]), np.concatenate([gp[2], gn[2]]), norm); ho = hist_features(np.concatenate([gp[5], gn[5]]), np.concatenate([gp[6], gn[6]]))
+    xom = features_q(np.concatenate([gp[0], gn[0]]), np.concatenate([gp[2], gn[2]]), norm) if V4 else xo
     yo = np.concatenate([np.ones(bl), np.zeros(bl)]).astype(np.float32); wo = np.concatenate([np.full(bl, wpos), np.full(bl, wneg)]).astype(np.float32)
-    po, oo, lo = step_o(po, oo, pm, jnp.asarray(xo), jnp.asarray(ho), jnp.asarray(yo), jnp.asarray(wo))
+    po, oo, lo = step_o(po, oo, pm, jnp.asarray(xo), jnp.asarray(xom), jnp.asarray(ho), jnp.asarray(yo), jnp.asarray(wo))
     # stationary gate: a natural mix of branch and log rows
     is_ = rng.choice(all_b, size=1536); il_ = rng.choice(all_l, size=512)
     gs = R.gather_branch(is_); gl = R.gather_log(il_)
-    xs = features(np.concatenate([gs[0], gl[0]]), np.concatenate([gs[1], gl[1]]), np.concatenate([gs[2], gl[2]]), norm); ys = np.concatenate([gs[7], gl[7]]).astype(np.float32)
+    xs = (features_q(np.concatenate([gs[0], gl[0]]), np.concatenate([gs[2], gl[2]]), norm) if V4 else
+          features(np.concatenate([gs[0], gl[0]]), np.concatenate([gs[1], gl[1]]), np.concatenate([gs[2], gl[2]]), norm)); ys = np.concatenate([gs[7], gl[7]]).astype(np.float32)
     ps, os_, ls = step_s(ps, os_, jnp.asarray(xs), jnp.asarray(ys))
     if it % FIT['val_every'] == 0 or it == steps:
-      md_, mo_, bce, prob, sbce, sacc = (np.asarray(v) for v in val_fn(pm, po, ps, jnp.asarray(VX), jnp.asarray(VD, jnp.float32), jnp.asarray(VH), jnp.asarray(Vdiag.astype(np.float32)), jnp.asarray(Vmov), jnp.asarray(Vo.astype(np.float32)), jnp.asarray(Vw), jnp.asarray(Vst.astype(np.float32))))
+      md_, mo_, bce, prob, sbce, sacc = (np.asarray(v) for v in val_fn(pm, po, ps, jnp.asarray(VX), jnp.asarray(VXm), jnp.asarray(VD, jnp.float32), jnp.asarray(VH), jnp.asarray(Vdiag.astype(np.float32)), jnp.asarray(Vmov), jnp.asarray(Vo.astype(np.float32)), jnp.asarray(Vw), jnp.asarray(Vst.astype(np.float32))))
       auc = auroc(prob, Vo); score = float(md_ + mo_ + FIT['onset_weight'] * bce + (0.0 if V3 else 0.25) * sbce)
       hist.append({'step': it, 'train_motion': float(lm), 'train_onset': float(lo), 'train_stat': float(ls), 'val_mse_diag': float(md_), 'val_mse_off': float(mo_), 'val_onset_bce': float(bce), 'val_auroc': auc, 'val_stat_bce': float(sbce), 'val_stat_acc': float(sacc), 'score': score})
       if score < best:
@@ -271,7 +288,7 @@ def mode_fit(args):
         best_state = {k: jax.tree_util.tree_map(np.asarray, p_) for k, p_ in (('motion_params', pm), ('onset_params', po), ('stat_params', ps))}
       print(f'[v2 fold {f} step {it:>6}] motion {float(lm):.4f} onset {float(lo):.4f} stat {float(ls):.4f} | val mse diag {float(md_):.4f} off {float(mo_):.4f} onset bce {float(bce):.4f} auroc {auc:.3f} stat bce {float(sbce):.4f} acc {float(sacc):.4f} score {score:.4f} best {best:.4f}@{best_step} {it / (time.time() - t0):.1f} it/s', flush=True)
   md = {**best_state, 'norm': norm, 'fold': f, 'best_step': best_step, 'best_score': best, 'steps': steps, 'fit': FIT, 'history': hist, 'prevalence_train': prevalence, 'es_episodes': sp['es_episodes'],
-        'stat_tol': STAT_TOL, 'hold_tol': HOLD_TOL, 'hist_cap': HIST_CAP, 'wall_seconds': time.time() - t0,
+        'stat_tol': STAT_TOL, 'hold_tol': HOLD_TOL, 'hist_cap': HIST_CAP, 'wall_seconds': time.time() - t0, 'motion_inputs': ('sq' if V4 else 'sabq'), 'version': ('v4' if V4 else ('v3' if V3 else 'v2')),
         'param_delta': {k: float(optax.global_norm(jax.tree_util.tree_map(lambda a, b: a - b, best_state[k], p0))) for k, p0 in (('motion_params', pm0), ('onset_params', po0), ('stat_params', ps0))},
         'supervision_sha256': MP.sha256(EC / 'supervision.npz')}
   with out.open('wb') as fh:
@@ -353,10 +370,13 @@ def main(argv=None):
   ap.add_argument('--steps', type=int, default=None)
   ap.add_argument('--force', action='store_true')
   ap.add_argument('--v3', action='store_true')
+  ap.add_argument('--v4', action='store_true', help='v3 + motion / stationary inputs (s, a_q) only; outputs under ett_one_step_v4/')
   args = ap.parse_args(argv)
-  global V3, OUT
+  global V3, V4, OUT
+  if args.v4:
+    V4 = True; args.v3 = True
   if args.v3:
-    V3 = True; OUT = OUT_V3
+    V3 = True; OUT = OUT_V4 if V4 else OUT_V3
   OUT.mkdir(parents=True, exist_ok=True)
   {'seal': mode_seal, 'fit': mode_fit, 'check': mode_check}[args.mode](args)
   return 0

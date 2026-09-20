@@ -73,6 +73,8 @@ V2 = False                       # set by --v2: the v2 models (stationary atom, 
 OUT_V2 = MP.OUT / 'ett_rollout_v2'
 V3 = False                       # --v3: the v3 models (v2 code path), outputs under ett_rollout_v3/
 OUT_V3 = MP.OUT / 'ett_rollout_v3'
+V4 = False                       # --v4: the v4 models (motion / stationary on (s, a_q) only; v3 code path), outputs under ett_rollout_v4/
+OUT_V4 = MP.OUT / 'ett_rollout_v4'
 HIST_FIX = False                 # --hist-fix: the history counters passed to the model equal the training rows' run_length (consecutive
                                  # flagged rows BEFORE the current one: 0 at the first hold / band row); without it the rollout passed 1
                                  # at the first row (an offset of +1 on every hold / band row).  Outputs under <OUT>/hist_fix/.
@@ -91,7 +93,7 @@ MDN = {'k': 5, 'hidden': (256, 256), 'steps': 20_000, 'batch': 1024, 'lr': 3e-4,
 
 
 def model_dir():
-  return MP.OUT / 'ett_one_step_v3' if V3 else (MP.OUT / 'ett_one_step_v2' if V2 else OS)
+  return MP.OUT / 'ett_one_step_v4' if V4 else (MP.OUT / 'ett_one_step_v3' if V3 else (MP.OUT / 'ett_one_step_v2' if V2 else OS))
 
 
 # ------------------------------------------------------------------- seal
@@ -102,7 +104,7 @@ def mode_seal(args):
     print(f'{p} exists', flush=True); return
   man = {'experiment': 'AntMaze V6 one-step ETT, Step 3a: full-length rollout diagnostic vs the held-out simulator branches (distributional), advice C (simulator teacher) vs A (memoryless nominal)',
          'sealed_at': time.strftime('%Y-%m-%d %H:%M:%S'), 'git_head': MP.git_head(), 'status': 'oracle-supervised engineering stage; nothing downstream generated',
-         'models': {f'fold{f}': {'path': str(model_dir() / f'model_fold{f}.pkl'), 'json_sha256': MP.sha256(model_dir() / f'model_fold{f}.json')} for f in range(3)}, 'model_version': ('v3' if V3 else ('v2' if V2 else 'v1')),
+         'models': {f'fold{f}': {'path': str(model_dir() / f'model_fold{f}.pkl'), 'json_sha256': MP.sha256(model_dir() / f'model_fold{f}.json')} for f in range(3)}, 'model_version': ('v4' if V4 else ('v3' if V3 else ('v2' if V2 else 'v1'))),
          'history_counters': ('exact: replicate fit_v6_ett_one_step_v2.run_length row by row' if HIST_EXACT else ('fix: uniform -1 (0 at the first flagged row; not exact after an unflagged row)' if HIST_FIX else 'raw: +1 at every flagged row vs the training rows')),
          'one_step_check_sha256': MP.sha256(model_dir() / 'check.json'), 'supervision_sha256': MP.sha256(EC / 'supervision.json'),
          'anchors': f'{N_PER_FOLD} held-out anchors per fold, uniform over anchors, seed {SAMPLE_SEED}; strata = anchor region', 'continuation': 'start agent mode (the reference branches\' continuation); first query = the logged torque',
@@ -200,10 +202,10 @@ def sample_anchors(fold):
 
 
 def _worker(args):
-  ks, fold, variant, seed, v2, v3, hist_fix, hist_exact = args
-  global V2, V3, OUT, HIST_FIX, HIST_EXACT
-  V3 = bool(v3); V2 = bool(v2) or V3; HIST_FIX = bool(hist_fix); HIST_EXACT = bool(hist_exact)
-  OUT = OUT_V3 if V3 else (OUT_V2 if V2 else MP.OUT / 'ett_rollout')      # spawned workers re-import the module: carry the flags explicitly
+  ks, fold, variant, seed, v2, v3, hist_fix, hist_exact, v4 = args
+  global V2, V3, V4, OUT, HIST_FIX, HIST_EXACT
+  V4 = bool(v4); V3 = bool(v3) or V4; V2 = bool(v2) or V3; HIST_FIX = bool(hist_fix); HIST_EXACT = bool(hist_exact)
+  OUT = OUT_V4 if V4 else (OUT_V3 if V3 else (OUT_V2 if V2 else MP.OUT / 'ett_rollout'))      # spawned workers re-import the module: carry the flags explicitly
   if HIST_EXACT:
     OUT = OUT / 'hist_exact'
   elif HIST_FIX:
@@ -215,7 +217,9 @@ def _worker(args):
   if V2:
     import fit_v6_ett_one_step_v2 as F2
     from fit_v6_ett_one_step_v2 import Predictor2, HOLD_TOL, in_band
-    if V3:
+    if V4:
+      F2.OUT = F2.OUT_V4
+    elif V3:
       F2.OUT = F2.OUT_V3
     P = Predictor2(F2.load_model(fold))
   else:
@@ -322,10 +326,10 @@ def mode_roll(args):
   n = max(1, args.workers * 3); parts = [ks[i::n] for i in range(n)]; parts = [p for p in parts if len(p)]
   t0 = time.time()
   if args.workers <= 1:
-    res = [_worker((p, f, v, 203_000_000 + i, V2, V3, HIST_FIX, HIST_EXACT)) for i, p in enumerate(parts)]
+    res = [_worker((p, f, v, 203_000_000 + i, V2, V3, HIST_FIX, HIST_EXACT, V4)) for i, p in enumerate(parts)]
   else:
     with get_context('spawn').Pool(args.workers) as pool:
-      res = pool.map(_worker, [(p, f, v, 203_000_000 + i, V2, V3, HIST_FIX, HIST_EXACT) for i, p in enumerate(parts)])
+      res = pool.map(_worker, [(p, f, v, 203_000_000 + i, V2, V3, HIST_FIX, HIST_EXACT, V4) for i, p in enumerate(parts)])
   rows = [r for part in res for r in part]
   with out.open('wb') as fh:
     pickle.dump({'fold': f, 'variant': v, 'anchors': ks, 'rows': rows, 'wall_seconds': time.time() - t0}, fh)
@@ -440,11 +444,14 @@ def main(argv=None):
   ap.add_argument('--force', action='store_true')
   ap.add_argument('--v2', action='store_true', help='use the v2 one-step models; outputs under ett_rollout_v2/')
   ap.add_argument('--v3', action='store_true', help='use the v3 one-step models (v2 code path); outputs under ett_rollout_v3/')
+  ap.add_argument('--v4', action='store_true', help='use the v4 one-step models (motion / stationary on (s, a_q) only); outputs under ett_rollout_v4/')
   ap.add_argument('--hist-fix', action='store_true', help='history counters aligned with the training rows (0 at the first hold / band row); outputs under <OUT>/hist_fix/')
   ap.add_argument('--hist-exact', action='store_true', help='history counters replicate fit_v6_ett_one_step_v2.run_length row by row; outputs under <OUT>/hist_exact/')
   args = ap.parse_args(argv)
-  global V2, V3, OUT, HIST_FIX, HIST_EXACT
-  if args.v3:
+  global V2, V3, V4, OUT, HIST_FIX, HIST_EXACT
+  if args.v4:
+    V4 = True; V3 = True; V2 = True; OUT = OUT_V4
+  elif args.v3:
     V3 = True; V2 = True; OUT = OUT_V3
   elif args.v2:
     V2 = True; OUT = OUT_V2

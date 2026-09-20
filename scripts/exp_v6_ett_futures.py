@@ -38,8 +38,17 @@ import fit_v6_ett_one_step_v2 as F2  # noqa: E402
 from fit_v6_ett_one_step_v2 import in_band  # noqa: E402
 from exp_v6_learned_ett import REGIONS, region_of  # noqa: E402
 
+ETT = 'v3'                                             # --ett v4: the v4 one-step models (motion / stationary on (s, a_q) only); outputs under ett_futures_v4/
 OUT = MP.OUT / 'ett_futures'
 BRANCHES = OUT / 'branches_ett.npz'
+
+
+def set_ett(version):
+  global ETT, OUT, BRANCHES
+  ETT = version
+  OUT = MP.OUT / ('ett_futures' if version == 'v3' else f'ett_futures_{version}')
+  BRANCHES = OUT / 'branches_ett.npz'
+  F2.OUT = F2.OUT_V4 if version == 'v4' else F2.OUT_V3
 BASE_VARIANT = 'critic_clip0.1'
 OVERRIDES = dict(MP.VARIANTS[BASE_VARIANT])
 SEEDS = (0, 1, 2, 3, 4)
@@ -66,7 +75,7 @@ def mode_seal(args):
     print(f'{p} exists', flush=True); return
   man = {'experiment': 'AntMaze V6 mainline with learned-ETT futures (arm ETT) vs the sealed simulator futures (CF) and the recorded futures (O); five paired seeds',
          'sealed_at': time.strftime('%Y-%m-%d %H:%M:%S'), 'git_head': MP.git_head(), 'status': 'oracle-supervised engineering stage (the ETT was supervised by the simulator); the training futures of arm ETT are the model\'s',
-         'ett': {'motion_onset': {f'fold{f}': MP.sha256(MP.OUT / 'ett_one_step_v3' / f'model_fold{f}.json') for f in range(FA.N_FOLDS)}, 'advice_generator': {f'fold{f}': MP.sha256(FA.OUT / f'gen3_fold{f}.json') for f in range(FA.N_FOLDS)},
+         'ett': {'version': ETT, 'motion_onset': {f'fold{f}': MP.sha256(F2.OUT / f'model_fold{f}.json') for f in range(FA.N_FOLDS)}, 'advice_generator': {f'fold{f}': MP.sha256(FA.OUT / f'gen3_fold{f}.json') for f in range(FA.N_FOLDS)},
                  'advice_gates': MP.read_json(FA.OUT / 'gates3_map.json'), 'rollout_check': 'ett_rollout_v3/hist_exact (variant B: pooled death 0.312 vs sim 0.294, KS death time 0.028)',
                  'hold_decision': 'map', 'context_prior': FA.Z_PRIOR, 'history_counters': 'exact (run_length)', 'cross_fitting': 'anchor k uses the models of its source-episode fold (supervision.npz fold_anchor)'},
          'generation': {'construction': 'the logged torque once from the logged row, then the start agent mode (exp_v6_mainline_pilot.mode_policy) closed-loop through the model; one realised path per anchor; onset sampled per step; ends on reach / death / horizon 800 - t; no goal hold',
@@ -98,7 +107,6 @@ def _policy_mode_batched():
 def generate_fold(fold, anchors, obs, act, ks, rng, mode):
   """All anchors of one fold, stepped together through the fold's models with fixed batch shapes.  Returns per-path rows."""
   n = len(ks); e, t = anchors.episode[ks].astype(np.int64), anchors.t[ks].astype(np.int64)
-  F2.OUT = F2.OUT_V3
   P = F2.Predictor2(F2.load_model(fold)); gen = FA.load_generator(fold)
   goal = anchors.goal_xy[ks].astype(np.float32)
   s = anchors.state[ks].astype(np.float32)
@@ -168,7 +176,7 @@ def mode_generate(args):
     obs_rows[off_new[i]:off_new[i] + L[i]] = obs_all[off_cat[o]:off_cat[o] + L[i]]; act_rows[off_new[i]:off_new[i] + L[i]] = act_all[off_cat[o]:off_cat[o] + L[i]]
   ks = cat['anchor_id'][order]
   assert args.limit or np.array_equal(ks, np.arange(anchors.n))
-  meta = {'source': 'learned ETT (v3 motion / onset + advice generator v3, MAP hold, prior context per path)', 'continuation_ckpt': str(MP.START_CKPT), 'continuation_ckpt_sha256': MP.sha256(MP.START_CKPT),
+  meta = {'source': f'learned ETT ({ETT} motion / onset + advice generator v3, MAP hold, prior context per path)', 'continuation_ckpt': str(MP.START_CKPT), 'continuation_ckpt_sha256': MP.sha256(MP.START_CKPT),
           'gen_seed': GEN_SEED, 'n_anchors': int(len(ks)), 'wall_seconds': time.time() - t0, 'outcome_counts': {k: int((cat['outcome'][order] == k).sum()) for k in ('success', 'death', 'timeout')},
           'hidden_context': 'sampled from the prior per path (u1 / u2 / t0 stored); the anchor\'s actual context is not read', 'filtering': 'none'}
   np.savez_compressed(BRANCHES, obs_rows=obs_rows, act_rows=act_rows, offset=off_new, length=L, episode=anchors.episode[ks], t=anchors.t[ks], outcome=cat['outcome'][order],
@@ -273,7 +281,9 @@ def main(argv=None):
   ap.add_argument('--only', nargs='*', default=None)
   ap.add_argument('--limit', type=int, default=None)
   ap.add_argument('--force', action='store_true')
+  ap.add_argument('--ett', choices=('v3', 'v4'), default='v3')
   args = ap.parse_args(argv)
+  set_ett(args.ett)
   {'seal': mode_seal, 'generate': mode_generate, 'train': mode_train, 'evaluate': mode_evaluate, 'report': mode_report}[args.mode](args)
   return 0
 
