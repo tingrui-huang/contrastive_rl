@@ -45,6 +45,7 @@ N_STEPS = 100
 LEAVE_DIST = 1.0                 # "left the start": xy distance from the start state's xy
 GOAL_DRAWS, GOAL_SEED = 8, 214_000_000
 STEPS_OBJ = (0, 5, 10, 20, 30)   # rollout steps whose visited states enter the objective check
+SEED_ROWS = 216_000_000
 
 
 def _nets():
@@ -218,6 +219,55 @@ def mode_objective(args):
 
 
 # -------------------------------------------------------------------- short
+N_SAMPLES_OBJ = 16
+
+
+def logged_start_rows(obs, act, lengths, n_max=2048, seed=SEED_ROWS):
+  """Valid logged rows (t < L - 1) in the start region: every reset row (t = 0) and a seeded sample of start_early rows (t 1-40)."""
+  from exp_v6_learned_ett import REGIONS, region_of
+  n_ep = len(lengths); rows = []
+  for e in range(n_ep):
+    L = int(lengths[e])
+    for t in range(0, min(41, L - 1)):
+      rows.append((e, t))
+  rows = np.array(rows); reg = region_of(obs[rows[:, 0], rows[:, 1], :2].astype(np.float64))
+  rows = rows[reg == REGIONS.index('start')]
+  rng = np.random.default_rng(seed)
+  reset = rows[rows[:, 1] == 0]; early = rows[rows[:, 1] > 0]
+  early = early[rng.choice(len(early), size=min(n_max - len(reset), len(early)), replace=False)]
+  return np.concatenate([reset, early]), len(reset)
+
+
+def objective_as_trained(nets, cfg, pols, qps, obs, act, lengths, rows, rng, key):
+  """Per policy and critic: E_{a ~ pi(s, g)}[min-twin Q(s, a, g)] with N_SAMPLES_OBJ common-random-number samples, the BC NLL of the logged
+  action, and the loss (1 - bc) (-E Q) + bc NLL, on the given logged rows with the actor stream's relabelled goals (one draw per row)."""
+  import jax
+  import jax.numpy as jnp
+  e, t = rows[:, 0], rows[:, 1]; s = obs[e, t, :STATE_DIM].astype(np.float32); a_log = act[e, t].astype(np.float32)
+  n = np.maximum(lengths[e] - 1 - t, 1); u = rng.random(len(rows)); m = np.clip(np.ceil(np.log1p(-u * (1.0 - GAMMA ** n)) / np.log(GAMMA)).astype(np.int64), 1, n)
+  g = obs[e, t + m, :2].astype(np.float32); o31 = np.concatenate([s, g], axis=1)
+  bc = float(cfg.bc_coef); keys = jax.random.split(key, N_SAMPLES_OBJ)
+
+  @jax.jit
+  def eq(pp, qp, o, k):
+    d = nets.policy_network.apply(pp, o)
+    def one(kk):
+      a = nets.sample(d, kk); q = nets.q_network.apply(qp, o, a); return jnp.diag(jnp.min(q, axis=-1))
+    return jnp.mean(jax.vmap(one)(k), axis=0)
+
+  @jax.jit
+  def nll(pp, o, a):
+    return -nets.log_prob(nets.policy_network.apply(pp, o), a)
+  out = {}
+  for pname, pp in pols.items():
+    row = {'bc_nll_mean': float(np.mean(np.asarray(nll(pp, jnp.asarray(o31), jnp.asarray(a_log)))))}
+    for cname, qp in qps.items():
+      q = np.asarray(eq(pp, qp, jnp.asarray(o31), keys)); row[f'EQ_{cname}'] = float(q.mean()); row[f'loss_{cname}'] = float((1 - bc) * (-q.mean()) + bc * row['bc_nll_mean'])
+      row[f'EQ_{cname}_per_row'] = q
+    out[pname] = row
+  return out
+
+
 def mode_short(args):
   import jax
   import jax.numpy as jnp
@@ -234,27 +284,31 @@ def mode_short(args):
     return states[:, jnp.asarray(gidx)] if gidx is not None else states[:, cfg.start_index:cfg.end_index]
   policy_optimizer = optax.adam(cfg.actor_learning_rate, eps=1e-7); q_optimizer = MP.critic_optimizer(cfg, 0.1)
   _, update_step = losses_mod.build_learner(nets, cfg, obs_to_goal, policy_optimizer, q_optimizer, separate_actor_batch=True)
+  step1 = jax.jit(update_step)                                            # ONE update per call: the critic is restored after every update
   st0 = _load(path0)                                                   # the pre-collapse actor AND its optimizer state
-  actor_stream = MP.ActorStream(cfg, MP.ACTOR_STREAM_SEED0 + int(args.seed) + 5000)
-
-  def _multi(state, pair):
-    state, metrics = jax.lax.scan(update_step, state, pair)
-    return state, jax.tree_util.tree_map(lambda x: x.mean(), metrics)
-  multi = jax.jit(_multi)
+  stream_seed = MP.ACTOR_STREAM_SEED0 + int(args.seed) + 5000
   S = start_states(); n = len(S['t']); env, _ = B._worker_env(RD.WORKER_SEED0 + 778)
-  res = {'start': {name0: path0}, 'critics': crit, 'updates': int(args.updates), 'per_critic': {}}
+  res = {'start': {name0: path0}, 'critics': crit, 'updates': int(args.updates), 'actor_stream_seed': stream_seed, 'per_critic': {}, 'replay_check': {}}
+  first_hash = None; results_pp = {}
   for cname, cpath in crit.items():
     stc = _load(cpath)
-    state = st0._replace(q_params=stc.q_params, target_q_params=stc.target_q_params, q_optimizer_state=stc.q_optimizer_state, key=jax.random.PRNGKey(int(args.seed) + 77))
-    frozen = (stc.q_params, stc.target_q_params, stc.q_optimizer_state)
-    t0 = time.time(); hist = []
-    for it in range(int(args.updates) // MP.G):
-      abs_ = [actor_stream.sample(cfg.batch_size) for _ in range(MP.G)]
-      state, metrics = multi(state, (MP._stack(abs_), MP._stack(abs_)))   # the critic batch is irrelevant: the critic is reset to the frozen one after every step
+    actor_stream = MP.ActorStream(cfg, stream_seed)                       # re-created per condition: the SAME batch sequence
+    frozen = (stc.q_params, stc.target_q_params, stc.q_optimizer_state); h_frozen = MP._tree_hash(frozen[0])
+    state = st0._replace(q_params=frozen[0], target_q_params=frozen[1], q_optimizer_state=frozen[2], key=jax.random.PRNGKey(int(args.seed) + 77))
+    t0 = time.time(); hist = []; hashes = []
+    for it in range(int(args.updates)):
+      b = actor_stream.sample(cfg.batch_size)
+      if it == 0:
+        hashes.append(MP.arr_hash(b.observation, b.action))
+      state, metrics = step1(state, (b, b))                                # the critic batch is the same rows; the critic's update is discarded next
       state = state._replace(q_params=frozen[0], target_q_params=frozen[1], q_optimizer_state=frozen[2])
-      if (it + 1) * MP.G % 1000 == 0:
-        hist.append({'update': (it + 1) * MP.G, **{k: float(v) for k, v in metrics.items() if k in ('actor_loss', 'bc_nll', 'actor_q_term', 'action_saturation_fraction', 'policy_scale_median', 'pre_tanh_loc_abs_max', 'actor_grad_norm')}})
-    pp = state.policy_params
+      if (it + 1) % 1000 == 0:
+        hist.append({'update': it + 1, **{k: float(v) for k, v in metrics.items() if k in ('actor_loss', 'bc_nll', 'actor_q_term', 'action_saturation_fraction', 'policy_scale_median', 'pre_tanh_loc_abs_max', 'actor_grad_norm')}})
+    assert MP._tree_hash(state.q_params) == h_frozen, 'the critic moved'
+    if first_hash is None:
+      first_hash = hashes[0]
+    res['replay_check'][cname] = {'first_actor_batch_hash': hashes[0], 'same_as_first_condition': bool(hashes[0] == first_hash), 'critic_hash_unchanged': True}
+    pp = state.policy_params; results_pp[cname] = pp
     pol = jax.jit(lambda o, pp=pp: jnp.tanh(nets.policy_network.apply(pp, o).loc))
     dist_end = np.zeros(n); sat = []
     for si in range(n):
@@ -268,13 +322,35 @@ def mode_short(args):
       dist_end[si] = np.linalg.norm(o[:2] - x0)
     res['per_critic'][cname] = {'left_start_share_100': float((dist_end > LEAVE_DIST).mean()), 'xy_disp_median_100': float(np.median(dist_end)), 'torque_saturation_share': float(np.mean(sat)),
                                 'policy_param_delta': float(optax.global_norm(jax.tree_util.tree_map(lambda a, b: a - b, pp, st0.policy_params))), 'history': hist, 'wall_seconds': time.time() - t0}
-    print(f'{cname}: left start {res["per_critic"][cname]["left_start_share_100"]:.2f}, disp {res["per_critic"][cname]["xy_disp_median_100"]:.2f}, saturation {res["per_critic"][cname]["torque_saturation_share"]:.2f}, param delta {res["per_critic"][cname]["policy_param_delta"]:.3f} ({time.time() - t0:.0f} s)', flush=True)
+    print(f'{cname}: left start {res["per_critic"][cname]["left_start_share_100"]:.2f}, disp {res["per_critic"][cname]["xy_disp_median_100"]:.2f}, saturation {res["per_critic"][cname]["torque_saturation_share"]:.2f}, param delta {res["per_critic"][cname]["policy_param_delta"]:.3f}, first batch {hashes[0][:8]} ({time.time() - t0:.0f} s)', flush=True)
+  # ---- the objective as trained, on valid logged rows of the start region (common random numbers), for the input / reference / result policies
+  obs, act, lengths, _ = MP.load_dataset(); rows, n_reset = logged_start_rows(obs, act, lengths)
+  pols = {name0: st0.policy_params, **{f'after_{c}': pp for c, pp in results_pp.items()}}
+  for kv in (args.policies or []):
+    lab, pth = kv.split('=', 1); pols[lab] = _load(pth).policy_params
+  qps = {c: _load(pth).q_params for c, pth in crit.items()}
+  OBJ = objective_as_trained(nets, cfg, pols, qps, obs, act, lengths, rows, np.random.default_rng(SEED_ROWS + 1), jax.random.PRNGKey(SEED_ROWS + 2))
+  res['objective_as_trained'] = {'rows': {'n': int(len(rows)), 'n_reset': int(n_reset), 'law': 'relabelled goals of the row\'s own episode (geometric, gamma 0.999, truncated), one draw per row', 'samples_per_row': N_SAMPLES_OBJ},
+                                 'per_policy': {pn: {k: v for k, v in r.items() if not k.endswith('_per_row')} for pn, r in OBJ.items()}}
+  # paired per-row comparison of the stalled vs the progressing policy's expected Q (if both given)
+  if 'stall' in OBJ and 'prog' in OBJ:
+    for c in qps:
+      d = OBJ['stall'][f'EQ_{c}_per_row'] - OBJ['prog'][f'EQ_{c}_per_row']
+      res['objective_as_trained'][f'EQ_stall_minus_prog_{c}'] = {'all_rows_mean': float(d.mean()), 'share_stall_higher': float((d > 0).mean()), 'reset_rows_mean': float(d[:n_reset].mean()), 'reset_share_stall_higher': float((d[:n_reset] > 0).mean())}
   MP.write_json(out / 'short_report.json', res)
-  L = [f'# Short actor-only updates from {name0} ({args.updates} updates, the recipe actor loss and stream, critic frozen) under each critic; then rolled from the {n} start states', '',
-       '| critic | left start at 100 | xy disp median at 100 | torque saturation | policy param delta | actor loss / bc nll / q term at the end | saturation on training batches at the end |', '|---|---:|---:|---:|---:|---|---:|']
+  L = [f'# Short actor-only updates from {name0} ({args.updates} updates; the recipe actor loss; the SAME actor batches and keys in every condition; the critic frozen at every update, hash-verified); then rolled from the {n} start states', '',
+       '| critic | left start at 100 | xy disp median at 100 | torque saturation | policy param delta | actor loss / bc nll / q term at the end | first actor batch identical |', '|---|---:|---:|---:|---:|---|---|']
   for c, r in res['per_critic'].items():
     h = r['history'][-1] if r['history'] else {}
-    L.append(f"| {c} | {r['left_start_share_100']:.2f} | {r['xy_disp_median_100']:.2f} | {r['torque_saturation_share']:.2f} | {r['policy_param_delta']:.2f} | {h.get('actor_loss', float('nan')):.3f} / {h.get('bc_nll', float('nan')):.2f} / {h.get('actor_q_term', float('nan')):.3f} | {h.get('action_saturation_fraction', float('nan')):.3f} |")
+    L.append(f"| {c} | {r['left_start_share_100']:.2f} | {r['xy_disp_median_100']:.2f} | {r['torque_saturation_share']:.2f} | {r['policy_param_delta']:.2f} | {h.get('actor_loss', float('nan')):.3f} / {h.get('bc_nll', float('nan')):.2f} / {h.get('actor_q_term', float('nan')):.3f} | {res['replay_check'][c]['same_as_first_condition']} |")
+  L += ['', f"## The actor objective as trained on {len(rows)} valid logged rows of the start region ({n_reset} reset rows + start_early rows; relabelled goals; {N_SAMPLES_OBJ} sampled actions per row with common random numbers)", '',
+        '| policy | BC NLL | ' + ' | '.join(f'E Q under {c} / loss' for c in qps) + ' |', '|---|---:|' + '---|' * len(qps)]
+  for pn, r in res['objective_as_trained']['per_policy'].items():
+    L.append(f"| {pn} | {r['bc_nll_mean']:.2f} | " + ' | '.join(f"{r[f'EQ_{c}']:.3f} / {r[f'loss_{c}']:.3f}" for c in qps) + ' |')
+  for c in qps:
+    k = f'EQ_stall_minus_prog_{c}'
+    if k in res['objective_as_trained']:
+      v = res['objective_as_trained'][k]; L.append(f"\nE Q(stall) - E Q(prog) under {c}: all rows {v['all_rows_mean']:+.3f} (stall higher in {v['share_stall_higher']:.2f}); reset rows {v['reset_rows_mean']:+.3f} ({v['reset_share_stall_higher']:.2f})")
   (out / 'SHORT.md').write_text('\n'.join(L) + '\n', encoding='utf-8'); print('\n'.join(L), flush=True)
 
 
@@ -285,7 +361,7 @@ def main(argv=None):
   ap.add_argument('--ckpts', nargs='*', default=[], help='name=path (roll); include init=... and a ref=...')
   ap.add_argument('--ref', default='ref')
   ap.add_argument('--stall', default='final'); ap.add_argument('--prog', default='ref')
-  ap.add_argument('--policies', nargs='*', default=None, help='stall=path prog=path (objective)')
+  ap.add_argument('--policies', nargs='*', default=None, help='stall=path prog=path (objective; short: extra policies for the as-trained objective)')
   ap.add_argument('--critics', nargs='*', default=[], help='name=path (objective / short): checkpoints whose critics are read')
   ap.add_argument('--start', default=None, help='name=path (short): the pre-collapse actor checkpoint (with its optimizer state)')
   ap.add_argument('--updates', type=int, default=5000); ap.add_argument('--seed', type=int, default=4)

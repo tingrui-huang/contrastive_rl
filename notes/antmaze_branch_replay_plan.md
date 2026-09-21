@@ -3243,3 +3243,30 @@ as goal-reaching, with an action dependence whose maximum sits at the
 corner of the action box; the stall is the actor's exploitation of an
 unbounded action extrapolation, not an imitation of stalled paths.
 Nothing launched beyond the two analyses.
+
+### Stall diagnostics, round 2 (user's review of b4aa391; 2026-09-22; stall_onset/SUMMARY.md ROUND 2)
+
+Corrections adopted: draw 1's goal-area mass at reset is BELOW the
+simulator's (not 1.5x above); the monotone-Q claim holds for task /
+near goals only (interior maxima under the actor's relabelled goals);
+the first short-update control was faulty (batches not replayed,
+critic restored per 4-update scan; mode-Q not expected-Q) and is
+superseded; "optimizer excluded" softened to "none observed at the
+logged resolution".  CORRECTED CONTROL (same batches / keys, critic
+frozen per update, hash-verified): own critics 0.43-0.49 leave-start
+(deeper stall), draw-2 critics 0.83-0.86 (recovery, smaller than the
+faulty 0.98-1.00).  OBJECTIVE AS TRAINED (expected Q over 16 sampled
+actions + BC, 2,048 logged start rows): under the own critic the
+stalled policy's loss is lower (5.83 vs 6.49; BC penalty 0.16 < Q gain
+0.82); under draw 2's the progressing one's.  CONSEQUENCES OF ONE FIRST
+ACTION (64 reset states, start continuation, paired draws, simulator
+and S ETT): the saturated step is NOT bad -- success +0.035 +- 0.032 vs
+logged (n.s.), deaths -0.21, timeouts +0.18, far entries 0.17; goal-area
+mass slightly LOWER (-0.007); the ETT agrees on success / masses,
+under-states timeouts -> the user's THIRD case: the one-step target
+does not describe the closed-loop failure; extra queries under the same
+continuation would not lower the critic's target.  DECOMPOSITION: all
+cosines negative at reset; the draw-1 critic's stalled action has the
+SHORTEST phi (0.85x), the norm shrinkage ~ half of the +2.1 nats ->
+config.repr_norm (off in the recipe) is a targeted candidate, untested.
+Nothing launched beyond the diagnostics.

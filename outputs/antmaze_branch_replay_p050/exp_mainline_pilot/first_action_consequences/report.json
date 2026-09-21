@@ -1,0 +1,752 @@
+{
+ "sim": {
+  "file": "repeated_draws/rollouts_start_reset_stall.npz",
+  "draws_per_state": {
+   "logged": 64,
+   "prog": 64,
+   "stall": 64,
+   "start": 64
+  },
+  "n_states": 64,
+  "per_cand": {
+   "logged": {
+    "success": 0.2353515625,
+    "death": 0.7373046875,
+    "timeout": 0.02734375,
+    "far_entry": 0.015625,
+    "reach0.5": 0.0009301067656452399,
+    "near2.0": 0.032088643059880795,
+    "goal_area": 0.040053851185924486,
+    "death_frame": 0.008932451890855866
+   },
+   "prog": {
+    "success": 0.23876953125,
+    "death": 0.57421875,
+    "timeout": 0.18701171875,
+    "far_entry": 0.15625,
+    "reach0.5": 0.0008327432049220429,
+    "near2.0": 0.027915776075914042,
+    "goal_area": 0.03395362977066119,
+    "death_frame": 0.006859756301163559
+   },
+   "stall": {
+    "success": 0.270751953125,
+    "death": 0.52734375,
+    "timeout": 0.201904296875,
+    "far_entry": 0.171875,
+    "reach0.5": 0.0008983703506427665,
+    "near2.0": 0.031070651563522414,
+    "goal_area": 0.03329996262670569,
+    "death_frame": 0.00609126897806701
+   },
+   "start": {
+    "success": 0.232666015625,
+    "death": 0.73828125,
+    "timeout": 0.029052734375,
+    "far_entry": 0.01953125,
+    "reach0.5": 0.0008921489279532355,
+    "near2.0": 0.027785882930310986,
+    "goal_area": 0.035162676442732,
+    "death_frame": 0.008482130832315714
+   }
+  },
+  "paired_vs_logged": {
+   "prog": {
+    "success": {
+     "mean": 0.00341796875,
+     "se": 0.025027859015381914,
+     "share_better": 0.109375,
+     "share_worse": 0.203125
+    },
+    "death": {
+     "mean": -0.1630859375,
+     "se": 0.04255510193537429,
+     "share_better": 0.03125,
+     "share_worse": 0.234375
+    },
+    "timeout": {
+     "mean": 0.15966796875,
+     "se": 0.05034350969796712,
+     "share_better": 0.25,
+     "share_worse": 0.046875
+    },
+    "far_entry": {
+     "mean": 0.140625,
+     "se": 0.04913531839612815,
+     "share_better": 0.15625,
+     "share_worse": 0.015625
+    },
+    "reach0.5": {
+     "mean": -9.736356072319712e-05,
+     "se": 6.327872624607345e-05,
+     "share_better": 0.25,
+     "share_worse": 0.6875
+    },
+    "near2.0": {
+     "mean": -0.004172866983966757,
+     "se": 0.009396427204064153,
+     "share_better": 0.421875,
+     "share_worse": 0.5625
+    },
+    "goal_area": {
+     "mean": -0.006100221415263295,
+     "se": 0.009276947081913317,
+     "share_better": 0.4375,
+     "share_worse": 0.5625
+    },
+    "death_frame": {
+     "mean": -0.0020726955896923065,
+     "se": 0.0005123589053134343,
+     "share_better": 0.234375,
+     "share_worse": 0.765625
+    }
+   },
+   "stall": {
+    "success": {
+     "mean": 0.035400390625,
+     "se": 0.03213882429399536,
+     "share_better": 0.140625,
+     "share_worse": 0.21875
+    },
+    "death": {
+     "mean": -0.2099609375,
+     "se": 0.04573191200768787,
+     "share_better": 0.03125,
+     "share_worse": 0.296875
+    },
+    "timeout": {
+     "mean": 0.174560546875,
+     "se": 0.05351858333065444,
+     "share_better": 0.21875,
+     "share_worse": 0.046875
+    },
+    "far_entry": {
+     "mean": 0.15625,
+     "se": 0.05087893153952011,
+     "share_better": 0.171875,
+     "share_worse": 0.015625
+    },
+    "reach0.5": {
+     "mean": -3.17364150024735e-05,
+     "se": 8.113295768787352e-05,
+     "share_better": 0.234375,
+     "share_worse": 0.734375
+    },
+    "near2.0": {
+     "mean": -0.0010179914963583826,
+     "se": 0.011472244422631134,
+     "share_better": 0.375,
+     "share_worse": 0.625
+    },
+    "goal_area": {
+     "mean": -0.006753888559218797,
+     "se": 0.011060342417680566,
+     "share_better": 0.375,
+     "share_worse": 0.625
+    },
+    "death_frame": {
+     "mean": -0.002841182912788856,
+     "se": 0.000527861675477552,
+     "share_better": 0.125,
+     "share_worse": 0.875
+    }
+   },
+   "start": {
+    "success": {
+     "mean": -0.002685546875,
+     "se": 0.008113278514749855,
+     "share_better": 0.03125,
+     "share_worse": 0.0625
+    },
+    "death": {
+     "mean": 0.0009765625,
+     "se": 0.016732349848699177,
+     "share_better": 0.03125,
+     "share_worse": 0.015625
+    },
+    "timeout": {
+     "mean": 0.001708984375,
+     "se": 0.02185494245104385,
+     "share_better": 0.046875,
+     "share_worse": 0.03125
+    },
+    "far_entry": {
+     "mean": 0.00390625,
+     "se": 0.022611734455681324,
+     "share_better": 0.03125,
+     "share_worse": 0.015625
+    },
+    "reach0.5": {
+     "mean": -3.795783769200463e-05,
+     "se": 3.351419602125204e-05,
+     "share_better": 0.125,
+     "share_worse": 0.796875
+    },
+    "near2.0": {
+     "mean": -0.004302760129569815,
+     "se": 0.008008004508239307,
+     "share_better": 0.390625,
+     "share_worse": 0.59375
+    },
+    "goal_area": {
+     "mean": -0.004891174743192485,
+     "se": 0.007866624441892034,
+     "share_better": 0.4375,
+     "share_worse": 0.5625
+    },
+    "death_frame": {
+     "mean": -0.0004503210585401523,
+     "se": 0.00020042254596544892,
+     "share_better": 0.09375,
+     "share_worse": 0.90625
+    }
+   }
+  },
+  "paired_vs_start": {
+   "logged": {
+    "success": {
+     "mean": 0.002685546875,
+     "se": 0.008113278514749855,
+     "share_better": 0.0625,
+     "share_worse": 0.03125
+    },
+    "death": {
+     "mean": -0.0009765625,
+     "se": 0.016732349848699177,
+     "share_better": 0.015625,
+     "share_worse": 0.03125
+    },
+    "timeout": {
+     "mean": -0.001708984375,
+     "se": 0.02185494245104385,
+     "share_better": 0.03125,
+     "share_worse": 0.046875
+    },
+    "far_entry": {
+     "mean": -0.00390625,
+     "se": 0.022611734455681324,
+     "share_better": 0.015625,
+     "share_worse": 0.03125
+    },
+    "reach0.5": {
+     "mean": 3.795783769200463e-05,
+     "se": 3.351419602125204e-05,
+     "share_better": 0.796875,
+     "share_worse": 0.125
+    },
+    "near2.0": {
+     "mean": 0.004302760129569815,
+     "se": 0.008008004508239307,
+     "share_better": 0.59375,
+     "share_worse": 0.390625
+    },
+    "goal_area": {
+     "mean": 0.004891174743192485,
+     "se": 0.007866624441892034,
+     "share_better": 0.5625,
+     "share_worse": 0.4375
+    },
+    "death_frame": {
+     "mean": 0.0004503210585401523,
+     "se": 0.00020042254596544892,
+     "share_better": 0.90625,
+     "share_worse": 0.09375
+    }
+   },
+   "prog": {
+    "success": {
+     "mean": 0.006103515625,
+     "se": 0.024154102554674272,
+     "share_better": 0.09375,
+     "share_worse": 0.171875
+    },
+    "death": {
+     "mean": -0.1640625,
+     "se": 0.04248407658632652,
+     "share_better": 0.015625,
+     "share_worse": 0.234375
+    },
+    "timeout": {
+     "mean": 0.157958984375,
+     "se": 0.04757267107123512,
+     "share_better": 0.234375,
+     "share_worse": 0.046875
+    },
+    "far_entry": {
+     "mean": 0.13671875,
+     "se": 0.04819718853330431,
+     "share_better": 0.15625,
+     "share_worse": 0.015625
+    },
+    "reach0.5": {
+     "mean": -5.940572303119248e-05,
+     "se": 5.710211374586686e-05,
+     "share_better": 0.453125,
+     "share_worse": 0.453125
+    },
+    "near2.0": {
+     "mean": 0.0001298931456030568,
+     "se": 0.007396082145020817,
+     "share_better": 0.40625,
+     "share_worse": 0.578125
+    },
+    "goal_area": {
+     "mean": -0.0012090466720708114,
+     "se": 0.007142555259683554,
+     "share_better": 0.4375,
+     "share_worse": 0.546875
+    },
+    "death_frame": {
+     "mean": -0.0016223745311521544,
+     "se": 0.0005105889947172623,
+     "share_better": 0.59375,
+     "share_worse": 0.40625
+    }
+   },
+   "stall": {
+    "success": {
+     "mean": 0.0380859375,
+     "se": 0.03411052739372863,
+     "share_better": 0.125,
+     "share_worse": 0.1875
+    },
+    "death": {
+     "mean": -0.2109375,
+     "se": 0.04248407658632652,
+     "share_better": 0.0,
+     "share_worse": 0.28125
+    },
+    "timeout": {
+     "mean": 0.1728515625,
+     "se": 0.052243377384047454,
+     "share_better": 0.21875,
+     "share_worse": 0.046875
+    },
+    "far_entry": {
+     "mean": 0.15234375,
+     "se": 0.04612232602236463,
+     "share_better": 0.15625,
+     "share_worse": 0.015625
+    },
+    "reach0.5": {
+     "mean": 6.221422689531116e-06,
+     "se": 8.744257035292405e-05,
+     "share_better": 0.40625,
+     "share_worse": 0.53125
+    },
+    "near2.0": {
+     "mean": 0.0032847686332114347,
+     "se": 0.007696877363453918,
+     "share_better": 0.4375,
+     "share_worse": 0.5625
+    },
+    "goal_area": {
+     "mean": -0.0018627138160263108,
+     "se": 0.007384444914672053,
+     "share_better": 0.359375,
+     "share_worse": 0.640625
+    },
+    "death_frame": {
+     "mean": -0.002390861854248704,
+     "se": 0.00048260800991021516,
+     "share_better": 0.296875,
+     "share_worse": 0.6875
+    }
+   }
+  }
+ },
+ "model": {
+  "file": "ett_crossover/v4s20_reset_stall/model_rollouts.npz",
+  "draws_per_state": {
+   "logged": 32,
+   "prog": 32,
+   "stall": 32,
+   "start": 32
+  },
+  "n_states": 64,
+  "per_cand": {
+   "logged": {
+    "success": 0.248046875,
+    "death": 0.751953125,
+    "timeout": 0.0,
+    "far_entry": 0.0,
+    "reach0.5": 0.0009528662293871984,
+    "near2.0": 0.024970202615774276,
+    "goal_area": 0.03280462043548997,
+    "death_frame": 0.009198514893523451
+   },
+   "prog": {
+    "success": 0.25048828125,
+    "death": 0.68359375,
+    "timeout": 0.06591796875,
+    "far_entry": 0.03125,
+    "reach0.5": 0.0008978341434156988,
+    "near2.0": 0.024712234556128684,
+    "goal_area": 0.03205138183552021,
+    "death_frame": 0.0084331213649943
+   },
+   "stall": {
+    "success": 0.265625,
+    "death": 0.6845703125,
+    "timeout": 0.0498046875,
+    "far_entry": 0.05029296875,
+    "reach0.5": 0.0009659967603843334,
+    "near2.0": 0.022982726863492873,
+    "goal_area": 0.02890508676858795,
+    "death_frame": 0.008289752483805049
+   },
+   "start": {
+    "success": 0.232421875,
+    "death": 0.740234375,
+    "timeout": 0.02734375,
+    "far_entry": 0.0,
+    "reach0.5": 0.0009020910283840071,
+    "near2.0": 0.026929754464084913,
+    "goal_area": 0.03444044156185335,
+    "death_frame": 0.009034329923025318
+   }
+  },
+  "paired_vs_logged": {
+   "prog": {
+    "success": {
+     "mean": 0.00244140625,
+     "se": 0.019051710892721438,
+     "share_better": 0.046875,
+     "share_worse": 0.1875
+    },
+    "death": {
+     "mean": -0.068359375,
+     "se": 0.028081175553739034,
+     "share_better": 0.109375,
+     "share_worse": 0.109375
+    },
+    "timeout": {
+     "mean": 0.06591796875,
+     "se": 0.030386421410065773,
+     "share_better": 0.078125,
+     "share_worse": 0.0
+    },
+    "far_entry": {
+     "mean": 0.03125,
+     "se": 0.021921011700381302,
+     "share_better": 0.03125,
+     "share_worse": 0.0
+    },
+    "reach0.5": {
+     "mean": -5.503208597149957e-05,
+     "se": 3.436526824148676e-05,
+     "share_better": 0.34375,
+     "share_worse": 0.59375
+    },
+    "near2.0": {
+     "mean": -0.0002579680596455924,
+     "se": 0.003253782958366331,
+     "share_better": 0.484375,
+     "share_worse": 0.5
+    },
+    "goal_area": {
+     "mean": -0.0007532385999697608,
+     "se": 0.0032386580745697273,
+     "share_better": 0.46875,
+     "share_worse": 0.5
+    },
+    "death_frame": {
+     "mean": -0.00076539352852915,
+     "se": 0.00033589763718840576,
+     "share_better": 0.328125,
+     "share_worse": 0.671875
+    }
+   },
+   "stall": {
+    "success": {
+     "mean": 0.017578125,
+     "se": 0.021269100947217456,
+     "share_better": 0.09375,
+     "share_worse": 0.140625
+    },
+    "death": {
+     "mean": -0.0673828125,
+     "se": 0.027305801597215663,
+     "share_better": 0.09375,
+     "share_worse": 0.140625
+    },
+    "timeout": {
+     "mean": 0.0498046875,
+     "se": 0.026481760736117188,
+     "share_better": 0.0625,
+     "share_worse": 0.0
+    },
+    "far_entry": {
+     "mean": 0.05029296875,
+     "se": 0.026753815321555637,
+     "share_better": 0.0625,
+     "share_worse": 0.0
+    },
+    "reach0.5": {
+     "mean": 1.3130530997134844e-05,
+     "se": 5.699579008145461e-05,
+     "share_better": 0.34375,
+     "share_worse": 0.609375
+    },
+    "near2.0": {
+     "mean": -0.001987475752281404,
+     "se": 0.0030562510539452062,
+     "share_better": 0.421875,
+     "share_worse": 0.5625
+    },
+    "goal_area": {
+     "mean": -0.0038995336669020234,
+     "se": 0.0032682329943588186,
+     "share_better": 0.421875,
+     "share_worse": 0.546875
+    },
+    "death_frame": {
+     "mean": -0.0009087624097184033,
+     "se": 0.0003158417939189512,
+     "share_better": 0.234375,
+     "share_worse": 0.765625
+    }
+   },
+   "start": {
+    "success": {
+     "mean": -0.015625,
+     "se": 0.007496072053426296,
+     "share_better": 0.046875,
+     "share_worse": 0.125
+    },
+    "death": {
+     "mean": -0.01171875,
+     "se": 0.0118011323850907,
+     "share_better": 0.0625,
+     "share_worse": 0.078125
+    },
+    "timeout": {
+     "mean": 0.02734375,
+     "se": 0.01681222478310762,
+     "share_better": 0.0625,
+     "share_worse": 0.0
+    },
+    "far_entry": {
+     "mean": 0.0,
+     "se": 0.0,
+     "share_better": 0.0,
+     "share_worse": 0.0
+    },
+    "reach0.5": {
+     "mean": -5.077520100319128e-05,
+     "se": 2.8859291883028946e-05,
+     "share_better": 0.296875,
+     "share_worse": 0.640625
+    },
+    "near2.0": {
+     "mean": 0.0019595518483106343,
+     "se": 0.00445004797948019,
+     "share_better": 0.484375,
+     "share_worse": 0.515625
+    },
+    "goal_area": {
+     "mean": 0.0016358211263633798,
+     "se": 0.004269042506329895,
+     "share_better": 0.5,
+     "share_worse": 0.5
+    },
+    "death_frame": {
+     "mean": -0.00016418497049813335,
+     "se": 0.0002215003718778512,
+     "share_better": 0.1875,
+     "share_worse": 0.8125
+    }
+   }
+  },
+  "paired_vs_start": {
+   "logged": {
+    "success": {
+     "mean": 0.015625,
+     "se": 0.007496072053426296,
+     "share_better": 0.125,
+     "share_worse": 0.046875
+    },
+    "death": {
+     "mean": 0.01171875,
+     "se": 0.0118011323850907,
+     "share_better": 0.078125,
+     "share_worse": 0.0625
+    },
+    "timeout": {
+     "mean": -0.02734375,
+     "se": 0.01681222478310762,
+     "share_better": 0.0,
+     "share_worse": 0.0625
+    },
+    "far_entry": {
+     "mean": 0.0,
+     "se": 0.0,
+     "share_better": 0.0,
+     "share_worse": 0.0
+    },
+    "reach0.5": {
+     "mean": 5.077520100319128e-05,
+     "se": 2.8859291883028946e-05,
+     "share_better": 0.640625,
+     "share_worse": 0.296875
+    },
+    "near2.0": {
+     "mean": -0.0019595518483106343,
+     "se": 0.00445004797948019,
+     "share_better": 0.515625,
+     "share_worse": 0.484375
+    },
+    "goal_area": {
+     "mean": -0.0016358211263633798,
+     "se": 0.004269042506329895,
+     "share_better": 0.5,
+     "share_worse": 0.5
+    },
+    "death_frame": {
+     "mean": 0.00016418497049813335,
+     "se": 0.0002215003718778512,
+     "share_better": 0.8125,
+     "share_worse": 0.1875
+    }
+   },
+   "prog": {
+    "success": {
+     "mean": 0.01806640625,
+     "se": 0.020301105810798328,
+     "share_better": 0.15625,
+     "share_worse": 0.171875
+    },
+    "death": {
+     "mean": -0.056640625,
+     "se": 0.030280687095997415,
+     "share_better": 0.125,
+     "share_worse": 0.15625
+    },
+    "timeout": {
+     "mean": 0.03857421875,
+     "se": 0.03554160895699879,
+     "share_better": 0.078125,
+     "share_worse": 0.0625
+    },
+    "far_entry": {
+     "mean": 0.03125,
+     "se": 0.021921011700381302,
+     "share_better": 0.03125,
+     "share_worse": 0.0
+    },
+    "reach0.5": {
+     "mean": -4.256884968308289e-06,
+     "se": 4.5768400321367126e-05,
+     "share_better": 0.53125,
+     "share_worse": 0.40625
+    },
+    "near2.0": {
+     "mean": -0.002217519907956227,
+     "se": 0.0050421857577141035,
+     "share_better": 0.5,
+     "share_worse": 0.5
+    },
+    "goal_area": {
+     "mean": -0.002389059726333141,
+     "se": 0.005182270657906201,
+     "share_better": 0.46875,
+     "share_worse": 0.484375
+    },
+    "death_frame": {
+     "mean": -0.0006012085580310167,
+     "se": 0.00037475343715928183,
+     "share_better": 0.578125,
+     "share_worse": 0.421875
+    }
+   },
+   "stall": {
+    "success": {
+     "mean": 0.033203125,
+     "se": 0.02238972222479152,
+     "share_better": 0.15625,
+     "share_worse": 0.109375
+    },
+    "death": {
+     "mean": -0.0556640625,
+     "se": 0.029939575297322857,
+     "share_better": 0.09375,
+     "share_worse": 0.140625
+    },
+    "timeout": {
+     "mean": 0.0224609375,
+     "se": 0.032049458490273734,
+     "share_better": 0.0625,
+     "share_worse": 0.0625
+    },
+    "far_entry": {
+     "mean": 0.05029296875,
+     "se": 0.026753815321555637,
+     "share_better": 0.0625,
+     "share_worse": 0.0
+    },
+    "reach0.5": {
+     "mean": 6.390573200032614e-05,
+     "se": 5.7584723065464724e-05,
+     "share_better": 0.484375,
+     "share_worse": 0.4375
+    },
+    "near2.0": {
+     "mean": -0.00394702760059204,
+     "se": 0.004472093403134663,
+     "share_better": 0.5,
+     "share_worse": 0.5
+    },
+    "goal_area": {
+     "mean": -0.005535354793265402,
+     "se": 0.004221724818093292,
+     "share_better": 0.453125,
+     "share_worse": 0.546875
+    },
+    "death_frame": {
+     "mean": -0.0007445774392202699,
+     "se": 0.0003743833206004374,
+     "share_better": 0.484375,
+     "share_worse": 0.515625
+    }
+   }
+  }
+ },
+ "sim_vs_model_per_state": {
+  "prog|success": {
+   "corr": -0.17602883894116217,
+   "sign_agreement": 0.6875
+  },
+  "prog|goal_area": {
+   "corr": 0.12470767449105613,
+   "sign_agreement": 0.4375
+  },
+  "prog|near2.0": {
+   "corr": 0.26706008794030633,
+   "sign_agreement": 0.40625
+  },
+  "stall|success": {
+   "corr": 0.07289106218024533,
+   "sign_agreement": 0.5625
+  },
+  "stall|goal_area": {
+   "corr": -0.03639486645536472,
+   "sign_agreement": 0.453125
+  },
+  "stall|near2.0": {
+   "corr": -0.11134242523346526,
+   "sign_agreement": 0.5
+  },
+  "start|success": {
+   "corr": 0.21206499900944153,
+   "sign_agreement": 0.78125
+  },
+  "start|goal_area": {
+   "corr": -0.06479268875848788,
+   "sign_agreement": 0.375
+  },
+  "start|near2.0": {
+   "corr": -0.06372412683298685,
+   "sign_agreement": 0.46875
+  }
+ }
+}

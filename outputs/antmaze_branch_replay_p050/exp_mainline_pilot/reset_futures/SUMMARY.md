@@ -44,8 +44,10 @@ along the path the critic's maximum sits.
 | | start agent | +0.92 (0.83), max INTERIOR 0.94 | +0.94 (0.80), interior 0.92 | -0.02 (0.47), interior 0.91 | +0.49 / +0.46, interior 0.98 | 0.06 |
 | | logged first torque | -0.17 (0.50) | -0.28 (0.47) | -1.43 (0.03) | -1.17 (0.09) / -1.26 (0.05) | 0.36 |
 
-* The draw-1 critic's Q rises MONOTONICALLY toward the saturated action from every forward action and under every goal set (the
-  maximum sits at the stall end of the path in 84-98 % of the states); the draw-2 critic's Q falls toward it from its own action and
+* CORRECTION (user's review): the monotone rise holds under the TASK / near-goal goals (the maximum at the stall end in 84-98 % of the
+  states) and, weaker, under the critic-training marginals -- NOT under the actor stream's relabelled goals, where the maximum is interior
+  in 52-84 % of the states.  Original sentence: the draw-1 critic's Q rises MONOTONICALLY toward the saturated action from every forward
+  action and under every goal set; the draw-2 critic's Q falls toward it from its own action and
   from the logged torque, and from the start agent's action its maximum is in the INTERIOR of the path (91-98 %) -- an action between
   the start agent's and the bound, its own actor's.  A monotone Q up to the action bound is what turns the actor's gradient ascent into
   saturation; an interior maximum does not.
@@ -53,9 +55,10 @@ along the path the critic's maximum sits.
   +3.2), least under the actor stream's relabelled goals (+0.5 from the progressing action, +1.3 from the start agent, -0.3 from the
   logged torque).  The 20k critic already carries the task / near / marginal bump (+1.2 / +2.8) with none yet under the relabelled goals
   -- the preference formed first for the goal-area goals and spread to the actor's goals by 30k.
-* Put together with A: the draw-1 table paired the reset states with goal-area futures 2.3x more often than draw 2 (and 1.5x more
-  often than the simulator), so the draw-1 critic learned the reset states as places from which the goal area is reached -- and the
-  action dependence it fitted to that puts the maximum at the corner of the action box.  What pulled the critic is the goal-area /
+* Put together with A: the draw-1 table paired the reset states with goal-area futures 2.3x more often than draw 2 (CORRECTION: and
+  LESS often than the simulator table, 0.046 vs 0.059 -- the earlier '1.5x more often than the simulator' was wrong), so the draw-1 critic
+  learned the reset states as places from which the goal area is reached more often than draw 2's critic did -- and the action dependence
+  it fitted to that puts the maximum at the corner of the action box for the task / near-goal goals.  What pulled the critic is the goal-area /
   near-goal positives at the reset rows, not stalled futures; the stall is the actor's exploitation of an unbounded extrapolation in
   the action, not an imitation of stalled paths.
 

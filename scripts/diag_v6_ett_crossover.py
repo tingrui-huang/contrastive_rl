@@ -154,13 +154,15 @@ def mode_run(args):
   print('states', {g: int((groups == g).sum()) for g in np.unique(groups)}, 'folds', np.bincount(fold).tolist(), flush=True)
   F2.OUT = Path(MODEL_DIR) if MODEL_DIR else F2.OUT_V4
   P = {f: F2.Predictor2(F2.load_model(f)) for f in range(FA.N_FOLDS)}; G = {f: FA.load_generator(f) for f in range(FA.N_FOLDS)}
-  modes = {'start': policy_mode_batched(MP.START_CKPT), 'CF': policy_mode_batched(RD.ckpt('CF'))}
-  pol1 = {c: policy_mode_batched(RD.ckpt(c)) for c in ('start', 'CF', 'MF', 'CF2')}
+  modes = {c: policy_mode_batched(RD.ckpt(c)) for c in CONTS}
+  pol1 = {c: policy_mode_batched(RD.ckpt(c)) for c in CANDS if c != 'logged'}
   obs31 = np.concatenate([S['state'], S['goal_xy']], axis=1).astype(np.float32)
   a0 = {'logged': S['logged'].astype(np.float32)}
-  for c in ('start', 'CF', 'MF', 'CF2'):
+  for c in pol1:
     a0[c] = pol1[c](obs31)
   states = np.arange(n_states) if not args.limit else np.arange(int(args.limit))
+  if args.groups:
+    states = states[np.isin(groups[states], args.groups)]
   rows = []
   for cont in CONTS:
     for c in CANDS:
@@ -349,8 +351,15 @@ def write_md(res):
 def main(argv=None):
   ap = argparse.ArgumentParser(); ap.add_argument('mode', choices=('run', 'report')); ap.add_argument('--limit', type=int, default=None)
   ap.add_argument('--model-dir', default=None, help='one-step model dir (default the v4 models)'); ap.add_argument('--tag', default=None, help='output subdir under ett_crossover/')
+  ap.add_argument('--cands', nargs='*', default=None, help='the first-step candidates (default logged start CF MF CF2)'); ap.add_argument('--conts', nargs='*', default=None, help='the continuations (default start CF)')
+  ap.add_argument('--extra-cands', nargs='*', default=[], help='name=checkpoint: further candidate / continuation actors'); ap.add_argument('--groups', nargs='*', default=None, help='run: restrict to these state groups')
   args = ap.parse_args(argv)
-  global MODEL_DIR, OUT
+  global MODEL_DIR, OUT, CANDS, CONTS
+  RD.EXTRA_CKPTS.update(dict(kv.split('=', 1) for kv in (args.extra_cands or [])))
+  if args.cands:
+    CANDS = tuple(args.cands)
+  if args.conts:
+    CONTS = tuple(args.conts)
   MODEL_DIR = args.model_dir
   if args.tag:
     OUT = OUT / args.tag

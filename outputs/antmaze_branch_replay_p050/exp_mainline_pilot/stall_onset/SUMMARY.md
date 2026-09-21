@@ -55,7 +55,8 @@ from the logged action with a policy scale of ~0.07), so at 0.05 it does not dec
 action as the target and are not a valid BC term; the step-0 rows are exact.)
 
 Short actor-only updates from the pre-collapse actor (seed 4 draw 1 at 20k, WITH its optimizer state; 5,000 updates with the recipe's
-actor loss and stream; the critic frozen; then rolled from the same 128 start states):
+actor loss and stream; the critic frozen; then rolled from the same 128 start states) -- SUPERSEDED (round 2): this run used different actor
+batches per condition and restored the critic only after each 4-update scan; the corrected control is in ROUND 2 below:
 
 | frozen critic | left the start at 100 | xy disp median | torque saturation | policy param delta |
 |---|---:|---:|---:|---:|
@@ -81,3 +82,106 @@ update), only its direction differs.
   on GPU nondeterminism, and the two tables' identical marginals do not tell them apart.  Any future comparison of "fixes" on this seed
   must therefore be read against a run-to-run spread of ~0.3, i.e. on several repeats, never on one run.
 * Not touched, as instructed: BC, the ETT, the number of futures (the two-table mixture already failed at 0.311).
+
+# ROUND 2 (user's review of b4aa391; 2026-09-22): corrections, the diagnostic fixed and redone, the real consequences of the first actions, the score decomposition
+
+## Corrections to the record
+
+* reset_futures/SUMMARY.md: the draw-1 table's goal-area mass at the reset anchors is BELOW the simulator table's (0.046 vs 0.059 on the 64
+  anchors; 0.047 vs 0.059 on all 196), not "1.5x above" as written; it is above draw 2's (0.020 / 0.031).
+* "The draw-1 critic's Q rises monotonically to the saturated action under every goal set" was too strong: under the ACTOR stream's
+  relabelled goals many curves peak in the interior (argmax interior 52-84 % of the states in those rows).  What holds: the boundary
+  preference under the TASK / near-goal goals (argmax at the bound in 84-98 %) and, weaker, under the critic-training marginals.
+* The first short-update control (stall_onset/s4d1/SHORT.md) had two implementation faults -- the actor stream was created once outside
+  the critic loop (different batches per condition) and the critic was restored only after each 4-update scan (three of four updates saw
+  a moved critic) -- and its "complete objective" used the mode action's Q, not the expected Q of sampled actions as trained.  Its
+  numbers are superseded by the corrected control below; the direction it showed survives, the size does not.
+* "Optimizer factors excluded" is too strong: the training log samples one update in 500; no spike was seen, which does not exclude
+  spikes between samples.  Stated as "none observed at the logged resolution".
+
+## The corrected control (`diag_v6_stall_onset.py short`, `stall_onset/s4d1_fixed/`): from the 20k actor + its Adam state, 5,000 actor-only updates -- the SAME actor batches (re-seeded stream, first-batch hash identical in every condition) and the same keys; the critic restored after EVERY update and hash-verified unchanged; then rolled from the 128 start states
+
+| frozen critic | left the start at 100 | xy disp median | torque saturation | policy param delta |
+|---|---:|---:|---:|---:|
+| own, 20k | 0.49 | 0.95 | 0.48 | 15.1 |
+| own, final | 0.43 | 0.74 | 0.49 | 17.6 |
+| draw 2, 20k | 0.86 | 7.4 | 0.20 | 15.8 |
+| draw 2, final | 0.83 | 10.4 | 0.16 | 18.2 |
+
+The 20k actor itself: 0.60 / 0.37.  Under its own critics the actor sinks further into the stall (0.60 -> 0.43-0.49, saturation 0.37 ->
+0.48); under the draw-2 critics it recovers most of the way (0.83-0.86, saturation 0.16-0.20) -- less than the faulty run's 0.98-1.00.  The
+critic's update direction is sufficient to deepen or relieve the stall on the 100-step start test; this says nothing about the whole task.
+
+The objective AS TRAINED -- E_{a ~ pi(s, g)}[min-twin Q(s, a, g)] with 16 sampled actions (common random numbers) plus the BC NLL of the
+logged action, loss = 0.95 (-E Q) + 0.05 NLL -- on 2,048 valid logged rows of the start region (the 1,000 reset rows t = 0 and 1,048
+start_early rows; the actor stream's relabelled goals):
+
+| policy | BC NLL | E Q / loss under own 20k | under own final | under draw-2 20k | under draw-2 final |
+|---|---:|---|---|---|---|
+| 20k actor | -11.75 | -6.78 / 5.86 | -6.98 / 6.04 | -7.15 / 6.20 | -7.70 / 6.73 |
+| stalled final | -8.53 | -6.63 / 5.87 | **-6.58 / 5.83** | -7.39 / 6.59 | -8.12 / 7.29 |
+| progressing (draw 2 final) | -11.72 | -7.18 / 6.24 | -7.45 / 6.49 | -6.86 / 5.93 | **-7.09 / 6.15** |
+
+E Q(stalled) - E Q(progressing): under the own critics +0.56 / +0.87 (the stalled policy higher on 81-83 % of the rows; on the reset rows
++0.84 / +1.37, 94 %); under the draw-2 critics -0.53 / -1.03 (21-23 %; reset rows 8-13 %).  The BC term is WORSE for the stalled policy
+(NLL -8.5 vs -11.7: 0.05 x 3.2 = 0.16 in the loss) and is outweighed by the critic term (0.95 x 0.87 = 0.82): under its own critic the
+actor's loss is lower for the stalled policy (5.83 vs 6.49) -- the actor follows its objective; under the draw-2 critic the objective
+prefers the progressing policy (6.15 vs 7.29).
+
+## The real consequences of ONE first action (`diag_v6_first_action_consequences.py`; `first_action_consequences/REPORT.md`): the 64 reset states; the logged torque / the stalled actor's mode / the progressing actor's mode / the start agent's mode, then the frozen START agent; paired hidden draws (simulator: 4 classes x 16; the S ETT with the learnt advice and sampled onset: 4 x 8)
+
+| first action | simulator: success / death / timeout / far entry | sim goal-area / near-2.0 / death-frame mass | S ETT: success / death / timeout / far entry | ETT goal-area / near-2.0 mass |
+|---|---|---|---|---|
+| logged torque | 0.235 / 0.737 / 0.027 / 0.016 | 0.0401 / 0.0321 / 0.0089 | 0.248 / 0.752 / 0.000 / 0.000 | 0.0328 / 0.0250 |
+| stalled actor's | 0.271 / 0.527 / **0.202** / **0.172** | 0.0333 / 0.0311 / 0.0061 | 0.266 / 0.685 / 0.050 / 0.050 | 0.0289 / 0.0230 |
+| progressing actor's | 0.239 / 0.574 / 0.187 / 0.156 | 0.0340 / 0.0279 / 0.0069 | 0.250 / 0.684 / 0.066 / 0.031 | 0.0321 / 0.0247 |
+| start agent's | 0.233 / 0.738 / 0.029 / 0.020 | 0.0352 / 0.0278 / 0.0085 | 0.232 / 0.740 / 0.027 / 0.000 | 0.0344 / 0.0269 |
+
+Paired vs the logged torque (simulator; mean +- s.e. over states): the stalled action's success +0.035 +- 0.032, timeouts +0.175 +- 0.054,
+goal-area mass -0.007 +- 0.011, death-frame mass -0.003 +- 0.001; the progressing action's success +0.003 +- 0.025, timeouts +0.160.  The
+model: stalled success +0.018 +- 0.021, timeouts +0.050 +- 0.026, goal-area -0.004 +- 0.003.  Per-state contrast correlations simulator vs
+model ~0 (as in every earlier crossover).
+
+* Executed ONCE and handed to the start agent, the saturated action is NOT a bad action: its success equals or slightly exceeds the logged
+  torque's (n.s.), it removes deaths (-0.21) at the price of timeouts and far-route entries (0.17 -- the kick puts the ant on a heading the
+  start agent turns into the far route), and the goal masses the critic is trained on are equal or slightly LOWER than the logged torque's
+  (goal area -0.007).  The model agrees in the success and the goal masses and under-states the timeouts / far entries (0.05 vs 0.20 /
+  0.17).
+* So, of the user's three cases, this is the third: the one-step consequence with the start continuation -- what the branch tables
+  supervise -- does not describe the failure of "the new actor keeps acting like this"; the stall is a closed-loop property, and neither
+  the simulator nor the ETT rates the single extreme step badly.  Adding queries at these actions under the same continuation rule would
+  give the critic a target that is NOT lower than the logged torque's, i.e. it would not remove the preference by itself.  And the critic's
+  +2 to +4 nats at the task goal are not supported by the goal masses even on the critic's own terms (they are lower).
+
+## The score split into |phi(s, a)|, |psi(g)| and the angle (`diag_v6_reset_futures.py decompose`; `reset_futures/DECOMPOSE.md`)
+
+f = phi(s, a) . psi(g) per twin head, at the 64 reset states; every cosine is NEGATIVE here (task goal -0.77 .. -0.86; the training
+marginal -0.45 .. -0.55): the critic says "unlikely" for every action, and the ranking of actions is then driven by |phi|.
+
+| critic | action | abs phi | cos with the task goal's psi | twin-min logit (task) |
+|---|---|---:|---:|---:|
+| draw 1 seed 4 | stalled | **1.28** | -0.77 | -7.0 |
+| | progressing | 1.51 | -0.86 | -9.1 |
+| | start agent | 1.93 | -0.83 | -11.2 |
+| | logged | 1.76 | -0.78 | -9.4 |
+| draw 2 seed 4 | stalled | **2.07** | -0.81 | -10.4 |
+| | progressing | 1.60 | -0.85 | -8.6 |
+| | start agent | 2.24 | -0.82 | -11.4 |
+
+For the draw-1 critic the stalled action has the SHORTEST phi (ratio 0.85 to the progressing action) and a slightly less negative angle
+(+0.08): with negative cosines a shorter phi is a less negative product; holding the angle at the progressing action's value, the norm
+change alone accounts for about +1.3 of the +2.1 nats, the angle change alone for about +1.2 (they overlap).  For the draw-2 critic the
+stalled action has the LONGEST phi (ratio 1.29), which with the same negative angle makes it worse.  So the extreme action's high score in
+the collapsed run comes to a substantial part from the representation length shrinking toward the saturated corner under negative
+angles -- the situation in which the recipe's existing `repr_norm` option (config.repr_norm, off in the sealed recipe) becomes a
+targeted candidate; not shown effective, not launched.
+
+## Where this leaves the decision tree
+
+* No abnormal updates at the logged resolution; the stall is the actor following its objective under its own critic (loss 5.83 vs
+  6.49 for the progressing policy), with BC at 0.05 too weak to hold it (0.16 vs 0.82).
+* The critic's preference is not backed by the consequences: the single extreme step is not worse than the logged torque in the
+  simulator or in the ETT, and its goal masses are slightly lower -- the preference is an extrapolation artefact (half of it the
+  phi-norm shrinkage), formed on a table whose reset-row positives happened to be richer, and which a second draw does not form.
+* Not concluded: that repr normalisation fixes it (untested); that reducing the successful futures would help (no basis); that more
+  futures per anchor would (the two-table mixture gave 0.311).

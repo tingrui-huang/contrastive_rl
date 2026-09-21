@@ -179,13 +179,71 @@ def mode_qsurface(args):
   (OUT / 'QSURFACE.md').write_text('\n'.join(L) + '\n', encoding='utf-8'); print('\n'.join(L), flush=True)
 
 
+# --------------------------------------------------------------- decompose
+def mode_decompose(args):
+  """f(s, a, g) = phi(s, a) . psi(g) per twin head: |phi|, |psi|, cos(phi, psi) at the 64 reset states for the stalled / progressing / start /
+  logged actions under each critic, with the task goal and the critic-training marginal goals -- does the stalled action's higher score come
+  from a longer phi or from a better angle?"""
+  import jax
+  import jax.numpy as jnp
+  from crl import checkpoint
+  OUT.mkdir(parents=True, exist_ok=True)
+  cfg = MP.recipe_config(0, OUT / '_cfg'); MP.fill_dims(cfg); nets = MP.make_nets(cfg)
+  anchors, _ = MP.AnchorSet.load(MP.OUT / 'anchors.npz')
+  S = np.load(RD.OUT / 'states.npz', allow_pickle=False); g = S['group'].astype(str); m = g == 'reset'
+  st, gxy, a_log = S['state'][m], S['goal_xy'][m], S['logged'][m].astype(np.float32); n = len(st)
+  crit = dict(kv.split('=', 1) for kv in args.critics); qp = {c: checkpoint.load_checkpoint(p)[1].q_params for c, p in crit.items()}
+  reprs = jax.jit(lambda p_, o, a: nets.representation_network.apply(p_, o, a))
+  pols = {}
+  for lab, p_ in (('stall', args.stall), ('fwd', args.fwd), ('start', str(MP.START_CKPT))):
+    pp = checkpoint.load_checkpoint(p_)[1].policy_params
+    pols[lab] = jax.jit(lambda o, pp=pp: jnp.tanh(nets.policy_network.apply(pp, o).loc))
+  o31 = np.concatenate([st, gxy], axis=1).astype(np.float32)
+  A = {lab: np.asarray(pols[lab](jnp.asarray(o31))) for lab in pols}; A['logged'] = a_log
+  rng = np.random.default_rng(SEED + 1)
+  T = {'draw1': MP.BranchFutures(anchors, TABLES['draw1']), 'draw2': MP.BranchFutures(anchors, TABLES['draw2'])}
+  marg = marginal_goals(anchors, T['draw1'], rng, N_MARG)
+  goal_sets = {'task': gxy.astype(np.float32), 'marginal draw1': marg}
+  res = {'critics': crit, 'actions': list(A), 'per': {}}
+  dummy = jnp.zeros((N_MARG, 8), jnp.float32)
+  for c in crit:
+    phi = {lab: np.asarray(reprs(qp[c], jnp.asarray(o31), jnp.asarray(A[lab]))[0]) for lab in A}          # [n, d, 2]
+    for gname, G in goal_sets.items():
+      og = np.concatenate([np.repeat(st[:1], len(G), axis=0), G], axis=1).astype(np.float32)             # psi ignores the state columns
+      psi = np.asarray(reprs(qp[c], jnp.asarray(og), dummy[:len(G)])[1])                                   # [m, d, 2]
+      for lab in A:
+        ph = phi[lab]; nph = np.linalg.norm(ph, axis=1)                                                    # [n, 2]
+        if gname == 'task':
+          ps = psi; nps = np.linalg.norm(ps, axis=1); dots = np.einsum('idh,idh->ih', ph, ps); cos = dots / (nph * nps + 1e-8)
+          f = np.min(dots, axis=1)
+        else:
+          nps = np.linalg.norm(psi, axis=1); dots = np.einsum('idh,jdh->ijh', ph, psi); cos = dots / (nph[:, None] * nps[None] + 1e-8)
+          f = np.min(dots.mean(axis=1), axis=1); cos = cos.mean(axis=1)
+        res['per'][f'{c}|{gname}|{lab}'] = {'phi_norm_mean': float(nph.mean()), 'psi_norm_mean': float(nps.mean()), 'cos_mean': float(cos.mean()), 'twin_min_logit_mean': float(f.mean())}
+  # the stall - fwd contrast split: log f = log|phi| + log|psi| + log cos is not defined for negative cos; report the multiplicative ratios instead
+  for c in crit:
+    for gname in goal_sets:
+      a, b = res['per'][f'{c}|{gname}|stall'], res['per'][f'{c}|{gname}|fwd']
+      res['per'][f'{c}|{gname}|stall_vs_fwd'] = {'phi_norm_ratio': a['phi_norm_mean'] / b['phi_norm_mean'], 'cos_diff': a['cos_mean'] - b['cos_mean'], 'logit_diff': a['twin_min_logit_mean'] - b['twin_min_logit_mean']}
+  MP.write_json(OUT / 'decompose_report.json', res)
+  L = ['# The critic score at the 64 reset states split into |phi(s, a)|, |psi(g)| and cos(phi, psi) (mean over the twin heads and states)', '',
+       '| critic | goal set | action | mean abs phi | mean abs psi | mean cos | twin-min logit |', '|---|---|---|---:|---:|---:|---:|']
+  for k, v in res['per'].items():
+    c, gname, lab = k.split('|')
+    if lab == 'stall_vs_fwd':
+      L.append(f"| {c} | {gname} | **stall vs fwd** | ratio {v['phi_norm_ratio']:.3f} | | diff {v['cos_diff']:+.3f} | diff {v['logit_diff']:+.3f} |")
+    else:
+      L.append(f"| {c} | {gname} | {lab} | {v['phi_norm_mean']:.3f} | {v['psi_norm_mean']:.3f} | {v['cos_mean']:+.3f} | {v['twin_min_logit_mean']:.3f} |")
+  (OUT / 'DECOMPOSE.md').write_text('\n'.join(L) + '\n', encoding='utf-8'); print('\n'.join(L), flush=True)
+
+
 def main(argv=None):
   ap = argparse.ArgumentParser()
-  ap.add_argument('mode', choices=('futures', 'qsurface'))
+  ap.add_argument('mode', choices=('futures', 'qsurface', 'decompose'))
   ap.add_argument('--stall', default=None); ap.add_argument('--fwd', default=None)
   ap.add_argument('--critics', nargs='*', default=[])
   args = ap.parse_args(argv)
-  {'futures': mode_futures, 'qsurface': mode_qsurface}[args.mode](args)
+  {'futures': mode_futures, 'qsurface': mode_qsurface, 'decompose': mode_decompose}[args.mode](args)
   return 0
 
 

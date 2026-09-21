@@ -61,11 +61,14 @@ CLASS_NAMES = ('U00', 'U10', 'U01', 'U11')
 DRAWS_PER_CLASS = 8
 PRE_SPECIFIED_SEED = 0
 CANDIDATES = ('logged', 'start', 'CF', 'MF', 'CF2')
+EXTRA_CKPTS = {}                 # --extra-cands name=path: further first-step candidates (e.g. the stalled / progressing seed-4 actors; user's plan after b4aa391)
 CI_HALF_WIDTH_RULE = 0.05
 REACH_R = 0.5
 
 
 def ckpt(fam):
+  if fam in EXTRA_CKPTS:
+    return Path(EXTRA_CKPTS[fam])
   return {'start': MP.START_CKPT, 'CF': EF.run_dir('CF', PRE_SPECIFIED_SEED) / 'final.pkl', 'MF': MFD.run_dir_mf(PRE_SPECIFIED_SEED) / 'final.pkl',
           'CF2': D2.run_dir2(PRE_SPECIFIED_SEED) / 'final.pkl'}[fam]
 
@@ -157,11 +160,13 @@ def path_masses(xy, goal_xy, outcome):
 
 
 def _worker(args):
-  jobs, worker_seed, continuation = args
+  jobs, worker_seed, continuation, cands, extra = args
+  global EXTRA_CKPTS
+  EXTRA_CKPTS = dict(extra)                                                      # spawned workers re-import the module
   import build_v6_branch_replay as B
   import diag_v6_first_step_crossover as DG
   env, _ = B._worker_env(worker_seed)
-  pol = {fam: MP.mode_policy(ckpt(fam)) for fam in ('start', 'CF', 'MF', 'CF2')}
+  pol = {fam: MP.mode_policy(ckpt(fam)) for fam in sorted(set(cands) | {continuation}) if fam != 'logged'}
   act_fn = pol[continuation]                                                    # the SAME continuation policy for every candidate
   S = np.load(OUT / 'states.npz', allow_pickle=False)
   state, goal, tt, logged = S['state'], S['goal_xy'], S['t'].astype(np.int64), S['logged']
@@ -206,16 +211,17 @@ def mode_generate(args):
   S = np.load(OUT / 'states.npz', allow_pickle=False); n_states = len(S['t']); groups = S['group'].astype(str)
   states = [si for si in range(n_states) if (not args.groups or groups[si] in args.groups)]
   draws = int(args.draws_per_class)
-  jobs = [(si, cand, ci, r) for si in states for cand in CANDIDATES for ci in range(len(CLASSES)) for r in range(draws)]
+  cands = tuple(args.cands) if args.cands else CANDIDATES
+  jobs = [(si, cand, ci, r) for si in states for cand in cands for ci in range(len(CLASSES)) for r in range(draws)]
   if args.limit:
     jobs = [j for j in jobs if j[0] in states[:int(args.limit)]]
   n_parts = max(1, args.workers * 4); parts = [jobs[i::n_parts] for i in range(n_parts)]; parts = [q for q in parts if q]
   t0 = time.time()
   if args.workers <= 1:
-    res = [_worker((q, WORKER_SEED0 + i, args.continuation)) for i, q in enumerate(parts)]
+    res = [_worker((q, WORKER_SEED0 + i, args.continuation, cands, EXTRA_CKPTS)) for i, q in enumerate(parts)]
   else:
     with get_context('spawn').Pool(args.workers) as pool:
-      res = pool.map(_worker, [(q, WORKER_SEED0 + i, args.continuation) for i, q in enumerate(parts)])
+      res = pool.map(_worker, [(q, WORKER_SEED0 + i, args.continuation, cands, EXTRA_CKPTS) for i, q in enumerate(parts)])
   res = [r for part in res for r in part]
   L = np.array([len(r['xy']) for r in res], np.int64); off = np.concatenate([[0], np.cumsum(L)[:-1]])
   np.savez_compressed(p, state=np.array([r['state'] for r in res], np.int64), cand=np.array([r['cand'] for r in res]), cls=np.array([r['cls'] for r in res], np.int64), rep=np.array([r['rep'] for r in res], np.int64),
@@ -223,7 +229,7 @@ def mode_generate(args):
                       outcome=np.array([r['outcome'] for r in res]), steps=np.array([r['steps'] for r in res], np.int64), far_entry=np.array([r['far_entry'] for r in res]), zone1_entry=np.array([r['zone1_entry'] for r in res]),
                       a0=np.stack([r['a0'] for r in res]), **{k: np.array([r[k] for r in res], np.float64) for k in ('reach0.5', 'near2.0', 'goal_area', 'far', 'death_frame')},
                       xy_rows=np.concatenate([r['xy'] for r in res]), offset=off, length=L,
-                      meta=np.asarray(json.dumps({'draws_per_class': draws, 'classes': CLASS_NAMES, 'candidates': list(CANDIDATES), 'pre_specified_seed': PRE_SPECIFIED_SEED, 'hazard_seed0': HAZARD_SEED0, 'worker_seed0': WORKER_SEED0,
+                      meta=np.asarray(json.dumps({'draws_per_class': draws, 'classes': CLASS_NAMES, 'candidates': list(cands), 'extra_ckpts': {k: str(v) for k, v in EXTRA_CKPTS.items()}, 'pre_specified_seed': PRE_SPECIFIED_SEED, 'hazard_seed0': HAZARD_SEED0, 'worker_seed0': WORKER_SEED0,
                                                   'continuation': f'the frozen {args.continuation} mode after one candidate step (the same for every candidate)', 'groups': (args.groups or 'all'), 'wall_seconds': time.time() - t0, 'n_rollouts': len(res)})))
   print(f'{len(res)} rollouts in {time.time() - t0:.0f} s; mean steps {L.mean() - 1:.0f}', flush=True)
 
@@ -498,12 +504,16 @@ def main(argv=None):
   ap.add_argument('--add-cf-early', action='store_true', help='states: append the 64 cf_early states (the indep resets rolled 20 steps by the CF s0 actor)')
   ap.add_argument('--continuation', choices=('start', 'CF'), default='start', help='generate: the frozen continuation policy for every candidate')
   ap.add_argument('--groups', nargs='*', default=None, help='generate: restrict to these state groups')
+  ap.add_argument('--cands', nargs='*', default=None, help='generate: the first-step candidates (default logged start CF MF CF2)')
+  ap.add_argument('--extra-cands', nargs='*', default=[], help='name=checkpoint: further candidate actors (their mode at the state)')
   ap.add_argument('--tag', default=None)
   ap.add_argument('--workers', type=int, default=18)
   ap.add_argument('--draws-per-class', type=int, default=DRAWS_PER_CLASS)
   ap.add_argument('--limit', type=int, default=None)
   ap.add_argument('--force', action='store_true')
   args = ap.parse_args(argv)
+  global EXTRA_CKPTS
+  EXTRA_CKPTS = dict(kv.split('=', 1) for kv in (args.extra_cands or []))
   {'states': mode_states, 'generate': mode_generate, 'report': mode_report, 'crossover': mode_crossover}[args.mode](args)
   return 0
 
