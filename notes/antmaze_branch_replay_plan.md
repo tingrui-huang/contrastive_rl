@@ -2913,3 +2913,40 @@ pre-selected decision states (e.g. 32 per candidate, frozen
 continuation) to measure the true same-state average advantage; no
 full tables, no five-seed training.  Caveats: 'vs avg' not out-of-
 sample; the cross-anchor detour signal compares different states.
+
+### User's review of 6b03cdd (2026-09-21): readout fix + the repeated paired hazard draws (repeated_draws/SUMMARY.md; no training)
+
+Corrections adopted: "no repeatable consequence per (state, action)" is
+not established by a ~0 draw-to-draw correlation of single outcomes
+(two actions at 0.3 / 0.7 give the same); the region read-out was a
+density ratio against the wrong reference -> fixed (reference goal set
+from each family's own training marginal; predicted goal-area
+probabilities now match the true masses; the own-draw correlation
+pattern stands); actor objective sampling 16 -> 64 (unchanged numbers);
+the pairing SUMMARY reworded.  The repeated draws
+(`scripts/exp_v6_repeated_draws.py`): 5 groups x 64 states (reset /
+start_early / pre_zone1_early anchors, seeded; fresh independent resets
+and their t = 20 states), candidates logged / start / CF s0 / MF s0 /
+CF2 s0 modes at the task goal, one step + the frozen start agent,
+identical clocks / jitter across candidates, activity stratified U00 /
+U10 / U01 / U11 x 16 draws (the pre-registered extension from 8 fired
+and changed nothing: the width is between states).  RESULT: the first
+step is absorbed by the continuation in 69-80 % of the reset states and
+86-97 % elsewhere (identical outcomes in all 64 paired draws); success
+advantage vs start at reset +0.001 (CF) / +0.066 +- 0.030 (CF2) / +0.046
++- 0.033 (MF), ~0 at start_early / indep_early, +0.02-0.03 at
+pre_zone1_early (the logged torque too), +0.01-0.03 at indep_reset;
+where not absorbed the actors' torques put the continuation on the far
+route (entry 0.09-0.14; completion 0.41 CF / 0.83 CF2 / 0.73 MF, the
+rest timeouts).  The gamma-law goal-area mass of the successful
+far-going candidates is LOWER than the start torque's (reset CF2 -0.007
+vs +0.066 success; pre_zone1_early -0.015..-0.021): the NCE target and
+the task return disagree in sign at the decision states.  The critics
+prefer every actor torque over start by 1-4 nats (76-100 % of states)
+with |corr| <= 0.19 to the measured per-state advantage and chance sign
+agreement.  Branches hit: "no stable advantage under the current
+continuation" (-> the continuation policy, per the user's rule; not
+"first steps unlearnable") and "success advantage but the goal target
+does not favour it".  The oracle CF actor's test-time far route is not
+a first-step effect the branch tables could supervise (far entry 0.125
+at reset with the start continuation).

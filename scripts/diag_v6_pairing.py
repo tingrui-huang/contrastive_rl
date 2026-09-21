@@ -278,42 +278,51 @@ def pairing_test(N, params, anchors, masks, T, det, sample_seed=11, per_stratum=
   return res
 
 
-def region_readout(N, params, anchors, masks, T, sample_seed=13, n=1024):
-  """Per critic, per stratum: softmax over a COMMON goal set (one goal per anchor from T1 and one from T2 under the law) of
-  f(s_i, a_i, g) -> the predicted mass by goal region, vs the true masses of T1 / T2 / avg; and the per-anchor correlation of the
-  predicted goal-area mass with the true one under each table."""
+def region_readout(N, params, anchors, masks, T, sample_seed=13, n=1024, n_ref=4096):
+  """Importance-corrected region probabilities per critic (user's correction after 6b03cdd): the NCE logit is a density ratio against the
+  critic's TRAINING negative marginal, so the reference goal set must be drawn from that marginal -- anchors by weight over ALL anchors,
+  the goal by the law from the critic's own table(s) (T1 for CF, T2 for CF2, the mixture for MF).  With G_ref ~ p_neg, the self-normalised
+  estimate p(g in region | s, a) = sum_{g in region} exp f(s, a, g) / sum_g exp f(s, a, g) is consistent, and comparable to the true masses of
+  the critic's own table(s).  Also the per-anchor correlation of the predicted goal-area mass with the true one under each table."""
   rng = np.random.default_rng(sample_seed)
   srcs = {'T1': MP.BranchFutures(anchors, TABLES['T1']), 'T2': MP.BranchFutures(anchors, TABLES['T2'])}
-  res = {}
+  cdf = np.cumsum(anchors.weight / anchors.weight.sum()); cdf[-1] = 1.0
+
+  def ref_set(tables):
+    ks = np.minimum(np.searchsorted(cdf, rng.random(n_ref), side='right'), anchors.n - 1)
+    which = rng.integers(0, len(tables), size=n_ref); G = np.zeros((n_ref, 2), np.float32)
+    for i, (k, w) in enumerate(zip(ks, which)):
+      f = srcs[tables[w]]; nf = int(f.lengths[k] - 1); u = rng.random()
+      mm = int(np.clip(np.ceil(np.log1p(-u * (1.0 - GAMMA ** nf)) / np.log(GAMMA)), 1, nf)); G[i] = f.goal_at(int(k), mm)
+    return G, region_of(G.astype(np.float64))
+  refs = {'CF': ref_set(('T1',)), 'CF2': ref_set(('T2',)), 'MF': ref_set(('T1', 'T2'))}
+  res = {'reference': 'goal set of 4096 drawn from the critic family own training goal marginal (anchor by weight, table(s) of the family, m by the law)',
+         'reference_region_share': {fam: {REGIONS[r]: float((GR == r).mean()) for r in range(len(REGIONS)) if (GR == r).any()} for fam, (G, GR) in refs.items()}}
   for s, m in masks.items():
     idx = np.nonzero(m)[0]
     if len(idx) < 100:
       continue
     idx = idx if len(idx) <= n else np.sort(rng.choice(idx, n, replace=False))
-    goals, greg = [], []
-    for name, f in srcs.items():
-      nf = f.lengths[idx] - 1; u = rng.random(len(idx))
-      mm = np.clip(np.ceil(np.log1p(-u * (1.0 - GAMMA ** nf)) / np.log(GAMMA)).astype(np.int64), 1, nf)
-      g = np.stack([f.goal_at(int(k), int(q)) for k, q in zip(idx, mm)]).astype(np.float32); goals.append(g); greg.append(region_of(g.astype(np.float64)))
-    G = np.concatenate(goals); GR = np.concatenate(greg)
     obs = anchors.obs31[idx].astype(np.float32); act = anchors.action[idx].astype(np.float32)
-    obs_g = np.concatenate([np.zeros((len(G), STATE_DIM), np.float32), G], axis=1)
-    row = {'n': int(len(idx)), 'true_mass': {reg: {'T1': float(T['T1'][key][idx].mean()), 'T2': float(T['T2'][key][idx].mean())} for reg, key in (('goal_area', 'goal_area'), ('far', 'far'))}}
+    row = {'n': int(len(idx)), 'true_mass': {reg: {'T1': float(T['T1'][key][idx].mean()), 'T2': float(T['T2'][key][idx].mean()), 'avg': float(0.5 * (T['T1'][key][idx] + T['T2'][key][idx]).mean())} for reg, key in (('goal_area', 'goal_area'), ('far', 'far'))}}
     for cname, qp in params.items():
-      f = N.logits(qp, obs, act, obs_g).mean(-1)                               # [n, 2n]
+      fam = cname.split('_')[0]; G, GR = refs[fam]
+      obs_g = np.concatenate([np.zeros((len(G), STATE_DIM), np.float32), G], axis=1)
+      f = N.logits(qp, obs, act, obs_g).mean(-1)                               # [n, n_ref]
       f = f - f.max(axis=1, keepdims=True); p = np.exp(f); p /= p.sum(axis=1, keepdims=True)
       pm = {REGIONS[r]: float(p[:, GR == r].sum(axis=1).mean()) for r in range(len(REGIONS)) if (GR == r).any()}
       pga = p[:, GR == REGIONS.index('goal_area')].sum(axis=1); pfar = p[:, np.isin(GR, FAR)].sum(axis=1)
-      row[cname] = {'pred_region_mass': pm, 'corr_pred_goalarea_vs_T1': corr(pga, T['T1']['goal_area'][idx]), 'corr_pred_goalarea_vs_T2': corr(pga, T['T2']['goal_area'][idx]),
-                    'corr_pred_goalarea_vs_avg': corr(pga, 0.5 * (T['T1']['goal_area'][idx] + T['T2']['goal_area'][idx])),
+      own = {'CF': 'T1', 'CF2': 'T2', 'MF': 'avg'}[fam]
+      true_ga = {'T1': T['T1']['goal_area'][idx], 'T2': T['T2']['goal_area'][idx], 'avg': 0.5 * (T['T1']['goal_area'][idx] + T['T2']['goal_area'][idx])}
+      row[cname] = {'pred_region_mass': pm, 'own_reference': own, 'pred_goalarea_mean': float(pga.mean()), 'true_goalarea_mean_own': float(true_ga[own].mean()),
+                    'corr_pred_goalarea_vs_T1': corr(pga, true_ga['T1']), 'corr_pred_goalarea_vs_T2': corr(pga, true_ga['T2']), 'corr_pred_goalarea_vs_avg': corr(pga, true_ga['avg']),
                     'corr_pred_far_vs_T1': corr(pfar, T['T1']['far'][idx]), 'corr_pred_far_vs_T2': corr(pfar, T['T2']['far'][idx])}
-    row['goal_set_region_share'] = {REGIONS[r]: float((GR == r).mean()) for r in range(len(REGIONS)) if (GR == r).any()}
     res[s] = row
   return res
 
 
 # ------------------------------------------------------------------ layer 3
-def layer_actor(N, params, pols, anchors, obs, lengths, masks, det, sample_seed=17, per_stratum=384, n_relabel=2, n_samples=16):
+def layer_actor(N, params, pols, anchors, obs, lengths, masks, det, sample_seed=17, per_stratum=384, n_relabel=2, n_samples=64):
   """Same state, same goal: fixed candidate actions under each critic, and each policy's full actor objective under each critic."""
   import jax
   rng = np.random.default_rng(sample_seed)
@@ -400,16 +409,19 @@ def write_report(data, critic, actor, fams):
       v = {k: [r[f'{fam}_s{sd}'][k] for sd in SEEDS if r[f'{fam}_s{sd}'][k] is not None] for k in ('corr_q_T1', 'corr_q_T2', 'corr_q_avg')}
       cells.append(' / '.join((f"{np.mean(v[k]):.3f} [{min(v[k]):.2f}..{max(v[k]):.2f}]" if v[k] else 'n/a') for k in ('corr_q_T1', 'corr_q_T2', 'corr_q_avg')))
     L.append(f"| {s} | {r['_data']['corr_q_T1_T2']} | " + ' | '.join(cells) + ' |')
-  L += ['', '## Layer 2c -- normalised region read-out (softmax over a common goal set from both tables): predicted goal-area / far mass vs the true masses; seed mean', '',
-        '| stratum | true goal_area T1 / T2 | true far T1 / T2 | ' + ' | '.join(f'{fam}: pred goal_area, pred far; corr(pred goal_area, T1 / T2 / avg)' for fam in fams) + ' |', '|---|---|---|' + '---|' * len(fams)]
+  L += ['', '## Layer 2c -- importance-corrected region probabilities (reference goal set = the critic family own training goal marginal): predicted goal-area / far mass vs the true masses; seed mean', '',
+        '| stratum | true goal_area T1 / T2 / avg | true far T1 / T2 | ' + ' | '.join(f'{fam}: pred goal_area, pred far; corr(pred goal_area, T1 / T2 / avg)' for fam in fams) + ' |', '|---|---|---|' + '---|' * len(fams)]
   rr = critic['region']
+  L.insert(len(L) - 2, f"Reference goal sets: {rr['reference']}; reference region shares {json.dumps({f: {k: round(v, 3) for k, v in d.items()} for f, d in rr['reference_region_share'].items()})}.")
   for s, r in rr.items():
+    if s in ('reference', 'reference_region_share'):
+      continue
     cells = []
     for fam in fams:
       pga = np.mean([r[f'{fam}_s{sd}']['pred_region_mass'].get('goal_area', 0.0) for sd in SEEDS]); pfar = np.mean([sum(r[f'{fam}_s{sd}']['pred_region_mass'].get(n, 0.0) for n in ('west_column', 'top_corridor', 'east_column')) for sd in SEEDS])
       cs = [np.mean([r[f'{fam}_s{sd}'][k] for sd in SEEDS if r[f'{fam}_s{sd}'][k] is not None] or [np.nan]) for k in ('corr_pred_goalarea_vs_T1', 'corr_pred_goalarea_vs_T2', 'corr_pred_goalarea_vs_avg')]
       cells.append(f'{pga:.3f}, {pfar:.3f}; ' + ' / '.join(f'{c:.3f}' for c in cs))
-    L.append(f"| {s} | {r['true_mass']['goal_area']['T1']:.3f} / {r['true_mass']['goal_area']['T2']:.3f} | {r['true_mass']['far']['T1']:.3f} / {r['true_mass']['far']['T2']:.3f} | " + ' | '.join(cells) + ' |')
+    L.append(f"| {s} | {r['true_mass']['goal_area']['T1']:.3f} / {r['true_mass']['goal_area']['T2']:.3f} / {r['true_mass']['goal_area']['avg']:.3f} | {r['true_mass']['far']['T1']:.3f} / {r['true_mass']['far']['T2']:.3f} | " + ' | '.join(cells) + ' |')
   L += ['', '## Layer 3 -- same state, same goal: candidate actions and the full actor objective (seed mean over the seed-matched critic / actor pairs)', '']
   for s, r in actor.items():
     L += [f"### {s} (n {r['n']}, detour-source share {r['detour_share']:.2f})", '',
@@ -424,7 +436,7 @@ def write_report(data, critic, actor, fams):
         L.append(f"| {gname}{'' if gname == 'task' else ' (far share ' + format(r[gname]['relabel_goal_far_share'], '.2f') + ')'} | {fam} | " + ' / '.join(f"{cm[a]:.2f}" for a in ('logged', 'pi_CF', 'pi_CF2', 'pi_MF', 'pi_start', 'pi_O'))
                  + f" | {am['pi_CF']:.2f} / {am['pi_MF']:.2f} / {am['pi_start']:.2f} | {np.mean([x['share_CFmode_gt_startmode'] for x in rows]):.2f} | {np.mean([x['share_CFmode_gt_MFmode'] for x in rows]):.2f} | {d['q_term_mean']:+.3f} / {d['bc_nll_mean']:+.3f} / {d['objective_mean']:+.3f} |")
     L.append('')
-  L += ['Reading conventions: a critic\'s logits are comparable only within that critic; region read-outs are normalised per critic over the same goal set; the actor objective is crl.losses.actor_loss with the twin-min, 16 samples, bc 0.05 -- lower is better, so a NEGATIVE "pi_MF - pi_CF" total means the MF policy scores better than the CF policy under that critic at that goal.', '']
+  L += ['Reading conventions: a critic\'s logits are comparable only within that critic; region read-outs are normalised per critic over the same goal set; the actor objective is crl.losses.actor_loss with the twin-min, 64 samples, bc 0.05 -- lower is better, so a NEGATIVE "pi_MF - pi_CF" total means the MF policy scores better than the CF policy under that critic at that goal.', '']
   return '\n'.join(L)
 
 

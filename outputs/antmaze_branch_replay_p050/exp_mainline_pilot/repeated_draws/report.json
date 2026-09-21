@@ -1,0 +1,4593 @@
+{
+ "meta": {
+  "draws_per_class": 16,
+  "classes": [
+   "U00",
+   "U10",
+   "U01",
+   "U11"
+  ],
+  "candidates": [
+   "logged",
+   "start",
+   "CF",
+   "MF",
+   "CF2"
+  ],
+  "pre_specified_seed": 0,
+  "hazard_seed0": 304000000,
+  "worker_seed0": 305000000,
+  "continuation": "the frozen start agent mode after one candidate step",
+  "wall_seconds": 2083.0793726444244,
+  "n_rollouts": 94208
+ },
+ "n_states": 320,
+ "groups": {
+  "indep_early": 64,
+  "indep_reset": 64,
+  "pre_zone1_early": 64,
+  "reset": 64,
+  "start_early": 64
+ },
+ "by_group": {
+  "reset": {
+   "n_states": 64,
+   "candidate_means": {
+    "CF": {
+     "success": 0.234130859375,
+     "death": 0.55078125,
+     "timeout": 0.215087890625,
+     "far_entry": 0.125,
+     "goal_area": 0.028942007604550096,
+     "reach0.5": 0.0008274071334397955,
+     "near2.0": 0.024337349124620523,
+     "far": 0.07846695840387685,
+     "death_frame": 0.006395020870449866,
+     "far_success": 0.050537109375
+    },
+    "CF2": {
+     "success": 0.299072265625,
+     "death": 0.609375,
+     "timeout": 0.091552734375,
+     "far_entry": 0.125,
+     "goal_area": 0.028037572777240335,
+     "reach0.5": 0.0009792292961026015,
+     "near2.0": 0.02390628787044769,
+     "far": 0.11374427448418033,
+     "death_frame": 0.007075358800192506,
+     "far_success": 0.103759765625
+    },
+    "MF": {
+     "success": 0.27880859375,
+     "death": 0.5390625,
+     "timeout": 0.18212890625,
+     "far_entry": 0.140625,
+     "goal_area": 0.03159727966499161,
+     "reach0.5": 0.0009151552899639129,
+     "near2.0": 0.02993073262299687,
+     "far": 0.12104984115211426,
+     "death_frame": 0.006496273091262015,
+     "far_success": 0.10302734375
+    },
+    "logged": {
+     "success": 0.2353515625,
+     "death": 0.7373046875,
+     "timeout": 0.02734375,
+     "far_entry": 0.015625,
+     "goal_area": 0.040053851185924486,
+     "reach0.5": 0.0009301067656452399,
+     "near2.0": 0.032088643059880795,
+     "far": 0.008219089173856558,
+     "death_frame": 0.008932451890855866,
+     "far_success": 0.0
+    },
+    "start": {
+     "success": 0.232666015625,
+     "death": 0.73828125,
+     "timeout": 0.029052734375,
+     "far_entry": 0.01953125,
+     "goal_area": 0.035162676442732,
+     "reach0.5": 0.0008921489279532355,
+     "near2.0": 0.027785882930310986,
+     "far": 0.0026946806898267214,
+     "death_frame": 0.008482130832315714,
+     "far_success": 0.006103515625
+    }
+   },
+   "advantage_vs_start": {
+    "CF": {
+     "success": {
+      "mean": 0.00146484375,
+      "state_se": 0.025108173007714576,
+      "share_positive": 0.109375,
+      "share_negative": 0.203125,
+      "n": 64,
+      "ci95_half_width": 0.04921201909512057,
+      "within_state_se_median": 0.0
+     },
+     "death": {
+      "mean": -0.1875,
+      "state_se": 0.04091585441924857,
+      "share_positive": 0.0,
+      "share_negative": 0.25,
+      "n": 64,
+      "ci95_half_width": 0.08019507466172719,
+      "within_state_se_median": 0.0
+     },
+     "timeout": {
+      "mean": 0.18603515625,
+      "state_se": 0.05005069009977683,
+      "share_positive": 0.234375,
+      "share_negative": 0.046875,
+      "n": 64,
+      "ci95_half_width": 0.09809935259556259,
+      "within_state_se_median": 0.0
+     },
+     "far_entry": {
+      "mean": 0.10546875,
+      "state_se": 0.04412561529287947,
+      "share_positive": 0.125,
+      "share_negative": 0.015625,
+      "n": 64,
+      "ci95_half_width": 0.08648620597404376,
+      "within_state_se_median": 0.0
+     },
+     "goal_area": {
+      "mean": -0.006220668838181902,
+      "state_se": 0.006405306973853257,
+      "share_positive": 0.484375,
+      "share_negative": 0.515625,
+      "n": 64,
+      "ci95_half_width": 0.012554401668752383,
+      "within_state_se_median": 0.0
+     },
+     "reach0.5": {
+      "mean": -6.47417945134399e-05,
+      "state_se": 6.648851061724859e-05,
+      "share_positive": 0.46875,
+      "share_negative": 0.53125,
+      "n": 64,
+      "ci95_half_width": 0.00013031748080980724,
+      "within_state_se_median": 0.0
+     },
+     "near2.0": {
+      "mean": -0.003448533805690458,
+      "state_se": 0.0067432760251854035,
+      "share_positive": 0.421875,
+      "share_negative": 0.578125,
+      "n": 64,
+      "ci95_half_width": 0.01321682100936339,
+      "within_state_se_median": 0.0
+     },
+     "far": {
+      "mean": 0.07577227771405014,
+      "state_se": 0.030818722454923172,
+      "share_positive": 0.125,
+      "share_negative": 0.015625,
+      "n": 64,
+      "ci95_half_width": 0.06040469601164942,
+      "within_state_se_median": 0.0
+     },
+     "death_frame": {
+      "mean": -0.0020871099618658476,
+      "state_se": 0.00046896013914246153,
+      "share_positive": 0.4375,
+      "share_negative": 0.546875,
+      "n": 64,
+      "ci95_half_width": 0.0009191618727192246,
+      "within_state_se_median": 5.855186401026943e-05
+     },
+     "far_success": {
+      "mean": 0.04443359375,
+      "state_se": 0.026528236095445055,
+      "share_positive": 0.078125,
+      "share_negative": 0.03125,
+      "n": 64,
+      "ci95_half_width": 0.05199534274707231,
+      "within_state_se_median": 0.0
+     }
+    },
+    "CF2": {
+     "success": {
+      "mean": 0.06640625,
+      "state_se": 0.030265686011587183,
+      "share_positive": 0.125,
+      "share_negative": 0.078125,
+      "n": 64,
+      "ci95_half_width": 0.059320744582710874,
+      "within_state_se_median": 0.0
+     },
+     "death": {
+      "mean": -0.12890625,
+      "state_se": 0.03564883092340276,
+      "share_positive": 0.0,
+      "share_negative": 0.171875,
+      "n": 64,
+      "ci95_half_width": 0.06987170860986941,
+      "within_state_se_median": 0.0
+     },
+     "timeout": {
+      "mean": 0.0625,
+      "state_se": 0.030301676137813115,
+      "share_positive": 0.140625,
+      "share_negative": 0.03125,
+      "n": 64,
+      "ci95_half_width": 0.0593912852301137,
+      "within_state_se_median": 0.0
+     },
+     "far_entry": {
+      "mean": 0.10546875,
+      "state_se": 0.045509096469641484,
+      "share_positive": 0.125,
+      "share_negative": 0.03125,
+      "n": 64,
+      "ci95_half_width": 0.08919782908049731,
+      "within_state_se_median": 0.0
+     },
+     "goal_area": {
+      "mean": -0.007125103665491668,
+      "state_se": 0.003629985756715666,
+      "share_positive": 0.421875,
+      "share_negative": 0.5625,
+      "n": 64,
+      "ci95_half_width": 0.007114772083162705,
+      "within_state_se_median": 0.0
+     },
+     "reach0.5": {
+      "mean": 8.70803681493662e-05,
+      "state_se": 6.270681142420476e-05,
+      "share_positive": 0.46875,
+      "share_negative": 0.453125,
+      "n": 64,
+      "ci95_half_width": 0.00012290535039144132,
+      "within_state_se_median": 0.0
+     },
+     "near2.0": {
+      "mean": -0.003879595059863291,
+      "state_se": 0.003589689048144305,
+      "share_positive": 0.453125,
+      "share_negative": 0.546875,
+      "n": 64,
+      "ci95_half_width": 0.007035790534362838,
+      "within_state_se_median": 0.0
+     },
+     "far": {
+      "mean": 0.11104959379435361,
+      "state_se": 0.03814757459091596,
+      "share_positive": 0.125,
+      "share_negative": 0.03125,
+      "n": 64,
+      "ci95_half_width": 0.07476924619819528,
+      "within_state_se_median": 0.0
+     },
+     "death_frame": {
+      "mean": -0.0014067720321232083,
+      "state_se": 0.0004159014553994366,
+      "share_positive": 0.453125,
+      "share_negative": 0.53125,
+      "n": 64,
+      "ci95_half_width": 0.0008151668525828956,
+      "within_state_se_median": 6.0274091620073154e-05
+     },
+     "far_success": {
+      "mean": 0.09765625,
+      "state_se": 0.03713628801655881,
+      "share_positive": 0.125,
+      "share_negative": 0.03125,
+      "n": 64,
+      "ci95_half_width": 0.07278712451245527,
+      "within_state_se_median": 0.0
+     }
+    },
+    "MF": {
+     "success": {
+      "mean": 0.046142578125,
+      "state_se": 0.0332631228890605,
+      "share_positive": 0.125,
+      "share_negative": 0.15625,
+      "n": 64,
+      "ci95_half_width": 0.06519572086255858,
+      "within_state_se_median": 0.0
+     },
+     "death": {
+      "mean": -0.19921875,
+      "state_se": 0.04173346115689338,
+      "share_positive": 0.0,
+      "share_negative": 0.265625,
+      "n": 64,
+      "ci95_half_width": 0.08179758386751103,
+      "within_state_se_median": 0.0
+     },
+     "timeout": {
+      "mean": 0.153076171875,
+      "state_se": 0.04918480796277038,
+      "share_positive": 0.21875,
+      "share_negative": 0.046875,
+      "n": 64,
+      "ci95_half_width": 0.09640222360702995,
+      "within_state_se_median": 0.0
+     },
+     "far_entry": {
+      "mean": 0.12109375,
+      "state_se": 0.042034163394042985,
+      "share_positive": 0.125,
+      "share_negative": 0.015625,
+      "n": 64,
+      "ci95_half_width": 0.08238696025232425,
+      "within_state_se_median": 0.0
+     },
+     "goal_area": {
+      "mean": -0.0035653967777403922,
+      "state_se": 0.007428362859342578,
+      "share_positive": 0.546875,
+      "share_negative": 0.453125,
+      "n": 64,
+      "ci95_half_width": 0.014559591204311453,
+      "within_state_se_median": 0.0
+     },
+     "reach0.5": {
+      "mean": 2.300636201067749e-05,
+      "state_se": 7.318733124938628e-05,
+      "share_positive": 0.625,
+      "share_negative": 0.3125,
+      "n": 64,
+      "ci95_half_width": 0.0001434471692487971,
+      "within_state_se_median": 0.0
+     },
+     "near2.0": {
+      "mean": 0.0021448496926858894,
+      "state_se": 0.007852087764095649,
+      "share_positive": 0.5625,
+      "share_negative": 0.40625,
+      "n": 64,
+      "ci95_half_width": 0.01539009201762747,
+      "within_state_se_median": 0.0
+     },
+     "far": {
+      "mean": 0.11835516046228753,
+      "state_se": 0.03743774077145858,
+      "share_positive": 0.140625,
+      "share_negative": 0.015625,
+      "n": 64,
+      "ci95_half_width": 0.07337797191205882,
+      "within_state_se_median": 0.0
+     },
+     "death_frame": {
+      "mean": -0.001985857741053699,
+      "state_se": 0.0005072624789563244,
+      "share_positive": 0.59375,
+      "share_negative": 0.390625,
+      "n": 64,
+      "ci95_half_width": 0.0009942344587543959,
+      "within_state_se_median": 5.368337605953427e-05
+     },
+     "far_success": {
+      "mean": 0.096923828125,
+      "state_se": 0.03676295018033216,
+      "share_positive": 0.109375,
+      "share_negative": 0.015625,
+      "n": 64,
+      "ci95_half_width": 0.07205538235345103,
+      "within_state_se_median": 0.0
+     }
+    },
+    "logged": {
+     "success": {
+      "mean": 0.002685546875,
+      "state_se": 0.008113278514749855,
+      "share_positive": 0.0625,
+      "share_negative": 0.03125,
+      "n": 64,
+      "ci95_half_width": 0.015902025888909717,
+      "within_state_se_median": 0.0
+     },
+     "death": {
+      "mean": -0.0009765625,
+      "state_se": 0.016732349848699177,
+      "share_positive": 0.015625,
+      "share_negative": 0.03125,
+      "n": 64,
+      "ci95_half_width": 0.03279540570345039,
+      "within_state_se_median": 0.0
+     },
+     "timeout": {
+      "mean": -0.001708984375,
+      "state_se": 0.02185494245104385,
+      "share_positive": 0.03125,
+      "share_negative": 0.046875,
+      "n": 64,
+      "ci95_half_width": 0.042835687204045944,
+      "within_state_se_median": 0.0
+     },
+     "far_entry": {
+      "mean": -0.00390625,
+      "state_se": 0.022611734455681324,
+      "share_positive": 0.015625,
+      "share_negative": 0.03125,
+      "n": 64,
+      "ci95_half_width": 0.044318999533135395,
+      "within_state_se_median": 0.0
+     },
+     "goal_area": {
+      "mean": 0.004891174743192487,
+      "state_se": 0.007866624441892036,
+      "share_positive": 0.5625,
+      "share_negative": 0.4375,
+      "n": 64,
+      "ci95_half_width": 0.015418583906108391,
+      "within_state_se_median": 0.0
+     },
+     "reach0.5": {
+      "mean": 3.7957837692004626e-05,
+      "state_se": 3.351419602125204e-05,
+      "share_positive": 0.796875,
+      "share_negative": 0.125,
+      "n": 64,
+      "ci95_half_width": 6.5687824201654e-05,
+      "within_state_se_median": 0.0
+     },
+     "near2.0": {
+      "mean": 0.004302760129569815,
+      "state_se": 0.008008004508239307,
+      "share_positive": 0.59375,
+      "share_negative": 0.390625,
+      "n": 64,
+      "ci95_half_width": 0.01569568883614904,
+      "within_state_se_median": 0.0
+     },
+     "far": {
+      "mean": 0.005524408484029837,
+      "state_se": 0.008624126465330496,
+      "share_positive": 0.015625,
+      "share_negative": 0.03125,
+      "n": 64,
+      "ci95_half_width": 0.01690328787204777,
+      "within_state_se_median": 0.0
+     },
+     "death_frame": {
+      "mean": 0.00045032105854015227,
+      "state_se": 0.00020042254596544892,
+      "share_positive": 0.90625,
+      "share_negative": 0.09375,
+      "n": 64,
+      "ci95_half_width": 0.0003928281900922799,
+      "within_state_se_median": 6.577907018337468e-05
+     },
+     "far_success": {
+      "mean": -0.006103515625,
+      "state_se": 0.004451324175252862,
+      "share_positive": 0.0,
+      "share_negative": 0.03125,
+      "n": 64,
+      "ci95_half_width": 0.00872459538349561,
+      "within_state_se_median": 0.0
+     }
+    }
+   },
+   "critic_recognition": {
+    "CF_s0": {
+     "CF": {
+      "critic_margin_mean": 2.104380741715431,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": -0.06347273458600038,
+      "corr_margin_vs_goalarea_adv": 0.058689831146829734,
+      "corr_margin_vs_near2_adv": 0.04347237168794688,
+      "sign_agreement_with_success_adv": 0.35,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 1.4711293429136276,
+      "share_margin_positive": 0.984375,
+      "corr_margin_vs_success_adv": -0.02708238354273095,
+      "corr_margin_vs_goalarea_adv": -0.22802194865067912,
+      "corr_margin_vs_near2_adv": -0.21539599331678994,
+      "sign_agreement_with_success_adv": 0.6153846153846154,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.8860754817724228,
+      "share_margin_positive": 0.84375,
+      "corr_margin_vs_success_adv": 0.053486663966544584,
+      "corr_margin_vs_goalarea_adv": 0.04076679317321876,
+      "corr_margin_vs_near2_adv": 0.08757432359452759,
+      "sign_agreement_with_success_adv": 0.4444444444444444,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": -0.3224596381187439,
+      "share_margin_positive": 0.3125,
+      "corr_margin_vs_success_adv": -0.2781186454992988,
+      "corr_margin_vs_goalarea_adv": 0.3587827073009905,
+      "corr_margin_vs_near2_adv": 0.3664524283757504,
+      "sign_agreement_with_success_adv": 0.16666666666666666,
+      "n": 64
+     }
+    },
+    "CF_s1": {
+     "CF": {
+      "critic_margin_mean": 0.7477260008454323,
+      "share_margin_positive": 0.796875,
+      "corr_margin_vs_success_adv": -0.01271922558938967,
+      "corr_margin_vs_goalarea_adv": -0.03894045637591587,
+      "corr_margin_vs_near2_adv": -0.002726607211384211,
+      "sign_agreement_with_success_adv": 0.35,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.8042620047926903,
+      "share_margin_positive": 0.78125,
+      "corr_margin_vs_success_adv": 0.08907253998300509,
+      "corr_margin_vs_goalarea_adv": -0.3154380446195096,
+      "corr_margin_vs_near2_adv": -0.25587495424503187,
+      "sign_agreement_with_success_adv": 0.5384615384615384,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.5028647184371948,
+      "share_margin_positive": 0.609375,
+      "corr_margin_vs_success_adv": 0.10517656538641927,
+      "corr_margin_vs_goalarea_adv": -0.006580393483043175,
+      "corr_margin_vs_near2_adv": 0.07931335526599222,
+      "sign_agreement_with_success_adv": 0.4444444444444444,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": -0.6672787442803383,
+      "share_margin_positive": 0.171875,
+      "corr_margin_vs_success_adv": -0.13769799329858282,
+      "corr_margin_vs_goalarea_adv": 0.17214201268860216,
+      "corr_margin_vs_near2_adv": 0.17548261159655418,
+      "sign_agreement_with_success_adv": 0.16666666666666666,
+      "n": 64
+     }
+    },
+    "CF_s2": {
+     "CF": {
+      "critic_margin_mean": 2.4835440814495087,
+      "share_margin_positive": 0.984375,
+      "corr_margin_vs_success_adv": -0.03590471492385725,
+      "corr_margin_vs_goalarea_adv": 0.14888421428516369,
+      "corr_margin_vs_near2_adv": 0.15925712474708834,
+      "sign_agreement_with_success_adv": 0.35,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.618581660091877,
+      "share_margin_positive": 0.59375,
+      "corr_margin_vs_success_adv": 0.08728959989710035,
+      "corr_margin_vs_goalarea_adv": -0.2818616306523045,
+      "corr_margin_vs_near2_adv": -0.21119528853458897,
+      "sign_agreement_with_success_adv": 0.46153846153846156,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 1.4087670668959618,
+      "share_margin_positive": 0.8125,
+      "corr_margin_vs_success_adv": 0.018473869083321822,
+      "corr_margin_vs_goalarea_adv": -0.030385248021143518,
+      "corr_margin_vs_near2_adv": 0.022197273253855808,
+      "sign_agreement_with_success_adv": 0.4444444444444444,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.5939430445432663,
+      "share_margin_positive": 0.734375,
+      "corr_margin_vs_success_adv": -0.15487209212738076,
+      "corr_margin_vs_goalarea_adv": 0.2019028739535928,
+      "corr_margin_vs_near2_adv": 0.20664326892376972,
+      "sign_agreement_with_success_adv": 0.16666666666666666,
+      "n": 64
+     }
+    },
+    "CF_s3": {
+     "CF": {
+      "critic_margin_mean": 1.419187732040882,
+      "share_margin_positive": 0.96875,
+      "corr_margin_vs_success_adv": -0.09714928142317178,
+      "corr_margin_vs_goalarea_adv": -0.07047051449473579,
+      "corr_margin_vs_near2_adv": -0.043001966595762754,
+      "sign_agreement_with_success_adv": 0.35,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 1.313887171447277,
+      "share_margin_positive": 0.9375,
+      "corr_margin_vs_success_adv": 0.08689372258962322,
+      "corr_margin_vs_goalarea_adv": -0.3425883682938504,
+      "corr_margin_vs_near2_adv": -0.2835260659554318,
+      "sign_agreement_with_success_adv": 0.6153846153846154,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.5225121378898621,
+      "share_margin_positive": 0.75,
+      "corr_margin_vs_success_adv": 0.06633469802901182,
+      "corr_margin_vs_goalarea_adv": 0.05224133478321799,
+      "corr_margin_vs_near2_adv": 0.09892310458683243,
+      "sign_agreement_with_success_adv": 0.3888888888888889,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": -0.021428219974040985,
+      "share_margin_positive": 0.421875,
+      "corr_margin_vs_success_adv": -0.12066679228704354,
+      "corr_margin_vs_goalarea_adv": 0.1605855780372978,
+      "corr_margin_vs_near2_adv": 0.16614848765687465,
+      "sign_agreement_with_success_adv": 0.16666666666666666,
+      "n": 64
+     }
+    },
+    "CF_s4": {
+     "CF": {
+      "critic_margin_mean": 1.5022898763418198,
+      "share_margin_positive": 0.96875,
+      "corr_margin_vs_success_adv": -0.07716787543923802,
+      "corr_margin_vs_goalarea_adv": -0.07072774595620426,
+      "corr_margin_vs_near2_adv": -0.03419443314235429,
+      "sign_agreement_with_success_adv": 0.35,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 1.7403520047664642,
+      "share_margin_positive": 0.96875,
+      "corr_margin_vs_success_adv": 0.12824338457114204,
+      "corr_margin_vs_goalarea_adv": -0.3729887055210693,
+      "corr_margin_vs_near2_adv": -0.2997853470437034,
+      "sign_agreement_with_success_adv": 0.6153846153846154,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 1.1565328314900398,
+      "share_margin_positive": 0.78125,
+      "corr_margin_vs_success_adv": 0.040031459233431516,
+      "corr_margin_vs_goalarea_adv": 0.010936784487089742,
+      "corr_margin_vs_near2_adv": 0.09472529674729355,
+      "sign_agreement_with_success_adv": 0.4444444444444444,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.33721520006656647,
+      "share_margin_positive": 0.671875,
+      "corr_margin_vs_success_adv": -0.1986631595842451,
+      "corr_margin_vs_goalarea_adv": 0.2559655089779452,
+      "corr_margin_vs_near2_adv": 0.25831788538424916,
+      "sign_agreement_with_success_adv": 0.3333333333333333,
+      "n": 64
+     }
+    },
+    "CF2_s0": {
+     "CF": {
+      "critic_margin_mean": 3.384599693119526,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.0649430991435042,
+      "corr_margin_vs_goalarea_adv": -0.09369982226259908,
+      "corr_margin_vs_near2_adv": -0.0478712292808664,
+      "sign_agreement_with_success_adv": 0.35,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 4.607766315340996,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.05600817551750944,
+      "corr_margin_vs_goalarea_adv": -0.048674049013098464,
+      "corr_margin_vs_near2_adv": -0.05141656992529916,
+      "sign_agreement_with_success_adv": 0.6153846153846154,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 3.20846951007843,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.18671147637065286,
+      "corr_margin_vs_goalarea_adv": -0.005450128278595498,
+      "corr_margin_vs_near2_adv": 0.08414358096322486,
+      "sign_agreement_with_success_adv": 0.4444444444444444,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 1.4299885258078575,
+      "share_margin_positive": 0.953125,
+      "corr_margin_vs_success_adv": -0.19486018928209925,
+      "corr_margin_vs_goalarea_adv": 0.27417786320746595,
+      "corr_margin_vs_near2_adv": 0.27981294855251093,
+      "sign_agreement_with_success_adv": 0.6666666666666666,
+      "n": 64
+     }
+    },
+    "CF2_s1": {
+     "CF": {
+      "critic_margin_mean": 4.402033187448978,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": -0.15278829668794025,
+      "corr_margin_vs_goalarea_adv": 0.028044261694202648,
+      "corr_margin_vs_near2_adv": 0.039297486337790385,
+      "sign_agreement_with_success_adv": 0.35,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 4.921069897711277,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.05540468603890312,
+      "corr_margin_vs_goalarea_adv": -0.07254946503876088,
+      "corr_margin_vs_near2_adv": -0.07042639227898627,
+      "sign_agreement_with_success_adv": 0.6153846153846154,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 4.218972831964493,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.22369963441031507,
+      "corr_margin_vs_goalarea_adv": 0.03974990755994283,
+      "corr_margin_vs_near2_adv": 0.10801916392105528,
+      "sign_agreement_with_success_adv": 0.4444444444444444,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 2.9819359332323074,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": -0.1773605047725436,
+      "corr_margin_vs_goalarea_adv": 0.21009669049987112,
+      "corr_margin_vs_near2_adv": 0.21915356390611646,
+      "sign_agreement_with_success_adv": 0.6666666666666666,
+      "n": 64
+     }
+    },
+    "CF2_s2": {
+     "CF": {
+      "critic_margin_mean": 4.437635578215122,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": -0.01032246261424076,
+      "corr_margin_vs_goalarea_adv": 0.1107958302136244,
+      "corr_margin_vs_near2_adv": 0.1281144993344032,
+      "sign_agreement_with_success_adv": 0.35,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 5.398577399551868,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": -0.03283187299592527,
+      "corr_margin_vs_goalarea_adv": 0.25466100885072773,
+      "corr_margin_vs_near2_adv": 0.19319283146728397,
+      "sign_agreement_with_success_adv": 0.6153846153846154,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 4.1170632764697075,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.10011978820655507,
+      "corr_margin_vs_goalarea_adv": -0.04271247543149304,
+      "corr_margin_vs_near2_adv": -0.022237963860457437,
+      "sign_agreement_with_success_adv": 0.4444444444444444,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 3.098269172012806,
+      "share_margin_positive": 0.984375,
+      "corr_margin_vs_success_adv": -0.1488918909820375,
+      "corr_margin_vs_goalarea_adv": 0.14256473158337404,
+      "corr_margin_vs_near2_adv": 0.1526858082567988,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     }
+    },
+    "CF2_s3": {
+     "CF": {
+      "critic_margin_mean": 2.9932329282164574,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.05154306330293003,
+      "corr_margin_vs_goalarea_adv": 0.07121957054374739,
+      "corr_margin_vs_near2_adv": 0.08489126474627554,
+      "sign_agreement_with_success_adv": 0.35,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 4.368561960756779,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.02393368720287397,
+      "corr_margin_vs_goalarea_adv": 0.18072566923841446,
+      "corr_margin_vs_near2_adv": 0.17096738125102356,
+      "sign_agreement_with_success_adv": 0.6153846153846154,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 2.732069842517376,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.183535195028279,
+      "corr_margin_vs_goalarea_adv": -0.08919993510577214,
+      "corr_margin_vs_near2_adv": -0.00117482040619651,
+      "sign_agreement_with_success_adv": 0.4444444444444444,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 1.5929109752178192,
+      "share_margin_positive": 0.9375,
+      "corr_margin_vs_success_adv": -0.09644200200372342,
+      "corr_margin_vs_goalarea_adv": 0.13184836487610632,
+      "corr_margin_vs_near2_adv": 0.13866250531761706,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     }
+    },
+    "CF2_s4": {
+     "CF": {
+      "critic_margin_mean": 1.5304839387536049,
+      "share_margin_positive": 0.953125,
+      "corr_margin_vs_success_adv": -0.060702252595830314,
+      "corr_margin_vs_goalarea_adv": 0.0731135503171735,
+      "corr_margin_vs_near2_adv": 0.11308983125164122,
+      "sign_agreement_with_success_adv": 0.35,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 2.744494393467903,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": -0.002796587713156084,
+      "corr_margin_vs_goalarea_adv": 0.12229102451853954,
+      "corr_margin_vs_near2_adv": 0.0795318162780834,
+      "sign_agreement_with_success_adv": 0.6153846153846154,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 2.995081253349781,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.17243070748684175,
+      "corr_margin_vs_goalarea_adv": 0.06424268975151118,
+      "corr_margin_vs_near2_adv": 0.12934275430480807,
+      "sign_agreement_with_success_adv": 0.4444444444444444,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 1.5685665234923363,
+      "share_margin_positive": 0.9375,
+      "corr_margin_vs_success_adv": -0.18852580184165732,
+      "corr_margin_vs_goalarea_adv": 0.1917678248021851,
+      "corr_margin_vs_near2_adv": 0.202034669041854,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     }
+    },
+    "MF_s0": {
+     "CF": {
+      "critic_margin_mean": 0.687259703874588,
+      "share_margin_positive": 0.9375,
+      "corr_margin_vs_success_adv": 0.06807274259264555,
+      "corr_margin_vs_goalarea_adv": -0.13061690539779028,
+      "corr_margin_vs_near2_adv": -0.11804233577168684,
+      "sign_agreement_with_success_adv": 0.35,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 1.6900527626276016,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.09570365021352235,
+      "corr_margin_vs_goalarea_adv": -0.2833944566135622,
+      "corr_margin_vs_near2_adv": -0.2282276312264609,
+      "sign_agreement_with_success_adv": 0.6153846153846154,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 1.394394226372242,
+      "share_margin_positive": 0.953125,
+      "corr_margin_vs_success_adv": 0.21199855856567068,
+      "corr_margin_vs_goalarea_adv": 0.015997005956773017,
+      "corr_margin_vs_near2_adv": 0.12100880918517273,
+      "sign_agreement_with_success_adv": 0.4444444444444444,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.3403758257627487,
+      "share_margin_positive": 0.65625,
+      "corr_margin_vs_success_adv": -0.1623916489176979,
+      "corr_margin_vs_goalarea_adv": 0.25640039118961633,
+      "corr_margin_vs_near2_adv": 0.2654459945772471,
+      "sign_agreement_with_success_adv": 0.3333333333333333,
+      "n": 64
+     }
+    },
+    "MF_s1": {
+     "CF": {
+      "critic_margin_mean": 0.9239366129040718,
+      "share_margin_positive": 0.96875,
+      "corr_margin_vs_success_adv": 0.09978281941099339,
+      "corr_margin_vs_goalarea_adv": -0.059217915102830455,
+      "corr_margin_vs_near2_adv": -0.02257279033339378,
+      "sign_agreement_with_success_adv": 0.35,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 1.5477051958441734,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.1630559274896612,
+      "corr_margin_vs_goalarea_adv": -0.3687021871842071,
+      "corr_margin_vs_near2_adv": -0.2802214355063011,
+      "sign_agreement_with_success_adv": 0.6153846153846154,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.9519096687436104,
+      "share_margin_positive": 0.875,
+      "corr_margin_vs_success_adv": 0.21691008902226636,
+      "corr_margin_vs_goalarea_adv": -0.05438646410028827,
+      "corr_margin_vs_near2_adv": 0.05472798926603745,
+      "sign_agreement_with_success_adv": 0.4444444444444444,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": -0.06381294131278992,
+      "share_margin_positive": 0.421875,
+      "corr_margin_vs_success_adv": -0.10370294774694107,
+      "corr_margin_vs_goalarea_adv": 0.12788061878321869,
+      "corr_margin_vs_near2_adv": 0.1335847777870777,
+      "sign_agreement_with_success_adv": 0.16666666666666666,
+      "n": 64
+     }
+    },
+    "MF_s2": {
+     "CF": {
+      "critic_margin_mean": 1.2200331464409828,
+      "share_margin_positive": 0.921875,
+      "corr_margin_vs_success_adv": 0.09480001936905977,
+      "corr_margin_vs_goalarea_adv": -0.008072450949619421,
+      "corr_margin_vs_near2_adv": 0.029657853154556126,
+      "sign_agreement_with_success_adv": 0.35,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 1.5113954320549965,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.1835040869610991,
+      "corr_margin_vs_goalarea_adv": -0.37807500987029663,
+      "corr_margin_vs_near2_adv": -0.29683260984450716,
+      "sign_agreement_with_success_adv": 0.6153846153846154,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 1.3873672187328339,
+      "share_margin_positive": 0.9375,
+      "corr_margin_vs_success_adv": 0.1887902326645191,
+      "corr_margin_vs_goalarea_adv": -0.033534567737751375,
+      "corr_margin_vs_near2_adv": 0.0639535262162835,
+      "sign_agreement_with_success_adv": 0.4444444444444444,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.3761913329362869,
+      "share_margin_positive": 0.796875,
+      "corr_margin_vs_success_adv": -0.19398400766938306,
+      "corr_margin_vs_goalarea_adv": 0.21471077634475136,
+      "corr_margin_vs_near2_adv": 0.22517701878317609,
+      "sign_agreement_with_success_adv": 0.3333333333333333,
+      "n": 64
+     }
+    },
+    "MF_s3": {
+     "CF": {
+      "critic_margin_mean": 1.385623924434185,
+      "share_margin_positive": 0.953125,
+      "corr_margin_vs_success_adv": -0.0008594554352054157,
+      "corr_margin_vs_goalarea_adv": 0.01897131331031304,
+      "corr_margin_vs_near2_adv": 0.052717141130255045,
+      "sign_agreement_with_success_adv": 0.35,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 1.471266083419323,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.15105417502960677,
+      "corr_margin_vs_goalarea_adv": -0.3206804349114759,
+      "corr_margin_vs_near2_adv": -0.243195587407208,
+      "sign_agreement_with_success_adv": 0.6153846153846154,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 1.307702086865902,
+      "share_margin_positive": 0.921875,
+      "corr_margin_vs_success_adv": 0.16523025733671365,
+      "corr_margin_vs_goalarea_adv": -0.012122711877653682,
+      "corr_margin_vs_near2_adv": 0.08591853238056642,
+      "sign_agreement_with_success_adv": 0.4444444444444444,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.17727117985486984,
+      "share_margin_positive": 0.625,
+      "corr_margin_vs_success_adv": -0.26225041464418025,
+      "corr_margin_vs_goalarea_adv": 0.23995177512571184,
+      "corr_margin_vs_near2_adv": 0.24479099127785223,
+      "sign_agreement_with_success_adv": 0.3333333333333333,
+      "n": 64
+     }
+    },
+    "MF_s4": {
+     "CF": {
+      "critic_margin_mean": 1.516321375966072,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.11368643629165717,
+      "corr_margin_vs_goalarea_adv": -0.0008620360353561061,
+      "corr_margin_vs_near2_adv": 0.02223480077848271,
+      "sign_agreement_with_success_adv": 0.35,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 1.729698695242405,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.15926808983377438,
+      "corr_margin_vs_goalarea_adv": -0.305789780995855,
+      "corr_margin_vs_near2_adv": -0.22789066629785845,
+      "sign_agreement_with_success_adv": 0.6153846153846154,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 1.3514900356531143,
+      "share_margin_positive": 0.953125,
+      "corr_margin_vs_success_adv": 0.16390781553621045,
+      "corr_margin_vs_goalarea_adv": 0.018385259825080963,
+      "corr_margin_vs_near2_adv": 0.11888214516599094,
+      "sign_agreement_with_success_adv": 0.4444444444444444,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.23860737681388855,
+      "share_margin_positive": 0.59375,
+      "corr_margin_vs_success_adv": -0.03375850203989878,
+      "corr_margin_vs_goalarea_adv": 0.008133464254143049,
+      "corr_margin_vs_near2_adv": 0.009705146802442948,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     }
+    }
+   }
+  },
+  "start_early": {
+   "n_states": 64,
+   "candidate_means": {
+    "CF": {
+     "success": 0.255126953125,
+     "death": 0.7265625,
+     "timeout": 0.018310546875,
+     "far_entry": 0.03515625,
+     "goal_area": 0.04027550298197947,
+     "reach0.5": 0.0009835660204700388,
+     "near2.0": 0.032994187867201,
+     "far": 0.02883722002146336,
+     "death_frame": 0.010242068588184307,
+     "far_success": 0.032470703125
+    },
+    "CF2": {
+     "success": 0.248291015625,
+     "death": 0.7265625,
+     "timeout": 0.025146484375,
+     "far_entry": 0.03125,
+     "goal_area": 0.04338017500166902,
+     "reach0.5": 0.0009699107631835633,
+     "near2.0": 0.03580197208668704,
+     "far": 0.025778146418181352,
+     "death_frame": 0.010316765902243737,
+     "far_success": 0.021728515625
+    },
+    "MF": {
+     "success": 0.25244140625,
+     "death": 0.7265625,
+     "timeout": 0.02099609375,
+     "far_entry": 0.03515625,
+     "goal_area": 0.04034550708770148,
+     "reach0.5": 0.0009827780965400118,
+     "near2.0": 0.032818987681632536,
+     "far": 0.029026870799445728,
+     "death_frame": 0.010278404007708845,
+     "far_success": 0.02978515625
+    },
+    "logged": {
+     "success": 0.2373046875,
+     "death": 0.7265625,
+     "timeout": 0.0361328125,
+     "far_entry": 0.03125,
+     "goal_area": 0.04808446771657113,
+     "reach0.5": 0.0009257491804416111,
+     "near2.0": 0.040856530097509565,
+     "far": 0.029407634643875705,
+     "death_frame": 0.010293976463094772,
+     "far_success": 0.0302734375
+    },
+    "start": {
+     "success": 0.26513671875,
+     "death": 0.7265625,
+     "timeout": 0.00830078125,
+     "far_entry": 0.03125,
+     "goal_area": 0.03730117359031272,
+     "reach0.5": 0.0010096279303915795,
+     "near2.0": 0.027509351622500955,
+     "far": 0.028440283329831156,
+     "death_frame": 0.0103060219048563,
+     "far_success": 0.03076171875
+    }
+   },
+   "advantage_vs_start": {
+    "CF": {
+     "success": {
+      "mean": -0.010009765625,
+      "state_se": 0.008156542817244008,
+      "share_positive": 0.03125,
+      "share_negative": 0.0625,
+      "n": 64,
+      "ci95_half_width": 0.015986823921798256,
+      "within_state_se_median": 0.0
+     },
+     "death": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     },
+     "timeout": {
+      "mean": 0.010009765625,
+      "state_se": 0.008156542817244008,
+      "share_positive": 0.0625,
+      "share_negative": 0.03125,
+      "n": 64,
+      "ci95_half_width": 0.015986823921798256,
+      "within_state_se_median": 0.0
+     },
+     "far_entry": {
+      "mean": 0.00390625,
+      "state_se": 0.00390625,
+      "share_positive": 0.015625,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.00765625,
+      "within_state_se_median": 0.0
+     },
+     "goal_area": {
+      "mean": 0.0029743293916667437,
+      "state_se": 0.004019423253765518,
+      "share_positive": 0.515625,
+      "share_negative": 0.453125,
+      "n": 64,
+      "ci95_half_width": 0.007878069577380416,
+      "within_state_se_median": 0.0
+     },
+     "reach0.5": {
+      "mean": -2.6061909921540493e-05,
+      "state_se": 3.098494320995198e-05,
+      "share_positive": 0.40625,
+      "share_negative": 0.515625,
+      "n": 64,
+      "ci95_half_width": 6.0730488691505885e-05,
+      "within_state_se_median": 0.0
+     },
+     "near2.0": {
+      "mean": 0.005484836244700043,
+      "state_se": 0.004786378368885724,
+      "share_positive": 0.515625,
+      "share_negative": 0.484375,
+      "n": 64,
+      "ci95_half_width": 0.009381301603016019,
+      "within_state_se_median": 0.0
+     },
+     "far": {
+      "mean": 0.00039693669163220173,
+      "state_se": 0.0005128992965782722,
+      "share_positive": 0.03125,
+      "share_negative": 0.015625,
+      "n": 64,
+      "ci95_half_width": 0.0010052826212934136,
+      "within_state_se_median": 0.0
+     },
+     "death_frame": {
+      "mean": -6.395331667199112e-05,
+      "state_se": 3.806877527515947e-05,
+      "share_positive": 0.421875,
+      "share_negative": 0.546875,
+      "n": 64,
+      "ci95_half_width": 7.461479953931255e-05,
+      "within_state_se_median": 9.143490474771654e-05
+     },
+     "far_success": {
+      "mean": 0.001708984375,
+      "state_se": 0.0046443792556576415,
+      "share_positive": 0.03125,
+      "share_negative": 0.015625,
+      "n": 64,
+      "ci95_half_width": 0.009102983341088977,
+      "within_state_se_median": 0.0
+     }
+    },
+    "CF2": {
+     "success": {
+      "mean": -0.016845703125,
+      "state_se": 0.009487640011192665,
+      "share_positive": 0.0,
+      "share_negative": 0.0625,
+      "n": 64,
+      "ci95_half_width": 0.018595774421937623,
+      "within_state_se_median": 0.0
+     },
+     "death": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     },
+     "timeout": {
+      "mean": 0.016845703125,
+      "state_se": 0.009487640011192665,
+      "share_positive": 0.0625,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.018595774421937623,
+      "within_state_se_median": 0.0
+     },
+     "far_entry": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     },
+     "goal_area": {
+      "mean": 0.00607900141135629,
+      "state_se": 0.004221960419314894,
+      "share_positive": 0.578125,
+      "share_negative": 0.390625,
+      "n": 64,
+      "ci95_half_width": 0.008275042421857191,
+      "within_state_se_median": 0.0
+     },
+     "reach0.5": {
+      "mean": -3.971716720801594e-05,
+      "state_se": 2.6723923074546573e-05,
+      "share_positive": 0.46875,
+      "share_negative": 0.453125,
+      "n": 64,
+      "ci95_half_width": 5.237888922611128e-05,
+      "within_state_se_median": 0.0
+     },
+     "near2.0": {
+      "mean": 0.00829262046418609,
+      "state_se": 0.004859668787696532,
+      "share_positive": 0.53125,
+      "share_negative": 0.421875,
+      "n": 64,
+      "ci95_half_width": 0.009524950823885204,
+      "within_state_se_median": 0.0
+     },
+     "far": {
+      "mean": -0.0026621369116498063,
+      "state_se": 0.003085701609502884,
+      "share_positive": 0.015625,
+      "share_negative": 0.015625,
+      "n": 64,
+      "ci95_half_width": 0.006047975154625652,
+      "within_state_se_median": 0.0
+     },
+     "death_frame": {
+      "mean": 1.0743997387437277e-05,
+      "state_se": 4.089981378771053e-05,
+      "share_positive": 0.546875,
+      "share_negative": 0.421875,
+      "n": 64,
+      "ci95_half_width": 8.016363502391263e-05,
+      "within_state_se_median": 8.989674686776477e-05
+     },
+     "far_success": {
+      "mean": -0.009033203125,
+      "state_se": 0.007888125164964403,
+      "share_positive": 0.0,
+      "share_negative": 0.03125,
+      "n": 64,
+      "ci95_half_width": 0.015460725323330229,
+      "within_state_se_median": 0.0
+     }
+    },
+    "MF": {
+     "success": {
+      "mean": -0.0126953125,
+      "state_se": 0.006674594706420584,
+      "share_positive": 0.0,
+      "share_negative": 0.078125,
+      "n": 64,
+      "ci95_half_width": 0.013082205624584346,
+      "within_state_se_median": 0.0
+     },
+     "death": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     },
+     "timeout": {
+      "mean": 0.0126953125,
+      "state_se": 0.006674594706420584,
+      "share_positive": 0.078125,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.013082205624584346,
+      "within_state_se_median": 0.0
+     },
+     "far_entry": {
+      "mean": 0.00390625,
+      "state_se": 0.00390625,
+      "share_positive": 0.015625,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.00765625,
+      "within_state_se_median": 0.0
+     },
+     "goal_area": {
+      "mean": 0.0030443334973887554,
+      "state_se": 0.003365765576222934,
+      "share_positive": 0.4375,
+      "share_negative": 0.515625,
+      "n": 64,
+      "ci95_half_width": 0.006596900529396951,
+      "within_state_se_median": 0.0
+     },
+     "reach0.5": {
+      "mean": -2.684983385156758e-05,
+      "state_se": 2.694586345243476e-05,
+      "share_positive": 0.4375,
+      "share_negative": 0.484375,
+      "n": 64,
+      "ci95_half_width": 5.281389236677213e-05,
+      "within_state_se_median": 0.0
+     },
+     "near2.0": {
+      "mean": 0.005309636059131584,
+      "state_se": 0.0041660202522764075,
+      "share_positive": 0.46875,
+      "share_negative": 0.53125,
+      "n": 64,
+      "ci95_half_width": 0.00816539969446176,
+      "within_state_se_median": 0.0
+     },
+     "far": {
+      "mean": 0.0005865874696145692,
+      "state_se": 0.0004565720701517234,
+      "share_positive": 0.046875,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0008948812574973778,
+      "within_state_se_median": 0.0
+     },
+     "death_frame": {
+      "mean": -2.761789714745341e-05,
+      "state_se": 3.107192940171773e-05,
+      "share_positive": 0.4375,
+      "share_negative": 0.53125,
+      "n": 64,
+      "ci95_half_width": 6.090098162736675e-05,
+      "within_state_se_median": 9.067954776614495e-05
+     },
+     "far_success": {
+      "mean": -0.0009765625,
+      "state_se": 0.0007683552660834406,
+      "share_positive": 0.0,
+      "share_negative": 0.03125,
+      "n": 64,
+      "ci95_half_width": 0.0015059763215235437,
+      "within_state_se_median": 0.0
+     }
+    },
+    "logged": {
+     "success": {
+      "mean": -0.02783203125,
+      "state_se": 0.009839556149780684,
+      "share_positive": 0.015625,
+      "share_negative": 0.125,
+      "n": 64,
+      "ci95_half_width": 0.01928553005357014,
+      "within_state_se_median": 0.0
+     },
+     "death": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     },
+     "timeout": {
+      "mean": 0.02783203125,
+      "state_se": 0.009839556149780684,
+      "share_positive": 0.125,
+      "share_negative": 0.015625,
+      "n": 64,
+      "ci95_half_width": 0.01928553005357014,
+      "within_state_se_median": 0.0
+     },
+     "far_entry": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     },
+     "goal_area": {
+      "mean": 0.010783294126258402,
+      "state_se": 0.005495893550225281,
+      "share_positive": 0.453125,
+      "share_negative": 0.515625,
+      "n": 64,
+      "ci95_half_width": 0.01077195135844155,
+      "within_state_se_median": 0.0
+     },
+     "reach0.5": {
+      "mean": -8.387874994996824e-05,
+      "state_se": 4.152712983350682e-05,
+      "share_positive": 0.453125,
+      "share_negative": 0.453125,
+      "n": 64,
+      "ci95_half_width": 8.139317447367335e-05,
+      "within_state_se_median": 0.0
+     },
+     "near2.0": {
+      "mean": 0.013347178475008617,
+      "state_se": 0.006123474031038719,
+      "share_positive": 0.5,
+      "share_negative": 0.46875,
+      "n": 64,
+      "ci95_half_width": 0.01200200910083589,
+      "within_state_se_median": 0.0
+     },
+     "far": {
+      "mean": 0.0009673513140445492,
+      "state_se": 0.0008389300042604599,
+      "share_positive": 0.03125,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0016443028083505014,
+      "within_state_se_median": 0.0
+     },
+     "death_frame": {
+      "mean": -1.2045441761526146e-05,
+      "state_se": 3.650058959171102e-05,
+      "share_positive": 0.5,
+      "share_negative": 0.46875,
+      "n": 64,
+      "ci95_half_width": 7.15411555997536e-05,
+      "within_state_se_median": 9.177960095686587e-05
+     },
+     "far_success": {
+      "mean": -0.00048828125,
+      "state_se": 0.0007757081155883686,
+      "share_positive": 0.015625,
+      "share_negative": 0.015625,
+      "n": 64,
+      "ci95_half_width": 0.0015203879065532023,
+      "within_state_se_median": 0.0
+     }
+    }
+   },
+   "critic_recognition": {
+    "CF_s0": {
+     "CF": {
+      "critic_margin_mean": 0.6332829222083092,
+      "share_margin_positive": 0.9375,
+      "corr_margin_vs_success_adv": -0.07716394925152,
+      "corr_margin_vs_goalarea_adv": 0.0977087730665005,
+      "corr_margin_vs_near2_adv": 0.07090758789438222,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": -0.0075902268290519714,
+      "share_margin_positive": 0.46875,
+      "corr_margin_vs_success_adv": 0.3879107871343661,
+      "corr_margin_vs_goalarea_adv": -0.23981219276055016,
+      "corr_margin_vs_near2_adv": -0.16096981343968939,
+      "sign_agreement_with_success_adv": 0.75,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.08411090821027756,
+      "share_margin_positive": 0.75,
+      "corr_margin_vs_success_adv": 0.05164260879281132,
+      "corr_margin_vs_goalarea_adv": -0.08537982218502023,
+      "corr_margin_vs_near2_adv": -0.08040213397070876,
+      "sign_agreement_with_success_adv": 0.4,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.05296690762042999,
+      "share_margin_positive": 0.546875,
+      "corr_margin_vs_success_adv": 0.015271677542769039,
+      "corr_margin_vs_goalarea_adv": -0.08275192219810151,
+      "corr_margin_vs_near2_adv": -0.09061083917020218,
+      "sign_agreement_with_success_adv": 0.3333333333333333,
+      "n": 64
+     }
+    },
+    "CF_s1": {
+     "CF": {
+      "critic_margin_mean": 0.38906584680080414,
+      "share_margin_positive": 0.703125,
+      "corr_margin_vs_success_adv": 0.04191822482032095,
+      "corr_margin_vs_goalarea_adv": -0.04926708618440029,
+      "corr_margin_vs_near2_adv": -0.03479094427826181,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": -0.018013089895248413,
+      "share_margin_positive": 0.515625,
+      "corr_margin_vs_success_adv": 0.010871646972367973,
+      "corr_margin_vs_goalarea_adv": 0.1237130602317976,
+      "corr_margin_vs_near2_adv": 0.173603287871357,
+      "sign_agreement_with_success_adv": 0.25,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.06049264222383499,
+      "share_margin_positive": 0.71875,
+      "corr_margin_vs_success_adv": -0.04383928241138363,
+      "corr_margin_vs_goalarea_adv": 0.05380439919358192,
+      "corr_margin_vs_near2_adv": 0.07721526555099306,
+      "sign_agreement_with_success_adv": 0.6,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.023931056261062622,
+      "share_margin_positive": 0.5,
+      "corr_margin_vs_success_adv": 0.014701848924358463,
+      "corr_margin_vs_goalarea_adv": -0.08819084747985204,
+      "corr_margin_vs_near2_adv": -0.07543191984659128,
+      "sign_agreement_with_success_adv": 0.6666666666666666,
+      "n": 64
+     }
+    },
+    "CF_s2": {
+     "CF": {
+      "critic_margin_mean": 0.5817407742142677,
+      "share_margin_positive": 0.828125,
+      "corr_margin_vs_success_adv": -0.1712662139071003,
+      "corr_margin_vs_goalarea_adv": 0.03692842009417306,
+      "corr_margin_vs_near2_adv": 0.003161581389138491,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": -0.037870801985263824,
+      "share_margin_positive": 0.453125,
+      "corr_margin_vs_success_adv": 0.07122009604626303,
+      "corr_margin_vs_goalarea_adv": 0.0782973255025175,
+      "corr_margin_vs_near2_adv": 0.09295190545382458,
+      "sign_agreement_with_success_adv": 0.75,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.05361659824848175,
+      "share_margin_positive": 0.6875,
+      "corr_margin_vs_success_adv": -0.08607841229016691,
+      "corr_margin_vs_goalarea_adv": -0.0852970407979935,
+      "corr_margin_vs_near2_adv": -0.08837885500143133,
+      "sign_agreement_with_success_adv": 0.2,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": -0.02810046821832657,
+      "share_margin_positive": 0.46875,
+      "corr_margin_vs_success_adv": -0.10605101925692101,
+      "corr_margin_vs_goalarea_adv": 0.14793143590281693,
+      "corr_margin_vs_near2_adv": 0.13701052323047497,
+      "sign_agreement_with_success_adv": 0.3333333333333333,
+      "n": 64
+     }
+    },
+    "CF_s3": {
+     "CF": {
+      "critic_margin_mean": 0.4816075786948204,
+      "share_margin_positive": 0.859375,
+      "corr_margin_vs_success_adv": -0.012060131605986303,
+      "corr_margin_vs_goalarea_adv": -0.01017119647499092,
+      "corr_margin_vs_near2_adv": -0.007129606091728023,
+      "sign_agreement_with_success_adv": 0.6666666666666666,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.039941005408763885,
+      "share_margin_positive": 0.515625,
+      "corr_margin_vs_success_adv": -0.035771164965648146,
+      "corr_margin_vs_goalarea_adv": 0.17585707694490338,
+      "corr_margin_vs_near2_adv": 0.21379878065383426,
+      "sign_agreement_with_success_adv": 0.25,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.0702999010682106,
+      "share_margin_positive": 0.65625,
+      "corr_margin_vs_success_adv": -0.0236242809768944,
+      "corr_margin_vs_goalarea_adv": -0.03992125507905254,
+      "corr_margin_vs_near2_adv": -0.02273643037348181,
+      "sign_agreement_with_success_adv": 0.4,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.016470618546009064,
+      "share_margin_positive": 0.515625,
+      "corr_margin_vs_success_adv": -0.02444798134767436,
+      "corr_margin_vs_goalarea_adv": 0.038541143066463966,
+      "corr_margin_vs_near2_adv": 0.04641768876529231,
+      "sign_agreement_with_success_adv": 0.3333333333333333,
+      "n": 64
+     }
+    },
+    "CF_s4": {
+     "CF": {
+      "critic_margin_mean": 0.4769957810640335,
+      "share_margin_positive": 0.828125,
+      "corr_margin_vs_success_adv": -0.0018875641659086202,
+      "corr_margin_vs_goalarea_adv": -0.07449786404696986,
+      "corr_margin_vs_near2_adv": -0.09468000311748337,
+      "sign_agreement_with_success_adv": 0.3333333333333333,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.03846975415945053,
+      "share_margin_positive": 0.640625,
+      "corr_margin_vs_success_adv": 0.23175299416307607,
+      "corr_margin_vs_goalarea_adv": -0.16855206401793876,
+      "corr_margin_vs_near2_adv": -0.11494019116190428,
+      "sign_agreement_with_success_adv": 0.25,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.07731880247592926,
+      "share_margin_positive": 0.65625,
+      "corr_margin_vs_success_adv": 0.03564901057684979,
+      "corr_margin_vs_goalarea_adv": -0.1287685869990521,
+      "corr_margin_vs_near2_adv": -0.1099163399869213,
+      "sign_agreement_with_success_adv": 0.6,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.013653986155986786,
+      "share_margin_positive": 0.53125,
+      "corr_margin_vs_success_adv": -0.07273390683167728,
+      "corr_margin_vs_goalarea_adv": 0.11264838662900155,
+      "corr_margin_vs_near2_adv": 0.0995257434508652,
+      "sign_agreement_with_success_adv": 0.2222222222222222,
+      "n": 64
+     }
+    },
+    "CF2_s0": {
+     "CF": {
+      "critic_margin_mean": 0.10367262363433838,
+      "share_margin_positive": 0.625,
+      "corr_margin_vs_success_adv": 0.21919377768133771,
+      "corr_margin_vs_goalarea_adv": -0.028291372988359584,
+      "corr_margin_vs_near2_adv": 0.011215262051811796,
+      "sign_agreement_with_success_adv": 0.6666666666666666,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.2754836454987526,
+      "share_margin_positive": 0.875,
+      "corr_margin_vs_success_adv": 0.10628855398786619,
+      "corr_margin_vs_goalarea_adv": -0.029018436840674185,
+      "corr_margin_vs_near2_adv": -0.013174822276260973,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.009270355105400085,
+      "share_margin_positive": 0.640625,
+      "corr_margin_vs_success_adv": 0.12202565328096233,
+      "corr_margin_vs_goalarea_adv": -0.01884175416919111,
+      "corr_margin_vs_near2_adv": 0.005209799884271516,
+      "sign_agreement_with_success_adv": 0.6,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": -0.02401590347290039,
+      "share_margin_positive": 0.4375,
+      "corr_margin_vs_success_adv": -0.031302059084634196,
+      "corr_margin_vs_goalarea_adv": 0.11066299651716706,
+      "corr_margin_vs_near2_adv": 0.11911695576380707,
+      "sign_agreement_with_success_adv": 0.5555555555555556,
+      "n": 64
+     }
+    },
+    "CF2_s1": {
+     "CF": {
+      "critic_margin_mean": -0.029942721128463745,
+      "share_margin_positive": 0.640625,
+      "corr_margin_vs_success_adv": 0.41272872504848623,
+      "corr_margin_vs_goalarea_adv": -0.09769940726936903,
+      "corr_margin_vs_near2_adv": -0.03541620341388805,
+      "sign_agreement_with_success_adv": 0.8333333333333334,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.17464011907577515,
+      "share_margin_positive": 0.84375,
+      "corr_margin_vs_success_adv": 0.05352499563148568,
+      "corr_margin_vs_goalarea_adv": 0.04313572369929921,
+      "corr_margin_vs_near2_adv": 0.07972727433479558,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.01750481128692627,
+      "share_margin_positive": 0.71875,
+      "corr_margin_vs_success_adv": 0.04440321230856089,
+      "corr_margin_vs_goalarea_adv": -0.019186915856938446,
+      "corr_margin_vs_near2_adv": -0.01747972283979956,
+      "sign_agreement_with_success_adv": 0.2,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.008179828524589539,
+      "share_margin_positive": 0.515625,
+      "corr_margin_vs_success_adv": -0.030971852865819202,
+      "corr_margin_vs_goalarea_adv": 0.06216636030656513,
+      "corr_margin_vs_near2_adv": 0.034207308834574526,
+      "sign_agreement_with_success_adv": 0.2222222222222222,
+      "n": 64
+     }
+    },
+    "CF2_s2": {
+     "CF": {
+      "critic_margin_mean": 0.12413238734006882,
+      "share_margin_positive": 0.65625,
+      "corr_margin_vs_success_adv": 0.30251190681885104,
+      "corr_margin_vs_goalarea_adv": -0.1022421998946825,
+      "corr_margin_vs_near2_adv": -0.07039288158600845,
+      "sign_agreement_with_success_adv": 0.8333333333333334,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.2320415899157524,
+      "share_margin_positive": 0.84375,
+      "corr_margin_vs_success_adv": -0.20768794301689983,
+      "corr_margin_vs_goalarea_adv": 0.14367090671576635,
+      "corr_margin_vs_near2_adv": 0.12837027445588822,
+      "sign_agreement_with_success_adv": 0.0,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.06027534604072571,
+      "share_margin_positive": 0.734375,
+      "corr_margin_vs_success_adv": 0.024962458229003302,
+      "corr_margin_vs_goalarea_adv": -0.010699970298813007,
+      "corr_margin_vs_near2_adv": 0.01152665840642833,
+      "sign_agreement_with_success_adv": 0.2,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": -0.011589385569095612,
+      "share_margin_positive": 0.515625,
+      "corr_margin_vs_success_adv": -0.06260990007383899,
+      "corr_margin_vs_goalarea_adv": 0.15638088055072777,
+      "corr_margin_vs_near2_adv": 0.15127685969281324,
+      "sign_agreement_with_success_adv": 0.4444444444444444,
+      "n": 64
+     }
+    },
+    "CF2_s3": {
+     "CF": {
+      "critic_margin_mean": -0.07834459841251373,
+      "share_margin_positive": 0.515625,
+      "corr_margin_vs_success_adv": 0.2939678613940663,
+      "corr_margin_vs_goalarea_adv": -0.08686284519250208,
+      "corr_margin_vs_near2_adv": -0.02529071222236543,
+      "sign_agreement_with_success_adv": 0.6666666666666666,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.2008209228515625,
+      "share_margin_positive": 0.6875,
+      "corr_margin_vs_success_adv": -0.27427629169418555,
+      "corr_margin_vs_goalarea_adv": 0.26327566422602366,
+      "corr_margin_vs_near2_adv": 0.2434974707839135,
+      "sign_agreement_with_success_adv": 0.25,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.006878361105918884,
+      "share_margin_positive": 0.53125,
+      "corr_margin_vs_success_adv": 0.009131845759708043,
+      "corr_margin_vs_goalarea_adv": -0.011946109351887108,
+      "corr_margin_vs_near2_adv": 0.005589053490710103,
+      "sign_agreement_with_success_adv": 0.2,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": -0.01598381996154785,
+      "share_margin_positive": 0.375,
+      "corr_margin_vs_success_adv": -0.10563410668360905,
+      "corr_margin_vs_goalarea_adv": 0.07148623152534812,
+      "corr_margin_vs_near2_adv": 0.0627745661698427,
+      "sign_agreement_with_success_adv": 0.4444444444444444,
+      "n": 64
+     }
+    },
+    "CF2_s4": {
+     "CF": {
+      "critic_margin_mean": 0.04241902381181717,
+      "share_margin_positive": 0.625,
+      "corr_margin_vs_success_adv": 0.35069554596927777,
+      "corr_margin_vs_goalarea_adv": -0.12208277453242738,
+      "corr_margin_vs_near2_adv": -0.0676126716315341,
+      "sign_agreement_with_success_adv": 0.6666666666666666,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.1370801255106926,
+      "share_margin_positive": 0.84375,
+      "corr_margin_vs_success_adv": 0.4058927843296976,
+      "corr_margin_vs_goalarea_adv": -0.3095707327617354,
+      "corr_margin_vs_near2_adv": -0.24165165581377054,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.028695084154605865,
+      "share_margin_positive": 0.609375,
+      "corr_margin_vs_success_adv": 0.07930665651674094,
+      "corr_margin_vs_goalarea_adv": -0.11966118567383711,
+      "corr_margin_vs_near2_adv": -0.08039643811250777,
+      "sign_agreement_with_success_adv": 0.6,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": -0.05798150599002838,
+      "share_margin_positive": 0.46875,
+      "corr_margin_vs_success_adv": -0.06426006141582441,
+      "corr_margin_vs_goalarea_adv": 0.17635252530684417,
+      "corr_margin_vs_near2_adv": 0.18550300219288116,
+      "sign_agreement_with_success_adv": 0.4444444444444444,
+      "n": 64
+     }
+    },
+    "MF_s0": {
+     "CF": {
+      "critic_margin_mean": 0.23051973432302475,
+      "share_margin_positive": 0.796875,
+      "corr_margin_vs_success_adv": 0.20746624631568975,
+      "corr_margin_vs_goalarea_adv": -0.004992220628383868,
+      "corr_margin_vs_near2_adv": -0.00881215165025756,
+      "sign_agreement_with_success_adv": 0.6666666666666666,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.09589524567127228,
+      "share_margin_positive": 0.796875,
+      "corr_margin_vs_success_adv": 0.14524671464712496,
+      "corr_margin_vs_goalarea_adv": 0.02821004378700128,
+      "corr_margin_vs_near2_adv": 0.043396443580496886,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.04593525826931,
+      "share_margin_positive": 0.734375,
+      "corr_margin_vs_success_adv": 0.04878467316937064,
+      "corr_margin_vs_goalarea_adv": -0.12942950978407433,
+      "corr_margin_vs_near2_adv": -0.11909464007588695,
+      "sign_agreement_with_success_adv": 0.2,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": -0.015852347016334534,
+      "share_margin_positive": 0.515625,
+      "corr_margin_vs_success_adv": -0.031564423262226714,
+      "corr_margin_vs_goalarea_adv": 0.16296917243441264,
+      "corr_margin_vs_near2_adv": 0.16213066634841763,
+      "sign_agreement_with_success_adv": 0.5555555555555556,
+      "n": 64
+     }
+    },
+    "MF_s1": {
+     "CF": {
+      "critic_margin_mean": 0.16359371691942215,
+      "share_margin_positive": 0.75,
+      "corr_margin_vs_success_adv": 0.159781040409851,
+      "corr_margin_vs_goalarea_adv": -0.051615730853796234,
+      "corr_margin_vs_near2_adv": -0.03261845356731818,
+      "sign_agreement_with_success_adv": 0.6666666666666666,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.10285564512014389,
+      "share_margin_positive": 0.859375,
+      "corr_margin_vs_success_adv": 0.01088315264513912,
+      "corr_margin_vs_goalarea_adv": -0.020892132678742837,
+      "corr_margin_vs_near2_adv": -0.010845800121304311,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.0359816774725914,
+      "share_margin_positive": 0.75,
+      "corr_margin_vs_success_adv": 0.06675777659358949,
+      "corr_margin_vs_goalarea_adv": -0.10598321904417664,
+      "corr_margin_vs_near2_adv": -0.09041213197984183,
+      "sign_agreement_with_success_adv": 0.4,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": -0.030374333262443542,
+      "share_margin_positive": 0.453125,
+      "corr_margin_vs_success_adv": -0.05482319596240345,
+      "corr_margin_vs_goalarea_adv": 0.17288672207658498,
+      "corr_margin_vs_near2_adv": 0.16805872115687026,
+      "sign_agreement_with_success_adv": 0.5555555555555556,
+      "n": 64
+     }
+    },
+    "MF_s2": {
+     "CF": {
+      "critic_margin_mean": 0.15575025975704193,
+      "share_margin_positive": 0.859375,
+      "corr_margin_vs_success_adv": 0.03733121450410688,
+      "corr_margin_vs_goalarea_adv": 0.07513847417340633,
+      "corr_margin_vs_near2_adv": 0.061949683664150684,
+      "sign_agreement_with_success_adv": 0.3333333333333333,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.08324244618415833,
+      "share_margin_positive": 0.78125,
+      "corr_margin_vs_success_adv": -0.05122822447100994,
+      "corr_margin_vs_goalarea_adv": 0.2340805865067597,
+      "corr_margin_vs_near2_adv": 0.2122375525781962,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.03006821870803833,
+      "share_margin_positive": 0.671875,
+      "corr_margin_vs_success_adv": 0.033308203826821633,
+      "corr_margin_vs_goalarea_adv": -0.11293025367086801,
+      "corr_margin_vs_near2_adv": -0.07111581807313748,
+      "sign_agreement_with_success_adv": 0.4,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.00551094114780426,
+      "share_margin_positive": 0.578125,
+      "corr_margin_vs_success_adv": -0.028221618307355385,
+      "corr_margin_vs_goalarea_adv": 0.07330194012426715,
+      "corr_margin_vs_near2_adv": 0.06762630794446813,
+      "sign_agreement_with_success_adv": 0.3333333333333333,
+      "n": 64
+     }
+    },
+    "MF_s3": {
+     "CF": {
+      "critic_margin_mean": 0.156867116689682,
+      "share_margin_positive": 0.71875,
+      "corr_margin_vs_success_adv": 0.133779137400588,
+      "corr_margin_vs_goalarea_adv": 0.02473235748917565,
+      "corr_margin_vs_near2_adv": 0.027361639653715335,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.08928301930427551,
+      "share_margin_positive": 0.796875,
+      "corr_margin_vs_success_adv": -0.004876128710729913,
+      "corr_margin_vs_goalarea_adv": 0.10921034549246234,
+      "corr_margin_vs_near2_adv": 0.09626745501677736,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.04525260627269745,
+      "share_margin_positive": 0.734375,
+      "corr_margin_vs_success_adv": 0.06317982741729926,
+      "corr_margin_vs_goalarea_adv": -0.17832443943100126,
+      "corr_margin_vs_near2_adv": -0.149772745620203,
+      "sign_agreement_with_success_adv": 0.6,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.01758599281311035,
+      "share_margin_positive": 0.4375,
+      "corr_margin_vs_success_adv": 0.1139251357632158,
+      "corr_margin_vs_goalarea_adv": -0.19660924607802896,
+      "corr_margin_vs_near2_adv": -0.1772703706502465,
+      "sign_agreement_with_success_adv": 0.7777777777777778,
+      "n": 64
+     }
+    },
+    "MF_s4": {
+     "CF": {
+      "critic_margin_mean": 0.21026143431663513,
+      "share_margin_positive": 0.8125,
+      "corr_margin_vs_success_adv": 0.17879699734237653,
+      "corr_margin_vs_goalarea_adv": -0.030515746376419448,
+      "corr_margin_vs_near2_adv": -0.0004571245550947852,
+      "sign_agreement_with_success_adv": 0.6666666666666666,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.08426642417907715,
+      "share_margin_positive": 0.734375,
+      "corr_margin_vs_success_adv": 0.40079800069932503,
+      "corr_margin_vs_goalarea_adv": -0.26287091222676706,
+      "corr_margin_vs_near2_adv": -0.19121955478551225,
+      "sign_agreement_with_success_adv": 0.75,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.04051615297794342,
+      "share_margin_positive": 0.765625,
+      "corr_margin_vs_success_adv": -0.04075844085136192,
+      "corr_margin_vs_goalarea_adv": -0.04912740875727682,
+      "corr_margin_vs_near2_adv": -0.035367265741993274,
+      "sign_agreement_with_success_adv": 0.4,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.004701495170593262,
+      "share_margin_positive": 0.484375,
+      "corr_margin_vs_success_adv": 0.02858806807711178,
+      "corr_margin_vs_goalarea_adv": -0.005899553693455755,
+      "corr_margin_vs_near2_adv": 0.00306565988075355,
+      "sign_agreement_with_success_adv": 0.5555555555555556,
+      "n": 64
+     }
+    }
+   }
+  },
+  "pre_zone1_early": {
+   "n_states": 64,
+   "candidate_means": {
+    "CF": {
+     "success": 0.2421875,
+     "death": 0.75,
+     "timeout": 0.0078125,
+     "far_entry": 0.0,
+     "goal_area": 0.03686974626710068,
+     "reach0.5": 0.0011212432520428892,
+     "near2.0": 0.027643343999798557,
+     "far": 0.0,
+     "death_frame": 0.01720513566455011,
+     "far_success": 0.0
+    },
+    "CF2": {
+     "success": 0.23828125,
+     "death": 0.75,
+     "timeout": 0.01171875,
+     "far_entry": 0.00390625,
+     "goal_area": 0.03987489109042644,
+     "reach0.5": 0.0010999055570529936,
+     "near2.0": 0.030737178897273107,
+     "far": 6.7037677682009e-05,
+     "death_frame": 0.017384482645137804,
+     "far_success": 0.00390625
+    },
+    "MF": {
+     "success": 0.24609375,
+     "death": 0.75,
+     "timeout": 0.00390625,
+     "far_entry": 0.0,
+     "goal_area": 0.03396353282811691,
+     "reach0.5": 0.0011464426058161133,
+     "near2.0": 0.024272098780465948,
+     "far": 0.0,
+     "death_frame": 0.017192720598469637,
+     "far_success": 0.0
+    },
+    "logged": {
+     "success": 0.24609375,
+     "death": 0.75,
+     "timeout": 0.00390625,
+     "far_entry": 0.0,
+     "goal_area": 0.036820554931148795,
+     "reach0.5": 0.0011282238623596722,
+     "near2.0": 0.027361512746417918,
+     "far": 0.0,
+     "death_frame": 0.0171287926935006,
+     "far_success": 0.0
+    },
+    "start": {
+     "success": 0.21484375,
+     "death": 0.75,
+     "timeout": 0.03515625,
+     "far_entry": 0.0,
+     "goal_area": 0.05444127190450443,
+     "reach0.5": 0.000983713904966495,
+     "near2.0": 0.0461646877699882,
+     "far": 0.0,
+     "death_frame": 0.017134546759136178,
+     "far_success": 0.0
+    }
+   },
+   "advantage_vs_start": {
+    "CF": {
+     "success": {
+      "mean": 0.02734375,
+      "state_se": 0.011297830832634088,
+      "share_positive": 0.125,
+      "share_negative": 0.015625,
+      "n": 64,
+      "ci95_half_width": 0.022143748431962814,
+      "within_state_se_median": 0.0
+     },
+     "death": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     },
+     "timeout": {
+      "mean": -0.02734375,
+      "state_se": 0.011297830832634088,
+      "share_positive": 0.015625,
+      "share_negative": 0.125,
+      "n": 64,
+      "ci95_half_width": 0.022143748431962814,
+      "within_state_se_median": 0.0
+     },
+     "far_entry": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     },
+     "goal_area": {
+      "mean": -0.017571525637403756,
+      "state_se": 0.006459677147361594,
+      "share_positive": 0.328125,
+      "share_negative": 0.640625,
+      "n": 64,
+      "ci95_half_width": 0.012660967208828724,
+      "within_state_se_median": 0.0
+     },
+     "reach0.5": {
+      "mean": 0.00013752934707639435,
+      "state_se": 5.1501915000384936e-05,
+      "share_positive": 0.578125,
+      "share_negative": 0.34375,
+      "n": 64,
+      "ci95_half_width": 0.00010094375340075447,
+      "within_state_se_median": 0.0
+     },
+     "near2.0": {
+      "mean": -0.018521343770189644,
+      "state_se": 0.006783380782926252,
+      "share_positive": 0.328125,
+      "share_negative": 0.65625,
+      "n": 64,
+      "ci95_half_width": 0.013295426334535454,
+      "within_state_se_median": 0.0
+     },
+     "far": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     },
+     "death_frame": {
+      "mean": 7.058890541393115e-05,
+      "state_se": 0.00010115380635947054,
+      "share_positive": 0.546875,
+      "share_negative": 0.453125,
+      "n": 64,
+      "ci95_half_width": 0.00019826146046456226,
+      "within_state_se_median": 0.0002376516156481897
+     },
+     "far_success": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     }
+    },
+    "CF2": {
+     "success": {
+      "mean": 0.0234375,
+      "state_se": 0.012095065630214924,
+      "share_positive": 0.125,
+      "share_negative": 0.03125,
+      "n": 64,
+      "ci95_half_width": 0.02370632863522125,
+      "within_state_se_median": 0.0
+     },
+     "death": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     },
+     "timeout": {
+      "mean": -0.0234375,
+      "state_se": 0.012095065630214924,
+      "share_positive": 0.03125,
+      "share_negative": 0.125,
+      "n": 64,
+      "ci95_half_width": 0.02370632863522125,
+      "within_state_se_median": 0.0
+     },
+     "far_entry": {
+      "mean": 0.00390625,
+      "state_se": 0.00390625,
+      "share_positive": 0.015625,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.00765625,
+      "within_state_se_median": 0.0
+     },
+     "goal_area": {
+      "mean": -0.014566380814077991,
+      "state_se": 0.00708648254385638,
+      "share_positive": 0.421875,
+      "share_negative": 0.5625,
+      "n": 64,
+      "ci95_half_width": 0.013889505785958505,
+      "within_state_se_median": 0.0
+     },
+     "reach0.5": {
+      "mean": 0.00011619165208649869,
+      "state_se": 5.652822447877548e-05,
+      "share_positive": 0.40625,
+      "share_negative": 0.46875,
+      "n": 64,
+      "ci95_half_width": 0.00011079531997839994,
+      "within_state_se_median": 0.0
+     },
+     "near2.0": {
+      "mean": -0.015427508872715098,
+      "state_se": 0.0074529174825718495,
+      "share_positive": 0.34375,
+      "share_negative": 0.59375,
+      "n": 64,
+      "ci95_half_width": 0.014607718265840825,
+      "within_state_se_median": 0.0
+     },
+     "far": {
+      "mean": 6.7037677682009e-05,
+      "state_se": 6.703767768200898e-05,
+      "share_positive": 0.015625,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0001313938482567376,
+      "within_state_se_median": 0.0
+     },
+     "death_frame": {
+      "mean": 0.00024993588600162673,
+      "state_se": 0.00012528946243711838,
+      "share_positive": 0.546875,
+      "share_negative": 0.453125,
+      "n": 64,
+      "ci95_half_width": 0.000245567346376752,
+      "within_state_se_median": 0.00022970277659501977
+     },
+     "far_success": {
+      "mean": 0.00390625,
+      "state_se": 0.00390625,
+      "share_positive": 0.015625,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.00765625,
+      "within_state_se_median": 0.0
+     }
+    },
+    "MF": {
+     "success": {
+      "mean": 0.03125,
+      "state_se": 0.01181138978153835,
+      "share_positive": 0.140625,
+      "share_negative": 0.015625,
+      "n": 64,
+      "ci95_half_width": 0.023150323971815167,
+      "within_state_se_median": 0.0
+     },
+     "death": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     },
+     "timeout": {
+      "mean": -0.03125,
+      "state_se": 0.01181138978153835,
+      "share_positive": 0.015625,
+      "share_negative": 0.140625,
+      "n": 64,
+      "ci95_half_width": 0.023150323971815167,
+      "within_state_se_median": 0.0
+     },
+     "far_entry": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     },
+     "goal_area": {
+      "mean": -0.020477739076387516,
+      "state_se": 0.006541694323081608,
+      "share_positive": 0.375,
+      "share_negative": 0.578125,
+      "n": 64,
+      "ci95_half_width": 0.012821720873239953,
+      "within_state_se_median": 0.0
+     },
+     "reach0.5": {
+      "mean": 0.0001627287008496183,
+      "state_se": 5.286379798246063e-05,
+      "share_positive": 0.609375,
+      "share_negative": 0.296875,
+      "n": 64,
+      "ci95_half_width": 0.00010361304404562283,
+      "within_state_se_median": 0.0
+     },
+     "near2.0": {
+      "mean": -0.021892588989522253,
+      "state_se": 0.006841233718135807,
+      "share_positive": 0.34375,
+      "share_negative": 0.640625,
+      "n": 64,
+      "ci95_half_width": 0.013408818087546182,
+      "within_state_se_median": 0.0
+     },
+     "far": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     },
+     "death_frame": {
+      "mean": 5.81738393334593e-05,
+      "state_se": 9.703865007035657e-05,
+      "share_positive": 0.515625,
+      "share_negative": 0.484375,
+      "n": 64,
+      "ci95_half_width": 0.00019019575413789887,
+      "within_state_se_median": 0.0002461794837637211
+     },
+     "far_success": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     }
+    },
+    "logged": {
+     "success": {
+      "mean": 0.03125,
+      "state_se": 0.010416666666666666,
+      "share_positive": 0.125,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.020416666666666666,
+      "within_state_se_median": 0.0
+     },
+     "death": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     },
+     "timeout": {
+      "mean": -0.03125,
+      "state_se": 0.010416666666666666,
+      "share_positive": 0.0,
+      "share_negative": 0.125,
+      "n": 64,
+      "ci95_half_width": 0.020416666666666666,
+      "within_state_se_median": 0.0
+     },
+     "far_entry": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     },
+     "goal_area": {
+      "mean": -0.017620716973355644,
+      "state_se": 0.006038994277744456,
+      "share_positive": 0.453125,
+      "share_negative": 0.546875,
+      "n": 64,
+      "ci95_half_width": 0.011836428784379132,
+      "within_state_se_median": 0.0
+     },
+     "reach0.5": {
+      "mean": 0.0001445099573931774,
+      "state_se": 4.843754259058648e-05,
+      "share_positive": 0.5,
+      "share_negative": 0.421875,
+      "n": 64,
+      "ci95_half_width": 9.49375834775495e-05,
+      "within_state_se_median": 0.0
+     },
+     "near2.0": {
+      "mean": -0.018803175023570286,
+      "state_se": 0.006334426958174649,
+      "share_positive": 0.421875,
+      "share_negative": 0.5625,
+      "n": 64,
+      "ci95_half_width": 0.012415476838022311,
+      "within_state_se_median": 0.0
+     },
+     "far": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     },
+     "death_frame": {
+      "mean": -5.754065635576712e-06,
+      "state_se": 9.262458270678259e-05,
+      "share_positive": 0.5,
+      "share_negative": 0.5,
+      "n": 64,
+      "ci95_half_width": 0.00018154418210529388,
+      "within_state_se_median": 0.00022744849978190444
+     },
+     "far_success": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     }
+    }
+   },
+   "critic_recognition": {
+    "CF_s0": {
+     "CF": {
+      "critic_margin_mean": 0.21397502720355988,
+      "share_margin_positive": 0.828125,
+      "corr_margin_vs_success_adv": 0.12446154170097305,
+      "corr_margin_vs_goalarea_adv": -0.13714026925320985,
+      "corr_margin_vs_near2_adv": -0.14185876664443944,
+      "sign_agreement_with_success_adv": 0.5555555555555556,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": -0.006527304649353027,
+      "share_margin_positive": 0.578125,
+      "corr_margin_vs_success_adv": 0.11277398320174499,
+      "corr_margin_vs_goalarea_adv": -0.0983774738347315,
+      "corr_margin_vs_near2_adv": -0.09701339550535774,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.01401163637638092,
+      "share_margin_positive": 0.5625,
+      "corr_margin_vs_success_adv": 0.06355597527620784,
+      "corr_margin_vs_goalarea_adv": -0.04745083638153643,
+      "corr_margin_vs_near2_adv": -0.04648178305485617,
+      "sign_agreement_with_success_adv": 0.4,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.008174650371074677,
+      "share_margin_positive": 0.484375,
+      "corr_margin_vs_success_adv": 0.012563055028887923,
+      "corr_margin_vs_goalarea_adv": -0.028786568906603867,
+      "corr_margin_vs_near2_adv": -0.021815504957256655,
+      "sign_agreement_with_success_adv": 0.375,
+      "n": 64
+     }
+    },
+    "CF_s1": {
+     "CF": {
+      "critic_margin_mean": 0.1437346190214157,
+      "share_margin_positive": 0.796875,
+      "corr_margin_vs_success_adv": 0.2751664597306402,
+      "corr_margin_vs_goalarea_adv": -0.2717730313817815,
+      "corr_margin_vs_near2_adv": -0.27769101730449464,
+      "sign_agreement_with_success_adv": 1.0,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.009005993604660034,
+      "share_margin_positive": 0.5625,
+      "corr_margin_vs_success_adv": 0.1672393065612689,
+      "corr_margin_vs_goalarea_adv": -0.1703691729667517,
+      "corr_margin_vs_near2_adv": -0.16951389814351606,
+      "sign_agreement_with_success_adv": 0.7,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.01657801866531372,
+      "share_margin_positive": 0.640625,
+      "corr_margin_vs_success_adv": 0.22799693441337945,
+      "corr_margin_vs_goalarea_adv": -0.17857139947005787,
+      "corr_margin_vs_near2_adv": -0.17847160206049056,
+      "sign_agreement_with_success_adv": 0.8,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.01839505136013031,
+      "share_margin_positive": 0.640625,
+      "corr_margin_vs_success_adv": -0.029234513442853632,
+      "corr_margin_vs_goalarea_adv": 0.02476028515834063,
+      "corr_margin_vs_near2_adv": 0.030367104251192864,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     }
+    },
+    "CF_s2": {
+     "CF": {
+      "critic_margin_mean": 0.1851470172405243,
+      "share_margin_positive": 0.734375,
+      "corr_margin_vs_success_adv": 0.06802423250458468,
+      "corr_margin_vs_goalarea_adv": -0.08453996067984569,
+      "corr_margin_vs_near2_adv": -0.09069279414858228,
+      "sign_agreement_with_success_adv": 0.8888888888888888,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": -0.0024611949920654297,
+      "share_margin_positive": 0.546875,
+      "corr_margin_vs_success_adv": 0.18911353461278527,
+      "corr_margin_vs_goalarea_adv": -0.17664271951041932,
+      "corr_margin_vs_near2_adv": -0.17525056163893954,
+      "sign_agreement_with_success_adv": 0.6,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.024521470069885254,
+      "share_margin_positive": 0.625,
+      "corr_margin_vs_success_adv": 0.13471582683083239,
+      "corr_margin_vs_goalarea_adv": -0.11831099352349522,
+      "corr_margin_vs_near2_adv": -0.11975380003947893,
+      "sign_agreement_with_success_adv": 0.8,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.0018122121691703796,
+      "share_margin_positive": 0.59375,
+      "corr_margin_vs_success_adv": 0.01713387148512593,
+      "corr_margin_vs_goalarea_adv": -0.054454971396924755,
+      "corr_margin_vs_near2_adv": -0.052693343656252147,
+      "sign_agreement_with_success_adv": 0.375,
+      "n": 64
+     }
+    },
+    "CF_s3": {
+     "CF": {
+      "critic_margin_mean": 0.11047101020812988,
+      "share_margin_positive": 0.75,
+      "corr_margin_vs_success_adv": 0.08222899796529219,
+      "corr_margin_vs_goalarea_adv": -0.08729617772234256,
+      "corr_margin_vs_near2_adv": -0.09317242164508527,
+      "sign_agreement_with_success_adv": 0.7777777777777778,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": -0.007434085011482239,
+      "share_margin_positive": 0.5,
+      "corr_margin_vs_success_adv": 0.17057703735677307,
+      "corr_margin_vs_goalarea_adv": -0.15631109066789306,
+      "corr_margin_vs_near2_adv": -0.1536656228377629,
+      "sign_agreement_with_success_adv": 0.6,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.008096784353256226,
+      "share_margin_positive": 0.578125,
+      "corr_margin_vs_success_adv": 0.04423566462079003,
+      "corr_margin_vs_goalarea_adv": -0.026980104135908952,
+      "corr_margin_vs_near2_adv": -0.02631026838084736,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": -0.0024011731147766113,
+      "share_margin_positive": 0.5,
+      "corr_margin_vs_success_adv": -0.13318125197419653,
+      "corr_margin_vs_goalarea_adv": 0.13081897737538212,
+      "corr_margin_vs_near2_adv": 0.13162089323161832,
+      "sign_agreement_with_success_adv": 0.0,
+      "n": 64
+     }
+    },
+    "CF_s4": {
+     "CF": {
+      "critic_margin_mean": 0.15225371718406677,
+      "share_margin_positive": 0.75,
+      "corr_margin_vs_success_adv": 0.1364655488248824,
+      "corr_margin_vs_goalarea_adv": -0.15598872039875394,
+      "corr_margin_vs_near2_adv": -0.15809033687253107,
+      "sign_agreement_with_success_adv": 0.6666666666666666,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": -0.006675004959106445,
+      "share_margin_positive": 0.59375,
+      "corr_margin_vs_success_adv": 0.1567361014808853,
+      "corr_margin_vs_goalarea_adv": -0.17138628721946322,
+      "corr_margin_vs_near2_adv": -0.1704132307778918,
+      "sign_agreement_with_success_adv": 0.7,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.013250336050987244,
+      "share_margin_positive": 0.640625,
+      "corr_margin_vs_success_adv": 0.1193838061187877,
+      "corr_margin_vs_goalarea_adv": -0.10663479105999382,
+      "corr_margin_vs_near2_adv": -0.10586094214944686,
+      "sign_agreement_with_success_adv": 0.7,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.005311056971549988,
+      "share_margin_positive": 0.5625,
+      "corr_margin_vs_success_adv": -0.049966389312231206,
+      "corr_margin_vs_goalarea_adv": 0.07470012742111394,
+      "corr_margin_vs_near2_adv": 0.07386701736520619,
+      "sign_agreement_with_success_adv": 0.375,
+      "n": 64
+     }
+    },
+    "CF2_s0": {
+     "CF": {
+      "critic_margin_mean": 0.03952120244503021,
+      "share_margin_positive": 0.625,
+      "corr_margin_vs_success_adv": 0.09529971443319388,
+      "corr_margin_vs_goalarea_adv": -0.14902438150960648,
+      "corr_margin_vs_near2_adv": -0.14840153109211413,
+      "sign_agreement_with_success_adv": 0.7777777777777778,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.12419860064983368,
+      "share_margin_positive": 0.859375,
+      "corr_margin_vs_success_adv": -0.026572923236267844,
+      "corr_margin_vs_goalarea_adv": 0.0025052134845862948,
+      "corr_margin_vs_near2_adv": 0.002790771414126409,
+      "sign_agreement_with_success_adv": 0.8,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.028621956706047058,
+      "share_margin_positive": 0.65625,
+      "corr_margin_vs_success_adv": -0.04709850738605909,
+      "corr_margin_vs_goalarea_adv": 0.08426808909087026,
+      "corr_margin_vs_near2_adv": 0.08756429544458742,
+      "sign_agreement_with_success_adv": 0.6,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.0064817070960998535,
+      "share_margin_positive": 0.515625,
+      "corr_margin_vs_success_adv": 0.014321137641197945,
+      "corr_margin_vs_goalarea_adv": -0.012806290331678145,
+      "corr_margin_vs_near2_adv": -0.012142917466348751,
+      "sign_agreement_with_success_adv": 0.75,
+      "n": 64
+     }
+    },
+    "CF2_s1": {
+     "CF": {
+      "critic_margin_mean": -0.003120146691799164,
+      "share_margin_positive": 0.515625,
+      "corr_margin_vs_success_adv": -0.06785010391577269,
+      "corr_margin_vs_goalarea_adv": 0.09078541810935162,
+      "corr_margin_vs_near2_adv": 0.09025559220661335,
+      "sign_agreement_with_success_adv": 0.4444444444444444,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.09176239371299744,
+      "share_margin_positive": 0.765625,
+      "corr_margin_vs_success_adv": -0.022246864068841164,
+      "corr_margin_vs_goalarea_adv": 0.01594423107409783,
+      "corr_margin_vs_near2_adv": 0.015446297699700589,
+      "sign_agreement_with_success_adv": 0.6,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.012961409986019135,
+      "share_margin_positive": 0.546875,
+      "corr_margin_vs_success_adv": 0.03549871306592925,
+      "corr_margin_vs_goalarea_adv": 0.033685199520408146,
+      "corr_margin_vs_near2_adv": 0.03507184976520605,
+      "sign_agreement_with_success_adv": 0.7,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": -0.005407057702541351,
+      "share_margin_positive": 0.515625,
+      "corr_margin_vs_success_adv": 0.07522757732582719,
+      "corr_margin_vs_goalarea_adv": -0.0479396765227449,
+      "corr_margin_vs_near2_adv": -0.049125935202678744,
+      "sign_agreement_with_success_adv": 0.75,
+      "n": 64
+     }
+    },
+    "CF2_s2": {
+     "CF": {
+      "critic_margin_mean": -0.0038468539714813232,
+      "share_margin_positive": 0.546875,
+      "corr_margin_vs_success_adv": 0.1560948770693054,
+      "corr_margin_vs_goalarea_adv": -0.14763972342584528,
+      "corr_margin_vs_near2_adv": -0.14682807976800538,
+      "sign_agreement_with_success_adv": 0.5555555555555556,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.09125964343547821,
+      "share_margin_positive": 0.75,
+      "corr_margin_vs_success_adv": 0.058612386040243505,
+      "corr_margin_vs_goalarea_adv": -0.07007135915842896,
+      "corr_margin_vs_near2_adv": -0.06987698905938006,
+      "sign_agreement_with_success_adv": 0.7,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.022929102182388306,
+      "share_margin_positive": 0.640625,
+      "corr_margin_vs_success_adv": 0.11195884967294543,
+      "corr_margin_vs_goalarea_adv": -0.0611050924669205,
+      "corr_margin_vs_near2_adv": -0.058998127836259406,
+      "sign_agreement_with_success_adv": 0.7,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.0027337372303009033,
+      "share_margin_positive": 0.53125,
+      "corr_margin_vs_success_adv": 0.16627006521297966,
+      "corr_margin_vs_goalarea_adv": -0.11657458927312461,
+      "corr_margin_vs_near2_adv": -0.11893279997214849,
+      "sign_agreement_with_success_adv": 0.75,
+      "n": 64
+     }
+    },
+    "CF2_s3": {
+     "CF": {
+      "critic_margin_mean": -0.020829081535339355,
+      "share_margin_positive": 0.5,
+      "corr_margin_vs_success_adv": 0.012146596134319178,
+      "corr_margin_vs_goalarea_adv": 0.020514740795605134,
+      "corr_margin_vs_near2_adv": 0.019833347246068344,
+      "sign_agreement_with_success_adv": 0.3333333333333333,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.1078314483165741,
+      "share_margin_positive": 0.828125,
+      "corr_margin_vs_success_adv": -0.036120905909746086,
+      "corr_margin_vs_goalarea_adv": 0.021706495672697865,
+      "corr_margin_vs_near2_adv": 0.01927897086257104,
+      "sign_agreement_with_success_adv": 0.7,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.025146126747131348,
+      "share_margin_positive": 0.625,
+      "corr_margin_vs_success_adv": -0.0534606798170285,
+      "corr_margin_vs_goalarea_adv": 0.08322488892088992,
+      "corr_margin_vs_near2_adv": 0.08384759594322695,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.003776147961616516,
+      "share_margin_positive": 0.484375,
+      "corr_margin_vs_success_adv": 0.18696341203048286,
+      "corr_margin_vs_goalarea_adv": -0.16065398470126696,
+      "corr_margin_vs_near2_adv": -0.1619754969997105,
+      "sign_agreement_with_success_adv": 0.75,
+      "n": 64
+     }
+    },
+    "CF2_s4": {
+     "CF": {
+      "critic_margin_mean": 0.09919863939285278,
+      "share_margin_positive": 0.65625,
+      "corr_margin_vs_success_adv": 0.07934184435950746,
+      "corr_margin_vs_goalarea_adv": -0.1840023920114704,
+      "corr_margin_vs_near2_adv": -0.18244495643896222,
+      "sign_agreement_with_success_adv": 0.6666666666666666,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.14088015258312225,
+      "share_margin_positive": 0.84375,
+      "corr_margin_vs_success_adv": -0.012164404086570177,
+      "corr_margin_vs_goalarea_adv": -0.024223067831994297,
+      "corr_margin_vs_near2_adv": -0.024010711808443844,
+      "sign_agreement_with_success_adv": 0.7,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.02490447461605072,
+      "share_margin_positive": 0.6875,
+      "corr_margin_vs_success_adv": 0.04824320563101367,
+      "corr_margin_vs_goalarea_adv": -0.015980317492422406,
+      "corr_margin_vs_near2_adv": -0.015888920053206117,
+      "sign_agreement_with_success_adv": 0.7,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.0022277384996414185,
+      "share_margin_positive": 0.484375,
+      "corr_margin_vs_success_adv": 0.15836798352529532,
+      "corr_margin_vs_goalarea_adv": -0.13918156278800634,
+      "corr_margin_vs_near2_adv": -0.14015516361695013,
+      "sign_agreement_with_success_adv": 0.75,
+      "n": 64
+     }
+    },
+    "MF_s0": {
+     "CF": {
+      "critic_margin_mean": 0.09045882523059845,
+      "share_margin_positive": 0.703125,
+      "corr_margin_vs_success_adv": 0.17972037945259392,
+      "corr_margin_vs_goalarea_adv": -0.21931669019190006,
+      "corr_margin_vs_near2_adv": -0.2250694125745254,
+      "sign_agreement_with_success_adv": 0.5555555555555556,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.0338321179151535,
+      "share_margin_positive": 0.71875,
+      "corr_margin_vs_success_adv": 0.08414608379291132,
+      "corr_margin_vs_goalarea_adv": -0.11385208378190173,
+      "corr_margin_vs_near2_adv": -0.11312850973936808,
+      "sign_agreement_with_success_adv": 0.7,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.012345507740974426,
+      "share_margin_positive": 0.65625,
+      "corr_margin_vs_success_adv": -0.04867231558047545,
+      "corr_margin_vs_goalarea_adv": 0.08723187288859358,
+      "corr_margin_vs_near2_adv": 0.08811609989024961,
+      "sign_agreement_with_success_adv": 0.6,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": -0.0019157975912094116,
+      "share_margin_positive": 0.484375,
+      "corr_margin_vs_success_adv": -0.05478474163129339,
+      "corr_margin_vs_goalarea_adv": 0.057468706897071314,
+      "corr_margin_vs_near2_adv": 0.05932329082693851,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     }
+    },
+    "MF_s1": {
+     "CF": {
+      "critic_margin_mean": 0.04789929836988449,
+      "share_margin_positive": 0.671875,
+      "corr_margin_vs_success_adv": 0.02250932066195996,
+      "corr_margin_vs_goalarea_adv": -0.030275793448978242,
+      "corr_margin_vs_near2_adv": -0.02967957686679373,
+      "sign_agreement_with_success_adv": 0.5555555555555556,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.03909176588058472,
+      "share_margin_positive": 0.625,
+      "corr_margin_vs_success_adv": 0.06842594630799967,
+      "corr_margin_vs_goalarea_adv": -0.09411001291638894,
+      "corr_margin_vs_near2_adv": -0.09358102844463911,
+      "sign_agreement_with_success_adv": 0.6,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.01428067684173584,
+      "share_margin_positive": 0.609375,
+      "corr_margin_vs_success_adv": 0.07081483245855236,
+      "corr_margin_vs_goalarea_adv": -0.013714453244571977,
+      "corr_margin_vs_near2_adv": -0.014992457272804736,
+      "sign_agreement_with_success_adv": 0.7,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.006219685077667236,
+      "share_margin_positive": 0.5625,
+      "corr_margin_vs_success_adv": 0.0529841364078095,
+      "corr_margin_vs_goalarea_adv": -0.07608319397888469,
+      "corr_margin_vs_near2_adv": -0.07295326676462274,
+      "sign_agreement_with_success_adv": 0.875,
+      "n": 64
+     }
+    },
+    "MF_s2": {
+     "CF": {
+      "critic_margin_mean": 0.06183205544948578,
+      "share_margin_positive": 0.78125,
+      "corr_margin_vs_success_adv": 0.20969900057881097,
+      "corr_margin_vs_goalarea_adv": -0.21974610912833625,
+      "corr_margin_vs_near2_adv": -0.22306130674601773,
+      "sign_agreement_with_success_adv": 0.5555555555555556,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.048988983035087585,
+      "share_margin_positive": 0.765625,
+      "corr_margin_vs_success_adv": 0.015618682002873563,
+      "corr_margin_vs_goalarea_adv": -0.04695431271061887,
+      "corr_margin_vs_near2_adv": -0.04618172575104495,
+      "sign_agreement_with_success_adv": 0.6,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.014880165457725525,
+      "share_margin_positive": 0.71875,
+      "corr_margin_vs_success_adv": 0.03189709667744576,
+      "corr_margin_vs_goalarea_adv": -0.02485032674013426,
+      "corr_margin_vs_near2_adv": -0.02530832441692222,
+      "sign_agreement_with_success_adv": 0.6,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.0014916956424713135,
+      "share_margin_positive": 0.484375,
+      "corr_margin_vs_success_adv": 0.24391305867559382,
+      "corr_margin_vs_goalarea_adv": -0.2585978052221399,
+      "corr_margin_vs_near2_adv": -0.25306110183174974,
+      "sign_agreement_with_success_adv": 0.625,
+      "n": 64
+     }
+    },
+    "MF_s3": {
+     "CF": {
+      "critic_margin_mean": 0.07000391185283661,
+      "share_margin_positive": 0.6875,
+      "corr_margin_vs_success_adv": 0.0651088838524199,
+      "corr_margin_vs_goalarea_adv": -0.09401508679239318,
+      "corr_margin_vs_near2_adv": -0.09722243118642022,
+      "sign_agreement_with_success_adv": 0.5555555555555556,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.0390448123216629,
+      "share_margin_positive": 0.65625,
+      "corr_margin_vs_success_adv": 0.031589474992003756,
+      "corr_margin_vs_goalarea_adv": -0.05978008234798755,
+      "corr_margin_vs_near2_adv": -0.05791030443344865,
+      "sign_agreement_with_success_adv": 0.7,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.008535966277122498,
+      "share_margin_positive": 0.65625,
+      "corr_margin_vs_success_adv": 0.017966473841349306,
+      "corr_margin_vs_goalarea_adv": 0.016480021662332242,
+      "corr_margin_vs_near2_adv": 0.0188791657514235,
+      "sign_agreement_with_success_adv": 0.7,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.004469007253646851,
+      "share_margin_positive": 0.5625,
+      "corr_margin_vs_success_adv": 0.2109869395886107,
+      "corr_margin_vs_goalarea_adv": -0.1834702837783586,
+      "corr_margin_vs_near2_adv": -0.17555397502063352,
+      "sign_agreement_with_success_adv": 0.75,
+      "n": 64
+     }
+    },
+    "MF_s4": {
+     "CF": {
+      "critic_margin_mean": 0.10067512094974518,
+      "share_margin_positive": 0.78125,
+      "corr_margin_vs_success_adv": 0.08622352230692898,
+      "corr_margin_vs_goalarea_adv": -0.1739465876959905,
+      "corr_margin_vs_near2_adv": -0.17419537868064097,
+      "sign_agreement_with_success_adv": 0.6666666666666666,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.041034698486328125,
+      "share_margin_positive": 0.65625,
+      "corr_margin_vs_success_adv": 0.03615963654017077,
+      "corr_margin_vs_goalarea_adv": -0.06458797623437489,
+      "corr_margin_vs_near2_adv": -0.06368744882010807,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.013668432831764221,
+      "share_margin_positive": 0.671875,
+      "corr_margin_vs_success_adv": 0.16726995547789203,
+      "corr_margin_vs_goalarea_adv": -0.1318530402457958,
+      "corr_margin_vs_near2_adv": -0.12892661074725076,
+      "sign_agreement_with_success_adv": 0.7,
+      "n": 64
+     },
+     "logged": {
+      "critic_margin_mean": 0.002645045518875122,
+      "share_margin_positive": 0.53125,
+      "corr_margin_vs_success_adv": 0.17526773500184628,
+      "corr_margin_vs_goalarea_adv": -0.160659427766905,
+      "corr_margin_vs_near2_adv": -0.15562759569652088,
+      "sign_agreement_with_success_adv": 0.625,
+      "n": 64
+     }
+    }
+   }
+  },
+  "indep_reset": {
+   "n_states": 64,
+   "candidate_means": {
+    "CF": {
+     "success": 0.2578125,
+     "death": 0.59765625,
+     "timeout": 0.14453125,
+     "far_entry": 0.09375,
+     "goal_area": 0.02353822967086725,
+     "reach0.5": 0.0009066883085982133,
+     "near2.0": 0.01972713708277826,
+     "far": 0.05693691703003127,
+     "death_frame": 0.006951745449311372,
+     "far_success": 0.0625
+    },
+    "CF2": {
+     "success": 0.2626953125,
+     "death": 0.62109375,
+     "timeout": 0.1162109375,
+     "far_entry": 0.125,
+     "goal_area": 0.033169177612147834,
+     "reach0.5": 0.0009279158311737915,
+     "near2.0": 0.02823175116778339,
+     "far": 0.07558374341016223,
+     "death_frame": 0.007112373929794089,
+     "far_success": 0.0556640625
+    },
+    "MF": {
+     "success": 0.239990234375,
+     "death": 0.594970703125,
+     "timeout": 0.1650390625,
+     "far_entry": 0.078125,
+     "goal_area": 0.028929786941976787,
+     "reach0.5": 0.000876535336927741,
+     "near2.0": 0.028817756252964438,
+     "far": 0.055772003452789674,
+     "death_frame": 0.007014069341128364,
+     "far_success": 0.0458984375
+    },
+    "start": {
+     "success": 0.234375,
+     "death": 0.75,
+     "timeout": 0.015625,
+     "far_entry": 0.0,
+     "goal_area": 0.03442297047505967,
+     "reach0.5": 0.0009121423827828331,
+     "near2.0": 0.027115910150067417,
+     "far": 0.0,
+     "death_frame": 0.008644560787359777,
+     "far_success": 0.0
+    }
+   },
+   "advantage_vs_start": {
+    "CF": {
+     "success": {
+      "mean": 0.0234375,
+      "state_se": 0.028780796781758097,
+      "share_positive": 0.09375,
+      "share_negative": 0.140625,
+      "n": 64,
+      "ci95_half_width": 0.05641036169224587,
+      "within_state_se_median": 0.0
+     },
+     "death": {
+      "mean": -0.15234375,
+      "state_se": 0.03801611904073906,
+      "share_positive": 0.0,
+      "share_negative": 0.203125,
+      "n": 64,
+      "ci95_half_width": 0.07451159331984855,
+      "within_state_se_median": 0.0
+     },
+     "timeout": {
+      "mean": 0.12890625,
+      "state_se": 0.04383926108948489,
+      "share_positive": 0.15625,
+      "share_negative": 0.046875,
+      "n": 64,
+      "ci95_half_width": 0.08592495173539039,
+      "within_state_se_median": 0.0
+     },
+     "far_entry": {
+      "mean": 0.09375,
+      "state_se": 0.036723103212062694,
+      "share_positive": 0.09375,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.07197728229564287,
+      "within_state_se_median": 0.0
+     },
+     "goal_area": {
+      "mean": -0.010884740804192418,
+      "state_se": 0.0046709892187133594,
+      "share_positive": 0.34375,
+      "share_negative": 0.640625,
+      "n": 64,
+      "ci95_half_width": 0.009155138868678185,
+      "within_state_se_median": 0.0
+     },
+     "reach0.5": {
+      "mean": -5.454074184619885e-06,
+      "state_se": 7.006445465690293e-05,
+      "share_positive": 0.546875,
+      "share_negative": 0.390625,
+      "n": 64,
+      "ci95_half_width": 0.00013732633112752975,
+      "within_state_se_median": 0.0
+     },
+     "near2.0": {
+      "mean": -0.00738877306728916,
+      "state_se": 0.0044042156775227345,
+      "share_positive": 0.34375,
+      "share_negative": 0.65625,
+      "n": 64,
+      "ci95_half_width": 0.008632262727944559,
+      "within_state_se_median": 0.0
+     },
+     "far": {
+      "mean": 0.05693691703003127,
+      "state_se": 0.02751812818706739,
+      "share_positive": 0.09375,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.05393553124665208,
+      "within_state_se_median": 0.0
+     },
+     "death_frame": {
+      "mean": -0.0016928153380484044,
+      "state_se": 0.00044960439251071755,
+      "share_positive": 0.453125,
+      "share_negative": 0.546875,
+      "n": 64,
+      "ci95_half_width": 0.0008812246093210064,
+      "within_state_se_median": 5.683548886580909e-05
+     },
+     "far_success": {
+      "mean": 0.0625,
+      "state_se": 0.030496877279641663,
+      "share_positive": 0.0625,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.05977387946809766,
+      "within_state_se_median": 0.0
+     }
+    },
+    "CF2": {
+     "success": {
+      "mean": 0.0283203125,
+      "state_se": 0.02418481154998466,
+      "share_positive": 0.09375,
+      "share_negative": 0.09375,
+      "n": 64,
+      "ci95_half_width": 0.04740223063796993,
+      "within_state_se_median": 0.0
+     },
+     "death": {
+      "mean": -0.12890625,
+      "state_se": 0.03564883092340276,
+      "share_positive": 0.0,
+      "share_negative": 0.171875,
+      "n": 64,
+      "ci95_half_width": 0.06987170860986941,
+      "within_state_se_median": 0.0
+     },
+     "timeout": {
+      "mean": 0.1005859375,
+      "state_se": 0.03851437578214569,
+      "share_positive": 0.140625,
+      "share_negative": 0.046875,
+      "n": 64,
+      "ci95_half_width": 0.07548817653300556,
+      "within_state_se_median": 0.0
+     },
+     "far_entry": {
+      "mean": 0.125,
+      "state_se": 0.041666666666666664,
+      "share_positive": 0.125,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.08166666666666667,
+      "within_state_se_median": 0.0
+     },
+     "goal_area": {
+      "mean": -0.001253792862911834,
+      "state_se": 0.008414674888602236,
+      "share_positive": 0.5,
+      "share_negative": 0.5,
+      "n": 64,
+      "ci95_half_width": 0.01649276278166038,
+      "within_state_se_median": 0.0
+     },
+     "reach0.5": {
+      "mean": 1.577344839095841e-05,
+      "state_se": 6.0729121452320024e-05,
+      "share_positive": 0.4375,
+      "share_negative": 0.453125,
+      "n": 64,
+      "ci95_half_width": 0.00011902907804654724,
+      "within_state_se_median": 0.0
+     },
+     "near2.0": {
+      "mean": 0.001115841017715973,
+      "state_se": 0.008670175493975371,
+      "share_positive": 0.5,
+      "share_negative": 0.484375,
+      "n": 64,
+      "ci95_half_width": 0.016993543968191728,
+      "within_state_se_median": 0.0
+     },
+     "far": {
+      "mean": 0.07558374341016223,
+      "state_se": 0.029010113458027956,
+      "share_positive": 0.125,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.05685982237773479,
+      "within_state_se_median": 0.0
+     },
+     "death_frame": {
+      "mean": -0.001532186857565687,
+      "state_se": 0.00041431190645987065,
+      "share_positive": 0.40625,
+      "share_negative": 0.59375,
+      "n": 64,
+      "ci95_half_width": 0.0008120513366613464,
+      "within_state_se_median": 5.996050039445785e-05
+     },
+     "far_success": {
+      "mean": 0.0556640625,
+      "state_se": 0.02637637167356686,
+      "share_positive": 0.109375,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.051697688480191045,
+      "within_state_se_median": 0.0
+     }
+    },
+    "MF": {
+     "success": {
+      "mean": 0.005615234375,
+      "state_se": 0.022351468777316277,
+      "share_positive": 0.078125,
+      "share_negative": 0.140625,
+      "n": 64,
+      "ci95_half_width": 0.043808878803539904,
+      "within_state_se_median": 0.0
+     },
+     "death": {
+      "mean": -0.155029296875,
+      "state_se": 0.03792411261986634,
+      "share_positive": 0.0,
+      "share_negative": 0.234375,
+      "n": 64,
+      "ci95_half_width": 0.07433126073493802,
+      "within_state_se_median": 0.0
+     },
+     "timeout": {
+      "mean": 0.1494140625,
+      "state_se": 0.044435850705260904,
+      "share_positive": 0.1875,
+      "share_negative": 0.015625,
+      "n": 64,
+      "ci95_half_width": 0.08709426738231137,
+      "within_state_se_median": 0.0
+     },
+     "far_entry": {
+      "mean": 0.078125,
+      "state_se": 0.033811213593755246,
+      "share_positive": 0.078125,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.06626997864376027,
+      "within_state_se_median": 0.0
+     },
+     "goal_area": {
+      "mean": -0.005493183533082882,
+      "state_se": 0.004127945565998207,
+      "share_positive": 0.53125,
+      "share_negative": 0.46875,
+      "n": 64,
+      "ci95_half_width": 0.008090773309356486,
+      "within_state_se_median": 0.0
+     },
+     "reach0.5": {
+      "mean": -3.560704585509213e-05,
+      "state_se": 5.8375531276618716e-05,
+      "share_positive": 0.609375,
+      "share_negative": 0.3125,
+      "n": 64,
+      "ci95_half_width": 0.00011441604130217268,
+      "within_state_se_median": 0.0
+     },
+     "near2.0": {
+      "mean": 0.0017018461028970246,
+      "state_se": 0.007515241641696522,
+      "share_positive": 0.484375,
+      "share_negative": 0.515625,
+      "n": 64,
+      "ci95_half_width": 0.014729873617725183,
+      "within_state_se_median": 0.0
+     },
+     "far": {
+      "mean": 0.055772003452789674,
+      "state_se": 0.02628351912042988,
+      "share_positive": 0.078125,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.051515697476042566,
+      "within_state_se_median": 0.0
+     },
+     "death_frame": {
+      "mean": -0.001630491446231412,
+      "state_se": 0.0004542917605811709,
+      "share_positive": 0.59375,
+      "share_negative": 0.40625,
+      "n": 64,
+      "ci95_half_width": 0.000890411850739095,
+      "within_state_se_median": 5.718166632219311e-05
+     },
+     "far_success": {
+      "mean": 0.0458984375,
+      "state_se": 0.024927026725174762,
+      "share_positive": 0.0625,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.04885697238134253,
+      "within_state_se_median": 0.0
+     }
+    }
+   },
+   "critic_recognition": {
+    "CF_s0": {
+     "CF": {
+      "critic_margin_mean": 1.982553482055664,
+      "share_margin_positive": 0.96875,
+      "corr_margin_vs_success_adv": -0.1768727723281919,
+      "corr_margin_vs_goalarea_adv": 0.18329612676211635,
+      "corr_margin_vs_near2_adv": 0.17939574027998717,
+      "sign_agreement_with_success_adv": 0.4,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 1.3689381629228592,
+      "share_margin_positive": 0.984375,
+      "corr_margin_vs_success_adv": 0.12217373578674068,
+      "corr_margin_vs_goalarea_adv": -0.07696151638099841,
+      "corr_margin_vs_near2_adv": -0.05328945672575571,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.8542399406433105,
+      "share_margin_positive": 0.875,
+      "corr_margin_vs_success_adv": 0.09363096237693619,
+      "corr_margin_vs_goalarea_adv": -0.09142661870238895,
+      "corr_margin_vs_near2_adv": -0.0666780422346573,
+      "sign_agreement_with_success_adv": 0.35714285714285715,
+      "n": 64
+     }
+    },
+    "CF_s1": {
+     "CF": {
+      "critic_margin_mean": 0.7121844217181206,
+      "share_margin_positive": 0.8125,
+      "corr_margin_vs_success_adv": 0.10059696620901393,
+      "corr_margin_vs_goalarea_adv": -0.011498196319560299,
+      "corr_margin_vs_near2_adv": 0.09218984914156093,
+      "sign_agreement_with_success_adv": 0.3333333333333333,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.7488650009036064,
+      "share_margin_positive": 0.734375,
+      "corr_margin_vs_success_adv": 0.14790230963860668,
+      "corr_margin_vs_goalarea_adv": -0.056136279188795,
+      "corr_margin_vs_near2_adv": -0.024247687925184815,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.5321854650974274,
+      "share_margin_positive": 0.5625,
+      "corr_margin_vs_success_adv": 0.08375667997464258,
+      "corr_margin_vs_goalarea_adv": -0.1668252904229635,
+      "corr_margin_vs_near2_adv": -0.03545439033409231,
+      "sign_agreement_with_success_adv": 0.42857142857142855,
+      "n": 64
+     }
+    },
+    "CF_s2": {
+     "CF": {
+      "critic_margin_mean": 2.3134279176592827,
+      "share_margin_positive": 0.921875,
+      "corr_margin_vs_success_adv": -0.07452562504055348,
+      "corr_margin_vs_goalarea_adv": 0.15996071447134502,
+      "corr_margin_vs_near2_adv": 0.22715231467992006,
+      "sign_agreement_with_success_adv": 0.26666666666666666,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.4188598319888115,
+      "share_margin_positive": 0.5625,
+      "corr_margin_vs_success_adv": 0.20401145967053536,
+      "corr_margin_vs_goalarea_adv": -0.04427422891658014,
+      "corr_margin_vs_near2_adv": -0.00027050449993878007,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 1.2770706415176392,
+      "share_margin_positive": 0.84375,
+      "corr_margin_vs_success_adv": 0.05167502619595721,
+      "corr_margin_vs_goalarea_adv": -0.19075243600721423,
+      "corr_margin_vs_near2_adv": -0.10226446990578751,
+      "sign_agreement_with_success_adv": 0.35714285714285715,
+      "n": 64
+     }
+    },
+    "CF_s3": {
+     "CF": {
+      "critic_margin_mean": 1.2236115783452988,
+      "share_margin_positive": 0.921875,
+      "corr_margin_vs_success_adv": 0.04868057101407911,
+      "corr_margin_vs_goalarea_adv": 0.09666595410695919,
+      "corr_margin_vs_near2_adv": 0.20175203913705334,
+      "sign_agreement_with_success_adv": 0.26666666666666666,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 1.0596862435340881,
+      "share_margin_positive": 0.90625,
+      "corr_margin_vs_success_adv": 0.20630094920240388,
+      "corr_margin_vs_goalarea_adv": -0.06688416852701329,
+      "corr_margin_vs_near2_adv": -0.03044062218012081,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.4746922180056572,
+      "share_margin_positive": 0.78125,
+      "corr_margin_vs_success_adv": 0.03150355006415713,
+      "corr_margin_vs_goalarea_adv": -0.16719399694257547,
+      "corr_margin_vs_near2_adv": -0.19940002200292928,
+      "sign_agreement_with_success_adv": 0.35714285714285715,
+      "n": 64
+     }
+    },
+    "CF_s4": {
+     "CF": {
+      "critic_margin_mean": 1.3856355771422386,
+      "share_margin_positive": 0.953125,
+      "corr_margin_vs_success_adv": 0.16728865943275079,
+      "corr_margin_vs_goalarea_adv": -0.09469250097636792,
+      "corr_margin_vs_near2_adv": 0.020604866146753293,
+      "sign_agreement_with_success_adv": 0.4,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 1.590327426791191,
+      "share_margin_positive": 0.9375,
+      "corr_margin_vs_success_adv": 0.14171060248947945,
+      "corr_margin_vs_goalarea_adv": -0.04027803723337089,
+      "corr_margin_vs_near2_adv": -3.5714967908895805e-05,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 1.1833623200654984,
+      "share_margin_positive": 0.78125,
+      "corr_margin_vs_success_adv": 0.08653331270338323,
+      "corr_margin_vs_goalarea_adv": -0.13567125465753765,
+      "corr_margin_vs_near2_adv": -0.08206685927930805,
+      "sign_agreement_with_success_adv": 0.42857142857142855,
+      "n": 64
+     }
+    },
+    "CF2_s0": {
+     "CF": {
+      "critic_margin_mean": 3.182893291115761,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.11806830640635782,
+      "corr_margin_vs_goalarea_adv": -0.07017819290287171,
+      "corr_margin_vs_near2_adv": 0.012784375223093983,
+      "sign_agreement_with_success_adv": 0.4,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 4.5891499519348145,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": -0.06123654516983353,
+      "corr_margin_vs_goalarea_adv": 0.060073873202096936,
+      "corr_margin_vs_near2_adv": 0.05884015488258366,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 3.0954910293221474,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.16293984251977586,
+      "corr_margin_vs_goalarea_adv": -0.1338386270446683,
+      "corr_margin_vs_near2_adv": 0.04402402747622785,
+      "sign_agreement_with_success_adv": 0.35714285714285715,
+      "n": 64
+     }
+    },
+    "CF2_s1": {
+     "CF": {
+      "critic_margin_mean": 4.235235594213009,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": -0.05059354111152346,
+      "corr_margin_vs_goalarea_adv": 0.15701914109730103,
+      "corr_margin_vs_near2_adv": 0.19015069029619172,
+      "sign_agreement_with_success_adv": 0.4,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 4.698183514177799,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.02829444383485189,
+      "corr_margin_vs_goalarea_adv": 0.14656649321879517,
+      "corr_margin_vs_near2_adv": 0.16286510441655494,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 4.24385029822588,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.15508353879277034,
+      "corr_margin_vs_goalarea_adv": 0.08649913039737517,
+      "corr_margin_vs_near2_adv": 0.07636856874681602,
+      "sign_agreement_with_success_adv": 0.35714285714285715,
+      "n": 64
+     }
+    },
+    "CF2_s2": {
+     "CF": {
+      "critic_margin_mean": 4.403826907277107,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": -0.16873924958203854,
+      "corr_margin_vs_goalarea_adv": 0.1991237176199215,
+      "corr_margin_vs_near2_adv": 0.21016588534933872,
+      "sign_agreement_with_success_adv": 0.4,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 5.461465880274773,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": -0.19640565285270042,
+      "corr_margin_vs_goalarea_adv": 0.08780548221064234,
+      "corr_margin_vs_near2_adv": 0.06310803923641593,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 4.178746312856674,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.13147294287935957,
+      "corr_margin_vs_goalarea_adv": 0.2417936887610495,
+      "corr_margin_vs_near2_adv": 0.21065155978884276,
+      "sign_agreement_with_success_adv": 0.35714285714285715,
+      "n": 64
+     }
+    },
+    "CF2_s3": {
+     "CF": {
+      "critic_margin_mean": 3.0679563879966736,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.09033159304303162,
+      "corr_margin_vs_goalarea_adv": 0.05757707312433078,
+      "corr_margin_vs_near2_adv": 0.11382281137736594,
+      "sign_agreement_with_success_adv": 0.4,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 4.3126285672187805,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": -0.22436108956642653,
+      "corr_margin_vs_goalarea_adv": 0.0901253080282179,
+      "corr_margin_vs_near2_adv": 0.06806926067195354,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 2.7091642171144485,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.28193920300405995,
+      "corr_margin_vs_goalarea_adv": -0.04493896571098094,
+      "corr_margin_vs_near2_adv": 0.11101627110489266,
+      "sign_agreement_with_success_adv": 0.35714285714285715,
+      "n": 64
+     }
+    },
+    "CF2_s4": {
+     "CF": {
+      "critic_margin_mean": 1.4637689515948296,
+      "share_margin_positive": 0.9375,
+      "corr_margin_vs_success_adv": -0.03265373633377857,
+      "corr_margin_vs_goalarea_adv": 0.060798999647262535,
+      "corr_margin_vs_near2_adv": 0.1152936032586925,
+      "sign_agreement_with_success_adv": 0.3333333333333333,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 2.592274531722069,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": -0.14681807612444026,
+      "corr_margin_vs_goalarea_adv": -0.01815649740409182,
+      "corr_margin_vs_near2_adv": -0.03845567428988008,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 2.9032824859023094,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.08445201617622239,
+      "corr_margin_vs_goalarea_adv": -0.05621886479831155,
+      "corr_margin_vs_near2_adv": 0.0171264656309186,
+      "sign_agreement_with_success_adv": 0.35714285714285715,
+      "n": 64
+     }
+    },
+    "MF_s0": {
+     "CF": {
+      "critic_margin_mean": 0.607801154255867,
+      "share_margin_positive": 0.890625,
+      "corr_margin_vs_success_adv": 0.16089871158547364,
+      "corr_margin_vs_goalarea_adv": -0.21766357960447316,
+      "corr_margin_vs_near2_adv": -0.12345558048593204,
+      "sign_agreement_with_success_adv": 0.4,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 1.5625848174095154,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.10998541260558439,
+      "corr_margin_vs_goalarea_adv": -0.15943161882373946,
+      "corr_margin_vs_near2_adv": -0.12148947163556562,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 1.293698325753212,
+      "share_margin_positive": 0.953125,
+      "corr_margin_vs_success_adv": 0.18522085764665813,
+      "corr_margin_vs_goalarea_adv": -0.18308214873466355,
+      "corr_margin_vs_near2_adv": -0.03316964761255669,
+      "sign_agreement_with_success_adv": 0.35714285714285715,
+      "n": 64
+     }
+    },
+    "MF_s1": {
+     "CF": {
+      "critic_margin_mean": 0.868604376912117,
+      "share_margin_positive": 0.875,
+      "corr_margin_vs_success_adv": 0.14856279285373086,
+      "corr_margin_vs_goalarea_adv": -0.16647824458730404,
+      "corr_margin_vs_near2_adv": -0.07405704991849743,
+      "sign_agreement_with_success_adv": 0.4666666666666667,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 1.4683622270822525,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.13496287113016756,
+      "corr_margin_vs_goalarea_adv": -0.04973392851601366,
+      "corr_margin_vs_near2_adv": -0.011474516236581784,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.9095037579536438,
+      "share_margin_positive": 0.828125,
+      "corr_margin_vs_success_adv": 0.26152580425534205,
+      "corr_margin_vs_goalarea_adv": -0.0707171292266788,
+      "corr_margin_vs_near2_adv": 0.07240367246267608,
+      "sign_agreement_with_success_adv": 0.42857142857142855,
+      "n": 64
+     }
+    },
+    "MF_s2": {
+     "CF": {
+      "critic_margin_mean": 1.1854666322469711,
+      "share_margin_positive": 0.96875,
+      "corr_margin_vs_success_adv": 0.007245031824038858,
+      "corr_margin_vs_goalarea_adv": -0.11171644954179069,
+      "corr_margin_vs_near2_adv": -0.03718300727961267,
+      "sign_agreement_with_success_adv": 0.4,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 1.4274430647492409,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.14840311016243102,
+      "corr_margin_vs_goalarea_adv": 0.0079681252157424,
+      "corr_margin_vs_near2_adv": 0.052883562124711396,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 1.432378999888897,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.1517651123881922,
+      "corr_margin_vs_goalarea_adv": -0.13061751818504685,
+      "corr_margin_vs_near2_adv": 0.03493974551570686,
+      "sign_agreement_with_success_adv": 0.35714285714285715,
+      "n": 64
+     }
+    },
+    "MF_s3": {
+     "CF": {
+      "critic_margin_mean": 1.2240655049681664,
+      "share_margin_positive": 0.9375,
+      "corr_margin_vs_success_adv": 0.010372932937624941,
+      "corr_margin_vs_goalarea_adv": -0.04285560524782874,
+      "corr_margin_vs_near2_adv": 0.06765022058822574,
+      "sign_agreement_with_success_adv": 0.3333333333333333,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 1.4107904806733131,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.14086187962406724,
+      "corr_margin_vs_goalarea_adv": -0.04145261791729085,
+      "corr_margin_vs_near2_adv": 0.0010390838159055294,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 1.2572307139635086,
+      "share_margin_positive": 0.96875,
+      "corr_margin_vs_success_adv": 0.16687247372443195,
+      "corr_margin_vs_goalarea_adv": -0.21585012135216447,
+      "corr_margin_vs_near2_adv": -0.034333721434362516,
+      "sign_agreement_with_success_adv": 0.35714285714285715,
+      "n": 64
+     }
+    },
+    "MF_s4": {
+     "CF": {
+      "critic_margin_mean": 1.4381464719772339,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.18489631466198123,
+      "corr_margin_vs_goalarea_adv": -0.18342763149872882,
+      "corr_margin_vs_near2_adv": -0.08457758622719223,
+      "sign_agreement_with_success_adv": 0.4,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 1.7114269062876701,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.17142343306700186,
+      "corr_margin_vs_goalarea_adv": -0.03326003767287911,
+      "corr_margin_vs_near2_adv": 0.007354010752493349,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 1.3810730278491974,
+      "share_margin_positive": 1.0,
+      "corr_margin_vs_success_adv": 0.19237849198275486,
+      "corr_margin_vs_goalarea_adv": -0.23392159842391866,
+      "corr_margin_vs_near2_adv": -0.05348023321596169,
+      "sign_agreement_with_success_adv": 0.35714285714285715,
+      "n": 64
+     }
+    }
+   }
+  },
+  "indep_early": {
+   "n_states": 64,
+   "candidate_means": {
+    "CF": {
+     "success": 0.238525390625,
+     "death": 0.738037109375,
+     "timeout": 0.0234375,
+     "far_entry": 0.0,
+     "goal_area": 0.03411623253674349,
+     "reach0.5": 0.001016023259250624,
+     "near2.0": 0.02611209730630023,
+     "far": 0.0,
+     "death_frame": 0.01165783798505993,
+     "far_success": 0.0
+    },
+    "CF2": {
+     "success": 0.238525390625,
+     "death": 0.738037109375,
+     "timeout": 0.0234375,
+     "far_entry": 0.00390625,
+     "goal_area": 0.035146960494389326,
+     "reach0.5": 0.0010118415097105408,
+     "near2.0": 0.027129460781632378,
+     "far": 3.217257673962431e-05,
+     "death_frame": 0.011654835165804237,
+     "far_success": 0.00390625
+    },
+    "MF": {
+     "success": 0.234375,
+     "death": 0.75,
+     "timeout": 0.015625,
+     "far_entry": 0.0,
+     "goal_area": 0.038525989048950604,
+     "reach0.5": 0.001002505044577261,
+     "near2.0": 0.030514560968404957,
+     "far": 0.0,
+     "death_frame": 0.01180131673278265,
+     "far_success": 0.0
+    },
+    "start": {
+     "success": 0.238525390625,
+     "death": 0.749755859375,
+     "timeout": 0.01171875,
+     "far_entry": 0.0,
+     "goal_area": 0.037414940136955004,
+     "reach0.5": 0.0010133902092779685,
+     "near2.0": 0.02925016298337764,
+     "far": 0.0,
+     "death_frame": 0.011838953166721755,
+     "far_success": 0.0
+    }
+   },
+   "advantage_vs_start": {
+    "CF": {
+     "success": {
+      "mean": 0.0,
+      "state_se": 0.009650235949522084,
+      "share_positive": 0.0625,
+      "share_negative": 0.0625,
+      "n": 64,
+      "ci95_half_width": 0.018914462461063285,
+      "within_state_se_median": 0.0
+     },
+     "death": {
+      "mean": -0.01171875,
+      "state_se": 0.01172391585874771,
+      "share_positive": 0.015625,
+      "share_negative": 0.03125,
+      "n": 64,
+      "ci95_half_width": 0.02297887508314551,
+      "within_state_se_median": 0.0
+     },
+     "timeout": {
+      "mean": 0.01171875,
+      "state_se": 0.017981685302674074,
+      "share_positive": 0.046875,
+      "share_negative": 0.046875,
+      "n": 64,
+      "ci95_half_width": 0.035244103193241186,
+      "within_state_se_median": 0.0
+     },
+     "far_entry": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     },
+     "goal_area": {
+      "mean": -0.0032987076002115047,
+      "state_se": 0.005181015900214464,
+      "share_positive": 0.453125,
+      "share_negative": 0.53125,
+      "n": 64,
+      "ci95_half_width": 0.01015479116442035,
+      "within_state_se_median": 0.0
+     },
+     "reach0.5": {
+      "mean": 2.6330499726555066e-06,
+      "state_se": 4.180638627135464e-05,
+      "share_positive": 0.46875,
+      "share_negative": 0.4375,
+      "n": 64,
+      "ci95_half_width": 8.19405170918551e-05,
+      "within_state_se_median": 0.0
+     },
+     "near2.0": {
+      "mean": -0.0031380656770774095,
+      "state_se": 0.005369733255840627,
+      "share_positive": 0.5,
+      "share_negative": 0.46875,
+      "n": 64,
+      "ci95_half_width": 0.01052467718144763,
+      "within_state_se_median": 0.0
+     },
+     "far": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     },
+     "death_frame": {
+      "mean": -0.0001811151816618256,
+      "state_se": 0.00017591780719383238,
+      "share_positive": 0.5,
+      "share_negative": 0.5,
+      "n": 64,
+      "ci95_half_width": 0.0003447989020999115,
+      "within_state_se_median": 0.0001261988875397363
+     },
+     "far_success": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     }
+    },
+    "CF2": {
+     "success": {
+      "mean": 0.0,
+      "state_se": 0.009650235949522084,
+      "share_positive": 0.0625,
+      "share_negative": 0.0625,
+      "n": 64,
+      "ci95_half_width": 0.018914462461063285,
+      "within_state_se_median": 0.0
+     },
+     "death": {
+      "mean": -0.01171875,
+      "state_se": 0.01172391585874771,
+      "share_positive": 0.015625,
+      "share_negative": 0.03125,
+      "n": 64,
+      "ci95_half_width": 0.02297887508314551,
+      "within_state_se_median": 0.0
+     },
+     "timeout": {
+      "mean": 0.01171875,
+      "state_se": 0.017981685302674074,
+      "share_positive": 0.046875,
+      "share_negative": 0.046875,
+      "n": 64,
+      "ci95_half_width": 0.035244103193241186,
+      "within_state_se_median": 0.0
+     },
+     "far_entry": {
+      "mean": 0.00390625,
+      "state_se": 0.00390625,
+      "share_positive": 0.015625,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.00765625,
+      "within_state_se_median": 0.0
+     },
+     "goal_area": {
+      "mean": -0.0022679796425656763,
+      "state_se": 0.0050517770663216725,
+      "share_positive": 0.46875,
+      "share_negative": 0.515625,
+      "n": 64,
+      "ci95_half_width": 0.009901483049990478,
+      "within_state_se_median": 0.0
+     },
+     "reach0.5": {
+      "mean": -1.5486995674277253e-06,
+      "state_se": 4.12388077912272e-05,
+      "share_positive": 0.46875,
+      "share_negative": 0.484375,
+      "n": 64,
+      "ci95_half_width": 8.082806327080531e-05,
+      "within_state_se_median": 0.0
+     },
+     "near2.0": {
+      "mean": -0.002120702201745261,
+      "state_se": 0.005239333216216935,
+      "share_positive": 0.484375,
+      "share_negative": 0.5,
+      "n": 64,
+      "ci95_half_width": 0.010269093103785192,
+      "within_state_se_median": 0.0
+     },
+     "far": {
+      "mean": 3.217257673962431e-05,
+      "state_se": 3.21725767396243e-05,
+      "share_positive": 0.015625,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 6.305825040966363e-05,
+      "within_state_se_median": 0.0
+     },
+     "death_frame": {
+      "mean": -0.00018411800091751917,
+      "state_se": 0.00017350819347206335,
+      "share_positive": 0.5,
+      "share_negative": 0.5,
+      "n": 64,
+      "ci95_half_width": 0.00034007605920524414,
+      "within_state_se_median": 0.00011883521161073379
+     },
+     "far_success": {
+      "mean": 0.00390625,
+      "state_se": 0.00390625,
+      "share_positive": 0.015625,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.00765625,
+      "within_state_se_median": 0.0
+     }
+    },
+    "MF": {
+     "success": {
+      "mean": -0.004150390625,
+      "state_se": 0.010406443711138967,
+      "share_positive": 0.046875,
+      "share_negative": 0.078125,
+      "n": 64,
+      "ci95_half_width": 0.020396629673832375,
+      "within_state_se_median": 0.0
+     },
+     "death": {
+      "mean": 0.000244140625,
+      "state_se": 0.000244140625,
+      "share_positive": 0.015625,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.000478515625,
+      "within_state_se_median": 0.0
+     },
+     "timeout": {
+      "mean": 0.00390625,
+      "state_se": 0.010405034427787943,
+      "share_positive": 0.0625,
+      "share_negative": 0.046875,
+      "n": 64,
+      "ci95_half_width": 0.02039386747846437,
+      "within_state_se_median": 0.0
+     },
+     "far_entry": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     },
+     "goal_area": {
+      "mean": 0.0011110489119955987,
+      "state_se": 0.005623344148593656,
+      "share_positive": 0.46875,
+      "share_negative": 0.484375,
+      "n": 64,
+      "ci95_half_width": 0.011021754531243566,
+      "within_state_se_median": 0.0
+     },
+     "reach0.5": {
+      "mean": -1.088516470070747e-05,
+      "state_se": 4.194329756924416e-05,
+      "share_positive": 0.46875,
+      "share_negative": 0.375,
+      "n": 64,
+      "ci95_half_width": 8.220886323571855e-05,
+      "within_state_se_median": 0.0
+     },
+     "near2.0": {
+      "mean": 0.001264397985027321,
+      "state_se": 0.005845855906225945,
+      "share_positive": 0.515625,
+      "share_negative": 0.484375,
+      "n": 64,
+      "ci95_half_width": 0.011457877576202851,
+      "within_state_se_median": 0.0
+     },
+     "far": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     },
+     "death_frame": {
+      "mean": -3.763643393910473e-05,
+      "state_se": 4.8002016878495406e-05,
+      "share_positive": 0.4375,
+      "share_negative": 0.5625,
+      "n": 64,
+      "ci95_half_width": 9.408395308185099e-05,
+      "within_state_se_median": 0.00013000719155381889
+     },
+     "far_success": {
+      "mean": 0.0,
+      "state_se": 0.0,
+      "share_positive": 0.0,
+      "share_negative": 0.0,
+      "n": 64,
+      "ci95_half_width": 0.0,
+      "within_state_se_median": 0.0
+     }
+    }
+   },
+   "critic_recognition": {
+    "CF_s0": {
+     "CF": {
+      "critic_margin_mean": 0.32755446434020996,
+      "share_margin_positive": 0.890625,
+      "corr_margin_vs_success_adv": 0.012477929802899444,
+      "corr_margin_vs_goalarea_adv": -0.08483384963825051,
+      "corr_margin_vs_near2_adv": -0.0842251592552267,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.002659723162651062,
+      "share_margin_positive": 0.609375,
+      "corr_margin_vs_success_adv": 0.30890446568133517,
+      "corr_margin_vs_goalarea_adv": -0.12853585787292676,
+      "corr_margin_vs_near2_adv": -0.14702691806360424,
+      "sign_agreement_with_success_adv": 0.75,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.041267648339271545,
+      "share_margin_positive": 0.703125,
+      "corr_margin_vs_success_adv": 0.14759856110411415,
+      "corr_margin_vs_goalarea_adv": -0.14234893696730178,
+      "corr_margin_vs_near2_adv": -0.14112318028102197,
+      "sign_agreement_with_success_adv": 0.625,
+      "n": 64
+     }
+    },
+    "CF_s1": {
+     "CF": {
+      "critic_margin_mean": 0.1453864946961403,
+      "share_margin_positive": 0.796875,
+      "corr_margin_vs_success_adv": 0.2014201489675934,
+      "corr_margin_vs_goalarea_adv": -0.0669442144345798,
+      "corr_margin_vs_near2_adv": -0.07682877928134559,
+      "sign_agreement_with_success_adv": 0.75,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.0150175541639328,
+      "share_margin_positive": 0.578125,
+      "corr_margin_vs_success_adv": 0.2097541706050974,
+      "corr_margin_vs_goalarea_adv": -0.17811124266582723,
+      "corr_margin_vs_near2_adv": -0.18477314838630604,
+      "sign_agreement_with_success_adv": 0.625,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.024459294974803925,
+      "share_margin_positive": 0.65625,
+      "corr_margin_vs_success_adv": -0.007427888036349485,
+      "corr_margin_vs_goalarea_adv": 0.01619956476670883,
+      "corr_margin_vs_near2_adv": 0.01916927464527075,
+      "sign_agreement_with_success_adv": 0.75,
+      "n": 64
+     }
+    },
+    "CF_s2": {
+     "CF": {
+      "critic_margin_mean": 0.19439657777547836,
+      "share_margin_positive": 0.84375,
+      "corr_margin_vs_success_adv": -0.13119893474897135,
+      "corr_margin_vs_goalarea_adv": 0.043679173102412476,
+      "corr_margin_vs_near2_adv": 0.04910853567865349,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": -0.0164765864610672,
+      "share_margin_positive": 0.609375,
+      "corr_margin_vs_success_adv": -0.04866073470880671,
+      "corr_margin_vs_goalarea_adv": 0.0732691528290447,
+      "corr_margin_vs_near2_adv": 0.07188010097131922,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.0345737487077713,
+      "share_margin_positive": 0.671875,
+      "corr_margin_vs_success_adv": -0.060024227712941275,
+      "corr_margin_vs_goalarea_adv": 0.05833176894615869,
+      "corr_margin_vs_near2_adv": 0.06292401182480566,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     }
+    },
+    "CF_s3": {
+     "CF": {
+      "critic_margin_mean": 0.14600807428359985,
+      "share_margin_positive": 0.828125,
+      "corr_margin_vs_success_adv": -0.18584161217598086,
+      "corr_margin_vs_goalarea_adv": 0.16472029774289798,
+      "corr_margin_vs_near2_adv": 0.16865640775720067,
+      "sign_agreement_with_success_adv": 0.375,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": -0.011343561112880707,
+      "share_margin_positive": 0.546875,
+      "corr_margin_vs_success_adv": 0.08701169146690979,
+      "corr_margin_vs_goalarea_adv": 0.08372567517976406,
+      "corr_margin_vs_near2_adv": 0.07390558618741845,
+      "sign_agreement_with_success_adv": 0.625,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.021476440131664276,
+      "share_margin_positive": 0.65625,
+      "corr_margin_vs_success_adv": 0.10649939020587704,
+      "corr_margin_vs_goalarea_adv": -0.07924350381167482,
+      "corr_margin_vs_near2_adv": -0.07875067096485258,
+      "sign_agreement_with_success_adv": 0.375,
+      "n": 64
+     }
+    },
+    "CF_s4": {
+     "CF": {
+      "critic_margin_mean": 0.17091041803359985,
+      "share_margin_positive": 0.8125,
+      "corr_margin_vs_success_adv": -0.06151555855553495,
+      "corr_margin_vs_goalarea_adv": 0.0057488948881674815,
+      "corr_margin_vs_near2_adv": 0.007998909476134379,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": -0.0078008174896240234,
+      "share_margin_positive": 0.546875,
+      "corr_margin_vs_success_adv": 0.2109250915433065,
+      "corr_margin_vs_goalarea_adv": -0.03948710514762655,
+      "corr_margin_vs_near2_adv": -0.0515413487891965,
+      "sign_agreement_with_success_adv": 1.0,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.01765996217727661,
+      "share_margin_positive": 0.609375,
+      "corr_margin_vs_success_adv": 0.10539513950223367,
+      "corr_margin_vs_goalarea_adv": -0.10333430937873532,
+      "corr_margin_vs_near2_adv": -0.10401942325272959,
+      "sign_agreement_with_success_adv": 0.75,
+      "n": 64
+     }
+    },
+    "CF2_s0": {
+     "CF": {
+      "critic_margin_mean": 0.12152400612831116,
+      "share_margin_positive": 0.515625,
+      "corr_margin_vs_success_adv": 0.2084070594224124,
+      "corr_margin_vs_goalarea_adv": -0.20049883498763135,
+      "corr_margin_vs_near2_adv": -0.20478147648523737,
+      "sign_agreement_with_success_adv": 0.625,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.05925992131233215,
+      "share_margin_positive": 0.78125,
+      "corr_margin_vs_success_adv": 0.39956940868786806,
+      "corr_margin_vs_goalarea_adv": -0.39633015568057783,
+      "corr_margin_vs_near2_adv": -0.4087698128968361,
+      "sign_agreement_with_success_adv": 0.625,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.008874401450157166,
+      "share_margin_positive": 0.515625,
+      "corr_margin_vs_success_adv": 0.35868612195838107,
+      "corr_margin_vs_goalarea_adv": -0.3450318946229205,
+      "corr_margin_vs_near2_adv": -0.3466691723658186,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     }
+    },
+    "CF2_s1": {
+     "CF": {
+      "critic_margin_mean": 0.015581101179122925,
+      "share_margin_positive": 0.515625,
+      "corr_margin_vs_success_adv": 0.2101876331647405,
+      "corr_margin_vs_goalarea_adv": -0.17512893462884463,
+      "corr_margin_vs_near2_adv": -0.17970488789492486,
+      "sign_agreement_with_success_adv": 0.625,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.044067420065402985,
+      "share_margin_positive": 0.765625,
+      "corr_margin_vs_success_adv": 0.367554026484393,
+      "corr_margin_vs_goalarea_adv": -0.18638429869243006,
+      "corr_margin_vs_near2_adv": -0.20691829244643303,
+      "sign_agreement_with_success_adv": 0.625,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.002039104700088501,
+      "share_margin_positive": 0.53125,
+      "corr_margin_vs_success_adv": 0.15558099301870865,
+      "corr_margin_vs_goalarea_adv": -0.12039495091895344,
+      "corr_margin_vs_near2_adv": -0.12804198038992343,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     }
+    },
+    "CF2_s2": {
+     "CF": {
+      "critic_margin_mean": 0.04477296769618988,
+      "share_margin_positive": 0.484375,
+      "corr_margin_vs_success_adv": 0.19246730036468446,
+      "corr_margin_vs_goalarea_adv": -0.2539952192867756,
+      "corr_margin_vs_near2_adv": -0.25608609436696833,
+      "sign_agreement_with_success_adv": 0.375,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.0750231146812439,
+      "share_margin_positive": 0.765625,
+      "corr_margin_vs_success_adv": 0.323824832951241,
+      "corr_margin_vs_goalarea_adv": -0.3376006479279029,
+      "corr_margin_vs_near2_adv": -0.3461652343543199,
+      "sign_agreement_with_success_adv": 0.25,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.019567862153053284,
+      "share_margin_positive": 0.578125,
+      "corr_margin_vs_success_adv": 0.31710449772500326,
+      "corr_margin_vs_goalarea_adv": -0.2993520956929571,
+      "corr_margin_vs_near2_adv": -0.30358372026022756,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     }
+    },
+    "CF2_s3": {
+     "CF": {
+      "critic_margin_mean": -0.031230531632900238,
+      "share_margin_positive": 0.53125,
+      "corr_margin_vs_success_adv": 0.14532965662160688,
+      "corr_margin_vs_goalarea_adv": -0.17404376744183947,
+      "corr_margin_vs_near2_adv": -0.17378435243006402,
+      "sign_agreement_with_success_adv": 0.375,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.05340532958507538,
+      "share_margin_positive": 0.671875,
+      "corr_margin_vs_success_adv": 0.2927292843316365,
+      "corr_margin_vs_goalarea_adv": -0.23966572811868128,
+      "corr_margin_vs_near2_adv": -0.25067532885729404,
+      "sign_agreement_with_success_adv": 0.375,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": -0.0063836053013801575,
+      "share_margin_positive": 0.390625,
+      "corr_margin_vs_success_adv": 0.25464056915860916,
+      "corr_margin_vs_goalarea_adv": -0.2524692075522178,
+      "corr_margin_vs_near2_adv": -0.255401645270393,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     }
+    },
+    "CF2_s4": {
+     "CF": {
+      "critic_margin_mean": 0.006418302655220032,
+      "share_margin_positive": 0.5,
+      "corr_margin_vs_success_adv": 0.10325490521225653,
+      "corr_margin_vs_goalarea_adv": -0.061503430159978084,
+      "corr_margin_vs_near2_adv": -0.0654473344932547,
+      "sign_agreement_with_success_adv": 0.75,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.060709573328495026,
+      "share_margin_positive": 0.75,
+      "corr_margin_vs_success_adv": -0.12300508496083912,
+      "corr_margin_vs_goalarea_adv": -0.031314690906175946,
+      "corr_margin_vs_near2_adv": -0.02112524925659441,
+      "sign_agreement_with_success_adv": 0.375,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.006426334381103516,
+      "share_margin_positive": 0.46875,
+      "corr_margin_vs_success_adv": 0.14110292284488984,
+      "corr_margin_vs_goalarea_adv": -0.11490678525762561,
+      "corr_margin_vs_near2_adv": -0.11967400949552488,
+      "sign_agreement_with_success_adv": 0.75,
+      "n": 64
+     }
+    },
+    "MF_s0": {
+     "CF": {
+      "critic_margin_mean": 0.1432712972164154,
+      "share_margin_positive": 0.703125,
+      "corr_margin_vs_success_adv": 0.13993423183614942,
+      "corr_margin_vs_goalarea_adv": -0.14119866931149722,
+      "corr_margin_vs_near2_adv": -0.14463623312118082,
+      "sign_agreement_with_success_adv": 0.375,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.02086089551448822,
+      "share_margin_positive": 0.703125,
+      "corr_margin_vs_success_adv": 0.445109224181702,
+      "corr_margin_vs_goalarea_adv": -0.17866837727112822,
+      "corr_margin_vs_near2_adv": -0.20217489562585894,
+      "sign_agreement_with_success_adv": 0.625,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.012320742011070251,
+      "share_margin_positive": 0.640625,
+      "corr_margin_vs_success_adv": 0.18588472488089208,
+      "corr_margin_vs_goalarea_adv": -0.1911933492699132,
+      "corr_margin_vs_near2_adv": -0.19570087406324363,
+      "sign_agreement_with_success_adv": 0.625,
+      "n": 64
+     }
+    },
+    "MF_s1": {
+     "CF": {
+      "critic_margin_mean": 0.0703345537185669,
+      "share_margin_positive": 0.75,
+      "corr_margin_vs_success_adv": 0.01815704244237935,
+      "corr_margin_vs_goalarea_adv": -0.0497901188063551,
+      "corr_margin_vs_near2_adv": -0.051325079120524864,
+      "sign_agreement_with_success_adv": 0.375,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.012212768197059631,
+      "share_margin_positive": 0.671875,
+      "corr_margin_vs_success_adv": 0.3550173823345358,
+      "corr_margin_vs_goalarea_adv": -0.1937472413467913,
+      "corr_margin_vs_near2_adv": -0.21114468659682328,
+      "sign_agreement_with_success_adv": 0.75,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.00676630437374115,
+      "share_margin_positive": 0.546875,
+      "corr_margin_vs_success_adv": 0.22421499438802897,
+      "corr_margin_vs_goalarea_adv": -0.2648193580703011,
+      "corr_margin_vs_near2_adv": -0.26975151309783235,
+      "sign_agreement_with_success_adv": 0.625,
+      "n": 64
+     }
+    },
+    "MF_s2": {
+     "CF": {
+      "critic_margin_mean": 0.07932479679584503,
+      "share_margin_positive": 0.78125,
+      "corr_margin_vs_success_adv": 0.2144261558236485,
+      "corr_margin_vs_goalarea_adv": -0.2899924595490305,
+      "corr_margin_vs_near2_adv": -0.29021097465100715,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.011785581707954407,
+      "share_margin_positive": 0.703125,
+      "corr_margin_vs_success_adv": 0.33317259249121606,
+      "corr_margin_vs_goalarea_adv": -0.30159125989346053,
+      "corr_margin_vs_near2_adv": -0.314499339189168,
+      "sign_agreement_with_success_adv": 0.625,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.017295777797698975,
+      "share_margin_positive": 0.703125,
+      "corr_margin_vs_success_adv": 0.2535754131567798,
+      "corr_margin_vs_goalarea_adv": -0.23681984025034716,
+      "corr_margin_vs_near2_adv": -0.23878652931970193,
+      "sign_agreement_with_success_adv": 0.625,
+      "n": 64
+     }
+    },
+    "MF_s3": {
+     "CF": {
+      "critic_margin_mean": 0.07860277593135834,
+      "share_margin_positive": 0.71875,
+      "corr_margin_vs_success_adv": 0.20702640854404514,
+      "corr_margin_vs_goalarea_adv": -0.20140433306892228,
+      "corr_margin_vs_near2_adv": -0.2060248665136421,
+      "sign_agreement_with_success_adv": 0.375,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.017563417553901672,
+      "share_margin_positive": 0.671875,
+      "corr_margin_vs_success_adv": 0.2996506767627911,
+      "corr_margin_vs_goalarea_adv": -0.3912881591999451,
+      "corr_margin_vs_near2_adv": -0.3997164357069409,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.0104694664478302,
+      "share_margin_positive": 0.609375,
+      "corr_margin_vs_success_adv": 0.28251107353182375,
+      "corr_margin_vs_goalarea_adv": -0.31464108746827196,
+      "corr_margin_vs_near2_adv": -0.31927390453247945,
+      "sign_agreement_with_success_adv": 0.5,
+      "n": 64
+     }
+    },
+    "MF_s4": {
+     "CF": {
+      "critic_margin_mean": 0.06982940435409546,
+      "share_margin_positive": 0.640625,
+      "corr_margin_vs_success_adv": 0.13048245431804062,
+      "corr_margin_vs_goalarea_adv": -0.14300776835385456,
+      "corr_margin_vs_near2_adv": -0.14602439096794653,
+      "sign_agreement_with_success_adv": 0.25,
+      "n": 64
+     },
+     "CF2": {
+      "critic_margin_mean": 0.014607742428779602,
+      "share_margin_positive": 0.640625,
+      "corr_margin_vs_success_adv": 0.2840324944709672,
+      "corr_margin_vs_goalarea_adv": -0.20993751117175627,
+      "corr_margin_vs_near2_adv": -0.2272758098714197,
+      "sign_agreement_with_success_adv": 0.625,
+      "n": 64
+     },
+     "MF": {
+      "critic_margin_mean": 0.006904885172843933,
+      "share_margin_positive": 0.609375,
+      "corr_margin_vs_success_adv": 0.19968200970435743,
+      "corr_margin_vs_goalarea_adv": -0.20589775877859798,
+      "corr_margin_vs_near2_adv": -0.2144268206128845,
+      "sign_agreement_with_success_adv": 0.375,
+      "n": 64
+     }
+    }
+   }
+  }
+ },
+ "extension_rule": "extend to 16 draws per class if the 95 % half-width (state-level s.e.) of the CF-vs-start success advantage exceeds 0.05 in any group",
+ "extension_needed": true
+}
