@@ -124,9 +124,23 @@ def _longest_run(flag):
   return best
 
 
+def mode_resplit(args):
+  """Re-assign the split by SOURCE EPISODE of the start anchor (user's review of 37b990f: a split by start anchor lets anchors of one
+  episode fall into different splits).  Episodes are assigned 70 / 15 / 15 (seeded); rollouts_cf_ep.npz keeps everything else."""
+  d = dict(np.load(OUT / 'rollouts_cf.npz', allow_pickle=False)); meta = json.loads(str(d.pop('meta')))
+  anchors, _ = MP.AnchorSet.load(MP.OUT / 'anchors.npz'); ep = anchors.episode[d['start_anchor']].astype(np.int64)
+  ue = np.unique(ep); rng = np.random.default_rng(START_SEED + 1); perm = rng.permutation(len(ue))
+  a, b = int(SPLIT[0] * len(ue)), int((SPLIT[0] + SPLIT[1]) * len(ue)); es = np.empty(len(ue), dtype='<U5'); es[perm[:a]] = 'train'; es[perm[a:b]] = 'val'; es[perm[b:]] = 'test'
+  split = es[np.searchsorted(ue, ep)]
+  d['start_split'] = split; d['roll_split'] = split[d['roll_start']]; meta['split'] = 'by SOURCE EPISODE of the start anchor 70/15/15 seeded (resplit)'
+  np.savez_compressed(OUT / 'rollouts_cf_ep.npz', **d, meta=np.asarray(json.dumps(meta)))
+  rid = d['rollout']; sp = d['roll_split'][rid]
+  print({'episodes': {k: int((es == k).sum()) for k in ('train', 'val', 'test')}, 'starts': {k: int((split == k).sum()) for k in ('train', 'val', 'test')}, 'rows': {k: int((sp == k).sum()) for k in ('train', 'val', 'test')}}, flush=True)
+
+
 def main(argv=None):
-  ap = argparse.ArgumentParser(); ap.add_argument('mode', choices=('collect',)); ap.add_argument('--workers', type=int, default=18); ap.add_argument('--limit', type=int, default=None); ap.add_argument('--force', action='store_true')
-  args = ap.parse_args(argv); mode_collect(args); return 0
+  ap = argparse.ArgumentParser(); ap.add_argument('mode', choices=('collect', 'resplit')); ap.add_argument('--workers', type=int, default=18); ap.add_argument('--limit', type=int, default=None); ap.add_argument('--force', action='store_true')
+  args = ap.parse_args(argv); {'collect': mode_collect, 'resplit': mode_resplit}[args.mode](args); return 0
 
 
 if __name__ == '__main__':

@@ -3044,3 +3044,32 @@ improved modestly; stalls NOT met; action differences not clearly
 closer; no regression under start met.  User's ladder -> next rung:
 short-sequence multi-step supervision on the one-step model, including
 stall and turn segments; not started.
+
+### CF-motion round 2 (2026-09-21; cf_motion/SUMMARY.md ROUND 2) -- stall-entry check, episode split, multi-step term; three nodes again
+
+User's review of 37b990f adopted: L3 horizon unified (400 steps both
+sides); the anchor split had episode overlap (28 / 84 test episodes)
+-> re-split by source episode (rollouts_cf_ep.npz, overlap 0); the
+"basin not learned" claim withdrawn.  STALL-ENTRY CHECK (no training,
+L2b): from the exact real entry with the recorded actions the ORIGINAL
+v4 walks 2.6-3.2 over a real 0.04 (90 % of segments; the gate never
+fires: these stalls are swaying rows), the CF-supervised models 0.09-0.17
+(55-72 % under 0.2) and 0.16-0.27 from 20 rows before -> the trajectory-
+level failure was mostly the accumulated error BEFORE the segment.
+ARMS under the episode split: A one-step, B one-step + short-sequence
+term (K 10 recorded actions, unrolled on the model's own predictions,
+half the windows on slow / static rows, weight 1).  B halves the
+open-loop drift (xy 0.22 / 0.43 / 1.04 at 30 / 50 / 100 vs v4 0.40 /
+0.81 / 2.04), improves the trajectory-level stall reproduction (0.44 vs
+0.77-1.04 over 0.05), partly restores the timeouts under the CF loop
+(0.15 vs v4r 0.02, sim 0.23) and fixes the CF2 contrast (+0.11 vs sim
++0.08); costs +15-20 % on the original validation and the start+start
+early error (0.45 vs 0.28); the closed-loop stall is STILL missing
+(stalled 0.05 vs real 0.47; reach 0.82 vs 0.42); per-state contrast
+correlations unchanged.  Verdict: bar for CRL retraining not met;
+candidates = longer / stall-covering unroll, weight, soft gate.
+NODES: node5 (30125) and node6 (30016) are gone (refused); two new
+pods 30027 (5070 Ti, 20c, 31 GB) and 30049 (3090, 28c, 15 GB) on
+35.199.51.171 bootstrapped (python3.12 + node3's venv copied + repo +
+artefacts + tables + ckpts), smoke-verified; rule recorded: always say
+when more machines would help (feedback-report-server-capacity).

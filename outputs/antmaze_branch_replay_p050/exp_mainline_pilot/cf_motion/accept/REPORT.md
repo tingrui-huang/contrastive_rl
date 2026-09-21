@@ -6,9 +6,9 @@ Models {'v4': '/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainl
 
 | model | moving | slow | static | turn30 | far | corridor | zone | gate fires on static / slow / moving | slow rows: real speed / pred speed / pred frozen share | static rows pred speed |
 |---|---|---|---|---|---|---|---|---|---|---|
-| v4 | 0.0063 / 0.0236 (n 21780) | 0.0206 / 0.0293 (n 8083) | 0.0000 / 0.0000 (n 9553) | 0.0147 / 0.0340 (n 840) | 0.0187 / 0.0312 (n 12116) | 0.0031 / 0.0138 (n 20006) | 0.0015 / 0.0143 (n 6454) | 0.970 / 0.092 / 0.000 | 0.0034 / 0.0187 / 0.09 | 0.0000 |
-| v4c | 0.0063 / 0.0238 (n 21780) | 0.0218 / 0.0308 (n 8083) | 0.0000 / 0.0000 (n 9553) | 0.0156 / 0.0345 (n 840) | 0.0191 / 0.0321 (n 12116) | 0.0031 / 0.0136 (n 20006) | 0.0014 / 0.0145 (n 6454) | 0.970 / 0.066 / 0.000 | 0.0034 / 0.0203 / 0.07 | 0.0000 |
-| v4r | 0.0053 / 0.0181 (n 21780) | 0.0028 / 0.0081 (n 8083) | 0.0000 / 0.0000 (n 9553) | 0.0119 / 0.0281 (n 840) | 0.0031 / 0.0180 (n 12116) | 0.0028 / 0.0110 (n 20006) | 0.0014 / 0.0112 (n 6454) | 0.970 / 0.002 / 0.000 | 0.0034 / 0.0042 / 0.00 | 0.0000 |
+| v4 | 0.0063 / 0.0236 (n 21780) | 0.0206 / 0.0292 (n 8083) | 0.0000 / 0.0000 (n 9553) | 0.0147 / 0.0340 (n 840) | 0.0187 / 0.0312 (n 12116) | 0.0031 / 0.0138 (n 20006) | 0.0015 / 0.0143 (n 6454) | 0.970 / 0.092 / 0.000 | 0.0034 / 0.0187 / 0.09 | 0.0000 |
+| v4c | 0.0063 / 0.0238 (n 21780) | 0.0218 / 0.0308 (n 8083) | 0.0000 / 0.0000 (n 9553) | 0.0155 / 0.0345 (n 840) | 0.0191 / 0.0321 (n 12116) | 0.0031 / 0.0136 (n 20006) | 0.0014 / 0.0145 (n 6454) | 0.970 / 0.066 / 0.000 | 0.0034 / 0.0203 / 0.07 | 0.0000 |
+| v4r | 0.0053 / 0.0181 (n 21780) | 0.0028 / 0.0081 (n 8083) | 0.0000 / 0.0000 (n 9553) | 0.0119 / 0.0281 (n 840) | 0.0031 / 0.0180 (n 12116) | 0.0028 / 0.0110 (n 20006) | 0.0013 / 0.0112 (n 6454) | 0.970 / 0.002 / 0.000 | 0.0034 / 0.0042 / 0.00 | 0.0000 |
 
 ## L2 -- open loop (real action sequence, model rolled forward; onset off): xy error median / p90 at steps; stall segments
 
@@ -18,13 +18,27 @@ Models {'v4': '/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainl
 | v4c | 0.036 / 0.096 | 0.096 / 0.296 | 0.220 / 0.676 | 0.400 / 0.971 | 0.861 / 2.131 | 2.245 / 5.703 | 0.036 / 0.076 | 0.280 / 0.414 | (14, 26): 0.05 / 0.47; 0.43 / 0.14 (0.00) |
 | v4r | 0.035 / 0.105 | 0.084 / 0.292 | 0.236 / 0.598 | 0.427 / 0.883 | 0.814 / 1.935 | 2.138 / 5.165 | 0.036 / 0.081 | 0.266 / 0.398 | (14, 26): 0.05 / 0.67; 0.71 / 0.00 (0.00) |
 
-## L3 -- closed loop (CF actor on the model state; onset off) vs the real hazard-free rollouts
+## L2b -- restart at the real stall-segment entry (and 20 rows before it), recorded actions through the segment
+
+| model | restart | n | seg len median | real disp median | model disp median / p90 | share model disp > 0.5 / < 0.2 | xy error at the entry (median) | gate share median | real speed median |
+|---|---|---:|---:|---:|---|---|---:|---:|---:|
+| v4 | restart_0_before_entry | 59 | 33 | 0.038 | 2.591 / 94.977 | 0.90 / 0.05 | 0.000 | 0.00 | 0.0040 |
+| v4 | restart_20_before_entry | 53 | 38 | 0.038 | 3.118 / 36.924 | 0.96 / 0.02 | 1.169 | 0.00 | 0.0069 |
+| v4c | restart_0_before_entry | 59 | 33 | 0.038 | 2.182 / 150.949 | 0.85 / 0.14 | 0.000 | 0.00 | 0.0040 |
+| v4c | restart_20_before_entry | 53 | 38 | 0.038 | 3.591 / 45.864 | 0.92 / 0.06 | 1.186 | 0.00 | 0.0069 |
+| v4r | restart_0_before_entry | 59 | 33 | 0.038 | 0.153 / 10.339 | 0.32 / 0.64 | 0.000 | 0.00 | 0.0040 |
+| v4r | restart_20_before_entry | 53 | 38 | 0.038 | 0.159 / 6.475 | 0.28 / 0.58 | 0.143 | 0.00 | 0.0069 |
+
+Split / episode overlap: {"train_episodes": 333, "test_episodes": 84, "test_episodes_also_in_train": 28, "val_episodes_also_in_train": 27, "note": "the split is by start anchor; anchors of one source episode can fall into different splits (their CF rollouts are different trajectories from different states)"}
+
+
+## L3 -- closed loop (CF actor on the model state; onset off) vs the real hazard-free rollouts, both inside the first 400 steps
 
 | model | n seq | heading north at 30: real / model / agreement | far entry by 100: real / model / agreement | reach by 400: real / model / agreement | stalled in the last 100: real / model / agreement |
 |---|---:|---|---|---|---|
-| v4 | 31 | 0.06 / 0.10 / 0.97 | 0.10 / 0.10 / 1.00 | 0.61 / 0.97 / 0.65 | 0.39 / 0.00 / 0.61 |
-| v4c | 31 | 0.06 / 0.03 / 0.97 | 0.10 / 0.03 / 0.94 | 0.61 / 0.97 / 0.65 | 0.39 / 0.03 / 0.65 |
-| v4r | 31 | 0.06 / 0.06 / 0.94 | 0.10 / 0.06 / 0.97 | 0.61 / 0.94 / 0.61 | 0.39 / 0.00 / 0.61 |
+| v4 | 31 | 0.06 / 0.10 / 0.97 | 0.10 / 0.10 / 1.00 | 0.48 / 0.97 / 0.52 | 0.39 / 0.00 / 0.61 |
+| v4c | 31 | 0.06 / 0.03 / 0.97 | 0.10 / 0.03 / 0.94 | 0.48 / 0.97 / 0.52 | 0.39 / 0.03 / 0.65 |
+| v4r | 31 | 0.06 / 0.06 / 0.94 | 0.10 / 0.06 / 0.97 | 0.48 / 0.94 / 0.55 | 0.39 / 0.00 / 0.61 |
 
 ## The original validation at the selected step (no-regression on the start-agent / logged rows) and the CF val
 

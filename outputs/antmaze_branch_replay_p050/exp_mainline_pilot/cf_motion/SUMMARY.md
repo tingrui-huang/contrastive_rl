@@ -45,9 +45,9 @@ states by ~40 % (standardised units), the control does not move it.
   for a real 0.003) and far-route rows 6x better; static rows are gated identically (97 %).
 * L2 / L3 do not: with the real action sequence the revision drifts as much as v4 (0.43 vs 0.37 at step 30; 2.1 at 100) and moves MORE
   through the real stall segments (0.67 vs 0.43 over a real 0.05); with the CF actor in the loop no model stalls (0.00-0.03 vs real
-  0.39) and all over-reach (0.94-0.97 vs 0.61).  The one-step model reproduces a stall only when handed the exact stuck state; once its
-  own state is slightly off, the gate does not fire and the actor's torque moves it on.  A stall is a basin of attraction of the real
-  contact dynamics, which the point-wise one-step fit does not represent.
+  0.39) and all over-reach (0.94-0.97 vs 0.61).  [Withdrawn on the user's review: this comparison starts from the trajectory start, so
+  the model may reach the segment in a different pose; whether the local stall dynamics are learned is settled by the entry check of
+  ROUND 2 below -- they are, for the CF-supervised models; the failure here was the accumulated error before the segment.]
 
 ## The crossover re-run with the fixed diagnostic (`diag_v6_ett_crossover.py --model-dir ... --tag {v4fix, v4c, v4r}`; paired clocks and death uniforms keyed by (state, class, rep); Q1 from a motion-only pass at exactly step 30)
 
@@ -101,3 +101,92 @@ states by ~40 % (standardised units), the control does not move it.
   (v4 vs v4c), so corner differences below ~0.1 should not be read as the revision's effect; the onset head was not retrained and its
   inputs now come from a different motion model -- its validation AUROC / BCE at the selected step are unchanged (0.997-0.998), but the
   closed-loop death timing under the new motion was not re-measured separately from the stall removal.
+
+# ROUND 2 (user's review of 37b990f): the stall-entry check, the episode-level split, and the short-sequence multi-step term
+
+## Fixes adopted
+
+* L3's horizon unified: the real rollout and the model are both judged inside the first 400 steps (before, the real used its full length).
+* The split by start anchor let anchors of one source episode fall into different splits: 28 of the 84 anchor-split test episodes also had
+  train anchors.  Re-split BY SOURCE EPISODE (`collect_v6_cf_motion.py resplit` -> `rollouts_cf_ep.npz`: 307 / 66 / 66 episodes, 412 / 77 / 87
+  starts, 224k / 52k / 50k rows; overlap 0).  v4c / v4r keep the anchor split (their numbers are reported on it); the new arms use the episode split.
+* "the stall's basin of attraction is not learned" was too strong for a comparison from the trajectory start -- replaced by the entry check below.
+
+## The stall-entry check (no training; `diag_v6_cf_motion_accept.py` L2b): the model restarted at the REAL entry state of each real stall segment (and 20 rows before it), the recorded actions fed through the segment
+
+| model (split) | restart | n segments | real disp | model disp median / p90 | share model disp > 0.5 / < 0.2 | xy error at the entry | gate fires |
+|---|---|---:|---:|---|---|---:|---:|
+| v4 (anchor) | at entry | 59 | 0.038 | **2.59 / 95.0** | 0.90 / 0.05 | 0 | 0.00 |
+| v4 | 20 before | 53 | 0.038 | 3.12 / 36.9 | 0.96 / 0.02 | 1.17 | 0.00 |
+| v4c | at entry | 59 | 0.038 | 2.18 / 151 | 0.85 / 0.14 | 0 | 0.00 |
+| v4r (anchor) | at entry | 59 | 0.038 | **0.15 / 10.3** | 0.32 / 0.64 | 0 | 0.00 |
+| v4r | 20 before | 53 | 0.038 | 0.16 / 6.5 | 0.28 / 0.58 | 0.14 | 0.00 |
+| v4 (episode) | at entry | 64 | 0.05 | 3.23 / 1261 | 0.94 / 0.03 | 0 | 0.00 |
+| v4a one-step (episode) | at entry | 64 | 0.05 | **0.09 / 4.4** | 0.25 / 0.72 | 0 | 0.00 |
+| v4a | 20 before | 64 | 0.05 | 0.16 / 4.9 | 0.36 / 0.55 | 0.22 | 0.00 |
+| v4b one-step + multi-step (episode) | at entry | 64 | 0.05 | 0.17 / 3.2 | 0.39 / 0.55 | 0 | 0.00 |
+| v4b | 20 before | 64 | 0.05 | 0.27 / 4.5 | 0.41 / 0.34 | 0.19 | 0.00 |
+
+* The ORIGINAL v4 has not learned the local stall dynamics at all: from the exact entry state with the recorded actions it walks 2.6-3.2
+  over a real 0.04 in 90 % of the segments (the gate never fires -- these stalls are swaying / slow rows, not fully static ones).
+* The CF-supervised models HAVE learned them locally: from the entry, 0.09-0.17 median (55-72 % of segments under 0.2), and from 20 rows
+  before the entry 0.16-0.27 with an entry error of 0.14-0.22.  So the trajectory-level failure (37b990f) was mostly the accumulated
+  state error BEFORE the segment; the local dynamics are now mostly right, with a heavy tail (p90 3-10) of segments that still run away.
+
+## Arms A / B under the episode split (`fit --init-from ett_one_step_v4 --freeze-onset --steps 10000 --cf-rows rollouts_cf_ep.npz --cf-share 0.25 [--multistep 10]`)
+
+B adds a short-sequence term: windows of K = 10 recorded actions from the CF train rollouts (half starting on slow / static rows), the raw
+regression unrolled on its OWN predictions from the real start state (no gate), MSE against the recorded states in standardised state
+units, weight 1, batch 256; the one-step training kept; same init, budget and selection rule as A.
+
+| arm | one-step CF-val MSE (moving) | original val diag / off | 10-step open-loop xy error on CF-val windows |
+|---|---|---|---|
+| A one-step | 0.113-0.119 | 0.0096-0.0132 / 0.028-0.034 (unchanged) | (not computed in the fit) |
+| B + multi-step | 0.119-0.126 | 0.0117-0.0158 / 0.031-0.036 (+15-20 %) | 0.064 |
+
+## Acceptance on the episode-level test split (66 episodes, 174 rollouts, 49,542 rows; `cf_motion/accept_ep/`)
+
+| layer | quantity | v4 | A one-step | B + multi-step |
+|---|---|---|---|---|
+| L1 | one-step xy error median: moving / slow / turn30 / far / corridor | 0.0070 / 0.0248 / 0.0140 / 0.0113 / 0.0017 | 0.0059 / 0.0023 / 0.0113 / 0.0046 / 0.0016 | 0.0065 / 0.0029 / 0.0122 / 0.0051 / 0.0018 |
+| L1 | slow rows: predicted speed (real 0.0082) | 0.0250 | 0.0095 | 0.0096 |
+| L2 open loop (real actions) | xy error median at 5 / 10 / 20 / 30 / 50 / 100 | 0.04 / 0.11 / 0.22 / 0.40 / 0.81 / 2.04 | 0.04 / 0.10 / 0.19 / 0.35 / 0.65 / 1.59 | 0.04 / 0.09 / 0.16 / **0.22 / 0.43 / 1.04** |
+| L2 | real stall segments from the trajectory start (8; real disp 0.05): model disp; share > 0.5 | 0.77; 0.75 | 1.04; 0.75 | **0.44; 0.25** |
+| L3 closed loop (38 hazard-free seqs, 400-step window) | heading north at 30 real / model / agreement | 0.13 / 0.16 / 0.97 | 0.13 / 0.18 / 0.95 | 0.13 / 0.13 / 0.95 |
+| L3 | far entry by 100 real / model / agreement | 0.16 / 0.18 / 0.97 | 0.16 / 0.18 / 0.97 | 0.16 / 0.13 / 0.97 |
+| L3 | reach by 400 real / model / agreement | 0.42 / 0.87 / 0.55 | 0.42 / 0.87 / 0.55 | 0.42 / 0.82 / 0.55 |
+| L3 | stalled in the last 100 real / model / agreement | 0.47 / 0.00 / 0.53 | 0.47 / 0.03 / 0.55 | 0.47 / 0.05 / 0.47 |
+
+## The crossover with A and B (fixed diagnostic; `ett_crossover/v4a`, `ett_crossover/v4b`)
+
+| quantity | sim | v4 | v4r | A | B |
+|---|---|---|---|---|---|
+| Q1 reset CF + CF: xy error at 10 / 20 / 30 (heading agreement) | | 0.44 / 1.07 / 1.68 (0.69) | 0.33 / 0.85 / 1.32 (0.73) | 0.32 / 0.82 / 1.40 (0.70) | 0.30 / 0.78 / 1.30 (0.69) |
+| Q1 cf_early CF + CF: at 30 (agreement) | | 1.01 (0.94) | 0.67 (0.92) | 0.68 (0.94) | **0.53** (0.94) |
+| Q1 reset start + start: at 30 (no regression) | | 0.28 | 0.33 | 0.47 | 0.45 |
+| reset CF + CF: success / timeout / completion given far | 0.53 / 0.23 / 0.67 | 0.57 / 0.12 / 0.82 | 0.61 / 0.02 / 0.92 | 0.54 / 0.14 / 0.69 | 0.60 / **0.15** / **0.75** |
+| indep_reset CF + CF: success / timeout / completion | 0.44 / 0.28 / 0.57 | 0.39 / 0.22 / 0.56 | 0.50 / 0.06 / 0.78 | 0.61 / 0.14 / 0.79 | 0.51 / 0.11 / 0.76 |
+| cf_early CF + CF: success / timeout / completion | 0.45 / 0.27 / 0.61 | 0.41 / 0.14 / 0.67 | 0.52 / 0.04 / 0.86 | 0.53 / 0.07 / 0.83 | 0.51 / 0.11 / 0.72 |
+| reset (CF + CF) - (logged + CF), success | +0.302 | +0.392 (r 0.45) | +0.455 (r 0.38) | +0.376 (r 0.36) | +0.450 (r 0.27) |
+| reset (CF + CF) - (start + CF) | +0.102 | +0.156 | +0.205 | +0.114 | +0.135 |
+| reset (CF2 + CF) - (start + CF) | +0.078 | +0.288 | +0.318 | +0.161 | **+0.110** |
+| reset (MF + CF) - (start + CF) | -0.073 | +0.036 | +0.013 | -0.000 | +0.016 |
+| indep_reset (start + CF) - (start + start) | +0.124 | +0.018 | +0.125 | +0.117 | +0.235 |
+
+## Reading against the user's decision rule for retraining CRL
+
+* Long-range drift down: YES for B -- the open-loop xy error is halved at 30 / 50 / 100 steps (0.22 / 0.43 / 1.04 vs 0.40 / 0.81 / 2.04) and the
+  early error under the CF loop at the turning states falls to 0.53 (v4 1.01).
+* Stalls reproduced: PARTLY -- locally yes (entry check 0.09-0.17 vs v4's 2.6-3.2), from the trajectory start improved (0.44 vs 0.77-1.04 over a
+  real 0.05; 25 % of segments still run > 0.5), the timeouts under the CF loop partly restored (0.15 vs v4r's 0.02, simulator 0.23), but in the
+  closed loop with the CF actor the model still does not stall (0.05 vs real 0.47) and over-reaches (0.82 vs 0.42).
+* Normal walking preserved: MOSTLY -- one-step error on moving rows 0.0065 (v4 0.0070), the original validation +15-20 % worse in B, and the
+  start + start early error at reset 0.45 vs 0.28 in both A and B (a regression to watch; v4r had 0.33).
+* Same-state action differences closer: PARTLY -- the CF2 over-statement fixed (+0.11 vs sim +0.08; v4 +0.29), the continuation effect at
+  reset closer (+0.135 vs +0.102); the coarse first-step contrast still over-stated (+0.45 vs +0.30), MF's sign still wrong, per-state
+  correlations unchanged (<= 0.3).
+* Verdict: the multi-step term is the right rung (it fixes what the one-step term could not, at a small one-step cost), but the closed-loop
+  stall is still missing, so the bar for re-running the critic + actor is not met yet.  Candidates (user's decision): a longer / stall-covering
+  unroll (K 20-30, windows spanning whole stall segments), a higher weight, or the gate replaced by a soft slow-down learned from the same
+  rows; each ~30 min on the three nodes now available.  The oracle's own instability (0.449 vs 0.351 across draws) is a separate open problem
+  that a better ETT does not touch.

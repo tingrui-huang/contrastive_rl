@@ -9,9 +9,12 @@ On the TEST split of the CF-controlled rollouts (start points never seen by the 
   L2  open loop: the REAL action sequence, the model rolled forward from the sequence start (the stationary gate as deployed; the onset
       OFF) -- xy / pose / velocity error at steps 5 / 10 / 20 / 30 / 50 / 100, and on the rollouts with a real stall segment (>= 20 rows
       below the slow speed) the model's displacement over that segment vs the real one (a stall predicted as progress).
+  L2b stall entry (user's review of 37b990f): the model restarted at the REAL entry state of each real stall segment (and, separately,
+      20 rows before it) and fed the recorded actions through the segment -- the model's displacement over the segment vs the real one
+      and the gate's firing; separates "the local stall dynamics are not learned" from "the state error accumulated before the entry".
   L3  closed loop: the CF actor chooses the action from the MODEL's state (onset OFF) -- heading north at exactly step 30, far entry
-      within 100 steps, and the reach / stall outcome by step 400, against the real rollout (its hazards inactive in both zones only,
-      so the real path is deterministic and never dies).
+      within 100 steps, and the reach / stall outcome INSIDE THE FIRST 400 STEPS for both the model and the real rollout (its hazards
+      inactive in both zones only, so the real path is deterministic and never dies).
   Plus the no-regression check on the ORIGINAL validation rows (start-agent / logged paths): the fit's own val metrics at the selected
   step are read from the model json.
 Outputs under cf_motion/accept/: report.json, REPORT.md.
@@ -54,8 +57,12 @@ class Motion:
     return s2, p_stat
 
 
+ROWS_FILE = 'rollouts_cf.npz'
+MODEL_DIRS = None
+
+
 def load_rows():
-  d = np.load(CFM / 'rollouts_cf.npz', allow_pickle=False)
+  d = np.load(CFM / ROWS_FILE, allow_pickle=False)
   return {k: d[k] for k in d.files if k != 'meta'}
 
 
@@ -143,6 +150,36 @@ def layer2(models, seqs):
   return res
 
 
+def layer2b(models, seqs, pre=20):
+  """Restart at the real stall-segment entry (offset 0) or `pre` rows before it, feed the recorded actions through the segment."""
+  res = {}
+  for name, M in models.items():
+    rows = {0: [], pre: []}
+    for q in seqs:
+      S, A = q['s'], q['a']
+      for (a0, b0) in stall_segments(q['speed']):
+        for off in (0, pre):
+          st = a0 - off
+          if st < 0:
+            continue
+          s = S[st:st + 1].copy(); gate_fires = 0; pred = [s[0]]
+          for j in range(st, b0):
+            s, pst = M[q['fold']].step(s, A[j:j + 1]); pred.append(s[0]); gate_fires += int(pst[0] > 0.5)
+          pred = np.stack(pred); k0 = a0 - st
+          real = float(np.linalg.norm(S[b0, :2] - S[a0, :2])); mod = float(np.linalg.norm(pred[-1, :2] - pred[k0, :2])); entry_err = float(np.linalg.norm(pred[k0, :2] - S[a0, :2]))
+          rows[off].append({'len': b0 - a0, 'real_disp': real, 'model_disp': mod, 'entry_xy_err': entry_err, 'gate_share': gate_fires / max(b0 - st, 1), 'real_speed_median': float(np.median(q['speed'][a0:b0]))})
+    out = {}
+    for off, rr in rows.items():
+      if not rr:
+        continue
+      md = np.array([x['model_disp'] for x in rr]); rd = np.array([x['real_disp'] for x in rr])
+      out[f'restart_{off}_before_entry'] = {'n': len(rr), 'len_median': float(np.median([x['len'] for x in rr])), 'real_disp_median': float(np.median(rd)), 'model_disp_median': float(np.median(md)), 'model_disp_p90': float(np.percentile(md, 90)),
+                                             'share_model_disp_gt_0.5': float((md > 0.5).mean()), 'share_model_disp_lt_0.2': float((md < 0.2).mean()), 'entry_xy_err_median': float(np.median([x['entry_xy_err'] for x in rr])),
+                                             'gate_share_median': float(np.median([x['gate_share'] for x in rr])), 'real_speed_median': float(np.median([x['real_speed_median'] for x in rr]))}
+    res[name] = out
+  return res
+
+
 def layer3(models, seqs, cf_mode):
   """Closed loop with the CF actor on the model state; compared with the real rollout where both hazards were inactive (deterministic real path)."""
   res = {}
@@ -155,12 +192,12 @@ def layer3(models, seqs, cf_mode):
         o31 = np.concatenate([s, goal[None]], axis=1); a = cf_mode(o31); s, _ = M[q['fold']].step(s, a); xy.append(s[0, :2])
         if np.linalg.norm(s[0, :2] - goal) <= RD.REACH_R:
           break
-      xy = np.stack(xy); real = S[:, :2]
+      xy = np.stack(xy); real = S[:401, :2]                                     # both judged inside the first 400 steps
       if len(real) > 30 and len(xy) > 30:
         heads.append((float(real[30, 1] > 1.5), float(xy[30, 1] > 1.5)))
       rf = np.isin(region_of(real[:101].astype(np.float64)), FAR).any(); mf = np.isin(region_of(xy[:101].astype(np.float64)), FAR).any(); fars.append((float(rf), float(mf)))
       rr = bool(np.linalg.norm(real - goal, axis=1).min() <= RD.REACH_R); mr = bool(np.linalg.norm(xy - goal, axis=1).min() <= RD.REACH_R); reach.append((float(rr), float(mr)))
-      rs = float(np.linalg.norm(real[-1] - real[max(0, len(real) - 100)]) < 0.5) if len(real) >= 100 else 0.0; ms = float(np.linalg.norm(xy[-1] - xy[max(0, len(xy) - 100)]) < 0.5) if len(xy) >= 100 and not mr else 0.0
+      rs = float(np.linalg.norm(real[-1] - real[max(0, len(real) - 100)]) < 0.5) if len(real) >= 100 and not rr else 0.0; ms = float(np.linalg.norm(xy[-1] - xy[max(0, len(xy) - 100)]) < 0.5) if len(xy) >= 100 and not mr else 0.0
       stallp.append((rs, ms))
     H = np.array(heads); Fa = np.array(fars); Rc = np.array(reach); St = np.array(stallp)
     res[name] = {'n_seq': len(seqs), 'heading_north_30': {'real': float(H[:, 0].mean()), 'model': float(H[:, 1].mean()), 'agreement': float((H[:, 0] == H[:, 1]).mean())} if len(H) else None,
@@ -174,7 +211,7 @@ def run(args):
   OUT.mkdir(parents=True, exist_ok=True); t0 = time.time()
   R = load_rows(); R['_fold'] = fold_of_rollouts(R)
   test_rollouts = np.flatnonzero(R['roll_split'].astype(str) == 'test'); test_rows = np.flatnonzero(np.isin(R['rollout'], test_rollouts))
-  dirs = {'v4': MP.OUT / 'ett_one_step_v4', 'v4c': MP.OUT / 'ett_one_step_v4c', 'v4r': MP.OUT / 'ett_one_step_v4r'}
+  dirs = {'v4': MP.OUT / 'ett_one_step_v4', 'v4c': MP.OUT / 'ett_one_step_v4c', 'v4r': MP.OUT / 'ett_one_step_v4r'} if not MODEL_DIRS else {k: MP.OUT / v for k, v in MODEL_DIRS.items()}
   dirs = {k: v for k, v in dirs.items() if all((v / f'model_fold{f}.pkl').exists() for f in range(3))}
   models = {name: {f: Motion(d, f) for f in range(3)} for name, d in dirs.items()}
   print('models', list(models), 'test rollouts', len(test_rollouts), 'rows', len(test_rows), flush=True)
@@ -182,6 +219,10 @@ def run(args):
   res['L1_teacher_forced'] = layer1(models, R, test_rows); print(f'L1 {time.time() - t0:.0f}s', flush=True)
   seqs = sequences(R, test_rollouts)
   res['L2_open_loop'] = layer2(models, seqs); print(f'L2 {time.time() - t0:.0f}s', flush=True)
+  res['L2b_stall_entry'] = layer2b(models, seqs); print(f'L2b {time.time() - t0:.0f}s', flush=True)
+  anchors, _ = MP.AnchorSet.load(MP.OUT / 'anchors.npz'); ep = anchors.episode[R['start_anchor']]; sp = R['start_split'].astype(str)
+  res['split_episode_overlap'] = {'train_episodes': int(len(set(ep[sp == 'train']))), 'test_episodes': int(len(set(ep[sp == 'test']))), 'test_episodes_also_in_train': int(len(set(ep[sp == 'test']) & set(ep[sp == 'train']))),
+                                  'val_episodes_also_in_train': int(len(set(ep[sp == 'val']) & set(ep[sp == 'train']))), 'note': 'the split is by start anchor; anchors of one source episode can fall into different splits (their CF rollouts are different trajectories from different states)'}
   cf_mode = RD_cf_mode()
   res['L3_closed_loop_no_hazard_seqs'] = layer3(models, seqs, cf_mode); print(f'L3 {time.time() - t0:.0f}s', flush=True)
   # the original validation (no-regression) from the fit jsons
@@ -192,6 +233,7 @@ def run(args):
       j = MP.read_json(d / f'model_fold{f}.json'); h = next((x for x in j['history'] if x['step'] == j['best_step']), None)
       per[f'fold{f}'] = {k: h.get(k) for k in ('step', 'val_mse_diag', 'val_mse_off', 'val_onset_bce', 'val_auroc', 'val_stat_acc', 'cf_val_mse_moving', 'cf_val_mse_all', 'cf_val_stat_acc')} if h else None
     res['original_validation_at_selected_step'][name] = per
+  res['rows_file'] = ROWS_FILE
   MP.write_json(OUT / 'report.json', res)
   (OUT / 'REPORT.md').write_text(write_md(res), encoding='utf-8')
   print(f'done {time.time() - t0:.0f}s', flush=True)
@@ -221,7 +263,12 @@ def write_md(res):
     cells = [(f"{r['xy_err'][str(k)]['median']:.3f} / {r['xy_err'][str(k)]['p90']:.3f}" if str(k) in r['xy_err'] else (f"{r['xy_err'][k]['median']:.3f} / {r['xy_err'][k]['p90']:.3f}" if k in r['xy_err'] else '-')) for k in STEPS_L2]
     pe = r['pose_err_median']; ve = r['vel_err_median']; g = lambda d, k: d.get(str(k), d.get(k))
     L.append(f"| {n} | " + ' | '.join(cells) + f" | {g(pe, 30):.3f} / {g(pe, 100) if g(pe, 100) is not None else float('nan'):.3f} | {g(ve, 30):.3f} / {g(ve, 100) if g(ve, 100) is not None else float('nan'):.3f} | " + (f"({st['n']}, {st['len_median']:.0f}): {st['real_disp_median']:.2f} / {st['model_disp_median']:.2f}; {st['share_model_disp_gt_0.5']:.2f} / {st['share_model_disp_gt_2.0']:.2f} ({st['share_real_disp_gt_0.5']:.2f})" if st else '-') + ' |')
-  L += ['', '## L3 -- closed loop (CF actor on the model state; onset off) vs the real hazard-free rollouts', '', '| model | n seq | heading north at 30: real / model / agreement | far entry by 100: real / model / agreement | reach by 400: real / model / agreement | stalled in the last 100: real / model / agreement |', '|---|---:|---|---|---|---|']
+  L += ['', '## L2b -- restart at the real stall-segment entry (and 20 rows before it), recorded actions through the segment', '', '| model | restart | n | seg len median | real disp median | model disp median / p90 | share model disp > 0.5 / < 0.2 | xy error at the entry (median) | gate share median | real speed median |', '|---|---|---:|---:|---:|---|---|---:|---:|---:|']
+  for n in names:
+    for k, e in res['L2b_stall_entry'][n].items():
+      L.append(f"| {n} | {k} | {e['n']} | {e['len_median']:.0f} | {e['real_disp_median']:.3f} | {e['model_disp_median']:.3f} / {e['model_disp_p90']:.3f} | {e['share_model_disp_gt_0.5']:.2f} / {e['share_model_disp_lt_0.2']:.2f} | {e['entry_xy_err_median']:.3f} | {e['gate_share_median']:.2f} | {e['real_speed_median']:.4f} |")
+  L += ['', f"Split / episode overlap: {json.dumps(res['split_episode_overlap'])}", '']
+  L += ['', '## L3 -- closed loop (CF actor on the model state; onset off) vs the real hazard-free rollouts, both inside the first 400 steps', '', '| model | n seq | heading north at 30: real / model / agreement | far entry by 100: real / model / agreement | reach by 400: real / model / agreement | stalled in the last 100: real / model / agreement |', '|---|---:|---|---|---|---|']
   for n in names:
     r = res['L3_closed_loop_no_hazard_seqs'][n]; h = r['heading_north_30']
     c = lambda d: f"{d['real']:.2f} / {d['model']:.2f} / {d['agreement']:.2f}"
@@ -237,7 +284,15 @@ def write_md(res):
 
 
 def main(argv=None):
-  ap = argparse.ArgumentParser(); ap.add_argument('mode', choices=('run',)); args = ap.parse_args(argv); run(args); return 0
+  ap = argparse.ArgumentParser(); ap.add_argument('mode', choices=('run',)); ap.add_argument('--rows', default='rollouts_cf.npz'); ap.add_argument('--models', nargs='*', default=None, help='name=dir pairs (dirs under the pilot output)'); ap.add_argument('--tag', default=None)
+  args = ap.parse_args(argv)
+  global ROWS_FILE, MODEL_DIRS, OUT
+  ROWS_FILE = args.rows
+  if args.models:
+    MODEL_DIRS = dict(m.split('=') for m in args.models)
+  if args.tag:
+    OUT = CFM / f'accept_{args.tag}'
+  run(args); return 0
 
 
 if __name__ == '__main__':

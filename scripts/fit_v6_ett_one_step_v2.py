@@ -65,6 +65,8 @@ CF_ROWS = None                          # --cf-rows: the CF-controlled motion ro
 CF_SHARE = 0.25
 INIT_FROM = None                        # --init-from: continue from this model dir's fold model (params + norm); the controlled continuation after 5650f8d
 FREEZE_ONSET = False                    # --freeze-onset: the onset head keeps its initial parameters (motion regression + stationary gate only)
+MULTISTEP = 0                           # --multistep K: short-sequence unroll term on the CF rollouts (0 = off); --multistep-weight / --multistep-batch / --multistep-stall-share
+MS_WEIGHT, MS_BATCH, MS_STALL_SHARE = 1.0, 256, 0.5
 REL_EPS, REL_W = 0.05, 1.0              # relative term: ||pred - d||^2 / (||d||^2 + REL_EPS^2) in standardised units
 
 
@@ -125,8 +127,23 @@ class CFRows:
   def __init__(self, path):
     with np.load(path, allow_pickle=False) as d:
       self.s, self.a, self.s2, self.static = d['s'], d['a'], d['s2'], d['static']
+      self.rollout, self.speed, self.slow = d['rollout'], d['speed'], d['slow']
       sp = d['roll_split'].astype(str)[d['rollout']]
     self.idx = {k: np.flatnonzero(sp == k) for k in ('train', 'val', 'test')}
+    self.split_row = sp
+
+  def windows(self, K, split='train'):
+    """Valid window starts i (rows i..i+K-1 in one rollout, all in `split`) and the subset starting on a slow / static row."""
+    n = len(self.s); i = np.arange(n - K)
+    ok = (self.rollout[i] == self.rollout[i + K - 1]) & (self.split_row[i] == split)
+    starts = i[ok]; stall = starts[(self.speed[starts] < 0.03)]
+    return starts, stall
+
+  def gather_window(self, starts, K):
+    """S [B, K+1, 29] (the real states s_0..s_K) and A [B, K, 8]."""
+    idx = starts[:, None] + np.arange(K)[None, :]
+    S = np.concatenate([self.s[idx], self.s2[idx[:, -1:]]], axis=1); A = self.a[idx]
+    return S.astype(np.float32), A.astype(np.float32)
 
   def gather(self, i):
     return self.s[i], self.a[i], self.s2[i], self.static[i]
@@ -288,6 +305,37 @@ def mode_fit(args):
     logit = ons.apply(po_, jnp.concatenate([x, jax.lax.stop_gradient(pred), h], axis=1)); bce = jnp.mean(w * optax.sigmoid_binary_cross_entropy(logit, y))
     sl = stt.apply(ps_, xm); sbce = jnp.mean(optax.sigmoid_binary_cross_entropy(sl, st)); sacc = jnp.mean((sl > 0) == (st > 0.5))
     return md, mo, bce, jax.nn.sigmoid(logit), sbce, sacc
+  ms_starts, ms_stall = (CF.windows(MULTISTEP, 'train') if (CF is not None and MULTISTEP > 0) else (None, None))
+  if ms_starts is not None:
+    print(f'fold {f}: multistep K {MULTISTEP}: {len(ms_starts)} train windows ({len(ms_stall)} starting on slow / static rows), weight {MS_WEIGHT}, batch {MS_BATCH}, stall share {MS_STALL_SHARE}', flush=True)
+    ms_val_starts, _ = CF.windows(MULTISTEP, 'val'); ms_val_starts = np.random.default_rng(5).choice(ms_val_starts, size=min(4096, len(ms_val_starts)), replace=False)
+    VS_ms, VA_ms = CF.gather_window(ms_val_starts, MULTISTEP)
+  nS_mean, nS_std, nD_mean, nD_std = (jnp.asarray(norm[k]) for k in ('s_mean', 's_std', 'd_mean', 'd_std'))
+
+  def unroll(p, S0, A):
+    """The raw regression unrolled on its own predictions from the real start state (no gate): predicted states s_1..s_K [B, K, 29]."""
+    s = S0; outs = []
+    for j in range(A.shape[1]):
+      x = jnp.concatenate([(s - nS_mean) / nS_std, A[:, j]], axis=1) if V4 else None
+      d = mot.apply(p, x) * nD_std + nD_mean; s = s + d; outs.append(s)
+    return jnp.stack(outs, axis=1)
+
+  def msloss(p, S, A):
+    pred = unroll(p, S[:, 0], A); err = (pred - S[:, 1:]) / nS_std
+    return jnp.mean(err ** 2)
+
+  @jax.jit
+  def step_m2(p, o, x, d, S, A):
+    def total(p_):
+      l1, parts = mloss(p_, x, d); l2 = msloss(p_, S, A); return l1 + MS_WEIGHT * l2, (parts, l2)
+    (l, (parts, l2)), g = jax.value_and_grad(total, has_aux=True)(p); up, o = opt_m.update(g, o, p); return optax.apply_updates(p, up), o, l, parts, l2
+
+  @jax.jit
+  def ms_val_fn(p, S, A):
+    pred = unroll(p, S[:, 0], A); err = (pred - S[:, 1:]) / nS_std
+    xy = jnp.linalg.norm(pred[:, :, :2] - S[:, 1:, :2], axis=2)
+    return jnp.mean(err ** 2), jnp.median(xy[:, -1])
+
   @jax.jit
   def cf_val_fn(pm_, ps_, xm, d, mov, st):
     pred = mot.apply(pm_, xm); se = jnp.mean((pred - d) ** 2, axis=1)
@@ -309,7 +357,12 @@ def mode_fit(args):
       ab = np.concatenate([ab[:bd - k_d], c1[1], ab[bd - k_d:], c2[1]])
     x = features(s, ab, aq, norm); d = ((s2 - s) - norm['d_mean']) / norm['d_std']
     xm = features_q(s, aq, norm) if V4 else x
-    pm, om, lm, parts = step_m(pm, om, jnp.asarray(xm), jnp.asarray(d, jnp.float32))
+    if ms_starts is not None:
+      n_st = int(MS_STALL_SHARE * MS_BATCH); w0 = np.concatenate([rng.choice(ms_stall, size=n_st), rng.choice(ms_starts, size=MS_BATCH - n_st)])
+      Sw, Aw = CF.gather_window(w0, MULTISTEP)
+      pm, om, lm, parts, lms = step_m2(pm, om, jnp.asarray(xm), jnp.asarray(d, jnp.float32), jnp.asarray(Sw), jnp.asarray(Aw))
+    else:
+      pm, om, lm, parts = step_m(pm, om, jnp.asarray(xm), jnp.asarray(d, jnp.float32)); lms = jnp.float32(0.0)
     ip = rng.choice(ons_pos, size=bl); ineg = rng.choice(ons_neg, size=bl)
     gp = R.gather_branch(ip); gn = R.gather_branch(ineg)
     xo = features(np.concatenate([gp[0], gn[0]]), np.concatenate([gp[1], gn[1]]), np.concatenate([gp[2], gn[2]]), norm); ho = hist_features(np.concatenate([gp[5], gn[5]]), np.concatenate([gp[6], gn[6]]))
@@ -334,6 +387,9 @@ def mode_fit(args):
       if cf_val is not None:
         c_mov, c_all, c_acc = (float(np.asarray(v)) for v in cf_val_fn(pm, ps, cf_val['xm'], cf_val['d'], cf_val['mov'], cf_val['st']))
         cfm = {'cf_val_mse_moving': c_mov, 'cf_val_mse_all': c_all, 'cf_val_stat_acc': c_acc}; score = score + c_mov      # the same selection rule for the control and the revision
+      if ms_starts is not None:
+        m_mse, m_xyK = (float(np.asarray(v)) for v in ms_val_fn(pm, jnp.asarray(VS_ms), jnp.asarray(VA_ms)))
+        cfm.update({'ms_val_mse': m_mse, f'ms_val_xy_err_at_{MULTISTEP}': m_xyK, 'train_multistep': float(lms)})
       hist.append({'step': it, 'train_motion': float(lm), 'train_onset': float(lo), 'train_stat': float(ls), 'val_mse_diag': float(md_), 'val_mse_off': float(mo_), 'val_onset_bce': float(bce), 'val_auroc': auc, 'val_stat_bce': float(sbce), 'val_stat_acc': float(sacc), 'score': score, **cfm})
       if score < best:
         best, best_step = score, it
@@ -344,7 +400,8 @@ def mode_fit(args):
         'param_delta': {k: float(optax.global_norm(jax.tree_util.tree_map(lambda a, b: a - b, best_state[k], p0))) for k, p0 in (('motion_params', pm0), ('onset_params', po0), ('stat_params', ps0))},
         'supervision_sha256': MP.sha256(EC / 'supervision.npz'),
         'init_from': (str(INIT_FROM) if INIT_FROM else None), 'cf_rows': (str(CF_ROWS) if CF_ROWS else None), 'cf_share': (CF_SHARE if CF_ROWS else 0.0), 'freeze_onset': FREEZE_ONSET,
-        'best_cf_val': next((h for h in hist if h['step'] == best_step), {}), 'selection': 'original validation score' + (' + CF-val one-step MSE (moving rows)' if CF_ROWS else '')}
+        'best_cf_val': next((h for h in hist if h['step'] == best_step), {}), 'selection': 'original validation score' + (' + CF-val one-step MSE (moving rows)' if CF_ROWS else ''),
+        'multistep': {'K': MULTISTEP, 'weight': MS_WEIGHT, 'batch': MS_BATCH, 'stall_share': MS_STALL_SHARE, 'unroll': 'raw regression on its own predictions from the real start (no gate); MSE in standardised state units'} if MULTISTEP > 0 else None}
   with out.open('wb') as fh:
     pickle.dump(md, fh)
   MP.write_json(out.with_suffix('.json'), {k: v for k, v in md.items() if k not in ('motion_params', 'onset_params', 'stat_params', 'norm')})
@@ -430,9 +487,14 @@ def main(argv=None):
   ap.add_argument('--cf-share', type=float, default=0.25)
   ap.add_argument('--freeze-onset', action='store_true')
   ap.add_argument('--out', default=None, help='output model dir (overrides the version default)')
+  ap.add_argument('--multistep', type=int, default=0, help='K: short-sequence unroll term on the CF rollouts (0 = off)')
+  ap.add_argument('--multistep-weight', type=float, default=1.0)
+  ap.add_argument('--multistep-batch', type=int, default=256)
+  ap.add_argument('--multistep-stall-share', type=float, default=0.5)
   args = ap.parse_args(argv)
-  global V3, V4, OUT, INIT_FROM, CF_ROWS, CF_SHARE, FREEZE_ONSET
+  global V3, V4, OUT, INIT_FROM, CF_ROWS, CF_SHARE, FREEZE_ONSET, MULTISTEP, MS_WEIGHT, MS_BATCH, MS_STALL_SHARE
   INIT_FROM, CF_ROWS, CF_SHARE, FREEZE_ONSET = args.init_from, args.cf_rows, float(args.cf_share), bool(args.freeze_onset)
+  MULTISTEP, MS_WEIGHT, MS_BATCH, MS_STALL_SHARE = int(args.multistep), float(args.multistep_weight), int(args.multistep_batch), float(args.multistep_stall_share)
   if args.v4:
     V4 = True; args.v3 = True
   if args.v3:
