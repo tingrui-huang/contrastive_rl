@@ -3219,3 +3219,27 @@ conditional future supervision produced it (per-anchor futures of the
 two tables at the start anchors; the critics' Q landscape from the
 logged torque to the saturated one) -- the user's design call; BC /
 ETT / number of futures untouched.
+
+### Which future supervision produced the stall preference (user's A / B after ccc42f6; 2026-09-22; reset_futures/SUMMARY.md)
+
+A. Reset / start anchors' futures, draw 1 vs draw 2 vs simulator: NO
+stalled / no-route futures in either draw (no-route timeouts 0-0.5 %,
+stall mass 0.005-0.014); the difference is the opposite -- draw 1 gives
+the reset anchors MORE goal-reaching futures (success 0.42 vs 0.16 on
+the 64 diagnostic anchors, 0.33 vs 0.20 on all 196; goal-area mass
+2.3x), while at the 4,049 start_early anchors the draws agree to 0.01
+(per-anchor outcome agreement only 0.58-0.60 at the reset rows).
+B. Q surface forward -> stall at the 64 reset states: the draw-1
+critic's Q rises monotonically to the saturated action from every
+forward action (argmax at the bound in 84-98 % of states), largest under
+the TASK / near-goal goals (+2.1 to +4.4 nats), then the critic-training
+marginals (+1.3 to +3.2), least under the actor stream's relabelled
+goals (+0.5 / +1.3 / -0.3); the 20k critic already has the task / near
+bump and none under the relabelled goals.  The draw-2 critic's Q falls
+toward the stall from its own action and has an INTERIOR maximum from
+the start agent's (91-98 %).  Reading: the draw-1 table's richer
+goal-area positives at the reset rows made the critic rate reset states
+as goal-reaching, with an action dependence whose maximum sits at the
+corner of the action box; the stall is the actor's exploitation of an
+unbounded action extrapolation, not an imitation of stalled paths.
+Nothing launched beyond the two analyses.
