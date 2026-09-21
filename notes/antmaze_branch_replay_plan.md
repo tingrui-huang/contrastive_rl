@@ -3012,3 +3012,35 @@ decision: one-step (state, query torque) supervision from CF-controlled
 simulator paths at reset / turning / corridor states + short multi-step
 unrolling on the existing one-step model; logged supervision kept,
 episode hold-out, no route label, one 8-D torque; engineering stage.
+
+### The controlled CF-motion revision (2026-09-21; cf_motion/SUMMARY.md) -- user's steps 1-3 after 5650f8d
+
+(1) `collect_v6_cf_motion.py`: the frozen CF s0 mode from 576
+pre-selected training-pool anchors (reset / start_early /
+pre_zone1_early / pre_mouth / between; the 192 hold-out anchors
+excluded), 2 rollouts each with natural hidden draws, every outcome
+kept: 1,152 rollouts, 325k full-state transitions (101k static, 31k
+slow, 101k far-route rows; 239 rollouts with a >= 20-row stall), split
+by start 70/15/15.  (2) `fit_v6_ett_one_step_v2.py --init-from
+ett_one_step_v4 --freeze-onset --steps 10000 --cf-rows --cf-share {0 |
+0.25}`: v4c (control) vs v4r (25 % CF rows per batch), same init /
+budget / selection rule.  CF-val one-step MSE (moving) 0.163 -> 0.095;
+original validation unchanged.  (3) `diag_v6_cf_motion_accept.py` on
+the test split: L1 (teacher-forced) clearly better -- slow rows 0.0028
+vs 0.0206 (v4 predicted 6x too much motion on slow rows), far rows
+0.0031 vs 0.0187, turn rows 0.0119 vs 0.0147; L2 (open loop, real
+actions) no better -- drift 0.43 vs 0.37 at step 30, 2.1 at 100, and
+MORE motion through real stall segments (0.67 vs 0.43 over a real
+0.05); L3 (closed loop with the CF actor) unchanged -- reach 0.94-0.97
+vs real 0.61, stalled 0.00 vs 0.39.  The crossover re-run with the
+fixed diagnostic (paired clocks + death uniforms keyed by (state,
+class, rep); Q1 from a motion-only pass at exactly step 30): early
+trajectory under the CF loop -10..-25 % with the revision only, heading
+agreement 0.66-0.75; stalls still removed (timeouts 0.02 vs 0.12 vs
+sim 0.23; completion 0.92 vs 0.67); coarse contrasts still over-stated;
+the control v4c differs from v4 in several corners (closed-loop
+sensitivity to small parameter changes ~0.1-0.2).  Acceptance: turn
+improved modestly; stalls NOT met; action differences not clearly
+closer; no regression under start met.  User's ladder -> next rung:
+short-sequence multi-step supervision on the one-step model, including
+stall and turn segments; not started.

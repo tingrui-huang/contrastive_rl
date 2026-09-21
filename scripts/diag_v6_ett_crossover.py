@@ -40,6 +40,7 @@ from fit_v6_ett_one_step_v2 import in_band  # noqa: E402
 from exp_v6_learned_ett import REGIONS, region_of, FAR  # noqa: E402
 
 OUT = MP.OUT / 'ett_crossover'
+MODEL_DIR = None                # --model-dir: the one-step model dir (default the v4 models); --tag names the output subdir
 STATE_DIM, GOAL_DIM, OBS_W, ACTION_DIM, HORIZON = MP.STATE_DIM, MP.GOAL_DIM, MP.OBS_W, MP.ACTION_DIM, MP.HORIZON
 REACH_R = RD.REACH_R
 CANDS = ('logged', 'start', 'CF', 'MF', 'CF2')
@@ -91,13 +92,15 @@ def prepare_states():
 
 
 # ------------------------------------------------------------------ the model rollouts
-def rollout_model(P, gen, mode_fn, s0, goal, a0, t0, z, kh0, prev_ab0, m0, rng, early_k=EARLY_K):
+def rollout_model(P, gen, mode_fn, s0, goal, a0, t0, z, kh0, prev_ab0, m0, rng, early_k=EARLY_K, death_u=None, onset_off=False, max_steps_cap=None):
   """n paths stepped together through the fold's models (as exp_v6_ett_futures.generate_fold) with an arbitrary first torque a0 and an
   arbitrary continuation policy on the predicted state; returns outcome, length, far entry, the path masses and the first early_k
   predicted states."""
   n = len(s0); s = s0.astype(np.float32).copy(); t = np.asarray(t0, np.int64)
   st = FA.PathState(kh0, prev_ab0, m0)
   max_steps = HORIZON - t
+  if max_steps_cap is not None:
+    max_steps = np.minimum(max_steps, int(max_steps_cap))
   alive = np.ones(n, bool); outcome = np.full(n, 'timeout', dtype='<U7'); L = np.ones(n, np.int64)
   xy_rows = [[s0[i, :2].copy()] for i in range(n)]
   early = np.full((n, early_k + 1, STATE_DIM), np.nan, np.float32); early[:, 0] = s0
@@ -115,7 +118,8 @@ def rollout_model(P, gen, mode_fn, s0, goal, a0, t0, z, kh0, prev_ab0, m0, rng, 
     x = FA.features(o31, ctx, mf, st.kh_prev, kb_now, st.prev_ab, gen.norm)
     hold, ab, _ = gen.sample(x, rng, decision='map'); kh_now = st.hold_counter(idx_all, j, hold)
     s_next, p_on, _ = P.step(s, ab, aq, kh_now, kb_now)
-    died = active & (rng.random(n) < p_on)
+    u_death = rng.random(n) if death_u is None else death_u[:, j]                   # paired across candidates / continuations when death_u is given
+    died = active & (u_death < p_on) & (not onset_off)
     reached = active & ~died & (np.linalg.norm(s_next[:, :2] - goal, axis=1) <= REACH_R)
     for i in np.flatnonzero(active):
       xy_rows[i].append(s_next[i, :2].copy())
@@ -134,11 +138,21 @@ def rollout_model(P, gen, mode_fn, s0, goal, a0, t0, z, kh0, prev_ab0, m0, rng, 
   return {'outcome': outcome, 'length': L, 'far_entry': far_entry, 'zone1_entry': zone1_entry, 'early': early, **masses}
 
 
+def paired_draws(states, cls, reps):
+  """Hidden draws keyed by (state, class, rep) only -- identical for every candidate torque and continuation: the two clocks and the
+  per-step death uniforms."""
+  t01 = np.zeros(len(states), np.int64); t02 = np.zeros(len(states), np.int64); U = np.zeros((len(states), HORIZON), np.float32)
+  for i, (si, ci, r) in enumerate(zip(states, cls, reps)):
+    g = np.random.default_rng([SEED, int(si), int(ci), int(r)])
+    t01[i] = g.integers(FA.Z_PRIOR['t0_1'][0], FA.Z_PRIOR['t0_1'][1] + 1); t02[i] = g.integers(FA.Z_PRIOR['t0_2'][0], FA.Z_PRIOR['t0_2'][1] + 1); U[i] = g.random(HORIZON)
+  return t01, t02, U
+
+
 def mode_run(args):
   OUT.mkdir(parents=True, exist_ok=True); t0 = time.time()
   S, fold, kh0, prev_ab, m0 = prepare_states(); n_states = len(S['t']); groups = S['group'].astype(str)
   print('states', {g: int((groups == g).sum()) for g in np.unique(groups)}, 'folds', np.bincount(fold).tolist(), flush=True)
-  F2.OUT = F2.OUT_V4
+  F2.OUT = Path(MODEL_DIR) if MODEL_DIR else F2.OUT_V4
   P = {f: F2.Predictor2(F2.load_model(f)) for f in range(FA.N_FOLDS)}; G = {f: FA.load_generator(f) for f in range(FA.N_FOLDS)}
   modes = {'start': policy_mode_batched(MP.START_CKPT), 'CF': policy_mode_batched(RD.ckpt('CF'))}
   pol1 = {c: policy_mode_batched(RD.ckpt(c)) for c in ('start', 'CF', 'MF', 'CF2')}
@@ -147,7 +161,7 @@ def mode_run(args):
   for c in ('start', 'CF', 'MF', 'CF2'):
     a0[c] = pol1[c](obs31)
   states = np.arange(n_states) if not args.limit else np.arange(int(args.limit))
-  rows = []; early_store = {}
+  rows = []
   for cont in CONTS:
     for c in CANDS:
       ok = states[np.all(np.isfinite(a0[c][states]), axis=1)]
@@ -159,21 +173,32 @@ def mode_run(args):
           continue
         # 4 classes x 8 draws per state, all in one batch
         rep = np.repeat(sf, 4 * DRAWS_PER_CLASS); cls = np.tile(np.repeat(np.arange(4), DRAWS_PER_CLASS), len(sf)); r = np.tile(np.tile(np.arange(DRAWS_PER_CLASS), 4), len(sf))
-        rng = np.random.default_rng(SEED + 1000 * f + 10 * CONTS.index(cont) + CANDS.index(c))
+        rng = np.random.default_rng(SEED + 1000 * f + 10 * CONTS.index(cont) + CANDS.index(c))          # the generator's torque samples only
         u1 = np.array([RD.CLASSES[k][0] for k in cls]); u2 = np.array([RD.CLASSES[k][1] for k in cls])
-        t01 = rng.integers(FA.Z_PRIOR['t0_1'][0], FA.Z_PRIOR['t0_1'][1] + 1, len(rep)); t02 = rng.integers(FA.Z_PRIOR['t0_2'][0], FA.Z_PRIOR['t0_2'][1] + 1, len(rep))
-        res = rollout_model(P[f], G[f], modes[cont], S['state'][rep], S['goal_xy'][rep].astype(np.float32), a0[c][rep], S['t'][rep], (u1, u2, t01, t02), kh0[rep], prev_ab[rep], m0[rep], rng)
+        t01, t02, U = paired_draws(rep, cls, r)
+        res = rollout_model(P[f], G[f], modes[cont], S['state'][rep], S['goal_xy'][rep].astype(np.float32), a0[c][rep], S['t'][rep], (u1, u2, t01, t02), kh0[rep], prev_ab[rep], m0[rep], rng, death_u=U)
         for i in range(len(rep)):
           rows.append({'state': int(rep[i]), 'cand': c, 'cont': cont, 'cls': int(cls[i]), 'rep': int(r[i]), 'outcome': str(res['outcome'][i]), 'length': int(res['length'][i]), 'far_entry': bool(res['far_entry'][i]), 'zone1_entry': bool(res['zone1_entry'][i]),
                        **{k: float(res[k][i]) for k in ('reach0.5', 'near2.0', 'goal_area', 'far', 'death_frame')}})
-          if cls[i] == 0 and r[i] == 0:
-            early_store[(int(rep[i]), c, cont)] = res['early'][i]
         print(f'{cont} cont, {c} first, fold {f}: {len(sf)} states x 32, {time.time() - t0:.0f} s', flush=True)
+  # the motion-only early pass (onset off, exactly 30 steps) for Q1
+  early_store = {}
+  for cont in CONTS:
+    for c in CANDS:
+      ok = states[np.all(np.isfinite(a0[c][states]), axis=1)]
+      for f in range(FA.N_FOLDS):
+        sf = ok[fold[ok] == f]
+        if len(sf) == 0:
+          continue
+        z0 = (np.zeros(len(sf), bool), np.zeros(len(sf), bool), np.full(len(sf), 30), np.full(len(sf), 110))
+        res = rollout_model(P[f], G[f], modes[cont], S['state'][sf], S['goal_xy'][sf].astype(np.float32), a0[c][sf], S['t'][sf], z0, kh0[sf], prev_ab[sf], m0[sf], np.random.default_rng(1), onset_off=True, max_steps_cap=EARLY_K)
+        for i, si in enumerate(sf):
+          early_store[(int(si), c, cont)] = res['early'][i]
   keys = list(rows[0].keys())
   arr = {k: np.array([row[k] for row in rows]) for k in keys}
   ek = sorted(early_store); early = np.stack([early_store[k] for k in ek])
   np.savez_compressed(OUT / 'model_rollouts.npz', **arr, early_state=np.array([k[0] for k in ek]), early_cand=np.array([k[1] for k in ek]), early_cont=np.array([k[2] for k in ek]), early=early,
-                      a0=np.stack([a0[c] for c in CANDS]), meta=np.asarray(json.dumps({'draws_per_class': DRAWS_PER_CLASS, 'seed': SEED, 'ett': 'v4', 'folds': 'anchor fold for training states; fold 0 for independent', 'early_k': EARLY_K})))
+                      a0=np.stack([a0[c] for c in CANDS]), meta=np.asarray(json.dumps({'draws_per_class': DRAWS_PER_CLASS, 'seed': SEED, 'ett': (str(MODEL_DIR) if MODEL_DIR else 'v4'), 'folds': 'anchor fold for training states; fold 0 for independent', 'early_k': EARLY_K, 'paired_draws': 'clocks and death uniforms keyed by (state, class, rep)', 'early_pass': 'motion only, onset off, exactly 30 steps'})))
   print(f'{len(rows)} model paths in {time.time() - t0:.0f} s', flush=True)
 
 
@@ -247,13 +272,13 @@ def mode_report(args):
             continue
           tm, ts = E[i], sim_e[(si, c, k2)]
           ok = np.all(np.isfinite(tm), axis=1) & np.all(np.isfinite(ts), axis=1)
-          if ok.sum() < 5:
-            continue
+          if ok.sum() < 5 or not ok[-1]:
+            continue                                                            # exactly step 30 required (motion-only pass: no early termination expected)
           d = tm[ok] - ts[ok]
           errs['xy'].append(np.linalg.norm(d[:, :2], axis=1)); errs['pose'].append(np.abs(d[:, 2:15]).mean(axis=1)); errs['vel'].append(np.abs(d[:, 15:29]).mean(axis=1))
           if ok[-1]:
             errs['xy_at_30'].append(float(np.linalg.norm(d[-1, :2])))
-          errs['north_sim'].append(float(ts[ok][-1, 1] > 1.5)); errs['north_model'].append(float(tm[ok][-1, 1] > 1.5))
+          errs['north_sim'].append(float(ts[-1, 1] > 1.5)); errs['north_model'].append(float(tm[-1, 1] > 1.5))
         if errs['xy']:
           steps = (1, 5, 10, 20, 30)
           def at(k, j):
@@ -300,7 +325,7 @@ def mode_report(args):
 
 
 def write_md(res):
-  L = ['# The v4 learned ETT on the crossover: model vs simulator at the same states, first torques and continuations', '', f"States {res['groups']}; {res['meta']['draws_per_class']} draws per class x 4 classes per (state, first torque, continuation); models of the anchor's fold (fold 0 for the independent states).", '']
+  L = [f"# The learned ETT ({res['meta'].get('ett', 'v4')}) on the crossover: model vs simulator at the same states, first torques and continuations", '', f"States {res['groups']}; {res['meta']['draws_per_class']} draws per class x 4 classes per (state, first torque, continuation); models of the anchor's fold (fold 0 for the independent states).", '']
   L += ['## Q1 -- the early trajectory (first 30 steps; the simulator is deterministic here, hazards off): mean errors model - simulator', '', '| group | first + cont | n | xy err at 1 / 5 / 10 / 20 / 30 | pose err (mean abs, dims 2-14) at 1 / 10 / 30 | vel err (dims 15-28) at 1 / 10 / 30 | heading north (y > 1.5) at step 30: sim / model / agreement |', '|---|---|---:|---|---|---|---|']
   for g, row in res['Q1_early'].items():
     for key, e in row.items():
@@ -323,7 +348,12 @@ def write_md(res):
 
 def main(argv=None):
   ap = argparse.ArgumentParser(); ap.add_argument('mode', choices=('run', 'report')); ap.add_argument('--limit', type=int, default=None)
+  ap.add_argument('--model-dir', default=None, help='one-step model dir (default the v4 models)'); ap.add_argument('--tag', default=None, help='output subdir under ett_crossover/')
   args = ap.parse_args(argv)
+  global MODEL_DIR, OUT
+  MODEL_DIR = args.model_dir
+  if args.tag:
+    OUT = OUT / args.tag
   {'run': mode_run, 'report': mode_report}[args.mode](args); return 0
 
 

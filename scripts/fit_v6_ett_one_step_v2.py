@@ -61,6 +61,10 @@ V4 = False                              # --v4 (user's revision after ett_motion
                                         # (s, a_q) only -- the executed torque decides how the body moves; the advice a_b (the hidden context's carrier) stays an
                                         # input of the ONSET head only.  Outputs under ett_one_step_v4/.
 OUT_V4 = MP.OUT / 'ett_one_step_v4'
+CF_ROWS = None                          # --cf-rows: the CF-controlled motion rows (collect_v6_cf_motion.py); --cf-share of each motion / stationary batch
+CF_SHARE = 0.25
+INIT_FROM = None                        # --init-from: continue from this model dir's fold model (params + norm); the controlled continuation after 5650f8d
+FREEZE_ONSET = False                    # --freeze-onset: the onset head keeps its initial parameters (motion regression + stationary gate only)
 REL_EPS, REL_W = 0.05, 1.0              # relative term: ||pred - d||^2 / (||d||^2 + REL_EPS^2) in standardised units
 
 
@@ -113,6 +117,19 @@ class Rows2(V1.Rows):
   def gather_log(self, i):
     s, ab, aq, s2, o = super().gather_log(i)
     return s, ab, aq, s2, o, self.kh_l[i], self.kb_l[i], self.stat_l[i]
+
+
+class CFRows:
+  """The CF-controlled motion rows: (s, a_q, s2) with the static flag, by split (train for the fit, val for selection)."""
+
+  def __init__(self, path):
+    with np.load(path, allow_pickle=False) as d:
+      self.s, self.a, self.s2, self.static = d['s'], d['a'], d['s2'], d['static']
+      sp = d['roll_split'].astype(str)[d['rollout']]
+    self.idx = {k: np.flatnonzero(sp == k) for k in ('train', 'val', 'test')}
+
+  def gather(self, i):
+    return self.s[i], self.a[i], self.s2[i], self.static[i]
 
 
 # ------------------------------------------------------------------- model
@@ -196,6 +213,15 @@ def mode_fit(args):
   s_b, _, _, s2_b, _, _, _, st_b = R.gather_branch(sub_b); s_l, _, _, s2_l, _, _, _, st_l = R.gather_log(sub_l)
   S_ = np.concatenate([s_b, s_l]); D_ = np.concatenate([(s2_b - s_b)[~st_b], (s2_l - s_l)[~st_l]])      # delta statistics on MOVING rows
   norm = {'s_mean': S_.mean(0).astype(np.float32), 's_std': np.maximum(S_.std(0), 1e-4).astype(np.float32), 'd_mean': D_.mean(0).astype(np.float32), 'd_std': np.maximum(D_.std(0), 1e-5).astype(np.float32)}
+  init_md = None
+  if INIT_FROM is not None:
+    with (Path(INIT_FROM) / f'model_fold{f}.pkl').open('rb') as fh:
+      init_md = pickle.load(fh)
+    assert (init_md.get('motion_inputs') == 'sq') == V4, 'init model / flags mismatch'
+    norm = init_md['norm']                                                   # the standardisation stays the init model's (continuity of the inputs)
+  CF = CFRows(CF_ROWS) if CF_ROWS else None
+  if CF is not None:
+    print(f'fold {f}: CF rows train {len(CF.idx["train"])} val {len(CF.idx["val"])} (share {CF_SHARE} of each motion / stationary batch)', flush=True)
   pos_b = R.br_diag[np.searchsorted(R.br, sp['train_b'])]
   mov_b = ~R.stat_b[sp['train_b']]; mov_l = ~R.stat_l[sp['train_l']]
   if V3:                                     # v3: the regression sees every row (the atom still applies at prediction)
@@ -215,10 +241,16 @@ def mode_fit(args):
   VXm = features_q(Vs, Vaq, norm) if V4 else VX
   DM = (STATE_DIM + 8) if V4 else 61
   es_prev = len(es_pos) / (len(sp['es_b']) + len(sp['es_l']))
+  cf_val = None
+  if CF is not None:
+    cs, ca, cs2, cst = CF.gather(CF.idx['val'][:200_000])
+    cf_val = {'xm': jnp.asarray(features_q(cs, ca, norm) if V4 else features(cs, ca, ca, norm)), 'd': jnp.asarray(((cs2 - cs) - norm['d_mean']) / norm['d_std'], jnp.float32), 'mov': jnp.asarray((~cst).astype(np.float32)), 'st': jnp.asarray(cst.astype(np.float32))}
   Vw = np.where(Vo, es_prev / max(Vo.mean(), 1e-9), (1 - es_prev) / max(1 - Vo.mean(), 1e-9)).astype(np.float32)
   mot, ons, stt = build_nets()
   key = jax.random.PRNGKey(200 + f)
   pm = mot.init(key, jnp.zeros((1, DM), jnp.float32)); po = ons.init(jax.random.fold_in(key, 1), jnp.zeros((1, 61 + STATE_DIM + 2), jnp.float32)); ps = stt.init(jax.random.fold_in(key, 2), jnp.zeros((1, DM), jnp.float32))
+  if init_md is not None:
+    pm = jax.tree_util.tree_map(jnp.asarray, init_md['motion_params']); po = jax.tree_util.tree_map(jnp.asarray, init_md['onset_params']); ps = jax.tree_util.tree_map(jnp.asarray, init_md['stat_params'])
   opt_m, opt_o, opt_s = optax.adam(FIT['lr']), optax.adam(FIT['lr']), optax.adam(FIT['lr']); om, oo, os_ = opt_m.init(pm), opt_o.init(po), opt_s.init(ps)
   pm0, po0, ps0 = (jax.tree_util.tree_map(np.asarray, p_) for p_ in (pm, po, ps))
   BD = int(FIT['batch_diag'])
@@ -256,14 +288,25 @@ def mode_fit(args):
     logit = ons.apply(po_, jnp.concatenate([x, jax.lax.stop_gradient(pred), h], axis=1)); bce = jnp.mean(w * optax.sigmoid_binary_cross_entropy(logit, y))
     sl = stt.apply(ps_, xm); sbce = jnp.mean(optax.sigmoid_binary_cross_entropy(sl, st)); sacc = jnp.mean((sl > 0) == (st > 0.5))
     return md, mo, bce, jax.nn.sigmoid(logit), sbce, sacc
+  @jax.jit
+  def cf_val_fn(pm_, ps_, xm, d, mov, st):
+    pred = mot.apply(pm_, xm); se = jnp.mean((pred - d) ** 2, axis=1)
+    mse_mov = jnp.sum(se * mov) / jnp.maximum(jnp.sum(mov), 1); mse_all = jnp.mean(se)
+    sl = stt.apply(ps_, xm); sacc = jnp.mean((sl > 0) == (st > 0.5))
+    return mse_mov, mse_all, sacc
   wpos, wneg = np.float32(prevalence / 0.5), np.float32((1 - prevalence) / 0.5)
   hist, best, best_state, best_step, t0 = [], float('inf'), None, 0, time.time()
   bd, bo, bl = FIT['batch_diag'], FIT['batch_off'], FIT['onset_batch_per_class']
   Vmov = (~Vst).astype(np.float32)
+  k_d = int(CF_SHARE * bd) if CF is not None else 0; k_o = int(CF_SHARE * bo) if CF is not None else 0; k_s = int(CF_SHARE * 2048) if CF is not None else 0
   for it in range(1, steps + 1):
-    i_d = rng.choice(diag_b, size=bd // 2); i_l = rng.choice(log_mov, size=bd - bd // 2); i_o = rng.choice(off_b, size=bo)
+    i_d = rng.choice(diag_b, size=(bd - k_d) // 2); i_l = rng.choice(log_mov, size=(bd - k_d) - (bd - k_d) // 2); i_o = rng.choice(off_b, size=bo - k_o)
     g1 = R.gather_branch(i_d); g2 = R.gather_log(i_l); g3 = R.gather_branch(i_o)
     s = np.concatenate([g1[0], g2[0], g3[0]]); ab = np.concatenate([g1[1], g2[1], g3[1]]); aq = np.concatenate([g1[2], g2[2], g3[2]]); s2 = np.concatenate([g1[3], g2[3], g3[3]])
+    if CF is not None:                                                        # CF rows replace a share of the diag block and of the off block (the batch size unchanged)
+      c1 = CF.gather(rng.choice(CF.idx['train'], size=k_d)); c2 = CF.gather(rng.choice(CF.idx['train'], size=k_o))
+      s = np.concatenate([s[:bd - k_d], c1[0], s[bd - k_d:], c2[0]]); aq = np.concatenate([aq[:bd - k_d], c1[1], aq[bd - k_d:], c2[1]]); s2 = np.concatenate([s2[:bd - k_d], c1[2], s2[bd - k_d:], c2[2]])
+      ab = np.concatenate([ab[:bd - k_d], c1[1], ab[bd - k_d:], c2[1]])
     x = features(s, ab, aq, norm); d = ((s2 - s) - norm['d_mean']) / norm['d_std']
     xm = features_q(s, aq, norm) if V4 else x
     pm, om, lm, parts = step_m(pm, om, jnp.asarray(xm), jnp.asarray(d, jnp.float32))
@@ -272,25 +315,36 @@ def mode_fit(args):
     xo = features(np.concatenate([gp[0], gn[0]]), np.concatenate([gp[1], gn[1]]), np.concatenate([gp[2], gn[2]]), norm); ho = hist_features(np.concatenate([gp[5], gn[5]]), np.concatenate([gp[6], gn[6]]))
     xom = features_q(np.concatenate([gp[0], gn[0]]), np.concatenate([gp[2], gn[2]]), norm) if V4 else xo
     yo = np.concatenate([np.ones(bl), np.zeros(bl)]).astype(np.float32); wo = np.concatenate([np.full(bl, wpos), np.full(bl, wneg)]).astype(np.float32)
-    po, oo, lo = step_o(po, oo, pm, jnp.asarray(xo), jnp.asarray(xom), jnp.asarray(ho), jnp.asarray(yo), jnp.asarray(wo))
-    # stationary gate: a natural mix of branch and log rows
-    is_ = rng.choice(all_b, size=1536); il_ = rng.choice(all_l, size=512)
+    if not FREEZE_ONSET:
+      po, oo, lo = step_o(po, oo, pm, jnp.asarray(xo), jnp.asarray(xom), jnp.asarray(ho), jnp.asarray(yo), jnp.asarray(wo))
+    else:
+      lo = jnp.float32(0.0)
+    # stationary gate: a natural mix of branch and log rows (+ the CF share)
+    is_ = rng.choice(all_b, size=1536 - (k_s * 3) // 4); il_ = rng.choice(all_l, size=512 - (k_s - (k_s * 3) // 4))
     gs = R.gather_branch(is_); gl = R.gather_log(il_)
-    xs = (features_q(np.concatenate([gs[0], gl[0]]), np.concatenate([gs[2], gl[2]]), norm) if V4 else
-          features(np.concatenate([gs[0], gl[0]]), np.concatenate([gs[1], gl[1]]), np.concatenate([gs[2], gl[2]]), norm)); ys = np.concatenate([gs[7], gl[7]]).astype(np.float32)
+    ss_, sab_, saq_, sy_ = np.concatenate([gs[0], gl[0]]), np.concatenate([gs[1], gl[1]]), np.concatenate([gs[2], gl[2]]), np.concatenate([gs[7], gl[7]])
+    if CF is not None:
+      c3 = CF.gather(rng.choice(CF.idx['train'], size=k_s)); ss_ = np.concatenate([ss_, c3[0]]); sab_ = np.concatenate([sab_, c3[1]]); saq_ = np.concatenate([saq_, c3[1]]); sy_ = np.concatenate([sy_, c3[3]])
+    xs = (features_q(ss_, saq_, norm) if V4 else features(ss_, sab_, saq_, norm)); ys = sy_.astype(np.float32)
     ps, os_, ls = step_s(ps, os_, jnp.asarray(xs), jnp.asarray(ys))
     if it % FIT['val_every'] == 0 or it == steps:
       md_, mo_, bce, prob, sbce, sacc = (np.asarray(v) for v in val_fn(pm, po, ps, jnp.asarray(VX), jnp.asarray(VXm), jnp.asarray(VD, jnp.float32), jnp.asarray(VH), jnp.asarray(Vdiag.astype(np.float32)), jnp.asarray(Vmov), jnp.asarray(Vo.astype(np.float32)), jnp.asarray(Vw), jnp.asarray(Vst.astype(np.float32))))
       auc = auroc(prob, Vo); score = float(md_ + mo_ + FIT['onset_weight'] * bce + (0.0 if V3 else 0.25) * sbce)
-      hist.append({'step': it, 'train_motion': float(lm), 'train_onset': float(lo), 'train_stat': float(ls), 'val_mse_diag': float(md_), 'val_mse_off': float(mo_), 'val_onset_bce': float(bce), 'val_auroc': auc, 'val_stat_bce': float(sbce), 'val_stat_acc': float(sacc), 'score': score})
+      cfm = {}
+      if cf_val is not None:
+        c_mov, c_all, c_acc = (float(np.asarray(v)) for v in cf_val_fn(pm, ps, cf_val['xm'], cf_val['d'], cf_val['mov'], cf_val['st']))
+        cfm = {'cf_val_mse_moving': c_mov, 'cf_val_mse_all': c_all, 'cf_val_stat_acc': c_acc}; score = score + c_mov      # the same selection rule for the control and the revision
+      hist.append({'step': it, 'train_motion': float(lm), 'train_onset': float(lo), 'train_stat': float(ls), 'val_mse_diag': float(md_), 'val_mse_off': float(mo_), 'val_onset_bce': float(bce), 'val_auroc': auc, 'val_stat_bce': float(sbce), 'val_stat_acc': float(sacc), 'score': score, **cfm})
       if score < best:
         best, best_step = score, it
         best_state = {k: jax.tree_util.tree_map(np.asarray, p_) for k, p_ in (('motion_params', pm), ('onset_params', po), ('stat_params', ps))}
-      print(f'[v2 fold {f} step {it:>6}] motion {float(lm):.4f} onset {float(lo):.4f} stat {float(ls):.4f} | val mse diag {float(md_):.4f} off {float(mo_):.4f} onset bce {float(bce):.4f} auroc {auc:.3f} stat bce {float(sbce):.4f} acc {float(sacc):.4f} score {score:.4f} best {best:.4f}@{best_step} {it / (time.time() - t0):.1f} it/s', flush=True)
+      print(f'[v2 fold {f} step {it:>6}] motion {float(lm):.4f} onset {float(lo):.4f} stat {float(ls):.4f} | val mse diag {float(md_):.4f} off {float(mo_):.4f} onset bce {float(bce):.4f} auroc {auc:.3f} stat bce {float(sbce):.4f} acc {float(sacc):.4f}' + (f" | cf val mse mov {cfm['cf_val_mse_moving']:.4f} all {cfm['cf_val_mse_all']:.4f} stat acc {cfm['cf_val_stat_acc']:.4f}" if cfm else '') + f' | score {score:.4f} best {best:.4f}@{best_step} {it / (time.time() - t0):.1f} it/s', flush=True)
   md = {**best_state, 'norm': norm, 'fold': f, 'best_step': best_step, 'best_score': best, 'steps': steps, 'fit': FIT, 'history': hist, 'prevalence_train': prevalence, 'es_episodes': sp['es_episodes'],
         'stat_tol': STAT_TOL, 'hold_tol': HOLD_TOL, 'hist_cap': HIST_CAP, 'wall_seconds': time.time() - t0, 'motion_inputs': ('sq' if V4 else 'sabq'), 'version': ('v4' if V4 else ('v3' if V3 else 'v2')),
         'param_delta': {k: float(optax.global_norm(jax.tree_util.tree_map(lambda a, b: a - b, best_state[k], p0))) for k, p0 in (('motion_params', pm0), ('onset_params', po0), ('stat_params', ps0))},
-        'supervision_sha256': MP.sha256(EC / 'supervision.npz')}
+        'supervision_sha256': MP.sha256(EC / 'supervision.npz'),
+        'init_from': (str(INIT_FROM) if INIT_FROM else None), 'cf_rows': (str(CF_ROWS) if CF_ROWS else None), 'cf_share': (CF_SHARE if CF_ROWS else 0.0), 'freeze_onset': FREEZE_ONSET,
+        'best_cf_val': next((h for h in hist if h['step'] == best_step), {}), 'selection': 'original validation score' + (' + CF-val one-step MSE (moving rows)' if CF_ROWS else '')}
   with out.open('wb') as fh:
     pickle.dump(md, fh)
   MP.write_json(out.with_suffix('.json'), {k: v for k, v in md.items() if k not in ('motion_params', 'onset_params', 'stat_params', 'norm')})
@@ -371,12 +425,20 @@ def main(argv=None):
   ap.add_argument('--force', action='store_true')
   ap.add_argument('--v3', action='store_true')
   ap.add_argument('--v4', action='store_true', help='v3 + motion / stationary inputs (s, a_q) only; outputs under ett_one_step_v4/')
+  ap.add_argument('--init-from', default=None, help='continue from this model dir (fold model params + norm)')
+  ap.add_argument('--cf-rows', default=None, help='cf_motion/rollouts_cf.npz: CF-controlled motion rows (train split) in the motion / stationary batches')
+  ap.add_argument('--cf-share', type=float, default=0.25)
+  ap.add_argument('--freeze-onset', action='store_true')
+  ap.add_argument('--out', default=None, help='output model dir (overrides the version default)')
   args = ap.parse_args(argv)
-  global V3, V4, OUT
+  global V3, V4, OUT, INIT_FROM, CF_ROWS, CF_SHARE, FREEZE_ONSET
+  INIT_FROM, CF_ROWS, CF_SHARE, FREEZE_ONSET = args.init_from, args.cf_rows, float(args.cf_share), bool(args.freeze_onset)
   if args.v4:
     V4 = True; args.v3 = True
   if args.v3:
     V3 = True; OUT = OUT_V4 if V4 else OUT_V3
+  if args.out:
+    OUT = Path(args.out)
   OUT.mkdir(parents=True, exist_ok=True)
   {'seal': mode_seal, 'fit': mode_fit, 'check': mode_check}[args.mode](args)
   return 0
