@@ -150,7 +150,9 @@ model ~0 (as in every earlier crossover).
 * So, of the user's three cases, this is the third: the one-step consequence with the start continuation -- what the branch tables
   supervise -- does not describe the failure of "the new actor keeps acting like this"; the stall is a closed-loop property, and neither
   the simulator nor the ETT rates the single extreme step badly.  Adding queries at these actions under the same continuation rule would
-  give the critic a target that is NOT lower than the logged torque's, i.e. it would not remove the preference by itself.  And the critic's
+  give the critic a target that is NOT lower than the logged torque's, i.e. it would not remove the preference by itself.  CORRECTION
+  (critic_ruler/SUMMARY.md): on one ruler the critic reads the stalled action's goal-area mass at 0.35 against a target of 0.03, so a
+  query there WOULD remove the over-estimate; what it leaves is a near-tie between the actions, not a preference for walking.  And the critic's
   +2 to +4 nats at the task goal are not supported by the goal masses even on the critic's own terms (they are lower).
 
 ## The score split into |phi(s, a)|, |psi(g)| and the angle (`diag_v6_reset_futures.py decompose`; `reset_futures/DECOMPOSE.md`)

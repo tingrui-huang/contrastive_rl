@@ -3270,3 +3270,29 @@ cosines negative at reset; the draw-1 critic's stalled action has the
 SHORTEST phi (0.85x), the norm shrinkage ~ half of the +2.1 nats ->
 config.repr_norm (off in the recipe) is a targeted candidate, untested.
 Nothing launched beyond the diagnostics.
+
+### One ruler + the normalised ranking (user's plan after 555f22c; 2026-09-22; critic_ruler/SUMMARY.md; no training)
+
+RULER: the binary-NCE logit is a density ratio against the
+critic-training marginal up to the known constant B - 1, so region
+masses are read from the critic on the same scale as the simulator's
+and the ETT's gamma-law masses (the critic's total over all goals is
+0.6-1.4: calibrated).  At the 64 reset states the real goal-area mass
+is 0.033-0.040 for all four first actions and the ETT agrees; the
+collapsed critic reads the stalled action at 0.354 (17.8x per state,
+9.5x at 20k) and as leaving the start region (0.037 vs 0.29); the
+draw-2 critic over-rates its own progressing action 2.2x; both
+under-rate the start agent's action ~0.08x; the critics' readouts are
+uncorrelated with the real masses (|r| <= 0.17), the ETT's 0.27-0.48.
+CORRECTION of round 2: a query at the stalled action would remove the
+over-estimate (target 0.03 vs the reading 0.35), leaving a near-tie.
+NORMRANK (per head cos -> min -> mean; tau* scale-matched): the
+collapsed critic's stall-vs-progressing preference is unchanged at the
+matched scale (+2.2 nats task, +0.8 relabelled; objective +0.53, 71 %
+of rows), the recovering critic's walking preference is destroyed at
+the mode level (77 % stall under the task goal, ties elsewhere) ->
+repr_norm NOT supported.  Tree: ETT right on these actions, the critic
+does not fit them (never sees any action but the logged one; the actor
+finds the largest extrapolation) -> the third branch, a LOCAL
+calibration at the output actions, is the one the evidence points to;
+user's call; caveat: both critics over-rate their own maximiser.
