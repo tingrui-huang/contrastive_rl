@@ -333,3 +333,56 @@ column (reach given entered far; reported, not gated).  The v4 reference under t
 pass; pre_zone1 fails on reach (0.41 vs 0.32) and timeout (0.065 vs 0.178), between on timeout, zone2 on the death-time KS.
 User's rule: if start_early / pre_zone1_early are still far outside the thresholds, no CRL training.  Jobs: node3 (C uniform, B
 decision folds 0-1), node 30027 (B uniform), node 30049 (C decision, B decision fold 2), ~70 min.
+
+## The full rollout acceptance for C: RESULT (`ett_rollout_v4/v4c20/REPORT.md`; the v4 reference `ett_rollout_v4/hist_exact/`)
+
+Sealed gates (Step 3a): rate gaps <= 0.05 (entered-far <= 0.03), KS <= 0.15, on the pooled sample and in every stratum with >= 200
+anchors; continuation = the start agent's mode, first query = the logged torque, one path per anchor under advice C (the simulator
+teacher along the model path) and 4 sampled paths under advice B (the learnt generator v3); the hazard integrated exactly along the path.
+Wall: C 7-8 min per fold of 2,000 anchors, B 21-25 min (20 workers sharing one GPU; 12 on node 30049); three nodes, 85 min in all.
+
+### Uniform held-out anchors (6,000; strata = anchor region) -- death / reach / timeout, sim vs model; the verdict per stratum
+
+| stratum | anchors | sim | v4 (C) | C arm (C) | v4 (B) | C arm (B) |
+|---|---:|---|---|---|---|---|
+| all | 6000 | 0.294 / 0.615 / 0.091 | 0.304 / 0.649 / 0.047 pass | 0.306 / **0.665** / **0.029** FAIL reach, timeout | 0.310 / 0.640 / 0.050 pass | 0.310 / 0.661 / **0.029** FAIL timeout |
+| start | 471 | 0.724 / 0.248 / 0.028 | 0.724 / 0.252 / 0.023 pass | 0.722 / 0.264 / 0.015 FAIL KS reach time 0.165 | 0.718 / 0.263 / 0.019 pass | 0.716 / 0.271 / 0.012 pass |
+| pre_zone1 | 1456 | 0.503 / 0.319 / 0.178 | 0.525 / 0.410 / 0.065 FAIL | 0.534 / **0.422** / **0.044** FAIL | 0.534 / 0.402 / 0.065 FAIL | 0.541 / 0.414 / 0.045 FAIL |
+| zone1 | 580 | 0.426 / 0.550 / 0.024 | pass | 0.440 / 0.557 / 0.003 pass | pass | pass |
+| between | 1366 | 0.283 / 0.616 / 0.102 | 0.295 / 0.667 / 0.039 FAIL | 0.295 / **0.686** / **0.019** FAIL (+ KS death x 0.151) | 0.308 / 0.645 / 0.047 FAIL | 0.301 / 0.678 / 0.020 FAIL |
+| zone2 | 544 | 0.105 / 0.857 / 0.039 | KS death time / x FAIL | 0.107 / 0.876 / 0.017; KS 0.22 / 0.18 FAIL | KS FAIL | KS FAIL |
+| post_zone2, goal_area | 879, 444 | 0 / 0.96 / 0.04 | pass | pass (timeout 0.018 vs 0.042 in post_zone2) | pass | pass |
+
+Far completion (reach given entered far; reported, not gated): pooled 0.82 (C) / 0.81 (B) vs sim 0.87 (71 / 284 far entries); start
+stratum 0.69 (n 14) / 0.77 (n 56) vs 0.93.
+
+### The decision-state anchor set (every reset anchor + 700 start_early + 700 pre_zone1_early per fold; each rolled with its held-out fold model)
+
+| group | anchors | death sim / C / B | reach sim / C / B | timeout sim / C / B | far sim / C / B | far completion sim / C / B (n sim far) | verdict |
+|---|---:|---|---|---|---|---|---|
+| all | 4396 | 0.737 / 0.738 / 0.737 | 0.246 / 0.253 / 0.255 | 0.017 / 0.010 / 0.008 | 0.020 / 0.018 / 0.018 | 0.80 / 0.74 / 0.84 (86 / 344) | pass |
+| reset (not gated, 196 < 200) | 196 | 0.663 / 0.665 / **0.733** | 0.296 / 0.323 / 0.254 | 0.041 / 0.012 / 0.013 | 0.015 / 0.000 / 0.000 | 0.67 / - / - (3 / 12) | C: KS reach time 0.285; B: death +0.07 |
+| start_early | 2100 | 0.732 / 0.734 / 0.721 | 0.247 / 0.249 / 0.268 | 0.021 / 0.017 / 0.012 | 0.040 / 0.037 / 0.037 | 0.81 / 0.74 / 0.84 (83 / 332) | pass (both) |
+| pre_zone1_early | 2100 | 0.748 / 0.748 / 0.754 | 0.241 / 0.249 / 0.241 | 0.010 / 0.002 / 0.004 | 0 / 0 / 0 | - | pass (both) |
+
+### Reading
+
+* The route-deciding groups are NOT far off: start_early and pre_zone1_early pass every sealed gate under both advice processes
+  (death / reach / timeout within 0.01-0.02, entered-far 0.037 vs 0.040), the far completion at start_early 0.74 (C) / 0.84 (B) vs 0.81
+  on 83 / 332 far entries; reset (below the minimum) matches on the rates under C (reach +0.027, timeout -0.029) with a failing reach-time
+  KS (0.285), and under B over-predicts the death (0.733 vs 0.663) -- the advice process at the reset row, not the motion (C is fine there).
+  But these groups are 73-75 % deaths under the start continuation: the outcome is decided by the frozen v4 onset head and the exact
+  hazard integration within ~60 steps, so the motion model has little room to show its long-path error here.
+* Where the long path matters the C arm is WORSE than v4 against the sealed gates: pooled it fails (reach 0.665 vs 0.615, timeout 0.029
+  vs 0.091; v4 0.649 / 0.047 passed), pre_zone1 (timeout 0.044 vs 0.178; v4 0.065) and between (0.019 vs 0.102; v4 0.039) fail by a
+  wider margin, post_zone2 timeouts halve.  Under the START agent's torques the C arm walks through the start agent's stalls before
+  the mouth and in the corridor MORE than v4 did, while under the CF actor's torques it reproduces the CF actor's stalls (the crossover).
+  The stall behaviour learnt from the CF rollouts is therefore the CF actor's stall pattern, not a policy-independent property of the
+  dynamics; the multi-step term moved the model towards the policy whose sequences it was trained on and away from the sealed table's
+  continuation.
+* Against the user's rule: start_early / pre_zone1_early do not block CRL training by themselves.  Against the Step 3a rule sealed with
+  these gates ("C fails -> fix the motion / onset model first"), the C arm's futures would not be generated -- and v4's already failed the
+  same strata.  Together with the crossover's start-policy regression and the unchanged per-state contrasts, the recommendation stands:
+  no CRL training from the C arm; stop this week's model revision here.  Note for later: a model that must serve BOTH continuations (the
+  sealed start-agent table and the CF actor's own futures) needs supervision from both policies' sequences, or one model per
+  continuation -- neither is a "one window change" and both are outside this round.

@@ -3120,3 +3120,16 @@ pre_zone1_early added as an anchor set (diag_v6_ett_rollout.py
 --model-dir / --tag / --anchor-set decision); rule: if start_early /
 pre_zone1_early are still far off, no CRL training.  Running on the
 three nodes (2026-09-21 evening).
+RESULT of the full rollout acceptance for C (ett_rollout_v4/v4c20/):
+the route-deciding groups pass every sealed gate under both advice
+processes (start_early / pre_zone1_early death / reach / timeout within
+0.02, far 0.037 vs 0.040, far completion 0.74-0.84 vs 0.81) -- but they
+are 73-75 % deaths decided by the frozen onset head; on the uniform
+6,000 the C arm FAILS the pooled gates that v4 passed (reach 0.665 vs
+0.615, timeout 0.029 vs 0.091) and fails pre_zone1 / between wider
+than v4 (timeouts 0.044 / 0.019 vs sim 0.178 / 0.102; v4 0.065 /
+0.039): under the START agent's torques it walks through the start
+agent's stalls MORE than v4, while under the CF actor it reproduces
+the CF actor's stalls -> the learnt stall is the CF actor's pattern,
+not policy-independent dynamics.  Recommendation unchanged: no CRL
+training from C; stop the week's model revision.
