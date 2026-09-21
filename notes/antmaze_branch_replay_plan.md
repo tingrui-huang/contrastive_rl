@@ -3097,3 +3097,26 @@ actor give closed-loop reach differing by up to 0.14 (B 0.82 vs 0.68)
 between two GPUs -> a +-0.1 noise floor on the 38-sequence closed-loop
 numbers.  Correction: the round-2 episode-split entry rows said real
 disp 0.05; it is 0.024.
+Arm C vs B (same device for the acceptance; B's crossover re-run on
+C's node = identical, the crossover is device-deterministic): C is the
+best model on everything driven by FIXED actions (open-loop drift 0.33
+/ 0.64 at 50 / 100 vs B 0.43 / 1.04; trajectory-start stall segments
+0.23 with none > 0.5; entry check 0.06) and reproduces the simulator's
+timeouts / completion-given-far under the CF loop in the crossover
+within 0.02-0.06 (B off by 0.10-0.17), with the coarse action contrasts
+closer in 9 of 13 (MF's sign at reset now right); but the strict L3
+stall stays far off (0.13 vs real 0.47; B 0.05), the per-state
+contrast correlations are unchanged (<= 0.3, chance sign agreement),
+and the START policy regresses (early error 0.59 vs v4 0.28; timeouts
+under start + start 0.15 vs sim 0.03).  Verdict under the stop rule:
+one clear closed-loop improvement (crossover stalls) + coarse contrasts,
+no per-state improvement, a start-policy regression -> the CRL bar is
+not cleared; recommendation = stop this week's model revision here, C
+recorded as the reference ETT with its two limits; no CRL seeds.
+User's next request: the FULL rollout acceptance (Step 3a, sealed
+thresholds) for v4c20 -- overall / strata death, timeout, reach, far
+completion -- with the decision groups reset / start_early /
+pre_zone1_early added as an anchor set (diag_v6_ett_rollout.py
+--model-dir / --tag / --anchor-set decision); rule: if start_early /
+pre_zone1_early are still far off, no CRL training.  Running on the
+three nodes (2026-09-21 evening).

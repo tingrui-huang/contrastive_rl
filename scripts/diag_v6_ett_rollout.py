@@ -46,6 +46,13 @@ the protocol nominal suffices.
   python scripts/diag_v6_ett_rollout.py roll --variant C --fold f --workers 20     # CPU
   python scripts/diag_v6_ett_rollout.py roll --variant A --fold f --workers 20
   python scripts/diag_v6_ett_rollout.py report
+
+Round 3 of the CF-motion revision (user's request after d4264fb): the same acceptance for any model dir (`--model-dir DIR --tag NAME`,
+outputs under ett_rollout_v4/<NAME>/; the v4 code path and exact counters), plus the DECISION-STATE anchor set (`--anchor-set decision`:
+every reset anchor (t = 0) and up to DECISION_PER_GROUP start_early (start region, t 1-40) / pre_zone1_early (pre_zone1, x < 4.5)
+anchors per fold -- the crossover's group definitions -- each rolled with its held-out fold's model; roll files
+roll_<variant>_fold<f>_decision.pkl, strata = the three groups; the reset group has fewer anchors than the sealed minimum and is
+reported, not gated).  The report adds far completion (reach given entered far; reported, not a sealed gate).
 """
 from __future__ import annotations
 
@@ -80,6 +87,10 @@ HIST_FIX = False                 # --hist-fix: the history counters passed to th
                                  # at the first row (an offset of +1 on every hold / band row).  Outputs under <OUT>/hist_fix/.
                                  # NOT exact (user's review of a408cef): run_length counts 0 at a flagged PATH START but 1 at a flagged row
                                  # that follows an unflagged one; the uniform -1 fixes the first case and breaks the second.
+MODEL_DIR = None                 # --model-dir: an arbitrary one-step model dir (v4 code path); --tag names the output dir ett_rollout_v4/<tag>/
+TAG = None
+ANCHOR_SET = 'uniform'           # --anchor-set decision: the decision-state groups (reset / start_early / pre_zone1_early) instead of the uniform sample
+DECISION_PER_GROUP, DECISION_SEED = 700, 204_000_000
 HIST_EXACT = False               # --hist-exact: the counters replicate run_length row by row (last reset index = the path start or the last
                                  # unflagged row; counter = j - last when flagged, else 0).  Outputs under <OUT>/hist_exact/.
 STATE_DIM, OBS_W = MP.STATE_DIM, MP.OBS_W
@@ -93,6 +104,8 @@ MDN = {'k': 5, 'hidden': (256, 256), 'steps': 20_000, 'batch': 1024, 'lr': 3e-4,
 
 
 def model_dir():
+  if MODEL_DIR:
+    return Path(MODEL_DIR)
   return MP.OUT / 'ett_one_step_v4' if V4 else (MP.OUT / 'ett_one_step_v3' if V3 else (MP.OUT / 'ett_one_step_v2' if V2 else OS))
 
 
@@ -106,8 +119,10 @@ def mode_seal(args):
          'sealed_at': time.strftime('%Y-%m-%d %H:%M:%S'), 'git_head': MP.git_head(), 'status': 'oracle-supervised engineering stage; nothing downstream generated',
          'models': {f'fold{f}': {'path': str(model_dir() / f'model_fold{f}.pkl'), 'json_sha256': MP.sha256(model_dir() / f'model_fold{f}.json')} for f in range(3)}, 'model_version': ('v4' if V4 else ('v3' if V3 else ('v2' if V2 else 'v1'))),
          'history_counters': ('exact: replicate fit_v6_ett_one_step_v2.run_length row by row' if HIST_EXACT else ('fix: uniform -1 (0 at the first flagged row; not exact after an unflagged row)' if HIST_FIX else 'raw: +1 at every flagged row vs the training rows')),
-         'one_step_check_sha256': MP.sha256(model_dir() / 'check.json'), 'supervision_sha256': MP.sha256(EC / 'supervision.json'),
-         'anchors': f'{N_PER_FOLD} held-out anchors per fold, uniform over anchors, seed {SAMPLE_SEED}; strata = anchor region', 'continuation': 'start agent mode (the reference branches\' continuation); first query = the logged torque',
+         'one_step_check_sha256': (MP.sha256(model_dir() / 'check.json') if (model_dir() / 'check.json').exists() else None), 'supervision_sha256': MP.sha256(EC / 'supervision.json'),
+         'anchors': f'{N_PER_FOLD} held-out anchors per fold, uniform over anchors, seed {SAMPLE_SEED}; strata = anchor region',
+         'decision_anchors': f'--anchor-set decision: every reset anchor (t = 0) and up to {DECISION_PER_GROUP} start_early (start region, t 1-40) / pre_zone1_early (pre_zone1, x < 4.5) anchors per fold, seed {DECISION_SEED}; each rolled with its held-out fold model; strata = the three groups (reset below the sealed minimum: reported, not gated)',
+         'model_dir': str(model_dir()), 'far_completion': 'reach given entered far; reported, not a sealed gate', 'continuation': 'start agent mode (the reference branches\' continuation); first query = the logged torque',
          'termination': 'reach (|xy - goal| <= 0.5), horizon 800 - t, onset (exact hazard integration along the path; no recovery)',
          'advice': {'C': 'simulator teacher along the model path under the branch\'s redrawn timetable (Step 0 / 1 construction)',
                     'B': f'the learnt advice generator v3 (fit_v6_ett_advice.py; state + own history incl. the first mouth arrival + a persistent hidden context drawn per path from the prior; MAP hold decision, sampled torque; cross-fitted by fold; gates3_map.json all folds pass), K = {K_DRAWS_A} advice paths per anchor, seed {ADVICE_SEED}; the evaluation episode\'s actual context is never read',
@@ -201,15 +216,29 @@ def sample_anchors(fold):
   return np.sort(rng.choice(ks, size=min(N_PER_FOLD, len(ks)), replace=False))
 
 
+def decision_groups():
+  """The crossover's decision-state groups over ALL anchors (exp_v6_repeated_draws.mode_states definitions)."""
+  from exp_v6_learned_ett import REGIONS, region_of
+  anchors, _ = MP.AnchorSet.load(MP.OUT / 'anchors.npz')
+  t = anchors.t.astype(np.int64); reg = region_of(anchors.state[:, :2]); x = anchors.state[:, 0]
+  return {'reset': t == 0, 'start_early': (reg == REGIONS.index('start')) & (t >= 1) & (t <= 40), 'pre_zone1_early': (reg == REGIONS.index('pre_zone1')) & (x < 4.5)}
+
+
+def sample_decision_anchors(fold):
+  S = np.load(EC / 'supervision.npz', allow_pickle=False)
+  fa = S['fold_anchor'].astype(np.int64)
+  rng = np.random.default_rng(DECISION_SEED + fold); ks = []
+  for g, m in decision_groups().items():
+    cand = np.flatnonzero(m & (fa == fold))
+    ks.append(cand if g == 'reset' else np.sort(rng.choice(cand, size=min(DECISION_PER_GROUP, len(cand)), replace=False)))
+  return np.sort(np.concatenate(ks))
+
+
 def _worker(args):
-  ks, fold, variant, seed, v2, v3, hist_fix, hist_exact, v4 = args
-  global V2, V3, V4, OUT, HIST_FIX, HIST_EXACT
-  V4 = bool(v4); V3 = bool(v3) or V4; V2 = bool(v2) or V3; HIST_FIX = bool(hist_fix); HIST_EXACT = bool(hist_exact)
-  OUT = OUT_V4 if V4 else (OUT_V3 if V3 else (OUT_V2 if V2 else MP.OUT / 'ett_rollout'))      # spawned workers re-import the module: carry the flags explicitly
-  if HIST_EXACT:
-    OUT = OUT / 'hist_exact'
-  elif HIST_FIX:
-    OUT = OUT / 'hist_fix'
+  ks, fold, variant, seed, v2, v3, hist_fix, hist_exact, v4, mdir, out_dir = args
+  global V2, V3, V4, OUT, HIST_FIX, HIST_EXACT, MODEL_DIR
+  V4 = bool(v4); V3 = bool(v3) or V4; V2 = bool(v2) or V3; HIST_FIX = bool(hist_fix); HIST_EXACT = bool(hist_exact); MODEL_DIR = mdir
+  OUT = Path(out_dir)                                                                          # spawned workers re-import the module: carry the flags explicitly
   import jax
   import jax.numpy as jnp
   import audit_v6_ett_context as AC
@@ -217,7 +246,9 @@ def _worker(args):
   if V2:
     import fit_v6_ett_one_step_v2 as F2
     from fit_v6_ett_one_step_v2 import Predictor2, HOLD_TOL, in_band
-    if V4:
+    if MODEL_DIR:
+      F2.OUT = Path(MODEL_DIR)
+    elif V4:
       F2.OUT = F2.OUT_V4
     elif V3:
       F2.OUT = F2.OUT_V3
@@ -311,7 +342,7 @@ def mode_roll(args):
   from multiprocessing import get_context
   OUT.mkdir(parents=True, exist_ok=True)
   f, v = int(args.fold), args.variant
-  out = OUT / f'roll_{v}_fold{f}.pkl'
+  out = OUT / (f'roll_{v}_fold{f}_decision.pkl' if ANCHOR_SET == 'decision' else f'roll_{v}_fold{f}.pkl')
   if out.exists() and not args.force:
     print(f'{out} exists', flush=True); return
   if v == 'A' and not ((MP.OUT / 'ett_rollout') / 'nominal_mdn.pkl').exists():      # the nominal lives with the v1 diagnostic; shared by v2
@@ -320,16 +351,16 @@ def mode_roll(args):
     import fit_v6_ett_advice as FA
     if not FA.model_path(f).exists():
       raise SystemExit('fit the advice generator first')
-  ks = sample_anchors(f)
+  ks = sample_decision_anchors(f) if ANCHOR_SET == 'decision' else sample_anchors(f)
   if args.limit:
     ks = ks[:args.limit]
   n = max(1, args.workers * 3); parts = [ks[i::n] for i in range(n)]; parts = [p for p in parts if len(p)]
   t0 = time.time()
   if args.workers <= 1:
-    res = [_worker((p, f, v, 203_000_000 + i, V2, V3, HIST_FIX, HIST_EXACT, V4)) for i, p in enumerate(parts)]
+    res = [_worker((p, f, v, 203_000_000 + i, V2, V3, HIST_FIX, HIST_EXACT, V4, MODEL_DIR, str(OUT))) for i, p in enumerate(parts)]
   else:
     with get_context('spawn').Pool(args.workers) as pool:
-      res = pool.map(_worker, [(p, f, v, 203_000_000 + i, V2, V3, HIST_FIX, HIST_EXACT, V4) for i, p in enumerate(parts)])
+      res = pool.map(_worker, [(p, f, v, 203_000_000 + i, V2, V3, HIST_FIX, HIST_EXACT, V4, MODEL_DIR, str(OUT)) for i, p in enumerate(parts)])
   rows = [r for part in res for r in part]
   with out.open('wb') as fh:
     pickle.dump({'fold': f, 'variant': v, 'anchors': ks, 'rows': rows, 'wall_seconds': time.time() - t0}, fh)
@@ -363,12 +394,12 @@ def mode_report(args):
   with np.load(MP.OUT / 'branches_cf.npz', allow_pickle=False) as d:
     boff, blen, boc = d['offset'].astype(np.int64), d['length'].astype(np.int64), d['outcome'].astype(str)
     bxy = d['obs_rows'][:, :2]
-  reg = region_of(anchors.state[:, :2])
-  res = {'variants': {}, 'thresholds': THRESH}
-  for v in ('C', 'A', 'B'):
+  reg = region_of(anchors.state[:, :2]); DG = decision_groups()
+  res = {'variants': {}, 'thresholds': THRESH, 'model_dir': str(model_dir())}
+  for v, aset in [(v_, a_) for v_ in ('C', 'A', 'B') for a_ in ('uniform', 'decision')]:
     rows = []
     for f in range(3):
-      p = OUT / f'roll_{v}_fold{f}.pkl'
+      p = OUT / (f'roll_{v}_fold{f}_decision.pkl' if aset == 'decision' else f'roll_{v}_fold{f}.pkl')
       if not p.exists():
         continue
       with p.open('rb') as fh:
@@ -383,9 +414,13 @@ def mode_report(args):
     m_death = np.array([r['p_death'] for r in rows]); m_reach = np.array([r['p_reach'] for r in rows]); m_timeout = np.array([r['p_timeout'] for r in rows]); m_far = np.array([r['p_far'] for r in rows])
     strata = {'all': np.ones(len(rows), bool)}
     rr = reg[ks]
-    for r_, name in enumerate(REGIONS):
-      if (rr == r_).sum() >= THRESH['min_stratum_anchors'] * n_draw:
-        strata[f'anchor in {name}'] = rr == r_
+    if aset == 'decision':
+      for g, gm in DG.items():
+        strata[g] = gm[ks]
+    else:
+      for r_, name in enumerate(REGIONS):
+        if (rr == r_).sum() >= THRESH['min_stratum_anchors'] * n_draw:
+          strata[f'anchor in {name}'] = rr == r_
     V = {'n_paths': len(rows), 'n_anchors': int(len(np.unique(ks))), 'strata': {}}
     gates_ok = True
     for name, m in strata.items():
@@ -400,8 +435,10 @@ def mode_report(args):
       # reach time: model reach steps weighted by p_reach; reference successes
       mr_t = np.array([r['reach_step'] for r, keep in zip(rows, m) if keep and r['reached']]); mr_w = np.array([r['p_reach'] for r, keep in zip(rows, m) if keep and r['reached']])
       rs = m & ref_reach
+      m_far_reach = np.array([(r['p_reach'] if r['far_step'] >= 0 else 0.0) for r in rows])          # reach mass on paths that entered far (the far entry precedes the reach on the path)
       blk = {'n_anchors': int(m.sum() / n_draw), 'death_rate': {'sim': float(ref_death[m].mean()), 'model': float(m_death[m].mean())}, 'reach_rate': {'sim': float(ref_reach[m].mean()), 'model': float(m_reach[m].mean())},
              'timeout_rate': {'sim': float(ref_timeout[m].mean()), 'model': float(m_timeout[m].mean())}, 'far_rate': {'sim': float(ref_far[m].mean()), 'model': float(m_far[m].mean())},
+             'far_completion': {'sim': (float(ref_reach[m & ref_far].mean()) if (m & ref_far).any() else None), 'model': (float(m_far_reach[m].sum() / m_far[m].sum()) if m_far[m].sum() > 0 else None), 'n_far_sim': int((m & ref_far).sum())},
              'ks_death_time': wks(mt, mw, ref_steps[rd], np.ones(int(rd.sum()))) if rd.sum() >= 20 and len(mt) else None,
              'ks_death_x': wks(mx, mw, ref_death_x[rd], np.ones(int(rd.sum()))) if rd.sum() >= 20 and len(mx) else None,
              'ks_reach_time': wks(mr_t, mr_w, ref_steps[rs], np.ones(int(rs.sum()))) if rs.sum() >= 20 and len(mr_t) else None,
@@ -412,23 +449,25 @@ def mode_report(args):
            'timeout': abs(blk['timeout_rate']['sim'] - blk['timeout_rate']['model']) <= THRESH['rate_gap'], 'far': abs(blk['far_rate']['sim'] - blk['far_rate']['model']) <= THRESH['far_gap'],
            'ks_death_time': (blk['ks_death_time'] is None) or blk['ks_death_time'] <= THRESH['ks'], 'ks_death_x': (blk['ks_death_x'] is None) or blk['ks_death_x'] <= THRESH['ks'],
            'ks_reach_time': (blk['ks_reach_time'] is None) or blk['ks_reach_time'] <= THRESH['ks']}
-      blk['gates'] = g; blk['passed'] = bool(all(g.values())); gates_ok = gates_ok and blk['passed']
+      blk['gates'] = g; blk['passed'] = bool(all(g.values())); blk['gated'] = bool(m.sum() / n_draw >= THRESH['min_stratum_anchors'])
+      gates_ok = gates_ok and (blk['passed'] or not blk['gated'])
       V['strata'][name] = blk
     V['all_gates_passed'] = gates_ok
-    res['variants'][v] = V
+    res['variants'][v if aset == 'uniform' else f'{v}_decision'] = V
   MP.write_json(OUT / 'report.json', res)
   L = ['# Step 3a: full-length model rollouts vs the held-out simulator branches (distributional)', '', f'`manifest.json` (thresholds sealed), `report.json`.  Model = exact hazard integration along the deterministic path (C: one path per anchor; A: {K_DRAWS_A} sampled-advice paths).  '
        'Reference = the branch of the same anchor (one realised outcome).  A KS entry is blank when fewer than 20 realised events exist in the stratum.', '']
   for v, V in res['variants'].items():
-    L += [f'## Advice {v}: **{"ALL GATES PASSED" if V["all_gates_passed"] else "GATE(S) FAILED"}** ({V["n_anchors"]} anchors, {V["n_paths"]} paths)', '',
-          '| stratum | anchors | death sim / model | reach sim / model | timeout sim / model | far sim / model | KS death time | KS death x | KS reach time | death time median sim / model | reach time median sim / model | AUROC P(death) | pass |',
-          '|---|---:|---|---|---|---|---:|---:|---:|---|---|---:|---|']
+    L += [f'## Advice {v}: **{"ALL GATES PASSED" if V["all_gates_passed"] else "GATE(S) FAILED"}** ({V["n_anchors"]} anchors, {V["n_paths"]} paths)' + (' -- the decision-state anchor set (reset / start_early / pre_zone1_early; a stratum below the sealed 200-anchor minimum is reported, not gated)' if v.endswith('_decision') else ''), '',
+          '| stratum | anchors | death sim / model | reach sim / model | timeout sim / model | far sim / model | far completion sim / model (n far sim) | KS death time | KS death x | KS reach time | death time median sim / model | reach time median sim / model | AUROC P(death) | pass |',
+          '|---|---:|---|---|---|---|---|---:|---:|---:|---|---|---:|---|']
     for name, b in V['strata'].items():
       fmt = lambda q: f'{b[q]["sim"]:.3f} / {b[q]["model"]:.3f}'
+      fc = b['far_completion']; fcs = f'{"-" if fc["sim"] is None else format(fc["sim"], ".2f")} / {"-" if fc["model"] is None else format(fc["model"], ".2f")} ({fc["n_far_sim"]})'
       ks_ = lambda q: ('-' if b[q] is None else f'{b[q]:.3f}')
       med = lambda q: f'{b[q]["sim"] if b[q]["sim"] is None else round(b[q]["sim"])} / {b[q]["model"] if b[q]["model"] is None else round(b[q]["model"])}'
-      L.append(f'| {name} | {b["n_anchors"]} | {fmt("death_rate")} | {fmt("reach_rate")} | {fmt("timeout_rate")} | {fmt("far_rate")} | {ks_("ks_death_time")} | {ks_("ks_death_x")} | {ks_("ks_reach_time")} | {med("death_time_median")} | {med("reach_time_median")} | '
-               f'{"-" if b["auroc_p_death_vs_realised"] is None else format(b["auroc_p_death_vs_realised"], ".3f")} | {"yes" if b["passed"] else "NO: " + ", ".join(k for k, ok in b["gates"].items() if not ok)} |')
+      L.append(f'| {name} | {b["n_anchors"]} | {fmt("death_rate")} | {fmt("reach_rate")} | {fmt("timeout_rate")} | {fmt("far_rate")} | {fcs} | {ks_("ks_death_time")} | {ks_("ks_death_x")} | {ks_("ks_reach_time")} | {med("death_time_median")} | {med("reach_time_median")} | '
+               f'{"-" if b["auroc_p_death_vs_realised"] is None else format(b["auroc_p_death_vs_realised"], ".3f")} | {("yes" if b["passed"] else "NO: " + ", ".join(k for k, ok in b["gates"].items() if not ok)) + ("" if b.get("gated", True) else " (not gated: below the anchor minimum)")} |')
     L.append('')
   (OUT / 'REPORT.md').write_text('\n'.join(L) + '\n', encoding='utf-8')
   print('\n'.join(L), flush=True)
@@ -447,8 +486,19 @@ def main(argv=None):
   ap.add_argument('--v4', action='store_true', help='use the v4 one-step models (motion / stationary on (s, a_q) only); outputs under ett_rollout_v4/')
   ap.add_argument('--hist-fix', action='store_true', help='history counters aligned with the training rows (0 at the first hold / band row); outputs under <OUT>/hist_fix/')
   ap.add_argument('--hist-exact', action='store_true', help='history counters replicate fit_v6_ett_one_step_v2.run_length row by row; outputs under <OUT>/hist_exact/')
+  ap.add_argument('--model-dir', default=None, help='an arbitrary one-step model dir (v4 code path, exact counters); with --tag')
+  ap.add_argument('--tag', default=None, help='output dir ett_rollout_v4/<tag>/ (used with --model-dir)')
+  ap.add_argument('--anchor-set', choices=('uniform', 'decision'), default='uniform', help='decision: the reset / start_early / pre_zone1_early groups instead of the uniform held-out sample')
   args = ap.parse_args(argv)
-  global V2, V3, V4, OUT, HIST_FIX, HIST_EXACT
+  global V2, V3, V4, OUT, HIST_FIX, HIST_EXACT, MODEL_DIR, TAG, ANCHOR_SET
+  ANCHOR_SET = args.anchor_set
+  if args.model_dir:                                      # an arbitrary model dir: the v4 code path with exact counters, outputs under ett_rollout_v4/<tag>/
+    assert args.tag, '--model-dir needs --tag'
+    MODEL_DIR, TAG = str(Path(args.model_dir)), args.tag
+    V4 = V3 = V2 = True; HIST_EXACT = True; OUT = OUT_V4 / TAG
+    OUT.mkdir(parents=True, exist_ok=True)
+    {'seal': mode_seal, 'nominal': mode_nominal, 'roll': mode_roll, 'report': mode_report}[args.mode](args)
+    return 0
   if args.v4:
     V4 = True; V3 = True; V2 = True; OUT = OUT_V4
   elif args.v3:

@@ -237,7 +237,7 @@ moving rows 0.123-0.133 (B 0.119-0.126), 20-step open-loop xy error on the CF-va
 horizon).  A longer window than 20 would need the weight or gradient clipping changed, i.e. two things at once -- outside this round.
 
 The acceptance (v4 / B / C, episode split, with the (a) / (b) check; node3, `cf_motion/accept_ep_c20/`) and the crossover for C (node
-30027, `ett_crossover/v4c20/`) are running; their reading against B is appended below when they finish.
+30027, `ett_crossover/v4c20/`): see the two sections after the reproducibility bound.
 
 ## A reproducibility bound for the closed-loop numbers (found by re-running the same acceptance on a second GPU)
 
@@ -246,3 +246,90 @@ The SAME models and the SAME frozen actor give different 400-step closed-loop ou
 stalled in the last 100 -- B 0.05 vs 0.08.  So the closed-loop reach / stall deviation has a device-noise floor of about +-0.1 on this
 set; "clear improvement" under the stop rule has to exceed it.  (L1 / L2 / L2b, which restart from real states, agree to the third
 decimal across the two runs.)
+
+## Arm C (K 20) vs arm B (K 10): the acceptance (node3, same device for all three models; `cf_motion/accept_ep_c20/`)
+
+| layer | quantity | v4 | B (K 10) | C (K 20) |
+|---|---|---|---|---|
+| L1 | one-step xy error median: moving / slow / turn30 / far / corridor | 0.0070 / 0.0248 / 0.0140 / 0.0113 / 0.0017 | 0.0065 / 0.0029 / 0.0122 / 0.0051 / 0.0018 | 0.0067 / 0.0035 / 0.0123 / 0.0054 / 0.0019 |
+| L2 open loop (real actions) | xy error median at 5 / 10 / 20 / 30 / 50 / 100 | 0.04 / 0.11 / 0.22 / 0.40 / 0.81 / 2.04 | 0.04 / 0.09 / 0.16 / 0.22 / 0.43 / 1.04 | 0.04 / 0.09 / 0.16 / 0.22 / **0.33 / 0.64** |
+| L2 | real stall segments from the trajectory start (8; real disp 0.05): model disp; share > 0.5 | 0.77; 0.75 | 0.44; 0.25 | **0.23; 0.00** |
+| L2b (a) at the entry | model disp median / p90; share > 0.5 | 3.23 / 1261; 0.94 | 0.17 / 3.2; 0.39 | **0.06 / 2.8; 0.25** |
+| L2b (a) 20 before | model disp median; share > 0.5; entry err | 2.96; 0.97; 1.05 | 0.27; 0.41; 0.19 | **0.12; 0.28**; 0.26 |
+| L2b (b) at the entry / 20 before | closed-loop disp median; share > 0.5; share (b) - (a) > 0.3 | 2.74; 0.94; 0.14 / 4.09; 0.97; 0.42 | 0.26; 0.36; 0.08 / 0.23; 0.34; 0.11 | 0.07; 0.28; 0.11 / 0.25; 0.38; **0.28** |
+| L3 closed loop (38 hazard-free seqs, 400 steps) | heading north at 30 real / model / agreement | 0.13 / 0.16 / 0.97 | 0.13 / 0.13 / 0.95 | 0.13 / 0.08 / 0.89 |
+| L3 | far entry by 100 real / model / agreement | 0.16 / 0.18 / 0.97 | 0.16 / 0.13 / 0.97 | 0.16 / 0.08 / 0.92 |
+| L3 | reach by 400 real / model / agreement | 0.42 / 0.87 / 0.55 | 0.42 / 0.82 / 0.55 | 0.42 / 0.76 / 0.55 |
+| L3 | stalled in the last 100 real / model / agreement | 0.47 / 0.00 / 0.53 | 0.47 / 0.05 / 0.47 | 0.47 / **0.13** / 0.61 |
+| original validation | val mse diag / off at the selected step (3 folds) | 0.0097-0.0137 / 0.028-0.033 | 0.0117-0.0158 / 0.031-0.036 | 0.0119-0.0165 / 0.031-0.037 |
+
+## Arm C vs arm B: the crossover (`ett_crossover/v4c20/`, node 30027; B re-run on the same node as a device control, `ett_crossover/v4b_n27/`: IDENTICAL to B's node3 numbers to the third decimal -- the crossover is device-deterministic, the 3090 / 4090L difference above concerns the acceptance's L3 only)
+
+| quantity | sim | v4 | B (K 10) | C (K 20) |
+|---|---|---|---|---|
+| Q1 reset CF + CF: xy error at 10 / 20 / 30 (heading agreement) | | 0.44 / 1.07 / 1.68 (0.69) | 0.30 / 0.78 / 1.30 (0.69) | 0.34 / 0.87 / 1.42 (0.70) |
+| Q1 cf_early CF + CF: at 30 (agreement) | | 1.01 (0.94) | **0.53** (0.94) | 0.63 (0.95) |
+| Q1 reset start + start: at 30 (no-regression check) | | **0.28** | 0.45 | 0.59 |
+| reset CF + CF: success / timeout / completion given far / timeout given far / length | 0.53 / 0.23 / 0.67 / 0.33 / 453 | 0.57 / 0.12 / 0.82 / 0.17 / 396 | 0.60 / 0.15 / 0.75 / 0.20 / 466 | **0.51 / 0.25 / 0.62 / 0.33 / 484** |
+| reset start + CF: same | 0.43 / 0.17 / 0.68 / 0.32 / 359 | 0.42 / 0.03 / 0.87 / 0.08 / 241 | 0.46 / 0.04 / 0.83 / 0.09 / 311 | **0.39 / 0.16 / 0.65 / 0.32 / 365** |
+| reset CF2 + CF: same | 0.51 / 0.33 / 0.61 / 0.39 / 534 | 0.71 / 0.11 / 0.86 / 0.12 / 435 | 0.57 / 0.27 / 0.62 / 0.30 / 540 | 0.54 / 0.28 / 0.62 / 0.34 / 513 |
+| indep_reset CF + CF: same | 0.44 / 0.28 / 0.57 / 0.43 / 447 | 0.39 / 0.22 / 0.56 / 0.37 / 389 | 0.51 / 0.11 / 0.76 / 0.16 / 374 | **0.45 / 0.27 / 0.61 / 0.37 / 494** |
+| cf_early CF + CF: same | 0.45 / 0.27 / 0.61 / 0.39 / 427 | 0.41 / 0.14 / 0.67 / 0.27 / 305 | 0.51 / 0.11 / 0.72 / 0.18 / 361 | **0.39 / 0.23 / 0.58 / 0.39 / 438** |
+| reset start + start: success / timeout / length (the start policy) | 0.23 / 0.03 / 148 | 0.23 / 0.01 / 134 | 0.23 / 0.08 / 189 | 0.20 / **0.15** / 242 |
+| cf_early start + start: timeout / completion given far / length | 0.22 / 0.74 / 352 | 0.15 / 0.72 / 304 | 0.15 / 0.74 / 325 | 0.19 / 0.66 / 445 |
+| start_early CF + CF: completion given far | 0.82 | 0.41 | 0.28 | 0.45 |
+| reset (CF + CF) - (logged + CF), success | +0.302 | +0.392 (r 0.45) | +0.450 (r 0.27) | +0.388 (r 0.25) |
+| reset (CF + CF) - (start + CF) | +0.102 | +0.156 | +0.135 | +0.123 (r 0.13) |
+| reset (CF2 + CF) - (start + CF) | +0.078 | +0.288 | **+0.110** | +0.150 |
+| reset (MF + CF) - (start + CF) | -0.073 | +0.036 | +0.016 | **-0.069** |
+| reset (start + CF) - (start + start) | +0.196 | +0.184 | +0.230 | +0.192 |
+| reset (CF + CF) - (CF + start) | +0.296 | +0.326 | +0.343 | +0.276 |
+| indep_reset (start + CF) - (start + start) | +0.124 | +0.018 | +0.235 | +0.140 |
+| indep_reset (CF2 + CF) - (start + CF) | +0.117 | +0.193 | +0.194 | +0.091 |
+| cf_early (CF + CF) - (start + CF) / (MF + CF) - (start + CF) | -0.013 / +0.033 | -0.022 / -0.062 | **-0.039** / -0.100 | +0.065 / +0.085 |
+| start_early (CF2 + CF) - (start + CF) | -0.058 | -0.019 | +0.017 | **-0.026** |
+| reset (CF + CF) - (start + CF): near-2.0 / goal-area mass | +0.019 / +0.006 | +0.047 / +0.035 | +0.037 / +0.029 | **+0.011 / +0.008** |
+| per-state correlation / sign agreement of the contrasts (all groups) | | <= 0.45 / 0.4-0.8 | <= 0.3 / chance | <= 0.3 / chance (unchanged) |
+
+## Reading against the user's stop rule (closed-loop reach / stall deviation and same-state action contrasts: clear improvement or not)
+
+* Open loop and the stall entries (fixed actions): C is the best model so far -- drift 0.33 / 0.64 at 50 / 100 (B 0.43 / 1.04, v4 0.81 / 2.04), the
+  trajectory-start stall segments 0.23 with none over 0.5 (B 0.44, 25 %), the entry check 0.06 (B 0.17); the one-step accuracy and the original
+  validation at B's level.  The longer window is what fixed the fixed-action accumulation that (a) / (b) identified.
+* Closed-loop stall under the CF loop -- two readouts disagree in size.  (i) The crossover (64 states x 32 paired hazard draws per corner, full
+  episodes, device-controlled): C reproduces the simulator's timeouts, completion-given-far and timeout-given-far at reset, indep_reset and
+  cf_early within 0.02-0.06 (B off by 0.10-0.17, v4 by 0.10-0.24), and the success rates and path lengths follow (reset CF + CF 0.51 / 484 vs
+  0.53 / 453) -- a clear improvement.  (ii) The acceptance's L3 (38 hazard-free sequences, strict "stationary in the last 100 of 400 steps"):
+  stalled 0.13 vs B 0.05 and real 0.47, reach 0.76 vs 0.82 and real 0.42 -- the right direction, but a step no larger than the 3090 / 4090L
+  device difference measured for B (0.14), and the deviation to the real sequences remains 0.34 on both.  What C fixed is the long-horizon
+  meander / timeout under hazards, not the strict stationary stall inside 400 steps.
+* Same-state action contrasts: the coarse means are closer to the simulator in 9 of the 13 listed contrasts (MF's sign at reset now right,
+  -0.069 vs -0.073; CF2's sign at start_early right; the reset goal-mass contrasts within 0.005 of the simulator where B was 2-5x too large);
+  worse in 4 (CF2 at reset +0.150 vs +0.078; cf_early CF / MF).  The per-state correlations (<= 0.3) and sign agreements (chance) are unchanged:
+  no model in this chain ranks first steps per state.
+* Costs: the start policy regresses further -- early error at reset 0.59 (B 0.45, v4 0.28), timeouts under start + start at reset 0.15 vs the
+  simulator's 0.03 (path length 242 vs 148), cf_early start + start length 445 vs 352 -- C adds stalls the start agent does not have (the
+  "normal walking preserved" condition, met in round 1, is NOT met by C); the early error under the CF loop is slightly worse than B's (1.42
+  vs 1.30 at reset, 0.63 vs 0.53 at cf_early); L3's heading / far-entry agreement drops to 0.89 / 0.92 (B 0.95 / 0.97); from 20 rows before
+  the stall entry the actor's feedback now matters more (0.28 of the segments worse than the recorded actions by > 0.3; B 0.11); and the K 20
+  unroll at weight 1 diverged in two of three folds (pre-spike checkpoints selected).
+* Verdict under the rule: a clear improvement on ONE closed-loop readout (the crossover's stall / timeout reproduction) and on the coarse
+  action contrasts; no clear improvement on the strict closed-loop stall (L3) or on the per-state contrasts; a regression on the start policy.
+  This does not clear the bar for re-running the CRL critic + actor (the per-state judge is unchanged and the start policy got worse), and under
+  the stop point set for the evening of 2026-09-22 the recommendation is to STOP this week's AntMaze model revision here, with C recorded as
+  the reference ETT for the CF-loop stall reproduction and its two limits (instability at K 20; the start-policy regression) recorded with it.
+  No CRL seeds are launched.  Everything beyond one window change (weight, gradient clipping, a soft gate, stall-covering windows) is outside
+  this round by the user's rule and is left as a list, not a plan.
+
+## The full rollout acceptance for C (user's request after the crossover reading; running)
+
+`diag_v6_ett_rollout.py --model-dir ett_one_step_v4c20 --tag v4c20` (outputs `ett_rollout_v4/v4c20/`): the Step 3a acceptance with the
+SEALED thresholds (6,000 held-out anchors, strata = anchor region, rate gaps <= 0.05, entered-far <= 0.03, KS <= 0.15, gated in strata
+with >= 200 anchors; advice C = the simulator teacher along the model path, advice B = the learnt generator v3 with 4 paths per anchor;
+continuation = the start agent's mode, first query = the logged torque), plus the DECISION-STATE anchor set (`--anchor-set decision`:
+every reset anchor (196) and up to 700 start_early / pre_zone1_early anchors per fold under the crossover's group definitions, each
+rolled with its held-out fold's model; the reset group is below the sealed minimum and is reported, not gated) and a far-completion
+column (reach given entered far; reported, not gated).  The v4 reference under the same gates (`ett_rollout_v4/hist_exact/`): pooled
+pass; pre_zone1 fails on reach (0.41 vs 0.32) and timeout (0.065 vs 0.178), between on timeout, zone2 on the death-time KS.
+User's rule: if start_early / pre_zone1_early are still far outside the thresholds, no CRL training.  Jobs: node3 (C uniform, B
+decision folds 0-1), node 30027 (B uniform), node 30049 (C decision, B decision fold 2), ~70 min.
