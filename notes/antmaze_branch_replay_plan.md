@@ -2980,3 +2980,35 @@ target") holds only at the reset states (196 / 53,747 anchors) and the
 current critics would not judge it; outside reset the third case
 ("no reliable advantage, more timeouts").  Not concluded: first steps
 unlearnable, or that such a round would fail.
+
+### The v4 learned ETT on the crossover (2026-09-21; ett_crossover/SUMMARY.md; no training)
+
+User's take-up after 48d603c: a learned ETT that only reproduces
+"logged step + start continuation" cannot supply the fork decision; it
+must predict the consequences of the relevant query torque + the
+matching continuation.  `scripts/diag_v6_ett_crossover.py`: the same
+384 states / 5 first torques / 2 continuations through the v4 ETT (the
+continuation acting on the model's state; 4 classes x 8 draws; history
+counters from each model path; fold 0 for independent states) vs the
+simulator crossover.  Q1 (initial turn): the root one-step error does
+not depend on the torque (0.01-0.02; 0.13-0.14 at step 5); under the
+start loop the error saturates at 0.28 by step 30, under the CF loop it
+grows to 1.4-1.7 with per-state heading agreement 0.66-0.69 (the turning
+rate about right); least accurate on the turning states themselves
+(cf_early 0.7-1.0 under any loop).  Q2 (completion vs stall): under the
+training-like loop the model matches; wherever the CF actor controls the
+model REMOVES ITS STALLS -- corridor timeouts 0.10-0.16 -> 0.00 (deaths
++0.15, rows 86-123 vs 157-225), far-route completion from reset
+0.81-0.86 vs 0.61-0.68, at the turning states under-completion
+0.57-0.63 vs 0.75-0.81; goal-area mass over-predicted on the far route
+(0.097 vs 0.035).  Q3 (same-state action differences): the two large
+reset contrasts reproduced in the MEAN ((CF+CF)-(logged+CF) +0.38 vs
++0.30, r 0.44; continuation +0.33 vs +0.30, r 0.01), the finer ones not
+(CF2 over-stated 3-4x, MF's sign wrong, the continuation effect at
+indep resets missed +0.015 vs +0.124).  Earliest error (user's ladder):
+rung 2 -- closed-loop motion on CF-controlled paths, chiefly the missing
+stall / stationary behaviour and the turn; remedy for the user's
+decision: one-step (state, query torque) supervision from CF-controlled
+simulator paths at reset / turning / corridor states + short multi-step
+unrolling on the existing one-step model; logged supervision kept,
+episode hold-out, no route label, one 8-D torque; engineering stage.
