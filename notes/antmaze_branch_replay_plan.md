@@ -3133,3 +3133,25 @@ agent's stalls MORE than v4, while under the CF actor it reproduces
 the CF actor's stalls -> the learnt stall is the CF actor's pattern,
 not policy-independent dynamics.  Recommendation unchanged: no CRL
 training from C; stop the week's model revision.
+
+### CF-motion round 3, arm S (2026-09-21 evening; user's plan after d8feadd): protocol-matched windows, one acceptance, the full run
+
+User's corrections adopted: "C learnt the CF actor's stalls" too
+strong -> training-distribution mismatch / conflicting goals; reset
+(196) stays a reported error.  Arm S = v4 + K 20 windows from the
+sealed table's own start-agent branches (--multistep-source branch;
+episode-level split respected; original one-step supervision; onset
+frozen).  Stable; sealed gates: pooled and between PASS under both
+advice processes, pre_zone1 timeout fails by 0.003 (0.125 vs 0.178; v4
+0.065), zone2 KS = the frozen onset head; reset under the learnt
+advice death 0.738 vs 0.663 (reported).  Futures table: pre_zone1
+timeouts 0.128 vs 0.184 (v4 0.067); far legs over-complete 0.04-0.08.
+FULL RUN (ett_futures_v4s20/, seeds 0 1 2 fixed first): Learned 0.567 /
+0.463 / 0.387 = 0.472 vs oracle table 1 0.477 (-0.004 +- 0.027), vs O
++0.181 (3/3, rule met), vs table 2 +0.184; completion to five: seed 3
+0.433, seed 4 0.047 (94 % timeouts, the start stall) -> five-seed
+Learned - O +0.083 +- 0.091, 4/5, NOT met; mean 0.379 between the
+tables (0.449 / 0.351).  Failure mode = the seed-dependent start
+stall (no route in 20-50 % of episodes, one seed 94 %), deaths
+0.01-0.14; the futures pass the gates, so the driver is outside the
+gated quantities.  Nothing further launched.

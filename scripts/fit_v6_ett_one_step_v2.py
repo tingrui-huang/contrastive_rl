@@ -67,6 +67,11 @@ INIT_FROM = None                        # --init-from: continue from this model 
 FREEZE_ONSET = False                    # --freeze-onset: the onset head keeps its initial parameters (motion regression + stationary gate only)
 MULTISTEP = 0                           # --multistep K: short-sequence unroll term on the CF rollouts (0 = off); --multistep-weight / --multistep-batch / --multistep-stall-share
 MS_WEIGHT, MS_BATCH, MS_STALL_SHARE = 1.0, 256, 0.5
+MS_SOURCE = 'cf'                        # --multistep-source branch (user's plan after d8feadd): the windows come from the sealed table's START-agent branch paths
+                                        # (branches_cf.npz obs_rows / act_rows; the target generation protocol) under the fold's own episode-level split
+                                        # (train windows from the training rows, selection windows from the early-stop episodes; never the held-out fold);
+                                        # 'cf' = the CF-controlled rollouts (arms B / C).  Slow / static start rows = xy speed < SLOW_SPEED, as in the CF rows.
+SLOW_SPEED = 0.03
 REL_EPS, REL_W = 0.05, 1.0              # relative term: ||pred - d||^2 / (||d||^2 + REL_EPS^2) in standardised units
 
 
@@ -119,6 +124,30 @@ class Rows2(V1.Rows):
   def gather_log(self, i):
     s, ab, aq, s2, o = super().gather_log(i)
     return s, ab, aq, s2, o, self.kh_l[i], self.kb_l[i], self.stat_l[i]
+
+
+class BranchWindows:
+  """K-step windows inside the sealed table's branch paths (the start agent's continuation): rows r..r+K-1 valid and in one path,
+  gathered from the branch obs / act rows; 'train' = the fold's training rows, 'es' = the early-stop episodes (selection)."""
+
+  def __init__(self, R, sp):
+    self.R = R
+    path = np.repeat(np.arange(len(R.boff)), R.blen)
+    self.path = path
+    xy = R.bobs[:, :2]; sp_ = np.zeros(len(xy), np.float32); sp_[:-1] = np.linalg.norm(xy[1:] - xy[:-1], axis=1)
+    self.speed = sp_
+    self.rows = {'train': np.zeros(len(R.valid), bool), 'es': np.zeros(len(R.valid), bool)}
+    self.rows['train'][sp['train_b']] = True; self.rows['es'][sp['es_b']] = True
+
+  def windows(self, K, split='train'):
+    n = len(self.R.valid); i = np.arange(n - K)
+    ok = self.rows[split][i] & self.R.valid[i + K - 1] & (self.path[i] == self.path[i + K - 1])     # one anchor per path -> one fold / one episode per window
+    starts = i[ok]; stall = starts[self.speed[starts] < SLOW_SPEED]
+    return starts, stall
+
+  def gather_window(self, starts, K):
+    idx = starts[:, None] + np.arange(K + 1)[None, :]
+    return self.R.bobs[idx].astype(np.float32), self.R.bact[idx[:, :-1]].astype(np.float32)
 
 
 class CFRows:
@@ -305,11 +334,13 @@ def mode_fit(args):
     logit = ons.apply(po_, jnp.concatenate([x, jax.lax.stop_gradient(pred), h], axis=1)); bce = jnp.mean(w * optax.sigmoid_binary_cross_entropy(logit, y))
     sl = stt.apply(ps_, xm); sbce = jnp.mean(optax.sigmoid_binary_cross_entropy(sl, st)); sacc = jnp.mean((sl > 0) == (st > 0.5))
     return md, mo, bce, jax.nn.sigmoid(logit), sbce, sacc
-  ms_starts, ms_stall = (CF.windows(MULTISTEP, 'train') if (CF is not None and MULTISTEP > 0) else (None, None))
+  WSRC = (BranchWindows(R, sp) if MS_SOURCE == 'branch' else CF) if MULTISTEP > 0 else None
+  ms_starts, ms_stall = (WSRC.windows(MULTISTEP, 'train') if WSRC is not None else (None, None))
   if ms_starts is not None:
-    print(f'fold {f}: multistep K {MULTISTEP}: {len(ms_starts)} train windows ({len(ms_stall)} starting on slow / static rows), weight {MS_WEIGHT}, batch {MS_BATCH}, stall share {MS_STALL_SHARE}', flush=True)
-    ms_val_starts, _ = CF.windows(MULTISTEP, 'val'); ms_val_starts = np.random.default_rng(5).choice(ms_val_starts, size=min(4096, len(ms_val_starts)), replace=False)
-    VS_ms, VA_ms = CF.gather_window(ms_val_starts, MULTISTEP)
+    print(f'fold {f}: multistep K {MULTISTEP} from {MS_SOURCE}: {len(ms_starts)} train windows ({len(ms_stall)} starting on slow / static rows), weight {MS_WEIGHT}, batch {MS_BATCH}, stall share {MS_STALL_SHARE}', flush=True)
+    ms_val_starts, _ = WSRC.windows(MULTISTEP, 'es' if MS_SOURCE == 'branch' else 'val'); ms_val_starts = np.random.default_rng(5).choice(ms_val_starts, size=min(4096, len(ms_val_starts)), replace=False)
+    VS_ms, VA_ms = WSRC.gather_window(ms_val_starts, MULTISTEP)
+    print(f'fold {f}: multistep selection windows {len(ms_val_starts)} from the {"early-stop episodes" if MS_SOURCE == "branch" else "CF val split"}', flush=True)
   nS_mean, nS_std, nD_mean, nD_std = (jnp.asarray(norm[k]) for k in ('s_mean', 's_std', 'd_mean', 'd_std'))
 
   def unroll(p, S0, A):
@@ -359,7 +390,7 @@ def mode_fit(args):
     xm = features_q(s, aq, norm) if V4 else x
     if ms_starts is not None:
       n_st = int(MS_STALL_SHARE * MS_BATCH); w0 = np.concatenate([rng.choice(ms_stall, size=n_st), rng.choice(ms_starts, size=MS_BATCH - n_st)])
-      Sw, Aw = CF.gather_window(w0, MULTISTEP)
+      Sw, Aw = WSRC.gather_window(w0, MULTISTEP)
       pm, om, lm, parts, lms = step_m2(pm, om, jnp.asarray(xm), jnp.asarray(d, jnp.float32), jnp.asarray(Sw), jnp.asarray(Aw))
     else:
       pm, om, lm, parts = step_m(pm, om, jnp.asarray(xm), jnp.asarray(d, jnp.float32)); lms = jnp.float32(0.0)
@@ -390,18 +421,21 @@ def mode_fit(args):
       if ms_starts is not None:
         m_mse, m_xyK = (float(np.asarray(v)) for v in ms_val_fn(pm, jnp.asarray(VS_ms), jnp.asarray(VA_ms)))
         cfm.update({'ms_val_mse': m_mse, f'ms_val_xy_err_at_{MULTISTEP}': m_xyK, 'train_multistep': float(lms)})
+        if MS_SOURCE == 'branch':
+          score = score + m_mse                                              # selection on the target protocol: + the K-step MSE on the early-stop episodes' branch windows
       hist.append({'step': it, 'train_motion': float(lm), 'train_onset': float(lo), 'train_stat': float(ls), 'val_mse_diag': float(md_), 'val_mse_off': float(mo_), 'val_onset_bce': float(bce), 'val_auroc': auc, 'val_stat_bce': float(sbce), 'val_stat_acc': float(sacc), 'score': score, **cfm})
       if score < best:
         best, best_step = score, it
         best_state = {k: jax.tree_util.tree_map(np.asarray, p_) for k, p_ in (('motion_params', pm), ('onset_params', po), ('stat_params', ps))}
-      print(f'[v2 fold {f} step {it:>6}] motion {float(lm):.4f} onset {float(lo):.4f} stat {float(ls):.4f} | val mse diag {float(md_):.4f} off {float(mo_):.4f} onset bce {float(bce):.4f} auroc {auc:.3f} stat bce {float(sbce):.4f} acc {float(sacc):.4f}' + (f" | cf val mse mov {cfm['cf_val_mse_moving']:.4f} all {cfm['cf_val_mse_all']:.4f} stat acc {cfm['cf_val_stat_acc']:.4f}" if cfm else '') + f' | score {score:.4f} best {best:.4f}@{best_step} {it / (time.time() - t0):.1f} it/s', flush=True)
+      print(f'[v2 fold {f} step {it:>6}] motion {float(lm):.4f} onset {float(lo):.4f} stat {float(ls):.4f} | val mse diag {float(md_):.4f} off {float(mo_):.4f} onset bce {float(bce):.4f} auroc {auc:.3f} stat bce {float(sbce):.4f} acc {float(sacc):.4f}' + (f" | cf val mse mov {cfm['cf_val_mse_moving']:.4f} all {cfm['cf_val_mse_all']:.4f} stat acc {cfm['cf_val_stat_acc']:.4f}" if 'cf_val_mse_moving' in cfm else '') + (f" | ms val mse {cfm['ms_val_mse']:.4f} xy@K {cfm[f'ms_val_xy_err_at_{MULTISTEP}']:.4f}" if 'ms_val_mse' in cfm else '') + f' | score {score:.4f} best {best:.4f}@{best_step} {it / (time.time() - t0):.1f} it/s', flush=True)
   md = {**best_state, 'norm': norm, 'fold': f, 'best_step': best_step, 'best_score': best, 'steps': steps, 'fit': FIT, 'history': hist, 'prevalence_train': prevalence, 'es_episodes': sp['es_episodes'],
         'stat_tol': STAT_TOL, 'hold_tol': HOLD_TOL, 'hist_cap': HIST_CAP, 'wall_seconds': time.time() - t0, 'motion_inputs': ('sq' if V4 else 'sabq'), 'version': ('v4' if V4 else ('v3' if V3 else 'v2')),
         'param_delta': {k: float(optax.global_norm(jax.tree_util.tree_map(lambda a, b: a - b, best_state[k], p0))) for k, p0 in (('motion_params', pm0), ('onset_params', po0), ('stat_params', ps0))},
         'supervision_sha256': MP.sha256(EC / 'supervision.npz'),
         'init_from': (str(INIT_FROM) if INIT_FROM else None), 'cf_rows': (str(CF_ROWS) if CF_ROWS else None), 'cf_share': (CF_SHARE if CF_ROWS else 0.0), 'freeze_onset': FREEZE_ONSET,
-        'best_cf_val': next((h for h in hist if h['step'] == best_step), {}), 'selection': 'original validation score' + (' + CF-val one-step MSE (moving rows)' if CF_ROWS else ''),
-        'multistep': {'K': MULTISTEP, 'weight': MS_WEIGHT, 'batch': MS_BATCH, 'stall_share': MS_STALL_SHARE, 'unroll': 'raw regression on its own predictions from the real start (no gate); MSE in standardised state units'} if MULTISTEP > 0 else None}
+        'best_cf_val': next((h for h in hist if h['step'] == best_step), {}), 'selection': 'original validation score' + (' + CF-val one-step MSE (moving rows)' if CF_ROWS else '') + (' + K-step MSE on the early-stop episodes\' branch windows' if (MULTISTEP > 0 and MS_SOURCE == 'branch') else ''),
+        'multistep': {'K': MULTISTEP, 'weight': MS_WEIGHT, 'batch': MS_BATCH, 'stall_share': MS_STALL_SHARE, 'source': MS_SOURCE, 'n_train_windows': int(len(ms_starts)), 'n_train_windows_slow': int(len(ms_stall)),
+                      'unroll': 'raw regression on its own predictions from the real start (no gate); MSE in standardised state units'} if MULTISTEP > 0 else None}
   with out.open('wb') as fh:
     pickle.dump(md, fh)
   MP.write_json(out.with_suffix('.json'), {k: v for k, v in md.items() if k not in ('motion_params', 'onset_params', 'stat_params', 'norm')})
@@ -491,9 +525,10 @@ def main(argv=None):
   ap.add_argument('--multistep-weight', type=float, default=1.0)
   ap.add_argument('--multistep-batch', type=int, default=256)
   ap.add_argument('--multistep-stall-share', type=float, default=0.5)
+  ap.add_argument('--multistep-source', choices=('cf', 'branch'), default='cf', help='branch: windows from the sealed table\'s start-agent branch paths (the target protocol) under the fold\'s episode split')
   args = ap.parse_args(argv)
-  global V3, V4, OUT, INIT_FROM, CF_ROWS, CF_SHARE, FREEZE_ONSET, MULTISTEP, MS_WEIGHT, MS_BATCH, MS_STALL_SHARE
-  INIT_FROM, CF_ROWS, CF_SHARE, FREEZE_ONSET = args.init_from, args.cf_rows, float(args.cf_share), bool(args.freeze_onset)
+  global V3, V4, OUT, INIT_FROM, CF_ROWS, CF_SHARE, FREEZE_ONSET, MULTISTEP, MS_WEIGHT, MS_BATCH, MS_STALL_SHARE, MS_SOURCE
+  INIT_FROM, CF_ROWS, CF_SHARE, FREEZE_ONSET, MS_SOURCE = args.init_from, args.cf_rows, float(args.cf_share), bool(args.freeze_onset), args.multistep_source
   MULTISTEP, MS_WEIGHT, MS_BATCH, MS_STALL_SHARE = int(args.multistep), float(args.multistep_weight), int(args.multistep_batch), float(args.multistep_stall_share)
   if args.v4:
     V4 = True; args.v3 = True

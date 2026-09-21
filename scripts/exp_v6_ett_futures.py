@@ -17,6 +17,11 @@ Arms (all the current mainline recipe = variant critic_clip0.1: start checkpoint
 0.1, 30k updates): ETT (branches_ett.npz), CF (the sealed simulator branches), O (recorded).  Seeds 0..4; CF / O seeds 0-2 are the
 existing clip finals, seeds 3-4 trained here.  Evaluation: a fresh paired draw (seed 8909, 300 episodes, policy mode) for all
 fifteen finals and the start agent.  Rule (pre-registered): mean over the five paired seeds > 2 x seed s.e. and 5 / 5.
+
+Round 3 of the CF-motion revision (user's plan after d8feadd): `--ett <name>` accepts any model dir ett_one_step_<name> on the v4
+code path (the revised ETT `v4s20`: v4 + K 20 windows from the sealed table's start-agent branches), outputs under
+ett_futures_<name>/; `--seeds 0 1 2` fixes the seed set before any result (three first, five if worth confirming); the second oracle
+table's arm (oracle_draw2/CF, `CF2`) is reported next to the first as a reference so that no single oracle number is the yardstick.
 """
 from __future__ import annotations
 
@@ -44,16 +49,18 @@ BRANCHES = OUT / 'branches_ett.npz'
 
 
 def set_ett(version):
-  """v3 / v4: the learned ETT of that version; 'hybrid': simulator motion + the v4 learned risk (exp_v6_hybrid_futures.py writes its branch table)."""
+  """v3 / v4: the learned ETT of that version; 'hybrid': simulator motion + the v4 learned risk (exp_v6_hybrid_futures.py writes its branch table);
+  any other name: the model dir ett_one_step_<name> on the v4 code path."""
   global ETT, OUT, BRANCHES
   ETT = version
   OUT = MP.OUT / ('ett_futures' if version == 'v3' else f'ett_futures_{version}')
   BRANCHES = OUT / 'branches_ett.npz'
-  F2.OUT = F2.OUT_V4 if version in ('v4', 'hybrid') else F2.OUT_V3
+  F2.OUT = F2.OUT_V4 if version in ('v4', 'hybrid') else (F2.OUT_V3 if version == 'v3' else MP.OUT / f'ett_one_step_{version}')
 BASE_VARIANT = 'critic_clip0.1'
 OVERRIDES = dict(MP.VARIANTS[BASE_VARIANT])
 SEEDS = (0, 1, 2, 3, 4)
 ARMS = ('ETT', 'CF', 'O')
+REF_ARMS = ('CF2',)                                    # the second oracle table's arm (oracle_draw2/CF), reported as a reference
 EVAL = {'n': 300, 'seed': 8909, 'policy': 'mean'}     # fresh draw (909 / 2909 / 3909 / 4909 / 6909 / 7909 used; 616_000_005 / 616_500_000 reserved)
 GEN_SEED = 206_000_000
 REACH_R = 0.5
@@ -61,6 +68,8 @@ STATE_DIM, OBS_W, ACTION_DIM, HORIZON = MP.STATE_DIM, MP.OBS_W, MP.ACTION_DIM, M
 
 
 def run_dir(arm, s):
+  if arm == 'CF2':
+    return MP.run_dir('CF', s, MP.OUT / 'oracle_draw2')
   return MP.run_dir('CF', s, OUT) if arm == 'ETT' else MP.run_dir(arm, s, MP.variant_base(BASE_VARIANT))
 
 
@@ -76,14 +85,15 @@ def mode_seal(args):
     print(f'{p} exists', flush=True); return
   man = {'experiment': 'AntMaze V6 mainline with learned-ETT futures (arm ETT) vs the sealed simulator futures (CF) and the recorded futures (O); five paired seeds',
          'sealed_at': time.strftime('%Y-%m-%d %H:%M:%S'), 'git_head': MP.git_head(), 'status': 'oracle-supervised engineering stage (the ETT was supervised by the simulator); the training futures of arm ETT are the model\'s',
-         'ett': {'version': ETT, 'motion': ('the SIMULATOR with both rockfalls forced inactive (physics only; an oracle diagnostic control, not a learned method)' if ETT == 'hybrid' else 'learned (v4 motion regression + stationary gate on (s, a_q))' if ETT == 'v4' else 'learned (v3)'), 'motion_onset': {f'fold{f}': MP.sha256(F2.OUT / f'model_fold{f}.json') for f in range(FA.N_FOLDS)}, 'advice_generator': {f'fold{f}': MP.sha256(FA.OUT / f'gen3_fold{f}.json') for f in range(FA.N_FOLDS)},
-                 'advice_gates': MP.read_json(FA.OUT / 'gates3_map.json'), 'rollout_check': 'ett_rollout_v3/hist_exact (variant B: pooled death 0.312 vs sim 0.294, KS death time 0.028)',
+         'ett': {'version': ETT, 'model_dir': str(F2.OUT), 'motion': ('the SIMULATOR with both rockfalls forced inactive (physics only; an oracle diagnostic control, not a learned method)' if ETT == 'hybrid' else 'learned (v4 motion regression + stationary gate on (s, a_q))' if ETT == 'v4' else 'learned (v3)' if ETT == 'v3' else f'learned ({ETT}: the v4 code path; see the model dir\'s json for the training recipe)'), 'motion_onset': {f'fold{f}': MP.sha256(F2.OUT / f'model_fold{f}.json') for f in range(FA.N_FOLDS)}, 'advice_generator': {f'fold{f}': MP.sha256(FA.OUT / f'gen3_fold{f}.json') for f in range(FA.N_FOLDS)},
+                 'advice_gates': MP.read_json(FA.OUT / 'gates3_map.json'), 'rollout_check': ('ett_rollout_v3/hist_exact (variant B: pooled death 0.312 vs sim 0.294, KS death time 0.028)' if ETT in ('v3', 'v4', 'hybrid') else f'ett_rollout_v4/{ETT}/ (the Step 3a acceptance for this model dir)'),
                  'hold_decision': 'map', 'context_prior': FA.Z_PRIOR, 'history_counters': 'exact (run_length)', 'cross_fitting': 'anchor k uses the models of its source-episode fold (supervision.npz fold_anchor)'},
          'generation': {'construction': 'the logged torque once from the logged row, then the start agent mode (exp_v6_mainline_pilot.mode_policy) closed-loop through the model; one realised path per anchor; onset sampled per step; ends on reach / death / horizon 800 - t; no goal hold',
                         'seed': GEN_SEED, 'anchors': 'all 53,747 pilot anchors (anchors.npz)', 'query_coverage': 'logged torque only (as the sealed CF table)'},
          'arms': {'ETT': 'critic futures = branches_ett.npz', 'CF': 'critic futures = the sealed simulator branches (branches_cf.npz)', 'O': 'critic futures = the recorded continuation'},
          'recipe': {'variant': BASE_VARIANT, 'overrides': OVERRIDES, 'unchanged': ['start checkpoint', 'anchors', 'actor / BC rows (logged buffer)', 'bc 0.05', f'{MP.UPDATES} updates', 'stream seeds by seed']},
-         'seeds': list(SEEDS), 'existing_finals': {f'{arm}/seed_{s}': (MP.sha256(run_dir(arm, s) / 'final.pkl') if (run_dir(arm, s) / 'final.pkl').exists() else 'to train') for arm in ('CF', 'O') for s in SEEDS},
+         'seeds': list(SEEDS), 'existing_finals': {f'{arm}/seed_{s}': (MP.sha256(run_dir(arm, s) / 'final.pkl') if (run_dir(arm, s) / 'final.pkl').exists() else 'to train') for arm in ('CF', 'O') + REF_ARMS for s in SEEDS},
+         'reference_arms': {'CF2': 'oracle_draw2/CF -- the second simulator draw of the same protocol (reported next to CF; neither oracle number is the yardstick alone)'},
          'evaluation': {**EVAL, 'targets': 'ETT / CF / O seeds 0-4 and the start agent on the same 300 episodes'},
          'judgement': {'primary': 'ETT - O success on the common episodes, per paired seed: mean > 2 x seed s.e. and 5 / 5',
                        'oracle_reference': 'CF - O under the same rule at five seeds (the oracle gain re-established)',
@@ -224,13 +234,13 @@ def mode_evaluate(args):
 # ------------------------------------------------------------------ report
 def mode_report(args):
   man = MP.read_json(OUT / 'manifest.json')
-  E = {arm: {s: MP._episodes(eval_file(run_dir(arm, s))) for s in SEEDS if eval_file(run_dir(arm, s)).exists()} for arm in ARMS}
+  E = {arm: {s: MP._episodes(eval_file(run_dir(arm, s))) for s in SEEDS if eval_file(run_dir(arm, s)).exists()} for arm in ARMS + REF_ARMS}
   start = MP._episodes(eval_file(MP.OUT / 'start_agent')) if eval_file(MP.OUT / 'start_agent').exists() else None
   res = {'sealed_at': man['sealed_at'], 'eval': EVAL, 'headline': {arm: {s: MP._headline(e) for s, e in by.items()} for arm, by in E.items()}, 'paired': {}}
   if start is not None:
     res['headline']['start'] = MP._headline(start)
-  full = [arm for arm in ARMS if len(E[arm]) == len(SEEDS)]
-  for label, a, b in (('ETT - O', 'ETT', 'O'), ('CF - O', 'CF', 'O'), ('ETT - CF', 'ETT', 'CF')):
+  full = [arm for arm in ARMS + REF_ARMS if len(E[arm]) == len(SEEDS)]
+  for label, a, b in (('ETT - O', 'ETT', 'O'), ('CF - O', 'CF', 'O'), ('ETT - CF', 'ETT', 'CF'), ('CF2 - O', 'CF2', 'O'), ('ETT - CF2', 'ETT', 'CF2'), ('CF - CF2', 'CF', 'CF2')):
     if a in full and b in full:
       res['paired'][label] = {key: MP.paired_block(E[a], E[b], key=key) for key in ('success', 'detour', 'failure', 'timeout')}
   if start is not None:
@@ -238,10 +248,13 @@ def mode_report(args):
       res['paired'][f'{a} - start'] = {key: MP.paired_block(E[a], start, key=key) for key in ('success', 'detour', 'failure', 'timeout')}
   g = OUT / 'generation_ett.json'
   res['generation'] = MP.read_json(g) if g.exists() else None
-  J = {'primary_ETT_minus_O': (res['paired'].get('ETT - O', {}).get('success', {}) or {}).get('improvement_rule_met'),
-       'oracle_CF_minus_O': (res['paired'].get('CF - O', {}).get('success', {}) or {}).get('improvement_rule_met')}
+  J = {'seeds': list(SEEDS), 'primary_ETT_minus_O': (res['paired'].get('ETT - O', {}).get('success', {}) or {}).get('improvement_rule_met'),
+       'oracle_CF_minus_O': (res['paired'].get('CF - O', {}).get('success', {}) or {}).get('improvement_rule_met'),
+       'oracle2_CF2_minus_O': (res['paired'].get('CF2 - O', {}).get('success', {}) or {}).get('improvement_rule_met')}
   if 'ETT - O' in res['paired'] and 'CF - O' in res['paired'] and res['paired']['CF - O']['success']['mean'] != 0:
     J['retention_of_oracle_gain'] = res['paired']['ETT - O']['success']['mean'] / res['paired']['CF - O']['success']['mean']
+  if 'ETT - O' in res['paired'] and 'CF2 - O' in res['paired'] and res['paired']['CF2 - O']['success']['mean'] != 0:
+    J['retention_of_oracle2_gain'] = res['paired']['ETT - O']['success']['mean'] / res['paired']['CF2 - O']['success']['mean']
   res['judgement'] = J
   MP.write_json(OUT / 'report.json', res)
   (OUT / 'REPORT.md').write_text(write_md(res, man), encoding='utf-8')
@@ -249,8 +262,8 @@ def mode_report(args):
 
 
 def write_md(res, man):
-  L = ['# Learned-ETT futures vs simulator futures vs recorded futures: five paired seeds', '',
-       f"Sealed {man['sealed_at']}.  Evaluation seed {res['eval']['seed']}, {res['eval']['n']} episodes, policy mode; the same episodes for every checkpoint.  Rule: mean over the five paired seeds > 2 x seed s.e. and 5 / 5.", '',
+  L = [f'# Learned-ETT futures vs simulator futures vs recorded futures: {len(SEEDS)} paired seeds', '',
+       f"Sealed {man['sealed_at']}.  Evaluation seed {res['eval']['seed']}, {res['eval']['n']} episodes, policy mode; the same episodes for every checkpoint.  Rule: mean over the {len(SEEDS)} paired seeds > 2 x seed s.e. and {len(SEEDS)} / {len(SEEDS)}.  CF2 = the second oracle table (oracle_draw2), a reference.", '',
        '## Headline (success / detour / death / timeout)', '', '| arm | ' + ' | '.join(f'seed {s}' for s in SEEDS) + ' | mean |', '|---|' + '---|' * (len(SEEDS) + 1)]
   for arm, by in res['headline'].items():
     if arm == 'start':
@@ -284,8 +297,12 @@ def main(argv=None):
   ap.add_argument('--only', nargs='*', default=None)
   ap.add_argument('--limit', type=int, default=None)
   ap.add_argument('--force', action='store_true')
-  ap.add_argument('--ett', choices=('v3', 'v4', 'hybrid'), default='v3')
+  ap.add_argument('--ett', default='v3', help='v3 / v4 / hybrid, or any model dir name ett_one_step_<name> on the v4 code path (outputs ett_futures_<name>/)')
+  ap.add_argument('--seeds', type=int, nargs='*', default=None, help='the seed set (default 0-4); fixed before any result')
   args = ap.parse_args(argv)
+  global SEEDS
+  if args.seeds:
+    SEEDS = tuple(int(x) for x in args.seeds)
   set_ett(args.ett)
   {'seal': mode_seal, 'generate': mode_generate, 'train': mode_train, 'evaluate': mode_evaluate, 'report': mode_report}[args.mode](args)
   return 0

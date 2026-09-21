@@ -386,3 +386,38 @@ stratum 0.69 (n 14) / 0.77 (n 56) vs 0.93.
   no CRL training from the C arm; stop this week's model revision here.  Note for later: a model that must serve BOTH continuations (the
   sealed start-agent table and the CF actor's own futures) needs supervision from both policies' sequences, or one model per
   continuation -- neither is a "one window change" and both are outside this round.
+
+## ROUND 3, arm S (user's review of d8feadd): the multi-step windows moved onto the oracle's own generation protocol
+
+Wording corrected on the user's review: "C learnt the CF actor's stall pattern, not policy-independent dynamics" was too strong -- the
+evidence supports a training-distribution mismatch / two training goals in conflict (the multi-step loss used only the CF actor's
+sequences while the futures we generate are start-agent continuations), not that every policy needs its own model.  "Decision groups
+all pass" must not be read as "reset is fine": reset (196 anchors) is outside the gated set and under the learnt advice its death is
+over-predicted (0.733 vs 0.663 for arm C) -- kept as a reported error.
+
+Arm S = v4 + the K 20 term on windows cut from `branches_cf.npz`'s own start-agent paths (`fit_v6_ett_one_step_v2.py --multistep-source
+branch`: ~4.0 M windows per fold, 1.8 M starting on slow / static rows, every outcome kept, each fold's episode-level split respected --
+train windows from the training rows, selection windows from the early-stop episodes, the held-out fold never; the one-step supervision
+the original, no CF rows; onset frozen; v4 init; 10k updates; selection = original validation score + the K-step MSE on the early-stop
+windows).  Training stable in all three folds (no divergence; original validation diag 0.011-0.015 / off 0.030-0.037, v4 0.010-0.014 /
+0.028-0.034; K-step xy error on the selection windows 0.03-0.07).
+
+Acceptance (`ett_rollout_v4/v4s20/`; sealed gates; the C arm's numbers in brackets):
+
+| stratum | sim d / r / t | S under advice C | S under advice B |
+|---|---|---|---|
+| all | 0.294 / 0.615 / 0.091 | 0.305 / 0.631 / 0.063 PASS [FAIL] | 0.310 / 0.629 / 0.062 PASS [FAIL] |
+| pre_zone1 | 0.503 / 0.319 / 0.178 | 0.528 / 0.347 / 0.125: timeout gap 0.053 FAIL by 0.003 [0.422 / 0.044] | 0.538 / 0.337 / 0.125: same |
+| between | 0.283 / 0.616 / 0.102 | 0.294 / 0.645 / 0.061 PASS [0.686 / 0.019 FAIL] | 0.301 / 0.643 / 0.056 PASS |
+| start | 0.724 / 0.248 / 0.028 | 0.723 / 0.259 / 0.018 PASS (KS reach time 0.072) | 0.716 / 0.265 / 0.019 PASS |
+| zone2 | KS death time / x | 0.240 / 0.187 FAIL (the frozen v4 onset head; unchanged in every arm) | 0.203 / 0.195 FAIL |
+| decision: start_early / pre_zone1_early | | pass / pass | pass / pass |
+| decision: reset (196, not gated) | 0.663 / 0.296 / 0.041 | 0.663 / 0.327 / 0.010; KS reach time 0.170 | **0.738** / 0.255 / 0.006; KS death x 0.156, reach time 0.251 |
+
+The far completion (reported): pooled 0.85 (C) / 0.85 (B) vs 0.87; start_early 0.88 / 0.77 vs 0.81.  The generated futures table
+(`ett_futures_v4s20/generation_ett.json`): pre_zone1 timeouts 0.128 vs 0.184 (v4 0.067), between 0.050 vs 0.091 (v4 0.041), the far
+legs now over-complete by 0.04-0.08.
+
+The full pipeline with these futures (three pre-fixed seeds, then five): see `ett_futures_v4s20/SUMMARY.md` -- three seeds at oracle
+table 1's level (0.472 vs 0.477; Learned - O +0.181 +- 0.050, 3 / 3), the fifth seed collapses into the start stall (0.047) so the
+five-seed rule is NOT met (+0.083 +- 0.091, 4 / 5; five-seed mean 0.379 between the two oracle tables 0.449 / 0.351).
