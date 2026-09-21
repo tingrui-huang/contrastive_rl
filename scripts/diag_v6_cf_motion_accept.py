@@ -150,13 +150,15 @@ def layer2(models, seqs):
   return res
 
 
-def layer2b(models, seqs, pre=20):
-  """Restart at the real stall-segment entry (offset 0) or `pre` rows before it, feed the recorded actions through the segment."""
+def layer2b(models, seqs, pre=20, cf_mode=None):
+  """Restart at the real stall-segment entry (offset 0) or `pre` rows before it; (a) the recorded actions fed through the segment, and
+  (b) the SAME CF actor choosing the action from the model's state for the same number of steps (user's plan after 20b9401): separates
+  'the model cannot propagate even fixed actions' from 'the actor's feedback on the predicted state amplifies the deviation'."""
   res = {}
   for name, M in models.items():
     rows = {0: [], pre: []}
     for q in seqs:
-      S, A = q['s'], q['a']
+      S, A = q['s'], q['a']; goal = q['goal'].astype(np.float32)
       for (a0, b0) in stall_segments(q['speed']):
         for off in (0, pre):
           st = a0 - off
@@ -167,15 +169,28 @@ def layer2b(models, seqs, pre=20):
             s, pst = M[q['fold']].step(s, A[j:j + 1]); pred.append(s[0]); gate_fires += int(pst[0] > 0.5)
           pred = np.stack(pred); k0 = a0 - st
           real = float(np.linalg.norm(S[b0, :2] - S[a0, :2])); mod = float(np.linalg.norm(pred[-1, :2] - pred[k0, :2])); entry_err = float(np.linalg.norm(pred[k0, :2] - S[a0, :2]))
-          rows[off].append({'len': b0 - a0, 'real_disp': real, 'model_disp': mod, 'entry_xy_err': entry_err, 'gate_share': gate_fires / max(b0 - st, 1), 'real_speed_median': float(np.median(q['speed'][a0:b0]))})
+          row = {'len': b0 - a0, 'real_disp': real, 'model_disp': mod, 'entry_xy_err': entry_err, 'gate_share': gate_fires / max(b0 - st, 1), 'real_speed_median': float(np.median(q['speed'][a0:b0]))}
+          if cf_mode is not None:                                            # (b) closed loop from the same start state
+            s = S[st:st + 1].copy(); pred_cl = [s[0]]; adev = []
+            for j in range(st, b0):
+              a = cf_mode(np.concatenate([s, goal[None]], axis=1)); adev.append(float(np.abs(a[0] - A[j]).mean())); s, _ = M[q['fold']].step(s, a); pred_cl.append(s[0])
+            pred_cl = np.stack(pred_cl)
+            row['model_disp_closed'] = float(np.linalg.norm(pred_cl[-1, :2] - pred_cl[k0, :2])); row['action_dev_closed'] = float(np.mean(adev)); row['entry_xy_err_closed'] = float(np.linalg.norm(pred_cl[k0, :2] - S[a0, :2]))
+          rows[off].append(row)
     out = {}
     for off, rr in rows.items():
       if not rr:
         continue
       md = np.array([x['model_disp'] for x in rr]); rd = np.array([x['real_disp'] for x in rr])
-      out[f'restart_{off}_before_entry'] = {'n': len(rr), 'len_median': float(np.median([x['len'] for x in rr])), 'real_disp_median': float(np.median(rd)), 'model_disp_median': float(np.median(md)), 'model_disp_p90': float(np.percentile(md, 90)),
-                                             'share_model_disp_gt_0.5': float((md > 0.5).mean()), 'share_model_disp_lt_0.2': float((md < 0.2).mean()), 'entry_xy_err_median': float(np.median([x['entry_xy_err'] for x in rr])),
-                                             'gate_share_median': float(np.median([x['gate_share'] for x in rr])), 'real_speed_median': float(np.median([x['real_speed_median'] for x in rr]))}
+      e = {'n': len(rr), 'len_median': float(np.median([x['len'] for x in rr])), 'real_disp_median': float(np.median(rd)), 'model_disp_median': float(np.median(md)), 'model_disp_p90': float(np.percentile(md, 90)),
+           'share_model_disp_gt_0.5': float((md > 0.5).mean()), 'share_model_disp_lt_0.2': float((md < 0.2).mean()), 'entry_xy_err_median': float(np.median([x['entry_xy_err'] for x in rr])),
+           'gate_share_median': float(np.median([x['gate_share'] for x in rr])), 'real_speed_median': float(np.median([x['real_speed_median'] for x in rr]))}
+      if 'model_disp_closed' in rr[0]:
+        mc = np.array([x['model_disp_closed'] for x in rr])
+        e.update({'closed_model_disp_median': float(np.median(mc)), 'closed_model_disp_p90': float(np.percentile(mc, 90)), 'closed_share_gt_0.5': float((mc > 0.5).mean()), 'closed_share_lt_0.2': float((mc < 0.2).mean()),
+                  'closed_entry_xy_err_median': float(np.median([x['entry_xy_err_closed'] for x in rr])), 'closed_action_dev_mean': float(np.mean([x['action_dev_closed'] for x in rr])),
+                  'share_closed_gt_recorded_by_0.3': float(((mc - md) > 0.3).mean())})
+      out[f'restart_{off}_before_entry'] = e
     res[name] = out
   return res
 
@@ -219,11 +234,11 @@ def run(args):
   res['L1_teacher_forced'] = layer1(models, R, test_rows); print(f'L1 {time.time() - t0:.0f}s', flush=True)
   seqs = sequences(R, test_rollouts)
   res['L2_open_loop'] = layer2(models, seqs); print(f'L2 {time.time() - t0:.0f}s', flush=True)
-  res['L2b_stall_entry'] = layer2b(models, seqs); print(f'L2b {time.time() - t0:.0f}s', flush=True)
+  cf_mode = RD_cf_mode()
+  res['L2b_stall_entry'] = layer2b(models, seqs, cf_mode=cf_mode); print(f'L2b {time.time() - t0:.0f}s', flush=True)
   anchors, _ = MP.AnchorSet.load(MP.OUT / 'anchors.npz'); ep = anchors.episode[R['start_anchor']]; sp = R['start_split'].astype(str)
   res['split_episode_overlap'] = {'train_episodes': int(len(set(ep[sp == 'train']))), 'test_episodes': int(len(set(ep[sp == 'test']))), 'test_episodes_also_in_train': int(len(set(ep[sp == 'test']) & set(ep[sp == 'train']))),
                                   'val_episodes_also_in_train': int(len(set(ep[sp == 'val']) & set(ep[sp == 'train']))), 'note': 'the split is by start anchor; anchors of one source episode can fall into different splits (their CF rollouts are different trajectories from different states)'}
-  cf_mode = RD_cf_mode()
   res['L3_closed_loop_no_hazard_seqs'] = layer3(models, seqs, cf_mode); print(f'L3 {time.time() - t0:.0f}s', flush=True)
   # the original validation (no-regression) from the fit jsons
   res['original_validation_at_selected_step'] = {}
@@ -263,10 +278,11 @@ def write_md(res):
     cells = [(f"{r['xy_err'][str(k)]['median']:.3f} / {r['xy_err'][str(k)]['p90']:.3f}" if str(k) in r['xy_err'] else (f"{r['xy_err'][k]['median']:.3f} / {r['xy_err'][k]['p90']:.3f}" if k in r['xy_err'] else '-')) for k in STEPS_L2]
     pe = r['pose_err_median']; ve = r['vel_err_median']; g = lambda d, k: d.get(str(k), d.get(k))
     L.append(f"| {n} | " + ' | '.join(cells) + f" | {g(pe, 30):.3f} / {g(pe, 100) if g(pe, 100) is not None else float('nan'):.3f} | {g(ve, 30):.3f} / {g(ve, 100) if g(ve, 100) is not None else float('nan'):.3f} | " + (f"({st['n']}, {st['len_median']:.0f}): {st['real_disp_median']:.2f} / {st['model_disp_median']:.2f}; {st['share_model_disp_gt_0.5']:.2f} / {st['share_model_disp_gt_2.0']:.2f} ({st['share_real_disp_gt_0.5']:.2f})" if st else '-') + ' |')
-  L += ['', '## L2b -- restart at the real stall-segment entry (and 20 rows before it), recorded actions through the segment', '', '| model | restart | n | seg len median | real disp median | model disp median / p90 | share model disp > 0.5 / < 0.2 | xy error at the entry (median) | gate share median | real speed median |', '|---|---|---:|---:|---:|---|---|---:|---:|---:|']
+  L += ['', '## L2b -- restart at the real stall-segment entry (and 20 rows before it): (a) recorded actions vs (b) the CF actor on the model state, same start, same number of steps', '', '| model | restart | n | seg len | real disp | (a) model disp median / p90; share > 0.5 / < 0.2 | (b) closed-loop disp median / p90; share > 0.5 / < 0.2 | share (b) - (a) > 0.3 | closed-loop mean action dev | entry xy err (a) / (b) | gate |', '|---|---|---:|---:|---:|---|---|---:|---:|---|---:|']
   for n in names:
     for k, e in res['L2b_stall_entry'][n].items():
-      L.append(f"| {n} | {k} | {e['n']} | {e['len_median']:.0f} | {e['real_disp_median']:.3f} | {e['model_disp_median']:.3f} / {e['model_disp_p90']:.3f} | {e['share_model_disp_gt_0.5']:.2f} / {e['share_model_disp_lt_0.2']:.2f} | {e['entry_xy_err_median']:.3f} | {e['gate_share_median']:.2f} | {e['real_speed_median']:.4f} |")
+      cl = (f"{e['closed_model_disp_median']:.3f} / {e['closed_model_disp_p90']:.3f}; {e['closed_share_gt_0.5']:.2f} / {e['closed_share_lt_0.2']:.2f}" if 'closed_model_disp_median' in e else '-')
+      L.append(f"| {n} | {k} | {e['n']} | {e['len_median']:.0f} | {e['real_disp_median']:.3f} | {e['model_disp_median']:.3f} / {e['model_disp_p90']:.3f}; {e['share_model_disp_gt_0.5']:.2f} / {e['share_model_disp_lt_0.2']:.2f} | {cl} | {e.get('share_closed_gt_recorded_by_0.3', float('nan')):.2f} | {e.get('closed_action_dev_mean', float('nan')):.3f} | {e['entry_xy_err_median']:.3f} / {e.get('closed_entry_xy_err_median', float('nan')):.3f} | {e['gate_share_median']:.2f} |")
   L += ['', f"Split / episode overlap: {json.dumps(res['split_episode_overlap'])}", '']
   L += ['', '## L3 -- closed loop (CF actor on the model state; onset off) vs the real hazard-free rollouts, both inside the first 400 steps', '', '| model | n seq | heading north at 30: real / model / agreement | far entry by 100: real / model / agreement | reach by 400: real / model / agreement | stalled in the last 100: real / model / agreement |', '|---|---:|---|---|---|---|']
   for n in names:

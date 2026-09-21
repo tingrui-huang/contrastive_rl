@@ -121,12 +121,14 @@ states by ~40 % (standardised units), the control does not move it.
 | v4c | at entry | 59 | 0.038 | 2.18 / 151 | 0.85 / 0.14 | 0 | 0.00 |
 | v4r (anchor) | at entry | 59 | 0.038 | **0.15 / 10.3** | 0.32 / 0.64 | 0 | 0.00 |
 | v4r | 20 before | 53 | 0.038 | 0.16 / 6.5 | 0.28 / 0.58 | 0.14 | 0.00 |
-| v4 (episode) | at entry | 64 | 0.05 | 3.23 / 1261 | 0.94 / 0.03 | 0 | 0.00 |
-| v4a one-step (episode) | at entry | 64 | 0.05 | **0.09 / 4.4** | 0.25 / 0.72 | 0 | 0.00 |
-| v4a | 20 before | 64 | 0.05 | 0.16 / 4.9 | 0.36 / 0.55 | 0.22 | 0.00 |
-| v4b one-step + multi-step (episode) | at entry | 64 | 0.05 | 0.17 / 3.2 | 0.39 / 0.55 | 0 | 0.00 |
-| v4b | 20 before | 64 | 0.05 | 0.27 / 4.5 | 0.41 / 0.34 | 0.19 | 0.00 |
+| v4 (episode) | at entry | 64 | 0.024 | 3.23 / 1261 | 0.94 / 0.03 | 0 | 0.00 |
+| v4a one-step (episode) | at entry | 64 | 0.024 | **0.09 / 4.4** | 0.25 / 0.72 | 0 | 0.00 |
+| v4a | 20 before | 64 | 0.024 | 0.16 / 4.9 | 0.36 / 0.55 | 0.22 | 0.00 |
+| v4b one-step + multi-step (episode) | at entry | 64 | 0.024 | 0.17 / 3.2 | 0.39 / 0.55 | 0 | 0.00 |
+| v4b | 20 before | 64 | 0.024 | 0.27 / 4.5 | 0.41 / 0.34 | 0.19 | 0.00 |
 
+* (Correction, round 3: the episode-split rows above said real disp 0.05 in the committed version of this table; report.json has 0.024 --
+  the 0.05 was the trajectory-start segments' figure from L2.)
 * The ORIGINAL v4 has not learned the local stall dynamics at all: from the exact entry state with the recorded actions it walks 2.6-3.2
   over a real 0.04 in 90 % of the segments (the gate never fires -- these stalls are swaying / slow rows, not fully static ones).
 * The CF-supervised models HAVE learned them locally: from the entry, 0.09-0.17 median (55-72 % of segments under 0.2), and from 20 rows
@@ -190,3 +192,57 @@ units, weight 1, batch 256; the one-step training kept; same init, budget and se
   unroll (K 20-30, windows spanning whole stall segments), a higher weight, or the gate replaced by a soft slow-down learned from the same
   rows; each ~30 min on the three nodes now available.  The oracle's own instability (0.449 vs 0.351 across draws) is a separate open problem
   that a better ETT does not touch.
+
+
+# ROUND 3 (user's plan after 20b9401): (a) recorded actions vs (b) the actor's feedback on the same stall entries; one longer window (K 20); stop point
+
+Rules set by the user before this round: compare (a) and (b) on the same stall segments first; only if the accumulated error under
+FIXED actions is still the main problem, try ONE longer unroll window (K 20) with everything else unchanged (no weight, gate or network
+change at the same time) and compare it with the K 10 arm; stop point = the evening of 2026-09-22 -- if the closed-loop reach / stall
+deviation and the same-state action contrasts show no clear improvement, this week's AntMaze model revision stops; a further drop in the
+position error alone does NOT justify new CRL seeds.
+
+## (a) vs (b) on the same 64 real stall segments (episode-split test rollouts; median segment length 496 rows; real displacement 0.024; `cf_motion/accept_ep2/`, node 30049)
+
+Both start from the SAME state (the real entry, or 20 rows before it) and run the same number of steps: (a) the recorded actions fed to
+the model; (b) the same frozen CF s0 actor choosing the action from the MODEL's predicted state (`diag_v6_cf_motion_accept.py` L2b,
+`cf_mode`).  Action deviation = mean |a_actor - a_recorded| per dimension (actions in [-1, 1]).
+
+| model | restart | (a) model disp median / p90; share > 0.5 / < 0.2 | (b) closed-loop disp median / p90; share > 0.5 / < 0.2 | share (b) - (a) > 0.3 | action dev | entry xy err (a) / (b) |
+|---|---|---|---|---:|---:|---|
+| v4 (original) | at entry | 3.23 / 1261; 0.94 / 0.03 | 2.80 / 170; 0.94 / 0.03 | 0.14 | 0.42 | 0 / 0 |
+| v4 | 20 before | 3.03 / 39.0; 0.98 / 0.02 | 4.71 / 18.5; 0.97 / 0.03 | 0.45 | 0.67 | 1.05 / 1.06 |
+| A one-step | at entry | 0.090 / 4.36; 0.25 / 0.72 | 0.052 / 2.28; 0.25 / 0.72 | 0.03 | 0.10 | 0 / 0 |
+| A | 20 before | 0.162 / 4.87; 0.36 / 0.55 | 0.159 / 14.1; 0.38 / 0.58 | 0.20 | 0.21 | 0.22 / 0.35 |
+| B one-step + K 10 | at entry | 0.171 / 3.25; 0.39 / 0.55 | 0.260 / 4.00; 0.36 / 0.39 | 0.08 | 0.08 | 0 / 0 |
+| B | 20 before | 0.266 / 4.52; 0.41 / 0.34 | 0.246 / 3.33; 0.38 / 0.48 | 0.11 | 0.13 | 0.19 / 0.30 |
+
+* For the CF-supervised models the actor's feedback changes almost nothing: the medians and the share of run-away segments (> 0.5) are
+  the same under (a) and (b) (A 0.25 / 0.25, B 0.39 / 0.36 at the entry; 0.36 / 0.38 and 0.41 / 0.38 from 20 rows before); the segments
+  that run away under the actor are the ones that already run away under the recorded actions; the actor's extra run-aways are 3-8 % of
+  the segments at the entry and 11-20 % from 20 rows before.  The actor's torques stay close to the recorded ones (0.08-0.13 per
+  dimension) because the model's state stays close to the real one wherever the stall is held.
+* The original v4 is the only model where the feedback matters (0.45 of the segments worse by > 0.3 from 20 rows before, action deviation
+  0.67): on a wrong state the actor picks different torques -- but v4 is not a candidate.
+* Reading under the user's rule: the accumulated error under FIXED actions is the main problem (25-40 % of the 500-row segments run away
+  with the recorded actions; the actor's feedback adds a small fraction on top).  The condition for trying one longer window is met.
+
+## The one longer window: arm C = arm B with K 20 (`--multistep 20`; nothing else changed: episode split, v4 init, onset frozen, CF share 0.25, weight 1, batch 256, stall share 0.5, 10k updates, same selection)
+
+Training (node3, three folds in parallel, 4 min per fold): the 20-step unroll at weight 1 is at the edge of stability -- folds 0 and 2
+diverged after step 8000 (fold 2: motion loss 0.15 -> 42, original validation MSE 0.012 -> 5.1 at step 9000, recovering to 1.1 at 10000;
+fold 0 a smaller spike, 0.016 -> 0.034); the pre-registered selection rule took the pre-spike checkpoints (step 8000 / 10000 / 8000).
+At the selected steps: original validation diag 0.012-0.016 / off 0.031-0.037 (B 0.012-0.016 / 0.030-0.036), CF-val one-step MSE on
+moving rows 0.123-0.133 (B 0.119-0.126), 20-step open-loop xy error on the CF-val windows 0.10-0.11 (B's 10-step 0.064; not the same
+horizon).  A longer window than 20 would need the weight or gradient clipping changed, i.e. two things at once -- outside this round.
+
+The acceptance (v4 / B / C, episode split, with the (a) / (b) check; node3, `cf_motion/accept_ep_c20/`) and the crossover for C (node
+30027, `ett_crossover/v4c20/`) are running; their reading against B is appended below when they finish.
+
+## A reproducibility bound for the closed-loop numbers (found by re-running the same acceptance on a second GPU)
+
+The SAME models and the SAME frozen actor give different 400-step closed-loop outcomes on the 38 hazard-free sequences on the two GPUs
+(node3 4090L vs node 30049 3090; JAX numerics, chaotic rollouts): reach by 400 -- v4 0.87 vs 0.89, A 0.87 vs 0.82, B 0.82 vs 0.68;
+stalled in the last 100 -- B 0.05 vs 0.08.  So the closed-loop reach / stall deviation has a device-noise floor of about +-0.1 on this
+set; "clear improvement" under the stop rule has to exceed it.  (L1 / L2 / L2b, which restart from real states, agree to the third
+decimal across the two runs.)

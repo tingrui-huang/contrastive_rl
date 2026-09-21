@@ -3073,3 +3073,27 @@ pods 30027 (5070 Ti, 20c, 31 GB) and 30049 (3090, 28c, 15 GB) on
 35.199.51.171 bootstrapped (python3.12 + node3's venv copied + repo +
 artefacts + tables + ckpts), smoke-verified; rule recorded: always say
 when more machines would help (feedback-report-server-capacity).
+
+### CF-motion round 3 (2026-09-21; cf_motion/SUMMARY.md ROUND 3) -- (a) vs (b) on the stall entries, one longer window, stop point
+
+User's rules: compare (a) recorded actions vs (b) the actor's own
+feedback on the same stall entries first; only if the fixed-action
+accumulation is still the main problem, try ONE longer window (K 20)
+with nothing else changed and compare it with K 10; stop point = the
+evening of 2026-09-22 (no clear closed-loop / action-contrast
+improvement -> this week's AntMaze model revision stops; a smaller
+position error alone does not justify new CRL seeds).
+(a) vs (b) on 64 real stall segments (median 496 rows, real disp
+0.024): the actor's feedback changes almost nothing for the
+CF-supervised models (run-away share A 0.25 / 0.25, B 0.39 / 0.36 at
+the entry; the actor's extra run-aways 3-8 % at the entry, 11-20 %
+from 20 rows before; action deviation 0.08-0.13) -> the fixed-action
+accumulation IS the main problem; condition for K 20 met.  Arm C (K 20,
+otherwise = B) trained on node3: the unroll at weight 1 is at the
+edge of stability (folds 0 / 2 diverged after step 8000; pre-spike
+checkpoints selected); its acceptance (node3) and crossover (node
+30027) running.  Reproducibility bound found: the same models and
+actor give closed-loop reach differing by up to 0.14 (B 0.82 vs 0.68)
+between two GPUs -> a +-0.1 noise floor on the 38-sequence closed-loop
+numbers.  Correction: the round-2 episode-split entry rows said real
+disp 0.05; it is 0.024.
