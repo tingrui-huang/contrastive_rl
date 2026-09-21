@@ -22,6 +22,11 @@ Round 3 of the CF-motion revision (user's plan after d8feadd): `--ett <name>` ac
 code path (the revised ETT `v4s20`: v4 + K 20 windows from the sealed table's start-agent branches), outputs under
 ett_futures_<name>/; `--seeds 0 1 2` fixes the seed set before any result (three first, five if worth confirming); the second oracle
 table's arm (oracle_draw2/CF, `CF2`) is reported next to the first as a reference so that no single oracle number is the yardstick.
+User's plan after 5f4827c: `--eval-seed S` re-evaluates the FROZEN finals of every arm on a fresh common draw (8909 was used through
+several development rounds; the reserved seeds stay untouched); reports go to REPORT_s<S>.md / report_s<S>.json.  `--table-draw N`
+regenerates the futures table independently (same dataset, same ETT, generation seed GEN_SEED + 4e6 (N - 1)) under
+ett_futures_<name>_draw<N>/ and repeats the same learner seeds -- the future-sampling effect alone (the oracle's own table-draw
+dependence, measured on the learned side).
 """
 from __future__ import annotations
 
@@ -54,6 +59,8 @@ def set_ett(version):
   global ETT, OUT, BRANCHES
   ETT = version
   OUT = MP.OUT / ('ett_futures' if version == 'v3' else f'ett_futures_{version}')
+  if TABLE_DRAW > 1:
+    OUT = OUT.with_name(OUT.name + f'_draw{TABLE_DRAW}')
   BRANCHES = OUT / 'branches_ett.npz'
   F2.OUT = F2.OUT_V4 if version in ('v4', 'hybrid') else (F2.OUT_V3 if version == 'v3' else MP.OUT / f'ett_one_step_{version}')
 BASE_VARIANT = 'critic_clip0.1'
@@ -63,6 +70,8 @@ ARMS = ('ETT', 'CF', 'O')
 REF_ARMS = ('CF2',)                                    # the second oracle table's arm (oracle_draw2/CF), reported as a reference
 EVAL = {'n': 300, 'seed': 8909, 'policy': 'mean'}     # fresh draw (909 / 2909 / 3909 / 4909 / 6909 / 7909 used; 616_000_005 / 616_500_000 reserved)
 GEN_SEED = 206_000_000
+TABLE_DRAW = 1                                         # --table-draw N: independent regeneration seed GEN_SEED + 4e6 (N - 1); outputs ett_futures_<name>_draw<N>/
+DEFAULT_EVAL_SEED = 8909
 REACH_R = 0.5
 STATE_DIM, OBS_W, ACTION_DIM, HORIZON = MP.STATE_DIM, MP.OBS_W, MP.ACTION_DIM, MP.HORIZON
 
@@ -89,7 +98,7 @@ def mode_seal(args):
                  'advice_gates': MP.read_json(FA.OUT / 'gates3_map.json'), 'rollout_check': ('ett_rollout_v3/hist_exact (variant B: pooled death 0.312 vs sim 0.294, KS death time 0.028)' if ETT in ('v3', 'v4', 'hybrid') else f'ett_rollout_v4/{ETT}/ (the Step 3a acceptance for this model dir)'),
                  'hold_decision': 'map', 'context_prior': FA.Z_PRIOR, 'history_counters': 'exact (run_length)', 'cross_fitting': 'anchor k uses the models of its source-episode fold (supervision.npz fold_anchor)'},
          'generation': {'construction': 'the logged torque once from the logged row, then the start agent mode (exp_v6_mainline_pilot.mode_policy) closed-loop through the model; one realised path per anchor; onset sampled per step; ends on reach / death / horizon 800 - t; no goal hold',
-                        'seed': GEN_SEED, 'anchors': 'all 53,747 pilot anchors (anchors.npz)', 'query_coverage': 'logged torque only (as the sealed CF table)'},
+                        'seed': GEN_SEED + 4_000_000 * (TABLE_DRAW - 1), 'table_draw': TABLE_DRAW, 'anchors': 'all 53,747 pilot anchors (anchors.npz)', 'query_coverage': 'logged torque only (as the sealed CF table)'},
          'arms': {'ETT': 'critic futures = branches_ett.npz', 'CF': 'critic futures = the sealed simulator branches (branches_cf.npz)', 'O': 'critic futures = the recorded continuation'},
          'recipe': {'variant': BASE_VARIANT, 'overrides': OVERRIDES, 'unchanged': ['start checkpoint', 'anchors', 'actor / BC rows (logged buffer)', 'bc 0.05', f'{MP.UPDATES} updates', 'stream seeds by seed']},
          'seeds': list(SEEDS), 'existing_finals': {f'{arm}/seed_{s}': (MP.sha256(run_dir(arm, s) / 'final.pkl') if (run_dir(arm, s) / 'final.pkl').exists() else 'to train') for arm in ('CF', 'O') + REF_ARMS for s in SEEDS},
@@ -176,7 +185,7 @@ def mode_generate(args):
     ks = np.flatnonzero(fold_anchor == f)
     if args.limit:
       ks = ks[:int(args.limit)]
-    rng = np.random.default_rng(GEN_SEED + f)
+    rng = np.random.default_rng(GEN_SEED + 4_000_000 * (TABLE_DRAW - 1) + f)
     parts.append(generate_fold(f, anchors, obs, act, ks, rng, mode))
     print(f'fold {f}: {len(ks)} paths, {time.time() - t0:.0f} s; outcome ' + json.dumps({k: round(float((parts[-1]["outcome"] == k).mean()), 3) for k in ("success", "death", "timeout")}), flush=True)
   order = np.argsort(np.concatenate([p['anchor_id'] for p in parts]))            # anchor order = the anchor set's
@@ -190,11 +199,11 @@ def mode_generate(args):
   ks = cat['anchor_id'][order]
   assert args.limit or np.array_equal(ks, np.arange(anchors.n))
   meta = {'source': f'learned ETT ({ETT} motion / onset + advice generator v3, MAP hold, prior context per path)', 'continuation_ckpt': str(MP.START_CKPT), 'continuation_ckpt_sha256': MP.sha256(MP.START_CKPT),
-          'gen_seed': GEN_SEED, 'n_anchors': int(len(ks)), 'wall_seconds': time.time() - t0, 'outcome_counts': {k: int((cat['outcome'][order] == k).sum()) for k in ('success', 'death', 'timeout')},
+          'gen_seed': GEN_SEED + 4_000_000 * (TABLE_DRAW - 1), 'table_draw': TABLE_DRAW, 'n_anchors': int(len(ks)), 'wall_seconds': time.time() - t0, 'outcome_counts': {k: int((cat['outcome'][order] == k).sum()) for k in ('success', 'death', 'timeout')},
           'hidden_context': 'sampled from the prior per path (u1 / u2 / t0 stored); the anchor\'s actual context is not read', 'filtering': 'none'}
   np.savez_compressed(BRANCHES, obs_rows=obs_rows, act_rows=act_rows, offset=off_new, length=L, episode=anchors.episode[ks], t=anchors.t[ks], outcome=cat['outcome'][order],
                       steps=(L - 1), u1=cat['u1'][order], u2=cat['u2'][order], t0_1=cat['t0_1'][order], t0_2=cat['t0_2'][order], n_query_steps=np.ones(len(ks), np.int64),
-                      restore_maxdiff=np.zeros(len(ks), np.float32), hazard_seed=np.full(len(ks), GEN_SEED, np.int64), meta=np.asarray(json.dumps(meta, sort_keys=True)))
+                      restore_maxdiff=np.zeros(len(ks), np.float32), hazard_seed=np.full(len(ks), GEN_SEED + 4_000_000 * (TABLE_DRAW - 1), np.int64), meta=np.asarray(json.dumps(meta, sort_keys=True)))
   summ = MP.generation_summary(BRANCHES, anchors)
   # vs the sealed simulator table, pooled and by anchor region
   with np.load(MP.OUT / 'branches_cf.npz', allow_pickle=False) as d:
@@ -221,7 +230,7 @@ def mode_train(args):
 # ---------------------------------------------------------------- evaluate
 def mode_evaluate(args):
   MP.D.EVAL['seed'], MP.D.EVAL['n'] = EVAL['seed'], EVAL['n']
-  todo = [(f'{arm}/seed_{s}', run_dir(arm, s) / 'final.pkl', run_dir(arm, s)) for arm in ARMS for s in SEEDS] + [('start', MP.START_CKPT, MP.OUT / 'start_agent')]
+  todo = [(f'{arm}/seed_{s}', run_dir(arm, s) / 'final.pkl', run_dir(arm, s)) for arm in ARMS + REF_ARMS for s in SEEDS] + [('start', MP.START_CKPT, MP.OUT / 'start_agent')]
   for name, ck, od in todo:
     if args.only and name not in args.only:
       continue
@@ -256,8 +265,9 @@ def mode_report(args):
   if 'ETT - O' in res['paired'] and 'CF2 - O' in res['paired'] and res['paired']['CF2 - O']['success']['mean'] != 0:
     J['retention_of_oracle2_gain'] = res['paired']['ETT - O']['success']['mean'] / res['paired']['CF2 - O']['success']['mean']
   res['judgement'] = J
-  MP.write_json(OUT / 'report.json', res)
-  (OUT / 'REPORT.md').write_text(write_md(res, man), encoding='utf-8')
+  sfx = '' if EVAL['seed'] == DEFAULT_EVAL_SEED else f"_s{EVAL['seed']}"
+  MP.write_json(OUT / f'report{sfx}.json', res)
+  (OUT / f'REPORT{sfx}.md').write_text(write_md(res, man), encoding='utf-8')
   print(json.dumps(J, indent=1), flush=True)
 
 
@@ -299,10 +309,14 @@ def main(argv=None):
   ap.add_argument('--force', action='store_true')
   ap.add_argument('--ett', default='v3', help='v3 / v4 / hybrid, or any model dir name ett_one_step_<name> on the v4 code path (outputs ett_futures_<name>/)')
   ap.add_argument('--seeds', type=int, nargs='*', default=None, help='the seed set (default 0-4); fixed before any result')
+  ap.add_argument('--eval-seed', type=int, default=DEFAULT_EVAL_SEED, help='evaluation draw (default 8909); a fresh seed re-evaluates the frozen finals; reports REPORT_s<seed>.md')
+  ap.add_argument('--table-draw', type=int, default=1, help='N > 1: an independent regeneration of the futures table (seed GEN_SEED + 4e6 (N - 1)), outputs ett_futures_<name>_draw<N>/')
   args = ap.parse_args(argv)
-  global SEEDS
+  global SEEDS, TABLE_DRAW
   if args.seeds:
     SEEDS = tuple(int(x) for x in args.seeds)
+  EVAL['seed'] = int(args.eval_seed)
+  TABLE_DRAW = int(args.table_draw)
   set_ett(args.ett)
   {'seal': mode_seal, 'generate': mode_generate, 'train': mode_train, 'evaluate': mode_evaluate, 'report': mode_report}[args.mode](args)
   return 0

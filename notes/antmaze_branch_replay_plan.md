@@ -3155,3 +3155,42 @@ tables (0.449 / 0.351).  Failure mode = the seed-dependent start
 stall (no route in 20-50 % of episodes, one seed 94 %), deaths
 0.01-0.14; the futures pass the gates, so the driver is outside the
 gated quantities.  Nothing further launched.
+
+### Verification after 5f4827c (user's plan, 2026-09-21 late evening; pre-registered before any result)
+
+1. FROZEN FINALS ON A FRESH COMMON DRAW: evaluation seed 10909 (300
+   episodes, policy mode; 909 / 2909 / 3909 / 4909 / 6909 / 7909 / 8909
+   used in development, 5909 pre-registered for the clip round,
+   616_000_005 / 616_500_000 reserved and untouched); every frozen
+   final of Learned (S futures) seeds 0-4, oracle table 1 (CF) 0-4,
+   oracle table 2 (CF2) 0-4, O 0-4 and the start agent; all five seeds
+   kept; the same paired rule (mean > 2 x seed s.e. and 5 / 5) read on
+   10909 for Learned - O, CF - O, CF2 - O; Learned - CF reported.
+2. INDEPENDENT FUTURES TABLE, SAME DATASET AND SAME ETT: table draw 2
+   of the S futures (generation seed 210_000_000 = GEN_SEED + 4e6;
+   ett_futures_v4s20_draw2/), the same learner seeds 0-4 under the
+   unchanged recipe, evaluated on 10909 only; the reading = draw 2 vs
+   draw 1 per learner seed (the future-sampling effect alone; the
+   oracle's own table-draw dependence measured on the learned side).
+   ETT fitting seeds are NOT varied here (only if the pipeline is to
+   be called stable).
+3. SUPERVISION ASSUMPTION: to be stated with the budget (below, after
+   the results); no control launched without the user's design call.
+Jobs: node3 = draw-2 generate + seeds 0-2 + Learned draw-1 finals on
+10909; node 30027 = CF + CF2 finals; node 30049 = O finals + start,
+then draw-2 seeds 3-4.
+RESULT (2026-09-21 23:00): (1) fresh draw 10909 reproduces 8909 within
+0.02 and every rule verdict: Learned 0.347 (seed 4 collapse 0.057 =
+the checkpoint), table 1 0.425 (5/5 met vs O), table 2 0.313, O 0.251;
+Learned - O +0.096 +- 0.081 4/5 NOT met.  (2) table draw 2 (same
+dataset, same ETT): marginals identical to draw 1 within 0.005, but the
+learner seeds move -0.13 .. +0.40 (seed 4 0.057 -> 0.457; seed 2 0.340
+-> 0.207 via deaths); draw-2 mean 0.384, - O +0.133 +- 0.050 4/5 NOT
+met; failure mode switches from start stalls to deaths -> the learner
+responds to the per-anchor pairing of the futures, not their marginal
+accuracy (the oracle's table-draw dependence measured on the learned
+side).  (3) budget stated in ett_futures_v4s20/SUMMARY.md: ETT
+supervision = the sealed table (7.65 M simulator transitions, the
+oracle's own futures) + log; privileged: hidden contexts for the
+advice generator, teacher advice / onset labels; NOT logs-only; the
+same-budget plain transition-model control is the user's design call.
