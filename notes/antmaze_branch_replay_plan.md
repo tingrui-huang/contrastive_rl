@@ -3194,3 +3194,28 @@ supervision = the sealed table (7.65 M simulator transitions, the
 oracle's own futures) + log; privileged: hidden contexts for the
 advice generator, teacher advice / onset labels; NOT logs-only; the
 same-budget plain transition-model control is the user's design call.
+
+### Stall-onset localisation (user's plan after 282ce17; 2026-09-21 night; stall_onset/SUMMARY.md)
+
+Three targeted checks on Learned seed 4 (draw 1), no hyper-parameter
+change.  (1) WHEN: milestones rolled from the same 128 start states --
+leave-the-start 0.96 (10k) -> 0.60 (20k) -> 0.19 (final); the stall is
+a torque SATURATION at the start states (0.63 of joints at the bound
+vs 0.07-0.15 for progressing checkpoints), invisible on the training
+batches (0.04 -> 0.07 in every run alike, no spikes).  (2) REPEATS on
+the same GPU / env with hash-verified tables: the collapse does not
+reproduce exactly (0.057 -> 0.343; the GPU training is not
+bit-deterministic although the first batches are identical), the
+draw-2 recovery reproduces in direction (0.457 -> 0.367); (table,
+seed) fixes a basin, run-to-run spread ~0.3.  (3) OBJECTIVE: at the
+reset rows the run's own critic rates the saturated action above the
+progressing one in 100 % (full objective 97-100 %), the draw-2 critic
+the opposite (91-100 %); BC at 0.05 cannot decide (NLL 29 vs 41, both
+far); short actor-only updates from the 20k actor + optimizer state:
+under the draw-2 critics it walks again (leave 1.00 / 0.98, saturation
+0.08), under its own critics it stays (0.60).  Decision tree: no
+abnormal updates; the bad critic does prefer the stall -> next = which
+conditional future supervision produced it (per-anchor futures of the
+two tables at the start anchors; the critics' Q landscape from the
+logged torque to the saturated one) -- the user's design call; BC /
+ETT / number of futures untouched.

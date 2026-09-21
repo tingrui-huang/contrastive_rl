@@ -1,0 +1,250 @@
+{
+ "start": {
+  "20k": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/ett_futures_v4s20/CF/seed_4/20000.pkl"
+ },
+ "critics": {
+  "own20k": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/ett_futures_v4s20/CF/seed_4/20000.pkl",
+  "ownfinal": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/ett_futures_v4s20/CF/seed_4/final.pkl",
+  "other_d2_20k": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/ett_futures_v4s20_draw2/CF/seed_4/20000.pkl",
+  "other_d2_final": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/ett_futures_v4s20_draw2/CF/seed_4/final.pkl"
+ },
+ "updates": 5000,
+ "per_critic": {
+  "own20k": {
+   "left_start_share_100": 0.6015625,
+   "xy_disp_median_100": 2.675421118736267,
+   "torque_saturation_share": 0.400341796875,
+   "policy_param_delta": 13.59984016418457,
+   "history": [
+    {
+     "update": 1000,
+     "action_saturation_fraction": 0.05120849609375,
+     "actor_grad_norm": 18.948665618896484,
+     "actor_loss": 5.33385705947876,
+     "actor_q_term": 6.43460750579834,
+     "bc_nll": -15.580405235290527,
+     "policy_scale_median": 0.07105134427547455,
+     "pre_tanh_loc_abs_max": 25.60043716430664
+    },
+    {
+     "update": 2000,
+     "action_saturation_fraction": 0.0487060546875,
+     "actor_grad_norm": 13.020895004272461,
+     "actor_loss": 5.308661937713623,
+     "actor_q_term": 6.459012508392334,
+     "bc_nll": -16.547992706298828,
+     "policy_scale_median": 0.06366866827011108,
+     "pre_tanh_loc_abs_max": 15.002815246582031
+    },
+    {
+     "update": 3000,
+     "action_saturation_fraction": 0.050384521484375,
+     "actor_grad_norm": 9.088218688964844,
+     "actor_loss": 5.32867431640625,
+     "actor_q_term": 6.428477764129639,
+     "bc_nll": -15.567578315734863,
+     "policy_scale_median": 0.06577733159065247,
+     "pre_tanh_loc_abs_max": 19.617305755615234
+    },
+    {
+     "update": 4000,
+     "action_saturation_fraction": 0.051513671875,
+     "actor_grad_norm": 31.801490783691406,
+     "actor_loss": 5.290427207946777,
+     "actor_q_term": 6.398842811584473,
+     "bc_nll": -15.769458770751953,
+     "policy_scale_median": 0.06540772318840027,
+     "pre_tanh_loc_abs_max": 16.217239379882812
+    },
+    {
+     "update": 5000,
+     "action_saturation_fraction": 0.051055908203125,
+     "actor_grad_norm": 8.911016464233398,
+     "actor_loss": 5.302700996398926,
+     "actor_q_term": 6.421086311340332,
+     "bc_nll": -15.946608543395996,
+     "policy_scale_median": 0.06791828572750092,
+     "pre_tanh_loc_abs_max": 16.696067810058594
+    }
+   ],
+   "wall_seconds": 93.18203449249268
+  },
+  "ownfinal": {
+   "left_start_share_100": 0.6015625,
+   "xy_disp_median_100": 6.829776763916016,
+   "torque_saturation_share": 0.352666015625,
+   "policy_param_delta": 15.235673904418945,
+   "history": [
+    {
+     "update": 1000,
+     "action_saturation_fraction": 0.049530029296875,
+     "actor_grad_norm": 10.297203063964844,
+     "actor_loss": 5.540929794311523,
+     "actor_q_term": 6.626626014709473,
+     "bc_nll": -15.087298393249512,
+     "policy_scale_median": 0.06939959526062012,
+     "pre_tanh_loc_abs_max": 20.16727066040039
+    },
+    {
+     "update": 2000,
+     "action_saturation_fraction": 0.0526123046875,
+     "actor_grad_norm": 5.8332672119140625,
+     "actor_loss": 5.53327751159668,
+     "actor_q_term": 6.568365097045898,
+     "bc_nll": -14.133386611938477,
+     "policy_scale_median": 0.07810669392347336,
+     "pre_tanh_loc_abs_max": 17.90252685546875
+    },
+    {
+     "update": 3000,
+     "action_saturation_fraction": 0.052734375,
+     "actor_grad_norm": 23.587345123291016,
+     "actor_loss": 5.5772905349731445,
+     "actor_q_term": 6.670502185821533,
+     "bc_nll": -15.193734169006348,
+     "policy_scale_median": 0.06985766440629959,
+     "pre_tanh_loc_abs_max": 20.771333694458008
+    },
+    {
+     "update": 4000,
+     "action_saturation_fraction": 0.05413818359375,
+     "actor_grad_norm": 9.7114839553833,
+     "actor_loss": 5.563854217529297,
+     "actor_q_term": 6.6406073570251465,
+     "bc_nll": -14.894454002380371,
+     "policy_scale_median": 0.07605528831481934,
+     "pre_tanh_loc_abs_max": 19.368436813354492
+    },
+    {
+     "update": 5000,
+     "action_saturation_fraction": 0.053863525390625,
+     "actor_grad_norm": 35.65159606933594,
+     "actor_loss": 5.534008979797363,
+     "actor_q_term": 6.617559432983398,
+     "bc_nll": -15.053452491760254,
+     "policy_scale_median": 0.07235517352819443,
+     "pre_tanh_loc_abs_max": 22.804779052734375
+    }
+   ],
+   "wall_seconds": 82.45923662185669
+  },
+  "other_d2_20k": {
+   "left_start_share_100": 1.0,
+   "xy_disp_median_100": 10.174107551574707,
+   "torque_saturation_share": 0.084541015625,
+   "policy_param_delta": 14.469324111938477,
+   "history": [
+    {
+     "update": 1000,
+     "action_saturation_fraction": 0.052520751953125,
+     "actor_grad_norm": 37.51586151123047,
+     "actor_loss": 5.31920051574707,
+     "actor_q_term": 6.429640293121338,
+     "bc_nll": -15.779150009155273,
+     "policy_scale_median": 0.06720278412103653,
+     "pre_tanh_loc_abs_max": 11.538663864135742
+    },
+    {
+     "update": 2000,
+     "action_saturation_fraction": 0.050018310546875,
+     "actor_grad_norm": 50.33512878417969,
+     "actor_loss": 5.351454734802246,
+     "actor_q_term": 6.483109951019287,
+     "bc_nll": -16.149988174438477,
+     "policy_scale_median": 0.06384854018688202,
+     "pre_tanh_loc_abs_max": 14.262994766235352
+    },
+    {
+     "update": 3000,
+     "action_saturation_fraction": 0.049072265625,
+     "actor_grad_norm": 22.39423942565918,
+     "actor_loss": 5.349834442138672,
+     "actor_q_term": 6.455224990844727,
+     "bc_nll": -15.652579307556152,
+     "policy_scale_median": 0.06564010679721832,
+     "pre_tanh_loc_abs_max": 14.575078964233398
+    },
+    {
+     "update": 4000,
+     "action_saturation_fraction": 0.049041748046875,
+     "actor_grad_norm": 8.829635620117188,
+     "actor_loss": 5.392838954925537,
+     "actor_q_term": 6.454841136932373,
+     "bc_nll": -14.785202026367188,
+     "policy_scale_median": 0.07692443579435349,
+     "pre_tanh_loc_abs_max": 16.740196228027344
+    },
+    {
+     "update": 5000,
+     "action_saturation_fraction": 0.048828125,
+     "actor_grad_norm": 53.88374328613281,
+     "actor_loss": 5.320711135864258,
+     "actor_q_term": 6.425472736358643,
+     "bc_nll": -15.669761657714844,
+     "policy_scale_median": 0.06805898249149323,
+     "pre_tanh_loc_abs_max": 17.517333984375
+    }
+   ],
+   "wall_seconds": 81.77061104774475
+  },
+  "other_d2_final": {
+   "left_start_share_100": 0.9765625,
+   "xy_disp_median_100": 10.610716819763184,
+   "torque_saturation_share": 0.078876953125,
+   "policy_param_delta": 16.867042541503906,
+   "history": [
+    {
+     "update": 1000,
+     "action_saturation_fraction": 0.05389404296875,
+     "actor_grad_norm": 9.630128860473633,
+     "actor_loss": 5.517354965209961,
+     "actor_q_term": 6.614171504974365,
+     "bc_nll": -15.32215690612793,
+     "policy_scale_median": 0.06810951977968216,
+     "pre_tanh_loc_abs_max": 15.518416404724121
+    },
+    {
+     "update": 2000,
+     "action_saturation_fraction": 0.0537109375,
+     "actor_grad_norm": 36.75965881347656,
+     "actor_loss": 5.492868423461914,
+     "actor_q_term": 6.597219467163086,
+     "bc_nll": -15.48979377746582,
+     "policy_scale_median": 0.06849504262208939,
+     "pre_tanh_loc_abs_max": 22.752166748046875
+    },
+    {
+     "update": 3000,
+     "action_saturation_fraction": 0.0531005859375,
+     "actor_grad_norm": 9.572957038879395,
+     "actor_loss": 5.372613906860352,
+     "actor_q_term": 6.474213600158691,
+     "bc_nll": -15.557771682739258,
+     "policy_scale_median": 0.06909224390983582,
+     "pre_tanh_loc_abs_max": 17.85531234741211
+    },
+    {
+     "update": 4000,
+     "action_saturation_fraction": 0.05670166015625,
+     "actor_grad_norm": 10.582014083862305,
+     "actor_loss": 5.4630303382873535,
+     "actor_q_term": 6.512229919433594,
+     "bc_nll": -14.47175407409668,
+     "policy_scale_median": 0.0728178396821022,
+     "pre_tanh_loc_abs_max": 22.545835494995117
+    },
+    {
+     "update": 5000,
+     "action_saturation_fraction": 0.05731201171875,
+     "actor_grad_norm": 44.15828323364258,
+     "actor_loss": 5.470977783203125,
+     "actor_q_term": 6.541926383972168,
+     "bc_nll": -14.87704849243164,
+     "policy_scale_median": 0.07268823683261871,
+     "pre_tanh_loc_abs_max": 24.001497268676758
+    }
+   ],
+   "wall_seconds": 80.49183487892151
+  }
+ }
+}

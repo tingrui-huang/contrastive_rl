@@ -70,6 +70,7 @@ ARMS = ('ETT', 'CF', 'O')
 REF_ARMS = ('CF2',)                                    # the second oracle table's arm (oracle_draw2/CF), reported as a reference
 EVAL = {'n': 300, 'seed': 8909, 'policy': 'mean'}     # fresh draw (909 / 2909 / 3909 / 4909 / 6909 / 7909 used; 616_000_005 / 616_500_000 reserved)
 GEN_SEED = 206_000_000
+RERUN_TAG = None                                       # --rerun-tag T: the ETT arm's runs go to <OUT>/rerun_<T>/CF/seed_<s> (a repeat of one seed on a named machine; the original kept)
 TABLE_DRAW = 1                                         # --table-draw N: independent regeneration seed GEN_SEED + 4e6 (N - 1); outputs ett_futures_<name>_draw<N>/
 DEFAULT_EVAL_SEED = 8909
 REACH_R = 0.5
@@ -79,7 +80,7 @@ STATE_DIM, OBS_W, ACTION_DIM, HORIZON = MP.STATE_DIM, MP.OBS_W, MP.ACTION_DIM, M
 def run_dir(arm, s):
   if arm == 'CF2':
     return MP.run_dir('CF', s, MP.OUT / 'oracle_draw2')
-  return MP.run_dir('CF', s, OUT) if arm == 'ETT' else MP.run_dir(arm, s, MP.variant_base(BASE_VARIANT))
+  return MP.run_dir('CF', s, OUT / f'rerun_{RERUN_TAG}' if RERUN_TAG else OUT) if arm == 'ETT' else MP.run_dir(arm, s, MP.variant_base(BASE_VARIANT))
 
 
 def eval_file(d):
@@ -222,7 +223,7 @@ def mode_train(args):
     raise SystemExit('seal first')
   s = int(args.seed)
   if args.arm == 'ETT':
-    MP.train_arm('CF', s, base=OUT, branch_path=BRANCHES, overrides=OVERRIDES, inputs=MP.OUT)
+    MP.train_arm('CF', s, base=(OUT / f'rerun_{RERUN_TAG}' if RERUN_TAG else OUT), branch_path=BRANCHES, overrides=OVERRIDES, inputs=MP.OUT)
   else:
     MP.train_arm(args.arm, s, base=MP.variant_base(BASE_VARIANT), overrides=OVERRIDES, inputs=MP.OUT)
 
@@ -310,9 +311,11 @@ def main(argv=None):
   ap.add_argument('--ett', default='v3', help='v3 / v4 / hybrid, or any model dir name ett_one_step_<name> on the v4 code path (outputs ett_futures_<name>/)')
   ap.add_argument('--seeds', type=int, nargs='*', default=None, help='the seed set (default 0-4); fixed before any result')
   ap.add_argument('--eval-seed', type=int, default=DEFAULT_EVAL_SEED, help='evaluation draw (default 8909); a fresh seed re-evaluates the frozen finals; reports REPORT_s<seed>.md')
+  ap.add_argument('--rerun-tag', default=None, help='repeat the ETT arm seed under <OUT>/rerun_<tag>/ (the original run kept)')
   ap.add_argument('--table-draw', type=int, default=1, help='N > 1: an independent regeneration of the futures table (seed GEN_SEED + 4e6 (N - 1)), outputs ett_futures_<name>_draw<N>/')
   args = ap.parse_args(argv)
-  global SEEDS, TABLE_DRAW
+  global SEEDS, TABLE_DRAW, RERUN_TAG
+  RERUN_TAG = args.rerun_tag
   if args.seeds:
     SEEDS = tuple(int(x) for x in args.seeds)
   EVAL['seed'] = int(args.eval_seed)
