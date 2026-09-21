@@ -19,6 +19,13 @@ Measured per rollout: outcome, steps, far-route entry, the geometric-law masses 
 frame) -- the NCE-target quantities -- and the hidden draws.  Report: per state and candidate the class-weighted means and the paired
 differences vs the start mode (and vs the logged torque); per group the state-level mean / s.e. / share positive; the critics' (CF, CF2,
 MF x 5 seeds) twin-min logit for each candidate at the task goal against the measured success and goal-mass advantages.
+
+CROSSOVER (user's plan after afc12c9): the same states, candidates and hidden seeds with the continuation policy switched to the FROZEN
+CF s0 actor's mode for every candidate (--continuation CF; the start-continuation rollouts are re-used), plus 64 'cf_early' states = the
+same fresh resets rolled 20 steps by the CF s0 actor (the states the new policy visits while turning; also run with the start
+continuation).  Read: (1) success and far-route completion, (2) the geometric-law masses within the reach radius / near the goal / in
+the goal area, (3) the critics' REGION-level ranking (importance-corrected p(region | s, a), reference goal set = the family's own training
+goal marginal) against the measured region masses under each continuation -- never the exact-goal logit against a region mass.
 """
 from __future__ import annotations
 
@@ -69,6 +76,8 @@ def mode_states(args):
   import build_v6_branch_replay as B
   OUT.mkdir(parents=True, exist_ok=True)
   p = OUT / 'states.npz'
+  if args.add_cf_early:
+    return add_cf_early(p)
   if p.exists() and not args.force:
     print(f'{p} exists', flush=True); return
   anchors, _ = MP.AnchorSet.load(MP.OUT / 'anchors.npz')
@@ -97,6 +106,34 @@ def mode_states(args):
   print({g: int((np.array([r['group'] for r in rows]) == g).sum()) for g in ('reset', 'start_early', 'pre_zone1_early', 'indep_reset', 'indep_early')}, flush=True)
 
 
+def add_cf_early(p):
+  """64 'cf_early' states: the SAME fresh resets as indep_reset (the env re-seeded, the reset streams replayed; asserted equal), then 20
+  steps of the frozen CF s0 actor's mode -- the early states the new policy actually visits while turning.  Appended to states.npz."""
+  import build_v6_branch_replay as B
+  S = {k: v for k, v in np.load(p, allow_pickle=False).items()}
+  if (S['group'].astype(str) == 'cf_early').any():
+    print('cf_early states exist', flush=True); return
+  env, _ = B._worker_env(INDEP_ENV_SEED0)
+  cf = MP.mode_policy(ckpt('CF'))
+  base = np.nonzero(S['group'].astype(str) == 'indep_reset')[0]
+  rows = []
+  for i in range(N_PER_GROUP):
+    o = env.reset()
+    assert np.abs(o[:STATE_DIM] - S['state'][base[i]]).max() < 1e-5, 'the replayed reset differs from the stored indep_reset state'
+    for j in range(20):
+      o, r, done, info = env.step(np.asarray(cf(o), np.float32))
+      assert not done and not bool(info.get('failure', False))
+    rows.append((o[:STATE_DIM].astype(np.float32), o[STATE_DIM:OBS_W].astype(np.float32)))
+  meta = json.loads(str(S.pop('meta'))); meta['cf_early'] = 'the indep_reset resets replayed (asserted equal) + 20 steps of the frozen CF s0 mode'
+  n = len(rows)
+  S['group'] = np.concatenate([S['group'], np.array(['cf_early'] * n)]); S['anchor_id'] = np.concatenate([S['anchor_id'], np.full(n, -1, np.int64)])
+  S['episode'] = np.concatenate([S['episode'], np.full(n, -1, np.int64)]); S['t'] = np.concatenate([S['t'], np.full(n, 20, np.int64)])
+  S['state'] = np.concatenate([S['state'], np.stack([r[0] for r in rows])]); S['goal_xy'] = np.concatenate([S['goal_xy'], np.stack([r[1] for r in rows])])
+  S['logged'] = np.concatenate([S['logged'], np.full((n, ACTION_DIM), np.nan, np.float32)])
+  np.savez_compressed(p, **S, meta=np.asarray(json.dumps(meta)))
+  print({g: int((S['group'].astype(str) == g).sum()) for g in np.unique(S['group'].astype(str))}, flush=True)
+
+
 # ------------------------------------------------------------------ rollouts
 def restore_forced(env, state, goal_xy, t, u1, u2):
   """build_v6_branch_replay.restore with the hazard activity forced (audit-only overrides; the clock / jitter streams are consumed as usual)."""
@@ -120,12 +157,12 @@ def path_masses(xy, goal_xy, outcome):
 
 
 def _worker(args):
-  jobs, worker_seed = args
+  jobs, worker_seed, continuation = args
   import build_v6_branch_replay as B
   import diag_v6_first_step_crossover as DG
   env, _ = B._worker_env(worker_seed)
   pol = {fam: MP.mode_policy(ckpt(fam)) for fam in ('start', 'CF', 'MF', 'CF2')}
-  act_fn = pol['start']
+  act_fn = pol[continuation]                                                    # the SAME continuation policy for every candidate
   S = np.load(OUT / 'states.npz', allow_pickle=False)
   state, goal, tt, logged = S['state'], S['goal_xy'], S['t'].astype(np.int64), S['logged']
   out = []
@@ -151,28 +188,34 @@ def _worker(args):
     outcome = 'success' if reached else ('death' if bool(info.get('failure', False)) or done else 'timeout')
     xy = np.stack(rows); reg = region_of(xy.astype(np.float64))
     far_entry = bool(np.isin(reg, FAR).any()); zone1_entry = bool((reg == REGIONS.index('zone1')).any())
-    out.append({'state': int(si), 'cand': cand, 'cls': int(ci), 'rep': int(r), 'hazard_seed': int(hz), 'u1': u1, 'u2': u2, 't0_1': t0[0], 't0_2': t0[1], 'outcome': outcome, 'steps': int(step),
+    out.append({'state': int(si), 'cand': cand, 'cls': int(ci), 'rep': int(r), 'hazard_seed': int(hz), 'u1': u1, 'u2': u2, 't0_1': t0[0], 't0_2': t0[1], 'outcome': outcome, 'steps': int(step), 'continuation': continuation,
                 'far_entry': far_entry, 'zone1_entry': zone1_entry, 'a0': a0, **path_masses(xy, gxy, outcome), 'xy': xy})
   return out
 
 
+def rollout_file(args):
+  tag = args.tag or ('base' if not args.groups else '_'.join(args.groups))
+  return OUT / ('rollouts.npz' if (args.continuation == 'start' and tag == 'base') else f'rollouts_{args.continuation}_{tag}.npz')
+
+
 def mode_generate(args):
   from multiprocessing import get_context
-  p = OUT / 'rollouts.npz'
+  p = rollout_file(args)
   if p.exists() and not args.force:
     print(f'{p} exists', flush=True); return
-  S = np.load(OUT / 'states.npz', allow_pickle=False); n_states = len(S['t'])
+  S = np.load(OUT / 'states.npz', allow_pickle=False); n_states = len(S['t']); groups = S['group'].astype(str)
+  states = [si for si in range(n_states) if (not args.groups or groups[si] in args.groups)]
   draws = int(args.draws_per_class)
-  jobs = [(si, cand, ci, r) for si in range(n_states) for cand in CANDIDATES for ci in range(len(CLASSES)) for r in range(draws)]
+  jobs = [(si, cand, ci, r) for si in states for cand in CANDIDATES for ci in range(len(CLASSES)) for r in range(draws)]
   if args.limit:
-    jobs = [j for j in jobs if j[0] < int(args.limit)]
+    jobs = [j for j in jobs if j[0] in states[:int(args.limit)]]
   n_parts = max(1, args.workers * 4); parts = [jobs[i::n_parts] for i in range(n_parts)]; parts = [q for q in parts if q]
   t0 = time.time()
   if args.workers <= 1:
-    res = [_worker((q, WORKER_SEED0 + i)) for i, q in enumerate(parts)]
+    res = [_worker((q, WORKER_SEED0 + i, args.continuation)) for i, q in enumerate(parts)]
   else:
     with get_context('spawn').Pool(args.workers) as pool:
-      res = pool.map(_worker, [(q, WORKER_SEED0 + i) for i, q in enumerate(parts)])
+      res = pool.map(_worker, [(q, WORKER_SEED0 + i, args.continuation) for i, q in enumerate(parts)])
   res = [r for part in res for r in part]
   L = np.array([len(r['xy']) for r in res], np.int64); off = np.concatenate([[0], np.cumsum(L)[:-1]])
   np.savez_compressed(p, state=np.array([r['state'] for r in res], np.int64), cand=np.array([r['cand'] for r in res]), cls=np.array([r['cls'] for r in res], np.int64), rep=np.array([r['rep'] for r in res], np.int64),
@@ -181,7 +224,7 @@ def mode_generate(args):
                       a0=np.stack([r['a0'] for r in res]), **{k: np.array([r[k] for r in res], np.float64) for k in ('reach0.5', 'near2.0', 'goal_area', 'far', 'death_frame')},
                       xy_rows=np.concatenate([r['xy'] for r in res]), offset=off, length=L,
                       meta=np.asarray(json.dumps({'draws_per_class': draws, 'classes': CLASS_NAMES, 'candidates': list(CANDIDATES), 'pre_specified_seed': PRE_SPECIFIED_SEED, 'hazard_seed0': HAZARD_SEED0, 'worker_seed0': WORKER_SEED0,
-                                                  'continuation': 'the frozen start agent mode after one candidate step', 'wall_seconds': time.time() - t0, 'n_rollouts': len(res)})))
+                                                  'continuation': f'the frozen {args.continuation} mode after one candidate step (the same for every candidate)', 'groups': (args.groups or 'all'), 'wall_seconds': time.time() - t0, 'n_rollouts': len(res)})))
   print(f'{len(res)} rollouts in {time.time() - t0:.0f} s; mean steps {L.mean() - 1:.0f}', flush=True)
 
 
@@ -310,15 +353,158 @@ def write_md(res, cands):
   return '\n'.join(L)
 
 
+# ------------------------------------------------------------------ crossover report
+def load_rollouts(continuation):
+  """All rollout files of one continuation (rollouts.npz = start / base states; rollouts_<cont>_<tag>.npz otherwise), concatenated."""
+  files = [OUT / 'rollouts.npz'] if continuation == 'start' else []
+  files += sorted(OUT.glob(f'rollouts_{continuation}_*.npz'))
+  parts = []
+  for f in files:
+    R = np.load(f, allow_pickle=False); parts.append({k: R[k] for k in R.files if k not in ('xy_rows', 'meta', 'offset', 'length')})
+  assert parts, f'no rollouts for continuation {continuation}'
+  keys = [k for k in parts[0] if all(k in q for q in parts)]
+  return {k: np.concatenate([q[k] for q in parts]) for k in keys}, [str(f.name) for f in files]
+
+
+def reference_goal_sets(anchors, rng, n_ref=4096):
+  """The critic families' own training goal marginals (as diag_v6_pairing.region_readout): anchors by weight, the family's table(s), m by the law."""
+  T1 = MP.BranchFutures(anchors, MP.OUT / 'branches_cf.npz'); T2 = MP.BranchFutures(anchors, D2.BRANCHES); srcs = {'T1': T1, 'T2': T2}
+  cdf = np.cumsum(anchors.weight / anchors.weight.sum()); cdf[-1] = 1.0
+
+  def ref_set(tables):
+    ks = np.minimum(np.searchsorted(cdf, rng.random(n_ref), side='right'), anchors.n - 1); which = rng.integers(0, len(tables), size=n_ref); G = np.zeros((n_ref, 2), np.float32)
+    for i, (k, w) in enumerate(zip(ks, which)):
+      f = srcs[tables[w]]; nf = int(f.lengths[k] - 1); u = rng.random()
+      mm = int(np.clip(np.ceil(np.log1p(-u * (1.0 - GAMMA ** nf)) / np.log(GAMMA)), 1, nf)); G[i] = f.goal_at(int(k), mm)
+    return G
+  return {'CF': ref_set(('T1',)), 'CF2': ref_set(('T2',)), 'MF': ref_set(('T1', 'T2'))}
+
+
+def critic_region_probs(S, cands, a0, refs):
+  """Per critic, per state and candidate: p(region | s, a_cand) over the family's reference goal set for regions goal_area, near2.0 (of THIS
+  state's task goal), reach0.5 (of this task goal; few reference goals -- reported with its count)."""
+  import diag_v6_pairing as DP
+  N = DP.Nets(); n_states = len(S['t']); obs = np.concatenate([S['state'], S['goal_xy']], axis=1).astype(np.float32)
+  out = {}
+  for fam in ('CF', 'CF2', 'MF'):
+    G = refs[fam]; GR = region_of(G.astype(np.float64)); obs_g = np.concatenate([np.zeros((len(G), STATE_DIM), np.float32), G], axis=1)
+    d_task = np.linalg.norm(G[None, :, :] - S['goal_xy'][:, None, :].astype(np.float32), axis=2)          # [n_states, n_ref]
+    masks = {'goal_area': np.broadcast_to(GR == REGIONS.index('goal_area'), d_task.shape), 'near2.0': d_task <= 2.0, 'reach0.5': d_task <= REACH_R}
+    for sd in range(5):
+      qp, _ = N.load(DP.ckpt_of(fam, sd)); res = {}
+      for c in cands:
+        ok = np.all(np.isfinite(a0[c]), axis=1); pr = {k: np.full(n_states, np.nan) for k in masks}
+        if ok.any():
+          f = N.logits(qp, obs[ok], a0[c][ok], obs_g).mean(-1); f = f - f.max(axis=1, keepdims=True); pmat = np.exp(f); pmat /= pmat.sum(axis=1, keepdims=True)
+          for k, m in masks.items():
+            pr[k][ok] = (pmat * m[ok]).sum(axis=1)
+        res[c] = pr
+      out[f'{fam}_s{sd}'] = res
+    out[f'{fam}_ref_counts'] = {'goal_area': int((GR == REGIONS.index('goal_area')).sum()), 'near2.0_median_per_state': float(np.median((d_task <= 2.0).sum(axis=1))), 'reach0.5_median_per_state': float(np.median((d_task <= REACH_R).sum(axis=1)))}
+  return out
+
+
+def mode_crossover(args):
+  S = np.load(OUT / 'states.npz', allow_pickle=False); n_states = len(S['t']); groups = S['group'].astype(str)
+  anchors, _ = MP.AnchorSet.load(MP.OUT / 'anchors.npz')
+  conts = {}
+  for cont in ('start', 'CF'):
+    R, files = load_rollouts(cont); cands, keys, M, D, Dse = per_state_candidate(R, n_states); conts[cont] = {'R': R, 'files': files, 'cands': cands, 'M': M, 'D': D}
+  cands = conts['start']['cands']
+  a0 = {}
+  R0 = conts['start']['R']
+  for c in cands:
+    a0[c] = np.full((n_states, ACTION_DIM), np.nan, np.float32); sel = (R0['cand'].astype(str) == c) & (R0['cls'] == 0) & (R0['rep'] == 0); a0[c][R0['state'][sel]] = R0['a0'][sel]
+  for c in cands:                                                                # the CF-continuation runs must have executed the same torques
+    R1 = conts['CF']['R']; sel = (R1['cand'].astype(str) == c) & (R1['cls'] == 0) & (R1['rep'] == 0); ok = np.all(np.isfinite(a0[c][R1['state'][sel]]), axis=1)
+    assert np.allclose(R1['a0'][sel][ok], a0[c][R1['state'][sel]][ok], atol=1e-6), f'candidate torque differs across continuations: {c}'
+  refs = reference_goal_sets(anchors, np.random.default_rng(13))
+  P = critic_region_probs(S, cands, a0, refs)
+  res = {'files': {c: conts[c]['files'] for c in conts}, 'n_states': int(n_states), 'groups': {str(g): int((groups == g).sum()) for g in np.unique(groups)},
+         'reference_counts': {fam: P[f'{fam}_ref_counts'] for fam in ('CF', 'CF2', 'MF')}, 'by_group': {}}
+  keys = ('success', 'death', 'timeout', 'far_entry', 'far_success', 'goal_area', 'near2.0', 'reach0.5', 'far', 'death_frame')
+  for g in ('reset', 'start_early', 'pre_zone1_early', 'indep_reset', 'indep_early', 'cf_early'):
+    m = groups == g
+    if not m.any():
+      continue
+    row = {'n_states': int(m.sum())}
+    for cont in ('start', 'CF'):
+      M, D = conts[cont]['M'], conts[cont]['D']; cr = {'candidate_means': {}, 'advantage_vs_start': {}}
+      for c in cands:
+        ok = m & np.isfinite(M[c]['success'])
+        if not ok.any():
+          continue
+        cr['candidate_means'][c] = {k: float(np.nanmean(M[c][k][ok])) for k in keys}
+        cr['candidate_means'][c]['far_completion'] = (float(np.nansum(M[c]['far_success'][ok]) / np.nansum(M[c]['far_entry'][ok])) if np.nansum(M[c]['far_entry'][ok]) > 0 else None)
+        if c != 'start':
+          cr['advantage_vs_start'][c] = {k: {'mean': float(D[c][k][ok].mean()), 'state_se': float(D[c][k][ok].std(ddof=1) / np.sqrt(ok.sum())), 'share_positive': float((D[c][k][ok] > 0).mean()), 'share_negative': float((D[c][k][ok] < 0).mean()), 'share_zero': float((D[c][k][ok] == 0).mean())} for k in keys}
+      row[cont] = cr
+    # the critics' region-level ranking vs the measured region masses under each continuation
+    rec = {}
+    for fam in ('CF', 'CF2', 'MF'):
+      for c in cands:
+        if c == 'start':
+          continue
+        entry = {}
+        for region in ('goal_area', 'near2.0', 'reach0.5'):
+          margins = []
+          for sd in range(5):
+            pr = P[f'{fam}_s{sd}']; ok = m & np.isfinite(pr[c][region]) & np.isfinite(pr['start'][region]); margins.append((pr[c][region] - pr['start'][region], ok))
+          e = {}
+          for cont in ('start', 'CF'):
+            D = conts[cont]['D']; cs, sa, mm = [], [], []
+            for marg, ok in margins:
+              ok2 = ok & np.isfinite(D[c][region]); dm = D[c][region][ok2]; mg = marg[ok2]
+              if ok2.sum() >= 10 and dm.std() > 1e-12 and mg.std() > 1e-12:
+                cs.append(float(np.corrcoef(mg, dm)[0, 1])); nz = dm != 0; sa.append(float(((mg > 0) == (dm > 0))[nz].mean()) if nz.any() else np.nan); mm.append(float(mg.mean()))
+            e[cont] = {'corr_margin_vs_measured': (float(np.mean(cs)) if cs else None), 'sign_agreement': (float(np.nanmean(sa)) if sa else None), 'critic_margin_mean': (float(np.mean(mm)) if mm else None), 'n_seeds': len(cs)}
+          entry[region] = e
+        rec[f'{fam}:{c}'] = entry
+    row['critic_region_ranking'] = rec
+    res['by_group'][g] = row
+  MP.write_json(OUT / 'report_crossover.json', res)
+  (OUT / 'REPORT_crossover.md').write_text(write_crossover_md(res, cands), encoding='utf-8')
+  print(json.dumps({g: {cont: {c: round(res['by_group'][g][cont]['advantage_vs_start'][c]['success']['mean'], 3) for c in res['by_group'][g][cont]['advantage_vs_start']} for cont in ('start', 'CF')} for g in res['by_group']}, indent=1), flush=True)
+
+
+def write_crossover_md(res, cands):
+  L = ['# Crossover: the same states, candidates and hidden seeds under the start continuation and the frozen CF s0 continuation (every candidate with the same continuation)', '',
+       f"States {res['groups']}; rollout files {res['files']}; reference goal sets (4096 from each family's own training marginal): counts {res['reference_counts']}.", '']
+  for g, row in res['by_group'].items():
+    L += [f"## {g} (n states {row['n_states']})", '', '| continuation | candidate | success | death | timeout | far entry | far completion | goal_area mass | near2.0 mass | reach0.5 mass | success adv vs start (mean +- s.e.; >0 / <0 / =0) | goal_area adv | near2.0 adv | reach0.5 adv |', '|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---|---|---|']
+    for cont in ('start', 'CF'):
+      if cont not in row:
+        continue
+      for c, mm in row[cont]['candidate_means'].items():
+        adv = row[cont]['advantage_vs_start'].get(c)
+        fc = '' if mm['far_completion'] is None else f"{mm['far_completion']:.2f}"
+        cell = '' if adv is None else f"{adv['success']['mean']:+.3f} +- {adv['success']['state_se']:.3f} ({adv['success']['share_positive']:.2f} / {adv['success']['share_negative']:.2f} / {adv['success']['share_zero']:.2f})"
+        cell2 = '' if adv is None else f"{adv['goal_area']['mean']:+.4f} +- {adv['goal_area']['state_se']:.4f}"
+        cell3 = '' if adv is None else f"{adv['near2.0']['mean']:+.4f} +- {adv['near2.0']['state_se']:.4f}"
+        cell4 = '' if adv is None else f"{adv['reach0.5']['mean']:+.4f} +- {adv['reach0.5']['state_se']:.4f}"
+        L.append(f"| {cont} | {c} | {mm['success']:.3f} | {mm['death']:.3f} | {mm['timeout']:.3f} | {mm['far_entry']:.3f} | {fc} | {mm['goal_area']:.4f} | {mm['near2.0']:.4f} | {mm['reach0.5']:.4f} | {cell} | {cell2} | {cell3} | {cell4} |")
+    L += ['', '| critic : candidate | region | critic margin (cand - start) | corr with the measured mass adv, start cont. | sign agr. | corr, CF cont. | sign agr. |', '|---|---|---:|---:|---:|---:|---:|']
+    for key, entry in row['critic_region_ranking'].items():
+      for region, e in entry.items():
+        f = lambda v: 'n/a' if v is None else f'{v:.3f}'
+        L.append(f"| {key} | {region} | {f(e['start']['critic_margin_mean'])} | {f(e['start']['corr_margin_vs_measured'])} | {f(e['start']['sign_agreement'])} | {f(e['CF']['corr_margin_vs_measured'])} | {f(e['CF']['sign_agreement'])} |")
+    L.append('')
+  return '\n'.join(L)
+
+
 def main(argv=None):
   ap = argparse.ArgumentParser()
-  ap.add_argument('mode', choices=('states', 'generate', 'report'))
+  ap.add_argument('mode', choices=('states', 'generate', 'report', 'crossover'))
+  ap.add_argument('--add-cf-early', action='store_true', help='states: append the 64 cf_early states (the indep resets rolled 20 steps by the CF s0 actor)')
+  ap.add_argument('--continuation', choices=('start', 'CF'), default='start', help='generate: the frozen continuation policy for every candidate')
+  ap.add_argument('--groups', nargs='*', default=None, help='generate: restrict to these state groups')
+  ap.add_argument('--tag', default=None)
   ap.add_argument('--workers', type=int, default=18)
   ap.add_argument('--draws-per-class', type=int, default=DRAWS_PER_CLASS)
   ap.add_argument('--limit', type=int, default=None)
   ap.add_argument('--force', action='store_true')
   args = ap.parse_args(argv)
-  {'states': mode_states, 'generate': mode_generate, 'report': mode_report}[args.mode](args)
+  {'states': mode_states, 'generate': mode_generate, 'report': mode_report, 'crossover': mode_crossover}[args.mode](args)
   return 0
 
 

@@ -86,3 +86,89 @@
 * Caveats: 64 states per group; the CF / MF / CF2 torques are the seed-0 actors' modes (pre-specified); classes weighted by the prior
   1/4 (the eval draws are Bernoulli 0.5 x 0.5, the same expectation); the geometric masses are the branch-table quantities, not the
   actor's relabelled goals.
+
+# CROSSOVER (user's plan after afc12c9): the same states, candidates and hidden seeds with the continuation switched to the frozen CF s0 actor for every candidate -- a first-step advantage exists ONLY at the reset states (~+0.09, 2 s.e. pooled), the near-goal NCE mass follows it weakly there, the CF continuation is worse than the start continuation everywhere else, and the critics' region-level ranking tracks none of it
+
+`exp_v6_repeated_draws.py states --add-cf-early / generate --continuation {start, CF} / crossover` (node3; the CF-continuation run 110,592 rollouts,
+75 min).  `REPORT_crossover.md` / `report_crossover.json`; rollout files on node3 (`rollouts.npz`, `rollouts_start_cf_early.npz`, `rollouts_CF_base.npz`).
+Added group `cf_early` (64): the SAME fresh resets as indep_reset (replayed and asserted equal) rolled 20 steps by the CF s0 actor -- the
+early states the new policy visits while turning; run under both continuations.  Every column's continuation is the same for all
+candidates; the executed candidate torques are asserted identical across the two continuation runs.  Region-level critic readout:
+importance-corrected p(region | s, a) over each family's own training-marginal reference set (4,096 goals; goal area 1,090-1,101 of
+them, near-2.0 ~870 per state, reach-0.5 ~140), the candidate-minus-start margin compared per state with the measured region-mass
+advantage under each continuation.
+
+## Success and far-route completion (class-weighted, 16 draws per class; 64 states per group)
+
+| group | continuation | start torque | CF torque (adv vs start) | CF2 torque (adv) | MF torque (adv) | logged torque (adv) |
+|---|---|---|---|---|---|---|
+| reset | start | 0.233 (far 0.02) | 0.234 (+0.001 +- 0.025; far 0.125, compl 0.40) | 0.299 (+0.066 +- 0.030; far 0.125, compl 0.83) | 0.279 (+0.046 +- 0.033) | 0.235 (+0.003) |
+| reset | CF | 0.428 (far 0.457, compl 0.68) | 0.531 (**+0.102 +- 0.056**, >0 / <0 / =0 0.41 / 0.31 / 0.28; far 0.656, compl 0.67) | 0.506 (+0.078 +- 0.064; far 0.734, compl 0.61) | 0.355 (-0.073 +- 0.066; far 0.457) | 0.228 (**-0.200 +- 0.059**; far 0.078) |
+| indep_reset | start | 0.234 (far 0.00) | 0.258 (+0.023 +- 0.029) | 0.263 (+0.028 +- 0.024) | 0.240 (+0.006) | -- |
+| indep_reset | CF | 0.358 (far 0.328) | 0.438 (+0.081 +- 0.065; far 0.562) | 0.475 (+0.117 +- 0.071; far 0.657) | 0.414 (+0.056 +- 0.057) | -- |
+| start_early | start | 0.265 | 0.255 (-0.010) | 0.248 (-0.017) | 0.252 (-0.013) | 0.237 (-0.028) |
+| start_early | CF | 0.194 (far 0.04) | 0.183 (-0.012 +- 0.022) | 0.137 (-0.058 +- 0.024) | 0.160 (-0.035) | 0.160 (-0.034) |
+| pre_zone1_early | start | 0.215 | 0.242 (+0.027) | 0.238 (+0.023) | 0.246 (+0.031) | 0.246 (+0.031) |
+| pre_zone1_early | CF | 0.168 (far 0.00) | 0.176 (+0.008 +- 0.012) | 0.166 (-0.002) | 0.157 (-0.011) | 0.176 (+0.008) |
+| indep_early | start | 0.239 | 0.239 (+0.000) | 0.239 (+0.000) | 0.234 (-0.004) | -- |
+| indep_early | CF | 0.167 (far 0.00) | 0.169 (+0.002 +- 0.016) | 0.180 (+0.013) | 0.179 (+0.011) | -- |
+| cf_early | start | 0.492 (far 0.536, compl 0.74) | 0.519 (+0.027 +- 0.035; far 0.516, compl 0.81) | 0.506 (+0.014 +- 0.047) | 0.503 (+0.011 +- 0.041) | -- |
+| cf_early | CF | 0.459 (far 0.578, compl 0.65) | 0.447 (-0.013 +- 0.062; compl 0.61) | 0.512 (+0.052 +- 0.057; compl 0.72) | 0.493 (+0.033 +- 0.053) | -- |
+
+Pooled over the two reset groups (128 states), CF continuation: CF torque success +0.091 +- 0.043 (2.1 s.e.), far entry +0.217 +- 0.052;
+CF2 torque +0.098 +- 0.048 (2.0 s.e.), far entry +0.303; MF torque -0.009 +- 0.043.  Timeouts under the CF continuation 0.10-0.33 in every
+group vs 0.01-0.04 (non-reset) / 0.03-0.22 (reset) under the start continuation.
+
+## The geometric-law masses (the NCE target) under the CF continuation, candidate minus start torque
+
+| group | candidate | near2.0 mass adv | goal_area mass adv | reach0.5 |
+|---|---|---|---|---|
+| reset | CF / CF2 / MF / logged | **+0.019 +- 0.008** / +0.021 +- 0.009 / -0.010 +- 0.007 / -0.019 +- 0.007 | +0.006 +- 0.007 / +0.008 +- 0.008 / -0.011 +- 0.005 / -0.009 +- 0.006 | +-0.0001 |
+| indep_reset | CF / CF2 / MF | +0.009 +- 0.012 / +0.011 +- 0.011 / -0.000 +- 0.009 | +0.004 +- 0.011 / -0.000 +- 0.009 / -0.004 +- 0.008 | ~0 |
+| pooled resets | CF / CF2 | +0.014 +- 0.007 (1.9 s.e.) / +0.016 +- 0.007 (2.2 s.e.) | +0.005 +- 0.006 (0.8) / +0.004 +- 0.006 (0.6) | |
+| start_early, pre_zone1_early, indep_early, cf_early | all | within +-0.004 (n.s.) | within +-0.006 (n.s.) | ~0 |
+
+(Under the start continuation the same masses were <= 0 for the far-going candidates: reset CF2 near2.0 -0.004 +- 0.004, goal_area -0.007 +- 0.004.)
+
+## The critics' region-level ranking (seed mean of five; margin = p(region | s, a_cand) - p(region | s, a_start))
+
+| group | critic : candidate | goal_area margin | corr / sign agreement with the measured goal_area adv, start cont. | ..., CF cont. | near2.0 margin | corr / sign, start | corr / sign, CF |
+|---|---|---:|---|---|---:|---|---|
+| reset | CF : CF | +0.230 | +0.14 / 0.47 | +0.00 / 0.56 | +0.191 | +0.19 / 0.42 | -0.16 / 0.53 |
+| reset | CF : CF2 | +0.104 | -0.31 / 0.46 | -0.10 / 0.56 | +0.100 | -0.23 / 0.48 | -0.05 / 0.59 |
+| reset | CF : MF | +0.090 | +0.07 / 0.47 | -0.02 / 0.42 | +0.088 | +0.13 / 0.51 | -0.13 / 0.38 |
+| reset | CF2 : CF / CF2 / MF | +0.197 / +0.249 / +0.165 | +0.08 / -0.18 / -0.06 (sign 0.43-0.55) | +0.01 / -0.15 / -0.09 (0.37-0.59) | +0.162 / +0.205 / +0.142 | +0.16 / -0.17 / +0.04 | -0.09 / -0.13 / -0.04 |
+| reset | MF : CF / CF2 / MF | +0.142 / +0.133 / +0.110 | +0.05 / -0.25 / +0.05 | +0.00 / -0.14 / -0.01 | +0.116 / +0.115 / +0.098 | +0.12 / -0.18 / +0.10 | -0.12 / -0.07 / -0.05 |
+| indep_reset | all | +0.08 .. +0.24 | -0.30 .. +0.05 (sign 0.35-0.53) | -0.27 .. +0.11 (0.45-0.59) | +0.08 .. +0.20 | -0.13 .. +0.17 | -0.24 .. +0.19 |
+| cf_early | all | -0.013 .. +0.000 | abs corr <= 0.14 (sign 0.44-0.53) | abs corr <= 0.22 (0.39-0.53) | -0.011 .. +0.000 | | |
+| pre_zone1_early | all | -0.000 .. +0.008 | abs corr <= 0.13 | abs corr <= 0.16 | ~0 | | |
+
+* At the reset states every critic raises the goal-area probability by +0.09 .. +0.25 for EVERY actor torque relative to the start torque
+  -- for MF's torque as much as for CF's, although MF's measured advantage under the CF continuation is negative (-0.011 goal area,
+  -0.073 success) and CF's is positive (+0.006, +0.102).  The true region-mass differences are 0.005-0.02; the critics' margins are
+  10-30x larger and uncorrelated per state with the measured advantage under either continuation (abs corr <= 0.31, sign agreement at
+  chance).  At the CF actor's own early states (cf_early) and at pre_zone1_early the margins are ~0 -- the critics separate the
+  candidate torques only at the reset states, where the actors' torques are far from the logged ones.
+
+## Reading against the user's three cases
+
+* "Under the CF continuation a good first step has a stable advantage and the original goal sampling keeps it": PARTLY, and only at the
+  reset states -- CF / CF2 torques +0.09 / +0.10 success (2.0-2.1 s.e. over 128 reset states; 41-48 % of states positive, 28-39 % negative)
+  through far entry +0.22 / +0.30, with the near-2.0 mass of the gamma law following at +0.014 / +0.016 (1.9-2.2 s.e.) and the goal-area
+  mass not clearly (+0.004 / +0.005, < 1 s.e.).  At every other state group the CF continuation is WORSE than the start continuation
+  (0.14-0.19 vs 0.22-0.27 success; timeouts 0.10-0.16 vs 0.01-0.04) and no first-step advantage exists (abs adv <= 0.06, mostly within 1
+  s.e.; CF2 at start_early -0.058 +- 0.024).  At the CF actor's own turning states both continuations give 0.45-0.52 regardless of the first
+  step.
+* "The advantage holds in the data but the critics do not learn it": the critics' per-state region ranking is uncorrelated with the
+  measured region-mass advantage under either continuation, and their margins are a blanket +0.1-0.25 for any actor-like torque at the
+  reset states (MF's included).  So even where the CF continuation creates a target advantage (reset, near-2.0), the existing critics
+  do not rank it per state.
+* "After switching to the CF continuation there is still no reliable advantage, mainly more timeouts": TRUE outside the reset states.
+* Structural facts for the next decision: (i) the CF actor's far route is decided in the first steps from reset and is fragile -- one
+  logged (shortcut-teacher) first step derails it (success 0.228, far entry 0.078; -0.200 +- 0.059 vs the start torque); (ii) the reset
+  states are 196 of 53,747 anchors, so a CF-continuation table would carry the first-step advantage on a small weight while degrading the
+  futures everywhere else; (iii) the near-2.0 mass is the gamma-law quantity that moves with the advantage; the reach-0.5 mass (0.001)
+  and the goal-area mass do not resolve it.
+* Not concluded: that the first-step torque is unlearnable, or that a CF-continuation resampling round would fail; only that the
+  crossover does not show the "stable advantage + preserved target" condition the user set for that round beyond the reset states,
+  and that the current critics would not be the judge of it.

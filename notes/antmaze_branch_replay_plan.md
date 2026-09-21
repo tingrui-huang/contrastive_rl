@@ -2950,3 +2950,33 @@ continuation" (-> the continuation policy, per the user's rule; not
 does not favour it".  The oracle CF actor's test-time far route is not
 a first-step effect the branch tables could supervise (far entry 0.125
 at reset with the start continuation).
+
+### The crossover (2026-09-21; repeated_draws/SUMMARY.md, CROSSOVER section) -- continuation = the frozen CF s0 actor for every candidate
+
+User's take-up: multi-future kept as an estimator; no new p(g|s,a)
+network; the continuation question examined with the current policy's
+closed loop (no macro-actions, no route labels); terminal weighting
+deferred.  The same states / candidates / hidden seeds re-run with the
+CF s0 mode as the continuation for ALL candidates (start continuation
+re-used), plus 64 cf_early states (the indep resets rolled 20 steps by
+the CF actor; replay asserted equal), both continuations.  RESULT:
+under the CF continuation a first-step advantage exists ONLY at the
+reset states (CF torque +0.102 +- 0.056, CF2 +0.078 +- 0.064; pooled
+128 resets +0.09 / +0.10, 2.0-2.1 s.e.; far entry +0.22 / +0.30; a
+logged shortcut first step derails the CF loop: -0.200 +- 0.059); the
+near-2.0 gamma-law mass follows weakly (+0.014 / +0.016, 1.9-2.2 s.e.),
+the goal-area mass does not (< 1 s.e.); everywhere else the CF
+continuation is WORSE than the start continuation (0.14-0.19 vs
+0.22-0.27; timeouts 0.10-0.16) with no first-step advantage; at the CF
+actor's own turning states both continuations give 0.45-0.52 regardless
+of the first step.  Critics (importance-corrected region probabilities,
+own-marginal reference sets): a blanket +0.1-0.25 goal-area margin for
+every actor torque at reset (MF's included, whose measured advantage is
+negative), uncorrelated per state with the measured region-mass
+advantage under either continuation (abs corr <= 0.31, sign at chance);
+margins ~0 at cf_early / pre_zone1_early.  Reading: the user's condition
+for a CF-continuation resampling round ("stable advantage + preserved
+target") holds only at the reset states (196 / 53,747 anchors) and the
+current critics would not judge it; outside reset the third case
+("no reliable advantage, more timeouts").  Not concluded: first steps
+unlearnable, or that such a round would fail.
