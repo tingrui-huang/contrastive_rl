@@ -125,13 +125,16 @@ def _policy_mode_batched():
   return lambda o31: np.asarray(f(jnp.asarray(o31, jnp.float32)), np.float32)
 
 
-def generate_fold(fold, anchors, obs, act, ks, rng, mode):
-  """All anchors of one fold, stepped together through the fold's models with fixed batch shapes.  Returns per-path rows."""
+def generate_fold(fold, anchors, obs, act, ks, rng, mode, a0=None):
+  """All anchors of one fold, stepped together through the fold's models with fixed batch shapes.  Returns per-path rows.
+  `a0` (optional, [len(ks), ACTION_DIM]): the first torque per path instead of the logged one (exp_v6_query_calibration.py's query
+  branches; `ks` may then repeat an anchor)."""
   n = len(ks); e, t = anchors.episode[ks].astype(np.int64), anchors.t[ks].astype(np.int64)
   P = F2.Predictor2(F2.load_model(fold)); gen = FA.load_generator(fold)
   goal = anchors.goal_xy[ks].astype(np.float32)
   s = anchors.state[ks].astype(np.float32)
-  a0 = anchors.action[ks].astype(np.float32)
+  a0 = anchors.action[ks].astype(np.float32) if a0 is None else np.asarray(a0, np.float32)
+  assert a0.shape == (n, ACTION_DIM), a0.shape
   z = FA.sample_context(rng, n)
   st = FA.PathState(FA.zero_run_before(act, e, t), np.where((t >= 1)[:, None], act[e, np.maximum(t - 1, 0)], 0.0).astype(np.float32),
                     np.stack([FA.first_mouth_in_prefix(obs[ee], int(tt)) for ee, tt in zip(e, t)]))

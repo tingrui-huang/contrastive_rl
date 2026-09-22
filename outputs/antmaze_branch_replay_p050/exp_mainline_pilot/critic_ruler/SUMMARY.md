@@ -97,7 +97,8 @@ Reading:
   the ETT's futures under the start continuation, at the start / reset anchors), read on this ruler and on the corrected short-update
   control -- is the branch the evidence points to.  It is the user's design call and was not launched.  Caveat from the same table: the
   over-estimate sits wherever the actor's maximiser sits (the draw-2 critic over-rates its own interior action 2.2x), so a calibration at one
-  set of output actions may move the maximiser rather than remove the curse; the earlier agent-continuation query round (negative, under
-  the pre-clip recipe and the agent's own continuation) is the precedent to keep in view.
+  set of output actions may move the maximiser rather than remove the curse; the earlier agent-continuation query round (negative; CORRECTION on the user's review: it already ran under the
+  clip-0.1 recipe -- 'pre-clip' in 4b33528 was wrong; its difference from the design below is the agent's own continuation) is the
+  precedent to keep in view.
 
 Files: `RULER.md` / `ruler_report.json` (+ `ruler_per_state.npz` on node 30027), `NORMRANK.md` / `normrank_report.json`.

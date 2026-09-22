@@ -62,15 +62,17 @@ def _setup(args):
   from crl import checkpoint
   OUT.mkdir(parents=True, exist_ok=True)
   cfg = MP.recipe_config(0, OUT / '_cfg'); MP.fill_dims(cfg); nets = MP.make_nets(cfg)
-  S = np.load(RD.OUT / 'states.npz', allow_pickle=False); g = S['group'].astype(str); idx = np.flatnonzero(g == 'reset')
+  S = np.load(RD.OUT / 'states.npz', allow_pickle=False); g = S['group'].astype(str); idx = np.flatnonzero(g == getattr(args, 'group', 'reset'))
   D = {'idx': idx, 'st': S['state'][idx], 'gxy': S['goal_xy'][idx], 'ep': S['episode'][idx].astype(np.int64), 't': S['t'][idx].astype(np.int64), 'a_log': S['logged'][idx].astype(np.float32)}
   D['o31'] = np.concatenate([D['st'], D['gxy']], axis=1).astype(np.float32)
   crit = dict(kv.split('=', 1) for kv in args.critics); qp = {c: checkpoint.load_checkpoint(p)[1].q_params for c, p in crit.items()}
   pols = {}
-  for lab, p in (('stall', args.stall), ('fwd', args.fwd), ('start', str(MP.START_CKPT))):
+  extra = [kv.split('=', 1) for kv in (getattr(args, 'extra_cands', None) or [])]
+  for lab, p in [('stall', args.stall), ('prog', args.fwd), ('start', str(MP.START_CKPT))] + extra:
     pp = checkpoint.load_checkpoint(p)[1].policy_params
     pols[lab] = jax.jit(lambda o, pp=pp: jnp.tanh(nets.policy_network.apply(pp, o).loc))
-  A = {'logged': D['a_log'], 'stall': np.asarray(pols['stall'](jnp.asarray(D['o31']))), 'prog': np.asarray(pols['fwd'](jnp.asarray(D['o31']))), 'start': np.asarray(pols['start'](jnp.asarray(D['o31'])))}
+  A = {'logged': D['a_log'], **{lab: np.asarray(pols[lab](jnp.asarray(D['o31']))) for lab in pols}}
+  A['fwd'] = A['prog']
   reprs = jax.jit(lambda p_, o, a: nets.representation_network.apply(p_, o, a))
   return cfg, nets, D, crit, qp, A, reprs
 
@@ -119,7 +121,19 @@ def sim_start_region_mass(R):
 
 def mode_ruler(args):
   import jax.numpy as jnp
+  global CANDS, OUT
+  if args.cands:
+    CANDS = tuple(args.cands)
+  if args.tag:
+    OUT = OUT / args.tag
+  OUT.mkdir(parents=True, exist_ok=True)
   cfg, nets, D, crit, qp, A, reprs = _setup(args); n = len(D['idx'])
+  label = np.array(['all'] * n)
+  if args.split:
+    with np.load(args.split, allow_pickle=False) as d_:
+      q_eps = set(d_['Q_episodes'].astype(np.int64).tolist()); h_eps = set(d_['H_episodes'].astype(np.int64).tolist())
+    label = np.array(['Q' if int(e) in q_eps else ('H' if int(e) in h_eps else 'indep') for e in D['ep']])
+  refs = [r for r in ('logged', 'prog') if r in CANDS]
   anchors, _ = MP.AnchorSet.load(MP.OUT / 'anchors.npz')
   rng = np.random.default_rng(SEED)
   T = {'draw1': MP.BranchFutures(anchors, RF.TABLES['draw1']), 'draw2': MP.BranchFutures(anchors, RF.TABLES['draw2'])}
@@ -127,15 +141,23 @@ def mode_ruler(args):
   masks = {name: [region_masks(G, D['gxy'][si]) for si in range(n)] for name, G in marg.items()}                  # per marginal, per state
   p_marg = {name: {k: float(np.mean([masks[name][si][k].mean() for si in range(n)])) for k in REGION_KEYS} for name in marg}
   # ---- the simulator and the model (existing rollouts; per (candidate, state) means over the paired draws)
-  Rs = np.load(MP.OUT / args.sim, allow_pickle=False)
-  sim_arrays = {k: Rs[k] for k in Rs.files if k not in ('xy_rows', 'meta', 'offset', 'length')}
-  sr = sim_start_region_mass(Rs)
-  if sr is not None:
-    assert np.allclose(sr[1], Rs['goal_area'], atol=1e-6), 'xy_rows law mismatch'
-    sim_arrays['start_region'] = sr[0]
+  sim_parts = []
+  for f_ in (args.sim if isinstance(args.sim, list) else [args.sim]):               # several rollout files: disjoint candidate sets, concatenated
+    Rs = np.load(MP.OUT / f_, allow_pickle=False)
+    part = {k: Rs[k] for k in Rs.files if k not in ('xy_rows', 'meta', 'offset', 'length')}
+    sr = sim_start_region_mass(Rs)
+    if sr is not None:
+      assert np.allclose(sr[1], Rs['goal_area'], atol=1e-6), 'xy_rows law mismatch'
+      part['start_region'] = sr[0]
+    sim_parts.append(part)
+  sim_arrays = {k: np.concatenate([q_[k] for q_ in sim_parts]) for k in sim_parts[0] if all(k in q_ for q_ in sim_parts)}
   Ps, nds = _agg(sim_arrays, REGION_KEYS); nds = {str(k): v for k, v in nds.items()}
-  Rm = np.load(MP.OUT / args.model, allow_pickle=False)
-  Pm, ndm = _agg({k: Rm[k] for k in Rm.files if k not in ('meta', 'early', 'early_state', 'early_cand', 'early_cont', 'a0')}, REGION_KEYS, cont_filter='start'); ndm = {str(k): v for k, v in ndm.items()}
+  mod_parts = []
+  for f_ in (args.model if isinstance(args.model, list) else [args.model]):
+    Rm = np.load(MP.OUT / f_, allow_pickle=False)
+    mod_parts.append({k: Rm[k] for k in Rm.files if k not in ('meta', 'early', 'early_state', 'early_cand', 'early_cont', 'a0')})
+  mod_arrays = {k: np.concatenate([q_[k] for q_ in mod_parts]) for k in mod_parts[0] if all(k in q_ for q_ in mod_parts)}
+  Pm, ndm = _agg(mod_arrays, REGION_KEYS, cont_filter='start'); ndm = {str(k): v for k, v in ndm.items()}
   # per_state keys the states by the absolute row of states.npz; align to the 64 reset rows
   real = {c: {k: np.array([Ps[c][int(D['idx'][si])][k] for si in range(n)]) for k in Ps[c][int(D['idx'][0])]} for c in CANDS}
   ett = {c: {k: np.array([Pm[c][int(D['idx'][si])][k] for si in range(n)]) for k in Pm[c][int(D['idx'][0])]} for c in CANDS}
@@ -165,7 +187,7 @@ def mode_ruler(args):
     print(f'{c}: readout done ({time.time() - t0:.0f} s)', flush=True)
   own = {c: ('draw2' if c.startswith('d2') else 'draw1') for c in crit}
   # ---- summaries
-  res = {'critics': crit, 'own_marginal': own, 'sim': args.sim, 'model': args.model, 'draws_per_state': {'sim': nds, 'model': ndm}, 'n_states': int(n), 'n_marginal': N_MARG, 'B_train': B_TRAIN,
+  res = {'critics': crit, 'own_marginal': own, 'sim': list(args.sim), 'model': list(args.model), 'draws_per_state': {'sim': nds, 'model': ndm}, 'n_states': int(n), 'n_marginal': N_MARG, 'B_train': B_TRAIN,
          'marginal_region_mass': p_marg, 'per_action': {}, 'paired': {}, 'agreement': {}, 'overestimation': {}}
   for k in REGION_KEYS:
     for c in CANDS:
@@ -175,7 +197,7 @@ def mode_ruler(args):
         row[cn] = {h: {'mass': float(rr[h][k].mean()), 'share': float(rr[h][k + '_share'].mean()), 'ratio': float(rr[h][k + '_ratio'].mean()), 'total': float(rr[h]['total'].mean())} for h in HEADS}
         row[cn]['min_other_marginal'] = float(read[cn]['draw2' if own[cn] == 'draw1' else 'draw1'][c]['min'][k].mean())
       res['per_action'][f'{k}|{c}'] = row
-  for ref in ('logged', 'prog'):
+  for ref in refs:
     for k in REGION_KEYS:
       blk = {}
       if k in real['stall']:
@@ -189,28 +211,33 @@ def mode_ruler(args):
       res['paired'][f'stall_minus_{ref}|{k}'] = blk
   # agreement across the 256 (state, action) pairs and across the 64 per-state contrasts
   for k in REGION_KEYS:
-    if k not in real['logged']:
+    if k not in real[refs[0]]:
       continue
     xr = np.concatenate([real[c][k] for c in CANDS]); ok = np.isfinite(xr)
     blk = {}
-    if k in ett['logged']:
+    if k in ett[refs[0]]:
       xe = np.concatenate([ett[c][k] for c in CANDS]); o2 = ok & np.isfinite(xe)
       blk['ett_vs_real'] = {'pearson': float(np.corrcoef(xe[o2], xr[o2])[0, 1]), 'spearman': _spearman(xe[o2], xr[o2])}
     for cn in crit:
       for h in ('min', 'h0'):
         xc = np.concatenate([read[cn][own[cn]][c][h][k] for c in CANDS])
-        dr = real['stall'][k] - real['logged'][k]; dc = read[cn][own[cn]]['stall'][h][k] - read[cn][own[cn]]['logged'][h][k]; o3 = np.isfinite(dr)
+        dr = real['stall'][k] - real[refs[0]][k]; dc = read[cn][own[cn]]['stall'][h][k] - read[cn][own[cn]][refs[0]][h][k]; o3 = np.isfinite(dr)
         blk[f'{cn}|{h}'] = {'pearson_pairs': float(np.corrcoef(xc[ok], xr[ok])[0, 1]), 'spearman_pairs': _spearman(xc[ok], xr[ok]), 'spearman_within_state': _within_state_spearman(xc, xr, n),
                             'contrast_stall_minus_logged_pearson': float(np.corrcoef(dc[o3], dr[o3])[0, 1]) if dr[o3].std() > 0 else None, 'contrast_sign_agreement': float(np.mean(np.sign(dc[o3]) == np.sign(dr[o3])))}
     res['agreement'][k] = blk
   for k in ('goal_area', 'near2.0', 'reach0.5'):
     for cn in crit:
       for c in CANDS:
-        q = read[cn][own[cn]][c]['min'][k] / np.maximum(real[c][k], 1e-4); q = q[np.isfinite(q)]
-        res['overestimation'][f'{k}|{cn}|{c}'] = {'median': float(np.median(q)), 'q25': float(np.percentile(q, 25)), 'q75': float(np.percentile(q, 75)), 'share_gt_2': float((q > 2).mean()), 'share_lt_0.5': float((q < 0.5).mean()),
-                                                 'mc_half_diff_over_mass': float(np.median(read[cn][own[cn]][c]['min']['goal_area_half_diff'] / np.maximum(read[cn][own[cn]][c]['min']['goal_area'], 1e-9)))}
+        q_all = read[cn][own[cn]][c]['min'][k] / np.maximum(real[c][k], 1e-4)
+        for lab_ in sorted(set(label.tolist())) + (['all'] if args.split else []):
+          sel_ = (label == lab_) | (lab_ == 'all'); q = q_all[sel_]; q = q[np.isfinite(q)]
+          if len(q) == 0:
+            continue
+          res['overestimation'][f'{k}|{cn}|{c}|{lab_}'] = {'n': int(len(q)), 'median': float(np.median(q)), 'q25': float(np.percentile(q, 25)), 'q75': float(np.percentile(q, 75)), 'share_gt_2': float((q > 2).mean()), 'share_lt_0.5': float((q < 0.5).mean()),
+                                                          'mc_half_diff_over_mass': float(np.median(read[cn][own[cn]][c]['min']['goal_area_half_diff'] / np.maximum(read[cn][own[cn]][c]['min']['goal_area'], 1e-9))),
+                                                          'critic_mass_mean': float(read[cn][own[cn]][c]['min'][k][sel_].mean()), 'real_mass_mean': float(np.nanmean(real[c][k][sel_])), 'ett_mass_mean': (float(np.nanmean(ett[c][k][sel_])) if (c in ett and k in ett[c]) else None)}
   MP.write_json(OUT / 'ruler_report.json', res)
-  np.savez_compressed(OUT / 'ruler_per_state.npz', idx=D['idx'], **{f'real|{c}|{k}': real[c][k] for c in CANDS for k in real[c]}, **{f'ett|{c}|{k}': ett[c][k] for c in CANDS for k in ett[c]},
+  np.savez_compressed(OUT / 'ruler_per_state.npz', idx=D['idx'], label=label, **{f'real|{c}|{k}': real[c][k] for c in CANDS for k in real[c]}, **{f'ett|{c}|{k}': ett[c][k] for c in CANDS for k in ett[c]},
                       **{f'critic|{cn}|{c}|{h}|{k}': read[cn][own[cn]][c][h][k] for cn in crit for c in CANDS for h in HEADS for k in list(REGION_KEYS) + ['total']})
   # ---- report
   L = ['# The critic and the consequences on the same ruler: gamma-law region masses at the 64 reset states, per first action', '',
@@ -222,7 +249,7 @@ def mode_ruler(args):
       cells = [f"{row[cn]['min']['mass']:.4f} / {row[cn]['min']['share']:.4f} / {row[cn]['min']['total']:.2f}" for cn in crit]
       L.append(f"| {c} | {'-' if row['real'] is None else format(row['real'], '.4f')} | {'-' if row['ett'] is None else format(row['ett'], '.4f')} | " + ' | '.join(cells) + ' |')
     L += ['', '| paired contrast | real | ETT | ' + ' | '.join(f'{cn}: min-head mass (share pos) / share' for cn in crit) + ' |', '|---|---|---|' + '|'.join('---' for _ in crit) + '|']
-    for ref in ('logged', 'prog'):
+    for ref in refs:
       blk = res['paired'][f'stall_minus_{ref}|{k}']
       cells = [f"{blk[cn]['min']['mass']['mean']:+.4f} +- {blk[cn]['min']['mass']['se']:.4f} ({blk[cn]['min']['mass']['share_pos']:.2f}) / {blk[cn]['min']['share']['mean']:+.4f}" for cn in crit]
       L.append(f"| stall - {ref} | " + ' | '.join(f"{blk[x]['mean']:+.4f} +- {blk[x]['se']:.4f} ({blk[x]['share_pos']:.2f})" if x in blk else '-' for x in ('real', 'ett')) + ' | ' + ' | '.join(cells) + ' |')
@@ -238,9 +265,9 @@ def mode_ruler(args):
         L.append(f"| {k} | ETT | {v['pearson']:.2f} | {v['spearman']:.2f} | | | |")
       else:
         L.append(f"| {k} | {rd} | {v['pearson_pairs']:.2f} | {v['spearman_pairs']:.2f} | {v['spearman_within_state']:.2f} | {'-' if v['contrast_stall_minus_logged_pearson'] is None else format(v['contrast_stall_minus_logged_pearson'], '.2f')} | {v['contrast_sign_agreement']:.2f} |")
-  L += ['', '## Over-estimation factor: critic (min-head) mass / real mass per (state, action)', '', '| region | critic | action | median | IQR | share > 2x | share < 0.5x | MC half-split error / mass (median) |', '|---|---|---|---:|---|---:|---:|---:|']
+  L += ['', '## Over-estimation factor: critic (min-head) mass / real mass per (state, action)' + (' (states labelled Q = queried episodes / H = held-out episodes / indep = non-anchors)' if args.split else ''), '', '| region | critic | action | states | n | median | IQR | share > 2x | share < 0.5x | critic / real / ETT mass (mean) | MC half-split error / mass (median) |', '|---|---|---|---|---:|---:|---|---:|---:|---|---:|']
   for key, v in res['overestimation'].items():
-    k, cn, c = key.split('|'); L.append(f"| {k} | {cn} | {c} | {v['median']:.2f} | {v['q25']:.2f} - {v['q75']:.2f} | {v['share_gt_2']:.2f} | {v['share_lt_0.5']:.2f} | {v['mc_half_diff_over_mass']:.2f} |")
+    k, cn, c, lab_ = key.split('|'); L.append(f"| {k} | {cn} | {c} | {lab_} | {v['n']} | {v['median']:.2f} | {v['q25']:.2f} - {v['q75']:.2f} | {v['share_gt_2']:.2f} | {v['share_lt_0.5']:.2f} | {v['critic_mass_mean']:.4f} / {v['real_mass_mean']:.4f} / {'-' if v['ett_mass_mean'] is None else format(v['ett_mass_mean'], '.4f')} | {v['mc_half_diff_over_mass']:.2f} |")
   (OUT / 'RULER.md').write_text('\n'.join(L) + '\n', encoding='utf-8'); print('\n'.join(L), flush=True)
 
 
@@ -374,7 +401,9 @@ def main(argv=None):
   ap.add_argument('mode', choices=('ruler', 'normrank'))
   ap.add_argument('--stall', required=True); ap.add_argument('--fwd', required=True); ap.add_argument('--actor20k', default=None)
   ap.add_argument('--critics', nargs='+', required=True)
-  ap.add_argument('--sim', default='repeated_draws/rollouts_start_reset_stall.npz'); ap.add_argument('--model', default='ett_crossover/v4s20_reset_stall/model_rollouts.npz')
+  ap.add_argument('--sim', nargs='+', default=['repeated_draws/rollouts_start_reset_stall.npz']); ap.add_argument('--model', nargs='+', default=['ett_crossover/v4s20_reset_stall/model_rollouts.npz'])
+  ap.add_argument('--group', default='reset'); ap.add_argument('--cands', nargs='*', default=None); ap.add_argument('--extra-cands', nargs='*', default=[], help='name=checkpoint: further candidate actors (mode under the task goal)')
+  ap.add_argument('--split', default=None, help='query_split.npz: label the states Q / H by their episode'); ap.add_argument('--tag', default=None, help='output sub-directory')
   args = ap.parse_args(argv)
   {'ruler': mode_ruler, 'normrank': mode_normrank}[args.mode](args)
   return 0

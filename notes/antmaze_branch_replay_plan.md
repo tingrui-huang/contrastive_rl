@@ -3296,3 +3296,31 @@ does not fit them (never sees any action but the logged one; the actor
 finds the largest extrapolation) -> the third branch, a LOCAL
 calibration at the output actions, is the one the evidence points to;
 user's call; caveat: both critics over-rate their own maximiser.
+
+### Local calibration at the actor's output actions (user's design after 4b33528; 2026-09-22; query_calibration/manifest.json sealed before any result)
+
+Correction: the earlier query-extension round already used clip 0.1
+(4b33528 called it "pre-clip"; wrong).  Design: fixed S ETT, start
+continuation and training state (draw-1 seed-4 at 20k); queries = the
+frozen 20k actor's mode + 3 sampled torques at the queried half Q of
+the start-region anchors (split by episode; H held out); control = 4
+repeated logged-action branches at the same anchors; three critic-only
+continuations (plain / control / query, 10k updates, actor restored
+every scan); then the corrected short-update control under each
+critic; readings pre-registered (calibration at H and at never-queried
+actions; less stall; the new mode not another over-estimate; detour
+share / completion kept).  Diagnostic arrangement, not the mainline;
+if it passes, the joint pipeline on all seeds with the extended scope
+disclosed.  Stop rule: if the actor moves to another over-estimated
+action, no more queries -- stronger constraints to be discussed.
+
+RESULT (query_calibration/SUMMARY.md): calibration MET (never-queried
+saturated action 1.9-2.3x vs control 8.1-8.8x, on held-out episodes and
+non-anchor resets; the query branches' own goal mass 0.037); less stall
+MET (leave-start 0.80 vs control 0.47, saturation 0.18); the new mode is
+not a new corner (flat ~2x); TASK NOT PRESERVED: detour share 0.42 ->
+0.18, shortcut 0.07 -> 0.58, deaths 0.04 -> 0.42, success +0.03 n.s. --
+the stall removed, the policy pulled back to the shortcut (the 20k
+actor's detours rode on the saturated kick's heading).  Not a fix; no
+joint pipeline from this; no more queries (stop rule, on the route
+ground).  Next to localise: the route preference at the fork.

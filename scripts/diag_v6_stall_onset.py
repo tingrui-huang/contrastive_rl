@@ -272,6 +272,7 @@ def mode_short(args):
   import jax
   import jax.numpy as jnp
   import optax
+  from crl import checkpoint
   from crl import losses as losses_mod
   import build_v6_branch_replay as B
   out = OUT / args.tag; out.mkdir(parents=True, exist_ok=True)
@@ -309,6 +310,7 @@ def mode_short(args):
       first_hash = hashes[0]
     res['replay_check'][cname] = {'first_actor_batch_hash': hashes[0], 'same_as_first_condition': bool(hashes[0] == first_hash), 'critic_hash_unchanged': True}
     pp = state.policy_params; results_pp[cname] = pp
+    checkpoint.save_named(str(out), f'after_{cname}', int(args.updates), state)   # the updated actor (with the frozen critic it was updated under)
     pol = jax.jit(lambda o, pp=pp: jnp.tanh(nets.policy_network.apply(pp, o).loc))
     dist_end = np.zeros(n); sat = []
     for si in range(n):
