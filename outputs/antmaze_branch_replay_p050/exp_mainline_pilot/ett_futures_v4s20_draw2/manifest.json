@@ -1,0 +1,163 @@
+{
+ "experiment": "AntMaze V6 mainline with learned-ETT futures (arm ETT) vs the sealed simulator futures (CF) and the recorded futures (O); five paired seeds",
+ "sealed_at": "2026-09-21 19:39:30",
+ "git_head": "unavailable (Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128.)",
+ "status": "oracle-supervised engineering stage (the ETT was supervised by the simulator); the training futures of arm ETT are the model's",
+ "ett": {
+  "version": "v4s20",
+  "model_dir": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/ett_one_step_v4s20",
+  "motion": "learned (v4s20: the v4 code path; see the model dir's json for the training recipe)",
+  "motion_onset": {
+   "fold0": "e80bf4cc7d7dfddeb458940655ad05b23d9bdb7cad1f6b8be00c919be67714e8",
+   "fold1": "da7b20597288d231a702c8fd23def794b4296f5e1544aafd1218c332404b7b74",
+   "fold2": "f7445737537a6074fd0399b720403faa7d8d8b848ea41693ad9ebe8a23f5bc58"
+  },
+  "advice_generator": {
+   "fold0": "7c75f781b4515e194f63e23ed9bcaf4e77612d1b3a7feefb9a9c0901e61f730c",
+   "fold1": "d639a50d289360baf0e3b5dc3772083e8605077556d93736849b3157f2c67d35",
+   "fold2": "fd8beff5975fdb7105433afb3761a8eed3d9b2802510eee4af279710c2910b6f"
+  },
+  "advice_gates": {
+   "all_folds_pass": true,
+   "generator_version": 3,
+   "decision": "map",
+   "per_fold": {
+    "0": {
+     "E1": {
+      "auroc_in_band": true,
+      "ece": true,
+      "region_shares": true
+     },
+     "E2b": {
+      "never_hold_regions": true
+     },
+     "E2a": {
+      "death_rate_vs_real_advice": true,
+      "death_auroc": true,
+      "death_time_ks": true,
+      "p_hold_given_hold": true,
+      "run_median": true
+     },
+     "all": true
+    },
+    "1": {
+     "E1": {
+      "auroc_in_band": true,
+      "ece": true,
+      "region_shares": true
+     },
+     "E2b": {
+      "never_hold_regions": true
+     },
+     "E2a": {
+      "death_rate_vs_real_advice": true,
+      "death_auroc": true,
+      "death_time_ks": true,
+      "p_hold_given_hold": true,
+      "run_median": true
+     },
+     "all": true
+    },
+    "2": {
+     "E1": {
+      "auroc_in_band": true,
+      "ece": true,
+      "region_shares": true
+     },
+     "E2b": {
+      "never_hold_regions": true
+     },
+     "E2a": {
+      "death_rate_vs_real_advice": true,
+      "death_auroc": true,
+      "death_time_ks": true,
+      "p_hold_given_hold": true,
+      "run_median": true
+     },
+     "all": true
+    }
+   }
+  },
+  "rollout_check": "ett_rollout_v4/v4s20/ (the Step 3a acceptance for this model dir)",
+  "hold_decision": "map",
+  "context_prior": {
+   "p_active": 0.5,
+   "t0_1": [
+    10,
+    45
+   ],
+   "t0_2": [
+    90,
+    125
+   ]
+  },
+  "history_counters": "exact (run_length)",
+  "cross_fitting": "anchor k uses the models of its source-episode fold (supervision.npz fold_anchor)"
+ },
+ "generation": {
+  "construction": "the logged torque once from the logged row, then the start agent mode (exp_v6_mainline_pilot.mode_policy) closed-loop through the model; one realised path per anchor; onset sampled per step; ends on reach / death / horizon 800 - t; no goal hold",
+  "seed": 210000000,
+  "table_draw": 2,
+  "anchors": "all 53,747 pilot anchors (anchors.npz)",
+  "query_coverage": "logged torque only (as the sealed CF table)"
+ },
+ "arms": {
+  "ETT": "critic futures = branches_ett.npz",
+  "CF": "critic futures = the sealed simulator branches (branches_cf.npz)",
+  "O": "critic futures = the recorded continuation"
+ },
+ "recipe": {
+  "variant": "critic_clip0.1",
+  "overrides": {
+   "critic_clip": 0.1
+  },
+  "unchanged": [
+   "start checkpoint",
+   "anchors",
+   "actor / BC rows (logged buffer)",
+   "bc 0.05",
+   "30000 updates",
+   "stream seeds by seed"
+  ]
+ },
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4
+ ],
+ "existing_finals": {
+  "CF/seed_0": "8265785d577365376bba7ba473728c14f0efdfbd04172a938423b81d68535414",
+  "CF/seed_1": "f09886a7a4c389cbacae29887a6bf3b23c0ffd7b48d68f3928b771404227c6c3",
+  "CF/seed_2": "06362f533243c395ac7b48a3d8cc67cf436955490c5b4689fd5240ba1f5f2861",
+  "CF/seed_3": "1fb77269c31813938b33224a7e61022d2cbd9d82deed149a588259300b9e0b35",
+  "CF/seed_4": "95e784dece28f31e0c0f7a6a7b0416faf735842da43233295b9055b2ff2a16b6",
+  "O/seed_0": "3245141a80a0a21a0be8a4ebbed6411f15d699a43e0c4b4669bdee2ca7107ef1",
+  "O/seed_1": "ebac1e5829e7f098af721d6778ea2f34de64e647e72d22eef7a8870b9f30425f",
+  "O/seed_2": "8d8f389fc8743fc360f83c4453b40244e0b7bf4ec13f65833fda701f56a19ab3",
+  "O/seed_3": "d59efedfa34b7d3251b8126a08d9804ecb6deab520e2c694aa06b622c47824e0",
+  "O/seed_4": "e35c0b7902116eee79b3df08252f6679a86320f976476af49dec14f57621bbf8",
+  "CF2/seed_0": "3bc0ee4e53c8a528d772d9922679afdc40a759aa5a447e3cdba2749670d7bc66",
+  "CF2/seed_1": "739144233f17f0fc5cd358d9dfbb4b11e4221081c5de04c2d2593b598dd79c10",
+  "CF2/seed_2": "7c837b8a77c85e35d3715336bb0b5d6a6a26c6bbb895743f703ce07743983064",
+  "CF2/seed_3": "fbb581831f84f68dfa6d887d0446b4512635cb0e7ce8e9601192faef4638a0a1",
+  "CF2/seed_4": "08a5164014700ff08b9669d243a4cab36d987d4e177e5d5baed93f6596f871dd"
+ },
+ "reference_arms": {
+  "CF2": "oracle_draw2/CF -- the second simulator draw of the same protocol (reported next to CF; neither oracle number is the yardstick alone)"
+ },
+ "evaluation": {
+  "n": 300,
+  "seed": 10909,
+  "policy": "mean",
+  "targets": "ETT / CF / O seeds 0-4 and the start agent on the same 300 episodes"
+ },
+ "judgement": {
+  "primary": "ETT - O success on the common episodes, per paired seed: mean > 2 x seed s.e. and 5 / 5",
+  "oracle_reference": "CF - O under the same rule at five seeds (the oracle gain re-established)",
+  "retention": "(ETT - O) / (CF - O) reported; ETT - CF reported (how much of the oracle gain the learned futures keep)",
+  "generation_check": "branches_ett outcome shares vs the sealed simulator table, pooled and by anchor region (reported; a pooled death-share gap > 0.05 flags the futures)",
+  "no_selection": "every final evaluated once; no tuning after the result"
+ }
+}

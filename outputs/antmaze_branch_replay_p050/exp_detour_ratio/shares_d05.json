@@ -1,0 +1,39 @@
+{
+ "ratio": "d05",
+ "dataset": {
+  "episode_share_detour": 0.05,
+  "row_share_detour": 0.06994141639966951
+ },
+ "vanilla_critic_anchor_share_detour": 0.05,
+ "branch_replay": {
+  "paths": 18704,
+  "mass_by_stratum": {
+   "general": 0.518819503849444,
+   "north_leg": 0.0962360992301112,
+   "shortcut_early": 0.0962360992301112,
+   "start_early": 0.1283147989734816,
+   "start_late": 0.0641573994867408,
+   "turn": 0.0962360992301112
+  },
+  "general_share_detour_episode_paths": 0.0690436933223413,
+  "total_share_paths_from_detour_episodes": 0.23535072711719418
+ },
+ "balanced_bc_sampler_share_detour_rows": {
+  "mean": 0.05083984375,
+  "sd_over_batches": 0.006810527550965559
+ },
+ "bc_sampler_stats": {
+  "n_pairs": 36693045,
+  "n_groups": 393,
+  "n_nonempty_buckets": 2282,
+  "cap": 0.25,
+  "cell": 4.0,
+  "n_sectors": 8,
+  "wait_eps": 0.05,
+  "max_multiplier": 2.652942044262733,
+  "min_nonzero_multiplier": 0.6400004297824136,
+  "ess_original": 11077345.271891754,
+  "ess_reweighted": 10928587.266195735,
+  "group_marginal_max_abs_dev": 2.706168622523819e-15
+ }
+}

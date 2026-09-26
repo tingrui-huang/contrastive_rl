@@ -1,0 +1,101 @@
+# Pre-training and post-hoc checks (mainline pilot)
+
+| check | value |
+|---|---|
+| smoke | False |
+| dataset_sha_matches | PASS |
+| sidecar_sha_matches | PASS |
+| no_held_out_or_cnew_episode_in_training | PASS |
+| anchors_deterministic | PASS |
+| anchors_valid_rows | PASS |
+| anchor_weight_sum | 1.0000000000000002 |
+| anchor_roots_match_dataset | PASS |
+| anchor_law.draws_per_episode_mean_sd | [60.0, 7.874007874011811] |
+| anchor_law.expected_sd_if_uniform | 7.745966692414834 |
+| anchor_law.relative_row_position_mean (0.5 if uniform) | 0.4982181194926541 |
+| anchor_law.share_t0 | 0.003783333333333334 |
+| anchor_law.expected_share_t0 | 0.003806691489056454 |
+| branches_available | True |
+| critic_stream_recorded_first_batches | 5 batches: 8a2cde22818624b9/509c15fca79bbba4; cf879f96d936572e/f0a1ba803a34fc51; ca416aa436816d18/b2fc601cc9331c03 ... |
+| critic_anchor_sequence_identical_across_arms | PASS |
+| critic_goals_differ_across_arms | True |
+| branch_roots_keep_timestep | PASS |
+| query_executed_exactly_once | PASS |
+| branch_first_action_is_logged | PASS |
+| branch_lengths_within_horizon | PASS |
+| branch_restore_maxdiff_max | 0.0 |
+| branch_outcomes.death | 15612 |
+| branch_outcomes.success | 33402 |
+| branch_outcomes.timeout | 4733 |
+| branch_all_outcomes_kept | PASS |
+| actor_streams.seed_0.identical_across_instances | PASS |
+| actor_streams.seed_0.reset_row_share | 0.003125 |
+| actor_streams.seed_0.non_reset_row_share | 0.996875 |
+| actor_streams.seed_0.future_crosses_episode_boundary | PASS |
+| actor_streams.seed_0.sampler | TrajectoryBuffer variable-length law |
+| actor_streams.seed_0.law_check | PASS |
+| actor_streams.seed_1.identical_across_instances | PASS |
+| actor_streams.seed_1.reset_row_share | 0.0044921875 |
+| actor_streams.seed_1.non_reset_row_share | 0.9955078125 |
+| actor_streams.seed_1.future_crosses_episode_boundary | PASS |
+| actor_streams.seed_1.sampler | TrajectoryBuffer variable-length law |
+| actor_streams.seed_1.law_check | PASS |
+| actor_streams.seed_2.identical_across_instances | PASS |
+| actor_streams.seed_2.reset_row_share | 0.0037109375 |
+| actor_streams.seed_2.non_reset_row_share | 0.9962890625 |
+| actor_streams.seed_2.future_crosses_episode_boundary | PASS |
+| actor_streams.seed_2.sampler | TrajectoryBuffer variable-length law |
+| actor_streams.seed_2.law_check | PASS |
+| offline_static_audit.all_pass | PASS |
+| offline_static_audit.gates.G1_FINGERPRINT | PASS |
+| offline_static_audit.gates.G2_KEY_SEPARATION | PASS |
+| offline_static_audit.gates.G3_SHAPES_DIMS | PASS |
+| offline_static_audit.gates.G4_DTYPES_FINITE | PASS |
+| offline_static_audit.gates.G5_EP_LENGTHS | PASS |
+| offline_static_audit.gates.G6_NO_AUDIT_LEAK | PASS |
+| offline_static_audit.gates.G7_RELABEL_BOUNDS | PASS |
+| offline_static_audit.gates.G8_FROZEN_BUFFER | PASS |
+| start_checkpoint.path | /root/contrastive_rl/outputs/antmaze_branch_replay_p050/joint_van_d05/seed_0/final.pkl |
+| start_checkpoint.available | True |
+| start_checkpoint.sha256 | 6a67dbbdffe817eb0d0ed4984be325c0dabc4d4158578026e9b3bb00bee5f0a9 |
+| manifest_mentions_no_d20_artifact | PASS |
+| post_training.O/seed_0.critic_changed | PASS |
+| post_training.O/seed_0.actor_changed | PASS |
+| post_training.O/seed_0.optimizer_updates | 30000 |
+| post_training.O/seed_0.actor_init_is_start_agent | PASS |
+| post_training.O/seed_0.first_critic_anchor_hash | 78b312ff751778dc |
+| post_training.O/seed_0.first_actor_hash | fb44f42269f0b085 |
+| post_training.O/seed_1.critic_changed | PASS |
+| post_training.O/seed_1.actor_changed | PASS |
+| post_training.O/seed_1.optimizer_updates | 30000 |
+| post_training.O/seed_1.actor_init_is_start_agent | PASS |
+| post_training.O/seed_1.first_critic_anchor_hash | 34d44c114447a0e3 |
+| post_training.O/seed_1.first_actor_hash | 14b9523b695a976a |
+| post_training.O/seed_2.critic_changed | PASS |
+| post_training.O/seed_2.actor_changed | PASS |
+| post_training.O/seed_2.optimizer_updates | 30000 |
+| post_training.O/seed_2.actor_init_is_start_agent | PASS |
+| post_training.O/seed_2.first_critic_anchor_hash | 257250c2acbac1c1 |
+| post_training.O/seed_2.first_actor_hash | 1cefc85b8d3814cc |
+| post_training.CF/seed_0.critic_changed | PASS |
+| post_training.CF/seed_0.actor_changed | PASS |
+| post_training.CF/seed_0.optimizer_updates | 30000 |
+| post_training.CF/seed_0.actor_init_is_start_agent | PASS |
+| post_training.CF/seed_0.first_critic_anchor_hash | 78b312ff751778dc |
+| post_training.CF/seed_0.first_actor_hash | fb44f42269f0b085 |
+| post_training.CF/seed_1.critic_changed | PASS |
+| post_training.CF/seed_1.actor_changed | PASS |
+| post_training.CF/seed_1.optimizer_updates | 30000 |
+| post_training.CF/seed_1.actor_init_is_start_agent | PASS |
+| post_training.CF/seed_1.first_critic_anchor_hash | 34d44c114447a0e3 |
+| post_training.CF/seed_1.first_actor_hash | 14b9523b695a976a |
+| post_training.CF/seed_2.critic_changed | PASS |
+| post_training.CF/seed_2.actor_changed | PASS |
+| post_training.CF/seed_2.optimizer_updates | 30000 |
+| post_training.CF/seed_2.actor_init_is_start_agent | PASS |
+| post_training.CF/seed_2.first_critic_anchor_hash | 257250c2acbac1c1 |
+| post_training.CF/seed_2.first_actor_hash | 1cefc85b8d3814cc |
+| paired_streams_identical_across_arms.seed_0 | PASS |
+| paired_streams_identical_across_arms.seed_1 | PASS |
+| paired_streams_identical_across_arms.seed_2 | PASS |
+| evaluation_episodes_identical_across_policies | PASS |

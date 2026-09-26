@@ -1,0 +1,51 @@
+{
+ "experiment": "AntMaze V6: the actor goal-source comparison -- frozen critic, actor rows from the anchor pool, critic-term goal recorded (goal_log) vs counterfactual (goal_cf); BC on the logged action + recorded goal in both",
+ "sealed_at": "2026-09-20 01:16:54",
+ "git_head": "unavailable (Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128.)",
+ "status": "sampling-level diagnostic (user's step 2); oracle futures; not a mainline result",
+ "anchors_sha256": "d6672a7dd70d9596944c9522d7d1cf887204847d34e3348d6e041c8d29d68367",
+ "sealed_branches_sha256": "503051d35287645b37cca39f43ec2ffb0f026148d10229219496cd06a58b53a4",
+ "dataset_sha256": "4533c70278a96e09b9d79ba8ed6c2144792abbab5085d405ae544f50982144d6",
+ "lineage_agents": {
+  "seed_0": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/variants/critic_clip0.1/CF/seed_0/final.pkl",
+   "sha256": "8265785d577365376bba7ba473728c14f0efdfbd04172a938423b81d68535414"
+  },
+  "seed_1": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/variants/critic_clip0.1/CF/seed_1/final.pkl",
+   "sha256": "f09886a7a4c389cbacae29887a6bf3b23c0ffd7b48d68f3928b771404227c6c3"
+  },
+  "seed_2": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/variants/critic_clip0.1/CF/seed_2/final.pkl",
+   "sha256": "06362f533243c395ac7b48a3d8cc67cf436955490c5b4689fd5240ba1f5f2861"
+  }
+ },
+ "arms": {
+  "goal_log": "actor critic-term goal = the recorded future goal of the anchor row (logged episode row t + m)",
+  "goal_cf": "actor critic-term goal = the sealed CF branch future goal of the same anchor (row m)"
+ },
+ "shared": "frozen lineage critic (params, target, critic Adam restored after every update); the lineage actor + its Adam state; anchor pool + weights; one RNG -> same anchors and same future uniform in both arms; BC rows = the same anchors with the logged action and the recorded goal (bc_sampling independent path, loss body unchanged); bc 0.05; +30,000 updates; batch 1024; G 4",
+ "not_changed": [
+  "no synthetic BC",
+  "no BC balancing",
+  "no reset re-weighting",
+  "no nearest-state matching (every row uses its own branch)",
+  "networks, losses, learning rates"
+ ],
+ "updates": 30000,
+ "evaluation": {
+  "n": 300,
+  "seed": 6909,
+  "policy": "mean",
+  "paired_against": [
+   "goal_log",
+   "current (the lineage agent)",
+   "frozen (actor-only continuation on the buffer stream, query_coverage/train/frozen)"
+  ]
+ },
+ "judgement": {
+  "improve": "success up without harming walking (timeouts / stalls not up, far-route completion kept) -> mainline validation",
+  "entries_only": "more far-route entries but more timeouts -> not a fix",
+  "none": "no improvement -> close the hypothesis; no ratio sweeps"
+ }
+}

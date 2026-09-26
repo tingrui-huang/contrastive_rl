@@ -1,0 +1,93 @@
+{
+ "experiment": "AntMaze V6 mainline, clip recipe: the current (clipped CF) agents as continuation at the same anchors -- futures profile (A), gated paired continuation (B)",
+ "sealed_at": "2026-09-19 17:25:38",
+ "git_head": "unavailable (Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128.)",
+ "recipe": "critic_clip0.1",
+ "recipe_overrides": {
+  "critic_clip": 0.1
+ },
+ "recipe_manifest_sha256": "5bf2df970d2cee5da47b8e3437e9d8690e7b024c7d105f0798462ff16ee2c280",
+ "anchors_sha256": "d6672a7dd70d9596944c9522d7d1cf887204847d34e3348d6e041c8d29d68367",
+ "old_branches": {
+  "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/branches_cf.npz",
+  "sha256": "503051d35287645b37cca39f43ec2ffb0f026148d10229219496cd06a58b53a4",
+  "continuation": "start agent (joint_van_d05/seed_0)"
+ },
+ "lineage_agents": {
+  "seed_0": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/variants/critic_clip0.1/CF/seed_0/final.pkl",
+   "sha256": "8265785d577365376bba7ba473728c14f0efdfbd04172a938423b81d68535414"
+  },
+  "seed_1": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/variants/critic_clip0.1/CF/seed_1/final.pkl",
+   "sha256": "f09886a7a4c389cbacae29887a6bf3b23c0ffd7b48d68f3928b771404227c6c3"
+  },
+  "seed_2": {
+   "path": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/variants/critic_clip0.1/CF/seed_2/final.pkl",
+   "sha256": "06362f533243c395ac7b48a3d8cc67cf436955490c5b4689fd5240ba1f5f2861"
+  }
+ },
+ "A_generation": {
+  "anchors": "the pilot anchor set, every anchor",
+  "query": "the logged torque, executed once",
+  "hazard_seed": "HAZARD_SEED0 + anchor_id (identical to the old file: paired by anchor)",
+  "continuation": "the lineage agent, mode tanh(loc), closed-loop to reach / death / horizon",
+  "per_lineage": [
+   "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/clip_round/branches_cf_c_s0.npz",
+   "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/clip_round/branches_cf_c_s1.npz",
+   "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/clip_round/branches_cf_c_s2.npz"
+  ]
+ },
+ "A_profile": {
+  "paired_by": "anchor (same state, same query torque, same hazard draw)",
+  "weights": "anchor weight (the critic anchor law)",
+  "quantities": [
+   "entered the far route after the query (y >= 6 at x < 2)",
+   "completed the far route (entered and reached the goal)",
+   "entered a hazard zone",
+   "outcome shares",
+   "branch length",
+   "the critic goal marginal under the truncated geometric law: mass in the far-route legs / goal area / hazard zones"
+  ],
+  "strata": [
+   "reset rows (t = 0)",
+   "anchor in start region",
+   "start region, t in [1, 30)",
+   "every maze region",
+   "logged shortcut / detour episodes x start region",
+   "all"
+  ]
+ },
+ "B_gate": {
+  "stratum": "anchor in start region",
+  "quantity": "far route completed (entered the far route after the query and the branch reached the goal), anchor-weighted share",
+  "rule": "new - old > 0 in 3/3 lineages AND the mean over the 3 lineages >= 0.02 (absolute); the start-agent share is the same file for every lineage"
+ },
+ "B_design": {
+  "source": "the lineage final (full TrainingState: params, target, policy and critic Adam states incl. the clip state, key)",
+  "updates": 30000,
+  "streams": "critic and actor streams fast-forwarded by 30,000 batches (the run continues its own sequence)",
+  "arms": {
+   "CFold": "the start-agent futures (branches_cf.npz): the plain continuation of the run",
+   "CFnew": "the lineage futures (branches_cf_c_s<s>.npz)"
+  },
+  "held_fixed": "the sealed critic_clip0.1 recipe: NCE, actor loss, bc 0.05, gamma 0.999, lr, clip 0.1, batch 1024, anchors and weights, actor stream, evaluation (seed 3909, 300, mode)",
+  "no_restart": "nothing re-initialised; the round-2 confound (restart vs futures) is absent"
+ },
+ "B_comparisons": {
+  "primary": "CFnew - CFold success, paired on the common episodes per lineage; rule: mean over the 3 lineages > 2 x seed s.e. and 3/3",
+  "secondary": [
+   "detour",
+   "death",
+   "timeout",
+   "hazard success",
+   "the route ledger"
+  ],
+  "context": [
+   "CFnew - source (the lineage agent)",
+   "CFold - source (more training alone)"
+  ]
+ },
+ "no_selection": "every lineage, both arms, the final checkpoints evaluated once; the gate is evaluated mechanically before any training",
+ "status": "oracle (simulator) futures under the disclosed optimizer-stabilisation recipe; not a learned-ETT result"
+}

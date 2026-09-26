@@ -75,7 +75,8 @@ class TrainingState(NamedTuple):
 
 
 def build_learner(networks, config, obs_to_goal, policy_optimizer,
-                  q_optimizer, fail_bank=None):
+                  q_optimizer, fail_bank=None, separate_actor_batch=False,
+                  anchor_params=None, anchor_coef=0.0):
   """Returns ``(init_state, update_step)`` closures for the given config.
 
   ``obs_to_goal`` maps a batch of states [B, obs_dim] -> goal coords
@@ -85,9 +86,35 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
   coordinates for failure-aware negative sampling. Used only when
   ``config.fail_neg_alpha > 0`` (see critic_loss); ``None`` or alpha 0 leaves
   every loss byte-identical to the baseline.
+
+  ``separate_actor_batch`` (sampling-interface change, notes/MAINLINE_CONTRACT.md):
+  ``update_step`` takes ``(critic_transitions, actor_transitions)``.  The
+  critic loss is taken on the first batch; the actor loss -- its critic term
+  AND its BC term, on the same rows, exactly the ``bc_transitions is None``
+  pairing -- on the second.  The loss bodies are the ones above, unchanged;
+  what changes is only WHICH rows each loss is evaluated on.  With both
+  batches drawn from the same stream this reduces to the shared-batch
+  learner up to the RNG stream.  Requires ``bc_sampling == 'shared'``.
+
+  ``anchor_params`` / ``anchor_coef`` (diagnostic variant, AntMaze V6 pilot):
+  adds ``anchor_coef * mean_i ||tanh(loc_i) - tanh(loc_ref_i)||^2`` to the
+  actor loss, where ``loc_ref`` is the mode of a FIXED reference policy
+  (``anchor_params``, e.g. the policy the actor was initialised from) at the
+  same (state, goal) rows -- a trust region to the previous iterate that uses
+  no labels and leaves the BC and critic terms untouched.  Inactive at 0.
   """
   adaptive_entropy_coefficient = config.entropy_coefficient is None
+  if separate_actor_batch and (getattr(config, 'bc_sampling', 'shared') or 'shared') != 'shared':
+    raise ValueError('separate_actor_batch keeps the shared-row actor pairing; '
+                     'bc_sampling must be "shared"')
   obs_dim = config.obs_dim
+  bc_sampling = getattr(config, 'bc_sampling', 'shared') or 'shared'
+  if bc_sampling not in ('shared', 'independent', 'balanced'):
+    raise ValueError(f'unknown bc_sampling {bc_sampling!r}')
+  if bc_sampling != 'shared' and (config.random_goals != 0.0
+                                  or config.bc_coef <= 0):
+    raise ValueError('bc_sampling independent/balanced requires '
+                     'random_goals 0 and bc_coef > 0')
 
   # --- Failure-aware negatives (Part 1): static setup -----------------------
   # Negative-distribution mixture q_alpha = (1-alpha)*p_clean + alpha*q_fail.
@@ -480,7 +507,8 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
     return loss, metrics
 
   # ------------------------------------------------------------------ actor
-  def actor_loss(policy_params, q_params, alpha, transitions, key):
+  def actor_loss(policy_params, q_params, alpha, transitions, key,
+                 bc_transitions=None):
     obs = transitions.observation
     if config.use_gcbc:
       dist_params = networks.policy_network.apply(policy_params, obs)
@@ -541,7 +569,15 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
       # Offline actor objective (paper Eq 7-8 / WindyCorridor recipe):
       # max (1-bc)*E_pi[f] + bc*log pi(a_orig|s,g). log_prob clips boundary
       # actions internally, so dataset actions at exactly +/-1 are safe.
-      bc_nll = -networks.log_prob(dist_params, orig_action)
+      if bc_transitions is None:
+        bc_nll = -networks.log_prob(dist_params, orig_action)
+      else:
+        # BC rows drawn separately (config.bc_sampling != 'shared'): the
+        # critic term above keeps the buffer batch, the BC term gets its own
+        # (state, goal, recorded action) rows, e.g. region-balanced ones.
+        bc_dist = networks.policy_network.apply(
+            policy_params, bc_transitions.observation)
+        bc_nll = -networks.log_prob(bc_dist, bc_transitions.action)
       loss = config.bc_coef * bc_nll + (1 - config.bc_coef) * q_term
       bc_nll_mean = jnp.mean(bc_nll)
       q_term_mean = jnp.mean(q_term)
@@ -558,6 +594,12 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
       q_term_mean = jnp.mean(q_term)
       aux = {'critic_actor_term_raw': q_term_mean,
              'critic_actor_term_weighted': q_term_mean}
+    if anchor_params is not None and anchor_coef > 0.0:
+      ref = networks.policy_network.apply(anchor_params, new_obs)
+      pen = jnp.sum((mode_action - jax.lax.stop_gradient(jnp.tanh(ref.loc))) ** 2, axis=1)
+      loss = loss + anchor_coef * pen
+      aux['anchor_penalty_raw'] = jnp.mean(pen)
+      aux['anchor_penalty_weighted'] = anchor_coef * jnp.mean(pen)
     aux.update(diag)
     return jnp.mean(loss), aux
 
@@ -567,10 +609,22 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
 
   # ------------------------------------------------------------- update step
   def update_step(state, transitions):
+    # ``transitions`` is a Transition, or a (Transition, Transition-or-None)
+    # pair whose second element holds the BC term's own rows; with
+    # ``separate_actor_batch`` it is the (critic rows, actor rows) pair.
+    if separate_actor_batch:
+      transitions, actor_transitions = transitions
+      bc_transitions = None
+    elif isinstance(transitions, Transition):
+      bc_transitions = None
+      actor_transitions = transitions
+    else:
+      transitions, bc_transitions = transitions
+      actor_transitions = transitions
     key, key_alpha, key_critic, key_actor = jax.random.split(state.key, 4)
     if adaptive_entropy_coefficient:
       alpha_loss_value, alpha_grads = alpha_grad(
-          state.alpha_params, state.policy_params, transitions, key_alpha)
+          state.alpha_params, state.policy_params, actor_transitions, key_alpha)
       alpha = jnp.exp(state.alpha_params)
     else:
       alpha = config.entropy_coefficient
@@ -581,7 +635,8 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
           transitions, key_critic)
 
     (actor_loss_value, actor_aux), actor_grads = actor_grad(
-        state.policy_params, state.q_params, alpha, transitions, key_actor)
+        state.policy_params, state.q_params, alpha, actor_transitions, key_actor,
+        bc_transitions)
 
     actor_update, policy_optimizer_state = policy_optimizer.update(
         actor_grads, state.policy_optimizer_state)

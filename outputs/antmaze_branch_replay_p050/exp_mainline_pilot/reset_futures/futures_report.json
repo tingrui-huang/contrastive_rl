@@ -1,0 +1,2944 @@
+{
+ "tables": {
+  "draw1": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/ett_futures_v4s20/branches_ett.npz",
+  "draw2": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/ett_futures_v4s20_draw2/branches_ett.npz",
+  "sim": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/branches_cf.npz"
+ },
+ "groups": {
+  "reset64 (the diagnostics' states)": {
+   "n": 64,
+   "per_table": {
+    "draw1": {
+     "success": 0.421875,
+     "death": 0.578125,
+     "timeout": 0.0,
+     "no_route_timeout": 0.0,
+     "never_left_start": 0.0,
+     "length": {
+      "mean": 147.203125,
+      "median": 138.5,
+      "p90": 227.7
+     },
+     "reach0.5": {
+      "mean": 0.001677568420643503,
+      "median": 0.0,
+      "p90": 0.004086257355009339
+     },
+     "near2.0": {
+      "mean": 0.033682686115446586,
+      "median": 0.0,
+      "p90": 0.07407070344799753
+     },
+     "goal_area": {
+      "mean": 0.04617494794226893,
+      "median": 0.0,
+      "p90": 0.10564743678929903
+     },
+     "far": {
+      "mean": 0.0,
+      "median": 0.0,
+      "p90": 0.0
+     },
+     "death_frame": {
+      "mean": 0.007062184155180654,
+      "median": 0.006787434310327706,
+      "p90": 0.015311299073856127
+     },
+     "stall": {
+      "mean": 0.004726677894315053,
+      "median": 0.0,
+      "p90": 0.015293823975757565
+     },
+     "start_region": {
+      "mean": 0.189311286729369,
+      "median": 0.14751054083587403,
+      "p90": 0.3224336767871823
+     },
+     "slow_rows_share": {
+      "mean": 0.004639434700599,
+      "median": 0.0,
+      "p90": 0.014795587280986374
+     }
+    },
+    "draw2": {
+     "success": 0.15625,
+     "death": 0.84375,
+     "timeout": 0.0,
+     "no_route_timeout": 0.0,
+     "never_left_start": 0.0,
+     "length": {
+      "mean": 112.65625,
+      "median": 71.0,
+      "p90": 225.7
+     },
+     "reach0.5": {
+      "mean": 0.0006009348495655236,
+      "median": 0.0,
+      "p90": 0.003773195784866239
+     },
+     "near2.0": {
+      "mean": 0.014787914490923013,
+      "median": 0.0,
+      "p90": 0.06170844638353566
+     },
+     "goal_area": {
+      "mean": 0.019510431679125164,
+      "median": 0.0,
+      "p90": 0.09776057076602336
+     },
+     "far": {
+      "mean": 0.0,
+      "median": 0.0,
+      "p90": 0.0
+     },
+     "death_frame": {
+      "mean": 0.010224351257455303,
+      "median": 0.013798204216613544,
+      "p90": 0.015385716036678095
+     },
+     "stall": {
+      "mean": 0.005029572774864776,
+      "median": 0.0,
+      "p90": 0.016122521834444258
+     },
+     "start_region": {
+      "mean": 0.22943441188374242,
+      "median": 0.2780008987388488,
+      "p90": 0.323222842878257
+     },
+     "slow_rows_share": {
+      "mean": 0.004915174970359997,
+      "median": 0.0,
+      "p90": 0.015625
+     }
+    },
+    "sim": {
+     "success": 0.28125,
+     "death": 0.671875,
+     "timeout": 0.046875,
+     "no_route_timeout": 0.0,
+     "never_left_start": 0.0,
+     "length": {
+      "mean": 165.4375,
+      "median": 137.0,
+      "p90": 229.0
+     },
+     "reach0.5": {
+      "mean": 0.0011107134155657742,
+      "median": 0.0,
+      "p90": 0.004018732774332603
+     },
+     "near2.0": {
+      "mean": 0.04895609400657097,
+      "median": 0.0,
+      "p90": 0.08458018598485906
+     },
+     "goal_area": {
+      "mean": 0.05877801279032174,
+      "median": 0.0,
+      "p90": 0.12191100619829862
+     },
+     "far": {
+      "mean": 0.008219089173856558,
+      "median": 0.0,
+      "p90": 0.0
+     },
+     "death_frame": {
+      "mean": 0.007811707741123736,
+      "median": 0.006867467066283735,
+      "p90": 0.015385716036678095
+     },
+     "stall": {
+      "mean": 0.02911035732558966,
+      "median": 0.0,
+      "p90": 0.01936150915353243
+     },
+     "start_region": {
+      "mean": 0.2012376996393652,
+      "median": 0.1623267521045763,
+      "p90": 0.33076689964466566
+     },
+     "slow_rows_share": {
+      "mean": 0.03351327619260787,
+      "median": 0.0,
+      "p90": 0.02096958174904945
+     }
+    }
+   },
+   "paired_draw1_minus_draw2": {
+    "length": {
+     "mean": 34.546875,
+     "se": 11.905879435084493,
+     "share_draw1_higher_by_0.1": 0.609375,
+     "share_draw2_higher_by_0.1": 0.359375,
+     "abs_mean": 77.546875
+    },
+    "reach0.5": {
+     "mean": 0.0010766335710779792,
+     "se": 0.0002952920370282873,
+     "share_draw1_higher_by_0.1": 0.0,
+     "share_draw2_higher_by_0.1": 0.0,
+     "abs_mean": 0.0016776074070138053
+    },
+    "near2.0": {
+     "mean": 0.01889477162452357,
+     "se": 0.006885385848439084,
+     "share_draw1_higher_by_0.1": 0.046875,
+     "share_draw2_higher_by_0.1": 0.03125,
+     "abs_mean": 0.03514869388717557
+    },
+    "goal_area": {
+     "mean": 0.026664516263143763,
+     "se": 0.008846280676020396,
+     "share_draw1_higher_by_0.1": 0.15625,
+     "share_draw2_higher_by_0.1": 0.0625,
+     "abs_mean": 0.047617593720845536
+    },
+    "far": {
+     "mean": 0.0,
+     "se": 0.0,
+     "share_draw1_higher_by_0.1": 0.0,
+     "share_draw2_higher_by_0.1": 0.0,
+     "abs_mean": 0.0
+    },
+    "death_frame": {
+     "mean": -0.0031621671022746484,
+     "se": 0.001127836467200746,
+     "share_draw1_higher_by_0.1": 0.0,
+     "share_draw2_higher_by_0.1": 0.0,
+     "abs_mean": 0.007471767954374815
+    },
+    "stall": {
+     "mean": -0.00030289488054972347,
+     "se": 0.0010044882994755865,
+     "share_draw1_higher_by_0.1": 0.0,
+     "share_draw2_higher_by_0.1": 0.0,
+     "abs_mean": 0.003158659128168163
+    },
+    "start_region": {
+     "mean": -0.04012312515437341,
+     "se": 0.0170215093461988,
+     "share_draw1_higher_by_0.1": 0.1875,
+     "share_draw2_higher_by_0.1": 0.359375,
+     "abs_mean": 0.1119431036773034
+    },
+    "slow_rows_share": {
+     "mean": -0.0002757402697609975,
+     "se": 0.0010246803817104987,
+     "share_draw1_higher_by_0.1": 0.0,
+     "share_draw2_higher_by_0.1": 0.0,
+     "abs_mean": 0.0032759915037460364
+    }
+   },
+   "outcome_agreement_draw1_draw2": 0.578125,
+   "same_outcome_as_sim": {
+    "draw1": 0.4375,
+    "draw2": 0.609375
+   }
+  },
+  "reset (all t = 0)": {
+   "n": 196,
+   "per_table": {
+    "draw1": {
+     "success": 0.33163265306122447,
+     "death": 0.6479591836734694,
+     "timeout": 0.02040816326530612,
+     "no_route_timeout": 0.00510204081632653,
+     "never_left_start": 0.00510204081632653,
+     "length": {
+      "mean": 153.73469387755102,
+      "median": 136.0,
+      "p90": 228.5
+     },
+     "reach0.5": {
+      "mean": 0.0013016870612295745,
+      "median": 0.0,
+      "p90": 0.004075916040510894
+     },
+     "near2.0": {
+      "mean": 0.036966829130633844,
+      "median": 0.0,
+      "p90": 0.07586733701768261
+     },
+     "goal_area": {
+      "mean": 0.04730109039880712,
+      "median": 0.0,
+      "p90": 0.11896617424230076
+     },
+     "far": {
+      "mean": 0.00475673380927279,
+      "median": 0.0,
+      "p90": 0.0
+     },
+     "death_frame": {
+      "mean": 0.007606174806943317,
+      "median": 0.006921877171201515,
+      "p90": 0.015385716036678095
+     },
+     "stall": {
+      "mean": 0.013654944403644774,
+      "median": 0.0,
+      "p90": 0.015423494911911367
+     },
+     "start_region": {
+      "mean": 0.19762085421064102,
+      "median": 0.15220206911064335,
+      "p90": 0.32587013534513076
+     },
+     "slow_rows_share": {
+      "mean": 0.014624480492247807,
+      "median": 0.0,
+      "p90": 0.014925373134328358
+     }
+    },
+    "draw2": {
+     "success": 0.20408163265306123,
+     "death": 0.7806122448979592,
+     "timeout": 0.015306122448979591,
+     "no_route_timeout": 0.00510204081632653,
+     "never_left_start": 0.00510204081632653,
+     "length": {
+      "mean": 130.07142857142858,
+      "median": 73.5,
+      "p90": 230.5
+     },
+     "reach0.5": {
+      "mean": 0.0007846592375838434,
+      "median": 0.0,
+      "p90": 0.003964930338281528
+     },
+     "near2.0": {
+      "mean": 0.024599813121138382,
+      "median": 0.0,
+      "p90": 0.07687574862037891
+     },
+     "goal_area": {
+      "mean": 0.030896247103452314,
+      "median": 0.0,
+      "p90": 0.1087282627545186
+     },
+     "far": {
+      "mean": 0.00475673380927279,
+      "median": 0.0,
+      "p90": 0.0
+     },
+     "death_frame": {
+      "mean": 0.009566456088077846,
+      "median": 0.013306211854416656,
+      "p90": 0.015385716036678095
+     },
+     "stall": {
+      "mean": 0.01115734543027073,
+      "median": 0.0,
+      "p90": 0.016122521834444258
+     },
+     "start_region": {
+      "mean": 0.22559796936768753,
+      "median": 0.2746045886215758,
+      "p90": 0.32696323984500286
+     },
+     "slow_rows_share": {
+      "mean": 0.01166394748510599,
+      "median": 0.0,
+      "p90": 0.015625
+     }
+    },
+    "sim": {
+     "success": 0.29591836734693877,
+     "death": 0.6632653061224489,
+     "timeout": 0.04081632653061224,
+     "no_route_timeout": 0.0,
+     "never_left_start": 0.0,
+     "length": {
+      "mean": 162.7908163265306,
+      "median": 136.0,
+      "p90": 235.5
+     },
+     "reach0.5": {
+      "mean": 0.0011394100874084002,
+      "median": 0.0,
+      "p90": 0.004004644274816779
+     },
+     "near2.0": {
+      "mean": 0.049222794267321776,
+      "median": 0.0,
+      "p90": 0.0977309280912611
+     },
+     "goal_area": {
+      "mean": 0.0589298402904458,
+      "median": 0.0,
+      "p90": 0.12890740735568892
+     },
+     "far": {
+      "mean": 0.01161428332062318,
+      "median": 0.0,
+      "p90": 0.0
+     },
+     "death_frame": {
+      "mean": 0.008041441149169447,
+      "median": 0.006921877171201515,
+      "p90": 0.015385716036678095
+     },
+     "stall": {
+      "mean": 0.027544189153849482,
+      "median": 0.0,
+      "p90": 0.016890330095834526
+     },
+     "start_region": {
+      "mean": 0.2027289272822236,
+      "median": 0.16293482327244727,
+      "p90": 0.3302148937847287
+     },
+     "slow_rows_share": {
+      "mean": 0.03122681300229839,
+      "median": 0.0,
+      "p90": 0.016530054644808743
+     }
+    }
+   },
+   "paired_draw1_minus_draw2": {
+    "length": {
+     "mean": 23.663265306122447,
+     "se": 10.36601461069852,
+     "share_draw1_higher_by_0.1": 0.5561224489795918,
+     "share_draw2_higher_by_0.1": 0.3979591836734694,
+     "abs_mean": 91.33673469387755
+    },
+    "reach0.5": {
+     "mean": 0.000517027823645731,
+     "se": 0.00017096577624531756,
+     "share_draw1_higher_by_0.1": 0.0,
+     "share_draw2_higher_by_0.1": 0.0,
+     "abs_mean": 0.001511554843386497
+    },
+    "near2.0": {
+     "mean": 0.01236701600949547,
+     "se": 0.008389172296203508,
+     "share_draw1_higher_by_0.1": 0.05102040816326531,
+     "share_draw2_higher_by_0.1": 0.061224489795918366,
+     "abs_mean": 0.04897634715511208
+    },
+    "goal_area": {
+     "mean": 0.01640484329535481,
+     "se": 0.009092285929205997,
+     "share_draw1_higher_by_0.1": 0.12755102040816327,
+     "share_draw2_higher_by_0.1": 0.09183673469387756,
+     "abs_mean": 0.060410818311142755
+    },
+    "far": {
+     "mean": 0.0,
+     "se": 0.0,
+     "share_draw1_higher_by_0.1": 0.0,
+     "share_draw2_higher_by_0.1": 0.0,
+     "abs_mean": 0.0
+    },
+    "death_frame": {
+     "mean": -0.001960281281134528,
+     "se": 0.000651371353858691,
+     "share_draw1_higher_by_0.1": 0.0,
+     "share_draw2_higher_by_0.1": 0.0,
+     "abs_mean": 0.007371194470369473
+    },
+    "stall": {
+     "mean": 0.002497598973374044,
+     "se": 0.0066450315279535255,
+     "share_draw1_higher_by_0.1": 0.015306122448979591,
+     "share_draw2_higher_by_0.1": 0.01020408163265306,
+     "abs_mean": 0.01706040154388042
+    },
+    "start_region": {
+     "mean": -0.02797711515704651,
+     "se": 0.009961291609240705,
+     "share_draw1_higher_by_0.1": 0.21428571428571427,
+     "share_draw2_higher_by_0.1": 0.3469387755102041,
+     "abs_mean": 0.11329390391045448
+    },
+    "slow_rows_share": {
+     "mean": 0.002960533007141816,
+     "se": 0.00765441926082545,
+     "share_draw1_higher_by_0.1": 0.015306122448979591,
+     "share_draw2_higher_by_0.1": 0.01020408163265306,
+     "abs_mean": 0.019462129236464364
+    }
+   },
+   "outcome_agreement_draw1_draw2": 0.5969387755102041,
+   "same_outcome_as_sim": {
+    "draw1": 0.5153061224489796,
+    "draw2": 0.6122448979591837
+   }
+  },
+  "start_early (start region, t 1-40)": {
+   "n": 4049,
+   "per_table": {
+    "draw1": {
+     "success": 0.26006421338602126,
+     "death": 0.7261052111632502,
+     "timeout": 0.013830575450728575,
+     "no_route_timeout": 0.0024697456162015314,
+     "never_left_start": 0.002716720177821684,
+     "length": {
+      "mean": 130.2758705853297,
+      "median": 114.0,
+      "p90": 224.0
+     },
+     "reach0.5": {
+      "mean": 0.0010157291087292547,
+      "median": 0.0,
+      "p90": 0.004236521035956341
+     },
+     "near2.0": {
+      "mean": 0.029500018076275197,
+      "median": 0.0,
+      "p90": 0.07802509834411755
+     },
+     "goal_area": {
+      "mean": 0.036691992325433236,
+      "median": 0.0,
+      "p90": 0.11552256328230591
+     },
+     "far": {
+      "mean": 0.027769945449948093,
+      "median": 0.0,
+      "p90": 0.0
+     },
+     "death_frame": {
+      "mean": 0.010704699612717222,
+      "median": 0.00836291429154097,
+      "p90": 0.020347264041240303
+     },
+     "stall": {
+      "mean": 0.008275864631962587,
+      "median": 0.0,
+      "p90": 0.0033172105905703766
+     },
+     "start_region": {
+      "mean": 0.11499755094458221,
+      "median": 0.0866373318513324,
+      "p90": 0.25980361203152935
+     },
+     "slow_rows_share": {
+      "mean": 0.009202463798693095,
+      "median": 0.0,
+      "p90": 0.003762962962963044
+     }
+    },
+    "draw2": {
+     "success": 0.2687083230427266,
+     "death": 0.7204247962459867,
+     "timeout": 0.010866880711286737,
+     "no_route_timeout": 0.0024697456162015314,
+     "never_left_start": 0.0024697456162015314,
+     "length": {
+      "mean": 129.85033341565818,
+      "median": 117.0,
+      "p90": 224.0
+     },
+     "reach0.5": {
+      "mean": 0.0010504593781751343,
+      "median": 0.0,
+      "p90": 0.004240977691126899
+     },
+     "near2.0": {
+      "mean": 0.028816358400078165,
+      "median": 0.0,
+      "p90": 0.08045638737930774
+     },
+     "goal_area": {
+      "mean": 0.03599376831256414,
+      "median": 0.0,
+      "p90": 0.11704464265635137
+     },
+     "far": {
+      "mean": 0.028290469926467828,
+      "median": 0.0,
+      "p90": 0.0
+     },
+     "death_frame": {
+      "mean": 0.010531063445011054,
+      "median": 0.008134182106454982,
+      "p90": 0.019921964659526566
+     },
+     "stall": {
+      "mean": 0.006351059359968631,
+      "median": 0.0,
+      "p90": 0.0026702901920195787
+     },
+     "start_region": {
+      "mean": 0.1138996588925937,
+      "median": 0.08517979089447325,
+      "p90": 0.2597675201210843
+     },
+     "slow_rows_share": {
+      "mean": 0.006937893971721911,
+      "median": 0.0,
+      "p90": 0.0028469929368496252
+     }
+    },
+    "sim": {
+     "success": 0.24005927389478884,
+     "death": 0.7372190664361571,
+     "timeout": 0.022721659669054088,
+     "no_route_timeout": 0.003457643862682144,
+     "never_left_start": 0.003457643862682144,
+     "length": {
+      "mean": 133.91108915781675,
+      "median": 117.0,
+      "p90": 224.0
+     },
+     "reach0.5": {
+      "mean": 0.0009377712223165383,
+      "median": 0.0,
+      "p90": 0.004192581578419783
+     },
+     "near2.0": {
+      "mean": 0.029126515598186534,
+      "median": 0.0,
+      "p90": 0.07494404187170091
+     },
+     "goal_area": {
+      "mean": 0.03594368159663115,
+      "median": 0.0,
+      "p90": 0.11129107299115004
+     },
+     "far": {
+      "mean": 0.029730535018996664,
+      "median": 0.0,
+      "p90": 0.0
+     },
+     "death_frame": {
+      "mean": 0.010640184966725875,
+      "median": 0.008134182106454982,
+      "p90": 0.019921964659526566
+     },
+     "stall": {
+      "mean": 0.014947571961599529,
+      "median": 0.0,
+      "p90": 0.003869239448837384
+     },
+     "start_region": {
+      "mean": 0.11595914734947323,
+      "median": 0.08879507303294003,
+      "p90": 0.25986005737789075
+     },
+     "slow_rows_share": {
+      "mean": 0.01668149374991443,
+      "median": 0.0,
+      "p90": 0.004329004329004329
+     }
+    }
+   },
+   "paired_draw1_minus_draw2": {
+    "length": {
+     "mean": 0.42553716967152383,
+     "se": 1.8627423154869134,
+     "share_draw1_higher_by_0.1": 0.45863176092862434,
+     "share_draw2_higher_by_0.1": 0.4687577179550506,
+     "abs_mean": 77.15756977031366
+    },
+    "reach0.5": {
+     "mean": -3.473026944587971e-05,
+     "se": 3.847372696517404e-05,
+     "share_draw1_higher_by_0.1": 0.0,
+     "share_draw2_higher_by_0.1": 0.0,
+     "abs_mean": 0.0014593138143758292
+    },
+    "near2.0": {
+     "mean": 0.0006836596761970297,
+     "se": 0.001525056360033547,
+     "share_draw1_higher_by_0.1": 0.05408742899481354,
+     "share_draw2_higher_by_0.1": 0.05309953074833292,
+     "abs_mean": 0.04308207985621672
+    },
+    "goal_area": {
+     "mean": 0.0006982240128690884,
+     "se": 0.0017483055828779815,
+     "share_draw1_higher_by_0.1": 0.12126450975549519,
+     "share_draw2_higher_by_0.1": 0.12743887379599902,
+     "abs_mean": 0.05469941368695399
+    },
+    "far": {
+     "mean": -0.0005205244765197375,
+     "se": 0.0005520834806007567,
+     "share_draw1_higher_by_0.1": 0.003457643862682144,
+     "share_draw2_higher_by_0.1": 0.004939491232403063,
+     "abs_mean": 0.0032377779953616614
+    },
+    "death_frame": {
+     "mean": 0.0001736361677061686,
+     "se": 0.0001783140658193777,
+     "share_draw1_higher_by_0.1": 0.0002469745616201531,
+     "share_draw2_higher_by_0.1": 0.0,
+     "abs_mean": 0.008150803567676926
+    },
+    "stall": {
+     "mean": 0.0019248052719939561,
+     "se": 0.0008992897325392495,
+     "share_draw1_higher_by_0.1": 0.0079031859718449,
+     "share_draw2_higher_by_0.1": 0.0041985675475426035,
+     "abs_mean": 0.008075528327695388
+    },
+    "start_region": {
+     "mean": 0.0010978920519885025,
+     "se": 0.0013281377944725419,
+     "share_draw1_higher_by_0.1": 0.1301555939738207,
+     "share_draw2_higher_by_0.1": 0.12447517905655718,
+     "abs_mean": 0.056239314350659576
+    },
+    "slow_rows_share": {
+     "mean": 0.0022645698269711852,
+     "se": 0.001047031269450078,
+     "share_draw1_higher_by_0.1": 0.008397135095085207,
+     "share_draw2_higher_by_0.1": 0.004692516670782909,
+     "abs_mean": 0.009365649973937363
+    }
+   },
+   "outcome_agreement_draw1_draw2": 0.6381822672264756,
+   "same_outcome_as_sim": {
+    "draw1": 0.6297851321313904,
+    "draw2": 0.6263274882687083
+   }
+  }
+ },
+ "per_anchor_reset64": {
+  "1175": {
+   "draw1": {
+    "outcome": "success",
+    "length": 228,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.1071544142715081,
+    "near2.0": 0.05930321639918033,
+    "goal_area": 0.09129739358699,
+    "reach0.5": 0.003925919133203184,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 68,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.33577770050171174,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014437932844756122
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 137,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.17112944070487732,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006867467066283735
+   }
+  },
+  "1493": {
+   "draw1": {
+    "outcome": "death",
+    "length": 65,
+    "no_route_timeout": false,
+    "stall": 0.016122521834444258,
+    "start_region": 0.30358652404055,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015137659493938195
+   },
+   "draw2": {
+    "outcome": "success",
+    "length": 245,
+    "no_route_timeout": false,
+    "stall": 0.019269207941387638,
+    "start_region": 0.08693106597706585,
+    "near2.0": 0.15898853391515236,
+    "goal_area": 0.17412885777652778,
+    "reach0.5": 0.003620254717449907,
+    "death_frame": 0.0
+   },
+   "sim": {
+    "outcome": "timeout",
+    "length": 801,
+    "no_route_timeout": false,
+    "stall": 0.4779093408031993,
+    "start_region": 0.03596460842436247,
+    "near2.0": 0.6633639833814182,
+    "goal_area": 0.6707799033735298,
+    "reach0.5": 0.0,
+    "death_frame": 0.0
+   }
+  },
+  "2764": {
+   "draw1": {
+    "outcome": "death",
+    "length": 65,
+    "no_route_timeout": false,
+    "stall": 0.06439341668073519,
+    "start_region": 0.33520857572604695,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015137659493938195
+   },
+   "draw2": {
+    "outcome": "success",
+    "length": 232,
+    "no_route_timeout": false,
+    "stall": 0.019355270781278636,
+    "start_region": 0.1007564606107543,
+    "near2.0": 0.0934698596455437,
+    "goal_area": 0.1330829228529999,
+    "reach0.5": 0.0038499319053146336,
+    "death_frame": 0.0
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 137,
+    "no_route_timeout": false,
+    "stall": 0.01571333859883569,
+    "start_region": 0.1634322733790389,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006867467066283735
+   }
+  },
+  "4152": {
+   "draw1": {
+    "outcome": "death",
+    "length": 66,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.28346504758860525,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014897238027106428
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 65,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.28775175396006575,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015137659493938195
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 142,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.14311533993592762,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006607010883397544
+   }
+  },
+  "5440": {
+   "draw1": {
+    "outcome": "death",
+    "length": 71,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.29289586592663575,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.013798204216613544
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 142,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.15057262846850583,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006607010883397544
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 136,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.14903833223643073,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006921877171201515
+   }
+  },
+  "5548": {
+   "draw1": {
+    "outcome": "death",
+    "length": 75,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.250100061023416,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.013025950769310856
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 64,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.2921745934687759,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015385716036678095
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 136,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.1412646415839844,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006921877171201515
+   }
+  },
+  "6460": {
+   "draw1": {
+    "outcome": "success",
+    "length": 232,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.1007564606107543,
+    "near2.0": 0.10136079774508135,
+    "goal_area": 0.1330829228529999,
+    "reach0.5": 0.0038499319053146336,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 68,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.32067488047027065,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014437932844756122
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 70,
+    "no_route_timeout": false,
+    "stall": 0.014991258458065353,
+    "start_region": 0.31168811229849136,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.01400526372178714
+   }
+  },
+  "7203": {
+   "draw1": {
+    "outcome": "death",
+    "length": 66,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.3302148937847287,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014897238027106428
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 137,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.1634322733790389,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006867467066283735
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 66,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.3302148937847287,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014897238027106428
+   }
+  },
+  "7584": {
+   "draw1": {
+    "outcome": "success",
+    "length": 232,
+    "no_route_timeout": false,
+    "stall": 0.0038576433343399793,
+    "start_region": 0.086491964594747,
+    "near2.0": 0.07381145662277543,
+    "goal_area": 0.12115736167973684,
+    "reach0.5": 0.0038499319053146336,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "success",
+    "length": 226,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.08854238264519548,
+    "near2.0": 0.05587164468081095,
+    "goal_area": 0.10845789353314583,
+    "reach0.5": 0.003964930338281528,
+    "death_frame": 0.0
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 133,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.15220206911064335,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.007090061432573466
+   }
+  },
+  "8237": {
+   "draw1": {
+    "outcome": "success",
+    "length": 224,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.09906834765945255,
+    "near2.0": 0.07270020750534308,
+    "goal_area": 0.10132798290497294,
+    "reach0.5": 0.004004644274816779,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "success",
+    "length": 226,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.0982823562727663,
+    "near2.0": 0.076016223370703,
+    "goal_area": 0.10032311635349453,
+    "reach0.5": 0.003964930338281528,
+    "death_frame": 0.0
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 62,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.33461661260235626,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015906236332166694
+   }
+  },
+  "8842": {
+   "draw1": {
+    "outcome": "success",
+    "length": 223,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.09454047085415399,
+    "near2.0": 0.05671488259242937,
+    "goal_area": 0.10596394409033368,
+    "reach0.5": 0.004024770702696527,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 62,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.31804432683335504,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015906236332166694
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 65,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.30358652404055,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015137659493938195
+   }
+  },
+  "10454": {
+   "draw1": {
+    "outcome": "death",
+    "length": 142,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.14311533993592762,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006607010883397544
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 140,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.14503276524502456,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006708941218367835
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 136,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.14903833223643073,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006921877171201515
+   }
+  },
+  "11216": {
+   "draw1": {
+    "outcome": "death",
+    "length": 66,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.299063923330096,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014897238027106428
+   },
+   "draw2": {
+    "outcome": "success",
+    "length": 235,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.0902117102438201,
+    "near2.0": 0.11160111540286849,
+    "goal_area": 0.135098047524973,
+    "reach0.5": 0.003794653776147069,
+    "death_frame": 0.0
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 64,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.2921745934687759,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015385716036678095
+   }
+  },
+  "12915": {
+   "draw1": {
+    "outcome": "death",
+    "length": 137,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.15572740118100245,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006867467066283735
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 64,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.324314826767394,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015385716036678095
+   },
+   "sim": {
+    "outcome": "success",
+    "length": 224,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.11375836169582274,
+    "near2.0": 0.06049240393737547,
+    "goal_area": 0.10132798290497294,
+    "reach0.5": 0.004004644274816779,
+    "death_frame": 0.0
+   }
+  },
+  "13782": {
+   "draw1": {
+    "outcome": "success",
+    "length": 220,
+    "no_route_timeout": false,
+    "stall": 0.005082171097654331,
+    "start_region": 0.10068357857506204,
+    "near2.0": 0.07418180923023557,
+    "goal_area": 0.09084886765960626,
+    "reach0.5": 0.004086257355009339,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 139,
+    "no_route_timeout": false,
+    "stall": 0.0077542551189346285,
+    "start_region": 0.15362059630748653,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.0067610161350696975
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 139,
+    "no_route_timeout": false,
+    "stall": 0.0077542551189346285,
+    "start_region": 0.15362059630748653,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.0067610161350696975
+   }
+  },
+  "17104": {
+   "draw1": {
+    "outcome": "death",
+    "length": 67,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.2946784186801116,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014664104587245236
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 135,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.15007714781984394,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006977100610616497
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 64,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.3082527491959485,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015385716036678095
+   }
+  },
+  "17737": {
+   "draw1": {
+    "outcome": "success",
+    "length": 213,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.08309159867631903,
+    "near2.0": 0.0639950328192345,
+    "goal_area": 0.08986317311024532,
+    "reach0.5": 0.004236521035956341,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 62,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.26822786983994706,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015906236332166694
+   },
+   "sim": {
+    "outcome": "success",
+    "length": 219,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.0860608439596158,
+    "near2.0": 0.06204051592888698,
+    "goal_area": 0.0871185993218339,
+    "reach0.5": 0.00410713049490484,
+    "death_frame": 0.0
+   }
+  },
+  "18108": {
+   "draw1": {
+    "outcome": "success",
+    "length": 223,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.09946667631529366,
+    "near2.0": 0.06897177063693147,
+    "goal_area": 0.10183723421424952,
+    "reach0.5": 0.004024770702696527,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 66,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.31464720019584524,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014897238027106428
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 71,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.27838984976400283,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.013798204216613544
+   }
+  },
+  "19024": {
+   "draw1": {
+    "outcome": "success",
+    "length": 217,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.09183252031497562,
+    "near2.0": 0.05847192082119501,
+    "goal_area": 0.10074187017561521,
+    "reach0.5": 0.004149458891464773,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 62,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.30145545218971026,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015906236332166694
+   },
+   "sim": {
+    "outcome": "success",
+    "length": 228,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.08784681421875082,
+    "near2.0": 0.07926955762255146,
+    "goal_area": 0.11950313793866313,
+    "reach0.5": 0.003925919133203184,
+    "death_frame": 0.0
+   }
+  },
+  "19565": {
+   "draw1": {
+    "outcome": "death",
+    "length": 62,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.31804432683335504,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015906236332166694
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 133,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.15220206911064335,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.007090061432573466
+   },
+   "sim": {
+    "outcome": "success",
+    "length": 229,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.10193496756219599,
+    "near2.0": 0.051092874323453885,
+    "goal_area": 0.10285462880524006,
+    "reach0.5": 0.003906671275836548,
+    "death_frame": 0.0
+   }
+  },
+  "21429": {
+   "draw1": {
+    "outcome": "death",
+    "length": 137,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.1325664781892478,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006867467066283735
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 142,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.12817836113868808,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006607010883397544
+   },
+   "sim": {
+    "outcome": "success",
+    "length": 224,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.0941618698988094,
+    "near2.0": 0.06049240393737547,
+    "goal_area": 0.10132798290497294,
+    "reach0.5": 0.004004644274816779,
+    "death_frame": 0.0
+   }
+  },
+  "21803": {
+   "draw1": {
+    "outcome": "success",
+    "length": 225,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.10355563018425419,
+    "near2.0": 0.08859092710973769,
+    "goal_area": 0.1049089197535515,
+    "reach0.5": 0.003984698288652624,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 137,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.1634322733790389,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006867467066283735
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 64,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.3082527491959485,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015385716036678095
+   }
+  },
+  "22678": {
+   "draw1": {
+    "outcome": "death",
+    "length": 70,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.32636768264425825,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.01400526372178714
+   },
+   "draw2": {
+    "outcome": "success",
+    "length": 239,
+    "no_route_timeout": false,
+    "stall": 0.0074836124856102115,
+    "start_region": 0.1027439394079586,
+    "near2.0": 0.09039125357044736,
+    "goal_area": 0.13640735276336538,
+    "reach0.5": 0.0037231271385443007,
+    "death_frame": 0.0
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 139,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.1688142647182182,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.0067610161350696975
+   }
+  },
+  "23322": {
+   "draw1": {
+    "outcome": "success",
+    "length": 217,
+    "no_route_timeout": false,
+    "stall": 0.0051453094325733095,
+    "start_region": 0.09688599722723396,
+    "near2.0": 0.06267991016393226,
+    "goal_area": 0.07955403173561107,
+    "reach0.5": 0.004149458891464773,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 66,
+    "no_route_timeout": false,
+    "stall": 0.01588234078907932,
+    "start_region": 0.299063923330096,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014897238027106428
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 62,
+    "no_route_timeout": false,
+    "stall": 0.016890330095834526,
+    "start_region": 0.33461661260235626,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015906236332166694
+   }
+  },
+  "25310": {
+   "draw1": {
+    "outcome": "success",
+    "length": 221,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.09530804085224862,
+    "near2.0": 0.06141279266927691,
+    "goal_area": 0.10286968281474324,
+    "reach0.5": 0.004065574726012449,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 65,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.30358652404055,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015137659493938195
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 148,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.14485051888556183,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006317888762374238
+   }
+  },
+  "25719": {
+   "draw1": {
+    "outcome": "death",
+    "length": 70,
+    "no_route_timeout": false,
+    "stall": 0.014946329641475273,
+    "start_region": 0.34103257341967935,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.01400526372178714
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 78,
+    "no_route_timeout": false,
+    "stall": 0.013446517274337499,
+    "start_region": 0.30681113688770884,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.012499437077008317
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 69,
+    "no_route_timeout": false,
+    "stall": 0.029377045921768624,
+    "start_region": 0.33100347358463866,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014218415665898832
+   }
+  },
+  "27702": {
+   "draw1": {
+    "outcome": "death",
+    "length": 68,
+    "no_route_timeout": false,
+    "stall": 0.015423494911911367,
+    "start_region": 0.3055569425008602,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014437932844756122
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 65,
+    "no_route_timeout": false,
+    "stall": 0.016122521834444258,
+    "start_region": 0.31940545935095366,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015137659493938195
+   },
+   "sim": {
+    "outcome": "success",
+    "length": 219,
+    "no_route_timeout": false,
+    "stall": 0.005103023364409935,
+    "start_region": 0.10109668565036793,
+    "near2.0": 0.06204051592888698,
+    "goal_area": 0.07038315556231149,
+    "reach0.5": 0.00410713049490484,
+    "death_frame": 0.0
+   }
+  },
+  "27848": {
+   "draw1": {
+    "outcome": "success",
+    "length": 260,
+    "no_route_timeout": false,
+    "stall": 0.020777227854591795,
+    "start_region": 0.07818489759316147,
+    "near2.0": 0.18053698374389715,
+    "goal_area": 0.22355021723094265,
+    "reach0.5": 0.003384027068237925,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "success",
+    "length": 260,
+    "no_route_timeout": false,
+    "stall": 0.020777227854591795,
+    "start_region": 0.07818489759316147,
+    "near2.0": 0.18053698374389715,
+    "goal_area": 0.22355021723094265,
+    "reach0.5": 0.003384027068237925,
+    "death_frame": 0.0
+   },
+   "sim": {
+    "outcome": "success",
+    "length": 229,
+    "no_route_timeout": false,
+    "stall": 0.003914496354048291,
+    "start_region": 0.09231888657193643,
+    "near2.0": 0.07092160824233879,
+    "goal_area": 0.11891724218384352,
+    "reach0.5": 0.003906671275836548,
+    "death_frame": 0.0
+   }
+  },
+  "27896": {
+   "draw1": {
+    "outcome": "success",
+    "length": 226,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.09341480567049354,
+    "near2.0": 0.059892502591345535,
+    "goal_area": 0.10438847023166944,
+    "reach0.5": 0.003964930338281528,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 70,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.2822848741041529,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.01400526372178714
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 62,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.30145545218971026,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015906236332166694
+   }
+  },
+  "28947": {
+   "draw1": {
+    "outcome": "death",
+    "length": 69,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.2862945041366855,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014218415665898832
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 70,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.2822848741041529,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.01400526372178714
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 67,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.2946784186801116,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014664104587245236
+   }
+  },
+  "30170": {
+   "draw1": {
+    "outcome": "death",
+    "length": 63,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.2803944122975067,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015641777094517185
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 65,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.2719011332588804,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015137659493938195
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 68,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.2752756522006985,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014437932844756122
+   }
+  },
+  "31548": {
+   "draw1": {
+    "outcome": "death",
+    "length": 64,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.27608034349162613,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015385716036678095
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 133,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.13631670643589808,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.007090061432573466
+   },
+   "sim": {
+    "outcome": "success",
+    "length": 220,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.09070563912345882,
+    "near2.0": 0.06587325976937332,
+    "goal_area": 0.10339300746822265,
+    "reach0.5": 0.004086257355009339,
+    "death_frame": 0.0
+   }
+  },
+  "31652": {
+   "draw1": {
+    "outcome": "death",
+    "length": 66,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.26785055735688285,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014897238027106428
+   },
+   "draw2": {
+    "outcome": "success",
+    "length": 218,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.08641576478239409,
+    "near2.0": 0.06235873400549202,
+    "goal_area": 0.09178129772859055,
+    "reach0.5": 0.00412819677952363,
+    "death_frame": 0.0
+   },
+   "sim": {
+    "outcome": "success",
+    "length": 231,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.09160422463062866,
+    "near2.0": 0.10979963947880068,
+    "goal_area": 0.13373099421334333,
+    "reach0.5": 0.0038686798449722457,
+    "death_frame": 0.0
+   }
+  },
+  "33006": {
+   "draw1": {
+    "outcome": "death",
+    "length": 63,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.34567936683919454,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015641777094517185
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 65,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.31940545935095366,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015137659493938195
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 66,
+    "no_route_timeout": false,
+    "stall": 0.031717050438132194,
+    "start_region": 0.3302148937847287,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014897238027106428
+   }
+  },
+  "33168": {
+   "draw1": {
+    "outcome": "success",
+    "length": 218,
+    "no_route_timeout": false,
+    "stall": 0.005124068582744107,
+    "start_region": 0.09648603276549955,
+    "near2.0": 0.07074416468760801,
+    "goal_area": 0.09600136767901367,
+    "reach0.5": 0.00412819677952363,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 68,
+    "no_route_timeout": false,
+    "stall": 0.015423494911911367,
+    "start_region": 0.29042387146040916,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014437932844756122
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 139,
+    "no_route_timeout": false,
+    "stall": 0.0077542551189346285,
+    "start_region": 0.1612212308301137,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.0067610161350696975
+   }
+  },
+  "33856": {
+   "draw1": {
+    "outcome": "death",
+    "length": 136,
+    "no_route_timeout": false,
+    "stall": 0.007914955294030314,
+    "start_region": 0.17231279313684394,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006921877171201515
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 70,
+    "no_route_timeout": false,
+    "stall": 0.014991258458065353,
+    "start_region": 0.32636768264425825,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.01400526372178714
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 67,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.3560053997673327,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014664104587245236
+   }
+  },
+  "34115": {
+   "draw1": {
+    "outcome": "success",
+    "length": 221,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.08536072013838364,
+    "near2.0": 0.08208939080960774,
+    "goal_area": 0.09870530398064206,
+    "reach0.5": 0.004065574726012449,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "success",
+    "length": 222,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.08501542919470878,
+    "near2.0": 0.05700107048518717,
+    "goal_area": 0.07755286480512967,
+    "reach0.5": 0.00404508002176037,
+    "death_frame": 0.0
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 138,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.13933856520567045,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.0068138524855857144
+   }
+  },
+  "34340": {
+   "draw1": {
+    "outcome": "success",
+    "length": 245,
+    "no_route_timeout": false,
+    "stall": 0.007316981997165455,
+    "start_region": 0.09146076937382125,
+    "near2.0": 0.1665511218988303,
+    "goal_area": 0.17792341565491515,
+    "reach0.5": 0.003620254717449907,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 137,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.15572740118100245,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006867467066283735
+   },
+   "sim": {
+    "outcome": "success",
+    "length": 219,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.1060986123291275,
+    "near2.0": 0.053714553232089665,
+    "goal_area": 0.07038315556231149,
+    "reach0.5": 0.00410713049490484,
+    "death_frame": 0.0
+   }
+  },
+  "35530": {
+   "draw1": {
+    "outcome": "death",
+    "length": 139,
+    "no_route_timeout": false,
+    "stall": 0.007738754362951878,
+    "start_region": 0.1612212308301137,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.0067610161350696975
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 68,
+    "no_route_timeout": false,
+    "stall": 0.015392663345582456,
+    "start_region": 0.32067488047027065,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014437932844756122
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 71,
+    "no_route_timeout": false,
+    "stall": 0.013798204216613544,
+    "start_region": 0.3363269363271174,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.013798204216613544
+   }
+  },
+  "36327": {
+   "draw1": {
+    "outcome": "death",
+    "length": 140,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.14503276524502456,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006708941218367835
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 66,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.299063923330096,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014897238027106428
+   },
+   "sim": {
+    "outcome": "success",
+    "length": 226,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.0982823562727663,
+    "near2.0": 0.059892502591345535,
+    "goal_area": 0.10438847023166944,
+    "reach0.5": 0.003964930338281528,
+    "death_frame": 0.0
+   }
+  },
+  "36577": {
+   "draw1": {
+    "outcome": "death",
+    "length": 66,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.31464720019584524,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014897238027106428
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 75,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.2776119477136948,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.013025950769310856
+   },
+   "sim": {
+    "outcome": "success",
+    "length": 224,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.0941618698988094,
+    "near2.0": 0.06049240393737547,
+    "goal_area": 0.09722601529152601,
+    "reach0.5": 0.004004644274816779,
+    "death_frame": 0.0
+   }
+  },
+  "37678": {
+   "draw1": {
+    "outcome": "death",
+    "length": 134,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.1432487344157839,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.007033155730453314
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 63,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.2967401532026319,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015641777094517185
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 69,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.3012124068827817,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014218415665898832
+   }
+  },
+  "37794": {
+   "draw1": {
+    "outcome": "success",
+    "length": 220,
+    "no_route_timeout": false,
+    "stall": 0.010118683899047427,
+    "start_region": 0.14039627569203772,
+    "near2.0": 0.06587325976937332,
+    "goal_area": 0.07418180923023557,
+    "reach0.5": 0.004086257355009339,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "success",
+    "length": 225,
+    "no_route_timeout": false,
+    "stall": 0.009916680380132006,
+    "start_region": 0.1375934861182789,
+    "near2.0": 0.0601911085989708,
+    "goal_area": 0.06828505689484116,
+    "reach0.5": 0.003984698288652624,
+    "death_frame": 0.0
+   },
+   "sim": {
+    "outcome": "timeout",
+    "length": 801,
+    "no_route_timeout": false,
+    "stall": 0.4087127835282425,
+    "start_region": 0.03061568768319437,
+    "near2.0": 0.4446226012221045,
+    "goal_area": 0.4433626051899859,
+    "reach0.5": 0.0,
+    "death_frame": 0.0
+   }
+  },
+  "38936": {
+   "draw1": {
+    "outcome": "success",
+    "length": 222,
+    "no_route_timeout": false,
+    "stall": 0.008142944860397934,
+    "start_region": 0.08501542919470878,
+    "near2.0": 0.07343427699858593,
+    "goal_area": 0.11896617424230076,
+    "reach0.5": 0.00404508002176037,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 65,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.2719011332588804,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015137659493938195
+   },
+   "sim": {
+    "outcome": "success",
+    "length": 223,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.08960933425641657,
+    "near2.0": 0.05671488259242937,
+    "goal_area": 0.09771465104804143,
+    "reach0.5": 0.004024770702696527,
+    "death_frame": 0.0
+   }
+  },
+  "39489": {
+   "draw1": {
+    "outcome": "death",
+    "length": 134,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.15113160825609098,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.007033155730453314
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 64,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.3082527491959485,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015385716036678095
+   },
+   "sim": {
+    "outcome": "success",
+    "length": 223,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.09946667631529366,
+    "near2.0": 0.05671488259242937,
+    "goal_area": 0.07716349157464485,
+    "reach0.5": 0.004024770702696527,
+    "death_frame": 0.0
+   }
+  },
+  "40029": {
+   "draw1": {
+    "outcome": "success",
+    "length": 255,
+    "no_route_timeout": false,
+    "stall": 0.017483005812922444,
+    "start_region": 0.07953330876254563,
+    "near2.0": 0.19186408547065392,
+    "goal_area": 0.20283018322787102,
+    "reach0.5": 0.0034596531930861335,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 67,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.2793082864839376,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014664104587245236
+   },
+   "sim": {
+    "outcome": "timeout",
+    "length": 801,
+    "no_route_timeout": false,
+    "stall": 0.5593965967272053,
+    "start_region": 0.0324004454264077,
+    "near2.0": 0.6707799033735298,
+    "goal_area": 0.6752472951802024,
+    "reach0.5": 0.0,
+    "death_frame": 0.0
+   }
+  },
+  "40441": {
+   "draw1": {
+    "outcome": "death",
+    "length": 64,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.324314826767394,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015385716036678095
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 70,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.29699384768811415,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.01400526372178714
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 139,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.1688142647182182,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.0067610161350696975
+   }
+  },
+  "40715": {
+   "draw1": {
+    "outcome": "success",
+    "length": 219,
+    "no_route_timeout": false,
+    "stall": 0.005103023364409935,
+    "start_region": 0.1060986123291275,
+    "near2.0": 0.05787545204854815,
+    "goal_area": 0.0871185993218339,
+    "reach0.5": 0.00410713049490484,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 139,
+    "no_route_timeout": false,
+    "stall": 0.0077542551189346285,
+    "start_region": 0.1612212308301137,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.0067610161350696975
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 135,
+    "no_route_timeout": false,
+    "stall": 0.00797012351000588,
+    "start_region": 0.15789719418202997,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006977100610616497
+   }
+  },
+  "42275": {
+   "draw1": {
+    "outcome": "death",
+    "length": 72,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.28891336677657886,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.013596979723347976
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 65,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.31940545935095366,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015137659493938195
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 142,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.17289978015674184,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006607010883397544
+   }
+  },
+  "43410": {
+   "draw1": {
+    "outcome": "death",
+    "length": 143,
+    "no_route_timeout": false,
+    "stall": 0.0075279380232272635,
+    "start_region": 0.1791448558488138,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.0065571242045220635
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 71,
+    "no_route_timeout": false,
+    "stall": 0.014740097132793372,
+    "start_region": 0.3507750154031872,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.013798204216613544
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 68,
+    "no_route_timeout": false,
+    "stall": 0.015377270682236873,
+    "start_region": 0.3809956040720237,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014437932844756122
+   }
+  },
+  "43554": {
+   "draw1": {
+    "outcome": "success",
+    "length": 221,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.09530804085224862,
+    "near2.0": 0.06967102183534736,
+    "goal_area": 0.08208939080960774,
+    "reach0.5": 0.004065574726012449,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 136,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.14903833223643073,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006921877171201515
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 65,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.28775175396006575,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015137659493938195
+   }
+  },
+  "43856": {
+   "draw1": {
+    "outcome": "death",
+    "length": 63,
+    "no_route_timeout": false,
+    "stall": 0.016626135317422668,
+    "start_region": 0.31306954836685197,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015641777094517185
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 65,
+    "no_route_timeout": false,
+    "stall": 0.016122521834444258,
+    "start_region": 0.30358652404055,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015137659493938195
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 141,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.1590734597926613,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.00665761141900827
+   }
+  },
+  "43911": {
+   "draw1": {
+    "outcome": "success",
+    "length": 221,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.0903368685695317,
+    "near2.0": 0.057289870725321206,
+    "goal_area": 0.09870530398064206,
+    "reach0.5": 0.004065574726012449,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 134,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.1432487344157839,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.007033155730453314
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 67,
+    "no_route_timeout": false,
+    "stall": 0.015586936554788143,
+    "start_region": 0.3100331807440895,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014664104587245236
+   }
+  },
+  "44690": {
+   "draw1": {
+    "outcome": "success",
+    "length": 227,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.08819305301299013,
+    "near2.0": 0.05959655021492014,
+    "goal_area": 0.09982738043646658,
+    "reach0.5": 0.0039453380603635055,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 67,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.2793082864839376,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014664104587245236
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 63,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.31306954836685197,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015641777094517185
+   }
+  },
+  "44963": {
+   "draw1": {
+    "outcome": "success",
+    "length": 233,
+    "no_route_timeout": false,
+    "stall": 0.014468067148141165,
+    "start_region": 0.11925066186451427,
+    "near2.0": 0.05787464058909858,
+    "goal_area": 0.09694309054595764,
+    "reach0.5": 0.003831346301465365,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 71,
+    "no_route_timeout": false,
+    "stall": 0.044308879603559614,
+    "start_region": 0.3652086464001809,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.013798204216613544
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 86,
+    "no_route_timeout": false,
+    "stall": 0.15761814694547757,
+    "start_region": 0.5165078247220102,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.011277185757564305
+   }
+  },
+  "45727": {
+   "draw1": {
+    "outcome": "success",
+    "length": 212,
+    "no_route_timeout": false,
+    "stall": 0.0052545455074972875,
+    "start_region": 0.09378214534745252,
+    "near2.0": 0.06001275709112045,
+    "goal_area": 0.08599095456219367,
+    "reach0.5": 0.0042588043118090965,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 61,
+    "no_route_timeout": false,
+    "stall": 0.01716333414499273,
+    "start_region": 0.30632797739328244,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.01617951365865138
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 61,
+    "no_route_timeout": false,
+    "stall": 0.01716333414499273,
+    "start_region": 0.30632797739328244,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.01617951365865138
+   }
+  },
+  "46971": {
+   "draw1": {
+    "outcome": "success",
+    "length": 225,
+    "no_route_timeout": false,
+    "stall": 0.004965786386752939,
+    "start_region": 0.11817247746807077,
+    "near2.0": 0.0601911085989708,
+    "goal_area": 0.08452162259226398,
+    "reach0.5": 0.003984698288652624,
+    "death_frame": 0.0
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 145,
+    "no_route_timeout": false,
+    "stall": 0.0074306369268354626,
+    "start_region": 0.17682934915451612,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006459432928784298
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 142,
+    "no_route_timeout": false,
+    "stall": 0.007585210665172992,
+    "start_region": 0.1654648411253531,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006607010883397544
+   }
+  },
+  "47716": {
+   "draw1": {
+    "outcome": "death",
+    "length": 138,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.1470062652735649,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.0068138524855857144
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 136,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.14903833223643073,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006921877171201515
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 64,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.3082527491959485,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015385716036678095
+   }
+  },
+  "48372": {
+   "draw1": {
+    "outcome": "death",
+    "length": 69,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.3161153917261319,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014218415665898832
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 67,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.32537258804600333,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.014664104587245236
+   },
+   "sim": {
+    "outcome": "success",
+    "length": 229,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.10193496756219599,
+    "near2.0": 0.08685616956870514,
+    "goal_area": 0.12294294973814238,
+    "reach0.5": 0.003906671275836548,
+    "death_frame": 0.0
+   }
+  },
+  "49499": {
+   "draw1": {
+    "outcome": "death",
+    "length": 70,
+    "no_route_timeout": false,
+    "stall": 0.014991258458065353,
+    "start_region": 0.29699384768811415,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.01400526372178714
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 141,
+    "no_route_timeout": false,
+    "stall": 0.007650953807589262,
+    "start_region": 0.15157408006513717,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.00665761141900827
+   },
+   "sim": {
+    "outcome": "success",
+    "length": 239,
+    "no_route_timeout": false,
+    "stall": 0.01126294928865462,
+    "start_region": 0.08886621299558553,
+    "near2.0": 0.12869958584639132,
+    "goal_area": 0.15574438197846474,
+    "reach0.5": 0.0037231271385443007,
+    "death_frame": 0.0
+   }
+  },
+  "49908": {
+   "draw1": {
+    "outcome": "death",
+    "length": 65,
+    "no_route_timeout": false,
+    "stall": 0.016122521834444258,
+    "start_region": 0.33520857572604695,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015137659493938195
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 65,
+    "no_route_timeout": false,
+    "stall": 0.016122521834444258,
+    "start_region": 0.33520857572604695,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.015137659493938195
+   },
+   "sim": {
+    "outcome": "success",
+    "length": 264,
+    "no_route_timeout": false,
+    "stall": 0.020303584157192286,
+    "start_region": 0.09832657168432131,
+    "near2.0": 0.16344250914430755,
+    "goal_area": 0.20907572474556935,
+    "reach0.5": 0.0033256078891220585,
+    "death_frame": 0.0
+   }
+  },
+  "52065": {
+   "draw1": {
+    "outcome": "death",
+    "length": 137,
+    "no_route_timeout": false,
+    "stall": 0.007860599599217453,
+    "start_region": 0.14801481639818317,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006867467066283735
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 71,
+    "no_route_timeout": false,
+    "stall": 0.01478440601239693,
+    "start_region": 0.27838984976400283,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.013798204216613544
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 61,
+    "no_route_timeout": false,
+    "stall": 0.01716333414499273,
+    "start_region": 0.3231849835608819,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.01617951365865138
+   }
+  },
+  "52568": {
+   "draw1": {
+    "outcome": "death",
+    "length": 59,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.3165772360144161,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.01675434701043787
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 134,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.1432487344157839,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.007033155730453314
+   },
+   "sim": {
+    "outcome": "success",
+    "length": 220,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.0857091772030075,
+    "near2.0": 0.06587325976937332,
+    "goal_area": 0.09920744336310011,
+    "reach0.5": 0.004086257355009339,
+    "death_frame": 0.0
+   }
+  },
+  "53029": {
+   "draw1": {
+    "outcome": "death",
+    "length": 140,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.17521625031681173,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.006708941218367835
+   },
+   "draw2": {
+    "outcome": "death",
+    "length": 138,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.17760046518313366,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.0068138524855857144
+   },
+   "sim": {
+    "outcome": "death",
+    "length": 74,
+    "no_route_timeout": false,
+    "stall": 0.0,
+    "start_region": 0.3229838660614772,
+    "near2.0": 0.0,
+    "goal_area": 0.0,
+    "reach0.5": 0.0,
+    "death_frame": 0.013211076592371756
+   }
+  }
+ }
+}

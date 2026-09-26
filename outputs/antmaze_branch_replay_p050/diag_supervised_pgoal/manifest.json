@@ -1,0 +1,215 @@
+{
+ "diagnostic": "direct supervised prediction of P_goal (S: s,a,g; N: s,g) on the R-arm replay, read with the A/B/C diagnostic",
+ "sealed_at": "2026-09-18 07:11:19",
+ "git": {
+  "error": "Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128."
+ },
+ "provenance": {
+  "replay": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_r1_coverage/replay_armR.npz",
+  "replay_sha256": "193d3dde5ee2f0cb40a406b7cf06633166c3ac1caf056f95f8b71eeed7cebed2",
+  "abc_manifest_sha256": "6617a414213fccb903df6bf1e6b6e64c61f6984b782f28ba6664017c27c9100c",
+  "abc_outcomes_sha256": "2e1c81bffbc78a5e715ff02418b43868b90d480cc1e11631b135228a19a6e39f",
+  "critics": {
+   "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/critics_armR/seed_0/final.pkl": "661bafd7a3e10246791db47124fd50c2b52b8bc817418b4436c12a3b3f28b524",
+   "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/critics_armR/seed_1/final.pkl": "58e67bd5154e6b0705d23418cf1bb411cd2bfcb93f1ca82a9a2c77ea81a36900",
+   "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/critics_armR/seed_2/final.pkl": "c850ff3202bb8aa0c7aad28c2fe6c2b2b58682294325660131a18de0904b66ad"
+  },
+  "continuation_ckpt": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/joint_purebc/seed_0/final.pkl",
+  "continuation_sha256": "820cb7e229ed0a163c8d6861028717f243493b9eb889a5e0429a20823bd764f2",
+  "scripts": {
+   "scripts/diag_v6_supervised_pgoal.py": "c0e8275fc6afc3c546df01914d0ea0861c8b3d8278c52ac1a6bae520e6744b4e",
+   "scripts/diag_v6_r1_abc.py": "ed6ca5ad78753d020ddc354146d12470eaa148776cb8fac9dc63e73427328d2d",
+   "scripts/build_v6_policy_replay.py": "a4e55ae3f17bd3bf378243a4b655c3a570fe18703789e269a6c28b09fc49f29a"
+  }
+ },
+ "target": {
+  "name": "audit_p_goal",
+  "definition": "build_v6_branch_replay.goal_frame_probability from row 0: sum_{j=1}^{L-1} gamma^j 1[|xy_j - goal| <= 0.5] / sum_{j=1}^{L-1} gamma^j",
+  "gamma": 0.999,
+  "radius": 0.5,
+  "path_end": "env done (death) or horizon 800 - t; zero-torque hold after reaching (parked frames count as near)",
+  "goal": "the anchor episode's recorded goal xy = the continuation's task goal = the critic's goal input",
+  "not_in_inputs": "absolute time t (hazard clocks from reset, remaining horizon), hazard latents, jitter -- for NCE and for S/N alike"
+ },
+ "inputs": {
+  "S": "obs[:31] (29-d Ant state + 2-d goal xy) and the 8-d torque; standardised with training-key mean/std",
+  "N": "obs[:31] only, same standardisation",
+  "standardisation": {
+   "obs_mean": [
+    6.88760232925415,
+    0.6465349793434143,
+    0.5366151332855225,
+    0.9673476815223694,
+    0.002516235923394561,
+    -0.049771953374147415,
+    0.064622662961483,
+    0.006237804889678955,
+    0.8956815004348755,
+    0.01305369846522808,
+    -0.6620235443115234,
+    -0.11281919479370117,
+    -0.6192519664764404,
+    0.044441599398851395,
+    0.9109242558479309,
+    0.6202813982963562,
+    0.12556102871894836,
+    0.0012238945346325636,
+    -0.0054293242283165455,
+    -0.03631899505853653,
+    0.044206734746694565,
+    0.07386063784360886,
+    0.0038317374419420958,
+    -0.03670920431613922,
+    0.06995244324207306,
+    -0.07369330525398254,
+    0.06805708259344101,
+    0.09275563806295395,
+    -0.017702559009194374,
+    24.7603702545166,
+    0.7577016949653625
+   ],
+   "obs_std": [
+    7.524397850036621,
+    1.7400411367416382,
+    0.05673797056078911,
+    0.08497966825962067,
+    0.04429412633180618,
+    0.049856036901474,
+    0.21966257691383362,
+    0.39293745160102844,
+    0.29151156544685364,
+    0.3848282992839813,
+    0.20740945637226105,
+    0.31410297751426697,
+    0.18990342319011688,
+    0.39472851157188416,
+    0.2873930037021637,
+    0.6197662353515625,
+    0.6408701539039612,
+    0.4975099563598633,
+    0.8420397043228149,
+    0.7695587277412415,
+    0.6255327463150024,
+    2.269231081008911,
+    2.041438102722168,
+    2.3480169773101807,
+    0.9808207154273987,
+    1.7467700242996216,
+    0.7114452719688416,
+    2.485394239425659,
+    2.0197441577911377,
+    0.3217249810695648,
+    0.31527069211006165
+   ],
+   "act_mean": [
+    0.05300102010369301,
+    -0.0006062073516659439,
+    0.08929047733545303,
+    0.003925311379134655,
+    0.04679125174880028,
+    0.35625123977661133,
+    -0.14445538818836212,
+    0.5364959836006165
+   ],
+   "act_std": [
+    0.6641614437103271,
+    0.7336382865905762,
+    0.5818852186203003,
+    0.7864945530891418,
+    0.6131982207298279,
+    0.45784154534339905,
+    0.5454371571540833,
+    0.42312636971473694
+   ]
+  },
+  "excluded": "time, hazards, clocks, episode/anchor ids, route labels, candidate identities"
+ },
+ "training": {
+  "keys": {
+   "n_paths": 35756,
+   "n_keys": 13256,
+   "total_weight": 17756.0,
+   "keys_by_kind_cand": {
+    "start_early|recorded": 400,
+    "turn|recorded": 300,
+    "start_late|recorded": 200,
+    "north_leg|recorded": 300,
+    "shortcut_early|recorded": 300,
+    "general|recorded": 4378,
+    "general|sample0": 4378,
+    "start_early|sample1": 400,
+    "start_early|sample0": 400,
+    "turn|sample0": 300,
+    "turn|sample1": 300,
+    "start_late|sample0": 200,
+    "start_late|sample1": 200,
+    "north_leg|sample0": 300,
+    "north_leg|sample1": 300,
+    "shortcut_early|sample0": 300,
+    "shortcut_early|sample1": 300
+   },
+   "paths_per_key": {
+    "2": 1500,
+    "1": 8756,
+    "8": 3000
+   }
+  },
+  "aggregation": "exact (anchor, candidate) key; weight = sum of path weights; target = weight-averaged P_goal; squared-error equivalence: sum_i w_i (h - y_i)^2 = (sum w_i)(h - ybar_w)^2 + const",
+  "effective_weights": {
+   "state_mass_dense": 0.5068709168731697,
+   "state_mass_general": 0.49312908312683035,
+   "mixture_recorded": 0.4155215138544717,
+   "mixture_policy": 0.5844784861455282,
+   "within_dense_recorded": 0.3333333333333333,
+   "round1_reference": {
+    "state_mass_dense": 0.5068709168731697,
+    "mixture_recorded": 0.4155215138544717,
+    "within_dense_recorded": 0.3333333333333333
+   }
+  },
+  "sampler": "keys drawn per batch with probability proportional to weight; numpy default_rng(seed) -> identical draws for S and N",
+  "model": {
+   "hidden": [
+    1024,
+    1024
+   ],
+   "activation": "relu",
+   "init": "VarianceScaling(1.0, fan_avg, uniform) as the critic encoders",
+   "output": "Linear(1) -> sigmoid"
+  },
+  "loss": "mean squared error on P_goal (conditional mean; diagnostic only)",
+  "optimizer": "adam lr 3e-4 eps 1e-7",
+  "batch": 1024,
+  "updates": 30000,
+  "seeds": [
+   0,
+   1,
+   2
+  ],
+  "checkpoint": "final only (no selection on A/B/C)",
+  "device": "one GPU, all six runs",
+  "sweeps": "none"
+ },
+ "evaluation": {
+  "sets": "diag_r1_abc sealed fresh outcomes (development diagnostics, already inspected); reserved validation seeds unused",
+  "layer_A_candidates": [
+   "recorded",
+   "sample0",
+   "sample1"
+  ],
+  "layer_B": "new0-2",
+  "layer_C": "recorded, mode, sample0-2 (+ matched subset)",
+  "comparators": "R NCE critics (region-integrated readout, radius 0.5, weighted R marginal, deployed min); S; N; random",
+  "metrics": "training-key weighted MSE; fresh-outcome MSE vs 16-draw sample mean with the sampling-noise floor; agreement on the same decided pairs (tie / same / opposite reported; ties never counted as wrong); pick gain as in the diagnostic with uniform random tie-breaking; per seed; paired episode-bootstrap differences S - NCE, S - N; per stratum",
+  "predeclared": {
+   "positive_transfer": "positive B and C pick gain AND improvement over R NCE supported by paired uncertainty (> 2 s.e.) with consistent per-seed direction",
+   "B_alone": "B improvement alone does not establish cross-episode transfer",
+   "nonsignificant": "inconclusive, not equivalence",
+   "fit_failure": "if S does not fit its training targets, reported separately, not read as a generalisation failure"
+  }
+ },
+ "leakage_checks": {
+  "C_episodes_in_training": 0,
+  "min_dist_training_torque_to_B_torque_same_anchor": 0.02788653038442135
+ }
+}

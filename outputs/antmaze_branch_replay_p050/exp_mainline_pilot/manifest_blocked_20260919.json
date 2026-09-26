@@ -1,0 +1,435 @@
+{
+ "experiment": "AntMaze V6 mainline pilot: observational (O) vs counterfactual-oracle (CF) positive futures, matched offline CRL",
+ "contract": {
+  "path": "notes\\MAINLINE_CONTRACT.md",
+  "sha256": "b8a9f854537ee5235dda1a0f5536c4105dc9717e5e36cb3b2e77ff52a2560708"
+ },
+ "sealed_at": "2026-09-19 00:33:43",
+ "git_head": "157a2127be66ed223c75a6abae596d098e3512b5",
+ "host": "Tingrui",
+ "dataset": {
+  "path": "D:\\Users\\trhua\\Research\\contrastive_rl\\artifacts\\rockfall_clock_v6\\dataset\\antmaze_rockfall_clock_v6_p050_d05_gxy.npz",
+  "sha256": "4533c70278a96e09b9d79ba8ed6c2144792abbab5085d405ae544f50982144d6",
+  "expected_sha256": "4533c70278a96e09b9d79ba8ed6c2144792abbab5085d405ae544f50982144d6",
+  "sidecar_sha256": "8b17a572356216ec3484d33525faafed6103ef666b6b01d14e6962dc9cd40afe",
+  "expected_sidecar_sha256": "8b17a572356216ec3484d33525faafed6103ef666b6b01d14e6962dc9cd40afe",
+  "n_episodes": 1000,
+  "rows": 267481,
+  "length_min_max_mean": [
+   213,
+   801,
+   268.481
+  ],
+  "route_counts": {
+   "detour": 50,
+   "shortcut": 950
+  },
+  "selection": {
+   "episodes": 1000,
+   "detour_episodes": 50,
+   "shortcut_episodes": 950,
+   "episode_share_detour": 0.05,
+   "row_share_detour": 0.06994141639966951,
+   "rows": 267481,
+   "detour_episode_ids": [
+    16,
+    458,
+    551,
+    590,
+    689,
+    723,
+    782,
+    924,
+    1114,
+    1209,
+    1214,
+    1392,
+    1763,
+    1902,
+    2184,
+    2212,
+    2263,
+    2284,
+    2349,
+    2413,
+    2589,
+    2609,
+    2700,
+    2783,
+    2809,
+    2844,
+    2992,
+    3030,
+    3051,
+    3211,
+    3221,
+    3313,
+    3383,
+    3415,
+    3648,
+    3951,
+    4283,
+    4369,
+    4553,
+    4565,
+    4945,
+    5206,
+    5240,
+    5755,
+    5778,
+    5782,
+    5925,
+    5942,
+    5966,
+    5967
+   ],
+   "gxy_sha256": "4533c70278a96e09b9d79ba8ed6c2144792abbab5085d405ae544f50982144d6",
+   "sidecar_sha256": "8b17a572356216ec3484d33525faafed6103ef666b6b01d14e6962dc9cd40afe",
+   "selection_seed": 2028,
+   "nested": true
+  },
+  "training_split": "the whole d05 file is the training set (critic anchors and actor rows); evaluation = fresh native draws; the old 100 held-out and the 30 Cnew reserved pool episodes are excluded from d05 by construction",
+  "source_episodes_disjoint_from_old_held_out_and_cnew": true,
+  "training_episode_source_ids_sha256": "e61e01f21a581a0ed11c5df9373057a349cfccb12dc5aa4a84b62156851f0658"
+ },
+ "start_agent": {
+  "path": "D:\\Users\\trhua\\Research\\contrastive_rl\\outputs\\antmaze_branch_replay_p050\\joint_van_d05\\seed_0\\final.pkl",
+  "available": false,
+  "sha256": "UNAVAILABLE",
+  "role": "continuation policy (mode) of arm CF and the actor initialisation of both arms",
+  "identity": "exp_detour_ratio d05 vanilla actor, training seed 0 (SUMMARY table row \"d05 vanilla seed 0\")",
+  "provenance_chain": {
+   "joint_van_d05/seed_0/prep.json": {
+    "seed": 0,
+    "warm_critic": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/critics_van_d05/seed_0/final.pkl",
+    "warm_critic_sha256": "b08869b6da8b175bdc770b7ec95d4f1019b5add7efbe407234dfd4f8e1e9fe5d",
+    "actor": "warm from /root/contrastive_rl/outputs/antmaze_branch_replay_p050/joint_purebc_d05/seed_0/final.pkl",
+    "actor_init_sha256": "815c3cf67674bf24efc9525e1f4c61709742de86e5494fe842a47072bfda5a69",
+    "joint_mode": "frozen",
+    "critic_tag": "_van_d05",
+    "bc_coef": null
+   },
+   "joint_van_d05/seed_0/branch_manifest.json": {
+    "arm": "branch_joint_warm",
+    "env_name": "offline_antmaze_rockfall_clock_v6_gxy",
+    "dataset": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/critic_stub_d05.npz",
+    "dataset_sha256": "4533c70278a96e09b9d79ba8ed6c2144792abbab5085d405ae544f50982144d6",
+    "discount": 0.999,
+    "steps": 30000,
+    "batch_size": 1024,
+    "twin_q": true,
+    "bc_coef": 0.05,
+    "bc_sampling": "balanced",
+    "bc_dataset": "/root/contrastive_rl/artifacts/rockfall_clock_v6/dataset/antmaze_rockfall_clock_v6_p050_d05_gxy.npz",
+    "bc_balance_region": "displacement",
+    "horizon": 800,
+    "p_active": [
+     0.5,
+     0.5
+    ],
+    "t0_ranges": [
+     [
+      10,
+      45
+     ],
+     [
+      90,
+      125
+     ]
+    ],
+    "note": "discount 0.999 deviates from the frozen V6 recipe (0.99) on purpose: plan section 0",
+    "dataset_stem": "antmaze_rockfall_clock_v6_p050_d05",
+    "p_active_env": 0.5,
+    "wall_seconds": 411.77939796447754,
+    "milestones": [
+     10000,
+     20000
+    ]
+   },
+   "joint_van_d05/seed_0/bc_sampling_audit.json": {
+    "bc_sampling": "balanced",
+    "bc_dataset": "/root/contrastive_rl/artifacts/rockfall_clock_v6/dataset/antmaze_rockfall_clock_v6_p050_d05_gxy.npz",
+    "stats": {
+     "n_pairs": 36693045,
+     "n_groups": 393,
+     "n_nonempty_buckets": 2282,
+     "cap": 0.25,
+     "cell": 4.0,
+     "n_sectors": 8,
+     "wait_eps": 0.05,
+     "max_multiplier": 2.652942044262733,
+     "min_nonzero_multiplier": 0.6400004297824136,
+     "ess_original": 11077345.271891754,
+     "ess_reweighted": 10928587.266195735,
+     "group_marginal_max_abs_dev": 2.706168622523819e-15
+    },
+    "law_check_max_abs_share_dev": NaN,
+    "fork_groups": {
+     "fork(1,3)->goal(8, 3)": null,
+     "fork(1,3)->goal(2, 3)": null,
+     "fork(1,3)->goal(1, 2)": null,
+     "fork(1,3)->goal(1, 3)": null,
+     "fork(1,3)->goal(3, 3)": null,
+     "fork(1,3)->goal(4, 3)": null
+    }
+   },
+   "critics_van_d05/seed_0/branch_manifest.json": {
+    "arm": "vanilla_gamma0999",
+    "env_name": "offline_antmaze_rockfall_clock_v6_gxy",
+    "dataset": "/root/contrastive_rl/artifacts/rockfall_clock_v6/dataset/antmaze_rockfall_clock_v6_p050_d05_gxy.npz",
+    "dataset_sha256": "4533c70278a96e09b9d79ba8ed6c2144792abbab5085d405ae544f50982144d6",
+    "discount": 0.999,
+    "steps": 30000,
+    "batch_size": 1024,
+    "twin_q": true,
+    "bc_coef": 0.05,
+    "bc_sampling": "shared",
+    "bc_dataset": "",
+    "bc_balance_region": "action",
+    "horizon": 800,
+    "p_active": [
+     0.5,
+     0.5
+    ],
+    "t0_ranges": [
+     [
+      10,
+      45
+     ],
+     [
+      90,
+      125
+     ]
+    ],
+    "note": "discount 0.999 deviates from the frozen V6 recipe (0.99) on purpose: plan section 0",
+    "dataset_stem": "antmaze_rockfall_clock_v6_p050_d05",
+    "p_active_env": 0.5,
+    "wall_seconds": 264.27212834358215
+   },
+   "joint_purebc_d05/seed_0/prep.json": {
+    "seed": 0,
+    "warm_critic": null,
+    "actor": "fresh",
+    "critic": "fresh",
+    "joint_mode": "frozen",
+    "bc_coef": "1.0"
+   },
+   "joint_purebc_d05/seed_0/branch_manifest.json": {
+    "arm": "branch_joint_warm",
+    "env_name": "offline_antmaze_rockfall_clock_v6_gxy",
+    "dataset": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/critic_stub_d05.npz",
+    "dataset_sha256": "4533c70278a96e09b9d79ba8ed6c2144792abbab5085d405ae544f50982144d6",
+    "discount": 0.999,
+    "steps": 100000,
+    "batch_size": 1024,
+    "twin_q": true,
+    "bc_coef": 1.0,
+    "bc_sampling": "balanced",
+    "bc_dataset": "/root/contrastive_rl/artifacts/rockfall_clock_v6/dataset/antmaze_rockfall_clock_v6_p050_d05_gxy.npz",
+    "bc_balance_region": "displacement",
+    "horizon": 800,
+    "p_active": [
+     0.5,
+     0.5
+    ],
+    "t0_ranges": [
+     [
+      10,
+      45
+     ],
+     [
+      90,
+      125
+     ]
+    ],
+    "note": "discount 0.999 deviates from the frozen V6 recipe (0.99) on purpose: plan section 0",
+    "dataset_stem": "antmaze_rockfall_clock_v6_p050_d05",
+    "p_active_env": 0.5,
+    "wall_seconds": 965.8062326908112,
+    "milestones": [
+     10000,
+     20000,
+     30000,
+     40000,
+     50000,
+     60000,
+     70000,
+     80000,
+     90000
+    ]
+   }
+  },
+  "data_provenance_check": {
+   "joint_van_d05 critic-term data sha == d05": true,
+   "joint_van_d05 bc_dataset is d05": true,
+   "critics_van_d05 data sha == d05": true,
+   "joint_purebc_d05 data sha == d05": true,
+   "joint_purebc_d05 bc_dataset is d05": true,
+   "observation contract": "29-dim Ant state + goal xy (31 columns); the env privileged channel never enters _flatten",
+   "no d20 reference in the chain": true
+  },
+  "historical_training_note": "the start agent itself was produced by the exp_detour_ratio chain (pure-BC 100k init, frozen vanilla critic 30k, displacement-balanced BC rows, 30k): diagnostic components of ITS history, not of this pilot's training procedure (contract section 1c)",
+  "alternative_not_used": "vanilla_g0999_d05/seed_0/final.pkl (the jointly trained vanilla run's own actor, never evaluated on natural draws) -- not used: the report row \"d05 vanilla seed 0\" is the actor above"
+ },
+ "anchors": {
+  "dataset": "D:\\Users\\trhua\\Research\\contrastive_rl\\artifacts\\rockfall_clock_v6\\dataset\\antmaze_rockfall_clock_v6_p050_d05_gxy.npz",
+  "dataset_sha256": "4533c70278a96e09b9d79ba8ed6c2144792abbab5085d405ae544f50982144d6",
+  "k_draws": 60000,
+  "law": "K i.i.d. draws: episode uniform over the d05 file, then row uniform over [0, L_e - 1); unique rows with weight = multiplicity / K (the recipe buffer's own anchor law, subsampled)",
+  "max_multiplicity": 5,
+  "n_t0": 196,
+  "n_unique": 53747,
+  "seed": 131000001,
+  "file": "D:\\Users\\trhua\\Research\\contrastive_rl\\outputs\\antmaze_branch_replay_p050\\exp_mainline_pilot\\anchors.npz",
+  "sha256": "34938196a8041c1a89452e0877478cd3763b559ef49baea72bf4d5a99f98745f",
+  "weight_sum": 1.0000000000000002,
+  "weights_identical_across_arms": "by construction (one file read by both arms)",
+  "per_anchor_fields": [
+   "episode",
+   "t",
+   "state",
+   "goal_xy",
+   "action",
+   "multiplicity",
+   "weight",
+   "source_episode",
+   "ep_length"
+  ],
+  "route_share_of_anchor_mass": {
+   "detour": 0.04966666666666668,
+   "shortcut": 0.9503333333333336
+  }
+ },
+ "arm_O": {
+  "anchors": "anchors.npz",
+  "positive_futures": "recorded rows t+1..L_e-1 of the anchor episode",
+  "future_law": "P(m) proportional to gamma^m, m = 1..L_e-1-t (truncated at the episode end)",
+  "negatives": "in-batch (the other anchors' positive goals): the arm's own goal marginal"
+ },
+ "arm_CF": {
+  "anchors": "anchors.npz (same file, same weights)",
+  "query_action": "the logged torque a_t, executed once",
+  "continuation": "start agent, mode tanh(loc), closed-loop from the state after the query step",
+  "action_selection_mode": "mode",
+  "draws_per_anchor": 1,
+  "hidden_draws": "hazard latents, both clocks and rock jitter redrawn from the priors; seed 132000000 + anchor_id",
+  "horizon": "absolute 800: a branch from time t runs at most 800 - t steps",
+  "terminal_handling": "ends on the first reach frame, on death, or at the horizon; every outcome kept (no success or route filter)",
+  "goal_hold": "none (matched to the recorded episodes, which end on their reach frame); the historical branch replays parked to the horizon",
+  "future_law": "P(m) proportional to gamma^m, m = 1..len-1 over the branch rows (truncated at the branch end)",
+  "negatives": "in-batch: the arm's own goal marginal (documented, not forced to match arm O)",
+  "existing_d05_branches": "replay_policy_d05.npz NOT reused: continuation = the d05 pure-BC walker, dense strata + every-60th anchors, goal hold to the horizon, 2 draws, extra sampled candidates -- none of it matches this contract",
+  "generation_seeds": {
+   "hazard_seed0": 132000000,
+   "worker_seed0": 133000000
+  }
+ },
+ "actor_stream": {
+  "both_arms": "TrajectoryBuffer over the d05 file, default law: episode uniform, row uniform over [0, L_e - 1), future goal geometric gamma^(j-i) truncated at the episode end (the recipe's own draw); seed 20000 + training seed",
+  "pairing": "random_goals 0: critic term at (s_i, g_j) with the sampled action; BC = -log pi(a_i | s_i, g_j) on the same rows; bc 0.05",
+  "reset_restriction": "none (the whole row range is eligible)",
+  "interface_note": "critic and actor batches are separate streams (crl.losses.build_learner(separate_actor_batch=True)); the loss algebra is the original's, the pairing of rows is not the shared-batch implementation"
+ },
+ "training": {
+  "config": {
+   "env_name": "offline_antmaze_rockfall_clock_v6_gxy",
+   "offline_dataset": "D:\\Users\\trhua\\Research\\contrastive_rl\\artifacts\\rockfall_clock_v6\\dataset\\antmaze_rockfall_clock_v6_p050_d05_gxy.npz",
+   "discount": 0.999,
+   "batch_size": 1024,
+   "hidden_layer_sizes": [
+    1024,
+    1024
+   ],
+   "repr_dim": 16,
+   "repr_norm": false,
+   "twin_q": true,
+   "bc_coef": 0.05,
+   "random_goals": 0.0,
+   "entropy_coefficient": 0.0,
+   "actor_learning_rate": 0.0003,
+   "learning_rate": 0.0003,
+   "tau": 0.005,
+   "use_td": false,
+   "use_cpc": false,
+   "use_gcbc": false,
+   "use_layer_norm": false,
+   "bc_sampling": "shared",
+   "num_sgd_steps_per_step": 4,
+   "goal_indices": [
+    0,
+    1
+   ],
+   "obs_dim": 29,
+   "goal_dim": 2,
+   "action_dim": 8,
+   "max_episode_steps": 800,
+   "rockfall_p_active_1": 0.5,
+   "rockfall_p_active_2": 0.5
+  },
+  "optimizer_updates": 30000,
+  "scan_group": 4,
+  "batch_size": 1024,
+  "update_rule": "one critic Adam step and one actor Adam step per optimizer update, both every update (joint)",
+  "critic_init": "fresh: crl.train's init_state at PRNGKey(seed) (identical across arms for a seed)",
+  "actor_init": "policy_params of the start agent; fresh Adam state for both optimizers",
+  "critic_stream_seed": "10000 + seed",
+  "actor_stream_seed": "20000 + seed",
+  "seeds": [
+   0,
+   1,
+   2
+  ],
+  "milestones_saved_not_selected": [
+   10000,
+   20000
+  ],
+  "evaluated_checkpoint": "final (update 30,000)",
+  "discount": 0.999,
+  "discount_note": "gamma 0.999 = the branch-chain recipe (the frozen V6 ladder used 0.99); pinned, not swept"
+ },
+ "evaluation": {
+  "env": "offline_antmaze_rockfall_clock_v6_gxy",
+  "p_active": [
+   0.5,
+   0.5
+  ],
+  "horizon": 800,
+  "n": 300,
+  "seed": 3909,
+  "policy": "mean",
+  "policies": [
+   "start agent",
+   "O seeds 0-2 (final)",
+   "CF seeds 0-2 (final)"
+  ],
+  "same_episodes": "one env seed; the six hidden streams and the reset pose are consumed at reset only, so episode k is identical for every policy (checked post hoc)",
+  "reserved_seeds_untouched": {
+   "FRESH_TORQUE_SEED": 616000005,
+   "FRESH_DRAW_SEED": 616500000
+  }
+ },
+ "comparisons": {
+  "primary": "CF - O success (mode), paired on the 300 common episodes within each training seed, then over the 3 paired seeds",
+  "practical": "CF - start and O - start success on the same episodes",
+  "secondary_metrics": [
+   "detour rate",
+   "death",
+   "timeout",
+   "success with / without an active hazard",
+   "zone deaths"
+  ],
+  "rule": "improvement = mean over the 3 paired seeds > 2 x the seed s.e. of the paired differences AND 3/3 seeds in the same direction; ties are never counted against; evaluation uncertainty (episode-paired bootstrap, seeds fixed) reported separately from seed variability",
+  "secondary_diagnostic": "true-reset candidate ranking: secondary only; not a substitute for policy improvement; the old mixed Cdev gate does not reject",
+  "no_selection": "no checkpoint, continuation, seed or batch source is chosen after evaluation"
+ },
+ "scripts_sha256": {
+  "scripts/exp_v6_mainline_pilot.py": "8a35c6b1f2476c5338365461b8bb6066ac793c6a5ff54e583f1f052aa769c88c",
+  "crl/losses.py": "f74056cc8bca3c3d9a1a980cc9a0fd7deb21056c312701f9da3a327f82fb1010",
+  "crl/replay.py": "2c6372f5089698b91928a2863e204e76d6ac6db829e57ce706c51fd46a3755be",
+  "crl/train.py": "4e4305e40a041293b3df667a63fb68af7c76b03cda5ca475949747094d23ddde",
+  "scripts/run_v6_branch_replay.py": "d13d6bb4b9b0861d727adcb237e9ef778026d87c7e1659a8a9cd1f6d7a7afc73",
+  "scripts/build_v6_branch_replay.py": "acd4ab95dd5dd0a1c216d602affbbb52753b1a49c5a98676ebf93951757af0db",
+  "scripts/diag_v6_first_step_crossover.py": "6855ed48a14e0a2d0f63c29119ec7a88016d0a63fe97158b06b767f50af5e10d",
+  "scripts/eval_rockfall_clock_v6_baseline.py": "0ca80800a51bf69784fd600fe3cbbeefdf303fa04f0068a1cef9be3fa351946e"
+ }
+}

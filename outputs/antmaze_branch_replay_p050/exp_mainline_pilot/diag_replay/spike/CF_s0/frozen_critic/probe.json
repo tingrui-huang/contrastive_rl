@@ -1,0 +1,786 @@
+{
+ "seed": 0,
+ "handover_states": 4,
+ "entry_states": 45,
+ "probe_steps": 100,
+ "north_y": 2.5,
+ "checkpoints": {
+  "4000": {
+   "step": 4000,
+   "ckpt": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/diag_replay/spike/CF_s0/frozen_critic/init.pkl",
+   "route_probe": {
+    "n": 300,
+    "turned_north": 0.2733333333333333,
+    "success_within_probe": 0.0,
+    "failure_within_probe": 0.37333333333333335,
+    "max_y_mean": 1.4856689072524507
+   },
+   "walking_probe": {
+    "n": 4,
+    "reach": 0.75,
+    "timeout": 0.25,
+    "failure": 0.0,
+    "steps_mean": 677.5
+   },
+   "entry_probe": {
+    "n": 45,
+    "reach": 0.5111111111111111,
+    "timeout": 0.4888888888888889,
+    "failure": 0.0,
+    "steps_mean": 666.7555555555556
+   },
+   "critic_at_reset_rows": {
+    "best_detour_minus_f_mode": 0.6028395891189575,
+    "P_best_detour_above_mode": 0.9791666666666666,
+    "best_detour_minus_f_logged": 0.9653474688529968,
+    "P_best_detour_above_logged": 0.9947916666666666
+   },
+   "mode_at_reset_rows": {
+    "dist_to_start_mode": 2.73345685005188,
+    "dist_to_cf_final_mode": 1.1334824562072754,
+    "cos_to_best_detour_direction": 0.7125139236450195
+   },
+   "wall_seconds": 10.69965386390686
+  },
+  "4050": {
+   "step": 4050,
+   "ckpt": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/diag_replay/spike/CF_s0/frozen_critic/upd_4050.pkl",
+   "route_probe": {
+    "n": 300,
+    "turned_north": 0.21,
+    "success_within_probe": 0.0,
+    "failure_within_probe": 0.38333333333333336,
+    "max_y_mean": 1.1633049074312052
+   },
+   "walking_probe": {
+    "n": 4,
+    "reach": 0.5,
+    "timeout": 0.5,
+    "failure": 0.0,
+    "steps_mean": 655.5
+   },
+   "entry_probe": {
+    "n": 45,
+    "reach": 0.5777777777777777,
+    "timeout": 0.4222222222222222,
+    "failure": 0.0,
+    "steps_mean": 640.0444444444445
+   },
+   "critic_at_reset_rows": {
+    "best_detour_minus_f_mode": 0.6150797605514526,
+    "P_best_detour_above_mode": 0.96875,
+    "best_detour_minus_f_logged": 0.9653474688529968,
+    "P_best_detour_above_logged": 0.9947916666666666
+   },
+   "mode_at_reset_rows": {
+    "dist_to_start_mode": 2.955225944519043,
+    "dist_to_cf_final_mode": 1.0608612298965454,
+    "cos_to_best_detour_direction": 0.7179231643676758
+   },
+   "wall_seconds": 10.671262502670288
+  },
+  "4100": {
+   "step": 4100,
+   "ckpt": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/diag_replay/spike/CF_s0/frozen_critic/upd_4100.pkl",
+   "route_probe": {
+    "n": 300,
+    "turned_north": 0.16666666666666666,
+    "success_within_probe": 0.0,
+    "failure_within_probe": 0.4066666666666667,
+    "max_y_mean": 1.0683054885764918
+   },
+   "walking_probe": {
+    "n": 4,
+    "reach": 0.0,
+    "timeout": 1.0,
+    "failure": 0.0,
+    "steps_mean": 800.0
+   },
+   "entry_probe": {
+    "n": 45,
+    "reach": 0.4888888888888889,
+    "timeout": 0.5111111111111111,
+    "failure": 0.0,
+    "steps_mean": 662.3555555555556
+   },
+   "critic_at_reset_rows": {
+    "best_detour_minus_f_mode": 0.6011090278625488,
+    "P_best_detour_above_mode": 0.96875,
+    "best_detour_minus_f_logged": 0.9653474688529968,
+    "P_best_detour_above_logged": 0.9947916666666666
+   },
+   "mode_at_reset_rows": {
+    "dist_to_start_mode": 3.0408830642700195,
+    "dist_to_cf_final_mode": 1.082917332649231,
+    "cos_to_best_detour_direction": 0.7186005115509033
+   },
+   "wall_seconds": 11.057673454284668
+  },
+  "4150": {
+   "step": 4150,
+   "ckpt": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/diag_replay/spike/CF_s0/frozen_critic/upd_4150.pkl",
+   "route_probe": {
+    "n": 300,
+    "turned_north": 0.17,
+    "success_within_probe": 0.0,
+    "failure_within_probe": 0.38333333333333336,
+    "max_y_mean": 1.050770601046582
+   },
+   "walking_probe": {
+    "n": 4,
+    "reach": 0.25,
+    "timeout": 0.75,
+    "failure": 0.0,
+    "steps_mean": 742.75
+   },
+   "entry_probe": {
+    "n": 45,
+    "reach": 0.35555555555555557,
+    "timeout": 0.6444444444444445,
+    "failure": 0.0,
+    "steps_mean": 707.4666666666667
+   },
+   "critic_at_reset_rows": {
+    "best_detour_minus_f_mode": 0.5592197179794312,
+    "P_best_detour_above_mode": 0.96875,
+    "best_detour_minus_f_logged": 0.9653474688529968,
+    "P_best_detour_above_logged": 0.9947916666666666
+   },
+   "mode_at_reset_rows": {
+    "dist_to_start_mode": 3.2103912830352783,
+    "dist_to_cf_final_mode": 1.1530629396438599,
+    "cos_to_best_detour_direction": 0.7554319500923157
+   },
+   "wall_seconds": 11.425556898117065
+  },
+  "4200": {
+   "step": 4200,
+   "ckpt": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/diag_replay/spike/CF_s0/frozen_critic/upd_4200.pkl",
+   "route_probe": {
+    "n": 300,
+    "turned_north": 0.13,
+    "success_within_probe": 0.0,
+    "failure_within_probe": 0.42,
+    "max_y_mean": 0.8678729798893133
+   },
+   "walking_probe": {
+    "n": 4,
+    "reach": 0.5,
+    "timeout": 0.5,
+    "failure": 0.0,
+    "steps_mean": 650.75
+   },
+   "entry_probe": {
+    "n": 45,
+    "reach": 0.6666666666666666,
+    "timeout": 0.3333333333333333,
+    "failure": 0.0,
+    "steps_mean": 613.9333333333333
+   },
+   "critic_at_reset_rows": {
+    "best_detour_minus_f_mode": 0.5761343836784363,
+    "P_best_detour_above_mode": 0.96875,
+    "best_detour_minus_f_logged": 0.9653474688529968,
+    "P_best_detour_above_logged": 0.9947916666666666
+   },
+   "mode_at_reset_rows": {
+    "dist_to_start_mode": 3.1292483806610107,
+    "dist_to_cf_final_mode": 1.0780330896377563,
+    "cos_to_best_detour_direction": 0.7242295145988464
+   },
+   "wall_seconds": 10.700904607772827
+  },
+  "4250": {
+   "step": 4250,
+   "ckpt": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/diag_replay/spike/CF_s0/frozen_critic/upd_4250.pkl",
+   "route_probe": {
+    "n": 300,
+    "turned_north": 0.14333333333333334,
+    "success_within_probe": 0.0,
+    "failure_within_probe": 0.4266666666666667,
+    "max_y_mean": 0.9655614404877026
+   },
+   "walking_probe": {
+    "n": 4,
+    "reach": 0.75,
+    "timeout": 0.25,
+    "failure": 0.0,
+    "steps_mean": 562.75
+   },
+   "entry_probe": {
+    "n": 45,
+    "reach": 0.6,
+    "timeout": 0.4,
+    "failure": 0.0,
+    "steps_mean": 610.7777777777778
+   },
+   "critic_at_reset_rows": {
+    "best_detour_minus_f_mode": 0.5481640696525574,
+    "P_best_detour_above_mode": 0.9635416666666666,
+    "best_detour_minus_f_logged": 0.9653474688529968,
+    "P_best_detour_above_logged": 0.9947916666666666
+   },
+   "mode_at_reset_rows": {
+    "dist_to_start_mode": 3.2791996002197266,
+    "dist_to_cf_final_mode": 1.1526042222976685,
+    "cos_to_best_detour_direction": 0.7588546872138977
+   },
+   "wall_seconds": 10.839885950088501
+  },
+  "4300": {
+   "step": 4300,
+   "ckpt": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/diag_replay/spike/CF_s0/frozen_critic/upd_4300.pkl",
+   "route_probe": {
+    "n": 300,
+    "turned_north": 0.18666666666666668,
+    "success_within_probe": 0.0,
+    "failure_within_probe": 0.38,
+    "max_y_mean": 1.1601796368385355
+   },
+   "walking_probe": {
+    "n": 4,
+    "reach": 0.75,
+    "timeout": 0.25,
+    "failure": 0.0,
+    "steps_mean": 568.25
+   },
+   "entry_probe": {
+    "n": 45,
+    "reach": 0.6888888888888889,
+    "timeout": 0.3111111111111111,
+    "failure": 0.0,
+    "steps_mean": 604.3333333333334
+   },
+   "critic_at_reset_rows": {
+    "best_detour_minus_f_mode": 0.5476738214492798,
+    "P_best_detour_above_mode": 0.96875,
+    "best_detour_minus_f_logged": 0.9653474688529968,
+    "P_best_detour_above_logged": 0.9947916666666666
+   },
+   "mode_at_reset_rows": {
+    "dist_to_start_mode": 3.2168781757354736,
+    "dist_to_cf_final_mode": 1.1188673973083496,
+    "cos_to_best_detour_direction": 0.7546567916870117
+   },
+   "wall_seconds": 10.78168797492981
+  },
+  "4350": {
+   "step": 4350,
+   "ckpt": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/diag_replay/spike/CF_s0/frozen_critic/upd_4350.pkl",
+   "route_probe": {
+    "n": 300,
+    "turned_north": 0.13666666666666666,
+    "success_within_probe": 0.0,
+    "failure_within_probe": 0.41333333333333333,
+    "max_y_mean": 0.935461805704981
+   },
+   "walking_probe": {
+    "n": 4,
+    "reach": 0.25,
+    "timeout": 0.75,
+    "failure": 0.0,
+    "steps_mean": 702.5
+   },
+   "entry_probe": {
+    "n": 45,
+    "reach": 0.5333333333333333,
+    "timeout": 0.4666666666666667,
+    "failure": 0.0,
+    "steps_mean": 644.0888888888888
+   },
+   "critic_at_reset_rows": {
+    "best_detour_minus_f_mode": 0.564952552318573,
+    "P_best_detour_above_mode": 0.96875,
+    "best_detour_minus_f_logged": 0.9653474688529968,
+    "P_best_detour_above_logged": 0.9947916666666666
+   },
+   "mode_at_reset_rows": {
+    "dist_to_start_mode": 3.2688820362091064,
+    "dist_to_cf_final_mode": 1.13282310962677,
+    "cos_to_best_detour_direction": 0.7475597262382507
+   },
+   "wall_seconds": 10.999740362167358
+  },
+  "4400": {
+   "step": 4400,
+   "ckpt": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/diag_replay/spike/CF_s0/frozen_critic/upd_4400.pkl",
+   "route_probe": {
+    "n": 300,
+    "turned_north": 0.10666666666666667,
+    "success_within_probe": 0.0,
+    "failure_within_probe": 0.44,
+    "max_y_mean": 0.7899960357447465
+   },
+   "walking_probe": {
+    "n": 4,
+    "reach": 0.25,
+    "timeout": 0.75,
+    "failure": 0.0,
+    "steps_mean": 728.25
+   },
+   "entry_probe": {
+    "n": 45,
+    "reach": 0.6222222222222222,
+    "timeout": 0.37777777777777777,
+    "failure": 0.0,
+    "steps_mean": 609.3555555555556
+   },
+   "critic_at_reset_rows": {
+    "best_detour_minus_f_mode": 0.6073237061500549,
+    "P_best_detour_above_mode": 0.96875,
+    "best_detour_minus_f_logged": 0.9653474688529968,
+    "P_best_detour_above_logged": 0.9947916666666666
+   },
+   "mode_at_reset_rows": {
+    "dist_to_start_mode": 3.1547489166259766,
+    "dist_to_cf_final_mode": 1.0616892576217651,
+    "cos_to_best_detour_direction": 0.7123639583587646
+   },
+   "wall_seconds": 10.850465774536133
+  },
+  "4450": {
+   "step": 4450,
+   "ckpt": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/diag_replay/spike/CF_s0/frozen_critic/upd_4450.pkl",
+   "route_probe": {
+    "n": 300,
+    "turned_north": 0.09,
+    "success_within_probe": 0.0,
+    "failure_within_probe": 0.44666666666666666,
+    "max_y_mean": 0.7167517784237861
+   },
+   "walking_probe": {
+    "n": 4,
+    "reach": 0.5,
+    "timeout": 0.5,
+    "failure": 0.0,
+    "steps_mean": 627.75
+   },
+   "entry_probe": {
+    "n": 45,
+    "reach": 0.5555555555555556,
+    "timeout": 0.4444444444444444,
+    "failure": 0.0,
+    "steps_mean": 634.7777777777778
+   },
+   "critic_at_reset_rows": {
+    "best_detour_minus_f_mode": 0.5799371600151062,
+    "P_best_detour_above_mode": 0.96875,
+    "best_detour_minus_f_logged": 0.9653474688529968,
+    "P_best_detour_above_logged": 0.9947916666666666
+   },
+   "mode_at_reset_rows": {
+    "dist_to_start_mode": 3.1989409923553467,
+    "dist_to_cf_final_mode": 1.1100845336914062,
+    "cos_to_best_detour_direction": 0.7341973185539246
+   },
+   "wall_seconds": 10.762811422348022
+  },
+  "4500": {
+   "step": 4500,
+   "ckpt": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/diag_replay/spike/CF_s0/frozen_critic/upd_4500.pkl",
+   "route_probe": {
+    "n": 300,
+    "turned_north": 0.15,
+    "success_within_probe": 0.0,
+    "failure_within_probe": 0.4166666666666667,
+    "max_y_mean": 0.9715740722542008
+   },
+   "walking_probe": {
+    "n": 4,
+    "reach": 0.25,
+    "timeout": 0.75,
+    "failure": 0.0,
+    "steps_mean": 725.25
+   },
+   "entry_probe": {
+    "n": 45,
+    "reach": 0.5777777777777777,
+    "timeout": 0.4222222222222222,
+    "failure": 0.0,
+    "steps_mean": 644.0
+   },
+   "critic_at_reset_rows": {
+    "best_detour_minus_f_mode": 0.5525200366973877,
+    "P_best_detour_above_mode": 0.96875,
+    "best_detour_minus_f_logged": 0.9653474688529968,
+    "P_best_detour_above_logged": 0.9947916666666666
+   },
+   "mode_at_reset_rows": {
+    "dist_to_start_mode": 3.2352077960968018,
+    "dist_to_cf_final_mode": 1.1063696146011353,
+    "cos_to_best_detour_direction": 0.740677535533905
+   },
+   "wall_seconds": 11.032442092895508
+  },
+  "4550": {
+   "step": 4550,
+   "ckpt": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/diag_replay/spike/CF_s0/frozen_critic/upd_4550.pkl",
+   "route_probe": {
+    "n": 300,
+    "turned_north": 0.13,
+    "success_within_probe": 0.0,
+    "failure_within_probe": 0.43,
+    "max_y_mean": 0.9358176663021247
+   },
+   "walking_probe": {
+    "n": 4,
+    "reach": 0.25,
+    "timeout": 0.75,
+    "failure": 0.0,
+    "steps_mean": 763.0
+   },
+   "entry_probe": {
+    "n": 45,
+    "reach": 0.5777777777777777,
+    "timeout": 0.4222222222222222,
+    "failure": 0.0,
+    "steps_mean": 613.3333333333334
+   },
+   "critic_at_reset_rows": {
+    "best_detour_minus_f_mode": 0.5717571377754211,
+    "P_best_detour_above_mode": 0.96875,
+    "best_detour_minus_f_logged": 0.9653474688529968,
+    "P_best_detour_above_logged": 0.9947916666666666
+   },
+   "mode_at_reset_rows": {
+    "dist_to_start_mode": 3.2590274810791016,
+    "dist_to_cf_final_mode": 1.1193920373916626,
+    "cos_to_best_detour_direction": 0.7351667284965515
+   },
+   "wall_seconds": 10.683989524841309
+  },
+  "4600": {
+   "step": 4600,
+   "ckpt": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/diag_replay/spike/CF_s0/frozen_critic/upd_4600.pkl",
+   "route_probe": {
+    "n": 300,
+    "turned_north": 0.19333333333333333,
+    "success_within_probe": 0.0,
+    "failure_within_probe": 0.39666666666666667,
+    "max_y_mean": 1.3031371716161568
+   },
+   "walking_probe": {
+    "n": 4,
+    "reach": 0.5,
+    "timeout": 0.5,
+    "failure": 0.0,
+    "steps_mean": 636.0
+   },
+   "entry_probe": {
+    "n": 45,
+    "reach": 0.5111111111111111,
+    "timeout": 0.4888888888888889,
+    "failure": 0.0,
+    "steps_mean": 661.5333333333333
+   },
+   "critic_at_reset_rows": {
+    "best_detour_minus_f_mode": 0.5520009994506836,
+    "P_best_detour_above_mode": 0.96875,
+    "best_detour_minus_f_logged": 0.9653474688529968,
+    "P_best_detour_above_logged": 0.9947916666666666
+   },
+   "mode_at_reset_rows": {
+    "dist_to_start_mode": 3.202650785446167,
+    "dist_to_cf_final_mode": 1.0768134593963623,
+    "cos_to_best_detour_direction": 0.7378501892089844
+   },
+   "wall_seconds": 11.020651817321777
+  },
+  "4650": {
+   "step": 4650,
+   "ckpt": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/diag_replay/spike/CF_s0/frozen_critic/upd_4650.pkl",
+   "route_probe": {
+    "n": 300,
+    "turned_north": 0.11,
+    "success_within_probe": 0.0,
+    "failure_within_probe": 0.44666666666666666,
+    "max_y_mean": 0.8127656964212656
+   },
+   "walking_probe": {
+    "n": 4,
+    "reach": 0.25,
+    "timeout": 0.75,
+    "failure": 0.0,
+    "steps_mean": 726.0
+   },
+   "entry_probe": {
+    "n": 45,
+    "reach": 0.5333333333333333,
+    "timeout": 0.4666666666666667,
+    "failure": 0.0,
+    "steps_mean": 639.2222222222222
+   },
+   "critic_at_reset_rows": {
+    "best_detour_minus_f_mode": 0.6376214623451233,
+    "P_best_detour_above_mode": 0.96875,
+    "best_detour_minus_f_logged": 0.9653474688529968,
+    "P_best_detour_above_logged": 0.9947916666666666
+   },
+   "mode_at_reset_rows": {
+    "dist_to_start_mode": 3.1086599826812744,
+    "dist_to_cf_final_mode": 1.0311763286590576,
+    "cos_to_best_detour_direction": 0.6729945540428162
+   },
+   "wall_seconds": 10.902430772781372
+  },
+  "4700": {
+   "step": 4700,
+   "ckpt": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/diag_replay/spike/CF_s0/frozen_critic/upd_4700.pkl",
+   "route_probe": {
+    "n": 300,
+    "turned_north": 0.19,
+    "success_within_probe": 0.0,
+    "failure_within_probe": 0.4066666666666667,
+    "max_y_mean": 1.168892429197828
+   },
+   "walking_probe": {
+    "n": 4,
+    "reach": 0.5,
+    "timeout": 0.5,
+    "failure": 0.0,
+    "steps_mean": 599.5
+   },
+   "entry_probe": {
+    "n": 45,
+    "reach": 0.5777777777777777,
+    "timeout": 0.4222222222222222,
+    "failure": 0.0,
+    "steps_mean": 628.2444444444444
+   },
+   "critic_at_reset_rows": {
+    "best_detour_minus_f_mode": 0.5842084884643555,
+    "P_best_detour_above_mode": 0.96875,
+    "best_detour_minus_f_logged": 0.9653474688529968,
+    "P_best_detour_above_logged": 0.9947916666666666
+   },
+   "mode_at_reset_rows": {
+    "dist_to_start_mode": 3.2007408142089844,
+    "dist_to_cf_final_mode": 1.0590437650680542,
+    "cos_to_best_detour_direction": 0.7151079177856445
+   },
+   "wall_seconds": 10.86762547492981
+  },
+  "4750": {
+   "step": 4750,
+   "ckpt": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/diag_replay/spike/CF_s0/frozen_critic/upd_4750.pkl",
+   "route_probe": {
+    "n": 300,
+    "turned_north": 0.17666666666666667,
+    "success_within_probe": 0.0,
+    "failure_within_probe": 0.41,
+    "max_y_mean": 1.1175122766941785
+   },
+   "walking_probe": {
+    "n": 4,
+    "reach": 0.5,
+    "timeout": 0.5,
+    "failure": 0.0,
+    "steps_mean": 640.75
+   },
+   "entry_probe": {
+    "n": 45,
+    "reach": 0.6888888888888889,
+    "timeout": 0.3111111111111111,
+    "failure": 0.0,
+    "steps_mean": 591.0222222222222
+   },
+   "critic_at_reset_rows": {
+    "best_detour_minus_f_mode": 0.5823972225189209,
+    "P_best_detour_above_mode": 0.96875,
+    "best_detour_minus_f_logged": 0.9653474688529968,
+    "P_best_detour_above_logged": 0.9947916666666666
+   },
+   "mode_at_reset_rows": {
+    "dist_to_start_mode": 3.2082901000976562,
+    "dist_to_cf_final_mode": 1.0554150342941284,
+    "cos_to_best_detour_direction": 0.723802387714386
+   },
+   "wall_seconds": 10.491270065307617
+  },
+  "4800": {
+   "step": 4800,
+   "ckpt": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/diag_replay/spike/CF_s0/frozen_critic/upd_4800.pkl",
+   "route_probe": {
+    "n": 300,
+    "turned_north": 0.09333333333333334,
+    "success_within_probe": 0.0,
+    "failure_within_probe": 0.46,
+    "max_y_mean": 0.714007829024146
+   },
+   "walking_probe": {
+    "n": 4,
+    "reach": 0.5,
+    "timeout": 0.5,
+    "failure": 0.0,
+    "steps_mean": 607.0
+   },
+   "entry_probe": {
+    "n": 45,
+    "reach": 0.6222222222222222,
+    "timeout": 0.37777777777777777,
+    "failure": 0.0,
+    "steps_mean": 622.1555555555556
+   },
+   "critic_at_reset_rows": {
+    "best_detour_minus_f_mode": 0.6009555459022522,
+    "P_best_detour_above_mode": 0.96875,
+    "best_detour_minus_f_logged": 0.9653474688529968,
+    "P_best_detour_above_logged": 0.9947916666666666
+   },
+   "mode_at_reset_rows": {
+    "dist_to_start_mode": 3.2635295391082764,
+    "dist_to_cf_final_mode": 1.0889614820480347,
+    "cos_to_best_detour_direction": 0.7119514346122742
+   },
+   "wall_seconds": 10.568542003631592
+  },
+  "4850": {
+   "step": 4850,
+   "ckpt": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/diag_replay/spike/CF_s0/frozen_critic/upd_4850.pkl",
+   "route_probe": {
+    "n": 300,
+    "turned_north": 0.09666666666666666,
+    "success_within_probe": 0.0,
+    "failure_within_probe": 0.45,
+    "max_y_mean": 0.784932358811299
+   },
+   "walking_probe": {
+    "n": 4,
+    "reach": 0.0,
+    "timeout": 1.0,
+    "failure": 0.0,
+    "steps_mean": 800.0
+   },
+   "entry_probe": {
+    "n": 45,
+    "reach": 0.08888888888888889,
+    "timeout": 0.9111111111111111,
+    "failure": 0.0,
+    "steps_mean": 790.1333333333333
+   },
+   "critic_at_reset_rows": {
+    "best_detour_minus_f_mode": 0.6510352492332458,
+    "P_best_detour_above_mode": 0.96875,
+    "best_detour_minus_f_logged": 0.9653474688529968,
+    "P_best_detour_above_logged": 0.9947916666666666
+   },
+   "mode_at_reset_rows": {
+    "dist_to_start_mode": 3.1894729137420654,
+    "dist_to_cf_final_mode": 1.0415934324264526,
+    "cos_to_best_detour_direction": 0.7035625576972961
+   },
+   "wall_seconds": 11.818222522735596
+  },
+  "4900": {
+   "step": 4900,
+   "ckpt": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/diag_replay/spike/CF_s0/frozen_critic/upd_4900.pkl",
+   "route_probe": {
+    "n": 300,
+    "turned_north": 0.12,
+    "success_within_probe": 0.0,
+    "failure_within_probe": 0.43333333333333335,
+    "max_y_mean": 0.9708463785549005
+   },
+   "walking_probe": {
+    "n": 4,
+    "reach": 0.5,
+    "timeout": 0.5,
+    "failure": 0.0,
+    "steps_mean": 672.0
+   },
+   "entry_probe": {
+    "n": 45,
+    "reach": 0.5333333333333333,
+    "timeout": 0.4666666666666667,
+    "failure": 0.0,
+    "steps_mean": 675.2666666666667
+   },
+   "critic_at_reset_rows": {
+    "best_detour_minus_f_mode": 0.5938839316368103,
+    "P_best_detour_above_mode": 0.96875,
+    "best_detour_minus_f_logged": 0.9653474688529968,
+    "P_best_detour_above_logged": 0.9947916666666666
+   },
+   "mode_at_reset_rows": {
+    "dist_to_start_mode": 3.260113000869751,
+    "dist_to_cf_final_mode": 1.073704719543457,
+    "cos_to_best_detour_direction": 0.7205998301506042
+   },
+   "wall_seconds": 11.006008625030518
+  },
+  "4950": {
+   "step": 4950,
+   "ckpt": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/diag_replay/spike/CF_s0/frozen_critic/upd_4950.pkl",
+   "route_probe": {
+    "n": 300,
+    "turned_north": 0.11666666666666667,
+    "success_within_probe": 0.0,
+    "failure_within_probe": 0.4266666666666667,
+    "max_y_mean": 0.9052733825643857
+   },
+   "walking_probe": {
+    "n": 4,
+    "reach": 0.5,
+    "timeout": 0.5,
+    "failure": 0.0,
+    "steps_mean": 709.0
+   },
+   "entry_probe": {
+    "n": 45,
+    "reach": 0.4666666666666667,
+    "timeout": 0.5333333333333333,
+    "failure": 0.0,
+    "steps_mean": 677.9555555555555
+   },
+   "critic_at_reset_rows": {
+    "best_detour_minus_f_mode": 0.6019062399864197,
+    "P_best_detour_above_mode": 0.96875,
+    "best_detour_minus_f_logged": 0.9653474688529968,
+    "P_best_detour_above_logged": 0.9947916666666666
+   },
+   "mode_at_reset_rows": {
+    "dist_to_start_mode": 3.1439425945281982,
+    "dist_to_cf_final_mode": 1.0315443277359009,
+    "cos_to_best_detour_direction": 0.711441695690155
+   },
+   "wall_seconds": 11.123556852340698
+  },
+  "5000": {
+   "step": 5000,
+   "ckpt": "outputs/antmaze_branch_replay_p050/exp_mainline_pilot/diag_replay/spike/CF_s0/frozen_critic/final.pkl",
+   "route_probe": {
+    "n": 300,
+    "turned_north": 0.1,
+    "success_within_probe": 0.0,
+    "failure_within_probe": 0.43666666666666665,
+    "max_y_mean": 0.7816478062421084
+   },
+   "walking_probe": {
+    "n": 4,
+    "reach": 0.5,
+    "timeout": 0.5,
+    "failure": 0.0,
+    "steps_mean": 688.5
+   },
+   "entry_probe": {
+    "n": 45,
+    "reach": 0.5555555555555556,
+    "timeout": 0.4444444444444444,
+    "failure": 0.0,
+    "steps_mean": 641.7777777777778
+   },
+   "critic_at_reset_rows": {
+    "best_detour_minus_f_mode": 0.5746808648109436,
+    "P_best_detour_above_mode": 0.96875,
+    "best_detour_minus_f_logged": 0.9653474688529968,
+    "P_best_detour_above_logged": 0.9947916666666666
+   },
+   "mode_at_reset_rows": {
+    "dist_to_start_mode": 3.3291542530059814,
+    "dist_to_cf_final_mode": 1.1137514114379883,
+    "cos_to_best_detour_direction": 0.7333899140357971
+   },
+   "wall_seconds": 10.876497030258179
+  }
+ }
+}

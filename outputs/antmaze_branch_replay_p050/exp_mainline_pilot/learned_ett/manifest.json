@@ -1,0 +1,94 @@
+{
+ "experiment": "AntMaze V6 mainline: oracle-label-trained learned ETT (cross-fitted) and the arm CF-learned under the sealed critic_clip0.1 recipe",
+ "sealed_at": "2026-09-19 17:00:18",
+ "git_head": "unavailable (Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128.)",
+ "status": "ENGINEERING INTERMEDIATE EXPERIMENT (user, 2026-09-19): the ETT model is supervised on the pilot's simulator branches, so it tests whether a learned generator of the critic's positive futures can replace the simulator in arm CF and keep the gain -- NOT whether such a model can be identified from the logged data alone (the logged continuations are the teacher's).  Reported as \"oracle-label-trained learned ETT\".",
+ "inputs": {
+  "anchors_sha256": "d6672a7dd70d9596944c9522d7d1cf887204847d34e3348d6e041c8d29d68367",
+  "branches_sha256": "503051d35287645b37cca39f43ec2ffb0f026148d10229219496cd06a58b53a4",
+  "start_ckpt_sha256": "6a67dbbdffe817eb0d0ed4984be325c0dabc4d4158578026e9b3bb00bee5f0a9",
+  "recipe_manifest_sha256": "5bf2df970d2cee5da47b8e3437e9d8690e7b024c7d105f0798462ff16ee2c280",
+  "recipe": "critic_clip0.1",
+  "recipe_overrides": {
+   "critic_clip": 0.1
+  },
+  "base_pilot_manifest_sha256": "d7092bb5401db400e4b24dfe4c617b266324935005441f9dd0aeb4de59e364a6"
+ },
+ "model": {
+  "input_full": "29-dim Ant state (standardised on the training anchors) + 8-dim logged torque",
+  "input_xy_reference": "the anchor's xy only (position-only reference, not used by the arm)",
+  "heads": {
+   "marginal": "p_gamma(g | s, a): categorical over 58 x 26 = 1508 cells of 0.5 (x [-2.5, 26.5], y [-2.5, 10.5]); training sampler = the pilot's future law (P(m) ~ gamma^m, gamma 0.999, truncated at the branch end)",
+   "horizons": {
+    "h10": "absorbing position 10 steps after the query, path[min(10, len - 1)]",
+    "h50": "absorbing position 50 steps after the query, path[min(50, len - 1)]",
+    "h200": "absorbing position 200 steps after the query, path[min(200, len - 1)]"
+   },
+   "outcome": [
+    "success",
+    "death",
+    "timeout"
+   ]
+  },
+  "fit": {
+   "hidden": [
+    1024,
+    1024
+   ],
+   "batch": 4096,
+   "steps": 40000,
+   "lr": 0.0003,
+   "val_every": 1000,
+   "val_pairs": 100000,
+   "val_seed": 162000000,
+   "sample_seed": 163000000
+  },
+  "anchor_sampling": "by anchor weight (multiplicity), as the critic stream",
+  "early_stopping": "best held-out marginal NLL over the validation checks (held-out episodes of the training folds); no other selection"
+ },
+ "cross_fitting": {
+  "n_folds": 3,
+  "fold_seed": 161000001,
+  "unit": "source episode (merged-pool id)",
+  "es_fraction_of_training_episodes": 0.1,
+  "rule": "model f: train on folds != f minus the early-stop slice, early-stop on that slice, GENERATE for fold f",
+  "anchors_per_fold": [
+   17843,
+   18235,
+   17669
+  ],
+  "weight_per_fold": [
+   0.3326833333333334,
+   0.3379833333333334,
+   0.32933333333333337
+  ],
+  "es_anchors_per_fold": [
+   1822,
+   1910,
+   1812
+  ]
+ },
+ "checks_before_the_arm": [
+  "held-out marginal NLL (exact expectation over the oracle path under the truncated geometric law), full vs xy-only reference",
+  "region-mass agreement per anchor (L1 over the maze regions) vs the oracle path, by anchor stratum (reset / own region / detour vs shortcut episode)",
+  "death: outcome-head P(death) vs the oracle branch outcome (AUC); hazard-zone and far-route masses vs the oracle",
+  "horizon heads: NLL and expected-position error at m = 10 / 50 / 200"
+ ],
+ "arm": {
+  "name": "CFL",
+  "futures": "LearnedFutures over futures_learned.npz (one cell draw by the stream's future uniform, uniform jitter inside the cell from the source's own RNG)",
+  "everything_else": "the sealed critic_clip0.1 recipe: same anchors and weights, actor stream and seeds, start-agent initialisation, fresh paired critics, 30,000 updates, evaluation seed 3909 mode",
+  "next_rows": "the recorded next rows (unused by the Monte-Carlo NCE loss; Transition layout only)"
+ },
+ "comparisons": {
+  "primary": "CFL - O(critic_clip0.1) success, paired per episode; rule: mean over the 3 paired seeds > 2 x seed s.e. and 3/3",
+  "practical": "CFL - start success (required separately)",
+  "kept": "CFL - CF(critic_clip0.1, oracle) success with its seed s.e.: how much of the oracle gain the learned generator keeps",
+  "reported": "success, detour, death, timeout, hazard / no-hazard success, the route ledger"
+ },
+ "no_selection": "one model family, one fold seed, one arm; the final checkpoints evaluated once on the development draw; nothing chosen after the result",
+ "reading": {
+  "kept": "CFL - O meets the rule -> the interface holds: a learned generator of positive futures (here oracle-label-trained) carries the gain",
+  "not_kept": "CFL - O does not meet the rule -> the loss lies between the oracle branches and the learned marginal (the checks say where)"
+ }
+}

@@ -1,0 +1,563 @@
+{
+ "logged_one_step_replay": {
+  "restore_maxdiff": {
+   "n": 3000,
+   "median": 0.0,
+   "p90": 0.0,
+   "p99": 0.0,
+   "max": 0.0
+  },
+  "step_maxdiff_all": {
+   "n": 3000,
+   "median": 2.384185791015625e-07,
+   "p90": 9.5367431640625e-07,
+   "p99": 1.9073486328125e-06,
+   "max": 0.05640709400177002
+  },
+  "step_maxdiff_outside_bursts": {
+   "n": 2236,
+   "median": 2.384185791015625e-07,
+   "p90": 1.9073486328125e-06,
+   "p99": 1.9073486328125e-06,
+   "max": 0.05640709400177002
+  },
+  "step_maxdiff_inside_bursts": {
+   "n": 764,
+   "median": 1.6205012798309326e-07,
+   "p90": 8.195638656616414e-07,
+   "p99": 9.5367431640625e-07,
+   "max": 9.5367431640625e-07
+  },
+  "rows_exact_1e-5_outside_bursts": 2235,
+  "rows_exact_1e-5_inside_bursts": 764
+ },
+ "branch_first_row_vs_logged_next": {
+  "n": 53747,
+  "maxdiff_all": {
+   "n": 53747,
+   "median": 2.384185791015625e-07,
+   "p90": 9.5367431640625e-07,
+   "p99": 1.9073486328125e-06,
+   "max": 0.16431689262390137
+  },
+  "maxdiff_no_burst_either_context": {
+   "n": 31266,
+   "median": 2.384185791015625e-07,
+   "p90": 1.9073486328125e-06,
+   "p99": 1.9073486328125e-06,
+   "max": 0.16431689262390137
+  },
+  "maxdiff_burst_in_either": {
+   "n": 22481,
+   "median": 2.384185791015625e-07,
+   "p90": 9.5367431640625e-07,
+   "p99": 1.9073486328125e-06,
+   "max": 4.239639383740723e-05
+  },
+  "rows_exact_1e-5_no_burst": 31264,
+  "rows_exact_1e-5_burst": 22480,
+  "burst_context_available": true
+ },
+ "sample_rows": [
+  {
+   "episode": 397,
+   "t": 152,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.4210984033979912e-07,
+   "step_xy_diff": 7.450580596923828e-09,
+   "burst_any": true,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 929,
+   "t": 1,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 2.384185791015625e-07,
+   "step_xy_diff": 7.450580596923828e-09,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 794,
+   "t": 276,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 2.384185791015625e-07,
+   "step_xy_diff": 0.0,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 675,
+   "t": 91,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 2.7567148208618164e-07,
+   "step_xy_diff": 0.0,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 588,
+   "t": 207,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.73225998878479e-07,
+   "step_xy_diff": 0.0,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 373,
+   "t": 203,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.1920928955078125e-07,
+   "step_xy_diff": 0.0,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 187,
+   "t": 183,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.7881393432617188e-07,
+   "step_xy_diff": 7.450580596923828e-09,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 167,
+   "t": 116,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.341104507446289e-07,
+   "step_xy_diff": 0.0,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 444,
+   "t": 88,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 9.5367431640625e-07,
+   "step_xy_diff": 9.53682501858566e-07,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 729,
+   "t": 175,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.1920928955078125e-07,
+   "step_xy_diff": 7.450580596923828e-09,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 81,
+   "t": 121,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 9.5367431640625e-07,
+   "step_xy_diff": 9.5367431640625e-07,
+   "burst_any": true,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 227,
+   "t": 137,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 9.5367431640625e-07,
+   "step_xy_diff": 9.5367431640625e-07,
+   "burst_any": true,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 125,
+   "t": 31,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 2.682209014892578e-07,
+   "step_xy_diff": 2.3853496600168e-07,
+   "burst_any": true,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 243,
+   "t": 270,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 2.5331974029541016e-07,
+   "step_xy_diff": 0.0,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 42,
+   "t": 153,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 2.384185791015625e-07,
+   "step_xy_diff": 0.0,
+   "burst_any": true,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 276,
+   "t": 252,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 2.384185791015625e-07,
+   "step_xy_diff": 1.4901161193847656e-08,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 917,
+   "t": 139,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 9.5367431640625e-07,
+   "step_xy_diff": 9.536747711536009e-07,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 677,
+   "t": 106,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 9.5367431640625e-07,
+   "step_xy_diff": 9.5367431640625e-07,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 80,
+   "t": 189,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 3.213062882423401e-07,
+   "step_xy_diff": 3.725290298461914e-09,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 453,
+   "t": 220,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.9073486328125e-06,
+   "step_xy_diff": 1.907352270791307e-06,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 939,
+   "t": 151,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 7.264316082000732e-08,
+   "step_xy_diff": 1.4901161193847656e-08,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 753,
+   "t": 233,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 9.5367431640625e-07,
+   "step_xy_diff": 9.5367431640625e-07,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 832,
+   "t": 82,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 9.5367431640625e-07,
+   "step_xy_diff": 9.53790731728077e-07,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 148,
+   "t": 160,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.6391277313232422e-07,
+   "step_xy_diff": 0.0,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 603,
+   "t": 72,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.2286182027310133e-07,
+   "step_xy_diff": 1.4901161193847656e-08,
+   "burst_any": true,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 875,
+   "t": 173,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 9.5367431640625e-07,
+   "step_xy_diff": 9.5367431640625e-07,
+   "burst_any": true,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 592,
+   "t": 249,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.2418604455888271e-07,
+   "step_xy_diff": 0.0,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 485,
+   "t": 29,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 2.384185791015625e-07,
+   "step_xy_diff": 3.725290298461914e-09,
+   "burst_any": true,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 623,
+   "t": 165,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.7881393432617188e-07,
+   "step_xy_diff": 7.450580596923828e-09,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 461,
+   "t": 12,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.4202669262886047e-07,
+   "step_xy_diff": 0.0,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 278,
+   "t": 274,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 2.980232238769531e-07,
+   "step_xy_diff": 0.0,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 644,
+   "t": 237,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.3737007975578308e-07,
+   "step_xy_diff": 0.0,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 330,
+   "t": 132,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.4736360753886402e-07,
+   "step_xy_diff": 1.4901161193847656e-08,
+   "burst_any": true,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 17,
+   "t": 120,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 9.5367431640625e-07,
+   "step_xy_diff": 9.536761353956535e-07,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 780,
+   "t": 45,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.4516990631818771e-07,
+   "step_xy_diff": 0.0,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 824,
+   "t": 96,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 9.5367431640625e-07,
+   "step_xy_diff": 9.5367431640625e-07,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 848,
+   "t": 133,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.7881393432617188e-07,
+   "step_xy_diff": 7.450580596923828e-09,
+   "burst_any": true,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 2,
+   "t": 55,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.7881393432617188e-07,
+   "step_xy_diff": 0.0,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 884,
+   "t": 85,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.1920928955078125e-07,
+   "step_xy_diff": 0.0,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 616,
+   "t": 65,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 4.76837158203125e-07,
+   "step_xy_diff": 4.76837158203125e-07,
+   "burst_any": true,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 398,
+   "t": 166,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.9073486328125e-06,
+   "step_xy_diff": 1.907356818264816e-06,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 554,
+   "t": 225,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.9073486328125e-06,
+   "step_xy_diff": 1.9074068404734135e-06,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 679,
+   "t": 97,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.1920928955078125e-07,
+   "step_xy_diff": 0.0,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 121,
+   "t": 169,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.9073486328125e-06,
+   "step_xy_diff": 1.9073631847277284e-06,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 728,
+   "t": 271,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.9073486328125e-06,
+   "step_xy_diff": 1.9073486328125e-06,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 628,
+   "t": 140,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.73225998878479e-07,
+   "step_xy_diff": 7.450580596923828e-09,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 869,
+   "t": 202,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 2.7194619178771973e-07,
+   "step_xy_diff": 0.0,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 186,
+   "t": 18,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 2.384185791015625e-07,
+   "step_xy_diff": 0.0,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 28,
+   "t": 108,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.862645149230957e-07,
+   "step_xy_diff": 0.0,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  },
+  {
+   "episode": 559,
+   "t": 247,
+   "restore_maxdiff": 0.0,
+   "step_maxdiff": 1.7881393432617188e-07,
+   "step_xy_diff": 0.0,
+   "burst_any": false,
+   "done": false,
+   "reward": 0.0
+  }
+ ]
+}

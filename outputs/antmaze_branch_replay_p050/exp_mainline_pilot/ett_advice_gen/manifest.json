@@ -1,0 +1,77 @@
+{
+ "experiment": "AntMaze V6 one-step ETT: the advice generator (state + own history + persistent hidden hazard context), fitted on the branch supervision; motion model and onset head frozen (v3)",
+ "sealed_at": "2026-09-20 09:56:37",
+ "git_head": "unavailable (Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128.)",
+ "status": "oracle-supervised engineering revision (the advice supervision and the branch contexts come from the simulator); nothing downstream generated",
+ "supervision_sha256": "1d51cfda15d97dd6b89c3e5a0d44bcbc8b1a466539d26665aa4dd78638ba873f",
+ "branch_advice_sha256": "589992ffff15af4ba975c26ef9417a026247626ed8745963301270008cc78667",
+ "v3_models": {
+  "fold0": "66a123f32cead79566dd36949c0c663499298439d115536ffefc468dcfc6bbbe",
+  "fold1": "7eac235de01041928fbcf012d4911e4eacf660abdec1123aaecb5dbdea01868d",
+  "fold2": "f6bee4241e7be51fab0f5fb71bc538744c684dfe92425467a51711e79fd74c3b"
+ },
+ "context": {
+  "observed_in_training": "the branch's redrawn timetable (u1, u2, t0_1, t0_2)",
+  "prior_at_generation": {
+   "p_active": 0.5,
+   "t0_1": [
+    10,
+    45
+   ],
+   "t0_2": [
+    90,
+    125
+   ]
+  },
+  "burst_length": 72,
+  "never_read": "the evaluation episode's actual hidden draw"
+ },
+ "inputs": "standardised state (29), goal xy (2), t / 800, u1, u2, (t - t0_z) / 72 clipped [-3, 4], in-burst flags (2), exact history counters (2), previous advice hold flag (1) and torque (8); teacher-forced in training, own at generation",
+ "outputs": "P(hold); driving torque MDN (k 5) on non-hold rows",
+ "fit": {
+  "hidden": [
+   256,
+   256
+  ],
+  "k": 5,
+  "steps": 20000,
+  "batch": 4096,
+  "lr": 0.0003,
+  "seed": 0,
+  "min_log_std": -5.0
+ },
+ "folds": "the supervision folds (source episode); fold f held out; fixed final iterate, no selection",
+ "hold_definition": "max |a_b| < 0.05; a generated hold is the exact zero torque",
+ "gates": {
+  "E1_in_band_auroc_true_context": 0.9,
+  "E1_ece": 0.05,
+  "E1_region_hold_share_abs_gap": 0.02,
+  "E2a_p_hold_given_hold_abs_gap": 0.05,
+  "E2a_run_median_rel_gap": 0.3,
+  "E2a_death_rate_vs_real_advice_abs_gap": 0.03,
+  "E2a_death_auroc": 0.9,
+  "E2a_death_time_ks": 0.15,
+  "E2b_never_hold_regions_max_share": 0.01
+ },
+ "gate_regions": [
+  "pre_zone1",
+  "zone1",
+  "between",
+  "zone2"
+ ],
+ "never_hold_regions": [
+  "start",
+  "west_column",
+  "top_corridor",
+  "east_column",
+  "goal_area"
+ ],
+ "E2b_not_gated": "in-band and hazard-region hold shares under the prior context (reported only): the real rows are selected by the real context, so they are not a row-for-row target; the distributional test is the rollout",
+ "checks": {
+  "E1": "true context, teacher-forced history, held-out rows",
+  "E2a": "true context, autoregressive along the real held-out branch states; frozen onset head -> P(death), compared with the REAL advice through the same head along the same censored rows; hold persistence and run length like for like",
+  "E2b": "prior context (4 draws per path, seed 205000000), autoregressive; support gate (no holds where the real advice never holds); the rest reported (censored, context distribution)"
+ },
+ "gate_revision": "the first v3 fold results showed the original E2a death-rate gate (censored integral vs realised rate) and the E2b persistence gates (prior context vs real) were not like for like; corrected as documented in the code (GATES) before any rollout",
+ "decision": "all gates in every fold -> the full rollout diag_v6_ett_rollout.py --v3 --hist-exact --variant B (prior context, K = 4 draws per anchor); otherwise stop and report"
+}

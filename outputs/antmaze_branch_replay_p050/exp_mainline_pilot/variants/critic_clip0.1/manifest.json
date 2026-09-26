@@ -1,0 +1,24 @@
+{
+ "variant": "critic_clip0.1",
+ "change": {
+  "critic_clip": 0.1
+ },
+ "note": "optax.clip_by_global_norm(0.1) on the critic gradient before Adam (optax.chain), both arms identically; NCE, actor loss, bc 0.05, learning rates, Adam and everything else unchanged.  Threshold from the spike trace: pre-spike critic gradient norms median 0.017 / 0.033, p99 ~0.055 / 0.096; the triggering impulses 0.92 / 2.53.  An optimizer-stabilisation change, disclosed as such -- not the original learner",
+ "sealed_at": "2026-09-19 15:16:30",
+ "git_head": "unavailable (Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128.)",
+ "base_pilot_manifest_sha256": "d7092bb5401db400e4b24dfe4c617b266324935005441f9dd0aeb4de59e364a6",
+ "anchors_sha256": "d6672a7dd70d9596944c9522d7d1cf887204847d34e3348d6e041c8d29d68367",
+ "branches_sha256": "503051d35287645b37cca39f43ec2ffb0f026148d10229219496cd06a58b53a4",
+ "start_ckpt_sha256": "6a67dbbdffe817eb0d0ed4984be325c0dabc4d4158578026e9b3bb00bee5f0a9",
+ "held_fixed": "dataset, anchors and weights, CF branches, critic and actor streams and seeds, losses (NCE + actor loss, bc 0.05, random_goals 0), critic learning rate 3e-4, twin-Q architecture, initialisation (fresh paired critics, actor from the start agent), 30,000 optimizer updates, gamma 0.999, evaluation (300 natural draws, seed 3909, mode); both arms O and CF, seeds 0-2",
+ "motivation": "diag_replay/spike/SUMMARY.md: the walking collapses are critic runaways -- one critic gradient impulse on an ordinary batch, Adam keeps x10-15 steps, all logits shift down on fixed data, the actor is dragged 12-20 updates later; with the critic frozen the actor does not collapse.  Both arms have the events.  First remedy: clip the critic gradient (global norm 0.1) before Adam, identically in O and CF; not a proven fix, disclosed as an optimizer-stabilisation change.",
+ "criteria": {
+  "0_training_stability": "no logged spike in any of the 6 runs: every 500-update log row has critic loss < 0.02 and mean positive logit > -20 (the base runs: CF 0.133 / 0.120 / 0.362 at 4.5k / 2.5k / 6.5k, O s1 0.21 at 8k); and the critic still learns (critic loss at 30k at the base level ~0.007, categorical accuracy comparable)",
+  "1_primary": "CF(variant) - O(variant) success on the 300 common episodes, per paired seed; rule: mean > 2 x seed s.e. and 3/3",
+  "2_detour": "CF(variant) - O(variant) detour rate 3/3 positive; death / timeout / hazard success reported",
+  "3_vs_base": "CF(variant) - CF(base) and O(variant) - O(base) success and timeout (does the stabilisation remove the walking loss?)",
+  "4_continuation": "from the SAME detour-entrance handover states of diag_traj (cont.json enter_detour): reach rate of CF(variant) vs CF(base) and the start policy",
+  "readings": "no spikes + walking kept + detour and success up = the runaway was the limit; no spikes + walking kept + no detour = a route-learning question, to be examined without training collapses; spikes remain = the clip does not bound the Adam step, next candidate is a bound on the actual update"
+ },
+ "no_selection": "the variant is evaluated once with its final checkpoint; no tuning of the rate after seeing the result"
+}

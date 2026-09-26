@@ -1,0 +1,64 @@
+{
+ "diagnostic": "AntMaze V6: task-goal target support per candidate action on the stage-1 query futures, current vs absorbing termination law (no rollouts, no training)",
+ "sealed_at": "2026-09-20 03:19:02",
+ "git_head": "unavailable (Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128.)",
+ "anchors_sha256": "d6672a7dd70d9596944c9522d7d1cf887204847d34e3348d6e041c8d29d68367",
+ "inputs": {
+  "queries": {
+   "seed_0": "8fc23e52c5e2fd5e0a5760b085b91ccd14fa34595d8eed848470649ed86f45de",
+   "seed_1": "359b0cf506d3f34bb7c5169c6cb89844aad78ce07342eda6d0a601fb99024ed7",
+   "seed_2": "dd1c766fd19a837bcb62326fcf95c2447b4e98394e1effdcfd20acbfb448a611"
+  },
+  "branches_cf": "503051d35287645b37cca39f43ec2ffb0f026148d10229219496cd06a58b53a4"
+ },
+ "states": {
+  "n_start_anchors": 4276,
+  "weight": 0.07943333333333336,
+  "n_reset": 196,
+  "weight_reset": 0.003783333333333334
+ },
+ "laws": {
+  "current": "P(m) ~ gamma^m over m = 1..L-1 (CriticStream.draw; each path normalised over its own rows)",
+  "absorbing": "P(m) ~ gamma^m over m = 1..H, H = HORIZON - t; rows m >= L-1 of a success / death branch are the branch's actual terminal row; a timeout (L-1 == H) is unchanged.  No relabelling: no death filled in as a goal, no reach position replaced by the goal centre, success and death both get the tail",
+  "gamma": 0.999,
+  "horizon": 800
+ },
+ "goal_sets": {
+  "reach_0.5": "||xy - task goal|| <= 0.5",
+  "within_1": "||xy - task goal|| <= 1.0",
+  "within_2": "||xy - task goal|| <= 2.0",
+  "goal_area": "the maze region (exp_v6_learned_ett.region_of)"
+ },
+ "primary_goal_set": "reach_0.5",
+ "secondary_goal_set": "goal_area",
+ "marginal": "anchor-weighted mean of the per-anchor law over ALL 53,747 anchors: the CF sealed branch table (what the lineage critics trained on) and the recorded futures (arm O); the law of the NCE negatives",
+ "weights": "anchor weight (the critic anchor law); unweighted (per-anchor equal) in report.json",
+ "strata": [
+  "all_start",
+  "reset",
+  "t_1_30",
+  "t_ge_30"
+ ],
+ "primary_stratum": "reset",
+ "route_classes": "a query is far-going if its future entered the far route in BOTH draws, short-going if in neither; mixed queries are excluded from R4 and their share reported",
+ "read_outs": {
+  "R1": "per query: success, far completion, death, timeout, expected task-goal mass under both laws",
+  "R2": "within (anchor, draw) pairs of queries with different outcome classes: P(mass_good > mass_bad), mean difference, ratio of means",
+  "R3": "per anchor: concordance across the six queries between the success rate (two draws) and the expected mass; top-1 agreement",
+  "R4": "per anchor with both route classes: delta success (far - short) vs delta expected task-goal mass under both laws; paired-by-anchor bootstrap; sign agreement (PRIMARY)"
+ },
+ "bootstrap": {
+  "paired_by": "anchor",
+  "resamples": 2000,
+  "seed": 149000001
+ },
+ "judgement": {
+  "J1_current_weakens_or_reverses": "in the reset stratum, reach_0.5: far-going queries succeed more (delta_success mean > 0, CI lower bound > 0) while under the CURRENT law delta_mass is not above zero (CI covers 0 or lies below) OR p_sign_agree_given_far_better < 0.5",
+  "J2_absorbing_improves": "under the ABSORBING law delta_mass mean > 0 with CI lower bound > 0 AND p_sign_agree_given_far_better above the current law's",
+  "decision": {
+   "J1 and J2 in every lineage": "the user's option 1: a small O / CF mainline comparison with the same termination handling in both arms (NCE, BC 0.05, actor data, weights, budget unchanged; disclosed as a changed future law) -- the user's call",
+   "otherwise": "the user's option 2: the termination rule is not a found cause; the problem stays in how the learner / policy update uses the target; stop this hypothesis"
+  },
+  "secondary": "R3 concordance and top-1 agreement (both laws); R2 far_success vs short_success (the pure speed penalty) -- reported, not part of the rule"
+ }
+}

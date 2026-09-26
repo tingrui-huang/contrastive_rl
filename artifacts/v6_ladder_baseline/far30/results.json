@@ -1,0 +1,109 @@
+{
+  "teacher_detour_prob": 0.3,
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "steps": 100000,
+  "bc_coef": 0.05,
+  "fail_neg_alpha": 0.0,
+  "eval_n": 300,
+  "eval_seed": 909,
+  "action_seed": 9909,
+  "per_seed": {
+    "0": {
+      "mean": {
+        "success": 0.37,
+        "failure": 0.63,
+        "timeout": 0.0,
+        "shortcut": 0.9633,
+        "detour": 0.0,
+        "no_route": 0.0367,
+        "mean_steps": 139.1767,
+        "ckpt_step": 100000,
+        "n": 300
+      },
+      "sample": {
+        "success": 0.3733,
+        "failure": 0.6167,
+        "timeout": 0.01,
+        "shortcut": 0.9733,
+        "detour": 0.0167,
+        "no_route": 0.01,
+        "mean_steps": 154.1733,
+        "ckpt_step": 100000,
+        "n": 300
+      },
+      "run_dir": "artifacts\\v6_failneg\\runs\\v6fn_a0_s0_100k_gxy_p0.4-0.4_h800_far30"
+    },
+    "1": {
+      "mean": {
+        "success": 0.37,
+        "failure": 0.63,
+        "timeout": 0.0,
+        "shortcut": 0.9767,
+        "detour": 0.0,
+        "no_route": 0.0233,
+        "mean_steps": 139.2033,
+        "ckpt_step": 100000,
+        "n": 300
+      },
+      "sample": {
+        "success": 0.37,
+        "failure": 0.63,
+        "timeout": 0.0,
+        "shortcut": 0.9767,
+        "detour": 0.0,
+        "no_route": 0.0233,
+        "mean_steps": 140.8233,
+        "ckpt_step": 100000,
+        "n": 300
+      },
+      "run_dir": "artifacts\\v6_failneg\\runs\\v6fn_a0_s1_100k_gxy_p0.4-0.4_h800_far30"
+    },
+    "2": {
+      "mean": {
+        "success": 0.37,
+        "failure": 0.63,
+        "timeout": 0.0,
+        "shortcut": 0.9867,
+        "detour": 0.0,
+        "no_route": 0.0133,
+        "mean_steps": 139.21,
+        "ckpt_step": 100000,
+        "n": 300
+      },
+      "sample": {
+        "success": 0.3767,
+        "failure": 0.62,
+        "timeout": 0.0033,
+        "shortcut": 0.9733,
+        "detour": 0.0,
+        "no_route": 0.0267,
+        "mean_steps": 147.9033,
+        "ckpt_step": 100000,
+        "n": 300
+      },
+      "run_dir": "artifacts\\v6_failneg\\runs\\v6fn_a0_s2_100k_gxy_p0.4-0.4_h800_far30"
+    }
+  },
+  "mean_over_seeds": {
+    "mean": {
+      "success": 0.36999999999999994,
+      "failure": 0.63,
+      "timeout": 0.0,
+      "shortcut": 0.9755666666666668,
+      "detour": 0.0,
+      "no_route": 0.024433333333333335
+    },
+    "sample": {
+      "success": 0.37333333333333335,
+      "failure": 0.6222333333333333,
+      "timeout": 0.004433333333333333,
+      "shortcut": 0.9744333333333334,
+      "detour": 0.005566666666666667,
+      "no_route": 0.02
+    }
+  }
+}

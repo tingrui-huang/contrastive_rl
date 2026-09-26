@@ -1,0 +1,21 @@
+{
+ "variant": "actor_lr1e-4",
+ "change": {
+  "actor_learning_rate": 0.0001
+ },
+ "sealed_at": "2026-09-19 09:23:58",
+ "git_head": "unavailable (Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128.)",
+ "base_pilot_manifest_sha256": "d7092bb5401db400e4b24dfe4c617b266324935005441f9dd0aeb4de59e364a6",
+ "anchors_sha256": "d6672a7dd70d9596944c9522d7d1cf887204847d34e3348d6e041c8d29d68367",
+ "branches_sha256": "503051d35287645b37cca39f43ec2ffb0f026148d10229219496cd06a58b53a4",
+ "start_ckpt_sha256": "6a67dbbdffe817eb0d0ed4984be325c0dabc4d4158578026e9b3bb00bee5f0a9",
+ "held_fixed": "dataset, anchors and weights, CF branches, critic and actor streams and seeds, losses (NCE + actor loss, bc 0.05, random_goals 0), critic learning rate 3e-4, twin-Q architecture, initialisation (fresh paired critics, actor from the start agent), 30,000 optimizer updates, gamma 0.999, evaluation (300 natural draws, seed 3909, mode); both arms O and CF, seeds 0-2",
+ "motivation": "diag_traj sections 3 and 7: the CF update lost local walking competence on states the pre-update policy still completes (19 O-finishes-CF-not handover pairs, start policy finishes 13); a slower actor update is the direct candidate that leaves the CRL objective unchanged.  Not a proven fix; cannot repair critic blind spots.",
+ "criteria": {
+  "1_native_success": "CF(variant) - CF(base) success on the 300 common episodes, per paired seed; rule: mean > 2 x seed s.e. and 3/3 (also reported vs O(variant) and vs start)",
+  "2_detour_gain_kept": "CF(variant) detour rate not below CF(base) by more than 2 x seed s.e. (and CF(variant) - O(variant) detour still 3/3 positive)",
+  "3_continuation_recovered": "from the SAME detour-entrance handover states of diag_traj (cont.json enter_detour, 42 + 12 + 4 states): reach rate of CF(variant) vs CF(base) and vs the start policy, per seed; recovered = CF(variant) >= start on those states and > CF(base)",
+  "failure_readings": "walks well but no detours = not a fix; continuation recovered and detour kept = an actionable handle; still stalls = not the update speed"
+ },
+ "no_selection": "the variant is evaluated once with its final checkpoint; no tuning of the rate after seeing the result"
+}

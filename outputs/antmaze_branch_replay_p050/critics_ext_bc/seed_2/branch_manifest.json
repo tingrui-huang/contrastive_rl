@@ -1,0 +1,39 @@
+{
+  "arm": "branch_critic",
+  "env_name": "offline_antmaze_rockfall_clock_v6_gxy",
+  "dataset": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/replay_policy_ext_bc.npz",
+  "dataset_sha256": "5659635c5ca4187b7a310423e94dae9fdcb772818a3d980e3f9b7d6f25fae197",
+  "discount": 0.999,
+  "steps": 30000,
+  "batch_size": 1024,
+  "twin_q": true,
+  "bc_coef": 0.05,
+  "bc_sampling": "shared",
+  "bc_dataset": "",
+  "bc_balance_region": "action",
+  "horizon": 800,
+  "p_active": [
+    0.5,
+    0.5
+  ],
+  "t0_ranges": [
+    [
+      10,
+      45
+    ],
+    [
+      90,
+      125
+    ]
+  ],
+  "note": "discount 0.999 deviates from the frozen V6 recipe (0.99) on purpose: plan section 0",
+  "dataset_stem": "antmaze_rockfall_clock_v6_p050_d20",
+  "p_active_env": 0.5,
+  "wall_seconds": 503.3849267959595,
+  "milestones": [
+    10000,
+    20000
+  ],
+  "anchor_weights": "uniform",
+  "critic_init": null
+}

@@ -1,0 +1,94 @@
+{
+ "per_seed": {
+  "CF_s1": {
+   "critic_action_gradient_at_prestall_states": {
+    "n_states": 31,
+    "grad_norm_mean": 0.8827091455459595,
+    "proj_toward_O_mean": 0.001135616097599268,
+    "P_proj_toward_O_positive": 0.5161290322580645,
+    "proj_toward_start_mean": 0.01497420109808445,
+    "P_proj_toward_start_positive": 0.5483870967741935,
+    "proj_along_drift_mean (a_CF - a_start)": -0.01497420109808445,
+    "dist_CF_O": 0.8742285370826721,
+    "dist_CF_start": 0.9254258275032043,
+    "grad_norm_mean_at_reset_rows": 1.4970874786376953
+   },
+   "real_actor_step_induced_mode_change_at_prestall_states": {
+    "all": {
+     "n": 16,
+     "share": 1.0,
+     "dm_norm": 0.009827832196606323,
+     "proj_drift": 0.00015268581159944006,
+     "proj_toward_O": 0.0007006089208516642
+    },
+    "start": {
+     "n": 16,
+     "share": 0.08441162109375,
+     "dm_norm": 0.000622269682935439,
+     "proj_drift": -5.8200926275731035e-05,
+     "proj_toward_O": 5.932578014267165e-05
+    },
+    "shortcut_corridor": {
+     "n": 16,
+     "share": 0.87176513671875,
+     "dm_norm": 0.009500441054115072,
+     "proj_drift": 0.00021944263619388948,
+     "proj_toward_O": 0.0006290980603580465
+    },
+    "detour_legs": {
+     "n": 16,
+     "share": 0.0438232421875,
+     "dm_norm": 0.00031206753101287177,
+     "proj_drift": 3.4224654896775064e-06,
+     "proj_toward_O": 2.980887778392116e-06
+    }
+   },
+   "note": "SGD probe step of size actor lr on one real actor batch (Adam preconditioning not applied); projections are mean cosine-scaled components along (a_CF - a_start) (the drift) and (a_O - a_CF)"
+  },
+  "CF_s2": {
+   "critic_action_gradient_at_prestall_states": {
+    "n_states": 642,
+    "grad_norm_mean": 0.6762727499008179,
+    "proj_toward_O_mean": 0.007527297828346491,
+    "P_proj_toward_O_positive": 0.5093457943925234,
+    "proj_toward_start_mean": -0.030545733869075775,
+    "P_proj_toward_start_positive": 0.4719626168224299,
+    "proj_along_drift_mean (a_CF - a_start)": 0.030545733869075775,
+    "dist_CF_O": 0.7187020182609558,
+    "dist_CF_start": 0.7676862478256226,
+    "grad_norm_mean_at_reset_rows": 1.9088835716247559
+   },
+   "real_actor_step_induced_mode_change_at_prestall_states": {
+    "all": {
+     "n": 16,
+     "share": 1.0,
+     "dm_norm": 0.008683619264047593,
+     "proj_drift": -0.0007903329133114312,
+     "proj_toward_O": 0.0008506564372510184
+    },
+    "start": {
+     "n": 16,
+     "share": 0.0797119140625,
+     "dm_norm": 0.0007426909687637817,
+     "proj_drift": -5.38683843274157e-05,
+     "proj_toward_O": 5.55756855646905e-05
+    },
+    "shortcut_corridor": {
+     "n": 16,
+     "share": 0.87689208984375,
+     "dm_norm": 0.007980003108968958,
+     "proj_drift": -0.0006953998345125001,
+     "proj_toward_O": 0.0007509760071116034
+    },
+    "detour_legs": {
+     "n": 16,
+     "share": 0.04339599609375,
+     "dm_norm": 0.00041125483221549075,
+     "proj_drift": -2.6004974913007572e-05,
+     "proj_toward_O": 3.4258405335663156e-05
+    }
+   },
+   "note": "SGD probe step of size actor lr on one real actor batch (Adam preconditioning not applied); projections are mean cosine-scaled components along (a_CF - a_start) (the drift) and (a_O - a_CF)"
+  }
+ }
+}

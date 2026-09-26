@@ -1,0 +1,315 @@
+{
+ "fold": 2,
+ "held_out_rows": 600000,
+ "E1": {
+  "hold_share_real": 0.04085166666666667,
+  "hold_share_pred_mean": 0.040381440393944736,
+  "ece": 0.0006258687702328264,
+  "auroc_all": 0.99988698763838,
+  "auroc_in_band": 0.9994046434173104,
+  "auroc_out_of_band": 0.999950977676784,
+  "torque_nll_non_hold_rows": -12.973227689905698,
+  "by_region": {
+   "start": {
+    "real": 0.0,
+    "pred": 0.0005548755275545317,
+    "rows": 3915
+   },
+   "pre_zone1": {
+    "real": 0.05289446471426063,
+    "pred": 0.05240189616460193,
+    "rows": 153759
+   },
+   "zone1": {
+    "real": 0.10439003799071338,
+    "pred": 0.10235713276746794,
+    "rows": 23690
+   },
+   "between": {
+    "real": 0.09779152865697989,
+    "pred": 0.09649810339815586,
+    "rows": 105367
+   },
+   "zone2": {
+    "real": 0.07096923551805741,
+    "pred": 0.07020243930998452,
+    "rows": 38876
+   },
+   "post_zone2": {
+    "real": 0.01064273525880048,
+    "pred": 0.01060577082657005,
+    "rows": 79115
+   },
+   "goal_area": {
+    "real": 0.0,
+    "pred": 1.6781046433741533e-05,
+    "rows": 144085
+   },
+   "west_column": {
+    "real": 0.0,
+    "pred": 0.0009703057032817775,
+    "rows": 960
+   },
+   "top_corridor": {
+    "real": 0.0,
+    "pred": 0.00022244716889958832,
+    "rows": 23600
+   },
+   "east_column": {
+    "real": 0.0,
+    "pred": 2.957606351563542e-07,
+    "rows": 26633
+   }
+  }
+ },
+ "paths": {
+  "n": 2000,
+  "realised_death_rate": 0.2935,
+  "real_hold_structure": {
+   "hold_share": 0.04141706081139271,
+   "in_band": 0.08841595006474319,
+   "out_of_band": 0.035976200359762005,
+   "p_hold_given_hold": 0.9819867086393844,
+   "p_hold_given_nohold": 0.0017843275360748406,
+   "runs": {
+    "n_runs": 793,
+    "mean": 15.161412358133669,
+    "median": 14.0,
+    "p90": 23.0,
+    "p99": 49.08000000000004,
+    "share_len1": 0.013871374527112233,
+    "share_len_ge5": 0.9457755359394704,
+    "share_len_ge20": 0.13871374527112232
+   },
+   "by_region": {
+    "start": 0.0,
+    "pre_zone1": 0.051205574214246326,
+    "zone1": 0.11680221491607544,
+    "between": 0.0950289593801542,
+    "zone2": 0.07073972307526534,
+    "post_zone2": 0.008387011962665966,
+    "goal_area": 0.0,
+    "west_column": 0.0,
+    "top_corridor": 0.0,
+    "east_column": 0.0
+   }
+  }
+ },
+ "E2a": {
+  "hold_structure": {
+   "hold_share": 0.04142739526888536,
+   "in_band": 0.08609183571831734,
+   "out_of_band": 0.03625678397367895,
+   "p_hold_given_hold": 0.982437745740498,
+   "p_hold_given_nohold": 0.0019288702022062806,
+   "runs": {
+    "n_runs": 782,
+    "mean": 15.378516624040921,
+    "median": 14.0,
+    "p90": 26.0,
+    "p99": 50.0,
+    "share_len1": 0.011508951406649617,
+    "share_len_ge5": 0.9475703324808185,
+    "share_len_ge20": 0.1547314578005115
+   },
+   "by_region": {
+    "start": 0.0,
+    "pre_zone1": 0.05082961551957492,
+    "zone1": 0.11550441252811905,
+    "between": 0.09836600053699512,
+    "zone2": 0.06777652066160228,
+    "post_zone2": 0.006047061916655712,
+    "goal_area": 0.0,
+    "west_column": 0.0,
+    "top_corridor": 0.001944474451766231,
+    "east_column": 0.0
+   }
+  },
+  "row_agreement_with_real_hold": 0.9957525379705192,
+  "in_band_row_auroc_p_hold": 0.9998274096506823,
+  "p_death_mean": 0.18687617174048202,
+  "death_auroc": 0.9774966211776507,
+  "p_death_real_advice_mean": 0.18584375083446503,
+  "death_auroc_real_advice": 0.9913085103034973,
+  "p_death_corr_with_real_advice": 0.9642496220965926,
+  "death_time_ks": 0.08298932748085713,
+  "death_time_median_model": 36.0,
+  "death_time_median_real": 42.0
+ },
+ "E2b": {
+  "draws": [
+   {
+    "hold_structure": {
+     "hold_share": 0.07569301149536155,
+     "in_band": 0.2678375776088184,
+     "out_of_band": 0.053449256645603675,
+     "p_hold_given_hold": 0.9759119380987472,
+     "p_hold_given_nohold": 0.002040670870548693,
+     "runs": {
+      "n_runs": 784,
+      "mean": 28.026785714285715,
+      "median": 19.0,
+      "p90": 59.0,
+      "p99": 72.0,
+      "share_len1": 0.011479591836734694,
+      "share_len_ge5": 0.9477040816326531,
+      "share_len_ge20": 0.4961734693877551
+     },
+     "by_region": {
+      "start": 0.0,
+      "pre_zone1": 0.050804551606596825,
+      "zone1": 0.3323239314760339,
+      "between": 0.13647347627632236,
+      "zone2": 0.22768169818436507,
+      "post_zone2": 0.07193374523465229,
+      "goal_area": 0.0,
+      "west_column": 0.0,
+      "top_corridor": 0.0,
+      "east_column": 0.0
+     }
+    },
+    "p_death_mean": 0.21958049581800326,
+    "death_time_ks_vs_realised": 0.11733251664527422
+   },
+   {
+    "hold_structure": {
+     "hold_share": 0.07668856423382055,
+     "in_band": 0.2702944984893257,
+     "out_of_band": 0.05427563304275633,
+     "p_hold_given_hold": 0.9757140258322722,
+     "p_hold_given_nohold": 0.0021178882701283876,
+     "runs": {
+      "n_runs": 808,
+      "mean": 27.551980198019802,
+      "median": 18.0,
+      "p90": 60.0,
+      "p99": 72.0,
+      "share_len1": 0.009900990099009901,
+      "share_len_ge5": 0.9517326732673267,
+      "share_len_ge20": 0.4752475247524752
+     },
+     "by_region": {
+      "start": 0.0,
+      "pre_zone1": 0.053899944859391445,
+      "zone1": 0.3356982176847205,
+      "between": 0.13474742050554256,
+      "zone2": 0.2295673724476052,
+      "post_zone2": 0.07340607335349021,
+      "goal_area": 0.0,
+      "west_column": 0.0,
+      "top_corridor": 0.00021605271686291454,
+      "east_column": 0.0
+     }
+    },
+    "p_death_mean": 0.2215824016543725,
+    "death_time_ks_vs_realised": 0.10193811082682236
+   },
+   {
+    "hold_structure": {
+     "hold_share": 0.07424274262722579,
+     "in_band": 0.26591188286463696,
+     "out_of_band": 0.052054025798318034,
+     "p_hold_given_hold": 0.9762979683972912,
+     "p_hold_given_nohold": 0.002063461747313942,
+     "runs": {
+      "n_runs": 792,
+      "mean": 27.21212121212121,
+      "median": 18.0,
+      "p90": 56.0,
+      "p99": 72.0,
+      "share_len1": 0.011363636363636364,
+      "share_len_ge5": 0.9532828282828283,
+      "share_len_ge20": 0.47474747474747475
+     },
+     "by_region": {
+      "start": 0.0,
+      "pre_zone1": 0.05292245225324577,
+      "zone1": 0.32228759300917115,
+      "between": 0.12824594376893866,
+      "zone2": 0.23080652982059155,
+      "post_zone2": 0.06922571315893256,
+      "goal_area": 0.0,
+      "west_column": 0.0,
+      "top_corridor": 0.0,
+      "east_column": 0.0
+     }
+    },
+    "p_death_mean": 0.22068286452281521,
+    "death_time_ks_vs_realised": 0.10356641288106982
+   },
+   {
+    "hold_structure": {
+     "hold_share": 0.07141799091256705,
+     "in_band": 0.2530960523257744,
+     "out_of_band": 0.05038589855941454,
+     "p_hold_given_hold": 0.9756228627259405,
+     "p_hold_given_nohold": 0.0018967892734326286,
+     "runs": {
+      "n_runs": 761,
+      "mean": 27.243101182654403,
+      "median": 18.0,
+      "p90": 57.0,
+      "p99": 75.79999999999984,
+      "share_len1": 0.013140604467805518,
+      "share_len_ge5": 0.9513797634691196,
+      "share_len_ge20": 0.47700394218134035
+     },
+     "by_region": {
+      "start": 0.0,
+      "pre_zone1": 0.04863652313399168,
+      "zone1": 0.31354905693026475,
+      "between": 0.12958843159065628,
+      "zone2": 0.21545175367706482,
+      "post_zone2": 0.06462468778756408,
+      "goal_area": 0.0,
+      "west_column": 0.0,
+      "top_corridor": 0.0014043426596089446,
+      "east_column": 0.0
+     }
+    },
+    "p_death_mean": 0.2104120920617326,
+    "death_time_ks_vs_realised": 0.1025047467584067
+   }
+  ],
+  "mean": {
+   "hold_share": 0.07451057731724374,
+   "in_band": 0.26428500282213885,
+   "p_hold_given_hold": 0.9758866987635627,
+   "run_median": 18.25,
+   "by_region": {
+    "start": 0.0,
+    "zone2": 0.22587683853240667,
+    "pre_zone1": 0.051565867963306436,
+    "east_column": 0.0,
+    "post_zone2": 0.06979755488365978,
+    "zone1": 0.3259646997750476,
+    "top_corridor": 0.00040509884411796477,
+    "west_column": 0.0,
+    "goal_area": 0.0,
+    "between": 0.13226381803536497
+   },
+   "p_death_mean": 0.2180644635142309
+  }
+ },
+ "gates": {
+  "E1": {
+   "auroc_in_band": true,
+   "ece": true,
+   "region_shares": true
+  },
+  "E2b": {
+   "never_hold_regions": true
+  },
+  "E2a": {
+   "death_rate_vs_real_advice": true,
+   "death_auroc": true,
+   "death_time_ks": true,
+   "p_hold_given_hold": true,
+   "run_median": true
+  },
+  "all": true
+ },
+ "wall_seconds": 89.42927956581116,
+ "decision": "map",
+ "generator_version": 3
+}

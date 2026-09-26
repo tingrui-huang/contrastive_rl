@@ -1,0 +1,57 @@
+{
+ "experiment": "detour-share follow-up: which difference from the ladder baseline lets the demonstrations act -- hazard density (A) or discount (B)",
+ "sealed_at": "2026-09-18 15:51:52",
+ "git": "b8816b8e4810708ff6b76a54bef468bb45c48b88 + uncommitted: scripts/run_v6_branch_replay.py (V6_DISCOUNT override), scripts/exp_v6_detour_ratio.py (report key fix)",
+ "motivation": "notes/v6_detour_ladder.md section 5: the frozen V6 baseline (p_active 0.40, gamma 0.99, critic + actor jointly from scratch, 100k, bc 0.05) never detours on the 0.30 rung (mean policy 0.000 on seeds 0-2, sampled <= 0.017); the detour-share experiment's d20 vanilla chain (p_active 0.50, gamma 0.999, frozen 30k critic, actor from the BC walker, bc 0.05, 30k, balanced rows) detours 0.51 / 0.74 / 0.63.  Four differences; this follow-up isolates two of them with the recorded-futures chain only (no branch replay).",
+ "arms": {
+  "A_density": {
+   "dataset_stem": "antmaze_rockfall_clock_v6_p040_far20",
+   "gxy_sha256": "ba8e3cc9596c05a8a07d7ed66e62eccbbab06e6428bf869252d38095643c9108",
+   "p_active": 0.4,
+   "discount": 0.999,
+   "detour_episodes": 217,
+   "shortcut_episodes": 783,
+   "chain": "pure BC 100k (seed 0, fresh) -> BC 300-draw eval -> vanilla critics x3 (30k) -> actors x3 (BC init, frozen critic, bc 0.05, 30k) -> 300-draw mean evals",
+   "node": "30021 (RTX 4090)",
+   "tag": "p040far20",
+   "reference": "d20 vanilla (p050, gamma 0.999): success 0.543 / 0.723 / 0.647, detour 0.507 / 0.737 / 0.630; ladder baseline 0.30 rung: detour 0.000"
+  },
+  "B_discount": {
+   "dataset_stem": "antmaze_rockfall_clock_v6_p050_d20",
+   "gxy_sha256": "9082836d83daceb49cd12c030b7de7bd89ff2f8e354253d59801f33b5b35d579",
+   "p_active": 0.5,
+   "discount": 0.99,
+   "bc_init": "joint_purebc_d20/seed_0/final.pkl (the d20 BC walker; BC does not depend on the discount)",
+   "chain": "vanilla critics x3 (30k, gamma 0.99) -> actors x3 (d20 BC init, frozen critic, bc 0.05, 30k, gamma 0.99) -> 300-draw mean evals",
+   "node": "30043 (RTX 4090 laptop)",
+   "tag": "d20_g099",
+   "reference": "d20 vanilla at gamma 0.999 (same node, same BC init, same seeds)"
+  },
+  "C_share10": {
+   "added": "2026-09-18 (user request, before any d10 training)",
+   "dataset_stem": "antmaze_rockfall_clock_v6_p050_d10",
+   "gxy_sha256": "fb0adff82055172a876f0628b43cc892fc37b7178443c46a334ee58edbecb5db",
+   "sidecar_sha256": "1767681f06ed246327d696348392e12bed29a2f96c484b589c8f3bacab0043c2",
+   "p_active": 0.5,
+   "discount": 0.999,
+   "detour_episodes": 100,
+   "shortcut_episodes": 900,
+   "episode_share_detour": 0.1,
+   "row_share_detour": 0.13879577266562604,
+   "rows": 273553,
+   "nested": "same selection seed 2028 and pool as the sealed d05 / d20 draws (d05 detour episodes subset of d10 subset of d20; shortcut episodes d20 subset of d10 subset of d05); d05 / d20 files untouched",
+   "chain": "recorded-futures chain as in A: pure BC 100k (seed 0, fresh) -> BC 300-draw eval -> vanilla critics x3 (30k, gamma 0.999) -> actors x3 (BC init, frozen critic, bc 0.05, 30k) -> 300-draw mean evals; no branch replay",
+   "node": "30043 (RTX 4090 laptop), queued after arm B",
+   "tag": "d10",
+   "reference": "d05 vanilla 0.263 / 0.263 / 0.260 (detour 0.07 / 0.01 / 0.01) and d20 vanilla 0.543 / 0.723 / 0.647 (detour 0.51 / 0.74 / 0.63); question: where between 5% and 20% the recorded-futures chain starts choosing the detour; no prediction registered"
+  }
+ },
+ "fixed": "everything else as in manifest.json: 8-d single-step torque, NCE + original actor loss, bc 0.05, balanced BC rows, 30k critic / 30k actor, eval seed 909, mean policy, no sweeps; no branch replay in this follow-up",
+ "decision_rules": {
+  "effect": "mean over 3 seeds differs from the reference by > 2 x pooled seed s.e. with 3 / 3 seeds in the same direction (success and detour rate)",
+  "A": "A detours like d20 vanilla (no effect vs the reference) -> the hazard density is not what separates this chain from the ladder baseline; A at ~0 detour -> density (or the p040 collection) matters",
+  "B": "B falls to ~0 detour (effect vs d20 vanilla, negative) -> the discount is the unlocking difference; B detours like d20 vanilla -> the discount is not it, the remaining candidates are the critic schedule and the actor initialisation / sampling",
+  "ceiling_arithmetic_prediction": "gamma 0.99: shortcut 0.37 x 0.157 = 0.058 vs detour 0.99 x 0.040 = 0.040 at p040 (shortcut preferred), 0.041 vs 0.040 at p050 (tie); gamma 0.999: 0.31 vs 0.72 (p040), 0.21 vs 0.72 (p050) -- prediction: A detours, B does not.  Stated before the run.",
+  "C": "descriptive: report success and detour rate per seed against d05 and d20 with the same 2 s.e. / 3-of-3 rule for each pairwise difference; an intermediate result (some seeds detour) is reported as such"
+ }
+}

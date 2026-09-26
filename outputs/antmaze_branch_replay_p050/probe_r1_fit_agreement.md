@@ -1,0 +1,37 @@
+| scorer | set | validated pairs | agreement | samples-only (n) | weighted | pick gain (anchors) |
+|---|---|---:|---:|---:|---:|---:|
+| random | start_early | 36 | **0.67** | 0.91 (11) | 0.55 | 0.12 (193) |
+| random | turn | 319 | **0.48** | 0.50 (98) | 0.49 | 0.03 (225) |
+| random | start_late | 11 | **0.45** | 0.60 (5) | 0.59 | 0.12 (92) |
+| random | north_leg | 410 | **0.52** | 0.52 (129) | 0.50 | -0.01 (299) |
+| random | shortcut_early | 19 | **0.21** | 0.33 (6) | 0.50 | 0.11 (129) |
+| random | general | 0 | **-** | - (0) | 0.51 | -0.01 (2620) |
+| random | dense_all | 795 | **0.51** | 0.53 (249) | 0.51 | 0.06 (938) |
+| critics_r1/seed_0/final | start_early | 36 | **0.94** | 1.00 (11) | 0.77 | 0.20 (193) |
+| critics_r1/seed_0/final | turn | 319 | **0.92** | 0.91 (98) | 0.94 | 0.73 (225) |
+| critics_r1/seed_0/final | start_late | 11 | **0.82** | 0.80 (5) | 0.83 | 0.28 (92) |
+| critics_r1/seed_0/final | north_leg | 410 | **0.84** | 0.85 (129) | 0.85 | 0.55 (299) |
+| critics_r1/seed_0/final | shortcut_early | 19 | **0.68** | 0.67 (6) | 0.67 | 0.30 (129) |
+| critics_r1/seed_0/final | general | 0 | **-** | - (0) | 0.67 | 0.18 (2620) |
+| critics_r1/seed_0/final | dense_all | 795 | **0.87** | 0.88 (249) | 0.85 | 0.46 (938) |
+| critics_r1/seed_1/final | start_early | 36 | **0.83** | 0.91 (11) | 0.77 | 0.16 (193) |
+| critics_r1/seed_1/final | turn | 319 | **0.92** | 0.93 (98) | 0.93 | 0.67 (225) |
+| critics_r1/seed_1/final | start_late | 11 | **0.82** | 0.80 (5) | 0.69 | 0.16 (92) |
+| critics_r1/seed_1/final | north_leg | 410 | **0.85** | 0.86 (129) | 0.85 | 0.55 (299) |
+| critics_r1/seed_1/final | shortcut_early | 19 | **0.74** | 0.50 (6) | 0.68 | 0.16 (129) |
+| critics_r1/seed_1/final | general | 0 | **-** | - (0) | 0.63 | 0.11 (2620) |
+| critics_r1/seed_1/final | dense_all | 795 | **0.88** | 0.88 (249) | 0.84 | 0.41 (938) |
+| critics_r1/seed_2/final | start_early | 36 | **0.89** | 1.00 (11) | 0.79 | 0.15 (193) |
+| critics_r1/seed_2/final | turn | 319 | **0.91** | 0.89 (98) | 0.93 | 0.73 (225) |
+| critics_r1/seed_2/final | start_late | 11 | **0.64** | 0.60 (5) | 0.66 | 0.01 (92) |
+| critics_r1/seed_2/final | north_leg | 410 | **0.87** | 0.88 (129) | 0.87 | 0.61 (299) |
+| critics_r1/seed_2/final | shortcut_early | 19 | **0.79** | 0.83 (6) | 0.69 | 0.01 (129) |
+| critics_r1/seed_2/final | general | 0 | **-** | - (0) | 0.69 | 0.18 (2620) |
+| critics_r1/seed_2/final | dense_all | 795 | **0.88** | 0.88 (249) | 0.85 | 0.40 (938) |
+| critics_r1/seed_0/20000 | start_early | 36 | **0.97** | 1.00 (11) | 0.72 | 0.17 (193) |
+| critics_r1/seed_0/20000 | turn | 319 | **0.93** | 0.93 (98) | 0.93 | 0.71 (225) |
+| critics_r1/seed_0/20000 | start_late | 11 | **0.55** | 0.40 (5) | 0.50 | -0.04 (92) |
+| critics_r1/seed_0/20000 | north_leg | 410 | **0.79** | 0.79 (129) | 0.79 | 0.44 (299) |
+| critics_r1/seed_0/20000 | shortcut_early | 19 | **0.58** | 0.67 (6) | 0.53 | 0.00 (129) |
+| critics_r1/seed_0/20000 | general | 0 | **-** | - (0) | 0.56 | 0.08 (2620) |
+| critics_r1/seed_0/20000 | dense_all | 795 | **0.84** | 0.84 (249) | 0.79 | 0.34 (938) |

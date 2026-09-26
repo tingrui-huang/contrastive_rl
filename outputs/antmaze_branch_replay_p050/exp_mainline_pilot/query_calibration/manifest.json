@@ -1,0 +1,75 @@
+{
+ "experiment": "local calibration of the critic at the actor's output actions -- a diagnostic arrangement (critic-only continuation from one checkpoint), not the mainline",
+ "sealed_at": "2026-09-21 23:51:07",
+ "git_head": "unavailable (Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128.)",
+ "fixed": {
+  "ett": "v4s20",
+  "ett_models": {
+   "fold0": "e80bf4cc7d7dfddeb458940655ad05b23d9bdb7cad1f6b8be00c919be67714e8",
+   "fold1": "da7b20597288d231a702c8fd23def794b4296f5e1544aafd1218c332404b7b74",
+   "fold2": "f7445737537a6074fd0399b720403faa7d8d8b848ea41693ad9ebe8a23f5bc58"
+  },
+  "advice_generator": {
+   "fold0": "7c75f781b4515e194f63e23ed9bcaf4e77612d1b3a7feefb9a9c0901e61f730c",
+   "fold1": "d639a50d289360baf0e3b5dc3772083e8605077556d93736849b3157f2c67d35",
+   "fold2": "fd8beff5975fdb7105433afb3761a8eed3d9b2802510eee4af279710c2910b6f"
+  },
+  "continuation": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/joint_van_d05/seed_0/final.pkl",
+  "continuation_sha256": "6a67dbbdffe817eb0d0ed4984be325c0dabc4d4158578026e9b3bb00bee5f0a9",
+  "training_start": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/ett_futures_v4s20/CF/seed_4/20000.pkl",
+  "training_start_sha256": "68666e416e7025d42f6f9b5b967d58df4398dd8271110684a4165f4e7318b0c0",
+  "base_table": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/ett_futures_v4s20/branches_ett.npz",
+  "base_table_sha256": "37ca6eba9670a1767bea6045768bcb5659fa1081874cdc9444fb70e2709c3367",
+  "recipe": {
+   "variant": "critic_clip0.1",
+   "overrides": {
+    "critic_clip": 0.1
+   },
+   "nce": "unchanged",
+   "bc": 0.05,
+   "actor_rows": "the logged buffer, unchanged; query actions never enter the actor loss"
+  }
+ },
+ "split": {
+  "rule": "start-region anchors (region start, t <= 40), split by source episode, half / half, seed SPLIT_SEED",
+  "n_start_region": 4245,
+  "n_episodes": 991,
+  "n_Q": 2121,
+  "n_H": 2124,
+  "n_Q_reset": 108,
+  "n_H_reset": 88,
+  "weight_share_Q": 0.0394
+ },
+ "queries": {
+  "per_Q_anchor": "the frozen 20k actor's mode under the task goal + 3 torques sampled from the same actor (fixed key)",
+  "n_extra_per_anchor": 4,
+  "control": "4 extra branches at the LOGGED torque per Q anchor (repeated consequences; new prior-context and onset draws)",
+  "filtering": "none: every consequence kept, no success selection, no direction imposed, no simulator rows",
+  "generation_seed": "218000000 + 100 x arm + fold"
+ },
+ "allocation": "at a Q anchor the future is drawn from one of its 1 + n_extra branches uniformly (a separate RNG); the anchor weights are unchanged; the anchor sequence is the run's own (stream re-seeded and fast-forwarded 20k batches); identical in all three arms",
+ "training": {
+  "arms": [
+   "plain",
+   "control",
+   "query"
+  ],
+  "updates": 10000,
+  "from": 20000,
+  "critic_only": "the policy and its optimizer state restored after every scan of 4 updates (the MC NCE critic loss does not read the policy); hash-verified at the end"
+ },
+ "measurements": {
+  "calibration": "diag_v6_critic_ruler.py ruler on the 64 diagnostic reset states (labelled Q / H by their anchor's episode) and the 64 independent reset states (non-anchors); actions: the logged torque, the queried 20k mode (a20k), the never-queried saturated final action (stall), the progressing draw-2 action (prog), the start agent (start); critics: 20k, final, plain, control, query",
+  "actor": "diag_v6_stall_onset.py short from the 20k actor + Adam state under each frozen critic (5,000 updates, identical batches); leave-the-start / saturation on the 128 start states; the as-trained objective on the 2,048 logged start rows",
+  "new_actions": "the consequences (simulator + ETT, start continuation, paired draws) and the ruler at the updated actors' modes: does the actor move to another over-estimated action?",
+  "task": "300 evaluation episodes (mode policy) of each updated actor: success / death / timeout / detour share / detour completion, vs the 20k actor and the original final"
+ },
+ "readings": {
+  "calibration_improved": "at the H reset states (never queried) and at the never-queried saturated action, the query critic's over-estimation factor (goal-area mass / real) is at most half the control critic's (median over states) AND the control critic does not show the same drop (otherwise it is the extra futures / the continuation, not the action); at the queried a20k action on H states the query critic reads within 2x of the ETT mass",
+  "less_stall": "leave-the-start on the 128 start states under the query critic exceeds the control critic's by >= 0.15 with lower saturation (the corrected control: own critics 0.43-0.49, draw-2 critics 0.83-0.86; the 20k actor 0.60)",
+  "moved_to_another_high": "the updated actor's new mode has an over-estimation factor > 2x (critic / real) at the H states -> static queries do not control the action extrapolation: STOP adding queries",
+  "task_preserved": "the query-critic actor's detour share and detour completion are not below the 20k actor's by more than the 300-episode s.e.; a higher success with the detour share collapsed is NOT a fix (the earlier query round: stalls removed, policy pulled back to the shortcut)",
+  "not_a_fix_by_itself": "a better-calibrated score alone is not success; the mainline verdict needs the joint pipeline on all seeds, which extends the \"logged-action futures only\" scope and must be recorded as such"
+ },
+ "scope_note": "extends the sampling-level change beyond \"replace the logged action's futures\": critic rows at (s, a_actor) with ETT futures -- disclosed if carried to the mainline"
+}

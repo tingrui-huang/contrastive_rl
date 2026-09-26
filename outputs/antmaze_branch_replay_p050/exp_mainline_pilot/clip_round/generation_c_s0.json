@@ -1,0 +1,79 @@
+{
+ "meta": {
+  "anchors": 53747,
+  "arm": "CF-oracle",
+  "continuation": "checkpoint actor mode tanh(loc), closed-loop",
+  "continuation_ckpt": "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/exp_mainline_pilot/variants/critic_clip0.1/CF/seed_0/final.pkl",
+  "continuation_ckpt_sha256": "8265785d577365376bba7ba473728c14f0efdfbd04172a938423b81d68535414",
+  "draws_per_anchor": 1,
+  "filtering": "none: every outcome kept",
+  "hidden_draws": "hazard latents, clocks and rock jitter redrawn from the priors at restore, seed HAZARD_SEED0 + anchor_id",
+  "max_steps_cap": null,
+  "outcome_counts": {
+   "death": 16168,
+   "success": 28599,
+   "timeout": 8980
+  },
+  "query": "the logged torque a_t executed exactly once from the restored logged state at absolute time t",
+  "restore": "build_v6_branch_replay.restore (reset, then qpos/qvel from the logged state, goal from the logged row, env time = t)",
+  "termination": "first reach frame (reward > 0) / death (env done) / absolute horizon 800; no goal hold",
+  "wall_seconds": 1415.2760164737701
+ },
+ "n": 53747,
+ "rows_total": 10370126,
+ "outcome_share": {
+  "success": 0.5321041174391129,
+  "death": 0.300816789774313,
+  "timeout": 0.16707909278657412
+ },
+ "mean_steps": 191.94334567510745,
+ "mean_rows": 192.94334567510745,
+ "hazard_share_u1": 0.5048095707667405,
+ "hazard_share_u2": 0.49839060784787986,
+ "restore_maxdiff_max": 0.0,
+ "n_query_steps_all_one": true,
+ "by_anchor_time": {
+  "t in [0, 1)": {
+   "n": 196,
+   "success": 0.1989795918367347,
+   "death": 0.6224489795918368,
+   "timeout": 0.17857142857142858,
+   "mean_rows": 266.61224489795916
+  },
+  "t in [1, 6)": {
+   "n": 955,
+   "success": 0.1612565445026178,
+   "death": 0.7162303664921466,
+   "timeout": 0.1225130890052356,
+   "mean_rows": 209.10680628272252
+  },
+  "t in [6, 50)": {
+   "n": 9050,
+   "success": 0.17933701657458564,
+   "death": 0.703646408839779,
+   "timeout": 0.11701657458563536,
+   "mean_rows": 184.1467403314917
+  },
+  "t in [50, 150)": {
+   "n": 20323,
+   "success": 0.37184470796634356,
+   "death": 0.4039265856418836,
+   "timeout": 0.22422870639177286,
+   "mean_rows": 245.26059144811296
+  },
+  "t in [150, 400)": {
+   "n": 23175,
+   "success": 0.8286084142394822,
+   "death": 0.033872707659115424,
+   "timeout": 0.13751887810140237,
+   "mean_rows": 149.3610355987055
+  },
+  "t in [400, 801)": {
+   "n": 48,
+   "success": 0.4791666666666667,
+   "death": 0.0,
+   "timeout": 0.5208333333333334,
+   "mean_rows": 120.25
+  }
+ }
+}

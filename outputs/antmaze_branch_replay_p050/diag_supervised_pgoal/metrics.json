@@ -1,0 +1,3559 @@
+{
+ "fit": {
+  "S/seed_0": {
+   "weighted_mse_all_keys": 0.005071462154556268,
+   "constant_predictor_mse": 0.10484223809034234,
+   "r2_weighted": 0.9516276812959086,
+   "wall_seconds": 283.3393325805664,
+   "device": "cpu:0"
+  },
+  "S/seed_1": {
+   "weighted_mse_all_keys": 0.00523614254856077,
+   "constant_predictor_mse": 0.10484223809034234,
+   "r2_weighted": 0.9500569365559632,
+   "wall_seconds": 278.17079162597656,
+   "device": "cpu:0"
+  },
+  "S/seed_2": {
+   "weighted_mse_all_keys": 0.005329813540476501,
+   "constant_predictor_mse": 0.10484223809034234,
+   "r2_weighted": 0.9491634894718309,
+   "wall_seconds": 307.1611750125885,
+   "device": "cpu:0"
+  },
+  "N/seed_0": {
+   "weighted_mse_all_keys": 0.02213288252310332,
+   "constant_predictor_mse": 0.10484223809034234,
+   "r2_weighted": 0.7888934562420209,
+   "wall_seconds": 258.48707723617554,
+   "device": "cpu:0"
+  },
+  "N/seed_1": {
+   "weighted_mse_all_keys": 0.022059974016487113,
+   "constant_predictor_mse": 0.10484223809034234,
+   "r2_weighted": 0.7895888678236906,
+   "wall_seconds": 263.79540252685547,
+   "device": "cpu:0"
+  },
+  "N/seed_2": {
+   "weighted_mse_all_keys": 0.021759117800930674,
+   "constant_predictor_mse": 0.10484223809034234,
+   "r2_weighted": 0.792458476685886,
+   "wall_seconds": 253.4631223678589,
+   "device": "cpu:0"
+  }
+ },
+ "fresh_mse": {
+  "S/seed_0": {
+   "A": {
+    "mse_vs_16draw_mean": 0.01301581947350416,
+    "noise_floor_var_of_mean": 0.002905402881998848,
+    "const_predictor_mse": 0.017451768456997762,
+    "n_keys": 480,
+    "corr_pred_vs_mean": 0.6861406823680473
+   },
+   "B": {
+    "mse_vs_16draw_mean": 0.038567591395822796,
+    "noise_floor_var_of_mean": 0.002873894003303799,
+    "const_predictor_mse": 0.017502647811990634,
+    "n_keys": 480,
+    "corr_pred_vs_mean": 0.23609963628866107
+   },
+   "C": {
+    "mse_vs_16draw_mean": 0.06305952293422368,
+    "noise_floor_var_of_mean": 0.002969142812480444,
+    "const_predictor_mse": 0.017344724904688396,
+    "n_keys": 800,
+    "corr_pred_vs_mean": 0.04011608520877834
+   }
+  },
+  "S/seed_1": {
+   "A": {
+    "mse_vs_16draw_mean": 0.01181125445571863,
+    "noise_floor_var_of_mean": 0.002905402881998848,
+    "const_predictor_mse": 0.017451768456997762,
+    "n_keys": 480,
+    "corr_pred_vs_mean": 0.7096582962035866
+   },
+   "B": {
+    "mse_vs_16draw_mean": 0.03203214296844934,
+    "noise_floor_var_of_mean": 0.002873894003303799,
+    "const_predictor_mse": 0.017502647811990634,
+    "n_keys": 480,
+    "corr_pred_vs_mean": 0.2659425822548892
+   },
+   "C": {
+    "mse_vs_16draw_mean": 0.05766938833861907,
+    "noise_floor_var_of_mean": 0.002969142812480444,
+    "const_predictor_mse": 0.017344724904688396,
+    "n_keys": 800,
+    "corr_pred_vs_mean": 0.10067463995338344
+   }
+  },
+  "S/seed_2": {
+   "A": {
+    "mse_vs_16draw_mean": 0.013164583712924234,
+    "noise_floor_var_of_mean": 0.002905402881998848,
+    "const_predictor_mse": 0.017451768456997762,
+    "n_keys": 480,
+    "corr_pred_vs_mean": 0.689400985263664
+   },
+   "B": {
+    "mse_vs_16draw_mean": 0.03887230187135168,
+    "noise_floor_var_of_mean": 0.002873894003303799,
+    "const_predictor_mse": 0.017502647811990634,
+    "n_keys": 480,
+    "corr_pred_vs_mean": 0.19949143121592555
+   },
+   "C": {
+    "mse_vs_16draw_mean": 0.04821707383907071,
+    "noise_floor_var_of_mean": 0.002969142812480444,
+    "const_predictor_mse": 0.017344724904688396,
+    "n_keys": 800,
+    "corr_pred_vs_mean": 0.15061936037995327
+   }
+  },
+  "N/seed_0": {
+   "A": {
+    "mse_vs_16draw_mean": 0.013886510635992973,
+    "noise_floor_var_of_mean": 0.002905402881998848,
+    "const_predictor_mse": 0.017451768456997762,
+    "n_keys": 480,
+    "corr_pred_vs_mean": 0.5398325569053497
+   },
+   "B": {
+    "mse_vs_16draw_mean": 0.019726608916703595,
+    "noise_floor_var_of_mean": 0.002873894003303799,
+    "const_predictor_mse": 0.017502647811990634,
+    "n_keys": 480,
+    "corr_pred_vs_mean": 0.33676436366830403
+   },
+   "C": {
+    "mse_vs_16draw_mean": 0.02494725362697834,
+    "noise_floor_var_of_mean": 0.002969142812480444,
+    "const_predictor_mse": 0.017344724904688396,
+    "n_keys": 800,
+    "corr_pred_vs_mean": 0.10106274616180841
+   }
+  },
+  "N/seed_1": {
+   "A": {
+    "mse_vs_16draw_mean": 0.01470825997687459,
+    "noise_floor_var_of_mean": 0.002905402881998848,
+    "const_predictor_mse": 0.017451768456997762,
+    "n_keys": 480,
+    "corr_pred_vs_mean": 0.5178717201081148
+   },
+   "B": {
+    "mse_vs_16draw_mean": 0.021043367359304847,
+    "noise_floor_var_of_mean": 0.002873894003303799,
+    "const_predictor_mse": 0.017502647811990634,
+    "n_keys": 480,
+    "corr_pred_vs_mean": 0.3059804191985437
+   },
+   "C": {
+    "mse_vs_16draw_mean": 0.022905358958405318,
+    "noise_floor_var_of_mean": 0.002969142812480444,
+    "const_predictor_mse": 0.017344724904688396,
+    "n_keys": 800,
+    "corr_pred_vs_mean": 0.15463788794026137
+   }
+  },
+  "N/seed_2": {
+   "A": {
+    "mse_vs_16draw_mean": 0.014784071364334194,
+    "noise_floor_var_of_mean": 0.002905402881998848,
+    "const_predictor_mse": 0.017451768456997762,
+    "n_keys": 480,
+    "corr_pred_vs_mean": 0.5195304324244118
+   },
+   "B": {
+    "mse_vs_16draw_mean": 0.021027973608770054,
+    "noise_floor_var_of_mean": 0.002873894003303799,
+    "const_predictor_mse": 0.017502647811990634,
+    "n_keys": 480,
+    "corr_pred_vs_mean": 0.31362409935949837
+   },
+   "C": {
+    "mse_vs_16draw_mean": 0.02582928441490566,
+    "noise_floor_var_of_mean": 0.002969142812480444,
+    "const_predictor_mse": 0.017344724904688396,
+    "n_keys": 800,
+    "corr_pred_vs_mean": 0.10313654909198312
+   }
+  }
+ },
+ "layers": {
+  "A": {
+   "n_pairs_decided": 230,
+   "n_anchors": 160,
+   "n_episodes": 131,
+   "scorers": {
+    "random": {
+     "start_early": {
+      "n_decided": 37,
+      "same": 11,
+      "opposite": 26,
+      "tie": 0,
+      "agreement": 0.2972972972972973,
+      "se": 0.09459572711388331,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.021726817720870407,
+      "pick_gain_se": 0.019976939119222745,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 65,
+      "same": 41,
+      "opposite": 24,
+      "tie": 0,
+      "agreement": 0.6307692307692307,
+      "se": 0.08366234875874479,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.027467366416658475,
+      "pick_gain_se": 0.024665504018366497,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 32,
+      "same": 15,
+      "opposite": 17,
+      "tie": 0,
+      "agreement": 0.46875,
+      "se": 0.10228326456922217,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.001977939588186926,
+      "pick_gain_se": 0.018816962313436728,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 72,
+      "same": 41,
+      "opposite": 31,
+      "tie": 0,
+      "agreement": 0.5694444444444444,
+      "se": 0.07030640060688265,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.012648943131428798,
+      "pick_gain_se": 0.02612795841060817,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 24,
+      "same": 12,
+      "opposite": 12,
+      "tie": 0,
+      "agreement": 0.5,
+      "se": 0.12501366678545148,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.005759766928349565,
+      "pick_gain_se": 0.019236249802257695,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 230,
+      "same": 120,
+      "opposite": 110,
+      "tie": 0,
+      "agreement": 0.5217391304347826,
+      "se": 0.04405737929518416,
+      "n_anchors": 160,
+      "n_episodes": 131,
+      "pick_gain": 0.0052254396687506696,
+      "pick_gain_se": 0.0108978688686366,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "NCE_R/seed_0": {
+     "start_early": {
+      "n_decided": 37,
+      "same": 18,
+      "opposite": 19,
+      "tie": 0,
+      "agreement": 0.4864864864864865,
+      "se": 0.10664440615880955,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.028615823438788837,
+      "pick_gain_se": 0.02622146042807483,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 65,
+      "same": 56,
+      "opposite": 9,
+      "tie": 0,
+      "agreement": 0.8615384615384616,
+      "se": 0.040649595746016384,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.07999668877539534,
+      "pick_gain_se": 0.017786043612369937,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 32,
+      "same": 16,
+      "opposite": 16,
+      "tie": 0,
+      "agreement": 0.5,
+      "se": 0.10933497481935961,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.002748746873976414,
+      "pick_gain_se": 0.018848591052130527,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 72,
+      "same": 55,
+      "opposite": 17,
+      "tie": 0,
+      "agreement": 0.7638888888888888,
+      "se": 0.060389461274752386,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.03976558062443777,
+      "pick_gain_se": 0.02283312542130758,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 24,
+      "same": 9,
+      "opposite": 15,
+      "tie": 0,
+      "agreement": 0.375,
+      "se": 0.1172231417314417,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.006852714140677563,
+      "pick_gain_se": 0.020358376162952094,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 230,
+      "same": 154,
+      "opposite": 76,
+      "tie": 0,
+      "agreement": 0.6695652173913044,
+      "se": 0.039651536141415575,
+      "n_anchors": 160,
+      "n_episodes": 131,
+      "pick_gain": 0.028854825114384162,
+      "pick_gain_se": 0.010732670915996929,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "NCE_R/seed_1": {
+     "start_early": {
+      "n_decided": 37,
+      "same": 23,
+      "opposite": 14,
+      "tie": 0,
+      "agreement": 0.6216216216216216,
+      "se": 0.09158503830981472,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.03795195912819811,
+      "pick_gain_se": 0.023493500522668704,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 65,
+      "same": 53,
+      "opposite": 12,
+      "tie": 0,
+      "agreement": 0.8153846153846154,
+      "se": 0.04766479009155369,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.06236372908813337,
+      "pick_gain_se": 0.019195464043458968,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 32,
+      "same": 16,
+      "opposite": 16,
+      "tie": 0,
+      "agreement": 0.5,
+      "se": 0.09991965033684565,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.00882453629833435,
+      "pick_gain_se": 0.016793721823062973,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 72,
+      "same": 52,
+      "opposite": 20,
+      "tie": 0,
+      "agreement": 0.7222222222222222,
+      "se": 0.0628251288642707,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.04439002999636917,
+      "pick_gain_se": 0.024694078353112495,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 24,
+      "same": 11,
+      "opposite": 13,
+      "tie": 0,
+      "agreement": 0.4583333333333333,
+      "se": 0.09973299693711608,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0029212311760602426,
+      "pick_gain_se": 0.022469098432727683,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 230,
+      "same": 155,
+      "opposite": 75,
+      "tie": 0,
+      "agreement": 0.6739130434782609,
+      "se": 0.03723769198899722,
+      "n_anchors": 160,
+      "n_episodes": 131,
+      "pick_gain": 0.030121804666994954,
+      "pick_gain_se": 0.010545545783750762,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "NCE_R/seed_2": {
+     "start_early": {
+      "n_decided": 37,
+      "same": 20,
+      "opposite": 17,
+      "tie": 0,
+      "agreement": 0.5405405405405406,
+      "se": 0.09908500863269319,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.026779245701921653,
+      "pick_gain_se": 0.026480758571778274,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 65,
+      "same": 59,
+      "opposite": 6,
+      "tie": 0,
+      "agreement": 0.9076923076923077,
+      "se": 0.03956390096611355,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.07943342958139965,
+      "pick_gain_se": 0.019530754988997163,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 32,
+      "same": 16,
+      "opposite": 16,
+      "tie": 0,
+      "agreement": 0.5,
+      "se": 0.10894558561502159,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.004780414936021772,
+      "pick_gain_se": 0.018450822367414327,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 72,
+      "same": 56,
+      "opposite": 16,
+      "tie": 0,
+      "agreement": 0.7777777777777778,
+      "se": 0.048035834979585405,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.07413229138463369,
+      "pick_gain_se": 0.018092024229924866,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 24,
+      "same": 9,
+      "opposite": 15,
+      "tie": 0,
+      "agreement": 0.375,
+      "se": 0.11933640855224202,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.00672851086665105,
+      "pick_gain_se": 0.02038027395652707,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 230,
+      "same": 160,
+      "opposite": 70,
+      "tie": 0,
+      "agreement": 0.6956521739130435,
+      "se": 0.03957873011562833,
+      "n_anchors": 160,
+      "n_episodes": 131,
+      "pick_gain": 0.03567937414746514,
+      "pick_gain_se": 0.011225385534095968,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "S/seed_0": {
+     "start_early": {
+      "n_decided": 37,
+      "same": 29,
+      "opposite": 8,
+      "tie": 0,
+      "agreement": 0.7837837837837838,
+      "se": 0.0827244865036775,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.04626196024567737,
+      "pick_gain_se": 0.020432566645791312,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 65,
+      "same": 61,
+      "opposite": 4,
+      "tie": 0,
+      "agreement": 0.9384615384615385,
+      "se": 0.03470012289874362,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.09885282563061537,
+      "pick_gain_se": 0.01659889784271229,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 32,
+      "same": 25,
+      "opposite": 7,
+      "tie": 0,
+      "agreement": 0.78125,
+      "se": 0.07551111647259297,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.019604989736535572,
+      "pick_gain_se": 0.012667550594322036,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 72,
+      "same": 66,
+      "opposite": 6,
+      "tie": 0,
+      "agreement": 0.9166666666666666,
+      "se": 0.028664460878930886,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.10651864935797069,
+      "pick_gain_se": 0.015258273664573847,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 24,
+      "same": 18,
+      "opposite": 6,
+      "tie": 0,
+      "agreement": 0.75,
+      "se": 0.09670905014735684,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.007823287172413986,
+      "pick_gain_se": 0.01646023290740624,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 230,
+      "same": 199,
+      "opposite": 31,
+      "tie": 0,
+      "agreement": 0.8652173913043478,
+      "se": 0.026213444477624203,
+      "n_anchors": 160,
+      "n_episodes": 131,
+      "pick_gain": 0.055812342428642595,
+      "pick_gain_se": 0.009282984750065776,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "S/seed_1": {
+     "start_early": {
+      "n_decided": 37,
+      "same": 30,
+      "opposite": 7,
+      "tie": 0,
+      "agreement": 0.8108108108108109,
+      "se": 0.08150622396425286,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.04218094179517114,
+      "pick_gain_se": 0.02176761064857475,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 65,
+      "same": 58,
+      "opposite": 7,
+      "tie": 0,
+      "agreement": 0.8923076923076924,
+      "se": 0.04497393193583757,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.08693832791652767,
+      "pick_gain_se": 0.01873958968487967,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 32,
+      "same": 27,
+      "opposite": 5,
+      "tie": 0,
+      "agreement": 0.84375,
+      "se": 0.05744372245946463,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.025563830571400104,
+      "pick_gain_se": 0.007948330296256842,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 72,
+      "same": 66,
+      "opposite": 6,
+      "tie": 0,
+      "agreement": 0.9166666666666666,
+      "se": 0.028664460878930886,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.10796536344021963,
+      "pick_gain_se": 0.014834991984882017,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 24,
+      "same": 20,
+      "opposite": 4,
+      "tie": 0,
+      "agreement": 0.8333333333333334,
+      "se": 0.10004018722177269,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.007705091860316317,
+      "pick_gain_se": 0.01646023290740624,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 230,
+      "same": 201,
+      "opposite": 29,
+      "tie": 0,
+      "agreement": 0.8739130434782608,
+      "se": 0.024962074526131375,
+      "n_anchors": 160,
+      "n_episodes": 131,
+      "pick_gain": 0.05407071111672697,
+      "pick_gain_se": 0.009196524995179471,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "S/seed_2": {
+     "start_early": {
+      "n_decided": 37,
+      "same": 31,
+      "opposite": 6,
+      "tie": 0,
+      "agreement": 0.8378378378378378,
+      "se": 0.07306121062586579,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.04470399525810838,
+      "pick_gain_se": 0.02028650845745649,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 65,
+      "same": 59,
+      "opposite": 6,
+      "tie": 0,
+      "agreement": 0.9076923076923077,
+      "se": 0.052285810762921034,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.09222872793509396,
+      "pick_gain_se": 0.0178773541468752,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 32,
+      "same": 22,
+      "opposite": 10,
+      "tie": 0,
+      "agreement": 0.6875,
+      "se": 0.08520927821399499,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.019485921593286548,
+      "pick_gain_se": 0.012679908791250324,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 72,
+      "same": 66,
+      "opposite": 6,
+      "tie": 0,
+      "agreement": 0.9166666666666666,
+      "se": 0.028664460878930886,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.10944111762917903,
+      "pick_gain_se": 0.014755690529184802,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 24,
+      "same": 18,
+      "opposite": 6,
+      "tie": 0,
+      "agreement": 0.75,
+      "se": 0.10695028918647613,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.012748078571803491,
+      "pick_gain_se": 0.010799630064721401,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 230,
+      "same": 196,
+      "opposite": 34,
+      "tie": 0,
+      "agreement": 0.8521739130434782,
+      "se": 0.02929135435106016,
+      "n_anchors": 160,
+      "n_episodes": 131,
+      "pick_gain": 0.05572156819749428,
+      "pick_gain_se": 0.009226134569128382,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "N/seed_0": {
+     "start_early": {
+      "n_decided": 37,
+      "same": 0,
+      "opposite": 0,
+      "tie": 37,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.0008932751717050756,
+      "pick_gain_se": 0.0013930847763115922,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 65,
+      "same": 0,
+      "opposite": 0,
+      "tie": 65,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.00011084101566438828,
+      "pick_gain_se": 0.0017213608726272848,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 32,
+      "same": 0,
+      "opposite": 0,
+      "tie": 32,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0008179987217386052,
+      "pick_gain_se": 0.0008177504447260182,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 72,
+      "same": 0,
+      "opposite": 0,
+      "tie": 72,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0011696091562275039,
+      "pick_gain_se": 0.001644234976314987,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 24,
+      "same": 0,
+      "opposite": 0,
+      "tie": 24,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.00021880429066641215,
+      "pick_gain_se": 0.0008335561479966188,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 230,
+      "same": 0,
+      "opposite": 0,
+      "tie": 230,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 160,
+      "n_episodes": 131,
+      "pick_gain": -0.0002847956025183668,
+      "pick_gain_se": 0.0007062391699857958,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "N/seed_1": {
+     "start_early": {
+      "n_decided": 37,
+      "same": 0,
+      "opposite": 0,
+      "tie": 37,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.000522476151416716,
+      "pick_gain_se": 0.0012370620690471629,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 65,
+      "same": 0,
+      "opposite": 0,
+      "tie": 65,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0012732740193786155,
+      "pick_gain_se": 0.0016683056928001073,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 32,
+      "same": 0,
+      "opposite": 0,
+      "tie": 32,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0006694513053628282,
+      "pick_gain_se": 0.0010555253557865095,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 72,
+      "same": 0,
+      "opposite": 0,
+      "tie": 72,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.001309738798598043,
+      "pick_gain_se": 0.0013921200676546483,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 24,
+      "same": 0,
+      "opposite": 0,
+      "tie": 24,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -1.3816705011322208e-05,
+      "pick_gain_se": 0.001647344625952698,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 230,
+      "same": 0,
+      "opposite": 0,
+      "tie": 230,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 160,
+      "n_episodes": 131,
+      "pick_gain": -0.0005487609353868186,
+      "pick_gain_se": 0.0006652882508272583,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "N/seed_2": {
+     "start_early": {
+      "n_decided": 37,
+      "same": 0,
+      "opposite": 0,
+      "tie": 37,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.00011104521882164916,
+      "pick_gain_se": 0.0019526234913417521,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 65,
+      "same": 0,
+      "opposite": 0,
+      "tie": 65,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -3.235183785363604e-05,
+      "pick_gain_se": 0.0012849702159698547,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 32,
+      "same": 0,
+      "opposite": 0,
+      "tie": 32,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 1.4511258393667124e-05,
+      "pick_gain_se": 0.000754255103776629,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 72,
+      "same": 0,
+      "opposite": 0,
+      "tie": 72,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0005691006083933795,
+      "pick_gain_se": 0.001452871210141816,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 24,
+      "same": 0,
+      "opposite": 0,
+      "tie": 24,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.00017052857491080413,
+      "pick_gain_se": 0.0016010842694000268,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 230,
+      "same": 0,
+      "opposite": 0,
+      "tie": 230,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 160,
+      "n_episodes": 131,
+      "pick_gain": -0.0001292849087885006,
+      "pick_gain_se": 0.0005946548957705004,
+      "pick_gain_vs_mode": null
+     }
+    }
+   }
+  },
+  "B": {
+   "n_pairs_decided": 222,
+   "n_anchors": 160,
+   "n_episodes": 131,
+   "scorers": {
+    "random": {
+     "start_early": {
+      "n_decided": 47,
+      "same": 31,
+      "opposite": 16,
+      "tie": 0,
+      "agreement": 0.6595744680851063,
+      "se": 0.07210820585111903,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.027887863450359873,
+      "pick_gain_se": 0.01662416218036663,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 57,
+      "same": 32,
+      "opposite": 25,
+      "tie": 0,
+      "agreement": 0.5614035087719298,
+      "se": 0.061775990668861865,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.0013000817385394117,
+      "pick_gain_se": 0.026491992476261193,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 23,
+      "same": 9,
+      "opposite": 14,
+      "tie": 0,
+      "agreement": 0.391304347826087,
+      "se": 0.1132903964552605,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0003876277023664478,
+      "pick_gain_se": 0.019621540600236718,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 66,
+      "same": 35,
+      "opposite": 31,
+      "tie": 0,
+      "agreement": 0.5303030303030303,
+      "se": 0.0686424702222406,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0026152255396709742,
+      "pick_gain_se": 0.01867509015057748,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 29,
+      "same": 11,
+      "opposite": 18,
+      "tie": 0,
+      "agreement": 0.3793103448275862,
+      "se": 0.09547964935170775,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.006823380276500755,
+      "pick_gain_se": 0.02144884040283537,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 222,
+      "same": 118,
+      "opposite": 104,
+      "tie": 0,
+      "agreement": 0.5315315315315315,
+      "se": 0.038238236216163,
+      "n_anchors": 160,
+      "n_episodes": 131,
+      "pick_gain": 0.003872342334072222,
+      "pick_gain_se": 0.008810229569777974,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "NCE_R/seed_0": {
+     "start_early": {
+      "n_decided": 47,
+      "same": 30,
+      "opposite": 17,
+      "tie": 0,
+      "agreement": 0.6382978723404256,
+      "se": 0.07640254756384247,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.02727339562807174,
+      "pick_gain_se": 0.020337605109569577,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 57,
+      "same": 27,
+      "opposite": 30,
+      "tie": 0,
+      "agreement": 0.47368421052631576,
+      "se": 0.06879930508938081,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0017220349820187743,
+      "pick_gain_se": 0.023398633247075588,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 23,
+      "same": 12,
+      "opposite": 11,
+      "tie": 0,
+      "agreement": 0.5217391304347826,
+      "se": 0.10680584186929595,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.0010506837029424752,
+      "pick_gain_se": 0.01872417848337142,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 66,
+      "same": 40,
+      "opposite": 26,
+      "tie": 0,
+      "agreement": 0.6060606060606061,
+      "se": 0.062127857000111975,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.017541846467338473,
+      "pick_gain_se": 0.01826527286123138,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 29,
+      "same": 20,
+      "opposite": 9,
+      "tie": 0,
+      "agreement": 0.6896551724137931,
+      "se": 0.10908765971922263,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.004848578813152927,
+      "pick_gain_se": 0.018730718741046492,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 222,
+      "same": 129,
+      "opposite": 93,
+      "tie": 0,
+      "agreement": 0.581081081081081,
+      "se": 0.03607832496341963,
+      "n_anchors": 160,
+      "n_episodes": 131,
+      "pick_gain": 0.009798493925897368,
+      "pick_gain_se": 0.008954616247559156,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "NCE_R/seed_1": {
+     "start_early": {
+      "n_decided": 47,
+      "same": 22,
+      "opposite": 25,
+      "tie": 0,
+      "agreement": 0.46808510638297873,
+      "se": 0.08496065634780128,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.0005699315597666979,
+      "pick_gain_se": 0.024697979317195997,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 57,
+      "same": 25,
+      "opposite": 32,
+      "tie": 0,
+      "agreement": 0.43859649122807015,
+      "se": 0.07025120968820485,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.02256386786522551,
+      "pick_gain_se": 0.027201265510072643,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 23,
+      "same": 16,
+      "opposite": 7,
+      "tie": 0,
+      "agreement": 0.6956521739130435,
+      "se": 0.11048873423813721,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.001801245282422313,
+      "pick_gain_se": 0.019480829585133357,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 66,
+      "same": 40,
+      "opposite": 26,
+      "tie": 0,
+      "agreement": 0.6060606060606061,
+      "se": 0.07137765761386979,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.018742812104392215,
+      "pick_gain_se": 0.01863164572047033,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 29,
+      "same": 15,
+      "opposite": 14,
+      "tie": 0,
+      "agreement": 0.5172413793103449,
+      "se": 0.12430626414103484,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0004992083142951744,
+      "pick_gain_se": 0.021486448992450034,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 222,
+      "same": 118,
+      "opposite": 104,
+      "tie": 0,
+      "agreement": 0.5315315315315315,
+      "se": 0.0392627005268546,
+      "n_anchors": 160,
+      "n_episodes": 131,
+      "pick_gain": -0.0003898174465878916,
+      "pick_gain_se": 0.008942897956514947,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "NCE_R/seed_2": {
+     "start_early": {
+      "n_decided": 47,
+      "same": 24,
+      "opposite": 23,
+      "tie": 0,
+      "agreement": 0.5106382978723404,
+      "se": 0.07596618028061398,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.01610449048712325,
+      "pick_gain_se": 0.022641057391258032,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 57,
+      "same": 25,
+      "opposite": 32,
+      "tie": 0,
+      "agreement": 0.43859649122807015,
+      "se": 0.078039026350478,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0035370605168433752,
+      "pick_gain_se": 0.026553540062248603,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 23,
+      "same": 14,
+      "opposite": 9,
+      "tie": 0,
+      "agreement": 0.6086956521739131,
+      "se": 0.10126009271208135,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.004543139386896655,
+      "pick_gain_se": 0.017589800035830997,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 66,
+      "same": 37,
+      "opposite": 29,
+      "tie": 0,
+      "agreement": 0.5606060606060606,
+      "se": 0.0678056165070107,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.01745959835920985,
+      "pick_gain_se": 0.01818932830755857,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 29,
+      "same": 22,
+      "opposite": 7,
+      "tie": 0,
+      "agreement": 0.7586206896551724,
+      "se": 0.09918977395510901,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.010945425206728032,
+      "pick_gain_se": 0.015024516217565327,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 222,
+      "same": 122,
+      "opposite": 100,
+      "tie": 0,
+      "agreement": 0.5495495495495496,
+      "se": 0.03738876519534073,
+      "n_anchors": 160,
+      "n_episodes": 131,
+      "pick_gain": 0.009103118584622882,
+      "pick_gain_se": 0.008446232652701382,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "S/seed_0": {
+     "start_early": {
+      "n_decided": 47,
+      "same": 27,
+      "opposite": 20,
+      "tie": 0,
+      "agreement": 0.574468085106383,
+      "se": 0.08344841969211836,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.01554527236839931,
+      "pick_gain_se": 0.021205844685438895,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 57,
+      "same": 31,
+      "opposite": 26,
+      "tie": 0,
+      "agreement": 0.543859649122807,
+      "se": 0.0710286342043763,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.030880266113020596,
+      "pick_gain_se": 0.025569557841180608,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 23,
+      "same": 11,
+      "opposite": 12,
+      "tie": 0,
+      "agreement": 0.4782608695652174,
+      "se": 0.09965897525938057,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0034248710203428363,
+      "pick_gain_se": 0.019913239388255843,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 66,
+      "same": 30,
+      "opposite": 36,
+      "tie": 0,
+      "agreement": 0.45454545454545453,
+      "se": 0.06656262753352997,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.02111760464640611,
+      "pick_gain_se": 0.01960707151059146,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 29,
+      "same": 20,
+      "opposite": 9,
+      "tie": 0,
+      "agreement": 0.6896551724137931,
+      "se": 0.09882819041606775,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.004789847303982242,
+      "pick_gain_se": 0.023028949569268195,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 222,
+      "same": 119,
+      "opposite": 103,
+      "tie": 0,
+      "agreement": 0.536036036036036,
+      "se": 0.03840765522402618,
+      "n_anchors": 160,
+      "n_episodes": 131,
+      "pick_gain": 0.005334582023730639,
+      "pick_gain_se": 0.01014797804133749,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "S/seed_1": {
+     "start_early": {
+      "n_decided": 47,
+      "same": 32,
+      "opposite": 15,
+      "tie": 0,
+      "agreement": 0.6808510638297872,
+      "se": 0.07116046942746435,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.014041215391898733,
+      "pick_gain_se": 0.01629072046282691,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 57,
+      "same": 36,
+      "opposite": 21,
+      "tie": 0,
+      "agreement": 0.631578947368421,
+      "se": 0.06961686500212136,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.04367885502195652,
+      "pick_gain_se": 0.023171222941420443,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 23,
+      "same": 11,
+      "opposite": 12,
+      "tie": 0,
+      "agreement": 0.4782608695652174,
+      "se": 0.11417260881168872,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0009075918451344508,
+      "pick_gain_se": 0.018740325924489497,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 66,
+      "same": 37,
+      "opposite": 29,
+      "tie": 0,
+      "agreement": 0.5606060606060606,
+      "se": 0.05878580385401972,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.026467025751799156,
+      "pick_gain_se": 0.017376439068483553,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 29,
+      "same": 20,
+      "opposite": 9,
+      "tie": 0,
+      "agreement": 0.6896551724137931,
+      "se": 0.08857463154949184,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.017842576441353227,
+      "pick_gain_se": 0.015124227298926703,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 222,
+      "same": 136,
+      "opposite": 86,
+      "tie": 0,
+      "agreement": 0.6126126126126126,
+      "se": 0.032724096131131315,
+      "n_anchors": 160,
+      "n_episodes": 131,
+      "pick_gain": 0.020224416152374636,
+      "pick_gain_se": 0.008385078070058338,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "S/seed_2": {
+     "start_early": {
+      "n_decided": 47,
+      "same": 30,
+      "opposite": 17,
+      "tie": 0,
+      "agreement": 0.6382978723404256,
+      "se": 0.08582724349644395,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.011477575852950393,
+      "pick_gain_se": 0.022856721203668478,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 57,
+      "same": 29,
+      "opposite": 28,
+      "tie": 0,
+      "agreement": 0.5087719298245614,
+      "se": 0.07293082941327599,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.00887339782874126,
+      "pick_gain_se": 0.0237979009099285,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 23,
+      "same": 10,
+      "opposite": 13,
+      "tie": 0,
+      "agreement": 0.43478260869565216,
+      "se": 0.08982355628877013,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0021019291866650764,
+      "pick_gain_se": 0.020164106443736774,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 66,
+      "same": 33,
+      "opposite": 33,
+      "tie": 0,
+      "agreement": 0.5,
+      "se": 0.06853377830775276,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.004030389506624489,
+      "pick_gain_se": 0.019610919523841783,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 29,
+      "same": 17,
+      "opposite": 12,
+      "tie": 0,
+      "agreement": 0.5862068965517241,
+      "se": 0.12147231233535846,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.004612404537510882,
+      "pick_gain_se": 0.021036861319566422,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 222,
+      "same": 119,
+      "opposite": 103,
+      "tie": 0,
+      "agreement": 0.536036036036036,
+      "se": 0.03457011099860555,
+      "n_anchors": 160,
+      "n_episodes": 131,
+      "pick_gain": 0.0019212500901782431,
+      "pick_gain_se": 0.009068613254479057,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "N/seed_0": {
+     "start_early": {
+      "n_decided": 47,
+      "same": 0,
+      "opposite": 0,
+      "tie": 47,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0014646663550627176,
+      "pick_gain_se": 0.0016242088774275603,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 57,
+      "same": 0,
+      "opposite": 0,
+      "tie": 57,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0014305193724480172,
+      "pick_gain_se": 0.001782196215373857,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 23,
+      "same": 0,
+      "opposite": 0,
+      "tie": 23,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.00012484141350796668,
+      "pick_gain_se": 0.001277663421943541,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 66,
+      "same": 0,
+      "opposite": 0,
+      "tie": 66,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.0014345833066340672,
+      "pick_gain_se": 0.0014316143326328422,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 29,
+      "same": 0,
+      "opposite": 0,
+      "tie": 29,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.00020128447924776,
+      "pick_gain_se": 0.0010724066939372242,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 222,
+      "same": 0,
+      "opposite": 0,
+      "tie": 222,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 160,
+      "n_episodes": 131,
+      "pick_gain": -0.00027683187102737485,
+      "pick_gain_se": 0.0007973997472940885,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "N/seed_1": {
+     "start_early": {
+      "n_decided": 47,
+      "same": 0,
+      "opposite": 0,
+      "tie": 47,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0012050924821062376,
+      "pick_gain_se": 0.0013104320680557247,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 57,
+      "same": 0,
+      "opposite": 0,
+      "tie": 57,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0035919761414701695,
+      "pick_gain_se": 0.002284213513008436,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 23,
+      "same": 0,
+      "opposite": 0,
+      "tie": 23,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -3.653711553398885e-06,
+      "pick_gain_se": 0.001266808460749004,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 66,
+      "same": 0,
+      "opposite": 0,
+      "tie": 66,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -7.03629037224118e-05,
+      "pick_gain_se": 0.0013072440661843585,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 29,
+      "same": 0,
+      "opposite": 0,
+      "tie": 29,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.0006225227711524885,
+      "pick_gain_se": 0.000768687577066741,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 222,
+      "same": 0,
+      "opposite": 0,
+      "tie": 222,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 160,
+      "n_episodes": 131,
+      "pick_gain": -0.000849712493539946,
+      "pick_gain_se": 0.000607065677121249,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "N/seed_2": {
+     "start_early": {
+      "n_decided": 47,
+      "same": 0,
+      "opposite": 0,
+      "tie": 47,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.0007467169393476074,
+      "pick_gain_se": 0.001344981030727515,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 57,
+      "same": 0,
+      "opposite": 0,
+      "tie": 57,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.002848964214064538,
+      "pick_gain_se": 0.0019810661916401648,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 23,
+      "same": 0,
+      "opposite": 0,
+      "tie": 23,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 8.874267271494218e-05,
+      "pick_gain_se": 0.0008583294185217543,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 66,
+      "same": 0,
+      "opposite": 0,
+      "tie": 66,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.001675921970974627,
+      "pick_gain_se": 0.0012878408424383896,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 29,
+      "same": 0,
+      "opposite": 0,
+      "tie": 29,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0004550450019360149,
+      "pick_gain_se": 0.001937162435001014,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 222,
+      "same": 0,
+      "opposite": 0,
+      "tie": 222,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 160,
+      "n_episodes": 131,
+      "pick_gain": -0.0008288943149825261,
+      "pick_gain_se": 0.0007440560663679966,
+      "pick_gain_vs_mode": null
+     }
+    }
+   }
+  },
+  "C": {
+   "n_pairs_decided": 758,
+   "n_anchors": 160,
+   "n_episodes": 67,
+   "scorers": {
+    "random": {
+     "start_early": {
+      "n_decided": 104,
+      "same": 60,
+      "opposite": 44,
+      "tie": 0,
+      "agreement": 0.5769230769230769,
+      "se": 0.0635300890914716,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.01249283907354766,
+      "pick_gain_se": 0.008212582307648106,
+      "pick_gain_vs_mode": 0.022024312863095474
+     },
+     "turn": {
+      "n_decided": 237,
+      "same": 120,
+      "opposite": 117,
+      "tie": 0,
+      "agreement": 0.5063291139240507,
+      "se": 0.05844171001866518,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": -0.01735453030307781,
+      "pick_gain_se": 0.03219473208161441,
+      "pick_gain_vs_mode": 0.0017510104050870723
+     },
+     "start_late": {
+      "n_decided": 97,
+      "same": 54,
+      "opposite": 43,
+      "tie": 0,
+      "agreement": 0.5567010309278351,
+      "se": 0.03702195187053082,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.006865598575313924,
+      "pick_gain_se": 0.012248302566371133,
+      "pick_gain_vs_mode": 0.0029595139176308294
+     },
+     "north_leg": {
+      "n_decided": 232,
+      "same": 104,
+      "opposite": 128,
+      "tie": 0,
+      "agreement": 0.4482758620689655,
+      "se": 0.04026151173416538,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": -0.00869156322282834,
+      "pick_gain_se": 0.021273314197747785,
+      "pick_gain_vs_mode": -0.00044782471104554133
+     },
+     "shortcut_early": {
+      "n_decided": 88,
+      "same": 45,
+      "opposite": 43,
+      "tie": 0,
+      "agreement": 0.5113636363636364,
+      "se": 0.07068374608702507,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.004861914732828151,
+      "pick_gain_se": 0.014485660411907264,
+      "pick_gain_vs_mode": -0.0069799513144062075
+     },
+     "pooled": {
+      "n_decided": 758,
+      "same": 383,
+      "opposite": 375,
+      "tie": 0,
+      "agreement": 0.5052770448548812,
+      "se": 0.029398176685800533,
+      "n_anchors": 160,
+      "n_episodes": 67,
+      "pick_gain": -0.0023099141219745404,
+      "pick_gain_se": 0.01059983727360214,
+      "pick_gain_vs_mode": 0.0038614122320723256
+     }
+    },
+    "NCE_R/seed_0": {
+     "start_early": {
+      "n_decided": 104,
+      "same": 46,
+      "opposite": 58,
+      "tie": 0,
+      "agreement": 0.4423076923076923,
+      "se": 0.06362175641462063,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.0016516289879746201,
+      "pick_gain_se": 0.011537356585951706,
+      "pick_gain_vs_mode": 0.011183102777522436
+     },
+     "turn": {
+      "n_decided": 237,
+      "same": 112,
+      "opposite": 125,
+      "tie": 0,
+      "agreement": 0.47257383966244726,
+      "se": 0.043862056270503894,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": -0.026803424708145937,
+      "pick_gain_se": 0.01825287487037302,
+      "pick_gain_vs_mode": -0.007697883999981059
+     },
+     "start_late": {
+      "n_decided": 97,
+      "same": 55,
+      "opposite": 42,
+      "tie": 0,
+      "agreement": 0.5670103092783505,
+      "se": 0.06140847430189577,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.012199164922367344,
+      "pick_gain_se": 0.018022393671703087,
+      "pick_gain_vs_mode": -0.01610524958005044
+     },
+     "north_leg": {
+      "n_decided": 232,
+      "same": 106,
+      "opposite": 126,
+      "tie": 0,
+      "agreement": 0.45689655172413796,
+      "se": 0.060887243166049244,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": -0.006657074369786638,
+      "pick_gain_se": 0.029735867929566666,
+      "pick_gain_vs_mode": 0.0015866641419961525
+     },
+     "shortcut_early": {
+      "n_decided": 88,
+      "same": 46,
+      "opposite": 42,
+      "tie": 0,
+      "agreement": 0.5227272727272727,
+      "se": 0.08612176731220246,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0030964544407652284,
+      "pick_gain_se": 0.02410989716474258,
+      "pick_gain_vs_mode": -0.005214491022343282
+     },
+     "pooled": {
+      "n_decided": 758,
+      "same": 365,
+      "opposite": 393,
+      "tie": 0,
+      "agreement": 0.4815303430079156,
+      "se": 0.034565679091269036,
+      "n_anchors": 160,
+      "n_episodes": 67,
+      "pick_gain": -0.009420897890618105,
+      "pick_gain_se": 0.011421553882128076,
+      "pick_gain_vs_mode": -0.0032495715365712385
+     }
+    },
+    "NCE_R/seed_1": {
+     "start_early": {
+      "n_decided": 104,
+      "same": 51,
+      "opposite": 53,
+      "tie": 0,
+      "agreement": 0.49038461538461536,
+      "se": 0.0725215385854357,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0003463635013758867,
+      "pick_gain_se": 0.01279273469173903,
+      "pick_gain_vs_mode": 0.009185110288171927
+     },
+     "turn": {
+      "n_decided": 237,
+      "same": 120,
+      "opposite": 117,
+      "tie": 0,
+      "agreement": 0.5063291139240507,
+      "se": 0.03611419657256564,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": -0.005096044499236998,
+      "pick_gain_se": 0.02548440605085216,
+      "pick_gain_vs_mode": 0.014009496208927885
+     },
+     "start_late": {
+      "n_decided": 97,
+      "same": 40,
+      "opposite": 57,
+      "tie": 0,
+      "agreement": 0.41237113402061853,
+      "se": 0.0718451480796321,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.012485007330997177,
+      "pick_gain_se": 0.018106500251041782,
+      "pick_gain_vs_mode": -0.016391091988680273
+     },
+     "north_leg": {
+      "n_decided": 232,
+      "same": 119,
+      "opposite": 113,
+      "tie": 0,
+      "agreement": 0.5129310344827587,
+      "se": 0.03054747983415219,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": 0.017786674351054903,
+      "pick_gain_se": 0.019954221177196255,
+      "pick_gain_vs_mode": 0.026030412862837693
+     },
+     "shortcut_early": {
+      "n_decided": 88,
+      "same": 48,
+      "opposite": 40,
+      "tie": 0,
+      "agreement": 0.5454545454545454,
+      "se": 0.06959041561078466,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.006817666723236471,
+      "pick_gain_se": 0.018523026899025723,
+      "pick_gain_vs_mode": 0.004699630141658417
+     },
+     "pooled": {
+      "n_decided": 758,
+      "same": 378,
+      "opposite": 380,
+      "tie": 0,
+      "agreement": 0.49868073878627966,
+      "se": 0.02241422401615985,
+      "n_anchors": 160,
+      "n_episodes": 67,
+      "pick_gain": 0.0013353851485362641,
+      "pick_gain_se": 0.010682618812300551,
+      "pick_gain_vs_mode": 0.00750671150258313
+     }
+    },
+    "NCE_R/seed_2": {
+     "start_early": {
+      "n_decided": 104,
+      "same": 66,
+      "opposite": 38,
+      "tie": 0,
+      "agreement": 0.6346153846153846,
+      "se": 0.04629707493922616,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.017250441788337414,
+      "pick_gain_se": 0.010528539510167972,
+      "pick_gain_vs_mode": 0.02678191557788523
+     },
+     "turn": {
+      "n_decided": 237,
+      "same": 108,
+      "opposite": 129,
+      "tie": 0,
+      "agreement": 0.45569620253164556,
+      "se": 0.05129079368125601,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": -0.0202503529621481,
+      "pick_gain_se": 0.018350399623023025,
+      "pick_gain_vs_mode": -0.0011448122539832184
+     },
+     "start_late": {
+      "n_decided": 97,
+      "same": 47,
+      "opposite": 50,
+      "tie": 0,
+      "agreement": 0.4845360824742268,
+      "se": 0.06784668009475972,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.009845641957144833,
+      "pick_gain_se": 0.019329210986262606,
+      "pick_gain_vs_mode": -0.01375172661482793
+     },
+     "north_leg": {
+      "n_decided": 232,
+      "same": 133,
+      "opposite": 99,
+      "tie": 0,
+      "agreement": 0.5732758620689655,
+      "se": 0.037946162030363675,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": 0.030100256568812257,
+      "pick_gain_se": 0.012525275677940708,
+      "pick_gain_vs_mode": 0.03834399508059505
+     },
+     "shortcut_early": {
+      "n_decided": 88,
+      "same": 41,
+      "opposite": 47,
+      "tie": 0,
+      "agreement": 0.4659090909090909,
+      "se": 0.07595508388711869,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.001316935862178072,
+      "pick_gain_se": 0.02030615798903439,
+      "pick_gain_vs_mode": -0.0008011007193999831
+     },
+     "pooled": {
+      "n_decided": 758,
+      "same": 395,
+      "opposite": 363,
+      "tie": 0,
+      "agreement": 0.521108179419525,
+      "se": 0.02687249261139199,
+      "n_anchors": 160,
+      "n_episodes": 67,
+      "pick_gain": 0.0037143278600069627,
+      "pick_gain_se": 0.006806710919693398,
+      "pick_gain_vs_mode": 0.00988565421405383
+     }
+    },
+    "S/seed_0": {
+     "start_early": {
+      "n_decided": 104,
+      "same": 70,
+      "opposite": 34,
+      "tie": 0,
+      "agreement": 0.6730769230769231,
+      "se": 0.06027483567889362,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.018062131560600395,
+      "pick_gain_se": 0.009315547101727025,
+      "pick_gain_vs_mode": 0.02759360535014821
+     },
+     "turn": {
+      "n_decided": 237,
+      "same": 114,
+      "opposite": 123,
+      "tie": 0,
+      "agreement": 0.4810126582278481,
+      "se": 0.03287451223942596,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": 0.00027499533739501047,
+      "pick_gain_se": 0.019577925216394943,
+      "pick_gain_vs_mode": 0.019380536045559893
+     },
+     "start_late": {
+      "n_decided": 97,
+      "same": 49,
+      "opposite": 48,
+      "tie": 0,
+      "agreement": 0.5051546391752577,
+      "se": 0.07722890369132662,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0033474704439868212,
+      "pick_gain_se": 0.01931497100971482,
+      "pick_gain_vs_mode": -0.007253555101669917
+     },
+     "north_leg": {
+      "n_decided": 232,
+      "same": 108,
+      "opposite": 124,
+      "tie": 0,
+      "agreement": 0.46551724137931033,
+      "se": 0.04302325767477712,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": -0.017659521765654065,
+      "pick_gain_se": 0.029216761138398425,
+      "pick_gain_vs_mode": -0.009415783253871268
+     },
+     "shortcut_early": {
+      "n_decided": 88,
+      "same": 51,
+      "opposite": 37,
+      "tie": 0,
+      "agreement": 0.5795454545454546,
+      "se": 0.07132727421751832,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.01488241035531246,
+      "pick_gain_se": 0.018547046099393557,
+      "pick_gain_vs_mode": 0.012764373773734405
+     },
+     "pooled": {
+      "n_decided": 758,
+      "same": 392,
+      "opposite": 366,
+      "tie": 0,
+      "agreement": 0.5171503957783641,
+      "se": 0.02719666190127348,
+      "n_anchors": 160,
+      "n_episodes": 67,
+      "pick_gain": 0.002442509008733395,
+      "pick_gain_se": 0.009004770488568776,
+      "pick_gain_vs_mode": 0.008613835362780264
+     }
+    },
+    "S/seed_1": {
+     "start_early": {
+      "n_decided": 104,
+      "same": 55,
+      "opposite": 49,
+      "tie": 0,
+      "agreement": 0.5288461538461539,
+      "se": 0.05463863659416355,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.010328058969025736,
+      "pick_gain_se": 0.011956061072339794,
+      "pick_gain_vs_mode": 0.01985953275857355
+     },
+     "turn": {
+      "n_decided": 237,
+      "same": 122,
+      "opposite": 115,
+      "tie": 0,
+      "agreement": 0.5147679324894515,
+      "se": 0.034039240235266006,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": 0.036167542667772064,
+      "pick_gain_se": 0.015115740198190283,
+      "pick_gain_vs_mode": 0.05527308337593695
+     },
+     "start_late": {
+      "n_decided": 97,
+      "same": 58,
+      "opposite": 39,
+      "tie": 0,
+      "agreement": 0.5979381443298969,
+      "se": 0.07016524322153339,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.004365605023576792,
+      "pick_gain_se": 0.01734301961763839,
+      "pick_gain_vs_mode": 0.00045952036589369527
+     },
+     "north_leg": {
+      "n_decided": 232,
+      "same": 117,
+      "opposite": 115,
+      "tie": 0,
+      "agreement": 0.5043103448275862,
+      "se": 0.03141897710584473,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": 0.01520584576287547,
+      "pick_gain_se": 0.026346074063251283,
+      "pick_gain_vs_mode": 0.023449584274658264
+     },
+     "shortcut_early": {
+      "n_decided": 88,
+      "same": 48,
+      "opposite": 40,
+      "tie": 0,
+      "agreement": 0.5454545454545454,
+      "se": 0.0733721363903843,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.003610534426570663,
+      "pick_gain_se": 0.01590180266398439,
+      "pick_gain_vs_mode": -0.0057285710081487196
+     },
+     "pooled": {
+      "n_decided": 758,
+      "same": 400,
+      "opposite": 358,
+      "tie": 0,
+      "agreement": 0.5277044854881267,
+      "se": 0.01959651931883218,
+      "n_anchors": 160,
+      "n_episodes": 67,
+      "pick_gain": 0.012491303599335878,
+      "pick_gain_se": 0.008649420300426954,
+      "pick_gain_vs_mode": 0.018662629953382748
+     }
+    },
+    "S/seed_2": {
+     "start_early": {
+      "n_decided": 104,
+      "same": 55,
+      "opposite": 49,
+      "tie": 0,
+      "agreement": 0.5288461538461539,
+      "se": 0.07639997081404708,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.003228644119371892,
+      "pick_gain_se": 0.01760700915008641,
+      "pick_gain_vs_mode": 0.0063028296701759245
+     },
+     "turn": {
+      "n_decided": 237,
+      "same": 119,
+      "opposite": 118,
+      "tie": 0,
+      "agreement": 0.5021097046413502,
+      "se": 0.04706549311004194,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": 0.022754815102121025,
+      "pick_gain_se": 0.03145192818321707,
+      "pick_gain_vs_mode": 0.04186035581028591
+     },
+     "start_late": {
+      "n_decided": 97,
+      "same": 54,
+      "opposite": 43,
+      "tie": 0,
+      "agreement": 0.5567010309278351,
+      "se": 0.07066318823511376,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0013966071522190752,
+      "pick_gain_se": 0.019507515937492913,
+      "pick_gain_vs_mode": -0.005302691809902171
+     },
+     "north_leg": {
+      "n_decided": 232,
+      "same": 116,
+      "opposite": 116,
+      "tie": 0,
+      "agreement": 0.5,
+      "se": 0.029538544763110988,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": 0.0029891062901697277,
+      "pick_gain_se": 0.03639623744288228,
+      "pick_gain_vs_mode": 0.011232844801952524
+     },
+     "shortcut_early": {
+      "n_decided": 88,
+      "same": 53,
+      "opposite": 35,
+      "tie": 0,
+      "agreement": 0.6022727272727273,
+      "se": 0.07294538534587477,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.016960790861048736,
+      "pick_gain_se": 0.018397076532457056,
+      "pick_gain_vs_mode": 0.014842754279470682
+     },
+     "pooled": {
+      "n_decided": 758,
+      "same": 397,
+      "opposite": 361,
+      "tie": 0,
+      "agreement": 0.5237467018469657,
+      "se": 0.024959358212990217,
+      "n_anchors": 160,
+      "n_episodes": 67,
+      "pick_gain": 0.007615892196349705,
+      "pick_gain_se": 0.014803468900553953,
+      "pick_gain_vs_mode": 0.013787218550396574
+     }
+    },
+    "N/seed_0": {
+     "start_early": {
+      "n_decided": 104,
+      "same": 0,
+      "opposite": 0,
+      "tie": 104,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.0007068439230715734,
+      "pick_gain_se": 0.0011502915386627998,
+      "pick_gain_vs_mode": 0.010576358968093018
+     },
+     "turn": {
+      "n_decided": 237,
+      "same": 0,
+      "opposite": 0,
+      "tie": 237,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": -0.005161557228922788,
+      "pick_gain_se": 0.0018852114955400425,
+      "pick_gain_vs_mode": 0.021760372790600398
+     },
+     "start_late": {
+      "n_decided": 97,
+      "same": 0,
+      "opposite": 0,
+      "tie": 97,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0003642193284031223,
+      "pick_gain_se": 0.001116306524801319,
+      "pick_gain_vs_mode": -0.0033678111881295094
+     },
+     "north_leg": {
+      "n_decided": 232,
+      "same": 0,
+      "opposite": 0,
+      "tie": 232,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": -0.0006535031433179494,
+      "pick_gain_se": 0.0016237840025719234,
+      "pick_gain_vs_mode": 0.008455357153412705
+     },
+     "shortcut_early": {
+      "n_decided": 88,
+      "same": 0,
+      "opposite": 0,
+      "tie": 88,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.00019526468382991973,
+      "pick_gain_se": 0.0017085746583423102,
+      "pick_gain_vs_mode": -0.0018445205710713702
+     },
+     "pooled": {
+      "n_decided": 758,
+      "same": 0,
+      "opposite": 0,
+      "tie": 758,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 160,
+      "n_episodes": 67,
+      "pick_gain": -0.0010554342187484734,
+      "pick_gain_se": 0.0009138588821504834,
+      "pick_gain_vs_mode": 0.00711595143058105
+     }
+    },
+    "N/seed_1": {
+     "start_early": {
+      "n_decided": 104,
+      "same": 0,
+      "opposite": 0,
+      "tie": 104,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.00044645595846873185,
+      "pick_gain_se": 0.0012257694431548447,
+      "pick_gain_vs_mode": 0.009759618178533174
+     },
+     "turn": {
+      "n_decided": 237,
+      "same": 0,
+      "opposite": 0,
+      "tie": 237,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": -0.0010277794271837594,
+      "pick_gain_se": 0.0017400141567893478,
+      "pick_gain_vs_mode": 0.017610456519886953
+     },
+     "start_late": {
+      "n_decided": 97,
+      "same": 0,
+      "opposite": 0,
+      "tie": 97,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0008594757616083357,
+      "pick_gain_se": 0.0013213768280575786,
+      "pick_gain_vs_mode": -0.0035731640779249575
+     },
+     "north_leg": {
+      "n_decided": 232,
+      "same": 0,
+      "opposite": 0,
+      "tie": 232,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": 0.0010923955392013339,
+      "pick_gain_se": 0.002063786956047182,
+      "pick_gain_vs_mode": 0.008018741711437084
+     },
+     "shortcut_early": {
+      "n_decided": 88,
+      "same": 0,
+      "opposite": 0,
+      "tie": 88,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.00029556307231587295,
+      "pick_gain_se": 0.0015363952568614103,
+      "pick_gain_vs_mode": -0.0029553863052910858
+     },
+     "pooled": {
+      "n_decided": 758,
+      "same": 0,
+      "opposite": 0,
+      "tie": 758,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 160,
+      "n_episodes": 67,
+      "pick_gain": -1.0568123761231323e-05,
+      "pick_gain_se": 0.0004015874296004403,
+      "pick_gain_vs_mode": 0.005772053205328233
+     }
+    },
+    "N/seed_2": {
+     "start_early": {
+      "n_decided": 104,
+      "same": 0,
+      "opposite": 0,
+      "tie": 104,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.00036346209001976654,
+      "pick_gain_se": 0.0010723269481537636,
+      "pick_gain_vs_mode": 0.009365382146926324
+     },
+     "turn": {
+      "n_decided": 237,
+      "same": 0,
+      "opposite": 0,
+      "tie": 237,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": 0.00131390952099764,
+      "pick_gain_se": 0.002318137212577333,
+      "pick_gain_vs_mode": 0.017746998019517832
+     },
+     "start_late": {
+      "n_decided": 97,
+      "same": 0,
+      "opposite": 0,
+      "tie": 97,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.00021638331819531372,
+      "pick_gain_se": 0.0005745493098608857,
+      "pick_gain_vs_mode": -0.004430947304547319
+     },
+     "north_leg": {
+      "n_decided": 232,
+      "same": 0,
+      "opposite": 0,
+      "tie": 232,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": 0.0005214005387074382,
+      "pick_gain_se": 0.000826531997775458,
+      "pick_gain_vs_mode": 0.009652086115539762
+     },
+     "shortcut_early": {
+      "n_decided": 88,
+      "same": 0,
+      "opposite": 0,
+      "tie": 88,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.0011042831909708188,
+      "pick_gain_se": 0.0009245103445605228,
+      "pick_gain_vs_mode": -0.0010745832675047489
+     },
+     "pooled": {
+      "n_decided": 758,
+      "same": 0,
+      "opposite": 0,
+      "tie": 758,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 160,
+      "n_episodes": 67,
+      "pick_gain": 0.0005585028957702888,
+      "pick_gain_se": 0.0007974490736200225,
+      "pick_gain_vs_mode": 0.0062517871419863705
+     }
+    }
+   }
+  },
+  "C_matched": {
+   "n_pairs_decided": 227,
+   "n_anchors": 160,
+   "n_episodes": 67,
+   "scorers": {
+    "random": {
+     "start_early": {
+      "n_decided": 24,
+      "same": 13,
+      "opposite": 11,
+      "tie": 0,
+      "agreement": 0.5416666666666666,
+      "se": 0.08526314879032594,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.007781607544454044,
+      "pick_gain_se": 0.013086925379906349,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 77,
+      "same": 41,
+      "opposite": 36,
+      "tie": 0,
+      "agreement": 0.5324675324675324,
+      "se": 0.10063778845316111,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": 0.013135361424967112,
+      "pick_gain_se": 0.026431228918523716,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 31,
+      "same": 19,
+      "opposite": 12,
+      "tie": 0,
+      "agreement": 0.6129032258064516,
+      "se": 0.1154423396102562,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.013313080844151653,
+      "pick_gain_se": 0.01871656867712111,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 65,
+      "same": 29,
+      "opposite": 36,
+      "tie": 0,
+      "agreement": 0.4461538461538462,
+      "se": 0.04629399105636614,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": -0.02839074727277572,
+      "pick_gain_se": 0.0041896152934510714,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 30,
+      "same": 14,
+      "opposite": 16,
+      "tie": 0,
+      "agreement": 0.4666666666666667,
+      "se": 0.10047539776261429,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.009341114692991443,
+      "pick_gain_se": 0.02036267691319253,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 227,
+      "same": 116,
+      "opposite": 111,
+      "tie": 0,
+      "agreement": 0.5110132158590308,
+      "se": 0.03839399519591119,
+      "n_anchors": 160,
+      "n_episodes": 67,
+      "pick_gain": 0.0030360834467577065,
+      "pick_gain_se": 0.008143402088008934,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "NCE_R/seed_0": {
+     "start_early": {
+      "n_decided": 24,
+      "same": 9,
+      "opposite": 15,
+      "tie": 0,
+      "agreement": 0.375,
+      "se": 0.1000782569058859,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.002812872341867962,
+      "pick_gain_se": 0.019734613514341897,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 77,
+      "same": 28,
+      "opposite": 49,
+      "tie": 0,
+      "agreement": 0.36363636363636365,
+      "se": 0.01953876939705916,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": -0.04524711290794888,
+      "pick_gain_se": 0.010524809570433226,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 31,
+      "same": 12,
+      "opposite": 19,
+      "tie": 0,
+      "agreement": 0.3870967741935484,
+      "se": 0.08737764383165116,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.01899861002205701,
+      "pick_gain_se": 0.01789764718210428,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 65,
+      "same": 31,
+      "opposite": 34,
+      "tie": 0,
+      "agreement": 0.47692307692307695,
+      "se": 0.07902914836083241,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": -0.01244656729105979,
+      "pick_gain_se": 0.02272876597262288,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 30,
+      "same": 12,
+      "opposite": 18,
+      "tie": 0,
+      "agreement": 0.4,
+      "se": 0.10776622847627174,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.009692088363105237,
+      "pick_gain_se": 0.02553012427174841,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 227,
+      "same": 92,
+      "opposite": 135,
+      "tie": 0,
+      "agreement": 0.4052863436123348,
+      "se": 0.03676270402471158,
+      "n_anchors": 160,
+      "n_episodes": 67,
+      "pick_gain": -0.017839450185207776,
+      "pick_gain_se": 0.008227309735703688,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "NCE_R/seed_1": {
+     "start_early": {
+      "n_decided": 24,
+      "same": 11,
+      "opposite": 13,
+      "tie": 0,
+      "agreement": 0.4583333333333333,
+      "se": 0.11062758972313104,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.008024822587761566,
+      "pick_gain_se": 0.02023142252918745,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 77,
+      "same": 37,
+      "opposite": 40,
+      "tie": 0,
+      "agreement": 0.4805194805194805,
+      "se": 0.060181918447615536,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": -0.00016165499785832874,
+      "pick_gain_se": 0.025810362982371125,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 31,
+      "same": 8,
+      "opposite": 23,
+      "tie": 0,
+      "agreement": 0.25806451612903225,
+      "se": 0.09325378088718507,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.017367649389446644,
+      "pick_gain_se": 0.01905423399976884,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 65,
+      "same": 33,
+      "opposite": 32,
+      "tie": 0,
+      "agreement": 0.5076923076923077,
+      "se": 0.04838698956543894,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": 0.025989454319036064,
+      "pick_gain_se": 0.020667184581618415,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 30,
+      "same": 15,
+      "opposite": 15,
+      "tie": 0,
+      "agreement": 0.5,
+      "se": 0.09660805119427446,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.013315840088883608,
+      "pick_gain_se": 0.018575565307519935,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 227,
+      "same": 104,
+      "opposite": 123,
+      "tie": 0,
+      "agreement": 0.4581497797356828,
+      "se": 0.02814050498672259,
+      "n_anchors": 160,
+      "n_episodes": 67,
+      "pick_gain": 0.0027502334865706275,
+      "pick_gain_se": 0.007063821009571329,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "NCE_R/seed_2": {
+     "start_early": {
+      "n_decided": 24,
+      "same": 15,
+      "opposite": 9,
+      "tie": 0,
+      "agreement": 0.625,
+      "se": 0.09316404252782484,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.009374954115325334,
+      "pick_gain_se": 0.016801378885595183,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 77,
+      "same": 30,
+      "opposite": 47,
+      "tie": 0,
+      "agreement": 0.38961038961038963,
+      "se": 0.08774472893841197,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": -0.04759502117834321,
+      "pick_gain_se": 0.0170401574402016,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 31,
+      "same": 13,
+      "opposite": 18,
+      "tie": 0,
+      "agreement": 0.41935483870967744,
+      "se": 0.08051477743914395,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.004510445797071343,
+      "pick_gain_se": 0.017211123554988255,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 65,
+      "same": 34,
+      "opposite": 31,
+      "tie": 0,
+      "agreement": 0.5230769230769231,
+      "se": 0.07393463843826545,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": 0.028535370537686802,
+      "pick_gain_se": 0.014040643525617687,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 30,
+      "same": 13,
+      "opposite": 17,
+      "tie": 0,
+      "agreement": 0.43333333333333335,
+      "se": 0.09626721491071956,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.004129747874988727,
+      "pick_gain_se": 0.023054864143420707,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 227,
+      "same": 105,
+      "opposite": 122,
+      "tie": 0,
+      "agreement": 0.46255506607929514,
+      "se": 0.03234444805707442,
+      "n_anchors": 160,
+      "n_episodes": 67,
+      "pick_gain": -0.0020130788894827376,
+      "pick_gain_se": 0.005197295939149674,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "S/seed_0": {
+     "start_early": {
+      "n_decided": 24,
+      "same": 20,
+      "opposite": 4,
+      "tie": 0,
+      "agreement": 0.8333333333333334,
+      "se": 0.08769346475638867,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.016056976125052337,
+      "pick_gain_se": 0.01812782722730453,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 77,
+      "same": 29,
+      "opposite": 48,
+      "tie": 0,
+      "agreement": 0.37662337662337664,
+      "se": 0.04691818466612931,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": -0.038830452768782685,
+      "pick_gain_se": 0.01262977555345923,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 31,
+      "same": 14,
+      "opposite": 17,
+      "tie": 0,
+      "agreement": 0.45161290322580644,
+      "se": 0.10690029049302831,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0018705195814921619,
+      "pick_gain_se": 0.02243413077469636,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 65,
+      "same": 32,
+      "opposite": 33,
+      "tie": 0,
+      "agreement": 0.49230769230769234,
+      "se": 0.07974526050264003,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": -0.011438573295815026,
+      "pick_gain_se": 0.013874433883400594,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 30,
+      "same": 17,
+      "opposite": 13,
+      "tie": 0,
+      "agreement": 0.5666666666666667,
+      "se": 0.1025516184389327,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.012494209771224027,
+      "pick_gain_se": 0.018906889151923355,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 227,
+      "same": 112,
+      "opposite": 115,
+      "tie": 0,
+      "agreement": 0.4933920704845815,
+      "se": 0.0388140529499495,
+      "n_anchors": 160,
+      "n_episodes": 67,
+      "pick_gain": -0.004717671949962701,
+      "pick_gain_se": 0.007174853508150557,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "S/seed_1": {
+     "start_early": {
+      "n_decided": 24,
+      "same": 15,
+      "opposite": 9,
+      "tie": 0,
+      "agreement": 0.625,
+      "se": 0.07654896969331335,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.008791578612469191,
+      "pick_gain_se": 0.021764978674478182,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 77,
+      "same": 35,
+      "opposite": 42,
+      "tie": 0,
+      "agreement": 0.45454545454545453,
+      "se": 0.09209909634736109,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": 0.0022845297127484275,
+      "pick_gain_se": 0.02514854072291377,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 31,
+      "same": 18,
+      "opposite": 13,
+      "tie": 0,
+      "agreement": 0.5806451612903226,
+      "se": 0.09800246411837477,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.00215299318430577,
+      "pick_gain_se": 0.020676281992656868,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 65,
+      "same": 39,
+      "opposite": 26,
+      "tie": 0,
+      "agreement": 0.6,
+      "se": 0.03177031202039185,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": 0.04365795263318735,
+      "pick_gain_se": 0.009036722621970016,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 30,
+      "same": 16,
+      "opposite": 14,
+      "tie": 0,
+      "agreement": 0.5333333333333333,
+      "se": 0.11630495833511713,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0028534417012148613,
+      "pick_gain_se": 0.022926468381411,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 227,
+      "same": 123,
+      "opposite": 104,
+      "tie": 0,
+      "agreement": 0.5418502202643172,
+      "se": 0.036066706044888035,
+      "n_anchors": 160,
+      "n_episodes": 67,
+      "pick_gain": 0.010806722488299177,
+      "pick_gain_se": 0.009215061343616684,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "S/seed_2": {
+     "start_early": {
+      "n_decided": 24,
+      "same": 13,
+      "opposite": 11,
+      "tie": 0,
+      "agreement": 0.5416666666666666,
+      "se": 0.11415476911159422,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.00048560774037771995,
+      "pick_gain_se": 0.025217168874741538,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 77,
+      "same": 32,
+      "opposite": 45,
+      "tie": 0,
+      "agreement": 0.4155844155844156,
+      "se": 0.08076698818604797,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": -0.026994254514723565,
+      "pick_gain_se": 0.019770862938830812,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 31,
+      "same": 18,
+      "opposite": 13,
+      "tie": 0,
+      "agreement": 0.5806451612903226,
+      "se": 0.1162788459591061,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.00048303876277107274,
+      "pick_gain_se": 0.022665498339024676,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 65,
+      "same": 35,
+      "opposite": 30,
+      "tie": 0,
+      "agreement": 0.5384615384615384,
+      "se": 0.0628666129491375,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": 0.021231304072747058,
+      "pick_gain_se": 0.01633748742361521,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 30,
+      "same": 20,
+      "opposite": 10,
+      "tie": 0,
+      "agreement": 0.6666666666666666,
+      "se": 0.09893494495542682,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.016328102359996894,
+      "pick_gain_se": 0.01737979520488236,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 227,
+      "same": 118,
+      "opposite": 109,
+      "tie": 0,
+      "agreement": 0.5198237885462555,
+      "se": 0.036969547069108766,
+      "n_anchors": 160,
+      "n_episodes": 67,
+      "pick_gain": 0.0019193010829743188,
+      "pick_gain_se": 0.00831137073012749,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "N/seed_0": {
+     "start_early": {
+      "n_decided": 24,
+      "same": 0,
+      "opposite": 0,
+      "tie": 24,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.00042769934867502963,
+      "pick_gain_se": 0.0022838733812260577,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 77,
+      "same": 0,
+      "opposite": 0,
+      "tie": 77,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": -0.002017609796594305,
+      "pick_gain_se": 0.0014729274939405033,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 31,
+      "same": 0,
+      "opposite": 0,
+      "tie": 31,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.00014886014824621064,
+      "pick_gain_se": 0.001227531319552039,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 65,
+      "same": 0,
+      "opposite": 0,
+      "tie": 65,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": 2.073530988089717e-05,
+      "pick_gain_se": 0.0007846517187607928,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 30,
+      "same": 0,
+      "opposite": 0,
+      "tie": 30,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.0003674477157968191,
+      "pick_gain_se": 0.0013335887888736118,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 227,
+      "same": 0,
+      "opposite": 0,
+      "tie": 227,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 160,
+      "n_episodes": 67,
+      "pick_gain": -0.00021057345479906977,
+      "pick_gain_se": 0.0005032818603018677,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "N/seed_1": {
+     "start_early": {
+      "n_decided": 24,
+      "same": 0,
+      "opposite": 0,
+      "tie": 24,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.00010228362116284452,
+      "pick_gain_se": 0.001909542130322511,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 77,
+      "same": 0,
+      "opposite": 0,
+      "tie": 77,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": 0.00228130856857471,
+      "pick_gain_se": 0.0013666698784520408,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 31,
+      "same": 0,
+      "opposite": 0,
+      "tie": 31,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -0.0010288894250955602,
+      "pick_gain_se": 0.0012308413221611538,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 65,
+      "same": 0,
+      "opposite": 0,
+      "tie": 65,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": 0.00034126025147391805,
+      "pick_gain_se": 0.0008366086330774065,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 30,
+      "same": 0,
+      "opposite": 0,
+      "tie": 30,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.0007212063983782476,
+      "pick_gain_se": 0.0017053054975322889,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 227,
+      "same": 0,
+      "opposite": 0,
+      "tie": 227,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 160,
+      "n_episodes": 67,
+      "pick_gain": 0.0004425204344336942,
+      "pick_gain_se": 0.0006709636206610241,
+      "pick_gain_vs_mode": null
+     }
+    },
+    "N/seed_2": {
+     "start_early": {
+      "n_decided": 24,
+      "same": 0,
+      "opposite": 0,
+      "tie": 24,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": -4.1167177317523126e-05,
+      "pick_gain_se": 0.001817060400830867,
+      "pick_gain_vs_mode": null
+     },
+     "turn": {
+      "n_decided": 77,
+      "same": 0,
+      "opposite": 0,
+      "tie": 77,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": -0.0008392004994745633,
+      "pick_gain_se": 0.001371640334138424,
+      "pick_gain_vs_mode": null
+     },
+     "start_late": {
+      "n_decided": 31,
+      "same": 0,
+      "opposite": 0,
+      "tie": 31,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.00042396057738794087,
+      "pick_gain_se": 0.001596819197456318,
+      "pick_gain_vs_mode": null
+     },
+     "north_leg": {
+      "n_decided": 65,
+      "same": 0,
+      "opposite": 0,
+      "tie": 65,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 5,
+      "pick_gain": 0.0027357313680007192,
+      "pick_gain_se": 0.0011794000239157005,
+      "pick_gain_vs_mode": null
+     },
+     "shortcut_early": {
+      "n_decided": 30,
+      "same": 0,
+      "opposite": 0,
+      "tie": 30,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 32,
+      "n_episodes": 32,
+      "pick_gain": 0.0007761716101170652,
+      "pick_gain_se": 0.001137202752889329,
+      "pick_gain_vs_mode": null
+     },
+     "pooled": {
+      "n_decided": 227,
+      "same": 0,
+      "opposite": 0,
+      "tie": 227,
+      "agreement": null,
+      "se": NaN,
+      "n_anchors": 160,
+      "n_episodes": 67,
+      "pick_gain": 0.0006110991757427278,
+      "pick_gain_se": 0.00071200306789721,
+      "pick_gain_vs_mode": null
+     }
+    }
+   }
+  }
+ },
+ "paired": {
+  "A": {
+   "S - NCE_R": {
+    "n_pairs": 230,
+    "diff": 0.18405797101449278,
+    "se": 0.026355023299537882,
+    "z": 6.983790866833349
+   },
+   "S - N": {
+    "n_pairs": 0
+   },
+   "NCE_R - N": {
+    "n_pairs": 0
+   },
+   "per_seed S - NCE_R": {
+    "0": {
+     "n_pairs": 230,
+     "diff": 0.1956521739130435,
+     "se": 0.030292731088069055,
+     "z": 6.458716889679916
+    },
+    "1": {
+     "n_pairs": 230,
+     "diff": 0.2,
+     "se": 0.034401949848293915,
+     "z": 5.813623962652179
+    },
+    "2": {
+     "n_pairs": 230,
+     "diff": 0.1565217391304348,
+     "se": 0.03255428383598956,
+     "z": 4.808022806430046
+    }
+   }
+  },
+  "B": {
+   "S - NCE_R": {
+    "n_pairs": 222,
+    "diff": 0.007507507507507511,
+    "se": 0.036177762177927855,
+    "z": 0.2075171888903582
+   },
+   "S - N": {
+    "n_pairs": 0
+   },
+   "NCE_R - N": {
+    "n_pairs": 0
+   },
+   "per_seed S - NCE_R": {
+    "0": {
+     "n_pairs": 222,
+     "diff": -0.04504504504504504,
+     "se": 0.052124278499038945,
+     "z": -0.8641854878792341
+    },
+    "1": {
+     "n_pairs": 222,
+     "diff": 0.08108108108108109,
+     "se": 0.04951634998041156,
+     "z": 1.6374607803918582
+    },
+    "2": {
+     "n_pairs": 222,
+     "diff": -0.013513513513513514,
+     "se": 0.04921400841767732,
+     "z": -0.2745867273973066
+    }
+   }
+  },
+  "C": {
+   "S - NCE_R": {
+    "n_pairs": 758,
+    "diff": 0.022427440633245387,
+    "se": 0.024046556651852652,
+    "z": 0.9326674483149952
+   },
+   "S - N": {
+    "n_pairs": 0
+   },
+   "NCE_R - N": {
+    "n_pairs": 0
+   },
+   "per_seed S - NCE_R": {
+    "0": {
+     "n_pairs": 758,
+     "diff": 0.03562005277044855,
+     "se": 0.04076145787543237,
+     "z": 0.8738660152760965
+    },
+    "1": {
+     "n_pairs": 758,
+     "diff": 0.029023746701846966,
+     "se": 0.03059343200122531,
+     "z": 0.9486920820352723
+    },
+    "2": {
+     "n_pairs": 758,
+     "diff": 0.002638522427440633,
+     "se": 0.025949475338759194,
+     "z": 0.10167922060064269
+    }
+   }
+  },
+  "C_matched": {
+   "S - NCE_R": {
+    "n_pairs": 227,
+    "diff": 0.07635829662261381,
+    "se": 0.0368996464681353,
+    "z": 2.069350357829391
+   },
+   "S - N": {
+    "n_pairs": 0
+   },
+   "NCE_R - N": {
+    "n_pairs": 0
+   },
+   "per_seed S - NCE_R": {
+    "0": {
+     "n_pairs": 227,
+     "diff": 0.0881057268722467,
+     "se": 0.06356932042672267,
+     "z": 1.38597874384716
+    },
+    "1": {
+     "n_pairs": 227,
+     "diff": 0.08370044052863436,
+     "se": 0.04495743101006507,
+     "z": 1.8617709830860998
+    },
+    "2": {
+     "n_pairs": 227,
+     "diff": 0.05726872246696035,
+     "se": 0.03622511728866786,
+     "z": 1.5809119956907762
+    }
+   }
+  }
+ },
+ "critic_hashes": {
+  "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/critics_armR/seed_0/final.pkl": "661bafd7a3e10246791db47124fd50c2b52b8bc817418b4436c12a3b3f28b524",
+  "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/critics_armR/seed_1/final.pkl": "58e67bd5154e6b0705d23418cf1bb411cd2bfcb93f1ca82a9a2c77ea81a36900",
+  "/root/contrastive_rl/outputs/antmaze_branch_replay_p050/critics_armR/seed_2/final.pkl": "c850ff3202bb8aa0c7aad28c2fe6c2b2b58682294325660131a18de0904b66ad"
+ }
+}
