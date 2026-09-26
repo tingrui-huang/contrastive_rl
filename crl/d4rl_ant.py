@@ -667,3 +667,152 @@ class LitterOfflineAntUMazeEnv(OfflineD4rlAntUMazeEnv):
       reward = float(dist <= SUCCESS_DIST)
     return (self._flatten(self._last_obs), reward, False,
             self._info(pile, rubble, stats))
+
+
+# ---------------------------------------------------------------------------
+# Feasible box for the 29-dim learner state.
+#
+# Used by the ETT stage-0 causal transition model to clip the states it
+# GENERATES (crl/causal_transition_model.py: ``rollout``).  A learned dynamics
+# head fed its own output diverges off-manifold -- the ant leaves the maze,
+# the torso sinks through the floor, a joint bends past its stop, a velocity
+# runs away -- and every later step of the chain inherits that state.  The
+# relabeler then hands the critic goals that no reset of the environment could
+# ever produce.  Clipping does not make a bad rollout good, but it keeps the
+# generated goal distribution inside the support the policy is evaluated on.
+#
+# The state is ``[qpos[:15], qvel[:14]]`` (see ``_Sim._obs_dict`` and
+# ``D4rlAntUMazeEnv._flatten``):
+#
+#     0,  1    torso x, y            world position, origin at the R cell
+#     2        torso z               height
+#     3 -  6   torso quaternion      w, x, y, z
+#     7 - 14   8 leg joint angles    hip_1, ankle_1, ... hip_4, ankle_4 (rad)
+#    15 - 17   torso linear velocity
+#    18 - 20   torso angular velocity
+#    21 - 28   8 leg joint velocities
+#
+# Three of those blocks have a bound the ENVIRONMENT actually enforces, and
+# those are read off the built model rather than written down here:
+#
+#   * x, y are enclosed by the maze walls.  The box is the bounding box of the
+#     env's own traversable cells (``env._open``) grown by half a cell, which
+#     is the inner face of the surrounding wall geoms.  It is a bounding BOX,
+#     so on a ring map like V6 it also contains the central wall block -- a
+#     per-dimension clip cannot express a non-convex room, and the point here
+#     is to stop divergence, not to enforce the topology.
+#   * z sits between the floor and the top of the wall geoms
+#     (``height * scaling``); the ant cannot fly and its legs are far too
+#     short to climb a wall.
+#   * the eight leg joints have hard ``range`` attributes in the vendored
+#     ant.xml, read back from ``model.jnt_range``.
+#
+# MuJoCo joint limits are SOFT constraints, so real data overshoots them: on
+# the frozen V6 dataset the hips reach 0.665 rad against a 0.5236 stop and the
+# ankles 1.344 against 1.2217, i.e. about 0.14 rad of solver give.  The stops
+# are therefore widened by ANT_JOINT_LIMIT_SLACK before they are used as a
+# clip, so that no state the environment can actually produce is clipped.
+#
+# The remaining blocks have no env-side bound at all and are capped by an
+# envelope instead.  The quaternion is normalized by the integrator, but only
+# to within its own slop (measured 0.901 to 1.108 in norm on the V6 dataset),
+# so the per-component cap is 1.25 rather than 1.0.  The velocity caps are
+# round numbers roughly 3x the maxima of the frozen V6 dataset (linear 2.86,
+# angular 7.45, joint 7.50): loose enough that no plausible state touches
+# them, tight enough that a diverging chain is stopped rather than allowed to
+# reach 1e3.  They are arguments, not buried constants, so a benchmark with a
+# faster ant can raise them.
+ANT_STATE_DIM = 29
+ANT_NQ = int(INIT_QPOS.size)          # 15: the ant's own qpos, rocks follow
+ANT_NV = ANT_NQ - 1                   # 14: the free joint is 7 qpos / 6 dofs
+ANT_JOINT_LIMIT_SLACK = 0.25          # rad of solver give on a soft stop
+ANT_QUAT_ABS_MAX = 1.25               # integrator normalization slop
+ANT_LIN_VEL_ABS_MAX = 10.0            # m/s  per torso linear axis
+ANT_ANG_VEL_ABS_MAX = 20.0            # rad/s per torso angular axis
+ANT_JOINT_VEL_ABS_MAX = 20.0          # rad/s per leg joint
+
+
+def ant_state_bounds(env, joint_slack=ANT_JOINT_LIMIT_SLACK,
+                     quat_abs_max=ANT_QUAT_ABS_MAX,
+                     lin_vel_abs_max=ANT_LIN_VEL_ABS_MAX,
+                     ang_vel_abs_max=ANT_ANG_VEL_ABS_MAX,
+                     joint_vel_abs_max=ANT_JOINT_VEL_ABS_MAX,
+                     scaling=SCALING, height=MAZE_HEIGHT):
+  """``(lo, hi)``, two float32 ``[29]`` vectors: the feasible state box.
+
+  Derived from the LIVE environment -- its traversable cells, its torso
+  offset and its compiled MuJoCo model -- so every benchmark in this family
+  (U-maze, V5, V6, V7, the litter variants) gets its own box from the same
+  call and nothing about a particular map is hard-coded here.  See the block
+  comment above for what bounds each of the four parts of the state and why
+  the soft joint stops are widened before use.
+
+  Args:
+    env: an ant maze env exposing ``_open`` (traversable ``(row, col)``
+      cells), ``_torso_offset`` and a ``_env.model`` MuJoCo model -- i.e. a
+      ``D4rlAntUMazeEnv`` or any subclass.
+    joint_slack: radians added to each side of every hard joint stop, to
+      absorb the solver give that makes the stops soft in practice.
+    quat_abs_max, lin_vel_abs_max, ang_vel_abs_max, joint_vel_abs_max: the
+      envelope caps for the blocks the environment does not bound.
+    scaling, height: maze cell size and wall height, as passed to
+      ``build_maze_xml``.
+
+  Raises:
+    TypeError: if ``env`` is not an ant maze env (no ``_open`` /
+      ``_torso_offset`` / model), so a caller cannot silently get a box that
+      describes a different environment.
+  """
+  cells = getattr(env, '_open', None)
+  offset = getattr(env, '_torso_offset', None)
+  model = getattr(getattr(env, '_env', None), 'model', None)
+  if cells is None or offset is None or model is None:
+    raise TypeError(
+        f'{type(env).__name__} does not look like an ant maze env: '
+        'ant_state_bounds needs _open, _torso_offset and _env.model')
+  if int(model.nq) < ANT_NQ or int(model.nv) < ANT_NV:
+    raise TypeError(f'model has nq={model.nq}, nv={model.nv}; the ant needs '
+                    f'at least {ANT_NQ} / {ANT_NV}')
+
+  lo = np.full(ANT_STATE_DIM, -np.inf, np.float64)
+  hi = np.full(ANT_STATE_DIM, np.inf, np.float64)
+
+  # -- 0, 1: the maze walls.  _cell_xy(r, c) = (c * scaling - tx,
+  # r * scaling - ty) is a cell CENTRE, so half a cell either side is the
+  # inner face of the wall ring.
+  tx, ty = float(offset[0]), float(offset[1])
+  rows = [int(r) for r, _ in cells]
+  cols = [int(c) for _, c in cells]
+  half = 0.5 * float(scaling)
+  lo[0], hi[0] = min(cols) * scaling - tx - half, max(cols) * scaling - tx + half
+  lo[1], hi[1] = min(rows) * scaling - ty - half, max(rows) * scaling - ty + half
+
+  # -- 2: floor to the top of the wall geoms.
+  lo[2], hi[2] = 0.0, float(height) * float(scaling)
+
+  # -- 3..6: the torso quaternion, capped per component.
+  lo[3:7], hi[3:7] = -float(quat_abs_max), float(quat_abs_max)
+
+  # -- 7..14: the leg joints' own stops, widened by the solver's give.  Read
+  # from the model, so a joint the XML leaves unlimited stays unbounded here
+  # rather than picking up a made-up range.
+  for j in range(int(model.njnt)):
+    q = int(model.jnt_qposadr[j])
+    if q < 7 or q >= ANT_NQ:            # the free joint, or a rock's joint
+      continue
+    if not bool(model.jnt_limited[j]):
+      continue
+    lo[q] = float(model.jnt_range[j][0]) - float(joint_slack)
+    hi[q] = float(model.jnt_range[j][1]) + float(joint_slack)
+
+  # -- 15..28: qvel, which nothing in the model bounds.
+  v = ANT_NQ                            # 15: qvel starts here in the state
+  lo[v:v + 3], hi[v:v + 3] = -float(lin_vel_abs_max), float(lin_vel_abs_max)
+  lo[v + 3:v + 6], hi[v + 3:v + 6] = (-float(ang_vel_abs_max),
+                                      float(ang_vel_abs_max))
+  lo[v + 6:], hi[v + 6:] = -float(joint_vel_abs_max), float(joint_vel_abs_max)
+
+  if not np.all(lo < hi):
+    bad = [i for i in range(ANT_STATE_DIM) if not lo[i] < hi[i]]
+    raise ValueError(f'empty state box on dimensions {bad}')
+  return lo.astype(np.float32), hi.astype(np.float32)

@@ -25,6 +25,42 @@ class Transition(NamedTuple):
   discount: jnp.ndarray
   next_observation: jnp.ndarray  # concat([next_state, same relabeled_goal])
   next_action: jnp.ndarray
+  # --- task-goal supervision (used only when config.task_goal_coef > 0) ------
+  # The episode's OWN task goal in goal coordinates, and whether that episode
+  # actually reached it. Unlike the relabeled goal above, task_goal does not
+  # depend on the anchor time, and task_success is a trajectory-level outcome
+  # that hindsight relabeling cannot express: a failed episode never contains
+  # the task goal among its future states, so the ordinary contrastive loss
+  # never scores (s, a, g_task) with a negative label. Both are None on the
+  # paths that do not supply them; critic_loss reads them only behind the flag.
+  task_goal: Optional[jnp.ndarray] = None      # [B, goal_dim]
+  task_success: Optional[jnp.ndarray] = None   # [B], 1.0 reached / 0.0 not
+  # --- death-trajectory hindsight negatives (config.death_neg_coef > 0) -----
+  # An INDEPENDENT batch drawn only from the failure episodes and relabeled by
+  # the ordinary rule: anchor time i, goal from a geometric future j > i of
+  # the same trajectory. Hindsight would call such a pair a positive; this
+  # term calls it a 0, because the place it reached is on a path that ended in
+  # a death. Rows here do not correspond to the rows above.
+  death_observation: Optional[jnp.ndarray] = None   # [B_d, obs_dim+goal_dim]
+  death_action: Optional[jnp.ndarray] = None        # [B_d, action_dim]
+  # --- generated-trajectory negatives (config.gen_neg_coef > 0) -------------
+  # An INDEPENDENT batch drawn from the causal transition model's generated
+  # trajectories and relabeled by the ordinary rule inside each one. Read only
+  # by the critic's generated-negative term; the contrastive loss and the
+  # actor never see it. Rows here do not correspond to the rows above.
+  gen_observation: Optional[jnp.ndarray] = None     # [B_g, obs_dim+goal_dim]
+  gen_action: Optional[jnp.ndarray] = None          # [B_g, action_dim]
+
+  def apply_fields(self, fn):
+    """Rebuild this Transition with ``fn`` applied to every PRESENT field.
+
+    The optional fields above are None on the paths that do not supply them,
+    and ``jnp.asarray(None)`` raises, so every call site that converts a whole
+    batch (to device arrays, to numpy, ...) goes through here rather than
+    splatting ``_fields`` blindly."""
+    return self._replace(**{
+        name: (None if getattr(self, name) is None else fn(getattr(self, name)))
+        for name in self._fields})
 
 
 class TrainingState(NamedTuple):
@@ -81,6 +117,66 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
           f'batch_size={config.batch_size}; the padded second critic apply '
           'requires n_bank <= batch_size.')
 
+  # --- Task-goal supervision: the negative term ------------------------------
+  # The Monte-Carlo contrastive critic is trained purely by hindsight: every
+  # positive is (s, a, g) with g a FUTURE state of the same trajectory. A
+  # failure trajectory therefore teaches "this (s, a) reaches the place where
+  # you died" and never "this (s, a) fails to reach the task goal" -- the task
+  # goal is simply absent from its future, so it is never scored with a
+  # negative label. The only pressure it puts on f(s, a, g_task) is as an
+  # off-diagonal negative of OTHER anchors, which is the same pressure a
+  # successful trajectory gets.
+  #
+  # This term supplies the missing label directly: score f(s, a, g_task) for
+  # the anchor's OWN task goal and regress it, with binary cross-entropy,
+  # onto whether that episode actually reached the goal. Successful
+  # transitions get label 1, negative-dataset transitions label 0. Both label
+  # classes carry the same goal (the task goal), so nothing is separable from
+  # the goal input alone -- the margin has to be carried by sa_repr(s, a).
+  #
+  # Added to the critic loss with weight ``config.task_goal_coef``; at 0 the
+  # branch is skipped entirely and the loss is byte-identical to the baseline.
+  task_coef = float(getattr(config, 'task_goal_coef', 0.0) or 0.0)
+  task_enabled = task_coef > 0.0
+  if task_enabled:
+    if config.use_td or config.use_cpc or config.use_gcbc:
+      raise ValueError('task-goal supervision is implemented only for the '
+                       'Monte-Carlo NCE critic (use_td=False, use_cpc=False).')
+    if task_coef < 0.0:
+      raise ValueError(f'task_goal_coef must be >= 0, got {task_coef}')
+
+  # --- death-trajectory hindsight negatives ---------------------------------
+  # fail_neg_alpha pairs banked death STATES with arbitrary anchors, so the
+  # only input that can carry the label is the goal -- and in the 2-dim XY
+  # goal the critic sees, a death state and a safe crossing of the same band
+  # are the same point (measured AUC 0.505, notes/v6_failure_negatives.md).
+  # This term keeps the anchor and the goal in the SAME death trajectory and
+  # relabels by the ordinary geometric-future rule, so the pair is one
+  # hindsight would score as a positive; labeling it 0 puts the pressure on
+  # sa_repr(s, a) instead of on the goal.
+  death_coef = float(getattr(config, 'death_neg_coef', 0.0) or 0.0)
+  death_enabled = death_coef > 0.0
+  if death_enabled:
+    if config.use_td or config.use_cpc or config.use_gcbc:
+      raise ValueError('death-trajectory negatives are implemented only for '
+                       'the Monte-Carlo NCE critic (use_td=False, '
+                       'use_cpc=False, use_gcbc=False).')
+    if death_coef < 0.0:
+      raise ValueError(f'death_neg_coef must be >= 0, got {death_coef}')
+
+  # --- generated-trajectory negatives (crl/ETT_train_v2.py) -----------------
+  # Real hindsight pairs labeled 1, the transition model's generated hindsight
+  # pairs labeled 0; the real side is the diagonal of the contrastive batch.
+  gen_coef = float(getattr(config, 'gen_neg_coef', 0.0) or 0.0)
+  gen_enabled = gen_coef > 0.0
+  if gen_enabled:
+    if config.use_td or config.use_cpc or config.use_gcbc:
+      raise ValueError('generated-trajectory negatives are implemented only '
+                       'for the Monte-Carlo NCE critic (use_td=False, '
+                       'use_cpc=False, use_gcbc=False).')
+  elif gen_coef < 0.0:
+    raise ValueError(f'gen_neg_coef must be >= 0, got {gen_coef}')
+
   if adaptive_entropy_coefficient:
     log_alpha_init = jnp.asarray(0., dtype=jnp.float32)
     alpha_optimizer = optax.adam(learning_rate=3e-4)
@@ -122,6 +218,7 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
     I = jnp.eye(batch_size)  # pylint: disable=invalid-name
     logits = networks.q_network.apply(
         q_params, transitions.observation, transitions.action)
+    q_logits = logits   # per-head [B, B(, 2)], before any twin averaging.
 
     if config.use_td:
       assert len(logits.shape) == 3  # twin Q required.
@@ -233,6 +330,134 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
       }
     else:
       loss = jnp.mean(loss)
+
+    task_metrics = {}
+    if task_enabled:
+      # f(s, a, g_task) for the anchor's OWN task goal, one score per row (the
+      # diagonal of the outer product), regressed onto the episode outcome.
+      if transitions.task_goal is None or transitions.task_success is None:
+        raise ValueError(
+            'task_goal_coef > 0 but the batch carries no task_goal / '
+            'task_success; the replay buffer was not given episode labels.')
+      state_t = transitions.observation[:, :obs_dim]
+      obs_task = jnp.concatenate([state_t, transitions.task_goal], axis=1)
+      task_all = networks.q_network.apply(q_params, obs_task,
+                                          transitions.action)
+      if task_all.ndim == 3:                       # twin q -> [B, 2]
+        task_logits = jax.vmap(jnp.diag, -1, -1)(task_all)
+        task_labels = transitions.task_success[:, None]
+      else:                                        # single q -> [B]
+        task_logits = jnp.diag(task_all)
+        task_labels = transitions.task_success
+      task_term = jnp.mean(optax.sigmoid_binary_cross_entropy(
+          logits=task_logits, labels=task_labels))
+      loss = loss + task_coef * task_term
+
+      f_task = (jnp.mean(task_logits, axis=-1) if task_logits.ndim == 2
+                else task_logits)                  # [B], twin-averaged
+      w1 = transitions.task_success
+      w0 = 1.0 - w1
+      f1 = jnp.sum(f_task * w1) / jnp.maximum(jnp.sum(w1), 1.0)
+      f0 = jnp.sum(f_task * w0) / jnp.maximum(jnp.sum(w0), 1.0)
+      task_metrics = {
+          'task_goal_coef': jnp.asarray(task_coef, jnp.float32),
+          'task_goal_term': task_coef * task_term,   # as it enters the loss
+          'task_goal_term_raw': task_term,
+          'task_logits_success': f1,
+          'task_logits_failure': f0,
+          # the quantity the term exists to open up.
+          'task_logits_margin': f1 - f0,
+          'task_success_fraction': jnp.mean(w1),
+          'task_goal_accuracy': jnp.mean(
+              ((f_task > 0) == (w1 > 0.5)).astype(jnp.float32)),
+      }
+
+    death_metrics = {}
+    if death_enabled:
+      # A pair (s, a, g) drawn entirely inside a death trajectory by the same
+      # geometric-future rule the positives use, scored with label 0. Row k's
+      # own state-action against row k's own relabeled goal -- the diagonal of
+      # the outer product, as in the task-goal term above.
+      if (transitions.death_observation is None
+          or transitions.death_action is None):
+        raise ValueError(
+            'death_neg_coef > 0 but the batch carries no death_observation / '
+            'death_action; the replay buffer was not asked for a death batch '
+            '(see TrajectoryBuffer.enable_death_negatives).')
+      death_all = networks.q_network.apply(
+          q_params, transitions.death_observation, transitions.death_action)
+      if death_all.ndim == 3:                      # twin q -> [B_d, 2]
+        death_logits = jax.vmap(jnp.diag, -1, -1)(death_all)
+      else:                                        # single q -> [B_d]
+        death_logits = jnp.diag(death_all)
+      death_term = jnp.mean(optax.sigmoid_binary_cross_entropy(
+          logits=death_logits, labels=jnp.zeros_like(death_logits)))
+      loss = loss + death_coef * death_term
+
+      f_death = (jnp.mean(death_logits, axis=-1) if death_logits.ndim == 2
+                 else death_logits)                # [B_d], twin-averaged
+      death_metrics = {
+          'death_neg_coef': jnp.asarray(death_coef, jnp.float32),
+          'death_neg_term': death_coef * death_term,   # as it enters the loss
+          'death_neg_term_raw': death_term,
+          # f on the pairs the term is pushing down. The ordinary positive
+          # diagonal ('logits_pos') is the reference: these pairs ARE
+          # hindsight positives, so the gap between the two is the term's
+          # whole effect on the critic.
+          'death_pair_logits': jnp.mean(f_death),
+          'death_pair_frac_pos': jnp.mean((f_death > 0).astype(jnp.float32)),
+          # Per-element weight against the ordinary positive diagonal, which
+          # the B x B mean gives 1/B^2 each: death_coef * B. At 1.0 this term
+          # exactly cancels the positive pressure on a death-trajectory pair.
+          'death_vs_pos_weight': jnp.asarray(death_coef * batch_size,
+                                             jnp.float32),
+      }
+
+    gen_metrics = {}
+    if gen_enabled:
+      # Real side: row k of the contrastive batch against its own relabeled
+      # goal, i.e. the diagonal already computed above -- label 1. Generated
+      # side: the same diagonal on an independent batch drawn from the model's
+      # trajectories -- label 0. Each class is averaged on its own, so the two
+      # batch sizes do not set the class prior.
+      if transitions.gen_observation is None or transitions.gen_action is None:
+        raise ValueError(
+            'gen_neg_coef > 0 but the batch carries no gen_observation / '
+            'gen_action; the generated buffer was not sampled '
+            '(see crl/ETT_train_v2.py).')
+      gen_all = networks.q_network.apply(
+          q_params, transitions.gen_observation, transitions.gen_action)
+      if gen_all.ndim == 3:                        # twin q -> [B, 2], [B_g, 2]
+        real_diag = jax.vmap(jnp.diag, -1, -1)(q_logits)
+        gen_diag = jax.vmap(jnp.diag, -1, -1)(gen_all)
+      else:                                        # single q -> [B], [B_g]
+        real_diag = jnp.diag(q_logits)
+        gen_diag = jnp.diag(gen_all)
+      gen_real_term = jnp.mean(optax.sigmoid_binary_cross_entropy(
+          logits=real_diag, labels=jnp.ones_like(real_diag)))
+      gen_fake_term = jnp.mean(optax.sigmoid_binary_cross_entropy(
+          logits=gen_diag, labels=jnp.zeros_like(gen_diag)))
+      gen_term = gen_real_term + gen_fake_term
+      loss = loss + gen_coef * gen_term
+
+      f_real = (jnp.mean(real_diag, axis=-1) if real_diag.ndim == 2
+                else real_diag)                    # [B], twin-averaged
+      f_gen = (jnp.mean(gen_diag, axis=-1) if gen_diag.ndim == 2
+               else gen_diag)                      # [B_g], twin-averaged
+      gen_metrics = {
+          'gen_neg_coef': jnp.asarray(gen_coef, jnp.float32),
+          'gen_neg_term': gen_coef * gen_term,     # as it enters the loss
+          'gen_neg_term_raw': gen_term,
+          'gen_neg_real_bce': gen_real_term,
+          'gen_neg_gen_bce': gen_fake_term,
+          'gen_real_logits': jnp.mean(f_real),
+          'gen_pair_logits': jnp.mean(f_gen),
+          # the quantity the term exists to open up.
+          'gen_logits_margin': jnp.mean(f_real) - jnp.mean(f_gen),
+          'gen_accuracy': 0.5 * (jnp.mean((f_real > 0).astype(jnp.float32))
+                                 + jnp.mean((f_gen < 0).astype(jnp.float32))),
+      }
+
     correct = (jnp.argmax(logits, axis=1) == jnp.argmax(I, axis=1))
     logits_pos = jnp.sum(logits * I) / jnp.sum(I)
     logits_neg = jnp.sum(logits * (1 - I)) / jnp.sum(1 - I)
@@ -248,6 +473,9 @@ def build_learner(networks, config, obs_to_goal, policy_optimizer,
         'logits_gap': logits_pos - logits_neg,  # NCE sanity: should be > 0.
         'logsumexp': logsumexp.mean(),
         **fail_metrics,
+        **death_metrics,
+        **task_metrics,
+        **gen_metrics,
     }
     return loss, metrics
 

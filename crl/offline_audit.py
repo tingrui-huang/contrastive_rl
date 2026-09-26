@@ -254,11 +254,45 @@ def build_offline_buffer(path, config):
     obs, act = d['obs'], d['act']
     lengths = (np.asarray(d['lengths']).astype(np.int64)
                if 'lengths' in d else None)
+    task_goals, task_success = _task_goal_labels(d, obs, lengths, config)
     for e in range(n_eps):
-      buffer.add_episode(obs[e], act[e],
-                         length=None if lengths is None else int(lengths[e]))
+      buffer.add_episode(
+          obs[e], act[e],
+          length=None if lengths is None else int(lengths[e]),
+          task_goal=None if task_goals is None else task_goals[e],
+          success=None if task_success is None else task_success[e])
   buffer.freeze()
   return buffer, fp
+
+
+def _task_goal_labels(d, obs, lengths, config):
+  """Per-episode (task goal, reached-it) labels derived from the dataset.
+
+  The label is read off the data, not off a field the collector had to think
+  to write: an episode's task goal is its ``eval_goals`` row, and it counts as
+  successful when its LAST valid state lands within
+  ``config.task_goal_success_dist`` of that goal in goal coordinates -- the
+  same test the environment scores with. Returns ``(None, None)`` for a
+  dataset with no ``eval_goals``, which leaves the buffer unlabeled and the
+  task-goal term unusable (crl/train.py refuses that combination rather than
+  training on silently-zero labels).
+  """
+  if 'eval_goals' not in d:
+    return None, None
+  from crl.replay import obs_to_goal
+  goals = np.asarray(d['eval_goals'], np.float32)
+  n_eps = obs.shape[0]
+  last = (obs[np.arange(n_eps), lengths - 1, :config.obs_dim]
+          if lengths is not None else obs[:, -1, :config.obs_dim])
+  last_goal = obs_to_goal(np.asarray(last, np.float32), config.start_index,
+                          config.end_index, config.goal_indices)
+  if goals.shape != last_goal.shape:
+    raise ValueError(
+        f'eval_goals {goals.shape} does not match the goal contract '
+        f'{last_goal.shape}; refusing to guess the task-goal labels.')
+  dist = np.linalg.norm(last_goal - goals, axis=1)
+  reached = (dist <= float(config.task_goal_success_dist)).astype(np.float32)
+  return goals, reached
 
 
 def run_static_audit(path, config, buffer=None):
@@ -285,3 +319,205 @@ def run_static_audit(path, config, buffer=None):
   report['gates'] = gates
   report['verdict'] = 'PASS' if all_pass else 'FAIL'
   return all_pass, gates, report
+
+
+# --------------------------------------------------------------------------- #
+# Benchmark manifest: the run's environment/timing/algorithm contract
+# --------------------------------------------------------------------------- #
+# `offline_dataset.sha256` pins WHICH data a checkpoint was trained on. It says
+# nothing about the environment the eval-during-training env was built with, the
+# learning math, or -- for crl/ETT_train.py -- whether the causal transition
+# model's generated rollouts were mixed into the minibatches. An authoritative
+# evaluation needs all three, because the eval process rebuilds the environment
+# from its own CLI flags and has no other way to know they match training.
+#
+# scripts/train_rockfall_clock_v6_baseline.py has written this file for its own
+# runs from the start. The recorder below is the launcher-agnostic version, so
+# that runs driven by configs/*.yml through crl/ETT_train.py carry the same
+# record and become evaluable by the same authoritative script. It reads the
+# live Config and the dataset fingerprint only: nothing here is inferred or
+# defaulted from a benchmark module.
+MANIFEST_NAME = 'benchmark_config.json'
+
+# Values that may never change across a resume: the science, not the budget.
+_MANIFEST_INVARIANTS = (
+    'environment_version', 'env_name', 'dataset_sha256', 'learner_contract',
+    'horizon', 'p_active_1', 'p_active_2', 't0_range_1', 't0_range_2',
+    'seed', 'dataset_collection_seed', 'teacher_detour_prob', 'algorithm',
+    'algorithm_contract', 'failure_bank', 'ett')
+
+
+def _manifest_path(ckpt_dir):
+  return os.path.join(ckpt_dir, MANIFEST_NAME)
+
+
+def algorithm_contract(config):
+  """The learning-math fields an evaluator must see unchanged.
+
+  Mirrors ALGORITHM_CONTRACT in scripts/eval_rockfall_clock_v6_baseline.py.
+  `recipe` names the contrastive recipe only; an ETT run's additions are
+  recorded separately in the manifest's `ett` block, because the stage adds
+  data rather than changing any term of the contrastive loss.
+  """
+  return {
+      'recipe': 'vanilla_crl_v5',
+      'binary_nce': not config.use_td and not config.use_cpc,
+      'use_td': bool(config.use_td),
+      'use_cpc': bool(config.use_cpc),
+      'use_gcbc': bool(config.use_gcbc),
+      'add_mc_to_td': bool(config.add_mc_to_td),
+      'twin_q': bool(config.twin_q),
+      'bc_coef': float(config.bc_coef),
+      'random_goals': float(config.random_goals),
+      'batch_size': int(config.batch_size),
+      'repr_dim': config.repr_dim,
+      'repr_norm': bool(config.repr_norm),
+      'repr_norm_temp': bool(config.repr_norm_temp),
+      'hidden_layer_sizes': [int(n) for n in config.hidden_layer_sizes],
+      'use_image_obs': bool(config.use_image_obs),
+      'use_layer_norm': bool(config.use_layer_norm),
+      'discount': float(config.discount),
+      'tau': float(config.tau),
+      'actor_learning_rate': float(config.actor_learning_rate),
+      'learning_rate': float(config.learning_rate),
+      'num_sgd_steps_per_step': int(config.num_sgd_steps_per_step),
+      'updates_per_step': int(config.updates_per_step),
+  }
+
+
+def ett_contract(config):
+  """The stage-0 block: which arm this run is, and the knobs that define it.
+
+  `augmentation_enabled` is the arm discriminator -- the one thing that
+  separates the standard offline baseline from the augmented run, and the
+  thing no model-fit metric records. Both halves of the stage are gated on
+  `dyn_enable`, so a run with the master switch off is the standard arm
+  whatever the finer values say.
+  """
+  enabled = bool(getattr(config, 'dyn_enable', True))
+  fit = enabled and int(getattr(config, 'dyn_train_steps', 0)) > 0
+  frac = float(getattr(config, 'dyn_augment_frac', 0.0))
+  # crl/ETT_train_v2.py's arm: generated trajectories as critic-only negatives.
+  gen = float(getattr(config, 'gen_neg_coef', 0.0) or 0.0)
+  if enabled and gen > 0.0:
+    arm = 'ett_gen_negative'
+  elif enabled and frac > 0.0:
+    arm = 'ett_augmented'
+  else:
+    arm = 'standard'
+  return {
+      'dyn_enable': enabled,
+      'model_fitted': fit,
+      'augmentation_enabled': bool(enabled and (frac > 0.0 or gen > 0.0)),
+      'arm': arm,
+      'gen_neg_coef': gen,
+      'dyn_train_steps': int(getattr(config, 'dyn_train_steps', 0)),
+      'dyn_augment_frac': frac,
+      'dyn_rollout_steps': int(getattr(config, 'dyn_rollout_steps', 0)),
+      'dyn_augment_refresh_every': int(
+          getattr(config, 'dyn_augment_refresh_every', 0)),
+      'dyn_next_action_input': bool(
+          getattr(config, 'dyn_next_action_input', False)),
+      'dyn_policy_head': getattr(config, 'dyn_policy_head', ''),
+      'dyn_policy_components': int(
+          getattr(config, 'dyn_policy_components', 0)),
+      'dyn_off_diagonal': getattr(config, 'dyn_off_diagonal', 'none'),
+      'dyn_off_diagonal_action': getattr(
+          config, 'dyn_off_diagonal_action', ''),
+      'dyn_off_diagonal_train_action': getattr(
+          config, 'dyn_off_diagonal_train_action', ''),
+      'dyn_off_diagonal_coef': float(
+          getattr(config, 'dyn_off_diagonal_coef', 0.0)),
+      'dyn_negative_dataset': getattr(config, 'dyn_negative_dataset', ''),
+      'dyn_spectral_norm': bool(getattr(config, 'dyn_spectral_norm', False)),
+      'dyn_spectral_norm_coef': float(
+          getattr(config, 'dyn_spectral_norm_coef', 0.0)),
+  }
+
+
+def build_benchmark_manifest(config, fingerprint, provenance):
+  """Assemble the manifest payload from the live Config and the fingerprint."""
+  meta = (fingerprint.get('meta') or {}) if fingerprint else {}
+  goal_dim = int(config.goal_dim)
+  horizon = config.rockfall_max_steps
+  if horizon is None:
+    horizon = config.max_episode_steps
+  return {
+      'provenance': provenance,
+      'environment_version': meta.get('environment_version'),
+      'env_name': config.env_name,
+      'dataset': config.offline_dataset,
+      'dataset_sha256': fingerprint.get('sha256') if fingerprint else None,
+      'learner_contract': {
+          'state_dim': int(config.obs_dim),
+          'goal_dim': goal_dim,
+          'flat_dim': int(config.obs_dim) + goal_dim,
+      },
+      'horizon': int(horizon),
+      'p_active_1': config.rockfall_p_active_1,
+      'p_active_2': config.rockfall_p_active_2,
+      't0_range_1': [config.rockfall_t0_min_1, config.rockfall_t0_max_1],
+      't0_range_2': [config.rockfall_t0_min_2, config.rockfall_t0_max_2],
+      'steps': int(config.max_number_of_steps),
+      'seed': int(config.seed),
+      # Provenance of the data, read off the dataset's own meta -- never a
+      # value this process chose.
+      'dataset_collection_seed': meta.get('collection_seed'),
+      'teacher_detour_prob': meta.get('teacher_detour_prob'),
+      'algorithm': 'vanilla_crl_v5_recipe',
+      'algorithm_contract': algorithm_contract(config),
+      'failure_bank': {
+          'path': getattr(config, 'fail_bank_path', ''),
+          'alpha': float(getattr(config, 'fail_neg_alpha', 0.0)),
+          'enabled': bool(getattr(config, 'fail_bank_path', '')
+                          and float(getattr(config, 'fail_neg_alpha', 0.0))),
+      },
+      'ett': ett_contract(config),
+  }
+
+
+def record_benchmark_manifest(ckpt_dir, config, fingerprint):
+  """Write (or, on resume, re-check) the run's benchmark manifest.
+
+  On a fresh run the file is written from the launch configuration. On resume
+  the recorded contract must be unchanged -- only the step budget may grow --
+  which is the same rule the resume dataset-hash gate applies to the data.
+  Resuming a run that predates this recorder writes the manifest, but labels
+  it so nobody can mistake the resuming launch's config for the original's.
+  """
+  if not ckpt_dir:
+    return None
+  os.makedirs(ckpt_dir, exist_ok=True)
+  path = _manifest_path(ckpt_dir)
+  resuming = bool(getattr(config, 'resume', False))
+  previous = None
+  if resuming and os.path.exists(path):
+    with open(path) as f:
+      previous = json.load(f)
+  provenance = 'written_at_run_start'
+  if resuming:
+    provenance = (previous.get('provenance') if previous
+                  else 'written_at_resume_of_unrecorded_run')
+  payload = build_benchmark_manifest(config, fingerprint, provenance)
+  if previous is not None:
+    changed = {key: {'recorded': previous.get(key),
+                     'requested': payload.get(key)}
+               for key in _MANIFEST_INVARIANTS
+               if previous.get(key) != payload.get(key)}
+    if changed:
+      raise RuntimeError(
+          f'OFFLINE RESUME CONTRACT MISMATCH: {path} records a different '
+          f'benchmark contract than this launch: {changed}')
+    recorded_steps = previous.get('steps')
+    if isinstance(recorded_steps, int) and payload['steps'] < recorded_steps:
+      raise RuntimeError(
+          f'OFFLINE RESUME step budget must not shrink: '
+          f'recorded={recorded_steps}, requested={payload["steps"]}')
+  elif resuming:
+    print(f'  [offline] WARNING: resuming a run with no {MANIFEST_NAME}; '
+          'writing one from THIS launch\'s config and marking it '
+          f'provenance={provenance!r}. It describes the resuming launch, '
+          'not the original.')
+  with open(path, 'w') as f:
+    json.dump(payload, f, indent=2)
+  return path

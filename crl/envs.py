@@ -1066,6 +1066,100 @@ def make_env(env_name, config, seed=0, render_mode=None):
     # -> legacy reset (byte-identical), so nothing legacy changes.
     if getattr(config, 'rockfall_reset_fix', False):
       env._env.full_reset = True
+  elif env_name in ('offline_antmaze_rockfall_v7',
+                    'offline_antmaze_rockfall_v7_gxy'):
+    # Three-trap probabilistic successor to V6: same map and same rock
+    # physics, but the hazard is a per-trap kill coin revealed on entry
+    # instead of an absolute clock.  V5/V6 registration is untouched.
+    from crl.rockfall_v7 import RockfallV7Env
+    eval_goals = None
+    if getattr(config, 'offline_dataset', ''):
+      with np.load(config.offline_dataset) as _d:
+        if 'eval_goals' in _d:
+          eval_goals = _d['eval_goals'].copy()
+    _kw = {}
+    for attr, arg in (
+        ('rockfall_p_kill_1', 'p_kill_1'),
+        ('rockfall_p_kill_2', 'p_kill_2'),
+        ('rockfall_p_kill_3', 'p_kill_3'),
+        # bank-construction knob only; None -> 0 -> legacy freeze-at-contact.
+        ('rockfall_death_settle_substeps', 'death_settle_substeps'),
+        ('rockfall_max_steps', 'max_episode_steps')):
+      value = getattr(config, attr, None)
+      if value is not None:
+        _kw[arg] = value
+    env = RockfallV7Env(
+        seed=seed, render_mode=render_mode, eval_goals=eval_goals,
+        eval_goal_mode=getattr(config, 'eval_goal_mode', 'd4rl'), **_kw)
+    if env_name.endswith('_gxy'):
+      env.set_goal_indices((0, 1))
+  elif env_name in ('offline_antmaze_rockfall_clock_v7',
+                    'offline_antmaze_rockfall_clock_v7_gxy'):
+    # V6 with a signed death position: identical map, rocks, hazard coins,
+    # clocks and stream offsets, but the reported torso XY is negated from
+    # the fatal rock contact onward.  It reads the SAME rockfall_* config
+    # fields as V6 on purpose, so a V6 recipe becomes a V7 recipe by
+    # changing only the env name.  V6 registration below is untouched.
+    from crl.rockfall_clock_v7 import RockfallClockV7Env
+    eval_goals = None
+    if getattr(config, 'offline_dataset', ''):
+      with np.load(config.offline_dataset) as _d:
+        if 'eval_goals' in _d:
+          eval_goals = _d['eval_goals'].copy()
+    _kw = {}
+    for attr, arg in (
+        ('rockfall_p_active_1', 'p_active_1'),
+        ('rockfall_p_active_2', 'p_active_2'),
+        ('rockfall_t0_min_1', 't0_min_1'),
+        ('rockfall_t0_max_1', 't0_max_1'),
+        ('rockfall_t0_min_2', 't0_min_2'),
+        ('rockfall_t0_max_2', 't0_max_2'),
+        # bank-construction knob only; None -> 0 -> freeze-at-contact.
+        ('rockfall_death_settle_substeps', 'death_settle_substeps'),
+        # audit-only; None -> True -> the V7 benchmark.
+        ('rockfall_negate_death_xy', 'negate_death_xy'),
+        # burst length; None -> 72 -> the frozen V7 benchmark.
+        ('rockfall_steps', 'rockfall_steps'),
+        ('rockfall_max_steps', 'max_episode_steps')):
+      value = getattr(config, attr, None)
+      if value is not None:
+        _kw[arg] = value
+    env = RockfallClockV7Env(
+        seed=seed, render_mode=render_mode, eval_goals=eval_goals,
+        eval_goal_mode=getattr(config, 'eval_goal_mode', 'd4rl'), **_kw)
+    if env_name.endswith('_gxy'):
+      env.set_goal_indices((0, 1))
+  elif env_name in ('offline_antmaze_rockfall_clock_v8',
+                    'offline_antmaze_rockfall_clock_v8_gxy'):
+    # V6 with a goal region: success is reaching the east column, past the
+    # end of both the shortcut and the upper passage.  Same map, rocks,
+    # hazard coins, clocks and stream offsets, and it reads the SAME
+    # rockfall_* config fields as V6.  V6 registration below is untouched.
+    from crl.rockfall_clock_v8 import RockfallClockV8Env
+    eval_goals = None
+    if getattr(config, 'offline_dataset', ''):
+      with np.load(config.offline_dataset) as _d:
+        if 'eval_goals' in _d:
+          eval_goals = _d['eval_goals'].copy()
+    _kw = {}
+    for attr, arg in (
+        ('rockfall_p_active_1', 'p_active_1'),
+        ('rockfall_p_active_2', 'p_active_2'),
+        ('rockfall_t0_min_1', 't0_min_1'),
+        ('rockfall_t0_max_1', 't0_max_1'),
+        ('rockfall_t0_min_2', 't0_min_2'),
+        ('rockfall_t0_max_2', 't0_max_2'),
+        ('rockfall_death_settle_substeps', 'death_settle_substeps'),
+        ('rockfall_steps', 'rockfall_steps'),
+        ('rockfall_max_steps', 'max_episode_steps')):
+      value = getattr(config, attr, None)
+      if value is not None:
+        _kw[arg] = value
+    env = RockfallClockV8Env(
+        seed=seed, render_mode=render_mode, eval_goals=eval_goals,
+        eval_goal_mode=getattr(config, 'eval_goal_mode', 'd4rl'), **_kw)
+    if env_name.endswith('_gxy'):
+      env.set_goal_indices((0, 1))
   elif env_name in ('offline_antmaze_rockfall_clock_v6',
                     'offline_antmaze_rockfall_clock_v6_gxy'):
     # Elongated rectangular successor to V5.  It owns two independent
@@ -1087,10 +1181,19 @@ def make_env(env_name, config, seed=0, render_mode=None):
         ('rockfall_t0_max_2', 't0_max_2'),
         # bank-construction knob only; None -> 0 -> byte-identical V6.
         ('rockfall_death_settle_substeps', 'death_settle_substeps'),
+        # burst length; None -> 72 -> the frozen V6 benchmark.
+        ('rockfall_steps', 'rockfall_steps'),
         ('rockfall_max_steps', 'max_episode_steps')):
       value = getattr(config, attr, None)
       if value is not None:
         _kw[arg] = value
+    # fixed eval goal position; None -> the eval_goal_mode goal.
+    if getattr(config, 'eval_goal', None) is not None:
+      _kw['eval_goal'] = tuple(config.eval_goal)
+    # box success region (h or (hx, hy)); None -> the 0.5 circle of the
+    # frozen benchmark.
+    if getattr(config, 'eval_goal_box_half', None) is not None:
+      _kw['goal_box_half'] = config.eval_goal_box_half
     env = RockfallClockV6Env(
         seed=seed, render_mode=render_mode, eval_goals=eval_goals,
         eval_goal_mode=getattr(config, 'eval_goal_mode', 'd4rl'), **_kw)

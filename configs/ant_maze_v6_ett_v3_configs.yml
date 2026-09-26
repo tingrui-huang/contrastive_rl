@@ -1,0 +1,245 @@
+# ETT v3 on clock V6, evaluated at a fixed goal POSITION: run with
+#   python ant_maze/train_crl_ant_maze_v3.py configs/ant_maze_v6_ett_v3_configs.yml
+# Copy of configs/ant_maze_v6_ett_v2_configs.yml minus the done head
+# (dyn_done_dataset / dyn_done_threshold) and minus gen_neg_coef; instead the
+# generated trajectories are mixed into every minibatch at dyn_augment_frac
+# and the critic, actor and BC losses all read the mixed batch
+# (crl/ETT_train_v3.py). The rest of this header is V6's, kept verbatim.
+#
+# Hyper-parameters for the V6 long two-rockfall benchmark
+# (crl/rockfall_clock_v6.py). Mirrors
+#   scripts/train_rockfall_clock_v6_baseline.py --steps 100000 --seed 0
+# (its defaults: --env-name ..._gxy, --horizon 800, the p_active 0.40 dataset
+# and the V6 module's t0 ranges), with the ETT stage-0 block on top.
+# V6 IS THE DEFAULT BENCHMARK, so this is the file the launcher reads with no
+# argument. The later and earlier benchmarks are kept alongside and are still
+# runnable unchanged through their own configs:
+#   python ant_maze/train_ctl_ant_maze.py configs/ant_maze_v7_configs.yml
+#   python ant_maze/train_ctl_ant_maze.py configs/ant_maze_v5_configs.yml
+# Every value is a crl.config.Config field; ant_maze/train_ctl_ant_maze.py hands
+# them straight to Config.
+
+# --- Environment ---
+# V6 is an ELONGATED 5x9 ring (V5's map is untouched): one straight shortcut
+# from start to goal carrying TWO spatially separated rockfall zones, and one
+# longer safe perimeter detour. Note the env-name stem changed with the
+# benchmark: offline_antmaze_... here, offline_ant_umaze_... in V5.
+# _gxy = the upstream ant goal contract: the commanded and relabeled goal are
+# both the XY pair (envs.make_env calls env.set_goal_indices((0, 1))), so the
+# learner sees 31 columns = state 29 + goal 2.
+env_name: offline_antmaze_rockfall_clock_v6_gxy
+eval_goal_mode: d4rl
+# shortcut_end(24, 0.76), detour_end(24, 1.18)
+eval_goal: [25.0, 1.0]
+# Success region around eval_goal: a 2 x 1 box (|dx| <= 1 and |dy| <= 0.5)
+# instead of the AntMaze 0.5 circle; [hx, hy] half-widths (a single number
+# gives a square). Delete the line for the frozen benchmark.
+eval_goal_box_half: [1.0, 0.5]
+# The p_active 0.40 dataset is the V6 default benchmark: 1000 sighted-teacher
+# episodes x 801 obs (262,493 transitions), outcomes success 0.999 / timeout
+# 0.001, teacher detour coin 0.05 and latent-independent. Its _gxy copy is the
+# same states/actions with the 27 zero-padding goal columns dropped.
+# The earlier p_active 0.35 files are still in the tree
+# (antmaze_rockfall_clock_v6{,_gxy}.npz); running them means changing BOTH this
+# path and the two rockfall_p_active_* values below, because the env knobs here
+# are what the eval-during-training env is built with.
+offline_dataset: artifacts/rockfall_clock_v6/dataset/antmaze_rockfall_clock_v6_p040_far50_gxy.npz
+
+# --- V6 env overrides (eval-during-training; must match the dataset meta) ---
+# Two INDEPENDENT reset-time hazard coins, one per zone (V5 had a single
+# rockfall_p_active, which the V6 branch of make_env never reads). At 0.40 the
+# four latent cells sit at P(neither) 0.360, P(exactly one) 0.480, P(both)
+# 0.160.
+rockfall_p_active_1: 0.7
+rockfall_p_active_2: 0.7
+# Two independent reset-time absolute clocks, t0_z ~ Uniform{min..max}
+# inclusive. The ranges differ because zone 2 is farther from the start; they
+# are calibrated to the frozen shortcut driver
+# (artifacts/rockfall_clock_v6/timing_audit.json). Each zone then runs the same
+# six-wave burst as V5 (ROCKFALL_STEPS 72, WAVE_PERIOD 12).
+rockfall_t0_min_1: 10
+rockfall_t0_max_1: 45
+rockfall_t0_min_2: 90
+rockfall_t0_max_2: 125
+# Burst length of ONE zone's rockfall, in env steps -- i.e. how long the
+# shortcut stays lethal once that zone's clock fires, and therefore how long an
+# agent that arrives early has to WAIT: zone z blocks from t0_z to
+# t0_z + rockfall_steps. 72 is the frozen V6 benchmark (six waves at
+# WAVE_PERIOD 12) and is what crl/rockfall_clock_v6.py uses when this is unset,
+# so the line as written changes nothing.
+#
+# CHANGING IT CHANGES THE BENCHMARK, and nothing gates that on the V6 side.
+# The offline_dataset above was collected at 72 by a sighted teacher that
+# releases at t0 + 72 + RELEASE_MARGIN, and its meta records rockfall_steps 72;
+# raising the value here moves only the eval-during-training env, so the policy
+# would be scored on a shortcut that stays shut longer than any episode it
+# trained on. Raise it in BOTH places (recollect the dataset) if the intent is
+# a longer-wait benchmark -- the lever it pulls is the length ratio between the
+# two routes, which is what the uniform future-goal relabeler normalises by
+# (crl/replay.py draws a goal with mass 1/(L-t), so a longer shortcut gives
+# each of its goals less mass and the detour relatively more).
+rockfall_steps: 72
+# Episode horizon, doubled from V5's 400 because the corridor is longer and the
+# expert may have to wait out two bursts. Dataset meta: horizon 800 (obs length
+# 801). make_env copies the env horizon back into config.max_episode_steps,
+# which the offline audit's G3 shape gate checks against the npz -- so do NOT
+# set max_episode_steps here. Keep max_number_of_steps a multiple of this: the
+# offline learner advances in horizon-sized blocks.
+rockfall_max_steps: 800
+# rockfall_reset_fix, rockfall_severity and rockfall_death_settle_substeps are
+# deliberately ABSENT. V6 always does the canonical episode-independent full
+# reset (RockfallClockV6Env sets full_reset unconditionally), and the other two
+# are v2 / bank-construction knobs; death_settle_substeps left unset means 0,
+# i.e. byte-identical V6 physics.
+
+# --- Faithful offline recipe (verify_offline_d4rl.build_offline_cfg) ---
+num_actors: 0                  # OFFLINE: zero collection actors
+use_td: false                  # binary NCE (not C-learning)
+use_cpc: false                 # binary NCE (not softmax CPC)
+twin_q: true                   # 2 critics; actor uses min
+bc_coef: 0.05                  # crl; the gcbc arm uses 1.0
+random_goals: 0.0
+entropy_coefficient: 0.0       # alpha = 0 (fixed)
+target_entropy: 0.0            # must be unset with fixed alpha
+batch_size: 1024
+repr_dim: 16
+hidden_layer_sizes: [1024, 1024]
+discount: 0.999
+actor_learning_rate: 3.0e-4
+learning_rate: 3.0e-4
+num_sgd_steps_per_step: 4
+updates_per_step: 1
+guard_abort: true
+use_layer_norm: false
+
+# --- Failure-aware negative sampling: OFF ---
+# The V6 failure banks under artifacts/v6_failneg/bank/ exist; this is the
+# vanilla arm, so the bank stays unset and alpha stays 0.
+fail_bank_path: ''
+fail_neg_alpha: 0.0
+
+# --- Causal transition model (ETT stage 0) ---
+# Master switch over BOTH halves of the stage: fitting the model, and sampling
+# rollouts from it to augment the dataset. false = neither runs, whatever the
+# dyn_* values below say, so this arm is plain offline CRL and pays none of
+# the stage-0 fit cost. Flip to true to run the stage; the augmentation half
+# additionally needs dyn_augment_frac > 0.
+dyn_enable: true
+dyn_spectral_norm: true
+dyn_next_action_input: true
+dyn_policy_head: mdn
+dyn_policy_components: 5
+
+# --- Sample-time entropy of the expert head -------------------------------
+# Both are SAMPLE-time only: they change what the mixture draws and nothing
+# about the fit, so the held-out NLL, the responsibilities and the component
+# means in the fit report still describe the fitted head. 1.0 / 1.0 is the
+# identity and reproduces every earlier run bit for bit -- verified, not
+# assumed. They are also mutable on a loaded pickle
+# (model.policy.sample_sigma_scale = 2.0), so sweeping them costs no refit.
+#
+# WHY THEY ARE HERE. The V7 far30 head at k=3 is not overfitted -- train NLL
+# -8.124 against val -8.084, a 0.04-nat gap, so weight decay, dropout, a
+# smaller policy MLP and early stopping would all buy nothing. It is
+# over-CONCENTRATED: weighted mean sigma 0.098 raw torque while its own mode
+# sits 0.210 from the stored action, roughly 2x more confident than its
+# residual justifies.
+#
+# sigma_scale multiplies every component's sigma at draw time. 2.0 is the
+# calibrated setting: it puts the draw's spread level with the head's own mode
+# error. Measured on the V7 far30 k=3 head, the sampled action's RMSE against
+# the stored one goes 0.287 -> 0.351 as this goes 1 -> 2.
+dyn_policy_sample_sigma_scale: 1.0
+# weight_temperature divides the branch LOGITS, so T > 1 flattens them, raises
+# the branch entropy and LOWERS the factual-diagonal coin -- the counterfactual
+# off-diagonal then fires more often. On the V7 far30 k=3 head, T = 1 / 2 / 3
+# gives coin 0.779 / 0.556 / 0.450 and branch entropy 0.402 / 0.771 / 0.929
+# nats.
+#
+# RAISE THIS ONE ONLY AFTER READING artifacts/reports/v7_expert_coin_vs_x.png.
+# At k=3 the head's branch entropy was not uniformly collapsed -- it was spent
+# on the teacher's DETOUR coin, which is latent-INDEPENDENT and therefore not
+# the confounder ETT is about. At the fork the head reproduced that coin well
+# (implied P(detour) 0.324 at t=50 against a true 0.300, and uncorrelated with
+# the route actually taken, r = -0.006, as it must be), and a temperature above
+# 1 flattens that CORRECT 0.30 toward 0.5. The collapse that mattered was
+# inside the two hazard bands, where the rockfall latent decides wait-vs-go:
+# coin 0.86, entropy 0.28 nats -- no better than the open corridor, where
+# there is nothing to decide. A uniform temperature cannot tell those apart;
+# more components, so the hazard decision gets branches of its own, can. Re-run
+# the diagnostic after any change to dyn_policy_components before setting T.
+dyn_policy_weight_temperature: 1.0
+# The off-diagonal is SUPERVISED, so the sampler is allowed to use it.
+# 'agent': each generated step tosses the expert head's own coin,
+# sum_i pi_i(s)^2 -- the probability that two independent draws of the hidden
+# confounder land in the same branch. With that probability the step is the
+# FACTUAL diagonal f(s, a, a) on the blind expert head's draw a; otherwise it
+# is f(s, a, a') with a' the CURRENT contrastive policy's action at the same
+# state, which is the failure branch the negative dataset supervised. So the
+# counterfactual fires in proportion to how much the confounder matters at
+# that state and never at a state where one branch holds all the weight; the
+# fit log reports the mean coin at DATASET states ("the sampler will take the
+# FACTUAL diagonal X% of the time") and the augmentation banner reports the
+# share that actually went off-diagonal over the states the rollout generated,
+# which is a different state distribution and typically a more confounded one.
+# dyn_off_diagonal_action is inert in this mode (a' comes from the learner, it
+# is not drawn).
+dyn_off_diagonal: agent
+dyn_off_diagonal_action: uniform
+# The negative (failure) episodes whose transitions supervise that
+# off-diagonal: for each (s, a, s') a random a' != a is drawn and the head is
+# regressed f(s, a, a') -> s'. This is the CANDIDATE npz, not the _sidecar
+# next to it (which holds outcome metadata and no trajectories); its 58-wide
+# obs are sliced to the leading 29 learner-state columns at load, so the older
+# goal contract needs no conversion. It never enters the replay buffer.
+dyn_negative_dataset: artifacts/v6_failneg/candidates_p040/v6_failures_p040_deliberate_z1_s981.npz
+dyn_off_diagonal_coef: 1.0
+dyn_off_diagonal_train_action: uniform
+dyn_spectral_norm_coef: 2.0
+# Rollouts start at the ROUTE SPLIT of a randomly drawn dataset episode and
+# keep its real prefix (crl/causal_transition_model_v2.py): a detour episode
+# at its first state with x > dyn_rollout_detour_min_x and
+# y < dyn_rollout_detour_max_y, a shortcut episode at
+# its first state inside hazard zone dyn_rollout_shortcut_zone (zone 2: x in
+# [14.6, 17.4], |y| < 2). Route labels
+# come from the dataset sidecar (route_realized); the 3 'none' timeouts and
+# any episode without such a state are skipped. A row is the real
+# s_0..s_{t0} followed by dyn_rollout_steps generated steps.
+# 'initial' restores v1: start at the reset state, no real prefix.
+dyn_rollout_start: route_split
+dyn_rollout_detour_min_x: 20.0
+dyn_rollout_detour_max_y: 7.5
+dyn_rollout_shortcut_zone: 2
+dyn_rollout_route_labels: ''
+dyn_rollout_steps: 90
+# ETT v3: the share of every minibatch drawn from the generated buffer
+# (round(frac * batch_size) rows; the rest are real). The concatenated batch
+# feeds the contrastive critic loss, the actor loss and the BC loss alike.
+# Must be in (0, 1). No done head: every generated row runs the full
+# dyn_rollout_steps.
+dyn_augment_frac: 0.0
+# Regenerate the generated buffer at the top of every main-loop iteration
+# (one iteration = 800 gradient-clock steps, so 125 regenerations over this
+# run). Required by dyn_off_diagonal='agent': a' is the current policy's
+# action, so a buffer built once is a buffer of counterfactuals against the
+# initialization. Raise it if the regeneration cost dominates.
+dyn_augment_refresh_every: 1
+
+# --- Run / logging ---
+# Learner-update budget (offline: the gradient clock). Keep it divisible by
+# rockfall_max_steps; 100000 = 125 x 800. The V6 vanilla CRL baseline reaches
+# success ~0.37 here (notes/v6_failure_negatives.md), against ~0.63 on V5 --
+# V6 is the harder benchmark, not a regression.
+max_number_of_steps: 100000
+seed: 0
+ckpt_dir: ./logs/antmaze_v6_ettv3_goal_${now:}
+resume: false
+tensorboard: true
+eval_every_steps: 10000
+eval_episodes: 30
+# Independently seeded eval envs, each run for eval_episodes (so 3 x 30 = 90
+# episodes per eval). Env 0 is the single eval env earlier runs used; the
+# logged success pools all episodes, success_seed<k> / success_std give the
+# per-seed spread.
+eval_num_seeds: 3
+log_every_steps: 5000

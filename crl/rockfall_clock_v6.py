@@ -141,11 +141,38 @@ class RockfallClockV6Env(OfflineD4rlAntUMazeEnv):
                p_active_1=P_ACTIVE_1, p_active_2=P_ACTIVE_2,
                t0_min_1=T0_MIN_1, t0_max_1=T0_MAX_1,
                t0_min_2=T0_MIN_2, t0_max_2=T0_MAX_2,
-               death_settle_substeps=0):
+               death_settle_substeps=0, rockfall_steps=ROCKFALL_STEPS,
+               eval_goal=None, goal_box_half=None):
     super().__init__(max_episode_steps=max_episode_steps, seed=seed,
                      render_mode=render_mode, eval_goals=eval_goals,
                      eval_goal_mode=eval_goal_mode)
     self.seed = int(seed)
+    #: EVAL GOAL POSITION, an (x, y) pair.  When set it is the commanded goal
+    #: of every episode, held fixed with no noise, and it overrides
+    #: eval_goal_mode.  Success follows it: the base step scores
+    #: dist(torso xy, goal xy) <= 0.5 against this point.  None = the goal
+    #: eval_goal_mode draws around GOAL_CELL, i.e. the frozen V6 benchmark.
+    if eval_goal is None:
+      self._eval_goal_fixed_xy = None
+    else:
+      xy = np.asarray(eval_goal, np.float32).reshape(-1)
+      if xy.shape != (2,):
+        raise ValueError(f'eval_goal must be an (x, y) pair, got {eval_goal!r}')
+      self._eval_goal_fixed_xy = xy
+    #: SUCCESS REGION.  None = the AntMaze test the base step scores,
+    #: dist(torso xy, goal xy) <= SUCCESS_DIST (0.5), byte-identical to the
+    #: frozen V6 benchmark and dataset.  A float h, or a pair (hx, hy) = a
+    #: BOX of size 2hx x 2hy centred on the goal: success iff |dx| <= hx and
+    #: |dy| <= hy.  It replaces the circle for the reward, the success latch
+    #: and info.
+    if goal_box_half is None:
+      self.goal_box_half = None
+    else:
+      h = np.broadcast_to(np.asarray(goal_box_half, np.float64).reshape(-1),
+                          (2,)).copy()
+      if not np.all(h > 0):
+        raise ValueError(f'goal_box_half must be > 0, got {goal_box_half!r}')
+      self.goal_box_half = h
     self._reset_index = -1
     #: DEATH-SETTLE (the AntMaze rock-death observability convention, ported
     #: from crl/rockfall_ant.py; 0 = legacy freeze-at-contact and is
@@ -174,6 +201,24 @@ class RockfallClockV6Env(OfflineD4rlAntUMazeEnv):
     if self.death_settle_substeps < 0:
       raise ValueError('death_settle_substeps must be >= 0, got '
                        f'{death_settle_substeps!r}')
+    #: BURST LENGTH, in env steps, of one zone's rockfall.  The module default
+    #: ROCKFALL_STEPS = 72 reproduces the frozen V6 benchmark byte for byte;
+    #: every existing V6 dataset, run and audit was produced at it.  Raising it
+    #: makes a sighted teacher WAIT longer at an armed mouth (the teacher
+    #: releases at ``schedule['end'] + RELEASE_MARGIN``, and ``end`` is
+    #: ``t0 + rockfall_steps``), which lengthens the armed shortcut episodes
+    #: without touching the map, the hazard coins, the clocks or the physics.
+    #: That is the ONE lever that changes the length ratio between the two
+    #: routes, which is what the uniform future-goal relabeler normalises by:
+    #: crl/replay.py draws a goal with mass 1/(L-t), so a longer shortcut
+    #: gives each of its goals less mass and the detour relatively more.
+    #: WAVE_PERIOD is unchanged, so a longer burst is simply more waves; the
+    #: four rocks per zone are re-dropped each wave and parked once at the
+    #: end, so no extra bodies are needed.
+    self.rockfall_steps = int(rockfall_steps)
+    if self.rockfall_steps < 1:
+      raise ValueError('rockfall_steps must be >= 1, got '
+                       f'{rockfall_steps!r}')
     for name, value in (('p_active_1', p_active_1),
                         ('p_active_2', p_active_2)):
       if not 0.0 <= float(value) <= 1.0:
@@ -270,7 +315,7 @@ class RockfallClockV6Env(OfflineD4rlAntUMazeEnv):
     return int(self._t0[zone])
 
   def privileged_rockfall_end(self, zone):
-    return (int(self._t0[zone]) + ROCKFALL_STEPS
+    return (int(self._t0[zone]) + self.rockfall_steps
             if self._active[zone] else None)
 
   @property
@@ -320,6 +365,11 @@ class RockfallClockV6Env(OfflineD4rlAntUMazeEnv):
             and abs(y) < HAZARD_HALF_Y)
 
   # ---- lifecycle ----------------------------------------------------------
+  def _eval_goal_xy(self):
+    if self._eval_goal_fixed_xy is not None:
+      return self._eval_goal_fixed_xy.copy()
+    return super()._eval_goal_xy()
+
   def reset(self, rockfall_active_1=None, rockfall_active_2=None,
             rockfall_start_1=None, rockfall_start_2=None):
     """Reset and sample two independent hazards and absolute schedules.
@@ -446,7 +496,7 @@ class RockfallClockV6Env(OfflineD4rlAntUMazeEnv):
       if not self._active[zone] or self._passed[zone]:
         continue
       since = self._t - self._t0[zone]
-      if since >= ROCKFALL_STEPS:
+      if since >= self.rockfall_steps:
         self._passed[zone] = True
         if self._dropped[zone]:
           self._park_rocks(zone)
@@ -454,6 +504,10 @@ class RockfallClockV6Env(OfflineD4rlAntUMazeEnv):
         self._drop_rocks(zone)
 
     obs, reward, _, _ = OfflineD4rlAntUMazeEnv.step(self, action)
+    if self.goal_box_half is not None:
+      d = (np.asarray(self._last_obs['achieved_goal'][:2], np.float64)
+           - np.asarray(self._env.goal[:2], np.float64))
+      reward = float(np.all(np.abs(d) <= self.goal_box_half))
     self._t += 1
     if reward > 0:
       self._succeeded = True
